@@ -1,0 +1,104 @@
+format 48
+
+classcanvas 128002 class_ref 128642 // Angebot
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 149 24 2000
+  end
+classcanvas 128130 class_ref 128770 // Angebotspositionen
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 400 37 2004
+  end
+classcanvas 128642 class_ref 128514 // Artikel
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 682 418 2004
+  end
+classcanvas 129154 class_ref 128258 // Auftrag
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 153 219 2004
+  end
+classcanvas 129922 class_ref 128386 // Auftragspositionen
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 396 249 2000
+  end
+classcanvas 130434 class_ref 128898 // Rechnung
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 141 386 2000
+  end
+classcanvas 130818 class_ref 129026 // Rechnungspositionen
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 399 446 2000
+  end
+classcanvas 131586 class_ref 130306 // Lieferant
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 675 261 2000
+  end
+classcanvas 131842 class_ref 130434 // Adresse
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 683 23 2000
+  end
+classcanvas 132354 class_ref 128130 // Kunde
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  xyz 22 623 2000
+  end
+relationcanvas 128514 relation_ref 137858 // Angebotsnummer
+  from ref 128002 z 1999 label "Angebotsnummer" italic xyz 293 53 1999 stereotype "<<masterdetail_action>>" xyz 276 75 3000 to ref 128130
+  role_a_pos 368 52 3000 role_b_pos 297 56 3000
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129794 relation_ref 138242 // <aggregation>
+  from ref 128002 z 1999 to ref 129154
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 130050 relation_ref 138370 // Auftragsnummer
+  from ref 129154 z 1999 label "Auftragsnummer" italic xyz 293 262 1999 stereotype "<<masterdetail_action>>" xyz 271 276 3000 to ref 129922
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 130306 relation_ref 138498 // Name
+  from ref 128642 z 1999 label "Name" italic xyz 575 356 1999 stereotype "<<masterdetail_action>>" xyz 525 370 3000 to ref 129922
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 130690 relation_ref 138626 // <aggregation>
+  from ref 129154 z 1999 to ref 130434
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 131202 relation_ref 138754 // Name
+  from ref 128642 z 1999 label "Name" italic xyz 594 461 1999 stereotype "<<masterdetail_action>>" xyz 544 475 3000 to ref 130818
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 131330 relation_ref 138882 // Rechnungsnummer
+  from ref 130434 z 1999 label "Rechnungsnummer" italic xyz 289 439 1999 stereotype "<<masterdetail_action>>" xyz 276 453 3000 to ref 130818
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 131458 relation_ref 137986 // Name
+  from ref 128642 z 2003 label "Name" italic xyz 580 244 2003 stereotype "<<masterdetail_action>>" xyz 530 258 3000 to ref 128130
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 132098 relation_ref 140034 // Lieferantennummer
+  from ref 131586 z 1999 label "Lieferantennummer" italic xyz 693 356 1999 stereotype "<<masterdetail_action>>" xyz 678 370 3000 to ref 128642
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 132226 relation_ref 140162 // Stadt
+  from ref 131842 z 1999 label "Stadt" italic xyz 730 175 1999 stereotype "<<masterdetail_action>>" xyz 678 189 3000 to ref 131586
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 133634 relation_ref 141570 // Stadt
+  from ref 131842 z 1999 label "Stadt" italic xyz 555 117 3000 stereotype "<<masterdetail_action>>" xyz 503 131 3000 to point 457 169
+  line 133890 z 1999 to point 451 652
+  line 133762 z 1999 to ref 132354
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 134018 relation_ref 141698 // Kundennummer
+  from ref 132354 z 1999 label "Kundennummer" italic xyz 99 534 3000 stereotype "<<masterdetail_action>>" xyz 76 548 3000 to ref 130434
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 134274 relation_ref 141954 // Kundennummer
+  from ref 132354 z 1999 label "Kundennummer" italic xyz 39 483 3000 stereotype "<<masterdetail_action>>" xyz 16 497 3000 to point 82 372
+  line 134402 z 1999 to ref 129154
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 134530 relation_ref 142082 // Kundennummer
+  from ref 132354 z 1999 label "Kundennummer" italic xyz 13 139 3000 stereotype "<<masterdetail_action>>" xyz 3 156 3000 to point 6 598
+  line 134658 z 1999 to point 6 218
+  line 134786 z 1999 to ref 128002
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end

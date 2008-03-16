@@ -1,27 +1,23 @@
-format 44
+format 48
 
 classcanvas 128107 class_ref 128130 // Kunde
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 482 31 2000
+  xyz 485 109 2000
   end
 classcanvas 128619 class_ref 130434 // Adresse
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 24 3 3005
+  xyz 57 94 3005
   end
 classcanvas 128875 class_ref 131586 // Kontakte
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 43 254 3005
+  xyz 496 337 3005
   end
-relationcanvas 128747 relation_ref 132226 // Stadt
-  from ref 128107 z 1999 label "Stadt" italic xyz 321 53 1999 stereotype "<<masterdetail_action>>" xyz 235 78 3000 to ref 128619
+relationcanvas 128386 relation_ref 136322 // Name
+  from ref 128875 z 1999 label "Name" italic xyz 528 240 1999 stereotype "<<masterdetail_action>>" xyz 478 254 3000 to ref 128107
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 129003 relation_ref 133762 // Stadt
-  from ref 128875 z 1999 label "Stadt" italic xyz 93 177 1999 stereotype "<<masterdetail_action>>" xyz 7 202 3000 to ref 128619
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-relationcanvas 129131 relation_ref 133506 // Name
-  from ref 128107 z 1999 label "Name" italic xyz 313 199 1999 stereotype "<<masterdetail_action>>" xyz 231 224 3000 to ref 128875
+relationcanvas 128770 relation_ref 141570 // Stadt
+  from ref 128619 z 1999 label "Stadt" italic xyz 318 127 3000 stereotype "<<masterdetail_action>>" xyz 266 141 3000 to ref 128107
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

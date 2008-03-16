@@ -1,7 +1,7 @@
-format 44
+format 48
 "BoUML"
-  revision 21
-  modified_by 107 "lothar"
+  revision 23
+  modified_by 2 "lothar"
 
 
   
@@ -37,61 +37,9 @@ format 44
   mark_for_import
   
   ncouples 4
-  key "gxmi path" value "/home/lothar/develop/Projects/CPP/AppDevelopment/XSLT_Templates/XMIToDMF/test.xmi"
+  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopment/XSLT_Templates/XMIToDMF/test.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi taggedvalue" value "1"
   package_ref 128002 // CRM
-
-  usecaseview 128002 "Admin usecases"
-    //use case diagram settings
-    package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-    //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
-    //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
-    //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-    //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
-    //activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
-    usecasediagram 128258 "Admin formulars"
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations no shadow default
-      size A4
-    end
-
-    class 129154 "Admin"
-      visibility package stereotype "actor"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    usecase 128002 "Kunden bearbeiten"
-      stereotype "Form"
-      //use case diagram settings
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-      //sequence diagram settings
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
-      //collaboration diagram settings
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
-      //object diagram settings
-       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-      //state diagram settings
-      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-      show_activities default region_horizontally default drawing_language default
-      //activity diagram settings
-      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-      show_infonote default drawing_language default
-    end
-  end
 end

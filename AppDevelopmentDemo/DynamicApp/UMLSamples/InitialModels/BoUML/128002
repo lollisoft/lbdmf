@@ -1,7 +1,7 @@
-format 44
+format 48
 "CRM" // CRM
-  revision 29
-  modified_by 56 "lothar"
+  revision 35
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -47,6 +47,11 @@ format 44
       size A4
     end
 
+    classdiagram 129282 "Angebot-Rechnung"
+      draw_all_relations no hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      size A4
+    end
+
     classdiagram 128130 "Kunde-Kontakte-Adresse"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
@@ -72,44 +77,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130050 // Firmenname
-	relation_ref 129026 // Firmenname
-      end
-
-      classrelation 129282 // Firmenname
-	relation_ref 128642 // Firmenname
-      end
-
-      classrelation 131330 // Firmenname
-	relation_ref 129666 // Firmenname
-      end
-
-      classrelation 134274 // (Stadt)
-	relation 132226 o--- name "Stadt"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 134274 // (Stadt)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 134402 // (Stadt)
-      end
-
-      classrelation 135810 // (Name)
-	relation 133506 o--- name "Name"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 135810 // (Name)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 135938 // (Name)
-      end
-
       attribute 136450 "Firmenname"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -117,6 +84,53 @@ ${inlines}
 	java_decl ""
 	php_decl ""
 	idl_decl ""
+      end
+
+      classrelation 139522 // Name
+	relation_ref 136322 // Name
+      end
+
+      classrelation 146946 // (Stadt)
+	relation_ref 141570 // Stadt
+      end
+
+      classrelation 147074 // (Kundennummer)
+	relation 141698 o--- name "Kundennummer"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147074 // (Kundennummer)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147202 // (Kundennummer)
+      end
+
+      classrelation 147586 // (Kundennummer)
+	relation 141954 o--- name "Kundennummer"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147586 // (Kundennummer)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147714 // (Kundennummer)
+      end
+
+      classrelation 147842 // (Kundennummer)
+	relation 142082 o--- name "Kundennummer"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147842 // (Kundennummer)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147970 // (Kundennummer)
       end
     end
 
@@ -149,19 +163,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 129154 // (Firmenname)
-	relation 128642 o--- name "Firmenname"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129154 // (Firmenname)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129282 // Firmenname
-      end
-
       classrelation 129538 // Auftragsnummer
 	relation_ref 128770 // Auftragsnummer
       end
@@ -175,22 +176,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 131458 // <aggregation>
-	relation 129794 o---
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131458 // <aggregation>
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131586 // <aggregation>
-      end
-
-      classrelation 131842 // <aggregation>
-	relation_ref 129922 // <aggregation>
-      end
-
       operation 128642 "Drucken"
 	public explicit_return_type ""
 	nparams 0
@@ -202,6 +187,52 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 142338 // <aggregation>
+	relation_ref 138242 // <aggregation>
+      end
+
+      classrelation 142466 // (Auftragsnummer)
+	relation 138370 o--- name "Auftragsnummer"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142466 // (Auftragsnummer)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142594 // (Auftragsnummer)
+      end
+
+      classrelation 142978 // <aggregation>
+	relation 138626 o---
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142978 // <aggregation>
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 143106 // <aggregation>
+      end
+
+      operation 130050 "RechnungMachen"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      classrelation 147714 // (Kundennummer)
+	relation_ref 141954 // Kundennummer
       end
     end
 
@@ -247,16 +278,12 @@ ${inlines}
 	    classrelation_ref 129538 // Auftragsnummer
       end
 
-      classrelation 129666 // <aggregation>
-	relation 128898 o---
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129666 // <aggregation>
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129794 // <aggregation>
+      classrelation 142594 // (Auftragsnummer)
+	relation_ref 138370 // Auftragsnummer
+      end
+
+      classrelation 142850 // Name
+	relation_ref 138498 // Name
       end
     end
 
@@ -298,10 +325,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 129794 // <aggregation>
-	relation_ref 128898 // <aggregation>
-      end
-
       attribute 130434 "Beschreibung"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -320,25 +343,47 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130562 // <aggregation>
-	relation_ref 129282 // <aggregation>
-      end
-
-      classrelation 131074 // <aggregation>
-	relation_ref 129538 // <aggregation>
-      end
-
-      classrelation 132994 // (Lieferantennummer)
-	relation 131074 o--- name "Lieferantennummer"
+      classrelation 141698 // (Name)
+	relation 137986 o--- name "Name"
 	  stereotype "masterdetail_action"
 	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 132994 // (Lieferantennummer)
+	    classrelation_ref 141698 // (Name)
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 133122 // (Lieferantennummer)
+	    classrelation_ref 141826 // (Name)
+      end
+
+      classrelation 142722 // (Name)
+	relation 138498 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142722 // (Name)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142850 // Name
+      end
+
+      classrelation 143234 // (Name)
+	relation 138754 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 143234 // (Name)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 143362 // (Name)
+      end
+
+      classrelation 144898 // Lieferantennummer
+	relation_ref 140034 // Lieferantennummer
       end
     end
 
@@ -353,19 +398,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 129922 // (Firmenname)
-	relation 129026 o--- name "Firmenname"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129922 // (Firmenname)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130050 // Firmenname
-      end
-
       attribute 130818 "Angebotsnummer"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -384,10 +416,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130306 // Angebotsnummer
-	relation_ref 129154 // Angebotsnummer
-      end
-
       attribute 131330 "Gesamtpreis"
 	protected explicit_type "float"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -395,10 +423,6 @@ ${inlines}
 	java_decl ""
 	php_decl ""
 	idl_decl ""
-      end
-
-      classrelation 131586 // <aggregation>
-	relation_ref 129794 // <aggregation>
       end
 
       operation 128770 "Drucken"
@@ -412,6 +436,48 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 141442 // von (Angebotsnummer)
+	relation 137858 o--- name "Angebotsnummer"
+	  stereotype "masterdetail_action"
+	  a role_name "von" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141442 // von (Angebotsnummer)
+	  b role_name "hat" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141570 // hat (Angebotsnummer)
+      end
+
+      classrelation 142210 // <aggregation>
+	relation 138242 o---
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142210 // <aggregation>
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142338 // <aggregation>
+      end
+
+      operation 129922 "AuftragMachen"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+      end
+
+      classrelation 147970 // (Kundennummer)
+	relation_ref 142082 // Kundennummer
       end
     end
 
@@ -444,29 +510,12 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130178 // (Angebotsnummer)
-	relation 129154 o--- name "Angebotsnummer"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130178 // (Angebotsnummer)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130306 // Angebotsnummer
+      classrelation 141570 // hat (Angebotsnummer)
+	relation_ref 137858 // Angebotsnummer
       end
 
-      classrelation 130434 // <aggregation>
-	relation 129282 o---
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130434 // <aggregation>
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130562 // <aggregation>
+      classrelation 141826 // (Name)
+	relation_ref 137986 // Name
       end
     end
 
@@ -508,35 +557,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130818 // Rechnungsnummer
-	relation_ref 129410 // Rechnungsnummer
-      end
-
-      classrelation 131202 // (Firmenname)
-	relation 129666 o--- name "Firmenname"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131202 // (Firmenname)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131330 // Firmenname
-      end
-
-      classrelation 131714 // <aggregation>
-	relation 129922 o---
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131714 // <aggregation>
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131842 // <aggregation>
-      end
-
       operation 128514 "Drucken"
 	public explicit_return_type ""
 	nparams 0
@@ -548,6 +568,27 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 143106 // <aggregation>
+	relation_ref 138626 // <aggregation>
+      end
+
+      classrelation 143490 // (Rechnungsnummer)
+	relation 138882 o--- name "Rechnungsnummer"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 143490 // (Rechnungsnummer)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 143618 // (Rechnungsnummer)
+      end
+
+      classrelation 147202 // (Kundennummer)
+	relation_ref 141698 // Kundennummer
       end
     end
 
@@ -580,68 +621,12 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 130690 // (Rechnungsnummer)
-	relation 129410 o--- name "Rechnungsnummer"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130690 // (Rechnungsnummer)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130818 // Rechnungsnummer
+      classrelation 143362 // (Name)
+	relation_ref 138754 // Name
       end
 
-      classrelation 130946 // <aggregation>
-	relation 129538 o---
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130946 // <aggregation>
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131074 // <aggregation>
-      end
-    end
-
-    sequencediagram 128386 "Sequence Diagram1"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
-      size A4
-    end
-
-    collaborationdiagram 128514 "Collaboration Diagram2"
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations no shadow default
-      size A4
-    end
-
-    objectdiagram 128642 "Object Diagram3"
-       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations no shadow default
-      size A4
-    end
-
-    state 128002 "Statemaschine"
-      stereotype "machine"
-    end
-
-    activity 128002 "TestActivity"
-      activitydiagram 128770 "Diagram4"
-	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations no shadow default
-	show_infonote default drawing_language default
-	size A4
-      end
-
-      activityaction 128002 "Open Database Form"
-	opaque_action
-      end
-
-      activityobject 128002 "Admin forms"
-	 type class_ref 129154 // Admin
-	unordered 
-	flow 128002 "<flow>"
-	  on activityaction_ref 128002 // activity action Open Database Form
-	end
+      classrelation 143618 // (Rechnungsnummer)
+	relation_ref 138882 // Rechnungsnummer
       end
     end
 
@@ -656,10 +641,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 133122 // (Lieferantennummer)
-	relation_ref 131074 // Lieferantennummer
-      end
-
       attribute 133378 "Lieferantennummer"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -678,17 +659,21 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 137858 // (Stadt)
-	relation 135042 o--- name "Stadt"
+      classrelation 144770 // (Lieferantennummer)
+	relation 140034 o--- name "Lieferantennummer"
 	  stereotype "masterdetail_action"
 	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 137858 // (Stadt)
+	    classrelation_ref 144770 // (Lieferantennummer)
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 137986 // (Stadt)
+	    classrelation_ref 144898 // Lieferantennummer
+      end
+
+      classrelation 145154 // Stadt
+	relation_ref 140162 // Stadt
       end
     end
 
@@ -739,20 +724,30 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 134402 // (Stadt)
-	relation_ref 132226 // Stadt
+      classrelation 145026 // (Stadt)
+	relation 140162 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 145026 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 145154 // Stadt
       end
 
-      classrelation 136450 // Stadt
-	relation_ref 133762 // Stadt
-      end
-
-      classrelation 137986 // (Stadt)
-	relation_ref 135042 // Stadt
-      end
-
-      classrelation 128235 // Stadt
-	relation_ref 128107 // Stadt
+      classrelation 146818 // (Stadt)
+	relation 141570 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 146818 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 146946 // (Stadt)
       end
     end
 
@@ -785,10 +780,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 135938 // (Name)
-	relation_ref 133506 // Name
-      end
-
       attribute 136578 "Telefon"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -816,19 +807,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 136322 // (Stadt)
-	relation 133762 o--- name "Stadt"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 136322 // (Stadt)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 136450 // Stadt
-      end
-
       attribute 137986 "Bild"
 	protected explicit_type "image"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -847,14 +825,32 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128491 // Name
-	relation_ref 128235 // Name
+      classrelation 139394 // (Name)
+	relation 136322 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 139394 // (Name)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 139522 // Name
       end
-    end
 
-    classdiagram 129922 "Create Customer"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-      size A4
+      classrelation 140162 // (Name)
+	relation 136706 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140162 // (Name)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140290 // (Name)
+      end
+
     end
 
     class 128107 "Konkurrenten"
@@ -886,19 +882,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128107 // (Stadt)
-	relation 128107 o--- name "Stadt"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128107 // (Stadt)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128235 // Stadt
-      end
-
       attribute 128363 "Kurzbeschreibung"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -917,17 +900,8 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128363 // (Name)
-	relation 128235 o--- name "Name"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128363 // (Name)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128491 // Name
+      classrelation 140290 // (Name)
+	relation_ref 136706 // Name
       end
     end
   end
