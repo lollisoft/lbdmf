@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.45 2008/01/26 20:24:44 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.46 2008/03/16 20:26:12 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.46  2008/03/16 20:26:12  lollisoft
+ * Added a refresh button.
+ *
  * Revision 1.45  2008/01/26 20:24:44  lollisoft
  * Implemented more functions regarding to meta data for sqlite database gateway. Some interface functions have
  * been changed to get proper working test application.
@@ -702,6 +705,11 @@ public:
 	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
 
 	/**
+	 * Refresh the database query and refill the dropdown listboxes.
+	 */
+	lbErrCodes LB_STDCALL lbDBRefresh(lb_I_Unknown* uk);
+
+	/**
 	 * Database manipulation
 	 * 
 	 * Internally used to update the current row.
@@ -819,6 +827,7 @@ public:
 	long l;
 	char buf[100];
 	
+	wxWindow* refreshButton;
 	wxWindow* firstButton;
 	wxWindow* prevButton;
 	wxWindow* nextButton;
