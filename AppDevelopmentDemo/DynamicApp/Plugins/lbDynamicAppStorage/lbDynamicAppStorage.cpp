@@ -443,6 +443,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
@@ -457,6 +458,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	XSLFileApplicationDatabase->accept(*&aspect);
 	UseOtherXSLFile->accept(*&aspect);
 	XMIFileUMLProject->accept(*&aspect);
+	GeneralDBSchemaname->accept(*&aspect);
 
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_KeyBase, key)
@@ -596,6 +598,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "UseOtherXSLFile";
 		QI(UseOtherXSLFile, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
+
+		*name = "GeneralDBSchemaname";
+		QI(GeneralDBSchemaname, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 	}		
 	
 	*name = "ApplicationData";
@@ -638,6 +644,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_String, UMLImportTargetDBName)
 	UAP(lb_I_String, UMLImportTargetDBUser)
 	UAP(lb_I_String, UMLImportTargetDBPass)
+	UAP(lb_I_String, GeneralDBSchemaname)
 
 	UAP(lb_I_FileLocation, XMIFileUMLProject)
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
@@ -776,6 +783,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
 
+	*name = "GeneralDBSchemaname";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, GeneralDBSchemaname)
+			
 
 
 	_LOG << "Start storing the data" LOG_
@@ -823,6 +834,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		XSLFileApplicationDatabase->accept(*&aspect);
 		UseOtherXSLFile->accept(*&aspect);
 		XMIFileUMLProject->accept(*&aspect);
+		GeneralDBSchemaname->accept(*&aspect);
 	}
 
 	return err;
@@ -984,6 +996,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
@@ -1031,6 +1044,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
 		*name = "XMIFileUMLProject";
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProject);
+		*name = "GeneralDBSchemaname";
+		SomeBaseSettings->getUAPString(*&name, *&GeneralDBSchemaname);
 	} 
 
 	*name = "UMLImportTargetDBName";
@@ -1067,6 +1082,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	*name = "XMIFileUMLProject";
 	QI(XMIFileUMLProject, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+
+	*name = "GeneralDBSchemaname";
+	QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
 
 	if ((forms != NULL) && 

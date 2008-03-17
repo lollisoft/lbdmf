@@ -202,6 +202,8 @@ protected:
 	UAP(lb_I_ReportTexts, reporttextblocks)
 
 
+	UAP(lb_I_String, GeneralDBSchemaname)
+
 	UAP(lb_I_String, UMLImportTargetDBName)
 	UAP(lb_I_String, UMLImportTargetDBUser)
 	UAP(lb_I_String, UMLImportTargetDBPass)
@@ -230,6 +232,7 @@ lbDynamicApplication::lbDynamicApplication() {
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
+	REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
 
 	REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
@@ -242,6 +245,8 @@ lbDynamicApplication::lbDynamicApplication() {
 	XMIFileUMLProject->setData("");
 	XSLFileSystemDatabase->setData("");
 	XSLFileApplicationDatabase->setData("");
+	
+	*GeneralDBSchemaname = "public";
 	
 	*lastExportedApp = "";
 }
@@ -354,6 +359,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		valueProject->setData(UMLImportTargetDBPass->charrep());
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
 		
+		parameterProject->setData("DB Schemaname");
+		valueProject->setData(GeneralDBSchemaname->charrep());
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
 		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramProject, 
 													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
 		
@@ -456,6 +465,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 					*DatabaseSettingNamespace = value->charrep();
 		}
 
+		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Schemaname") == 0) {
+					*GeneralDBSchemaname = value->charrep();
+		}
+
 		if (strcmp(key->charrep(), "Transformation settingsAsk for other XSL files") == 0) {
 					if (strcmp(value->charrep(), "TRUE") == 0) {
 						UseOtherXSLFile->setData(true);
@@ -501,10 +514,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		document->setUAPString(*&paramname, *&UMLImportTargetDBUser);
 		*paramname = "UMLImportDBPass";
 		document->setUAPString(*&paramname, *&UMLImportTargetDBPass);
+		*paramname = "GeneralDBSchemaname";
+		document->setUAPString(*&paramname, *&GeneralDBSchemaname);
 	}
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
 	
+	*paramname = "GeneralDBSchemaname";
+	temp_params->setUAPString(*&paramname, *&GeneralDBSchemaname);
 	*paramname = "UMLImportDBName";
 	temp_params->setUAPString(*&paramname, *&UMLImportTargetDBName);
 	*paramname = "UMLImportDBUser";
@@ -1521,6 +1538,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
 			QI(UseOtherXSLFile, lb_I_Unknown, uk)
 			ApplicationData->insert(&uk, &key);
+
+			*name = "GeneralDBSchemaname";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(GeneralDBSchemaname, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
 			
 			*name = "ApplicationData";
 			document->setUAPContainer(*&name, *&ApplicationData);
@@ -2242,6 +2264,10 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     uk = document->getElement(&key);
 	XMIFileUMLProject->setData(*&uk);
 	
+    *name = "GeneralDBSchemaname";
+    uk = document->getElement(&key);
+	if (uk != NULL) GeneralDBSchemaname->setData(*&uk);
+	
 
 	// UML import routines currently rely on this.
 	*name = "XSLFileSystemDatabase";
@@ -2256,6 +2282,9 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	param->setUAPString(*&name, *&UMLImportTargetDBUser);
 	*name = "UMLImportDBPass";
 	param->setUAPString(*&name, *&UMLImportTargetDBPass);
+
+	*name = "GeneralDBSchemaname";
+	param->setUAPString(*&name, *&GeneralDBSchemaname);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
 	
@@ -2277,6 +2306,9 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	temp_params->setUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
 	*name = "XMIFileUMLProject";
 	temp_params->setUAPFileLocation(*&name, *&XMIFileUMLProject);
+
+	*name = "GeneralDBSchemaname";
+	temp_params->setUAPString(*&name, *&GeneralDBSchemaname);
 
 
 	metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
