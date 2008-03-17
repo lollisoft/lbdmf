@@ -5586,7 +5586,21 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	
 	meta->setStatusText("Info", "Get tables ...");
 	
-	retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
+	if (SomeBaseSettings != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+		*name = "GeneralDBSchemaname";
+		SomeBaseSettings->getUAPString(*&name, *&schema);
+
+		retcode = SQLTables(hstmt, NULL, 0, schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);
+	} else {
+		retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+	}
+
 		
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -5707,8 +5721,22 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		return columns.getPtr();
 	}
 
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
+	if (SomeBaseSettings != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+		*name = "GeneralDBSchemaname";
+		SomeBaseSettings->getUAPString(*&name, *&schema);
+
+		retcode = SQLColumns(hstmt, NULL, 0, schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);     
+	} else {
+		retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);     
+	}
+
 	
-	retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);     
 	
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 		 /* Bind columns in result set to buffers */
