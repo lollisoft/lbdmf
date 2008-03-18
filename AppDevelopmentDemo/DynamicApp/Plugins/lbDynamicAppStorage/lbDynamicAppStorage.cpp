@@ -1015,6 +1015,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		*UMLImportTargetDBName = "CRM";
 		*UMLImportTargetDBUser = "<dbuser>";
 		*UMLImportTargetDBPass = "<dbpass>";
+		*GeneralDBSchemaname = "public";
 
 		*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
 		XMIFileUMLProject->setData("");
@@ -1024,6 +1025,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 		XSLFileSystemDatabase->setData("<system>");
 		XSLFileApplicationDatabase->setData("<application>");
+		XMIFileUMLProject->setData("<UML XMI file>");
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
 		*name = "UMLImportDBName";
