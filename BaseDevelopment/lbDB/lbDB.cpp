@@ -5596,7 +5596,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 		*name = "GeneralDBSchemaname";
 		SomeBaseSettings->getUAPString(*&name, *&schema);
 
-		retcode = SQLTables(hstmt, NULL, 0, schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);
+		retcode = SQLTables(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);
 	} else {
 		retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
 	}
@@ -5731,7 +5731,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		*name = "GeneralDBSchemaname";
 		SomeBaseSettings->getUAPString(*&name, *&schema);
 
-		retcode = SQLColumns(hstmt, NULL, 0, schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);     
+		retcode = SQLColumns(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);     
 	} else {
 		retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);     
 	}
