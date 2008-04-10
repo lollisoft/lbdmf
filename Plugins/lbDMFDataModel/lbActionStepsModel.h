@@ -68,4 +68,45 @@ public:
 	UAP(lb_I_Long, marked)
 };
 
+class lbActionStepTransitionsModel : public lb_I_Action_Step_Transitions {
+public:
+	lbActionStepTransitionsModel();
+	virtual ~lbActionStepTransitionsModel();
+
+	DECLARE_LB_UNKNOWN()
+
+	long		LB_STDCALL addTransition(const char* decision, long src_actionid, long dst_actionid, const char* description, long _id = -1);
+	bool		LB_STDCALL selectTransition(long _id);
+	int			LB_STDCALL getActionStepTransitionsCount();
+	bool		LB_STDCALL hasMoreActionStepTransitions();
+	void		LB_STDCALL setNextActionStepTransition();
+	void		LB_STDCALL finishActionStepTransitionIteration();
+	
+	long		LB_STDCALL getActionStepTransitionID();
+	long		LB_STDCALL getActionStepTransitionSrcActionID();
+	long		LB_STDCALL getActionStepTransitionDstActionID();
+
+	char*		LB_STDCALL getActionStepTransitionDecision();
+	char*		LB_STDCALL getActionStepTransitionDescription();
+	
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+	
+	UAP(lb_I_Container, Actions)
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentSrcActionId)
+	UAP(lb_I_Long, currentDstActionId)
+	UAP(lb_I_String, currentDescription)
+	UAP(lb_I_String, currentDecision)
+
+	UAP(lb_I_Long, marked)
+
+};
+
+
 DECLARE_FUNCTOR(instanceOflbActionStepsModel)
+DECLARE_FUNCTOR(instanceOflbActionStepTransitionsModel)

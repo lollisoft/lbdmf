@@ -301,7 +301,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		*key = *&module;
 		*key += *&action_handler;
 
-		_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() << "'" LOG_
+		_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() << "' for action ID = " << id->charrep() LOG_
 
 		if (actions->exists(&keybase) == 0) {
 			/*...sInstanciate one and insert into actions:32:*/
@@ -584,6 +584,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
 		
+		_LOG << "Execute action steps based on actionsteps model." LOG_
+		
 		QI(order, lb_I_KeyBase, key)
 		QI(stepid, lb_I_Unknown, uk)
 		
@@ -599,6 +601,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			actionid->setData(appActionSteps->getActionStepActionID());
 			
 			if (actionidcmp->equals(*&actionid)) {
+			    _LOG << "Sort action steps by ordering column: " << appActionSteps->getActionStepOrderNo() << "." LOG_
 				order->setData(appActionSteps->getActionStepOrderNo());
 				stepid->setData(appActionSteps->getActionStepID());
 				sortedActionSteps->insert(&uk, &key);
@@ -609,6 +612,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		sortedActionSteps->finishIteration();
 		while (sortedActionSteps->hasMoreElements() == 1) {
 			uk = sortedActionSteps->nextElement();
+			
+			stepid->setData(*&uk);
 		
 			parameter->setData("id");
 			params->setUAPLong(*&parameter, *&stepid);
@@ -619,7 +624,9 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	} else {
 		REQUEST(manager.getPtr(), lb_I_Database, db)
 		UAP(lb_I_Query, query)
-		
+
+		_LOG << "Read actionsteps sequentially from the database." LOG_
+
 		db->init();
 		
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -632,7 +639,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		
 		query = db->getQuery("lbDMF", 0);	
 		
-		char buf[] = "select id from action_steps where actionid = %d";
+		char buf[] = "select id from action_steps where actionid = %d order by a_order_no";
 		char* q = (char*) malloc(strlen(buf)+10);
 		q[0] = 0;
 		sprintf(q, buf, myActionID);
@@ -640,8 +647,11 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		_LOG << "Get action steps from id = " << myActionID << ". Query is " << q LOG_
 			
 			if (query->query(q) == ERR_NONE) {
-				
+				UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, statechangeID)
 				lbErrCodes err = query->first();
+				
+				*paramname = "statechange";
 				
 				while(err == ERR_NONE) {
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
@@ -653,7 +663,27 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 					
 					delegate(*&params);
 					
-					err = query->next();
+					// If the actionstep returns a statechange parameter, then it is propably no more a linear action execution flow.
+					// In that case an action may be a desicion and therefore a statechange informs about the next state to be entered.
+					// A state is a specific action step where the state is the ID of that step.
+
+					if (params->getUAPLong(*&paramname, *&statechangeID) == ERR_PARAM_NOT_FOUND) {
+						err = query->next();
+					} else {
+						// A statechange comes back
+						if (query->first() == ERR_NONE) {
+							//UAP(lb_I_KeyBase, comp1)
+							//UAP(lb_I_KeyBase, comp2)
+							//QI(id, lb_I_KeyBase, comp1)
+							//QI(statechangeID, lb_I_KeyBase, comp2)
+							id = query->getAsLong(1);
+							
+							while ((err != ERR_DB_NODATA) && (id->getData() != (long) statechangeID->getData())) {
+								err = query->next();
+								id = query->getAsLong(1);
+							}
+						}
+					}
 				}
 				
 				if (err == WARN_DB_NODATA) {
@@ -1778,6 +1808,271 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			q->skipFKCollecting();
 			*What = s.c_str();
 			
+			if ((err = q->query(What->charrep(), false)) != ERR_NONE && err != ERR_DB_NODATA) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			return;
+		}
+	}
+	
+	// - Old database variant -
+		
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query)
+
+
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = database->getQuery("lbDMF", 0);	
+	
+	char buf[] = "select what from action_steps where id = %d order by a_order_nr";
+	char* q = (char*) malloc(strlen(buf)+20);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	db->init();
+	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+		return;
+	}
+	
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+/*...sFor each row open the detail form with given params:24:*/
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*what = s.c_str();
+			if ((err = q->query(what->charrep(), false)) != ERR_NONE && err != ERR_DB_NODATA) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			err = query->next();
+/*...e*/
+		}
+		
+		if (err == WARN_DB_NODATA) {
+/*...sOpen the detail form with given params:24:*/
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*what = s.c_str();
+			if (q->query(what->charrep(), false) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+/*...e*/
+		}
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		
+		ID->setData(myActionID);
+		
+		*msg = "lbSQLQueryAction::execute(";
+		*msg += ID->charrep();
+		*msg += ") failed.";
+
+		meta->setStatusText("Info", msg->charrep());
+	}
+	
+	lb_I_GUI* gui;
+
+	meta->getGUI(&gui);
+	
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, f)
+		
+		f = gui->findDBForm(SourceFormName->charrep());
+		
+		if (f != NULL) f->reopen();
+	}
+}
+/*...e*/
+
+#ifdef USE_NEW_ACTIONS
+
+/*...lbDecisionAction:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDecisionAction)
+	ADD_INTERFACE(lb_I_DelegatedAction)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbDecisionAction, lbDecisionAction)
+
+lbErrCodes LB_STDCALL lbDecisionAction::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbDecisionAction::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbDecisionAction::lbDecisionAction() {
+	ref = STARTREF;
+	myActionID = -1;
+}
+
+lbDecisionAction::~lbDecisionAction() {
+}
+
+void LB_STDCALL lbDecisionAction::setDatabase(lb_I_Database* _db) {
+	db = _db;
+	db++;
+}
+
+void LB_STDCALL lbDecisionAction::setActionID(long id) {
+	myActionID = id;
+}
+
+void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
+	_CL_LOG << "lbDecisionAction::execute()" LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, app)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source value");
+	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("source field");
+	params->getUAPString(*&parameter, *&SourceFieldName);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&SourceFormName);
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+		
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+		
+	if (docparams != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		
+		if (appActionSteps != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
+			
+			*msg = "Execute query (";
+			*msg += What->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			db->init();
+			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+				return;
+			}
+
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(What->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*What = s.c_str();
+			
 			if (q->query(What->charrep()) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				q->enableFKCollecting();
@@ -1829,7 +2124,6 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 		lbErrCodes err = query->first();
 	
 		while(err == ERR_NONE) {
-/*...sFor each row open the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 			what = query->getAsString(1);
@@ -1859,11 +2153,9 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			q->enableFKCollecting();
 
 			err = query->next();
-/*...e*/
 		}
 		
 		if (err == WARN_DB_NODATA) {
-/*...sOpen the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 			what = query->getAsString(1);
@@ -1891,7 +2183,6 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 				return;
 			}
 			q->enableFKCollecting();
-/*...e*/
 		}
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
@@ -1918,4 +2209,269 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 		if (f != NULL) f->reopen();
 	}
 }
-/*...e*/
+
+/****************
+
+
+
+/*...lbOpAqueOperation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbOpAqueOperation)
+	ADD_INTERFACE(lb_I_DelegatedAction)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbOpAqueOperation, lbOpAqueOperation)
+
+lbErrCodes LB_STDCALL lbOpAqueOperation::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbOpAqueOperation::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbOpAqueOperation::lbOpAqueOperation() {
+	ref = STARTREF;
+	myActionID = -1;
+}
+
+lbOpAqueOperation::~lbOpAqueOperation() {
+}
+
+void LB_STDCALL lbOpAqueOperation::setDatabase(lb_I_Database* _db) {
+	db = _db;
+	db++;
+}
+
+void LB_STDCALL lbOpAqueOperation::setActionID(long id) {
+	myActionID = id;
+}
+
+void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
+	_CL_LOG << "lbOpAqueOperation::execute()" LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, app)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source value");
+	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("source field");
+	params->getUAPString(*&parameter, *&SourceFieldName);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&SourceFormName);
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+		
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+		
+	if (docparams != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		*name = "AppAction_Step_Transitions";
+		
+		
+		if (appActionSteps != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
+			
+			*msg = "Execute query (";
+			*msg += What->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			db->init();
+			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+				return;
+			}
+
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(What->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*What = s.c_str();
+			
+			if (q->query(What->charrep()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			return;
+		}
+	}
+	
+	// - Old database variant -
+		
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query)
+
+
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = database->getQuery("lbDMF", 0);	
+	
+	char buf[] = "select what from action_steps where id = %d";
+	char* q = (char*) malloc(strlen(buf)+20);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	db->init();
+	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+		return;
+	}
+	
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*what = s.c_str();
+			if (q->query(what->charrep()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*what = s.c_str();
+			if (q->query(what->charrep()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+		}
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		
+		ID->setData(myActionID);
+		
+		*msg = "lbSQLQueryAction::execute(";
+		*msg += ID->charrep();
+		*msg += ") failed.";
+
+		meta->setStatusText("Info", msg->charrep());
+	}
+	
+	lb_I_GUI* gui;
+
+	meta->getGUI(&gui);
+	
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, f)
+		
+		f = gui->findDBForm(SourceFormName->charrep());
+		
+		if (f != NULL) f->reopen();
+	}
+}
+
+#endif //#ifdef USE_NEW_ACTIONS

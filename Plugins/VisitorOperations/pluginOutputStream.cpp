@@ -179,6 +179,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
+	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
 
 	/** \brief Start save operation.
 	 *
@@ -357,6 +358,27 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 			b ->setData(*&uk);
 			visit(*&b);
 		}
+	}
+}
+
+
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Step_Transitions* transition) {
+	int count;
+
+	count = transition->getActionStepTransitionsCount();
+	*oStream << count;
+	
+	transition->finishActionStepTransitionIteration();
+	
+	while (transition->hasMoreActionStepTransitions()) {
+		transition->setNextActionStepTransition();
+		
+		*oStream << transition->getActionStepTransitionID();
+		*oStream << transition->getActionStepTransitionSrcActionID();
+		*oStream << transition->getActionStepTransitionDstActionID();
+		*oStream << transition->getActionStepTransitionDecision();
+		*oStream << transition->getActionStepTransitionDescription();
 	}
 }
 

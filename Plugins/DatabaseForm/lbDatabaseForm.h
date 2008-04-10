@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.46 2008/03/16 20:26:12 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.47 2008/04/10 06:43:44 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.47  2008/04/10 06:43:44  lollisoft
+ * Corrected non select statement handling.
+ *
  * Revision 1.46  2008/03/16 20:26:12  lollisoft
  * Added a refresh button.
  *
@@ -414,6 +417,25 @@ class lbSQLQueryAction : public lb_I_DelegatedAction
 public:
 	lbSQLQueryAction();
 	virtual ~lbSQLQueryAction();
+
+	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL execute(lb_I_Parameter* params);
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+	long myActionID;
+	UAP(lb_I_Database, db)
+};
+/*...e*/
+/*...sclass lbDesicionAction:0:*/
+class lbDesicionAction : public lb_I_DelegatedAction
+{
+public:
+	lbDesicionAction();
+	virtual ~lbDesicionAction();
 
 	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);

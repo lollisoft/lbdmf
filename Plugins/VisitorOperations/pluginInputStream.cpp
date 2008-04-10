@@ -180,6 +180,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
+	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
 
 
 	bool LB_STDCALL begin(char* file);
@@ -336,6 +337,27 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		} else {
 			_LOG << "lbInputStreamOpr::visit(lb_I_Parameter* params) Error: Not supported type '" << ParameterClassName << "'" LOG_
 		}
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Step_Transitions* transition) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long SrcActionID = NULL;
+		long DstActionID = NULL;
+		char* Decision = NULL;
+		char* Description = NULL;
+		
+		*iStream >> ID;
+		*iStream >> SrcActionID;
+		*iStream >> DstActionID;
+		*iStream >> Decision;
+		*iStream >> Description;
+		
+		transition->addTransition(Decision, SrcActionID, DstActionID, Description, ID);
 	}
 }
 

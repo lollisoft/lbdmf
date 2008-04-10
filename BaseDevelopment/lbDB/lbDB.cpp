@@ -1746,10 +1746,15 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 /*...e*/
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
+	if (retcode == SQL_NO_DATA) {
+		_LOG << "lbDB::query(...) gives no data, may be no select statement (" << szSql << "). Skipping binding." LOG_
+		return ERR_DB_NODATA;
+	}
+
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
         	//dbError("SQLExecDirect()", hstmt);
-		_LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
+		_LOG << "lbQuery::query(...) failed. (" << szSql << "). Error code: " << (long) retcode LOG_
 		return ERR_DB_QUERYFAILED;
         }
 
