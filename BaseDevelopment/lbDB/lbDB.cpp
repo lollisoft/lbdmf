@@ -6153,13 +6153,15 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 		*paramname = "TableName";
 		param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS, NULL, 0, NULL, 0, NULL, 0);        
+		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);        
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 			UAP(lb_I_KeyBase, key)
 			QI(index, lb_I_KeyBase, key)
 			
 			long i = 0;
+		
+		_LOG << "Extract foreign key from table '" << tablename->charrep() << "'." LOG_
 		
 		while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 			retcode = SQLFetch(hstmt);
@@ -6226,6 +6228,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 
 					meta->setStatusText("Info", msg->charrep());
 	
+					_LOG << "Extract foreign key from table '" << tablename->charrep() << "': " << msg->charrep() LOG_
 					
 					ForeignKeys->insert(&uk, &key);
 			}
