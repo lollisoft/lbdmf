@@ -1728,6 +1728,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					UAP(lb_I_Formular_Actions, formActions)
 					UAP(lb_I_Actions, appActions)
 					UAP(lb_I_Action_Steps, appActionSteps)
+					UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
 					UAP(lb_I_Action_Types, appActionTypes)
 					UAP(lb_I_DBTables, dbTables)
 					UAP(lb_I_DBColumns, dbColumns)
@@ -1755,6 +1756,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 						AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 						AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
+						AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
 						
 						
 						metaapp->setStatusText("Info", "Preload application data from file ...");
@@ -1779,6 +1781,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						appActions->accept(*&fOp);
 						appActionTypes->accept(*&fOp);
 						appActionSteps->accept(*&fOp);
+						appActionStepTransitions->accept(*&fOp);
 						fOp->end();
 					} else {
 						// FATAL: No system database and no file.
@@ -1801,7 +1804,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
 						_LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
-						metaapp->msgBox("Error", "No application database available.");
+						// This can lock the application in Mac OS X
+						// Maybe due to the splash sscreen
+						//metaapp->msgBox("Error", "No application database available.");
 					}				
 				}
 				
@@ -1833,6 +1838,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 		AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
+		AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
 #endif		
 /*...e*/
 		
@@ -1884,6 +1890,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
+			(appActionStepTransitions != NULL) && 
 			(appActionTypes != NULL) && 
 			(appParams != NULL)) {
 			_LOG << "Load application data from file ..." LOG_
@@ -1912,6 +1919,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			appActions->accept(*&fOp);
 			appActionTypes->accept(*&fOp);
 			appActionSteps->accept(*&fOp);
+			appActionStepTransitions->accept(*&fOp);
 		}
 #endif
 #ifndef USE_OLD_INITIALIZE		
@@ -1944,6 +1952,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
+			(appActionStepTransitions != NULL) && 
 			(appActionTypes != NULL) && 
 			(appParams != NULL)) {
 			_LOG << "Load application data from database ..." LOG_
@@ -1972,6 +1981,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			appActions->accept(*&fOpDB);
 			appActionTypes->accept(*&fOpDB);
 			appActionSteps->accept(*&fOpDB);
+			appActionStepTransitions->accept(*&fOpDB);
 		}
 #endif // USE_OLD_INITIALIZE
 		if (!DBOperation) fOp->end();
@@ -1989,6 +1999,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
+			(appActionStepTransitions != NULL) && 
 			(appActionTypes != NULL) && 
 			(appParams != NULL)) {
 			
@@ -2056,6 +2067,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			*name = "AppActionTypes";
 			QI(appActionTypes, lb_I_Unknown, uk)
 				document->insert(&uk, &key);
+			
+			*name = "appActionStepTransitions";
+			QI(appActionStepTransitions, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+
 		}		
 			
 		*name = "ApplicationData";
