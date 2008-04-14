@@ -131,7 +131,7 @@ endif
 ifeq (($DEBUG), yes)
 C_OPS=-g
 endif
-C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DWXUSINGDLL `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 ifeq ($(DEBUG), yes)
