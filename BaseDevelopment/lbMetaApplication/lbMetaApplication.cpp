@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.129 $
+ * $Revision: 1.130 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.129 2008/02/23 18:25:11 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.130 2008/04/14 06:05:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.130  2008/04/14 06:05:33  lollisoft
+ * Added database backend configuration for near pluggable database support. Corrected property panel displaying at startup.
+ *
  * Revision 1.129  2008/02/23 18:25:11  lollisoft
  * Added an optional boolean parameter that additionally
  * triggers change events of the properties in parameter 1.
@@ -761,22 +764,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 		User_Applications->accept(*&fOp1);
 	}
 	
-/*				
-	if (ApplicationFormulars == NULL) {
-			UAP(lb_I_Plugin, pl5)
-			UAP(lb_I_Unknown, ukPl5)
-			pl5 = PM->getFirstMatchingPlugin("lb_I_Applications_Formulars", "Model");
-			ukPl5 = pl5->getImplementation();
-			QI(ukPl5, lb_I_Applications_Formulars, ApplicationFormulars)
-			
-			_LOG << "Save default formular - application data ..." LOG_
-	}
+	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	
-	if (ApplicationFormulars != NULL) {
-		_LOG << "lb_MetaApplication::save(): Save ApplicationFormulars list." LOG_
-		ApplicationFormulars->accept(*&fOp1);
-	}
-*/				
+	*backend = _database_backend;
+	
+	backend->accept(*&fOp1);
+
 	fOp1->end();		
 
 	return ERR_NONE;
@@ -871,6 +864,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();
 			}
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
+			
+			backend->accept(*&fOp);
+			
+			if (_database_backend != NULL) free(_database_backend);
+			_database_backend = strdup(backend->charrep());
 
 			fOp->end();
 			
@@ -1161,7 +1161,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			free(a);
 			free(u);
 			
+		} else {
+			UAP(lb_I_Parameter, params)
+			params = getParameter();
+			showPropertyPanel(*&params);
 		}
+	}
+	
+	if (!getAutoload()) {
+		UAP(lb_I_Parameter, params)
+		params = getParameter();
+		showPropertyPanel(*&params);
 	}
 
 	addToolBarButton("Main Toolbar", "Properties", "ShowPropertyPanel", "configure.png");
@@ -1260,6 +1270,11 @@ bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
 	return _autoselect;
 }
 
+char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
+	return _database_backend;
+}
+
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\propertyChanged\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -1284,6 +1299,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		
 		if (strcmp(key->charrep(), "GeneralBase directory") == 0) {
 					setDirLocation(value->charrep());
+		}
+		
+		if (strcmp(key->charrep(), "GeneralDatabase backend") == 0) {
+					if (_database_backend != NULL) free(_database_backend);
+					_database_backend = strdup(value->charrep());
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
@@ -1369,11 +1389,10 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	parameterGeneral->setData("Prefer database configuration");
 	b->setData(_force_use_database);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
-/*
-	parameterGeneral->setData("Last application");
-	getApplicationName(&value);
+
+	parameterGeneral->setData("Database backend");
+	*value = _database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
-*/
 
 
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
@@ -1551,6 +1570,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			
 			if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 				_LOG << "Error: Connection to database failed." LOG_
+				UAP(lb_I_Parameter, params)
+				params = getParameter();
+				showPropertyPanel(*&params);
+				// Mac OS X hangs because wxWidgets manin frame isn't initialized yet.
+				//msgBox("Error", _trans("Could not login to system database."));
 				return ERR_NONE;
 			} else {
 				

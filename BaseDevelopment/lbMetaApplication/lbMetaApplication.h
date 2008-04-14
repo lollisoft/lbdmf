@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.55 2008/02/23 18:25:11 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.56 2008/04/14 06:05:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.56  2008/04/14 06:05:33  lollisoft
+ * Added database backend configuration for near pluggable database support. Corrected property panel displaying at startup.
+ *
  * Revision 1.55  2008/02/23 18:25:11  lollisoft
  * Added an optional boolean parameter that additionally
  * triggers change events of the properties in parameter 1.
@@ -410,6 +413,9 @@ public:
 	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
 	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
+	char*					LB_STDCALL getSystemDatabaseBackend();
+
+
 protected:
 	lb_I_GUI* gui;
 	
@@ -440,6 +446,8 @@ protected:
 	bool isPropertyPanelFloating;
 	bool isPropertyPanelLeft;
 	
+	// Internal (ODBC) is an empty string. Not empty is a plugin namespace.
+	char* _database_backend;
 	char* _dirloc;
 	bool _force_use_database;
 	bool _autoload;
