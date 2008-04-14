@@ -1768,15 +1768,14 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 	interfaceName* that = (interfaceName*) this; \
                 	lb_I_Unknown* uk = (lb_I_Unknown*) this; \
                 	manager->notify_add(uk, _classname, file, line); \
-                } \
-		else { \
-		        setFurtherLock(1); \
-		        _CL_LOG << "Error: QueryInterface can't add a reference. No manager. File: " << \
-		        file << ", Line: " << line LOG_ \
-		        free(buf); \
-	        	return ERR_STATE_FURTHER_LOCK; \
-		} \
-		free(buf); \
+                } else { \
+					setFurtherLock(1); \
+					_CL_LOG << "Error: QueryInterface can't add a reference. No manager. File: " << \
+					file << ", Line: " << line LOG_ \
+					free(buf); \
+					return ERR_STATE_FURTHER_LOCK; \
+				} \
+				free(buf); \
                 return ERR_NONE; \
         }
 
@@ -2803,6 +2802,13 @@ public:
 	 * The user gets a directory chooser dialog and should provide with that information.
 	 */
 	virtual bool			LB_STDCALL askForDirectory(lb_I_DirLocation* loc) = 0;
+
+	/** \brief Returns the system database backend name.
+	 *
+	 * If the name is empty, the internal database wrapper is used as configured in code.
+	 * This is usually the lbDB module.
+	 */
+	virtual char*			LB_STDCALL getSystemDatabaseBackend() = 0;
 };
 /*...e*/
 
@@ -3258,6 +3264,32 @@ public:
 
 	virtual char*		LB_STDCALL getActionStepBezeichnung() = 0;
 	virtual char*		LB_STDCALL getActionStepWhat() = 0;
+	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+/*...e*/
+
+/*...sclass lb_I_Action_Steps:0:*/
+class lb_I_Action_Step_Transitions : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addTransition(const char* decision, long src_actionid, long dst_actionid, const char* description, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectTransition(long _id) = 0;
+	virtual int			LB_STDCALL getActionStepTransitionsCount() = 0;
+	virtual bool		LB_STDCALL hasMoreActionStepTransitions() = 0;
+	virtual void		LB_STDCALL setNextActionStepTransition() = 0;
+	virtual void		LB_STDCALL finishActionStepTransitionIteration() = 0;
+	
+	virtual long		LB_STDCALL getActionStepTransitionID() = 0;
+	virtual long		LB_STDCALL getActionStepTransitionSrcActionID() = 0;
+	virtual long		LB_STDCALL getActionStepTransitionDstActionID() = 0;
+
+	virtual char*		LB_STDCALL getActionStepTransitionDecision() = 0;
+	virtual char*		LB_STDCALL getActionStepTransitionDescription() = 0;
 	
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
@@ -3749,13 +3781,16 @@ void LB_STDCALL cls::enumPlugins() { \
 		if (pl##name != NULL) { \
 			uk##name = pl##name->getImplementation(); \
 		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
+			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
 		} \
 		\
 		if (uk##name != NULL) { \
 			QI(uk##name, interface, name) \
+			if (name == NULL) { \
+				_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ")." LOG_ \
+			} \
 		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
+			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
 		}
 
 
