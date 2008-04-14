@@ -46,7 +46,8 @@ SET SESSION AUTHORIZATION 'dba';
 select dropTable('column_types');
 select dropTable('formular_actions');
 select dropTable('translations');
-select dropTable('codegentarget');
+-- Not used yet and not clear if this table has any sense in that way.
+--select dropTable('codegentarget');
 select dropTable('applevel_plugin_registry');
 select dropTable('anwendungs_parameter');
 select dropTable('formular_parameters');
@@ -73,11 +74,11 @@ select dropTable('action_types');
 CREATE TABLE column_types
 (
   id SERIAL,
-  name char(30) NOT NULL,
-  tablename char(30) NOT NULL,
+  name char(100) NOT NULL,
+  tablename char(100) NOT NULL,
   ro BOOL DEFAULT false,
   specialColumn BOOL DEFAULT false,
-  controlType char(30) DEFAULT ''
+  controlType char(100) DEFAULT ''
 ) WITH OIDS;
 --...e
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
@@ -141,7 +142,7 @@ CREATE TABLE action_steps
   bezeichnung	char(100),
   a_order_nr	INTEGER,
   type		INTEGER, -- May be NULL for the first target
-  what		char(100),
+  what		text,
   PRIMARY KEY (id)
 ) WITH OIDS;
 
@@ -153,6 +154,7 @@ ALTER TABLE action_steps
 ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
    REFERENCES action_types ( id );
 --...e
+
 --...sCREATE TABLE Formulare:0:
 -- +---------------------------------------------------------
 -- | TABLE: Formulare
@@ -160,10 +162,10 @@ ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
 CREATE TABLE Formulare
 (
   id SERIAL,
-  Name CHAR(30),
-  MenuName CHAR(30),
+  Name CHAR(100),
+  MenuName CHAR(100),
   MenuOrder INTEGER,
-  EventName CHAR(30),
+  EventName CHAR(100),
   MenuHilfe CHAR(100),
   ToolBarImage CHAR(100),
   AnwendungID INTEGER,
@@ -237,6 +239,24 @@ insert into action_types (bezeichnung, action_handler, module) values(
 'Open Database Report',
 'instanceOflbDBReportAction',
 'lbDatabaseReport');
+
+-- New Activity actions
+
+insert into action_types (bezeichnung, action_handler, module) values(
+'Activity',
+'-',
+'-');
+
+insert into action_types (bezeichnung, action_handler, module) values(
+'Activity Decision',
+'instanceOflbDecisionAction',
+'lbDatabaseForm');
+
+insert into action_types (bezeichnung, action_handler, module) values(
+'Activity Opaque Operation',
+'instanceOflbOpAqueOperation',
+'lbDatabaseForm');
+
 --...e
 --...sFill actions:0:
 insert into actions (name, typ, source, target) values(
@@ -307,6 +327,13 @@ insert into actions (name, typ, source, target) values(
 
 insert into actions (name, typ, source, target) values(
 'Anwendung loeschen',
+1,
+'name',
+0);
+
+
+insert into actions (name, typ, source, target) values(
+'Unbenutzte Aktionen weg',
 1,
 'name',
 0);
@@ -390,6 +417,21 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 1,
 'select "DropApplication"(''{name}'')',
 2, 12);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Deletes all unused actions.',
+1,
+'delete from action_steps where actionid in (select id from actions where id not in (select action from formular_actions))',
+2, 13);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Deletes all unused actions.',
+2,
+'delete from actions where id not in (select action from formular_actions)',
+2, 13);
+
+
+
 --...e
 --...e
 
@@ -404,7 +446,7 @@ CREATE TABLE translations
   id SERIAL,
   text CHAR(100),
   translated CHAR(100),
-  language CHAR(30) default 'german',
+  language CHAR(100) default 'german',
   PRIMARY KEY (id)
 ) WITH OIDS;
 --...e
@@ -412,7 +454,7 @@ CREATE TABLE translations
 -- +---------------------------------------------------------
 -- | TABLE: CodegenTarget
 -- +---------------------------------------------------------
-
+/*
 CREATE TABLE CodegenTarget
 (
   id SERIAL,
@@ -428,6 +470,7 @@ CREATE UNIQUE INDEX pk_id_CodegenTarget ON CodegenTarget
 (
   id
 );
+*/
 --...e
 --...sCREATE TABLE Anwendungen:0:
 -- +---------------------------------------------------------
@@ -476,7 +519,7 @@ CREATE TABLE Applevel_Plugin_Registry
 CREATE TABLE Anwendungs_Parameter
 (
   id SERIAL,
-  ParameterName CHAR(30),
+  ParameterName CHAR(100),
   ParameterValue CHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
@@ -494,7 +537,7 @@ CREATE UNIQUE INDEX pk_id_Anwendungs_Parameter ON Anwendungs_Parameter
 CREATE TABLE Formular_Parameters
 (
   id SERIAL,
-  ParameterName CHAR(30),
+  ParameterName CHAR(100),
   ParameterValue CHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
@@ -561,7 +604,7 @@ CREATE UNIQUE INDEX pk_id_Anwendungsberechtigungen ON Anwendungsberechtigungen
 CREATE TABLE Formulartypen
 (
   id SERIAL,
-  HandlerModule CHAR(30),
+  HandlerModule CHAR(100),
   HandlerFunctor CHAR(100),
   HandlerInterface CHAR(100),
   Namespace CHAR(50),
@@ -581,10 +624,10 @@ CREATE UNIQUE INDEX pk_id_Formulartypen ON Formulartypen
 CREATE TABLE Users
 (
   id SERIAL,
-  Name CHAR(30),
-  Vorname CHAR(30),
-  userid CHAR(30),
-  passwort CHAR(30),
+  Name CHAR(100),
+  Vorname CHAR(100),
+  userid CHAR(100),
+  passwort CHAR(100),
   lastapp INTEGER,
   PRIMARY KEY (id)
 ) WITH OIDS;
@@ -1165,6 +1208,7 @@ insert into formular_actions (formular, action, event) values(19, 7, 'evt_Manage
 insert into formular_actions (formular, action, event) values(24, 8, 'evt_Manage_Action_Steps');
 insert into formular_actions (formular, action, event) values(27, 10, 'evt_Manage_A_F_A_Assoc');
 insert into formular_actions (formular, action, event) values(19, 12, 'evt_DropApplication');
+insert into formular_actions (formular, action, event) values(19, 13, 'evt_DropDanglingActions');
 
 --...e
 
@@ -1322,8 +1366,8 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 2);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 7);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 8);
 
-insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 1);
-insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 2);
+--insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 1);
+--insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 2);
 
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 5);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 6);
@@ -1365,7 +1409,7 @@ insert into User_Anwendungen (userid, AnwendungenId) Values (1, 5);
 -- +----------------------------------------
 -- | Setup for the codgeneration Target
 -- +----------------------------------------
-
+/*
 insert into CodegenTarget (Name, Titel, ModuleName, Functor, Interface) 
 Values (
 'lbDMFAppwriter', 
@@ -1374,6 +1418,7 @@ Values (
 'instanceOflbDMFAppwriter',
 'lb_I_CodeGenerator'
 );
+*/
 --...e
 --...e
 
@@ -1400,6 +1445,35 @@ CREATE OR REPLACE FUNCTION "DropApplication"("varchar")
 
 	select true;'
   LANGUAGE 'sql' VOLATILE;
+
+-- Function: "DropFormular"("varchar", "varchar")
+
+-- DROP FUNCTION "DropFormular"("varchar", "varchar");
+
+-- The function is not complete.
+
+CREATE OR REPLACE FUNCTION "DropFormular"("varchar", "varchar")
+  RETURNS bool AS
+'
+declare appid int;
+declare formid int;
+declare appname alias for $1;
+declare formname alias for $2;
+begin
+	select id into appid from anwendungen where name = appname;
+	select id into formid from formulare where name = formname and anwendungid = appid;
+
+	delete from formular_parameters where formularid = formid;
+	delete from anwendungen_formulare where anwendungid = appid and formularid = formid;
+	delete from formular_actions where formular = formid;
+	delete from formulare where anwendungid = appid and id = formid;
+
+	return true;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
 
 -- dropconstraint("varchar", "varchar")
 --
@@ -1465,3 +1539,240 @@ return applicationid;
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
+
+
+CREATE OR REPLACE FUNCTION "CreateActivityOnMissing"("varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activityid int;
+UmlID alias for $1;
+activityName alias for $2;
+begin
+  select "ID" into activityid from "Activities" where "UmlId" = UmlID;
+  if not activityid is null then
+    return activityid;
+  end if;
+  if activityid is null then
+	insert into "Activities" ("UmlId", "Name") values(UmlID, activityName);
+	activityid = "CreateActivityOnMissing"(UmlID, activityName);
+  end if;
+return activityid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "CreateControlFlow"("varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+activityNodeName alias for $4;
+activityStereotype alias for $5;
+activitySource alias for $6;
+activityTarget alias for $7;
+activityExpression alias for $8;
+
+declare activitySourceID int;
+declare activityTargetID int;
+
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  activitySourceID = "FindDecisionNode"(activityID, activityName, activitySource);
+  activityTargetID = "FindDecisionNode"(activityID, activityName, activityTarget);
+
+  if activitySourceID is null and activityTargetID is null then
+	select "ID" into activity_id from "ControlFlow" where "UmlId" = activityNodeId;
+  end if;
+  
+  if not activitySourceID is null and activityTargetID is null then
+	select "ID" into activity_id from "ControlFlow" where "UmlId" = activityNodeId and "ActivityNodesSource1" = activitySourceID;
+  end if;
+  
+  if activitySourceID is null and not activityTargetID is null then
+	select "ID" into activity_id from "ControlFlow" where "UmlId" = activityNodeId and "ActivityNodesTarget1" = activityTargetID;
+  end if;
+  
+  if not activitySourceID is null and not activityTargetID is null then
+	select "ID" into activity_id from "ControlFlow" where "UmlId" = activityNodeId and "ActivityNodesSource1" = activitySourceID and "ActivityNodesTarget1" = activityTargetID;
+  end if;
+
+  if not activity_id is null then
+    return activity_id;
+  end if;
+  if activity_id is null then
+	insert into "ControlFlow" ("Activities", "UmlId", "Name", "Stereotype", "ActivityNodesSource1", "ActivityNodesTarget1", "Expression") values(activity_id, activityNodeId, activityNodeName, activityStereotype, activitySourceID, activityTargetID, activityExpression);
+	activity_id = "CreateControlFlow"(activityID, activityName, activityNodeId, activityNodeName, activityStereotype, activitySource, activityTarget, activityExpression);
+  end if;
+return activity_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "CreateDecisionNode"("varchar", "varchar", "varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+declare activitynode_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+activityNodeName alias for $4;
+activityStereotype alias for $5;
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  select "ID" into activitynode_id from "ActivityNodes" where "UmlId" = activityNodeId;
+  if not activitynode_id is null then
+    return activitynode_id;
+  end if;
+  if activitynode_id is null then
+	insert into "ActivityNodes" ("Activities", "UmlId", "Name", "Stereotype", "NodeType") values(activity_id, activityNodeId, activityNodeName, activityStereotype, ''Decision'');
+	activitynode_id = "CreateDecisionNode"(activityID, activityName, activityNodeId, activityNodeName,activityStereotype);
+  end if;
+return activitynode_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+CREATE OR REPLACE FUNCTION "CreateDecisionPath"("varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+activityNodeName alias for $4;
+activityStereotype alias for $5;
+activitySource alias for $6;
+activityTarget alias for $7;
+
+declare activitySourceID int;
+declare activityTargetID int;
+
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  activitySourceID = "FindDecisionNode"(activityID, activityName, activitySource);
+  activityTargetID = "FindDecisionNode"(activityID, activityName, activityTarget);
+
+  if activitySourceID is null and activityTargetID is null then
+	select "ID" into activity_id from "DecisionPath" where "UmlId" = activityNodeId;
+  end if;
+  
+  if not activitySourceID is null and activityTargetID is null then
+	select "ID" into activity_id from "DecisionPath" where "UmlId" = activityNodeId and "ActivityNodesSource2" = activitySourceID;
+  end if;
+  
+  if activitySourceID is null and not activityTargetID is null then
+	select "ID" into activity_id from "DecisionPath" where "UmlId" = activityNodeId and "ActivityNodesTarget2" = activityTargetID;
+  end if;
+  
+  if not activitySourceID is null and not activityTargetID is null then
+	select "ID" into activity_id from "DecisionPath" where "UmlId" = activityNodeId and "ActivityNodesSource2" = activitySourceID and "ActivityNodesTarget2" = activityTargetID;
+  end if;
+
+  if not activity_id is null then
+    return activity_id;
+  end if;
+  if activity_id is null then
+	insert into "DecisionPath" ("Activities", "UmlId", "Name", "Stereotype", "ActivityNodesSource2", "ActivityNodesTarget2") values(activity_id, activityNodeId, activityNodeName, activityStereotype, activitySourceID, activityTargetID);
+	activity_id = "CreateDecisionPath"(activityID, activityName, activityNodeId, activityNodeName, activityStereotype, activitySource, activityTarget);
+  end if;
+return activity_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "CreateInitialNode"("varchar", "varchar", "varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+declare activitynode_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+activityNodeName alias for $4;
+activityStereotype alias for $5;
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  select "ID" into activitynode_id from "ActivityNodes" where "UmlId" = activityNodeId;
+  if not activitynode_id is null then
+    return activitynode_id;
+  end if;
+  if activitynode_id is null then
+	insert into "ActivityNodes" ("Activities", "UmlId", "Name", "Stereotype", "NodeType") values(activity_id, activityNodeId, activityNodeName, activityStereotype, ''Initial'');
+	activitynode_id = "CreateInitialNode"(activityID, activityName, activityNodeId, activityNodeName,activityStereotype);
+  end if;
+return activitynode_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "CreateOpaqueAction"("varchar", "varchar", "varchar", "varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+declare activitynode_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+activityNodeName alias for $4;
+activityStereotype alias for $5;
+activityBody alias for $6;
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  select "ID" into activitynode_id from "ActivityNodes" where "UmlId" = activityNodeId;
+  if not activitynode_id is null then
+    return activitynode_id;
+  end if;
+  if activitynode_id is null then
+	insert into "ActivityNodes" ("Activities", "UmlId", "Name", "Stereotype", "NodeType", "Body") values(activity_id, activityNodeId, activityNodeName, activityStereotype, ''OpaqueAction'', activityBody);
+	activitynode_id = "CreateOpaqueAction"(activityID, activityName, activityNodeId, activityNodeName,activityStereotype, activityBody);
+  end if;
+return activitynode_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "FindControlFlow"("varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  select "ID" into activity_id from "ControlFlow" where "UmlId" = activityNodeId;
+  if not activity_id is null then
+    return activity_id;
+  end if;
+return activity_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "FindDecisionNode"("varchar", "varchar", "varchar")
+  RETURNS int4 AS
+'
+declare activity_id int;
+activityID alias for $1;
+activityName alias for $2;
+activityNodeId alias for $3;
+begin
+  activity_id = "CreateActivityOnMissing"(activityID, activityName);
+
+  select "ID" into activity_id from "ActivityNodes" where "UmlId" = activityNodeId;
+  if not activity_id is null then
+    return activity_id;
+  end if;
+return activity_id;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
