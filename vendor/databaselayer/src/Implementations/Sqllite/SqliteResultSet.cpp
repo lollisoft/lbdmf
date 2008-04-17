@@ -57,6 +57,10 @@ bool SqliteResultSet::Next()
 {
   if (m_pSqliteStatement == NULL)
     m_pSqliteStatement = m_pStatement->GetLastStatement();
+
+  if (!m_pSqliteStatement)
+	return false;
+	
   int nReturn = sqlite3_step(m_pSqliteStatement);
  
   if (nReturn != SQLITE_ROW)
