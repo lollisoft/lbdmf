@@ -23,6 +23,11 @@
 #define true TRUE
 #endif
 
+#ifdef OSX
+#define false FALSE
+#define true TRUE
+#endif
+
 typedef struct yy_buffer_state *YY_BUFFER_STATE; 
 
 int             yylex( void ); 
@@ -52,6 +57,9 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
     ForeignKey *fk;
 #ifdef BUILD_LIBRARY
 	List *foreign_keys;
+#endif
+#ifndef BUILD_LIBRARY
+	char* sql_ddl = NULL;
 #endif
 
     schema = list_new();

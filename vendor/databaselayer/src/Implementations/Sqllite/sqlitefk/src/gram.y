@@ -48,10 +48,10 @@ tables:
             if ($1)
                 list_append(schema, $1);
         }
-    | tables table
+    | tables ';' table
         {
-            if ($2)
-                list_append(schema, $2);
+            if ($3)
+                list_append(schema, $3);
         }
     | error
         /* ignore errors outside
@@ -59,7 +59,7 @@ tables:
 ;
 
 table:
-    CREATE TABLE TOK_WORD '(' columndefs ')' ';'
+    CREATE TABLE TOK_WORD '(' columndefs ')'
         {
             /* did we get at least one
                 foreign key column ? */
@@ -75,6 +75,25 @@ table:
             else
             {
                 list_destroy($5);
+                $$ = NULL;
+            }
+        }
+    | CREATE TABLE '"' TOK_WORD '"' '(' columndefs ')'
+        {
+            /* did we get at least one
+                foreign key column ? */
+            if ($7->len > 0)
+            {
+                $$ = (Table *) malloc(sizeof(Table));
+                $$->name = $4;
+                $$->fks = $7;
+                //fprintf(stderr, "Parsed table %s\n", $3);
+            }
+            /* no foreign keys on this table
+               ignore it */
+            else
+            {
+                list_destroy($7);
                 $$ = NULL;
             }
         }
@@ -96,6 +115,8 @@ columndefs:
 
 columndef:
     TOK_WORD type
+        { $$ = NULL }
+    | '"' TOK_WORD '"' type
         { $$ = NULL }
     | TOK_WORD type columnconstraints
         {
@@ -144,6 +165,53 @@ columndef:
                 list_destroy($3);
             }
         }
+    | '"' TOK_WORD '"' type columnconstraints
+        {
+            $$ = NULL;
+
+            if ($5)
+            {
+                if ($5->len > 0)
+                {
+                    int i;
+                    unsigned char notnull = 0;
+                    Constraint *constraint;
+                    ListItem *item;
+
+                    item = list_head($5);
+                    for (i = 0; item; i++)
+                    {
+                        constraint = (Constraint *)list_data(item);
+                        
+                        switch  (constraint->type)
+                        {
+                            case CONSTRAINT_FOREIGNKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+                                        $$->col = $2;
+                                        $$->ftab = constraint->foreign.tab;
+                                        $$->fcol = constraint->foreign.col;
+                                    }
+                                }
+                                break;
+                            case CONSTRAINT_NOTNULL:
+                                notnull = 2;
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                        item = list_next(item);
+                    }
+
+                    if ($$)
+                        $$->notnull = notnull;
+                }
+                list_destroy($5);
+            }
+        }
     | CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
         {
             //ForeignKey *constraint;
@@ -152,6 +220,15 @@ columndef:
 
             $$->ftab = $9;
             $$->fcol = $11;
+        }
+    | CONSTRAINT '"' TOK_WORD '"' FOREIGN KEY '(' '"' TOK_WORD '"' ')' REFERENCES '"' TOK_WORD '"' '(' '"' TOK_WORD '"' ')'
+        {
+            //ForeignKey *constraint;
+            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+            $$->col = $9;
+
+            $$->ftab = $14;
+            $$->fcol = $18;
         }
 ;
 
