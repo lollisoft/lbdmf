@@ -1412,8 +1412,25 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			_LOG << "Prepare database creation..." LOG_
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			
+			UAP(lb_I_Database, database)
 			UAP(lb_I_Query, sampleQuery)
+			
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (database == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_UML_IMPORT_LOADDATABASE_MODUL;
+			}
 				
 			database->init();
 			
