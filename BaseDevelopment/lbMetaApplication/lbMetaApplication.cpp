@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.130 $
+ * $Revision: 1.131 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.130 2008/04/14 06:05:33 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.131 2008/04/18 05:58:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.131  2008/04/18 05:58:30  lollisoft
+ * Added new methods to get ans set application and system database backend (the namespace of a plugin).
+ *
  * Revision 1.130  2008/04/14 06:05:33  lollisoft
  * Added database backend configuration for near pluggable database support. Corrected property panel displaying at startup.
  *
@@ -558,6 +561,8 @@ lb_MetaApplication::lb_MetaApplication() {
 	isPropertyPanelFloating = false;
 	isPropertyPanelLeft = true;
 	
+	_application_database_backend = strdup("");
+	_system_database_backend = strdup("");
 	_dirloc = strdup(".");
 	_loading_object_data = false;
 	
@@ -766,8 +771,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	
-	*backend = _database_backend;
-	
+	*backend = _application_database_backend;
+	backend->accept(*&fOp1);
+
+	*backend = _system_database_backend;
 	backend->accept(*&fOp1);
 
 	fOp1->end();		
@@ -866,11 +873,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			}
 			
 			UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
-			
+
 			backend->accept(*&fOp);
-			
-			if (_database_backend != NULL) free(_database_backend);
-			_database_backend = strdup(backend->charrep());
+			if (_application_database_backend != NULL) free(_application_database_backend);
+			_application_database_backend = strdup(backend->charrep());
+
+			backend->accept(*&fOp);
+			if (_system_database_backend != NULL) free(_system_database_backend);
+			_system_database_backend = strdup(backend->charrep());
 
 			fOp->end();
 			
@@ -1271,7 +1281,21 @@ bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
 }
 
 char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
-	return _database_backend;
+	return _system_database_backend;
+}
+
+char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
+	return _application_database_backend;
+}
+
+void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
+	if (_system_database_backend) free(_system_database_backend);
+	_system_database_backend = strdup(backend);
+}
+
+void		LB_STDCALL lb_MetaApplication::setApplicationDatabaseBackend(char* backend) {
+	if (_application_database_backend) free(_application_database_backend);
+ 	_application_database_backend = strdup(backend);
 }
 
 
@@ -1301,9 +1325,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 					setDirLocation(value->charrep());
 		}
 		
-		if (strcmp(key->charrep(), "GeneralDatabase backend") == 0) {
-					if (_database_backend != NULL) free(_database_backend);
-					_database_backend = strdup(value->charrep());
+		if (strcmp(key->charrep(), "GeneralSystem Database backend") == 0) {
+					if (_system_database_backend != NULL) free(_system_database_backend);
+					_system_database_backend = strdup(value->charrep());
+		}
+		
+		
+		if (strcmp(key->charrep(), "GeneralApplication Database backend") == 0) {
+					if (_application_database_backend != NULL) free(_application_database_backend);
+					_application_database_backend = strdup(value->charrep());
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
@@ -1390,8 +1420,12 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	b->setData(_force_use_database);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Database backend");
-	*value = _database_backend;
+	parameterGeneral->setData("Application Database backend");
+	*value = _application_database_backend;
+	paramGeneral->setUAPString(*&parameterGeneral, *&value);
+
+	parameterGeneral->setData("System Database backend");
+	*value = _system_database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 
 

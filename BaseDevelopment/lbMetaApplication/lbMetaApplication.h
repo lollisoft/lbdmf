@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.56 2008/04/14 06:05:33 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.57 2008/04/18 05:58:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.57  2008/04/18 05:58:30  lollisoft
+ * Added new methods to get ans set application and system database backend (the namespace of a plugin).
+ *
  * Revision 1.56  2008/04/14 06:05:33  lollisoft
  * Added database backend configuration for near pluggable database support. Corrected property panel displaying at startup.
  *
@@ -414,6 +417,9 @@ public:
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
 	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
 	char*					LB_STDCALL getSystemDatabaseBackend();
+	char*					LB_STDCALL getApplicationDatabaseBackend();
+	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
+	void					LB_STDCALL setApplicationDatabaseBackend(char* backend);
 
 
 protected:
@@ -447,7 +453,8 @@ protected:
 	bool isPropertyPanelLeft;
 	
 	// Internal (ODBC) is an empty string. Not empty is a plugin namespace.
-	char* _database_backend;
+	char* _system_database_backend;
+	char* _application_database_backend;
 	char* _dirloc;
 	bool _force_use_database;
 	bool _autoload;
