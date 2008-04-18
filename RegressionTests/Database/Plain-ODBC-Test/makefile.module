@@ -67,7 +67,7 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
 LIBS = #-F$(HOME)/lib -framework lbHook
-VENDORLIBS=/usr/lib/libiodbc.dylib
+VENDORLIBS=`odbc_config --prefix`/lib/libodbc.dylib
 endif    
 
 endif
