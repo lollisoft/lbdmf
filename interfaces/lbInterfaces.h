@@ -2807,8 +2807,26 @@ public:
 	 *
 	 * If the name is empty, the internal database wrapper is used as configured in code.
 	 * This is usually the lbDB module.
+	 *
+	 * This parameter is for using on the system configuration. To distinguish from application
+	 * database backend, whose purpose is for the designed application.
 	 */
 	virtual char*			LB_STDCALL getSystemDatabaseBackend() = 0;
+
+	/** \brief Returns the application database backend name.
+	 *
+	 * If the name is empty, the internal database wrapper is used as configured in code.
+	 * This is usually the lbDB module.
+	 */
+	virtual char*			LB_STDCALL getApplicationDatabaseBackend() = 0;
+
+	/** \brief Set a different system database backend.
+	 */
+	virtual void			LB_STDCALL setSystemDatabaseBackend(char* backend) = 0;
+
+	/** \brief Set a different application database backend.
+	 */
+	virtual void			LB_STDCALL setApplicationDatabaseBackend(char* backend) = 0;
 };
 /*...e*/
 
@@ -3778,6 +3796,26 @@ void LB_STDCALL cls::enumPlugins() { \
 		UAP(lb_I_Plugin, pl##name) \
 		UAP(lb_I_Unknown, uk##name) \
 		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
+		if (pl##name != NULL) { \
+			uk##name = pl##name->getImplementation(); \
+		} else { \
+			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+		} \
+		\
+		if (uk##name != NULL) { \
+			QI(uk##name, interface, name) \
+			if (name == NULL) { \
+				_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ")." LOG_ \
+			} \
+		} else { \
+			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+		}
+
+
+#define AQUIRE_PLUGIN_NAMESPACE_BYSTRING(interface, ns, name, errmsgpart) \
+		UAP(lb_I_Plugin, pl##name) \
+		UAP(lb_I_Unknown, uk##name) \
+		pl##name = PM->getFirstMatchingPlugin(#interface, ns); \
 		if (pl##name != NULL) { \
 			uk##name = pl##name->getImplementation(); \
 		} else { \
