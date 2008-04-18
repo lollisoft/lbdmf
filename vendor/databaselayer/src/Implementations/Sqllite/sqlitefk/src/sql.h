@@ -26,6 +26,7 @@ typedef struct constraint
 
 typedef struct foreignkey
 {
+    char *tab;
     char *col;
     char *ftab;
     char *fcol;

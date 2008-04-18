@@ -53,6 +53,8 @@ type       (int)|(integer)|(bool)|(varchar\([0-9]+\))|(char\([0-9]+\))|(datetime
 {type}                         return TOK_TYPE;
 create                         return CREATE;
 table                          return TABLE;
+alter                          return ALTER;
+add							   return ADD;
 references                     return REFERENCES;
 constraint                     return CONSTRAINT;
 not                            return NOT;

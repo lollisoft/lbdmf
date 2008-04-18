@@ -23,14 +23,15 @@ extern MemPool mempool;
 }
 
 %type <table> table;
-%type <list>  columndefs columnconstraints
-%type <fk>    columndef
-%type <cons>  columnconstraint
+%type <list>  error schema tables columndefs columnconstraints altertables
+%type <fk>    columndef altertable
+%type <cons>  columnconstraint 
 
 %token CREATE
 %token TABLE
+%token ALTER
 %token CONSTRAINT FOREIGN
-%token REFERENCES NOT NIL PRIMARY KEY DEFAULT UNIQUE
+%token ADD REFERENCES NOT NIL PRIMARY KEY DEFAULT UNIQUE
 %token TOK_TYPE
 %token <str> TOK_WORD
 
@@ -40,6 +41,72 @@ extern MemPool mempool;
 
 schema:
     tables
+	| tables ';' altertables
+	| altertables
+;
+
+altertables:
+	altertable
+        {
+            if ($1) {
+				if ($$ == NULL) $$ = list_new();
+
+                Table* t = (Table *) malloc(sizeof(Table));
+
+				List* l = list_new();
+                list_append(l, $1);
+
+                t->name = $1->tab;
+                t->fks = l;
+                list_append(schema, t);
+			}
+        }
+    | altertables ';' altertable
+        {
+            if ($3) {
+				if ($$ == NULL) $$ = list_new();
+
+                Table* t = (Table *) malloc(sizeof(Table));
+
+				List* l = list_new();
+                list_append(l, $3);
+
+                t->name = $3->tab;
+                t->fks = l;
+                list_append(schema, t);
+			}
+        }
+
+    | error
+        /* ignore errors outside
+           table definitons */
+
+;
+
+altertable:
+	ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
+        {
+            //ForeignKey *constraint;
+            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+            $$->tab = $3;
+			// $5 = constraint
+            $$->col = $10;
+
+            $$->ftab = $13;
+            $$->fcol = $15;
+        }
+	
+	| ALTER TABLE '"' TOK_WORD '"' ADD CONSTRAINT '"' TOK_WORD '"' FOREIGN KEY '(' '"' TOK_WORD '"' ')' REFERENCES '"' TOK_WORD '"' '(' '"' TOK_WORD '"' ')'
+        {
+            //ForeignKey *constraint;
+            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+            $$->tab = $4;
+			// $9 = constraint
+            $$->col = $15;
+
+            $$->ftab = $20;
+            $$->fcol = $24;
+        }
 ;
 
 tables:
@@ -240,7 +307,7 @@ type:
 columnconstraints:
     columnconstraint
         {
-            $$ = list_new();
+			if ($$ == NULL) $$ = list_new();
             if ($1)
                 list_append($$, $1);
         }
