@@ -1487,6 +1487,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 	}
 	
 	try {
+		wxString theQuery = szSql;
+		if (theQuery.Upper().Contains("CREATE")) {
+			// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
+			// foreign keys.
+		}
+
+	
+	
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
 		
 		if (theResult != NULL) {
@@ -1495,7 +1503,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
-				wxString theQuery = szSql;
 				if (skipFKCollections == 0) prepareFKList();
 							
 
@@ -1597,6 +1604,20 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				
 			}
 		} else {
+			wxString theQuery = szSql;
+			if (theQuery.Upper().Contains("INSERT")) {
+				return ERR_NONE;
+			}
+			if (theQuery.Upper().Contains("UPDATE")) {
+				return ERR_NONE;
+			}
+			if (theQuery.Upper().Contains("DROP")) {
+				return ERR_NONE;
+			}
+			if (theQuery.Upper().Contains("CREATE")) {
+				return ERR_NONE;
+			}
+
 			return ERR_DB_QUERYFAILED;
 		}
 		
