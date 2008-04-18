@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.34 2007/11/22 16:13:28 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.35 2008/04/18 05:48:27 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.35  2008/04/18 05:48:27  lollisoft
+ * Added an error code when UML import with database backend plugin does not work.
+ *
  * Revision 1.34  2007/11/22 16:13:28  lollisoft
  * New module error code.
  *
@@ -295,7 +298,9 @@ enum lbErrCodes {
 	
 	ERR_PLUGIN_NOT_INITIALIZED,
 	
-	ERR_MEMORY_ALLOC
+	ERR_MEMORY_ALLOC,
+	
+	ERR_UML_IMPORT_LOADDATABASE_MODUL
 };
 /*...e*/
 
