@@ -324,7 +324,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		
 		param->setUAPParameter(*&parameter, *&paramXSL);
 
-		parameter->setData("Database settings");
+		parameter->setData("Application Database settings");
 		//--------------------------------------
 		
 		parameterGeneral->setData("Use plugin");
@@ -392,7 +392,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 		
-		parameter->setData("Database settings");
+		parameter->setData("Application Database settings");
 		
 		parameterGeneral->setData("Use plugin");
 		boolGeneral->setData(UsePlugin->getData());
@@ -453,7 +453,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		}
 
 
-		if (strcmp(key->charrep(), "Database settingsUse plugin") == 0) {
+		if (strcmp(key->charrep(), "Application Database settingsUse plugin") == 0) {
 					if (strcmp(value->charrep(), "TRUE") == 0) {
 						UsePlugin->setData(true);
 					} else {
@@ -461,7 +461,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 					}
 		}
 		
-		if (strcmp(key->charrep(), "Database settingsDB plugin namespace") == 0) {
+		if (strcmp(key->charrep(), "Application Database settingsDB plugin namespace") == 0) {
 					*DatabaseSettingNamespace = value->charrep();
 		}
 
