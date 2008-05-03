@@ -135,10 +135,10 @@ C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DWXUSINGDLL `wx-co
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 ifeq ($(DEBUG), yes)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
 ifeq ($(DEBUG), no)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 endif
 

@@ -69,7 +69,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 VENDORLIBS=
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif

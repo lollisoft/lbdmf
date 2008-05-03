@@ -123,7 +123,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS= 
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs`
+LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`
 endif    
 
 endif

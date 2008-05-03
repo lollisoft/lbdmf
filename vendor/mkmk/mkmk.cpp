@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.90 $
+ * $Revision: 1.91 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.90 2008/01/18 21:44:30 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.91 2008/05/03 07:00:37 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.91  2008/05/03 07:00:37  lollisoft
+ * Changed path to frameworks.
+ *
  * Revision 1.90  2008/01/18 21:44:30  lollisoft
  * Added lex and yacc target.
  *
@@ -860,10 +863,10 @@ void writeBundleTarget(char* modulename) {
   printf("\t\trm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
   printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
 
-  printf("\t\tcp -R $(HOME)/lib/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tcp -R $(HOME)/lib/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tcp -R $(HOME)/lib/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tcp -R $(HOME)/lib/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
   printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
   printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
@@ -1529,8 +1532,8 @@ void write_wx_framework_Target(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\t-rm -R $(HOME)/lib/%s.framework\n", modulename);
-  printf("\t\tcp -Rf $(PROGRAM).framework $(HOME)/lib\n");
+  printf("\t\t-rm -R $(prefix)/Library/Frameworks/%s.framework\n", modulename);
+  printf("\t\tcp -Rf $(PROGRAM).framework $(prefix)/Library/Frameworks\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1614,8 +1617,8 @@ void write_framework_Target(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\t-rm -R $(HOME)/lib/%s.framework\n", modulename);
-  printf("\t\tcp -Rf $(PROGRAM).framework $(HOME)/lib\n");
+  printf("\t\t-rm -R $(prefix)/Library/Frameworks/%s.framework\n", modulename);
+  printf("\t\tcp -Rf $(PROGRAM).framework $(prefix)/Library/Frameworks\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1706,7 +1709,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.90 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.91 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

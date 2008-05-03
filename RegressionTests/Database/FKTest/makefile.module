@@ -60,7 +60,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-LIBS = -F$(HOME)/lib -framework lbHook
+LIBS = -F$(prefix)/Library/Frameworks -framework lbHook
 VENDORLIBS=
 endif    
 

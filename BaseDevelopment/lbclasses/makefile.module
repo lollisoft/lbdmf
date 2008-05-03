@@ -73,7 +73,7 @@ ifeq ($(OSTYPE), osx)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
