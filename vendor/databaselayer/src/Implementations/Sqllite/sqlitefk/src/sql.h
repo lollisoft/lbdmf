@@ -23,7 +23,6 @@ typedef struct constraint
     Foreign foreign;
 } Constraint;
 
-
 typedef struct foreignkey
 {
     char *tab;
@@ -34,14 +33,43 @@ typedef struct foreignkey
     unsigned char notnull;
 } ForeignKey;
 
+typedef struct primarykey
+{
+    char *tab;
+    char *col;
+    char *type;
+
+    unsigned char notnull;
+} PrimaryKey;
+
+#define ALTER_PK 1
+#define ALTER_FK 2
+
+typedef struct altertable
+{
+	int type;
+	ForeignKey* fk;
+	PrimaryKey* pk;
+} Altertable;
+
+typedef struct column
+{
+    char *col;
+    char *type;
+	char *_default;
+    unsigned char notnull;
+} Column;
+
 
 typedef struct table
 {
     char *name;
 
-    List *fks;
+    List *columns;
 } Table;
 
 List* getForeignKeyList(char* _table, char* sql_ddl);
+
+char* rewriteSchemaOfDDL(char* sql_ddl);
 
 #endif

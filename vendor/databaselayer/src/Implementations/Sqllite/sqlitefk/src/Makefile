@@ -1,7 +1,7 @@
 YACC   = bison
 LEX    = flex
 CC     = gcc
-CCOPTS = -g -Wall -O2 -DOSX -s
+CCOPTS = -g -Wall -O2 -DOSX
 
 .PHONY: clean
 all: fk

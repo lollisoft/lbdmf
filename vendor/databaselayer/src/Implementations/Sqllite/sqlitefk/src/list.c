@@ -39,7 +39,7 @@ list_destroy (List *list)
 
 
 int
-list_append(List *list, void *data)
+list_append(List *list, void *data, int _type)
 {
     ListItem *tail;
     int i;
@@ -50,6 +50,7 @@ list_append(List *list, void *data)
 
     _new->next = NULL;
     _new->data = data;
+    _new->type = _type;
 
     if (list->len == 0)
     {

@@ -1,9 +1,18 @@
 #ifndef LIST_H
 #define LIST_H
 
+#define TYPE_COLUMN 1
+#define TYPE_FOREIGNKEY 2
+#define TYPE_TABLE 3
+#define TYPE_ALTERTABLES 4
+#define TYPE_ALTERTABLE 5
+#define TYPE_COLUMNS 6
+
+
 typedef struct list_element
 {
     void *data;
+	int type;
     struct list_element *next;
 } ListItem;
 
@@ -16,7 +25,7 @@ typedef struct list
 extern List *list_new(void);
 extern void list_destroy(List *list);
 
-extern int list_append(List *list, void *data);
+extern int list_append(List *list, void *data, int _type);
 extern ListItem *list_pop(List *list);
 
 extern ListItem *list_head(List *list);

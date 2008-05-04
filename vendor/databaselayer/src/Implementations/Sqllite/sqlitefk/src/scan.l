@@ -50,7 +50,11 @@ type       (int)|(integer)|(bool)|(varchar\([0-9]+\))|(char\([0-9]+\))|(datetime
 <COMMENT>\n                    { BEGIN(INITIAL); }
 <COMMENT>.                     /* ignore */;
 ^--                            { BEGIN(COMMENT); }
-{type}                         return TOK_TYPE;
+{type}						   { 
+                                 yylval.str = pstrdup(&mempool, yytext);
+
+                                 return TOK_TYPE;
+                               }
 create                         return CREATE;
 table                          return TABLE;
 alter                          return ALTER;

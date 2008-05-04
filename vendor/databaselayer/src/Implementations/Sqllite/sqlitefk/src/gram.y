@@ -7,7 +7,7 @@
 
 extern int yylex(void);
 extern void yyerror(const char *msg);
-
+extern char* yytext;
 extern List *schema;
 extern MemPool mempool;
 
@@ -17,15 +17,20 @@ extern MemPool mempool;
 {
     char         *str;
     ForeignKey   *fk;
+    Column       *column;
     List         *list;
     Table        *table;
+    Altertable   *altertable;
     Constraint   *cons;
 }
 
-%type <table> table;
-%type <list>  error schema tables columndefs columnconstraints altertables
-%type <fk>    columndef altertable
-%type <cons>  columnconstraint 
+%type <table>      table;
+%type <list>       error schema tables columndefs columnconstraints altertables
+%type <fk>         fkcolumndef
+%type <altertable> altertable
+%type <column>     columndef
+%type <cons>       columnconstraint 
+%type <str>        type TOK_TYPE 
 
 %token CREATE
 %token TABLE
@@ -41,7 +46,9 @@ extern MemPool mempool;
 
 schema:
     tables
+	| tables ';'
 	| tables ';' altertables
+	| tables ';' altertables ';'
 	| altertables
 ;
 
@@ -54,11 +61,32 @@ altertables:
                 Table* t = (Table *) malloc(sizeof(Table));
 
 				List* l = list_new();
-                list_append(l, $1);
+                list_append(l, $1, TYPE_ALTERTABLE);
 
-                t->name = $1->tab;
-                t->fks = l;
-                list_append(schema, t);
+				if ($1->type == ALTER_FK)
+					t->name = $1->fk->tab;
+                else
+					t->name = $1->pk->tab;
+				t->columns = l;
+                list_append(schema, t, TYPE_TABLE);
+			}
+        }
+	| altertable ';'
+        {
+            if ($1) {
+				if ($$ == NULL) $$ = list_new();
+
+                Table* t = (Table *) malloc(sizeof(Table));
+
+				List* l = list_new();
+                list_append(l, $1, TYPE_ALTERTABLE);
+
+				if ($1->type == ALTER_FK)
+					t->name = $1->fk->tab;
+                else
+					t->name = $1->pk->tab;
+				t->columns = l;
+                list_append(schema, t, TYPE_TABLE);
 			}
         }
     | altertables ';' altertable
@@ -69,43 +97,87 @@ altertables:
                 Table* t = (Table *) malloc(sizeof(Table));
 
 				List* l = list_new();
-                list_append(l, $3);
+                list_append(l, $3, TYPE_ALTERTABLE);
 
-                t->name = $3->tab;
-                t->fks = l;
-                list_append(schema, t);
+				if ($3->type == ALTER_FK)
+					t->name = $3->fk->tab;
+                else
+					t->name = $3->pk->tab;
+                t->columns = l;
+                list_append(schema, t, TYPE_TABLE);
 			}
         }
+    | altertables ';' altertable ';'
+        {
+            if ($3) {
+				if ($$ == NULL) $$ = list_new();
 
+                Table* t = (Table *) malloc(sizeof(Table));
+
+				List* l = list_new();
+                list_append(l, $3, TYPE_ALTERTABLE);
+
+				if ($3->type == ALTER_FK)
+					t->name = $3->fk->tab;
+                else
+					t->name = $3->pk->tab;
+                t->columns = l;
+                list_append(schema, t, TYPE_TABLE);
+			}
+        }
+    | altertables ';'
+	    /* Ignore */
     | error
         /* ignore errors outside
            table definitons */
 
 ;
 
-altertable:
-	ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
-        {
-            //ForeignKey *constraint;
-            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
-            $$->tab = $3;
-			// $5 = constraint
-            $$->col = $10;
 
-            $$->ftab = $13;
-            $$->fcol = $15;
+altertable:
+	ALTER TABLE '"' TOK_WORD '"' ADD CONSTRAINT '"' TOK_WORD '"' PRIMARY KEY '(' '"' TOK_WORD '"' ')'
+        {
+            Altertable *constraint = malloc(sizeof(Altertable));
+			constraint->type = ALTER_PK;
+            constraint->pk = (PrimaryKey *) malloc(sizeof(PrimaryKey));
+            constraint->pk->tab = $4;
+            constraint->pk->col = $15;
+
+			$$ = constraint;
         }
-	
+	| ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD PRIMARY KEY '(' TOK_WORD ')'
+        {
+            Altertable *constraint = malloc(sizeof(Altertable));
+			constraint->type = ALTER_PK;
+            constraint->pk = (PrimaryKey *) malloc(sizeof(PrimaryKey));
+            constraint->pk->tab = $3;
+            constraint->pk->col = $10;
+
+			$$ = constraint;
+        }
+	| ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
+        {
+            Altertable *constraint = malloc(sizeof(Altertable));
+			constraint->type = ALTER_FK;
+            constraint->fk = (ForeignKey *) malloc(sizeof(ForeignKey));
+            constraint->fk->tab = $3;
+            constraint->fk->col = $10;
+
+            constraint->fk->ftab = $13;
+            constraint->fk->fcol = $15;
+			$$ = constraint;
+        }
 	| ALTER TABLE '"' TOK_WORD '"' ADD CONSTRAINT '"' TOK_WORD '"' FOREIGN KEY '(' '"' TOK_WORD '"' ')' REFERENCES '"' TOK_WORD '"' '(' '"' TOK_WORD '"' ')'
         {
-            //ForeignKey *constraint;
-            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
-            $$->tab = $4;
-			// $9 = constraint
-            $$->col = $15;
+            Altertable *constraint = malloc(sizeof(Altertable));
+			constraint->type = ALTER_FK;
+            constraint->fk = (ForeignKey *) malloc(sizeof(ForeignKey));
+            constraint->fk->tab = $4;
+            constraint->fk->col = $15;
 
-            $$->ftab = $20;
-            $$->fcol = $24;
+            constraint->fk->ftab = $20;
+            constraint->fk->fcol = $24;
+			$$ = constraint;
         }
 ;
 
@@ -113,12 +185,12 @@ tables:
     table
         {
             if ($1)
-                list_append(schema, $1);
+                list_append(schema, $1, TYPE_TABLE);
         }
     | tables ';' table
         {
             if ($3)
-                list_append(schema, $3);
+                list_append(schema, $3, TYPE_TABLE);
         }
     | error
         /* ignore errors outside
@@ -134,7 +206,7 @@ table:
             {
                 $$ = (Table *) malloc(sizeof(Table));
                 $$->name = $3;
-                $$->fks = $5;
+                $$->columns = $5;
                 //fprintf(stderr, "Parsed table %s\n", $3);
             }
             /* no foreign keys on this table
@@ -153,7 +225,7 @@ table:
             {
                 $$ = (Table *) malloc(sizeof(Table));
                 $$->name = $4;
-                $$->fks = $7;
+                $$->columns = $7;
                 //fprintf(stderr, "Parsed table %s\n", $3);
             }
             /* no foreign keys on this table
@@ -170,22 +242,50 @@ columndefs:
     columndef
         {
             $$ = list_new();
-            if ($1)
-                list_append($$, $1);
+            if ($1) {
+				list_append($$, $1, TYPE_COLUMN);
+			}
+        }
+    | fkcolumndef
+        {
+            $$ = list_new();
+            if ($1) {
+				list_append($$, $1, TYPE_FOREIGNKEY);
+			}
         }
     | columndefs ',' columndef
         {
-            if ($3)
-                list_append($$, $3);
+            if ($3) {
+				list_append($$, $3, TYPE_COLUMN);
+			}
+        }
+    | columndefs ',' fkcolumndef
+        {
+            if ($3) {
+				list_append($$, $3, TYPE_FOREIGNKEY);
+			}
         }
 ;
 
 columndef:
     TOK_WORD type
-        { $$ = NULL }
+        {
+			Column* col = (Column *) malloc(sizeof(Column));
+			col->col = $1;
+			col->type = $2;
+            $$ = col;
+        }
     | '"' TOK_WORD '"' type
-        { $$ = NULL }
-    | TOK_WORD type columnconstraints
+        {
+			Column* col = (Column *) malloc(sizeof(Column));
+			col->col = $2;
+			col->type = $4;
+            $$ = col;
+        }
+;
+
+fkcolumndef:
+    TOK_WORD type columnconstraints
         {
             $$ = NULL;
 
@@ -297,24 +397,41 @@ columndef:
             $$->ftab = $14;
             $$->fcol = $18;
         }
-;
+;					
 
 type:
     /* empty */
+	{
+		$$ = "empty";
+	}
     | TOK_TYPE
+	{
+		$$ = yyval.str;
+	}
 ;
+
 
 columnconstraints:
     columnconstraint
         {
 			if ($$ == NULL) $$ = list_new();
-            if ($1)
-                list_append($$, $1);
+            if ($1) {
+				if ($1->type == CONSTRAINT_FOREIGNKEY) {
+				    list_append($$, $1, TYPE_FOREIGNKEY);
+				} else {
+				    list_append($$, $1, TYPE_COLUMN);
+				}
+			}
         }
     | columnconstraints columnconstraint
         {
-            if ($2)
-                list_append($$, $2);
+            if ($2) {
+				if ($2->type == CONSTRAINT_FOREIGNKEY) {
+				    list_append($$, $2, TYPE_FOREIGNKEY);
+				} else {
+				    list_append($$, $2, TYPE_COLUMN);
+				}
+			}
         }
 ;
 
