@@ -106,6 +106,7 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
 	PrimaryKey* pk;
 
+#ifdef bla
 	if (at->type == ALTER_FK) {
 		fk = at->fk;
 		/*
@@ -132,7 +133,8 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 			strrealloccat(buffer);
 		}
 	}
-	
+#endif
+
 	if (at->type == ALTER_PK) {
 		pk = at->pk;
 		/*
@@ -513,7 +515,7 @@ table_next:
     list_destroy(schema);
     MemPoolDestroy(&mempool);
 
-	//printf(rewrittenSchemaDDL);
+	printf(rewrittenSchemaDDL);
 
     printf("COMMIT;\n");
 

@@ -49,29 +49,12 @@ schema:
 	| tables ';'
 	| tables ';' altertables
 	| tables ';' altertables ';'
+	| altertables ';'
 	| altertables
 ;
 
 altertables:
 	altertable
-        {
-            if ($1) {
-				if ($$ == NULL) $$ = list_new();
-
-                Table* t = (Table *) malloc(sizeof(Table));
-
-				List* l = list_new();
-                list_append(l, $1, TYPE_ALTERTABLE);
-
-				if ($1->type == ALTER_FK)
-					t->name = $1->fk->tab;
-                else
-					t->name = $1->pk->tab;
-				t->columns = l;
-                list_append(schema, t, TYPE_TABLE);
-			}
-        }
-	| altertable ';'
         {
             if ($1) {
 				if ($$ == NULL) $$ = list_new();
@@ -107,30 +90,9 @@ altertables:
                 list_append(schema, t, TYPE_TABLE);
 			}
         }
-    | altertables ';' altertable ';'
-        {
-            if ($3) {
-				if ($$ == NULL) $$ = list_new();
-
-                Table* t = (Table *) malloc(sizeof(Table));
-
-				List* l = list_new();
-                list_append(l, $3, TYPE_ALTERTABLE);
-
-				if ($3->type == ALTER_FK)
-					t->name = $3->fk->tab;
-                else
-					t->name = $3->pk->tab;
-                t->columns = l;
-                list_append(schema, t, TYPE_TABLE);
-			}
-        }
-    | altertables ';'
-	    /* Ignore */
     | error
         /* ignore errors outside
            table definitons */
-
 ;
 
 
