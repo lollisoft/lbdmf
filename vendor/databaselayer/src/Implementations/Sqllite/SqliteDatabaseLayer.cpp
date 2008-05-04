@@ -195,7 +195,18 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 		} else {
 			rewrittenQuery = wxString(rewriteSchemaOfDDL(strQuery.c_str()));
 		}
-		QueryArray = ParseQueries(rewrittenQuery);
+      wxString strErrorMessage = _("");
+      char* szErrorMessage = NULL;
+	  int nReturn = sqlite3_exec(m_pDatabase, rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
+      if (szErrorMessage != NULL)
+      {
+        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+		printf(strErrorMessage);
+        sqlite3_free(szErrorMessage);
+        return NULL;
+      }
+	  return NULL;
 	} else {
 		QueryArray = ParseQueries(strQuery);
     }
@@ -204,13 +215,17 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
     {
       char* szErrorMessage = NULL;
       wxString strErrorMessage = _("");
-      wxCharBuffer sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
-      int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer, 0, 0, &szErrorMessage);
-  
+      wxString sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
+
+	  printf("Execute query: %s\n", sqlBuffer.c_str());
+      
+	  int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer.c_str(), 0, 0, &szErrorMessage);
+	    
       if (szErrorMessage != NULL)
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+		printf(strErrorMessage);
         sqlite3_free(szErrorMessage);
         return NULL;
       }
