@@ -1487,14 +1487,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 	}
 	
 	try {
-		wxString theQuery = szSql;
-		if (theQuery.Upper().Contains("CREATE")) {
-			// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
-			// foreign keys.
-		}
-
-	
-	
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
 		
 		if (theResult != NULL) {
@@ -1519,7 +1511,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					whereClause = theQuery.SubString(theQuery.Find(wxString("WHERE")), theQuery.Length());
 				}
 */				
-				
+				wxString theQuery = wxString(szSql);
 			
 				if (theQuery.Upper().Contains("INSERT")) {
 					return ERR_NONE;
