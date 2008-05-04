@@ -133,7 +133,6 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 			strrealloccat(buffer);
 		}
 	}
-#endif
 
 	if (at->type == ALTER_PK) {
 		pk = at->pk;
@@ -144,6 +143,24 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 		char* buffer = (char*) malloc(strlen(_template) + strlen(pk->tab) + strlen(pk->col)+1);
 
 		sprintf(buffer, _template, pk->tab, pk->col);
+		strrealloccat(buffer);
+	}
+#endif
+}
+
+void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
+	ForeignKey* fk;
+	
+	if (at->type == ALTER_FK) {
+		fk = at->fk;
+
+		char* _template = "INSERT INTO \"lbDMF_ForeignKeys\" (\"PKTable\", \"PKColumn\", \"FKTable\", \"FKColumn\") VALUES ('%s', '%s', '%s', '%s');\n";
+		char* buffer = (char*) malloc(strlen(_template)+
+							strlen(fk->tab)+
+							strlen(fk->col)+
+							strlen(fk->ftab)+
+							strlen(fk->fcol)+1);
+		sprintf(buffer, _template, fk->tab, fk->col, fk->ftab, fk->fcol);
 		strrealloccat(buffer);
 	}
 }
@@ -345,6 +362,7 @@ void WriteTriggerSchema() {
 				if (at == NULL)
 					goto next_fk;
 				WriteTriggerRules(table, at);
+				WriteForeignKeyMetaRules(table, at);
 			}
 
 next_fk:
@@ -401,7 +419,7 @@ char* rewriteSchemaOfDDL(char* sql_ddl) {
 	}
 	
 	WriteTableSchema();
-	WriteAlterTableSchema();
+	//WriteAlterTableSchema();
 	WriteTriggerSchema();
 
 	CleanupSchema(schema);
