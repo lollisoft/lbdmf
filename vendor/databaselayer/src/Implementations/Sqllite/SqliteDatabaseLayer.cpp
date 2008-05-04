@@ -26,6 +26,7 @@ SqliteDatabaseLayer::SqliteDatabaseLayer()
   wxCSConv conv(_("UTF-8"));
   SetEncoding(&conv);
   m_fklist = NULL;
+  m_schema = NULL;
 }
 
 SqliteDatabaseLayer::SqliteDatabaseLayer(const wxString& strDatabase)
@@ -36,6 +37,7 @@ SqliteDatabaseLayer::SqliteDatabaseLayer(const wxString& strDatabase)
   SetEncoding(&conv);
   Open(strDatabase);
   m_fklist = NULL;
+  m_schema = NULL;
 }
 
 // dtor()
@@ -174,8 +176,30 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 
   if (m_pDatabase != NULL)
   {
-    wxArrayString QueryArray = ParseQueries(strQuery);
-     
+    wxArrayString QueryArray;
+	if (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER")) {
+		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
+		// foreign keys.
+		wxString rewrittenQuery;
+		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
+			wxString createSystemTables;
+			
+			createSystemTables = 
+			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
+			wxString("	\"PKTable\" BPCHAR,") +
+			wxString("	\"PKColumn\" BPCHAR,") +
+			wxString("	\"FKTable\" BPCHAR,") +
+			wxString("	\"FKColumn\" BPCHAR") +
+			wxString(");\n");
+			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL(strQuery.c_str()));
+		} else {
+			rewrittenQuery = wxString(rewriteSchemaOfDDL(strQuery.c_str()));
+		}
+		QueryArray = ParseQueries(rewrittenQuery);
+	} else {
+		QueryArray = ParseQueries(strQuery);
+    }
+	 
     for (unsigned int i=0; i<(QueryArray.size()-1); i++)
     {
       char* szErrorMessage = NULL;
