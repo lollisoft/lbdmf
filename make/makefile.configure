@@ -11,6 +11,10 @@ ifeq ($(OSTYPE), solaris)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
 endif
+ifeq ($(OSTYPE), linux-debian-ppc)
+DEVROOT_MAKE=$(DEVROOT)
+MKMK=mkmk
+endif
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk

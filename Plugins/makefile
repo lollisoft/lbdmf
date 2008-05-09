@@ -24,6 +24,10 @@ ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -40,6 +44,22 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \
+	VisitorOperations \
+	DatabaseForm \
+	lbDMFDataModel \
+	DatabaseReport
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+TARGETDLL=so
+TARGETEXE=elf
+TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
+
+ALLTARGETS = \
+	TestPlugin \
+	DatabaseLayerGateway \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \

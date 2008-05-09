@@ -116,6 +116,15 @@ VENDORLIBS=
 LIBS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = `wx-config --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I /opt/gnome/include/gtk-2.0 -I /opt/gnome/include/glib-2.0 -I /opt/gnome/lib/glib-2.0/include -I /opt/gnome/include/pango-1.0 -I /opt/gnome/lib/gtk-2.0/include -I /opt/gnome/include/atk-1.0
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=
+LIBS=$(L_SOOPS) `wx-config --inplace --libs` 
+endif    
+
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 

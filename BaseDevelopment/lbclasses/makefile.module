@@ -61,7 +61,14 @@ MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
+
 ifeq ($(OSTYPE), linux)
+MODULE=lbClasses
+MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=-L$(prefix)/lib -llbHook

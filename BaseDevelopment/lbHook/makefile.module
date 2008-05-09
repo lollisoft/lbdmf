@@ -65,6 +65,10 @@ endif
 
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL) -I ../linuxCode
+endif    
+
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL) -I ../linuxCode
 endif    

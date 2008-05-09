@@ -11,6 +11,15 @@ endif
 include $(DEVROOT)$(RELPATH)\make\STD_MAKE
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
+endif
+
 ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
@@ -51,6 +60,9 @@ plugindir=$(exec_prefix)/plugins
 INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 ifeq ($(OSTYPE), linux)
+STRIP=strip -s
+endif
+ifeq ($(OSTYPE), linux-debian-ppc)
 STRIP=strip -s
 endif
 ifeq ($(OSTYPE), solaris)

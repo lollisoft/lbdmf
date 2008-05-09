@@ -114,7 +114,7 @@ public wxWizardPageSimple
 public:
 
 	wxAppSelectPage() {
-		app = wxString("");
+		app = wxString(wxT(""));
 	}
 	
 	virtual ~wxAppSelectPage() {
@@ -169,7 +169,7 @@ wxAppSelectPage::wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 
 	sizerMain  = new wxBoxSizer(wxVERTICAL);
 
-	wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
+	wxStaticText* text = new wxStaticText(this, -1, (wxChar*) _trans("Application:"));
 	box = new wxChoice(this, -1);
 	        
 	sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);

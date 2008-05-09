@@ -65,6 +65,13 @@ OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
 endif    
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+C_SOOPS= $(C_OPS)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)

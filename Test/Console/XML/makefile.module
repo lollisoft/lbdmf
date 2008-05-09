@@ -61,6 +61,12 @@ OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)

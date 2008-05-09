@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.113 $
+# * $Revision: 1.114 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.113 2008/01/23 22:45:50 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.114 2008/05/09 06:38:22 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.114  2008/05/09 06:38:22  lollisoft
+# * More porting changes for debian-ppc.
+# *
 # * Revision 1.113  2008/01/23 22:45:50  lollisoft
 # * Partly implemented sqlite foreign key metadata support.
 # * Reading out the table definition from the system table
@@ -833,6 +836,61 @@ endif
 CC =gcc
 CPP=g++
 LD =cc -s
+CP =cp
+EXEDIR =
+LEX=flex
+YACC=bison
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+DEBUG_MEMORY=no
+DEBUG=yes
+
+
+ifeq ($(DEBUG), yes)
+# as of a note in google
+#DEBUG_CXX_FLAGS=-gstabs
+DEBUG_CXX_FLAGS=-g
+endif
+
+ifeq ($(DEBUG), no)
+DEBUG_CXX_FLAGS=
+endif
+
+STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
+	-I /usr/include \
+	-I $(HOME)/mpatrol/src \
+	-I . 
+
+STD_INCL_CPP = $(STD_INCL)
+
+OBJ =o
+C_OPS   = -c $(DEBUG_CXX_FLAGS) -DDEBIAN_PPC -DUNIX -DLINUX -DTVISION
+
+ifeq ($(DEBUG_MEMORY), yes)
+C_OPS += -DDEBUG_MALLOC -DUSE_MPATROL
+endif
+
+C_SOOPS = $(C_OPS)
+C_ELFOPS= $(C_OPS)
+L_OPS   = -o
+
+ifeq ($(DEBUG_MEMORY), yes)
+LIBS    = -ldl -lstdc++ -lmpatrol -lbfd 
+endif
+
+ifeq ($(DEBUG_MEMORY), no)
+LIBS    = -ldl -lstdc++
+endif
+
+#-lefence
+CC =gcc-4.1
+CPP=g++-4.1
+LD =ld
 CP =cp
 EXEDIR =
 LEX=flex

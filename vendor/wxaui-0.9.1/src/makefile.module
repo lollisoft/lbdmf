@@ -117,6 +117,15 @@ VENDORLIBS=
 LIBS=$(L_SOOPS) -L$(prefix)/lib `wx-config --inplace --libs` -lwxPropgrid 
 endif    
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=
+LIBS=$(L_SOOPS) -L$(prefix)/lib `wx-config --inplace --libs` -lwxPropgrid 
+endif    
+
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 

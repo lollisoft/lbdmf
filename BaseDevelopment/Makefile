@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.166 $
+# * $Revision: 1.167 $
 # * $Name:  $
-# * $Id: Makefile,v 1.166 2008/02/02 08:22:52 lollisoft Exp $
+# * $Id: Makefile,v 1.167 2008/05/09 06:38:22 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.167  2008/05/09 06:38:22  lollisoft
+# * More porting changes for debian-ppc.
+# *
 # * Revision 1.166  2008/02/02 08:22:52  lollisoft
 # * Some improvements in sqlite database stuff, but also some problems in parser syntax.
 # *
@@ -560,6 +563,15 @@ endif
 
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+DEVROOT_MAKE=$(DEVROOT)
+
+ifndef prefix
+prefix=$(HOME)
+endif
+
+endif
+
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 
@@ -593,6 +605,26 @@ Path=$(PATH)
 # To enable one build process, these directories are predefined or checked for it's existence.
 
 MAKE_CONFIG_FILE=$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+
+ifndef RPMBUILD 
+ifeq ($(OSTYPE), linux-debian-ppc)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../RegressionTests \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../AppDevelopment
+endif
+endif
+
+ifdef RPMBUILD 
+ifeq ($(OSTYPE), linux-debian-ppc)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules
+endif
+endif
+
 
 ifndef RPMBUILD 
 ifeq ($(OSTYPE), solaris)
@@ -737,6 +769,75 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
 
+
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+TARGETDLL=so
+TARGETFRAMEWORK=so
+TARGETEXE=elf
+TARGETSHARED=so
+TARGETWXEXE=elf
+TARGETWXSO=wxso
+TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_elf
+TARGETPLUGIN=soplugin
+TARGETWXPLUGIN=wxsoplugin
+TARGETWXSHARED=so
+TARGETYACC=yacc
+TARGETLEX=lex
+
+ifdef RPMBUILD
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/sqlite \
+	../vendor/wxaui-0.9.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+endif
+
+ifndef RPMBUILD
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/wxaui-0.9.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+endif
+
+ALLTARGETS = \
+	$(prefix)/bin \
+	$(prefix)/lib \
+	$(prefix)/plugins \
+	../include/lbkey.h \
+	$(ALLDIRS)
 
 endif
 
@@ -1068,11 +1169,11 @@ dummy:
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
-	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
-	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/tests: dummy
@@ -1134,6 +1235,17 @@ dummy:
 	touch ../include/lbkey.h
 
 ifeq ($(OSTYPE), solaris)
+../vendor/dosdir: dummy
+	$@/make.sh $@
+	cd ../BaseDevelopment
+
+../vendor/mkmk: dummy
+	$@/make.sh $@
+	cp $@/mkmk $(HOME)/bin
+	cd ../BaseDevelopment
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
 ../vendor/dosdir: dummy
 	$@/make.sh $@
 	cd ../BaseDevelopment
@@ -1275,6 +1387,44 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+../vendor/wxaui-0.9.1/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/propgrid: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxPropgrid -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/mpatrol/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=libmpatrol -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/wxaui-0.9.1/sample: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/GUI/wxWrapperDLL: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../Test/GUI/wxWrapper: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+
+#../Test/GUI/wxWrapper: dummy
+#	$(MAKE) -s -C $@ -f makefile.wx-sample
+
+../Test/GUI/wxPlugins/lbLoginWizard: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
+
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
@@ -1352,7 +1502,11 @@ else
 ifeq ($(OSTYPE), solaris)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+ifeq ($(OSTYPE), linux-debian-ppc)
+	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+endif
 endif
 endif
 	$(MAKE) -s -C $@

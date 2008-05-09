@@ -22,7 +22,7 @@
 **     COMMIT
 **     ROLLBACK
 **
-** $Id: build.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
+** $Id: build.c,v 1.3 2008/05/09 06:38:22 lollisoft Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"
@@ -2109,7 +2109,8 @@ void sqlite3CreateForeignKey(
   pFKey->pFrom = p;
   pFKey->pNextFrom = p->pFKey;
   z = (char*)&pFKey[1];
-  (struct sColMap*) pFKey->aCol = (struct sColMap*)z;
+  //(struct sColMap*) pFKey->aCol = (struct sColMap*)z;
+  pFKey->aCol = (struct sColMap*)z;
   z += sizeof(struct sColMap)*nCol;
   pFKey->zTo = z;
   memcpy(z, pTo->z, pTo->n);
