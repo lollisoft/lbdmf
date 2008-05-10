@@ -192,11 +192,11 @@ void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 
 		char* _template = "INSERT INTO \"lbDMF_ForeignKeys\" (\"PKTable\", \"PKColumn\", \"FKTable\", \"FKColumn\") VALUES ('%s', '%s', '%s', '%s');\n";
 		char* buffer = (char*) malloc(strlen(_template)+
-							strlen(fk->tab)+
-							strlen(fk->col)+
 							strlen(fk->ftab)+
-							strlen(fk->fcol)+1);
-		sprintf(buffer, _template, fk->tab, fk->col, fk->ftab, fk->fcol);
+							strlen(fk->fcol)+
+							strlen(fk->tab)+
+							strlen(fk->col)+1);
+		sprintf(buffer, _template, fk->ftab, fk->fcol, fk->tab, fk->col);
 		strrealloccat(buffer);
 	}
 }
