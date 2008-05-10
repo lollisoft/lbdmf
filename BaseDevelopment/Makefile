@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.167 $
+# * $Revision: 1.168 $
 # * $Name:  $
-# * $Id: Makefile,v 1.167 2008/05/09 06:38:22 lollisoft Exp $
+# * $Id: Makefile,v 1.168 2008/05/10 17:42:06 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.168  2008/05/10 17:42:06  lollisoft
+# * Activated and deactivated some targets.
+# *
 # * Revision 1.167  2008/05/09 06:38:22  lollisoft
 # * More porting changes for debian-ppc.
 # *
@@ -718,6 +721,8 @@ TARGETLEX=lex
 
 ALLTARGETS = \
 	$(prefix)/bin \
+	$(prefix)/Library \
+	$(prefix)/Library/Frameworks \
 	$(prefix)/lib \
 	$(prefix)/plugins \
 	../include/lbkey.h \
@@ -736,8 +741,6 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxWrapper \
-	../vendor/wxShapeFramework/src \
-	../vendor/wxShapeFramework/example \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -747,6 +750,10 @@ ALLTARGETS = \
 
 #	../vendor/wxARG/src \
 #	../vendor/databaselayer/tests \
+#	../vendor/wxShapeFramework/src \
+#	../vendor/wxShapeFramework/example \
+#	../vendor/databaselayer/tests \
+
 
 ALLDIRS = \
 	../vendor/dosdir \
@@ -1128,6 +1135,12 @@ test-ldd:
 
 ../../plugins/libs: ../../plugins
 	-mkdir ../../plugins/libs
+
+$(prefix)/Library:
+	-mkdir -p $@
+
+$(prefix)/Library/Frameworks:
+	-mkdir -p $@
 
 $(prefix)/bin:
 	-mkdir -p $@
