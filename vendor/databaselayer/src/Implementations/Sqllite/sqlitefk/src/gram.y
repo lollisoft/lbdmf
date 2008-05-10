@@ -17,6 +17,7 @@ extern MemPool mempool;
 {
     char         *str;
     ForeignKey   *fk;
+    PrimaryKey   *pk;
     Column       *column;
     List         *list;
     Table        *table;
@@ -25,11 +26,12 @@ extern MemPool mempool;
 }
 
 %type <table>      table;
-%type <list>       error schema tables columndefs columnconstraints altertables
+%type <list>       error schema tables columndefs fkcolumnconstraints pkcolumnconstraints altertables
 %type <fk>         fkcolumndef
+%type <pk>         pkcolumndef
 %type <altertable> altertable
 %type <column>     columndef
-%type <cons>       columnconstraint 
+%type <cons>       fkcolumnconstraint pkcolumnconstraint
 %type <str>        type TOK_TYPE 
 
 %token CREATE
@@ -215,6 +217,13 @@ columndefs:
 				list_append($$, $1, TYPE_FOREIGNKEY);
 			}
         }
+    | pkcolumndef
+        {
+            $$ = list_new();
+            if ($1) {
+				list_append($$, $1, TYPE_PRIMARYKEY);
+			}
+        }
     | columndefs ',' columndef
         {
             if ($3) {
@@ -225,6 +234,12 @@ columndefs:
         {
             if ($3) {
 				list_append($$, $3, TYPE_FOREIGNKEY);
+			}
+        }
+    | columndefs ',' pkcolumndef
+        {
+            if ($3) {
+				list_append($$, $3, TYPE_PRIMARYKEY);
 			}
         }
 ;
@@ -247,7 +262,7 @@ columndef:
 ;
 
 fkcolumndef:
-    TOK_WORD type columnconstraints
+    TOK_WORD type fkcolumnconstraints
         {
             $$ = NULL;
 
@@ -266,7 +281,17 @@ fkcolumndef:
                         constraint = (Constraint *)list_data(item);
                         
                         switch  (constraint->type)
-                        {
+                        {/*
+                            case CONSTRAINT_PRIMARYKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (PrimaryKey *) malloc(sizeof(PrimaryKey));
+                                        $$->col = $1;
+                                        $$->tab = NULL;
+                                    }
+                                }
+                                break;*/
                             case CONSTRAINT_FOREIGNKEY:
                                 {
                                     if ($$ == NULL)
@@ -294,7 +319,7 @@ fkcolumndef:
                 list_destroy($3);
             }
         }
-    | '"' TOK_WORD '"' type columnconstraints
+    | '"' TOK_WORD '"' type fkcolumnconstraints
         {
             $$ = NULL;
 
@@ -361,6 +386,125 @@ fkcolumndef:
         }
 ;					
 
+pkcolumndef:
+    TOK_WORD type pkcolumnconstraints
+        {
+            $$ = NULL;
+
+            if ($3)
+            {
+                if ($3->len > 0)
+                {
+                    int i;
+                    unsigned char notnull = 0;
+                    Constraint *constraint;
+                    ListItem *item;
+
+                    item = list_head($3);
+                    for (i = 0; item; i++)
+                    {
+                        constraint = (Constraint *)list_data(item);
+                        
+                        switch  (constraint->type)
+                        {
+                            case CONSTRAINT_PRIMARYKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (PrimaryKey *) malloc(sizeof(PrimaryKey));
+                                        $$->col = $1;
+										$$->type = $2;
+                                        $$->tab = NULL;
+                                    }
+                                }
+                                break;
+/*                            case CONSTRAINT_FOREIGNKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+                                        $$->col = $1;
+                                        $$->ftab = constraint->foreign.tab;
+                                        $$->fcol = constraint->foreign.col;
+                                    }
+                                }
+                                break;*/
+                            case CONSTRAINT_NOTNULL:
+                                notnull = 1;
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                        item = list_next(item);
+                    }
+
+                    if ($$)
+                        $$->notnull = notnull;
+                }
+                list_destroy($3);
+            }
+        }
+    | '"' TOK_WORD '"' type pkcolumnconstraints
+        {
+            $$ = NULL;
+
+            if ($5)
+            {
+                if ($5->len > 0)
+                {
+                    int i;
+                    unsigned char notnull = 0;
+                    Constraint *constraint;
+                    ListItem *item;
+
+                    item = list_head($5);
+                    for (i = 0; item; i++)
+                    {
+                        constraint = (Constraint *)list_data(item);
+                        
+                        switch  (constraint->type)
+                        {
+                            case CONSTRAINT_PRIMARYKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (PrimaryKey *) malloc(sizeof(PrimaryKey));
+                                        $$->col = $2;
+										$$->type = $4;
+                                        $$->tab = NULL;
+                                    }
+                                }
+                                break;
+/*                            case CONSTRAINT_FOREIGNKEY:
+                                {
+                                    if ($$ == NULL)
+                                    {
+                                        $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
+                                        $$->col = $2;
+                                        $$->ftab = constraint->foreign.tab;
+                                        $$->fcol = constraint->foreign.col;
+                                    }
+                                }
+                                break;*/
+                            case CONSTRAINT_NOTNULL:
+                                notnull = 2;
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                        item = list_next(item);
+                    }
+
+                    if ($$)
+                        $$->notnull = notnull;
+                }
+                list_destroy($5);
+            }
+        }
+;					
+
 type:
     /* empty */
 	{
@@ -373,8 +517,8 @@ type:
 ;
 
 
-columnconstraints:
-    columnconstraint
+fkcolumnconstraints:
+    fkcolumnconstraint
         {
 			if ($$ == NULL) $$ = list_new();
             if ($1) {
@@ -385,7 +529,7 @@ columnconstraints:
 				}
 			}
         }
-    | columnconstraints columnconstraint
+    | fkcolumnconstraints fkcolumnconstraint
         {
             if ($2) {
 				if ($2->type == CONSTRAINT_FOREIGNKEY) {
@@ -397,10 +541,56 @@ columnconstraints:
         }
 ;
 
-columnconstraint:
+pkcolumnconstraints:
+    pkcolumnconstraints pkcolumnconstraint
+        {
+			//printf("List of pkcolumnconstraints is %p.\n", $1);
+            if ($2) {
+				if ($2->type == CONSTRAINT_PRIMARYKEY) {
+					//if ($1 == $2) malloc_printf("Error: Item to be added is the list itself!\n");
+				    list_append($1, $2, TYPE_PRIMARYKEY);
+				} else {
+				    list_append($1, $2, TYPE_COLUMN);
+				}
+			}
+			if ($$ == NULL) $$ = $1;
+        }
+    | pkcolumnconstraint
+        {
+			$$ = list_new();
+			//printf("List of pkcolumnconstraints is %p.\n", $$);
+            if ($1) {
+				if ($1->type == CONSTRAINT_PRIMARYKEY) {
+					//if ($$ == $1) malloc_printf("Error: Item to be added is the list itself (list = %p, pkconstraint = %p)!\n", $$, $1);
+				    list_append($$, $1, TYPE_PRIMARYKEY);
+				} else {
+				    list_append($$, $1, TYPE_COLUMN);
+				}
+			}
+        }
+
+;
+
+pkcolumnconstraint:
     PRIMARY KEY        /* primary key */
-        { $$ = NULL; }
+        { 
+            $$ = (Constraint *) malloc(sizeof(Constraint));
+			//printf("Allocated primary key constraint: %p.\n", $$);
+            $$->type = CONSTRAINT_PRIMARYKEY;
+		}
     | DEFAULT TOK_WORD /* default */
+        { $$ = NULL; }
+    | UNIQUE           /* unique */
+        { $$ = NULL; }
+    | NOT NIL          /* not null */
+        {
+            $$ = (Constraint *) malloc(sizeof(Constraint));
+            $$->type = CONSTRAINT_NOTNULL;
+        }
+;
+
+fkcolumnconstraint:
+	DEFAULT TOK_WORD /* default */
         { $$ = NULL; }
     | UNIQUE           /* unique */
         { $$ = NULL; }

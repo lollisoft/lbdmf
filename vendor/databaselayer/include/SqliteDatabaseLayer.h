@@ -98,6 +98,7 @@ private:
   wxArrayString arrPrimarySequence;
   
   void* m_fklist;
+  void* m_schema;
   sqlite3* m_pDatabase;
 };
 

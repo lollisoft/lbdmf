@@ -14,6 +14,65 @@ list_new (void)
     return list;
 }
 
+void printDeleteInfo(ListItem* item) {
+	char* itemtype = "";
+	switch (item->type) {
+		case TYPE_COLUMN:
+			itemtype = "TYPE_COLUMN";
+			break;
+		case TYPE_FOREIGNKEY:
+			itemtype = "TYPE_FOREIGNKEY";
+			break;
+		case TYPE_PRIMARYKEY:
+			itemtype = "TYPE_PRIMARYKEY";
+			break;
+		case TYPE_TABLE:
+			itemtype = "TYPE_TABLE";
+			break;
+		case TYPE_ALTERTABLES:
+			itemtype = "TYPE_ALTERTABLES";
+			break;
+		case TYPE_ALTERTABLE:
+			itemtype = "TYPE_ALTERTABLE";
+			break;
+		case TYPE_COLUMNS:
+			itemtype = "TYPE_COLUMNS";
+			break;
+	}
+#ifdef DEBUG
+	printf("Destroy listitem of type %s.\n", itemtype);
+#endif
+}
+
+void printAppendInfo(ListItem* item) {
+	char* itemtype = "";
+	switch (item->type) {
+		case TYPE_COLUMN:
+			itemtype = "TYPE_COLUMN";
+			break;
+		case TYPE_FOREIGNKEY:
+			itemtype = "TYPE_FOREIGNKEY";
+			break;
+		case TYPE_PRIMARYKEY:
+			itemtype = "TYPE_PRIMARYKEY";
+			break;
+		case TYPE_TABLE:
+			itemtype = "TYPE_TABLE";
+			break;
+		case TYPE_ALTERTABLES:
+			itemtype = "TYPE_ALTERTABLES";
+			break;
+		case TYPE_ALTERTABLE:
+			itemtype = "TYPE_ALTERTABLE";
+			break;
+		case TYPE_COLUMNS:
+			itemtype = "TYPE_COLUMNS";
+			break;
+	}
+#ifdef DEBUG
+	printf("Append listitem of type %s (item = %p, data = %p, size = %d).\n", itemtype, item, item->data, sizeof(item));
+#endif
+}
 
 void
 list_destroy (List *list)
@@ -24,16 +83,26 @@ list_destroy (List *list)
     while (item != NULL)
     {
         /* free data */
+#ifdef DEBUG
+		printDeleteInfo(item);
+		printf("Free up the data in item.\n");
+#endif
         free(item->data);
 
         /* save the next pointer */
         next = item->next;
         /* free item */
+#ifdef DEBUG
+		printf("Free up the item.\n");
+#endif
         free(item);
 
         /* move on to next */
         item = next;
     }
+#ifdef DEBUG
+	printf("Free up the list.\n");
+#endif
     free(list);
 }
 
@@ -51,6 +120,10 @@ list_append(List *list, void *data, int _type)
     _new->next = NULL;
     _new->data = data;
     _new->type = _type;
+
+#ifdef DEBUG
+	printAppendInfo(_new);
+#endif
 
     if (list->len == 0)
     {

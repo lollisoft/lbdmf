@@ -11,6 +11,7 @@ typedef struct foreign {
 
 
 typedef enum {
+CONSTRAINT_PRIMARYKEY,
 CONSTRAINT_FOREIGNKEY,
 CONSTRAINT_NOTNULL
 } ConstraintType;

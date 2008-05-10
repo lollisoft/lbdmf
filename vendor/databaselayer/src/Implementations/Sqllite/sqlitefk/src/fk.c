@@ -102,6 +102,42 @@ int WriteColumnRule(Table* table, Column* column, int cols) {
 	return cols;
 }
 
+int WriteFirstPrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
+	if (strcmp(column->type, "empty") != 0) {
+		cols++;
+		char* _template = "\nCREATE TABLE \"%s\" (\n";
+		char* buffer = (char*) malloc(strlen(_template) + strlen(table->name)+1);
+		
+		sprintf(buffer, _template, table->name);
+		strrealloccat(buffer);
+		
+		free(buffer);
+		_template = "\t\"%s\"\t%s PRIMARY KEY";
+		buffer = (char*) malloc(
+		strlen(_template) + 
+		strlen(column->col) + 
+		strlen(column->type)+1);
+		
+		sprintf(buffer, _template, column->col, column->type);
+		strrealloccat(buffer);
+		
+		return cols;
+	}
+	return cols;
+}
+
+int WritePrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
+	if (strcmp(column->type, "empty") != 0) {
+		char* _template = ",\n\t\"%s\"\t%s PRIMARY KEY";
+		char* buffer = (char*) malloc(strlen(_template) + strlen(column->col) + strlen(column->type)+1);
+		cols++;
+		sprintf(buffer, _template, column->col, column->type);
+		strrealloccat(buffer);
+		return cols;
+	}
+	return cols;
+}
+
 void WriteAlterTableRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
 	PrimaryKey* pk;
@@ -252,6 +288,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 void WriteTableSchema() {
     Table *table;
     Column *column;
+    PrimaryKey *primarykey;
 	ListItem *tabitem, *colitem;
     int i,x,cols,wrotetable;
     /*
@@ -282,6 +319,18 @@ void WriteTableSchema() {
 				}
 			}
 
+			if (colitem->type == TYPE_PRIMARYKEY) {
+				primarykey = (PrimaryKey *)list_data(colitem);
+				if (primarykey == NULL)
+					goto next_column;
+				if (cols > 0) {
+					cols = WritePrimaryColumnRule(table, primarykey, cols);
+				} else {
+					cols = WriteFirstPrimaryColumnRule(table, primarykey, cols);
+					if (cols > 0) wrotetable = 1;
+				}
+			}
+
 			if (colitem->type == TYPE_FOREIGNKEY) {
 				column = (Column *)list_data(colitem);
 				if (column == NULL)
@@ -290,6 +339,7 @@ void WriteTableSchema() {
 					cols = WriteColumnRule(table, column, cols);
 				} else {
 					cols = WriteFirstColumnRule(table, column, cols);
+					if (cols > 0) wrotetable = 1;
 				}
 			}
 

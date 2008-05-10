@@ -3,10 +3,11 @@
 
 #define TYPE_COLUMN 1
 #define TYPE_FOREIGNKEY 2
-#define TYPE_TABLE 3
-#define TYPE_ALTERTABLES 4
-#define TYPE_ALTERTABLE 5
-#define TYPE_COLUMNS 6
+#define TYPE_PRIMARYKEY 3
+#define TYPE_TABLE 4
+#define TYPE_ALTERTABLES 5
+#define TYPE_ALTERTABLE 6
+#define TYPE_COLUMNS 7
 
 
 typedef struct list_element

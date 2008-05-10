@@ -1,3 +1,4 @@
+
 -- Class Benutzer of type FORM found.
 				
 -- Class Formulare of type FORM found.
@@ -31,6 +32,7 @@
 -- Class DecisionPath of type FORM found.
 				
 -- Class Activities of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table Activities for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -41,12 +43,13 @@ CREATE TABLE "Activities" (
 --,
 --,
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"UmlId" BPCHAR
 );
 
 -- Class ActivityNodes of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table ActivityNodes for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -58,7 +61,7 @@ CREATE TABLE "ActivityNodes" (
 --,
 --,
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"Stereotype" BPCHAR,
 	"UmlId" BPCHAR,
@@ -69,6 +72,7 @@ CREATE TABLE "ActivityNodes" (
 );
 
 -- Class ControlFlow of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table ControlFlow for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -76,7 +80,7 @@ CREATE TABLE "ActivityNodes" (
 -- CREATE TABLE ControlFlow
 CREATE TABLE "ControlFlow" (
 	
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"Expression" BPCHAR,
 	"UmlId" BPCHAR,
@@ -90,6 +94,7 @@ CREATE TABLE "ControlFlow" (
 );
 
 -- Class DecisionPath of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table DecisionPath for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -97,7 +102,7 @@ CREATE TABLE "ControlFlow" (
 -- CREATE TABLE DecisionPath
 CREATE TABLE "DecisionPath" (
 	
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"UmlId" BPCHAR,
 	"Stereotype" BPCHAR,
@@ -110,6 +115,7 @@ CREATE TABLE "DecisionPath" (
 );
 
 -- Class PluginModules of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table PluginModules for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -118,7 +124,7 @@ CREATE TABLE "DecisionPath" (
 CREATE TABLE "PluginModules" (
 	
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"Modulname" BPCHAR,
 --,
@@ -126,6 +132,7 @@ CREATE TABLE "PluginModules" (
 );
 
 -- Class Plugins of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table Plugins for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -133,7 +140,7 @@ CREATE TABLE "PluginModules" (
 -- CREATE TABLE Plugins
 CREATE TABLE "Plugins" (
 	
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Functor" BPCHAR,
 	"Namespace" BPCHAR,
 	"PrimaryInterface" BPCHAR,
@@ -142,6 +149,7 @@ CREATE TABLE "Plugins" (
 );
 
 -- Class Template of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table Template for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -150,13 +158,14 @@ CREATE TABLE "Plugins" (
 CREATE TABLE "Template" (
 	
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 --,
 	"Templates" INTEGER
 );
 
 -- Class TemplateParameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table TemplateParameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -164,13 +173,14 @@ CREATE TABLE "Template" (
 -- CREATE TABLE TemplateParameters
 CREATE TABLE "TemplateParameters" (
 	
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 --,
 	"Template" INTEGER
 );
 
 -- Class Templates of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table Templates for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -179,12 +189,13 @@ CREATE TABLE "TemplateParameters" (
 CREATE TABLE "Templates" (
 	
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"Purpose" BPCHAR
 );
 
 -- Class Vendor of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table Vendor for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -193,20 +204,20 @@ CREATE TABLE "Templates" (
 CREATE TABLE "Vendor" (
 	
 --,
-	"ID" INTEGER,
+	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR
 );
 
 -- Class action_steps of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table action_steps for lbDMFManager_Entities. Tagtet database: 'Sqlite'
-
 
 
 -- CREATE TABLE action_steps
 CREATE TABLE "action_steps" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"actionid" INTEGER,
 	"bezeichnung" BPCHAR,
@@ -216,6 +227,7 @@ CREATE TABLE "action_steps" (
 );
 
 -- Class action_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table action_types for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -225,13 +237,14 @@ CREATE TABLE "action_types" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"bezeichnung" BPCHAR,
 	"action_handler" BPCHAR,
 	"module" BPCHAR
 );
 
 -- Class actions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table actions for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -241,7 +254,7 @@ CREATE TABLE "actions" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 --,
 	"typ" INTEGER,
@@ -250,6 +263,7 @@ CREATE TABLE "actions" (
 );
 
 -- Class anwendungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table anwendungen for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -262,7 +276,7 @@ CREATE TABLE "anwendungen" (
 --,
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"titel" BPCHAR,
 	"modulename" BPCHAR,
@@ -271,6 +285,7 @@ CREATE TABLE "anwendungen" (
 );
 
 -- Class anwendungen_formulare of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table anwendungen_formulare for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -278,7 +293,7 @@ CREATE TABLE "anwendungen" (
 -- CREATE TABLE anwendungen_formulare
 CREATE TABLE "anwendungen_formulare" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"anwendungid" INTEGER,
 --,
@@ -286,6 +301,7 @@ CREATE TABLE "anwendungen_formulare" (
 );
 
 -- Class anwendungs_parameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table anwendungs_parameter for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -293,7 +309,7 @@ CREATE TABLE "anwendungen_formulare" (
 -- CREATE TABLE anwendungs_parameter
 CREATE TABLE "anwendungs_parameter" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
 	"parametervalue" BPCHAR,
 --,
@@ -301,6 +317,7 @@ CREATE TABLE "anwendungs_parameter" (
 );
 
 -- Class anwendungsberechtigungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table anwendungsberechtigungen for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -308,7 +325,7 @@ CREATE TABLE "anwendungs_parameter" (
 -- CREATE TABLE anwendungsberechtigungen
 CREATE TABLE "anwendungsberechtigungen" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"iduser" INTEGER,
 --,
@@ -316,6 +333,7 @@ CREATE TABLE "anwendungsberechtigungen" (
 );
 
 -- Class applevel_plugin_registry of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table applevel_plugin_registry for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -323,11 +341,12 @@ CREATE TABLE "anwendungsberechtigungen" (
 -- CREATE TABLE applevel_plugin_registry
 CREATE TABLE "applevel_plugin_registry" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"anwendungid" INTEGER
 );
 
 -- Class column_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table column_types for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -342,6 +361,7 @@ CREATE TABLE "column_types" (
 );
 
 -- Class foreignkey_visibledata_mapping of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table foreignkey_visibledata_mapping for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -349,7 +369,7 @@ CREATE TABLE "column_types" (
 -- CREATE TABLE foreignkey_visibledata_mapping
 CREATE TABLE "foreignkey_visibledata_mapping" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"fkname" BPCHAR,
 	"fktable" BPCHAR,
 	"pkname" BPCHAR,
@@ -357,6 +377,7 @@ CREATE TABLE "foreignkey_visibledata_mapping" (
 );
 
 -- Class formular_actions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table formular_actions for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -364,7 +385,7 @@ CREATE TABLE "foreignkey_visibledata_mapping" (
 -- CREATE TABLE formular_actions
 CREATE TABLE "formular_actions" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"formular" INTEGER,
 --,
@@ -373,6 +394,7 @@ CREATE TABLE "formular_actions" (
 );
 
 -- Class formular_parameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table formular_parameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -380,7 +402,7 @@ CREATE TABLE "formular_actions" (
 -- CREATE TABLE formular_parameters
 CREATE TABLE "formular_parameters" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
 	"parametervalue" BPCHAR,
 --,
@@ -388,6 +410,7 @@ CREATE TABLE "formular_parameters" (
 );
 
 -- Class formulare of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table formulare for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -399,7 +422,7 @@ CREATE TABLE "formulare" (
 --,
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"menuname" BPCHAR,
 	"menuorder" INTEGER,
@@ -413,6 +436,7 @@ CREATE TABLE "formulare" (
 );
 
 -- Class formulartypen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table formulartypen for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -421,7 +445,7 @@ CREATE TABLE "formulare" (
 CREATE TABLE "formulartypen" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"handlermodule" BPCHAR,
 	"handlerfunctor" BPCHAR,
 	"handlerinterface" BPCHAR,
@@ -430,6 +454,7 @@ CREATE TABLE "formulartypen" (
 );
 
 -- Class regressiontest of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table regressiontest for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -437,11 +462,12 @@ CREATE TABLE "formulartypen" (
 -- CREATE TABLE regressiontest
 CREATE TABLE "regressiontest" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"test" BPCHAR
 );
 
 -- Class report_element_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table report_element_types for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -450,12 +476,13 @@ CREATE TABLE "regressiontest" (
 CREATE TABLE "report_element_types" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"description" BPCHAR
 );
 
 -- Class report_elements of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table report_elements for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -464,7 +491,7 @@ CREATE TABLE "report_element_types" (
 CREATE TABLE "report_elements" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"reportid" INTEGER,
 --,
@@ -478,6 +505,7 @@ CREATE TABLE "report_elements" (
 );
 
 -- Class report_parameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table report_parameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -485,7 +513,7 @@ CREATE TABLE "report_elements" (
 -- CREATE TABLE report_parameters
 CREATE TABLE "report_parameters" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"reportid" INTEGER,
 	"name" BPCHAR,
@@ -493,6 +521,7 @@ CREATE TABLE "report_parameters" (
 );
 
 -- Class report_texts of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table report_texts for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -500,7 +529,7 @@ CREATE TABLE "report_parameters" (
 -- CREATE TABLE report_texts
 CREATE TABLE "report_texts" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"elementid" INTEGER,
 	"line" INTEGER,
@@ -508,6 +537,7 @@ CREATE TABLE "report_texts" (
 );
 
 -- Class reports of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table reports for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -517,12 +547,13 @@ CREATE TABLE "reports" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"description" BPCHAR
 );
 
 -- Class translations of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table translations for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -530,13 +561,14 @@ CREATE TABLE "reports" (
 -- CREATE TABLE translations
 CREATE TABLE "translations" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"text" BPCHAR,
 	"translated" BPCHAR,
 	"language" BPCHAR
 );
 
 -- Class user_anwendungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table user_anwendungen for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -544,7 +576,7 @@ CREATE TABLE "translations" (
 -- CREATE TABLE user_anwendungen
 CREATE TABLE "user_anwendungen" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 --,
 	"userid" INTEGER,
 --,
@@ -552,6 +584,7 @@ CREATE TABLE "user_anwendungen" (
 );
 
 -- Class users of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
 
 -- Generate application table users for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
@@ -561,7 +594,7 @@ CREATE TABLE "users" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"vorname" BPCHAR,
 	"userid" BPCHAR,
@@ -607,230 +640,232 @@ CREATE TABLE "users" (
 -- Generate application tables Activities for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "Activities" ADD CONSTRAINT "Activities_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class ActivityNodes of type ENTITY found.
 
 -- Generate application tables ActivityNodes for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "ActivityNodes" ADD CONSTRAINT "ActivityNodes_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class ControlFlow of type ENTITY found.
 
 -- Generate application tables ControlFlow for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "ControlFlow" ADD CONSTRAINT "ControlFlow_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class DecisionPath of type ENTITY found.
 
 -- Generate application tables DecisionPath for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "DecisionPath" ADD CONSTRAINT "DecisionPath_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class PluginModules of type ENTITY found.
 
 -- Generate application tables PluginModules for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "PluginModules" ADD CONSTRAINT "PluginModules_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class Plugins of type ENTITY found.
 
 -- Generate application tables Plugins for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "Plugins" ADD CONSTRAINT "Plugins_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class Template of type ENTITY found.
 
 -- Generate application tables Template for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "Template" ADD CONSTRAINT "Template_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class TemplateParameters of type ENTITY found.
 
 -- Generate application tables TemplateParameters for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "TemplateParameters" ADD CONSTRAINT "TemplateParameters_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class Templates of type ENTITY found.
 
 -- Generate application tables Templates for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "Templates" ADD CONSTRAINT "Templates_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class Vendor of type ENTITY found.
 
 -- Generate application tables Vendor for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "Vendor" ADD CONSTRAINT "Vendor_pkey" PRIMARY KEY ("ID");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class action_steps of type ENTITY found.
 
 -- Generate application tables action_steps for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "action_steps" ADD CONSTRAINT "action_steps_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class action_types of type ENTITY found.
 
 -- Generate application tables action_types for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "action_types" ADD CONSTRAINT "action_types_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class actions of type ENTITY found.
 
 -- Generate application tables actions for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "actions" ADD CONSTRAINT "actions_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class anwendungen of type ENTITY found.
 
 -- Generate application tables anwendungen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class anwendungen_formulare of type ENTITY found.
 
 -- Generate application tables anwendungen_formulare for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "anwendungen_formulare_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class anwendungs_parameter of type ENTITY found.
 
 -- Generate application tables anwendungs_parameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "anwendungs_parameter_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class anwendungsberechtigungen of type ENTITY found.
 
 -- Generate application tables anwendungsberechtigungen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "anwendungsberechtigungen_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class applevel_plugin_registry of type ENTITY found.
 
 -- Generate application tables applevel_plugin_registry for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "applevel_plugin_registry" ADD CONSTRAINT "applevel_plugin_registry_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class column_types of type ENTITY found.
 
 -- Generate application tables column_types for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
+
+-- Skipped, due to creation in template 'importApplicationTable'
 
 -- Class foreignkey_visibledata_mapping of type ENTITY found.
 
 -- Generate application tables foreignkey_visibledata_mapping for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "foreignkey_visibledata_mapping" ADD CONSTRAINT "foreignkey_visibledata_mapping_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class formular_actions of type ENTITY found.
 
 -- Generate application tables formular_actions for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "formular_actions" ADD CONSTRAINT "formular_actions_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class formular_parameters of type ENTITY found.
 
 -- Generate application tables formular_parameters for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "formular_parameters" ADD CONSTRAINT "formular_parameters_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class formulare of type ENTITY found.
 
 -- Generate application tables formulare for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "formulare" ADD CONSTRAINT "formulare_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class formulartypen of type ENTITY found.
 
 -- Generate application tables formulartypen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "formulartypen" ADD CONSTRAINT "formulartypen_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class regressiontest of type ENTITY found.
 
 -- Generate application tables regressiontest for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "regressiontest" ADD CONSTRAINT "regressiontest_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class report_element_types of type ENTITY found.
 
 -- Generate application tables report_element_types for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "report_element_types" ADD CONSTRAINT "report_element_types_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class report_elements of type ENTITY found.
 
 -- Generate application tables report_elements for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "report_elements" ADD CONSTRAINT "report_elements_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class report_parameters of type ENTITY found.
 
 -- Generate application tables report_parameters for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "report_parameters" ADD CONSTRAINT "report_parameters_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class report_texts of type ENTITY found.
 
 -- Generate application tables report_texts for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "report_texts" ADD CONSTRAINT "report_texts_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class reports of type ENTITY found.
 
 -- Generate application tables reports for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "reports" ADD CONSTRAINT "reports_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class translations of type ENTITY found.
 
 -- Generate application tables translations for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "translations" ADD CONSTRAINT "translations_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class user_anwendungen of type ENTITY found.
 
 -- Generate application tables user_anwendungen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "user_anwendungen" ADD CONSTRAINT "user_anwendungen_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class users of type ENTITY found.
 
 -- Generate application tables users for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
-		
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Generate application table Activities for lbDMFManager_Entities
 ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_Activities_ID_DecisionPath_Activities_18" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
 ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_Activities_ID_ControlFlow_Activities_19" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
