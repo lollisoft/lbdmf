@@ -502,6 +502,30 @@ wxString& SqliteDatabaseLayer::GetPrimaryKeySequence(const int index) {
 
 
 int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
+	wxString sysQ = wxString("select PKColumn, PKTable, FKColumn from lbDMF_ForeignKeys where FKTable = '");
+	sysQ += table;
+	sysQ += "'";
+
+	DatabaseResultSet* system_query = RunQueryWithResults(sysQ);
+	arrFKCols.Clear();
+	arrPKCols.Clear();
+	arrPKTables.Clear();
+
+	if (system_query != NULL) {
+		while (system_query->Next()) {
+			wxString PKColumn =	system_query->GetResultString(1);
+			wxString PKTable =	system_query->GetResultString(2);
+			wxString FKColumn =	system_query->GetResultString(3);
+
+
+			arrFKCols.Add(FKColumn);
+			arrPKCols.Add(PKColumn);
+			arrPKTables.Add(PKTable);
+		}
+		return arrFKCols.Count();
+	}
+
+#ifdef Bla	
 	if (m_fklist) list_destroy((List*)m_fklist);
 	
 	// Workaround: Parser may fail and m_fklist->len is wrong.
@@ -544,7 +568,7 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 			return realitems;
 		}
 	}
-
+#endif
 	return 0;
 }
 
