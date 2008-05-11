@@ -466,7 +466,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UMLImportTargetDBPass->accept(*&aspect);
 
 	DatabaseSettingNamespace->accept(*&aspect);
-	UsePlugin->accept(*&aspect);
+	UsePlugin->accept(*&aspect);	
 	XSLFileSystemDatabase->accept(*&aspect);
 	XSLFileApplicationDatabase->accept(*&aspect);
 	UseOtherXSLFile->accept(*&aspect);
@@ -794,11 +794,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "DatabaseSettingNamespace";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_String, DatabaseSettingNamespace)
-			
+
 	*name = "UsePlugin";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UsePlugin)
-			
+	
 	*name = "UseOtherXSLFile";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UseOtherXSLFile)
@@ -811,9 +811,6 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_String, GeneralDBSchemaname)
 			
-
-
-	_LOG << "Start storing the data" LOG_
 
 	if ((forms != NULL) &&
 	    (ApplicationFormulars != NULL) &&
@@ -831,6 +828,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		(appActionTypes != NULL) &&
 		(appActionStepTransitions != NULL) &&
 		(appActionSteps != NULL)) {
+
+		_LOG << "Start storing the data" LOG_
 
 		reports->accept(*&aspect);
 		reportparams->accept(*&aspect);
@@ -861,6 +860,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		UseOtherXSLFile->accept(*&aspect);
 		XMIFileUMLProject->accept(*&aspect);
 		GeneralDBSchemaname->accept(*&aspect);
+
+		_LOG << "End storing the data" LOG_
 	}
 
 	return err;
@@ -1102,7 +1103,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	*name = "UsePlugin";
 	QI(UsePlugin, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
-	
+
+	_LOG << "Loaded Use Plugin switch from database: " << UsePlugin->charrep() LOG_
+
 	*name = "XSLFileSystemDatabase";
 	QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
@@ -1548,8 +1551,25 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			_LOG << "Prepare database creation..." LOG_
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+			char* dbbackend = metaapp->getSystemDatabaseBackend();
+			
+			UAP(lb_I_Database, database)
 			UAP(lb_I_Query, sampleQuery)
+
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (database == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_UML_IMPORT_LOADDATABASE_MODUL;
+			}
 				
 			database->init();
 			
