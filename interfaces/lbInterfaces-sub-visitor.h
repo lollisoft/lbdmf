@@ -46,6 +46,7 @@ virtual void LB_STDCALL visit(lb_I_GUIApp*) = 0;        // This is the wxApp cla
 virtual void LB_STDCALL visit(lb_I_GUI*) = 0;
 virtual void LB_STDCALL visit(lb_I_Frame*) = 0;
 virtual void LB_STDCALL visit(lb_I_KeyBase*) = 0; 
+virtual void LB_STDCALL visit(lb_I_Boolean*) = 0; 
 virtual void LB_STDCALL visit(lb_I_String*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Integer*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Long*) = 0;
