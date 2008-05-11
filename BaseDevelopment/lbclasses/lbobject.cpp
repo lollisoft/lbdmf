@@ -1260,7 +1260,7 @@ int LB_STDCALL lbBoolean::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbBoolean::charrep() const {
-	if (integerdata == 1) return "true";
+	if (integerdata) return "true";
 	else return "false";
 }
 /*...e*/
