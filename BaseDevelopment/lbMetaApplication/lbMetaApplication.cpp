@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.131 $
+ * $Revision: 1.132 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.131 2008/04/18 05:58:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.132 2008/05/11 22:33:03 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.132  2008/05/11 22:33:03  lollisoft
+ * Bugfixes and propably some log messages changed / added.
+ *
  * Revision 1.131  2008/04/18 05:58:30  lollisoft
  * Added new methods to get ans set application and system database backend (the namespace of a plugin).
  *
@@ -1337,23 +1340,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
-				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
+				value->toLower();
+				if (strcmp(value->charrep(), "true") == 0) {
 					setAutorefreshData(true);
 				} else {
 					setAutorefreshData(false);
 				}
 		}
-/*		
-		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
-				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
-					setAutoselect(true);
-				} else {
-					setAutoselect(false);
-				}
-		}
-*/		
+
 		if (strcmp(key->charrep(), "GeneralAutoopen last application") == 0) {
-				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
+				value->toLower();
+				if (strcmp(value->charrep(), "true") == 0) {
 					setAutoload(true);
 				} else {
 					setAutoload(false);
@@ -1362,11 +1359,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralPrefer database configuration") == 0) {
-				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
-					_CL_LOG << "Prefer database configuration = 1" LOG_
+				value->toLower();
+				if (strcmp(value->charrep(), "true") == 0) {
 					_force_use_database = true;
 				} else {
-					_CL_LOG << "Prefer database configuration = 0" LOG_
 					_force_use_database = false;
 				}
 		}
@@ -1374,6 +1370,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		if (strcmp(key->charrep(), "GeneralLast application") == 0) {
 			setApplicationName(value->charrep());
 		}
+		
+		_LOG << "User has changed a property for meta application: " << key->charrep() << " = " << value->charrep() LOG_
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
 	}
@@ -1428,7 +1426,9 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	*value = _system_database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 
-
+	_LOG << "lb_MetaApplication::getParameter() returns as Application Database backend: " << _application_database_backend LOG_
+	_LOG << "lb_MetaApplication::getParameter() returns as System Database backend: " << _system_database_backend LOG_
+	
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
 	
 	param->setUAPParameter(*&parameter, *&paramGeneral);
@@ -2690,7 +2690,9 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 							
 				fOp->end();
 				
-				save(); // Late save
+				/// \todo Save on demand or at application end.
+				// => Save menu entry, or on property changes.
+				//save(); // Late save
 				
 				while (Applications->hasMoreApplications()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
