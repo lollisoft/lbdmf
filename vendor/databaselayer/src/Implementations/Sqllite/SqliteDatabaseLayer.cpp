@@ -177,7 +177,8 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
   if (m_pDatabase != NULL)
   {
     wxArrayString QueryArray;
-	if (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER")) {
+	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
+	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 		wxString rewrittenQuery;
@@ -208,6 +209,21 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       }
 	  return NULL;
 	} else {
+		if (strQuery.Upper().Contains("SKIP REWRITE")) {
+			wxString strErrorMessage = _("");
+			char* szErrorMessage = NULL;
+			int nReturn = sqlite3_exec(m_pDatabase, strQuery.c_str(), 0, 0, &szErrorMessage);
+			if (szErrorMessage != NULL)
+			{
+				SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+				strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+				printf(strErrorMessage);
+				sqlite3_free(szErrorMessage);
+				return NULL;
+			}
+			return NULL;
+		}
+		
 		QueryArray = ParseQueries(strQuery);
     }
 	 
