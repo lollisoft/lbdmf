@@ -153,6 +153,13 @@ public:
 	lbErrCodes LB_STDCALL editProperties(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL OnPropertiesDataChange(lb_I_Unknown* uk);
+	
+	/** \brief Setup the systemdatabase.
+	 *
+	 * This function is used to initialize the system database with the devault content.
+	 * The default content
+	 */
+	lbErrCodes LB_STDCALL setupSystemDatabase(lb_I_Unknown* uk);
 
 protected:
 
@@ -161,6 +168,7 @@ protected:
 	void LB_STDCALL activateDBForms(char* user, char* app);
 
 	void LB_STDCALL loadDataFromActiveDocument();
+	void LB_STDCALL saveDataToActiveDocument();
 
 	bool haveLoadedDBModel;
 	UAP(lb_I_String, lastExportedApp)
@@ -413,6 +421,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lbDynamicApplication::setupSystemDatabase(lb_I_Unknown* uk) {
+	_CL_LOG << "lbDynamicApplication::setupSystemDatabase() called." LOG_
+	return ERR_NONE;
+}
+
 lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown* uk) {
 	_CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
 	
@@ -452,9 +465,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 					XMIFileUMLProject->setData(value->charrep());
 		}
 
-
+		// This is propably not usefull in the configuration ---------------------------------
 		if (strcmp(key->charrep(), "Application Database settingsUse plugin") == 0) {
-					if (strcmp(value->charrep(), "TRUE") == 0) {
+					value->toLower();
+					if (strcmp(value->charrep(), "true") == 0) {
 						UsePlugin->setData(true);
 					} else {
 						UsePlugin->setData(false);
@@ -464,13 +478,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		if (strcmp(key->charrep(), "Application Database settingsDB plugin namespace") == 0) {
 					*DatabaseSettingNamespace = value->charrep();
 		}
+		//------------------------------------------------------------------------------------
 
 		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Schemaname") == 0) {
 					*GeneralDBSchemaname = value->charrep();
 		}
 
 		if (strcmp(key->charrep(), "Transformation settingsAsk for other XSL files") == 0) {
-					if (strcmp(value->charrep(), "TRUE") == 0) {
+					value->toLower();
+					if (strcmp(value->charrep(), "true") == 0) {
 						UseOtherXSLFile->setData(true);
 					} else {
 						UseOtherXSLFile->setData(false);
@@ -485,11 +501,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 					XSLFileApplicationDatabase->setData(value->charrep());
 		}
 
-		if (strcmp(key->charrep(), "") == 0) {
-					*DatabaseSettingNamespace = value->charrep();
-		}
-
-		_LOG << "User has changed a property: " << key->charrep() << " = " << value->charrep() LOG_
+		_LOG << "User has changed a property for dynamic application: " << key->charrep() << " = " << value->charrep() LOG_
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
 	}
@@ -516,6 +528,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		document->setUAPString(*&paramname, *&UMLImportTargetDBPass);
 		*paramname = "GeneralDBSchemaname";
 		document->setUAPString(*&paramname, *&GeneralDBSchemaname);
+		*paramname = "DatabaseSettingNamespace";
+		document->setUAPString(*&paramname, *&DatabaseSettingNamespace);
+		
+		saveDataToActiveDocument();
 	}
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
@@ -544,6 +560,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	metaapp->delPropertySet("DynamicAppDefaultSettings");
 	metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
 
+	//metaapp->setActiveDocument(*&document);
 	
 	return ERR_NONE;
 }
@@ -2207,6 +2224,82 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	return ERR_NONE;
 }
 
+void LB_STDCALL lbDynamicApplication::saveDataToActiveDocument() {
+    lbErrCodes err = ERR_NONE;
+    UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+    UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+    
+    UAP(lb_I_Parameter, param)
+    UAP(lb_I_Unknown, uk)
+    UAP(lb_I_KeyBase, key)
+    QI(name, lb_I_KeyBase, key)
+
+    document->setCloning(false);
+
+    uk = metaapp->getActiveDocument();
+    QI(uk, lb_I_Parameter, param)
+			
+    *name = "ApplicationData";
+    param->getUAPContainer(*&name, *&document);
+
+
+    *name = "UMLImportTargetDBName";
+	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "UMLImportTargetDBUser";
+	QI(UMLImportTargetDBUser, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "UMLImportTargetDBPass";
+	QI(UMLImportTargetDBPass, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "DatabaseSettingNamespace";
+	QI(DatabaseSettingNamespace, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "UsePlugin";
+	QI(UsePlugin, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "UsePlugin";
+	QI(UsePlugin, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+	_LOG << "Have UsePlugin switch from active document: " << UsePlugin->charrep() LOG_
+
+    *name = "XSLFileSystemDatabase";
+	QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "XSLFileApplicationDatabase";
+	QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "UseOtherXSLFile";
+	QI(UseOtherXSLFile, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "XMIFileUMLProject";
+	QI(XMIFileUMLProject, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
+    *name = "GeneralDBSchemaname";
+	QI(GeneralDBSchemaname, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+}
+
 void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     lbErrCodes err = ERR_NONE;
     UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -2263,6 +2356,7 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     *name = "UsePlugin";
     uk = document->getElement(&key);
 	UsePlugin->setData(*&uk);
+	_LOG << "Have UsePlugin switch from active document: " << UsePlugin->charrep() LOG_
 
     *name = "XSLFileSystemDatabase";
     uk = document->getElement(&key);
