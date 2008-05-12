@@ -460,6 +460,9 @@ private:
 	
 	// Datamanipulation helpers
 	
+	wxArrayString nullColumns;
+	wxArrayString nullValues;
+	
 	wxArrayString queryColumns;
 	wxArrayString queryValues;
 	
@@ -1392,8 +1395,14 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 	if (currentdbLayer != NULL) {
-		if (!currentdbLayer->RunQuery(SQL)) {
-			_LOG << "lbDatabaseLayerQuery::executeDirect(): Error: Could not execute query. Query failed." LOG_
+		try {
+			if (!currentdbLayer->RunQuery(SQL)) {
+				_LOG << "lbDatabaseLayerQuery::executeDirect(): Error: Could not execute query. Query failed." LOG_
+				return ERR_DB_QUERYFAILED;
+			}
+		}
+		catch (...) {
+			_LOG << "lbDatabaseLayerQuery::executeDirect(char* SQL) failed with query: " << SQL LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		return ERR_NONE;
@@ -1868,7 +1877,23 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
-    return NULL;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+	
+	wxString table = metadata->GetTableForColumn(wxString(FKName));
+	
+
+	int fkcolumns = currentdbLayer->GetForeignKeys(table);
+	
+	for (int i = 0; i<fkcolumns;i++) {
+		if (currentdbLayer->GetForeignKeyFKColumn(i) == wxString(FKName)) {
+			*s = currentdbLayer->GetForeignKeyPKColumn(i).c_str();
+			s++;
+			return s.getPtr();
+		}
+	}
+	*s = "";
+    return s.getPtr();
 }
 /*...e*/
 
@@ -2016,20 +2041,38 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
-	return boundColumns->isNull(pos);
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+
+	return isNull(metadata->GetColumnName(pos).c_str());
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
-	if (boundColumns == NULL) return true;
-	return boundColumns->isNull(name);
+	if (nullColumns.Index(wxString(name)) != wxNOT_FOUND) {
+		if (nullValues[nullColumns.Index(wxString(name))] == "true") return true;
+		else return false;
+	} else {
+		return false;
+	}
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
-	return boundColumns->setNull(pos, b);
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+
+	return setNull(metadata->GetColumnName(pos).c_str(), b);
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
-	return boundColumns->setNull(name, b);
+	wxString nullFlag = "false";
+	if (b) nullFlag = "true";
+	
+	if (nullColumns.Index(wxString(name)) != wxNOT_FOUND) {
+		nullValues[nullColumns.Index(wxString(name))] = nullFlag;
+	} else {
+		nullColumns.Add(wxString(name));
+		nullValues.Add(nullFlag);
+	}
+
+	return true; //boundColumns->setNull(name, b);
 }
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\int pos\41\:0:*/
@@ -2302,7 +2345,17 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 
 	theResult = currentdbLayer->RunQueryWithResults(newQuery);
 	
-	if (theResult && theResult->Next()) return true;
+	if (theResult && theResult->Next()) {
+		ResultSetMetaData* metadata = theResult->GetMetaData();
+		for (int i = 1; i <= metadata->GetColumnCount(); i++) {
+			if (theResult->IsFieldNull(i)) 
+				setNull(i, true);
+			else
+				setNull(i, false);			
+		}
+
+		return true;
+	}
 	_CL_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
 	return false;
 }
@@ -2475,7 +2528,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		for (int i = 0; i < queryValues.Count(); i++) {
 			if (i > 0) strSQL += ", ";
-			strSQL += "?";
+			if (isNull(i+1))
+				strSQL += "NULL";
+			else
+				strSQL += "?";
 		}
 
 		strSQL += " )";
@@ -2511,14 +2567,23 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			if (getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar) {
 				if (i > 0) strSQL += ", ";
 				strSQL += queryColumns[i];
-				strSQL += " = '";
-				strSQL += queryValues[i];
-				strSQL += "'";
+				if (isNull(i+1)) {
+					strSQL += " = NULL";
+				} else {
+					strSQL += " = '";
+					strSQL += queryValues[i];
+					strSQL += "'";
+				}
 			} else {
 				if (i > 0) strSQL += ", ";
-				strSQL += queryColumns[i];
-				strSQL += " = ";
-				strSQL += queryValues[i];
+				if (isNull(i+1)) {
+					strSQL += queryColumns[i];
+					strSQL += " = NULL";
+				} else {
+					strSQL += queryColumns[i];
+					strSQL += " = ";
+					strSQL += queryValues[i];
+				}
 			}
 		}
 		
