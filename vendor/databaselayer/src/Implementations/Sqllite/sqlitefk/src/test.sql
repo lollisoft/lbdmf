@@ -31,6 +31,10 @@
 				
 -- Class DecisionPath of type FORM found.
 				
+-- Class Project of type FORM found.
+				
+-- Class Todo of type FORM found.
+				
 -- Class Activities of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
@@ -148,6 +152,20 @@ CREATE TABLE "Plugins" (
 	"PluginModules" INTEGER
 );
 
+-- Class Project of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table Project for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE TABLE Project
+CREATE TABLE "Project" (
+	
+--,
+	"ID" INTEGER PRIMARY KEY,
+	"Name" BPCHAR
+);
+
 -- Class Template of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
@@ -192,6 +210,21 @@ CREATE TABLE "Templates" (
 	"ID" INTEGER PRIMARY KEY,
 	"Name" BPCHAR,
 	"Purpose" BPCHAR
+);
+
+-- Class Todo of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table Todo for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE TABLE Todo
+CREATE TABLE "Todo" (
+	
+	"ID" INTEGER PRIMARY KEY,
+	"Name" BPCHAR,
+--,
+	"Project" INTEGER
 );
 
 -- Class Vendor of type ENTITY found.
@@ -357,6 +390,8 @@ CREATE TABLE "column_types" (
 	"id" INTEGER,
 	"name" BPCHAR,
 	"tablename" BPCHAR,
+	"ro" BOOLEAN,
+	"specialcolumn" BOOLEAN,
 	"controltype" BPCHAR
 );
 
@@ -463,7 +498,9 @@ CREATE TABLE "formulartypen" (
 CREATE TABLE "regressiontest" (
 	
 	"id" INTEGER PRIMARY KEY,
-	"test" BPCHAR
+	"test" BPCHAR,
+	"btest" BOOLEAN,
+	"btest1" BOOLEAN
 );
 
 -- Class report_element_types of type ENTITY found.
@@ -635,6 +672,10 @@ CREATE TABLE "users" (
 				
 -- Class DecisionPath of type FORM found.
 				
+-- Class Project of type FORM found.
+				
+-- Class Todo of type FORM found.
+				
 -- Class Activities of type ENTITY found.
 
 -- Generate application tables Activities for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
@@ -677,6 +718,13 @@ CREATE TABLE "users" (
 
 -- Skipped, due to creation in template 'importApplicationTable'
 
+-- Class Project of type ENTITY found.
+
+-- Generate application tables Project for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class Template of type ENTITY found.
 
 -- Generate application tables Template for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
@@ -694,6 +742,13 @@ CREATE TABLE "users" (
 -- Class Templates of type ENTITY found.
 
 -- Generate application tables Templates for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class Todo of type ENTITY found.
+
+-- Generate application tables Todo for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
@@ -867,39 +922,42 @@ CREATE TABLE "users" (
 -- Skipped, due to creation in template 'importApplicationTable'
 
 -- Generate application table Activities for lbDMFManager_Entities
-ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_Activities_ID_DecisionPath_Activities_18" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
-ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_Activities_ID_ControlFlow_Activities_19" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
-ALTER TABLE "ActivityNodes" ADD CONSTRAINT "cst_Activities_ID_ActivityNodes_Activities_20" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
+ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_Activities_ID_DecisionPath_Activities_19" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
+ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_Activities_ID_ControlFlow_Activities_20" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
+ALTER TABLE "ActivityNodes" ADD CONSTRAINT "cst_Activities_ID_ActivityNodes_Activities_21" FOREIGN KEY ( "Activities" ) REFERENCES "Activities" ( "ID" );
 -- Generate application table ActivityNodes for lbDMFManager_Entities
-ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_ActivityNodes_ID_DecisionPath_ActivityNodesSource2_28" FOREIGN KEY ( "ActivityNodesSource2" ) REFERENCES "ActivityNodes" ( "ID" );
-ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_ActivityNodes_ID_ControlFlow_ActivityNodesSource1_29" FOREIGN KEY ( "ActivityNodesSource1" ) REFERENCES "ActivityNodes" ( "ID" );
-ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_ActivityNodes_ID_DecisionPath_ActivityNodesTarget2_30" FOREIGN KEY ( "ActivityNodesTarget2" ) REFERENCES "ActivityNodes" ( "ID" );
-ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_ActivityNodes_ID_ControlFlow_ActivityNodesTarget1_31" FOREIGN KEY ( "ActivityNodesTarget1" ) REFERENCES "ActivityNodes" ( "ID" );
+ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_ActivityNodes_ID_DecisionPath_ActivityNodesSource2_29" FOREIGN KEY ( "ActivityNodesSource2" ) REFERENCES "ActivityNodes" ( "ID" );
+ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_ActivityNodes_ID_ControlFlow_ActivityNodesSource1_30" FOREIGN KEY ( "ActivityNodesSource1" ) REFERENCES "ActivityNodes" ( "ID" );
+ALTER TABLE "DecisionPath" ADD CONSTRAINT "cst_ActivityNodes_ID_DecisionPath_ActivityNodesTarget2_31" FOREIGN KEY ( "ActivityNodesTarget2" ) REFERENCES "ActivityNodes" ( "ID" );
+ALTER TABLE "ControlFlow" ADD CONSTRAINT "cst_ActivityNodes_ID_ControlFlow_ActivityNodesTarget1_32" FOREIGN KEY ( "ActivityNodesTarget1" ) REFERENCES "ActivityNodes" ( "ID" );
 -- Generate application table ControlFlow for lbDMFManager_Entities
 -- Generate application table DecisionPath for lbDMFManager_Entities
 -- Generate application table PluginModules for lbDMFManager_Entities
-ALTER TABLE "Plugins" ADD CONSTRAINT "cst_PluginModules_ID_Plugins_PluginModules_16" FOREIGN KEY ( "PluginModules" ) REFERENCES "PluginModules" ( "ID" );
+ALTER TABLE "Plugins" ADD CONSTRAINT "cst_PluginModules_ID_Plugins_PluginModules_17" FOREIGN KEY ( "PluginModules" ) REFERENCES "PluginModules" ( "ID" );
 -- Generate application table Plugins for lbDMFManager_Entities
+-- Generate application table Project for lbDMFManager_Entities
+ALTER TABLE "Todo" ADD CONSTRAINT "cst_Project_ID_Todo_Project_14" FOREIGN KEY ( "Project" ) REFERENCES "Project" ( "ID" );
 -- Generate application table Template for lbDMFManager_Entities
-ALTER TABLE "TemplateParameters" ADD CONSTRAINT "cst_Template_ID_TemplateParameters_Template_14" FOREIGN KEY ( "Template" ) REFERENCES "Template" ( "ID" );
+ALTER TABLE "TemplateParameters" ADD CONSTRAINT "cst_Template_ID_TemplateParameters_Template_15" FOREIGN KEY ( "Template" ) REFERENCES "Template" ( "ID" );
 -- Generate application table TemplateParameters for lbDMFManager_Entities
 -- Generate application table Templates for lbDMFManager_Entities
-ALTER TABLE "Template" ADD CONSTRAINT "cst_Templates_ID_Template_Templates_15" FOREIGN KEY ( "Templates" ) REFERENCES "Templates" ( "ID" );
+ALTER TABLE "Template" ADD CONSTRAINT "cst_Templates_ID_Template_Templates_16" FOREIGN KEY ( "Templates" ) REFERENCES "Templates" ( "ID" );
+-- Generate application table Todo for lbDMFManager_Entities
 -- Generate application table Vendor for lbDMFManager_Entities
-ALTER TABLE "PluginModules" ADD CONSTRAINT "cst_Vendor_ID_PluginModules_Vendor_17" FOREIGN KEY ( "Vendor" ) REFERENCES "Vendor" ( "ID" );
+ALTER TABLE "PluginModules" ADD CONSTRAINT "cst_Vendor_ID_PluginModules_Vendor_18" FOREIGN KEY ( "Vendor" ) REFERENCES "Vendor" ( "ID" );
 -- Generate application table action_steps for lbDMFManager_Entities
 -- Generate application table action_types for lbDMFManager_Entities
 ALTER TABLE "actions" ADD CONSTRAINT "cst_action_types_id_actions_typ_12" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type_27" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type_28" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
 -- Generate application table actions for lbDMFManager_Entities
 ALTER TABLE "action_steps" ADD CONSTRAINT "cst_actions_id_action_steps_actionid_13" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
-ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_actions_id_formular_actions_action_24" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_actions_id_formular_actions_action_25" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
 -- Generate application table anwendungen for lbDMFManager_Entities
 ALTER TABLE "users" ADD CONSTRAINT "cst_anwendungen_id_users_lastapp_1" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungen_id_anwendungs_parameter_anwendungid_10" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_id_anwendungen_formulare_anwendungid_11" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_21" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_23" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_22" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_24" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 -- Generate application table anwendungen_formulare for lbDMFManager_Entities
 -- Generate application table anwendungs_parameter for lbDMFManager_Entities
 -- Generate application table anwendungsberechtigungen for lbDMFManager_Entities
@@ -912,12 +970,12 @@ ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid
 ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formulare_id_formular_parameters_formularid_7" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
 ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formulare_id_formular_actions_formular_8" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
 ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_formulare_id_anwendungsberechtigungen_idformular_9" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
-ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_26" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_27" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
 -- Generate application table formulartypen for lbDMFManager_Entities
 ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulartypen_id_formulare_typ_6" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
 -- Generate application table regressiontest for lbDMFManager_Entities
 -- Generate application table report_element_types for lbDMFManager_Entities
-ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_element_types_id_report_elements_typ_22" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_element_types_id_report_elements_typ_23" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
 -- Generate application table report_elements for lbDMFManager_Entities
 ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_elements_id_report_texts_elementid_3" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
 -- Generate application table report_parameters for lbDMFManager_Entities
@@ -929,4 +987,4 @@ ALTER TABLE "report_elements" ADD CONSTRAINT "cst_reports_id_report_elements_rep
 -- Generate application table user_anwendungen for lbDMFManager_Entities
 -- Generate application table users for lbDMFManager_Entities
 ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_users_id_user_anwendungen_userid_2" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
-ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_25" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_26" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
