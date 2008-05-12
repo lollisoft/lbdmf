@@ -986,6 +986,10 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 	UAP(lb_I_Parameter, document)
 	
 	ukDoc = meta->getActiveDocument();
+	if (ukDoc == NULL) {
+		_LOG << "Error: Expected a document as 'active document' here!" LOG_
+		return;
+	}
 	
 	QI(ukDoc, lb_I_Parameter, document)
 	
