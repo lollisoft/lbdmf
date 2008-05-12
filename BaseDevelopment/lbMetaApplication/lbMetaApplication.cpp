@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.132 $
+ * $Revision: 1.133 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.132 2008/05/11 22:33:03 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.133 2008/05/12 21:46:47 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.133  2008/05/12 21:46:47  lollisoft
+ * Trim the database namespaces.
+ *
  * Revision 1.132  2008/05/11 22:33:03  lollisoft
  * Bugfixes and propably some log messages changed / added.
  *
@@ -1284,21 +1287,35 @@ bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
 }
 
 char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
+	*Backend = _system_database_backend;
+	Backend->trim(); // Always trim spaces.
+	setSystemDatabaseBackend(Backend->charrep());
 	return _system_database_backend;
 }
 
 char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
+	*Backend = _application_database_backend;
+	Backend->trim(); // Always trim spaces.
+	setApplicationDatabaseBackend(Backend->charrep());
 	return _application_database_backend;
 }
 
 void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
 	if (_system_database_backend) free(_system_database_backend);
-	_system_database_backend = strdup(backend);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
+	*Backend = backend;
+	Backend->trim();
+	_system_database_backend = strdup(Backend->charrep());
 }
 
 void		LB_STDCALL lb_MetaApplication::setApplicationDatabaseBackend(char* backend) {
 	if (_application_database_backend) free(_application_database_backend);
- 	_application_database_backend = strdup(backend);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
+	*Backend = backend;
+	Backend->trim();
+ 	_application_database_backend = strdup(Backend->charrep());
 }
 
 
