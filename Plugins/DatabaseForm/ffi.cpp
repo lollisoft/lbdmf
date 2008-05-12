@@ -174,7 +174,22 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 		}
 		columntypes->finishTypeIteration();
 	} else {
-		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return;
+		}
 		
 		database->init();
 		

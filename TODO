@@ -4,6 +4,63 @@
 		
 		I also will discuss some problems while the development stages.
 
+		16.04.2008	Creating Sqlite Database script in usual way fails due to unsupported ALTER TABLE ADD CONSTRAINT.
+				Solution could be parsing these statements and separate the step of creating foreign keys to an
+				internal subsequent statement. While parsing them the statements could be rewritten to be triggers.
+				Additional metadata could be created to enable logical extraction of foreign key information.
+
+		14.04.2008	Importing XMI 2.1 formatted files are working, but complete application logic transfer
+				to a new database does not work. There are missing three steps:
+
+				1. In the table column_types is missing ro boolean column.
+ 				2. No user account has been created.
+				3. Type of dynamic database formular must be created in table formulartypen.
+
+				ODBC library path settings should be taken from odbc_config.
+
+				Shell scripts for setting um environment under Mac OS X does still not work.
+
+		01.04.2008	Testing package on a newly installed Mac OS X.
+				
+				There are any things that are not working without manual steps:
+				
+				Must call environment-osx.sh to get OSTYPE and some other environment
+				variables.
+
+				Download unixODBC and do the following steps:
+
+					./configure --enable-gui=no     (If no Qt libraries are installed)
+					make
+					make install
+
+				The configure script does set the prefix to /usr/local, so I may change my
+				prefix for the required libodbc.dylib file.
+
+				CVS source code version needs to get wxWidgets from anywhere.
+				On Mac it is still the wxMac 2.6.2 version.
+
+				Build the wxWidgets library with the following options:
+
+					./configure --enable-monolithic=yes --enable-shared=yes
+					make
+					make install
+
+				After installing the library, you need to remove the created dylib files in
+				output directory of the wxWidgets library. Do not make clean.
+
+				Add /usr/local/bin to the path variable to enable access to wx-config, if
+				the prefix has not been changed.
+
+				The environment-osx.sh script does not really work. Do a cat and copy paste
+				the commands.
+
+				The documentation for the Mac OS X system must be written in the API doc.
+
+				The Sqlite library didn't get cleaned and installed nor build. It is propably
+				not in the target list.
+
+				Sample.r in vendor/wxaui-0.9.1/sample is missing.
+
 		03.12.2005	DatabaseForms lack to handle proper adding of data in an empty table.
 				The form does not update the entered data after 'Add' has been pressed.
 				There must be added a second row. Then manipulating rows will work.

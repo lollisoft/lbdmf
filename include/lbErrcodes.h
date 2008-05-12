@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.35 2008/04/18 05:48:27 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.36 2008/05/12 08:06:46 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.36  2008/05/12 08:06:46  lollisoft
+ * Added code to load database instance from backend (plugin).
+ *
  * Revision 1.35  2008/04/18 05:48:27  lollisoft
  * Added an error code when UML import with database backend plugin does not work.
  *
@@ -300,7 +303,8 @@ enum lbErrCodes {
 	
 	ERR_MEMORY_ALLOC,
 	
-	ERR_UML_IMPORT_LOADDATABASE_MODUL
+	ERR_UML_IMPORT_LOADDATABASE_MODUL,
+	ERR_DYNAMIC_APP_LOAD_DBSCHEMA
 };
 /*...e*/
 

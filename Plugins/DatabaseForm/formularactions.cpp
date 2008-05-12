@@ -181,6 +181,7 @@ long FormularActions::getActionTargetIDLong(char* reversed_event) {
 /*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionTargetID(char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	if (eventmapping != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, eventname)
@@ -200,7 +201,22 @@ char* FormularActions::getActionTargetID(char* reversed_event) {
 		}
 	}	
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return "-1";
+	}
 	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 	
 	What->setData(reversed_event);
@@ -250,6 +266,7 @@ char* FormularActions::getActionTargetID(char* reversed_event) {
 /*...schar\42\ FormularActions\58\\58\getActionSourceDataField\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionSourceDataField(char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	if (eventmapping != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -287,8 +304,23 @@ char* FormularActions::getActionSourceDataField(char* reversed_event) {
 		}
 	}
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
-	
+	UAP(lb_I_Database, database)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return "Error";
+	}
+
 	database->init();
 	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");

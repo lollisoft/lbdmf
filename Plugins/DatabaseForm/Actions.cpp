@@ -622,7 +622,21 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		}
 		return;
 	} else {
-		REQUEST(manager.getPtr(), lb_I_Database, db)
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, db)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (db == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return;
+		}
 		UAP(lb_I_Query, query)
 
 		_LOG << "Read actionsteps sequentially from the database." LOG_
@@ -743,6 +757,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);
@@ -768,7 +783,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		
 		detailForm->setName(formularname->charrep(), parameter->charrep());
 
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
@@ -785,7 +799,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		detailForm->updateFromMaster();
 		gui->showForm(formularname->charrep());	
 	} else {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
 		meta->getGUI(&gui);
 
@@ -904,7 +917,23 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return;
+		}
+
 		UAP(lb_I_Query, query)
 		
 		database->init();
@@ -1141,7 +1170,22 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 
 	// - Old database variant -
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	UAP(lb_I_Query, query)
 
 	database->init();
@@ -1255,6 +1299,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	lbErrCodes err = ERR_NONE;
 	_LOG "lbMasterFormAction::openMasterForm() called." LOG_
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		
@@ -1283,7 +1328,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		
 		masterForm->setName(formularname->charrep(), parameter->charrep());
 				
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
@@ -1300,7 +1344,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		masterForm->updateFromDetail();
 		gui->showForm(formularname->charrep());
 	} else {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
 		meta->getGUI(&gui);
 		
@@ -1412,7 +1455,22 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return;
+		}
 		UAP(lb_I_Query, query)
 		
 		database->init();
@@ -1626,7 +1684,22 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	
 	// - Old database variant -
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	UAP(lb_I_Query, query)
 
 	database->init();
@@ -1786,7 +1859,22 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			
 			meta->setStatusText("Info", msg->charrep());
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			UAP(lb_I_Database, db)
+			char* dbbackend = meta->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, db)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (db == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return;
+			}
 			db->init();
 			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
@@ -1825,7 +1913,22 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	
 	// - Old database variant -
 		
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	UAP(lb_I_Query, query)
 
 
@@ -1847,7 +1950,22 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	UAP(lb_I_Database, db)
+	dbbackend = meta->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, db)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (db == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	db->init();
 	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
@@ -2051,7 +2169,22 @@ void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 			
 			meta->setStatusText("Info", msg->charrep());
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			UAP(lb_I_Database, db)
+			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, db)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (db == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+			}
 			db->init();
 			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
@@ -2090,7 +2223,22 @@ void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	
 	// - Old database variant -
 		
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = metaapp->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+	}
 	UAP(lb_I_Query, query)
 
 
@@ -2112,7 +2260,22 @@ void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	UAP(lb_I_Database, db)
+	char* dbbackend = metaapp->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, db)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (db == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+	}
 	db->init();
 	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
@@ -2315,7 +2478,22 @@ void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 			
 			meta->setStatusText("Info", msg->charrep());
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			UAP(lb_I_Database, db)
+			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, db)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (db == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+			}
 			db->init();
 			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
@@ -2354,7 +2532,22 @@ void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	
 	// - Old database variant -
 		
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Database, database)
+	char* dbbackend = metaapp->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+	}
 	UAP(lb_I_Query, query)
 
 
@@ -2376,7 +2569,22 @@ void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	UAP(lb_I_Database, db)
+	char* dbbackend = metaapp->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, db)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (db == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	db->init();
 	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");

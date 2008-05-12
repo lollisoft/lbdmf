@@ -456,7 +456,21 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		_CL_LOG << "WARNING: Database instance available!" LOG_
 	}
 	
-	REQUEST(manager.getPtr(), lb_I_Database, database)
+	char* dbbackend = meta->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 
 	database->init();
 	if (database->connect(DBName, DBName, DBUser, DBPass) != ERR_NONE) {
@@ -721,7 +735,23 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
 
-			UAP_REQUEST(manager.getPtr(), lb_I_Database, lbDMF_DB)
+			UAP(lb_I_Database, lbDMF_DB)
+			char* dbbackend = meta->getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, lbDMF_DB, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, lbDMF_DB)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (lbDMF_DB == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_FKPK_SCHEMA;
+			}
+
 			lbDMF_DB->init();
 
 			char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -1766,6 +1796,7 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	_LOG << "lbDatabasePanel::updateFromMaster() called." LOG_
 
@@ -1842,11 +1873,24 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	int columns = _master->getPrimaryColumns();
 	
 	if (columns == 0) {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		
 		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
 			/// \todo Fixing code.
-			REQUEST(manager.getPtr(), lb_I_Database, database)
+			char* dbbackend = meta->getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (database == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return;
+			}
 			UAP(lb_I_Query, correctionQuery)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
 
@@ -1913,7 +1957,21 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	}
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
-	REQUEST(manager.getPtr(), lb_I_Database, database)
+	char* dbbackend = meta->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	UAP(lb_I_Query, PKQuery)
 
 	database->init();
@@ -2298,7 +2356,21 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
 			/// \todo Fixing code.
-			REQUEST(manager.getPtr(), lb_I_Database, database)
+			char* dbbackend = meta->getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (database == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return;
+			}
 			UAP(lb_I_Query, correctionQuery)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
 
@@ -2371,7 +2443,21 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	}
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
-	REQUEST(manager.getPtr(), lb_I_Database, database)
+	char* dbbackend = meta->getApplicationDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	UAP(lb_I_Query, PKQuery)
 	UAP(lb_I_Query, sourceTableQuery)
 
@@ -3398,14 +3484,28 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) called." LOG_
 	sampleQuery->reopen();
 	
 	if (database == NULL) {
-		REQUEST(getModuleInstance(), lb_I_Database, database)
+		char* dbbackend = meta->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
 		database->init();
 	}
-	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	if (err == ERR_DB_NODATA) {
 		DISABLE_FOR_NO_DATA()
@@ -3568,7 +3668,22 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
 
-			UAP_REQUEST(manager.getPtr(), lb_I_Database, lbDMF_DB)
+			UAP(lb_I_Database, lbDMF_DB)
+			char* dbbackend = meta->getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, lbDMF_DB, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, lbDMF_DB)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (lbDMF_DB == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+			}
 			lbDMF_DB->init();
 
 			char* lbDMFPasswd = getenv("lbDMFPasswd");

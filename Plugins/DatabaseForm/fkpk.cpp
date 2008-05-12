@@ -123,8 +123,10 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk)
 }
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
+	lbErrCodes err = ERR_NONE;
 	wxString s = cBoxFKNames->GetStringSelection();
-	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
 	cBoxFKNames->Disable();
 	
 	UAP(lb_I_String, PKTable)
@@ -135,7 +137,22 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
 	sprintf(buffer, buf, PKTable->charrep());
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, queryDB)
+	UAP(lb_I_Database, queryDB)
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, queryDB, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, queryDB)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (queryDB == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
 	
 	queryDB->init();
 	
@@ -240,7 +257,21 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 		}
 		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
 	} else {
-		REQUEST(manager.getPtr(), lb_I_Database, database)
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return;
+		}
 		
 		database->init();
 		

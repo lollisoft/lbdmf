@@ -574,11 +574,27 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
 	bool isDBAvailable = false;
 	UAP(lb_I_DatabaseOperation, fOpDB)
-		
-	UAP(lb_I_Query, sampleQuery)
 
+	
+	UAP(lb_I_Query, sampleQuery)
+	
 	if (database == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Database, database)
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+
 		database->init();
 	}
 	
@@ -639,12 +655,31 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			dbColumns->accept(*&fOpDB);
 			fOpDB->end();
 		} else {
-			UAP_REQUEST(getModuleInstance(), lb_I_Database, customDB)
+			UAP(lb_I_Database, customDB)
 			UAP(lb_I_DatabaseOperation, fOpCustomDB)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+
+/************/
+			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, customDB)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			if (customDB == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+			}
+
 			customDB->init();
+/************/
 
 			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using custom database." LOG_
 			
@@ -1137,7 +1172,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
 	lbErrCodes err = ERR_NONE;
 	
 	if(database == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Database, database)
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+
 		database->init();
 		
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -1270,7 +1320,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			// Use old version with direct database queries. This could happen, if no plugin was found, no file was found and couldn't created.
 			
 			if(database == NULL) {
-				REQUEST(manager.getPtr(), lb_I_Database, database)
+				char* dbbackend = metaapp->getSystemDatabaseBackend();
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+					AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+					_LOG << "Using plugin database backend for UML import operation..." LOG_
+				} else {
+					// Use built in
+					REQUEST(getModuleInstance(), lb_I_Database, database)
+					_LOG << "Using built in database backend for UML import operation..." LOG_
+				}
+
+				if (database == NULL) {
+					_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+					return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+				}
+				
 				database->init();
 				
 				char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -1680,7 +1745,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 
 	UAP(lb_I_Query, sampleQuery)
 	if (database == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Database, database)
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
 		database->init();
 	}
 	
