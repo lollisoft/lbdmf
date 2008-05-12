@@ -224,15 +224,16 @@ public:
 			free(szSql);
 		}
 		if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
-			if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_		
+		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_
 				
-				// The global variable for getTableName() :-(
-				if (lpszTable) {
-					/// \todo Return a ministring object, that gets automatically deleted.
-					free(lpszTable);
-					lpszTable = NULL;
-				}
-				if (cursorname != NULL) free (cursorname);
+		// The global variable for getTableName() :-(
+		if (lpszTable) {
+			/// \todo Return a ministring object, that gets automatically deleted.
+			free(lpszTable);
+			lpszTable = NULL;
+		}
+		if (cursorname != NULL) free (cursorname);
+		if (currentdbLayer && currentdbLayer->IsOpen()) currentdbLayer->Close(); 
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -1612,7 +1613,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 
 			return ERR_DB_QUERYFAILED;
 		}
-		
+		_dataFetched = true;
 		return ERR_NONE;
 	} catch (...) {
 		return ERR_DB_QUERYFAILED;
@@ -2033,12 +2034,31 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int pos) {
-	return boundColumns->getColumnType(pos);
+		ResultSetMetaData* metadata = theResult->GetMetaData();
+		
+		int type = metadata->GetColumnType(pos);
+		
+		switch (type) {
+			case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
+			case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
+			case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
+			case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
+			case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
+			case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
+			default: return lbDBColumnUnknown;
+		}
 }
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char* name) {
-	return boundColumns->getColumnType(name);
+		ResultSetMetaData* metadata = theResult->GetMetaData();
+		
+		for(int i=1;i<=metadata->GetColumnCount();i++) {
+			if (metadata->GetColumnName(i) == wxString(name)) {
+				return getColumnType(i);
+			}
+		}
+		return lbDBColumnUnknown;
 }
 /*...e*/
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\setReadonly\40\char\42\ column\44\ bool updateable\41\:0:*/
@@ -2084,7 +2104,9 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 /*...e*/
 /*...sbool LB_STDCALL lbDatabaseLayerQuery\58\\58\getReadonly\40\char\42\ column\41\:0:*/
 bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
-	return boundColumns->getReadonly(column);
+	//return boundColumns->getReadonly(column);
+	// \todo Implement.
+	return false;
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
@@ -2132,6 +2154,9 @@ void LB_STDCALL lbDatabaseLayerQuery::unbind() {
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\reopen\40\\41\:0:*/
 void LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	///\todo Implement
+	int backup_cursor = cursor;
+	query(szSql, true);
+	absolute(backup_cursor);
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
@@ -2225,13 +2250,21 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " FROM ";
 			tempSQL += tables[0];
-			tempSQL += " WHERE ";
-			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-			tempSQL += " > ";
-			tempSQL += currentCursorview[max_in_cursor-1];
-			tempSQL += " ORDER BY ";
-			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			
+			if (currentCursorview.Count() > 0) {
+				tempSQL += " WHERE ";
+				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+				tempSQL += " > ";
+			
+				if (max_in_cursor-1 < 0) {
+					tempSQL += currentCursorview[0];
+				} else {
+					tempSQL += currentCursorview[max_in_cursor-1];
+				}
+				
+				tempSQL += " ORDER BY ";
+				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+			}
 			
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 			
@@ -2276,6 +2309,25 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	///\todo Implement
+	if (cursorFeature == false) return ERR_NONE;
+	
+	cursor = pos;
+	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
+		cursor = 0;
+		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
+	if (max_in_cursor-1 < 0) {
+		currentCursorview[0] = "0";
+		cursor = 0;
+		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
+	currentCursorview[max_in_cursor-1] = "0";
+	if (!selectCurrentRow()) return ERR_DB_NODATA;
+	_dataFetched = true;
 	return ERR_NONE;
 }
 
@@ -2284,8 +2336,22 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::first() {
 	if (cursorFeature == false) return ERR_NONE;
 	
 	cursor = max_in_cursor;
+	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
+		cursor = 0;
+		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
+	if (max_in_cursor-1 < 0) {
+		currentCursorview[0] = "0";
+		cursor = 0;
+		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
 	currentCursorview[max_in_cursor-1] = "0";
 	if (!selectCurrentRow()) return ERR_DB_NODATA;
+	_dataFetched = true;
 	return ERR_NONE;
 }
 
@@ -2295,9 +2361,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::next() {
 	if (cursorFeature == true) {
 		cursor++;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		_dataFetched = true;
 		return ERR_NONE;
 	} else {
 		if (theResult->Next() == true) {
+			_dataFetched = true;
 			return ERR_NONE;
 		} else return ERR_DB_NODATA;
 	}
@@ -2310,6 +2378,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 		cursor--;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
 	}
+	_dataFetched = true;
 	return ERR_NONE;
 }
 
@@ -2320,6 +2389,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
 		cursor = max_in_cursor+1;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
 	}
+	_dataFetched = true;
 	return ERR_NONE;
 }
 
@@ -2359,6 +2429,19 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::add() {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::remove() {
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
+	wxString strSQL = _("DELETE FROM ");
+	strSQL += tables[0];
+	strSQL += " WHERE ";
+	strSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	strSQL += " = ";
+	strSQL += currentCursorview[cursor];
+
+	_LOG << "Update statement: " << strSQL.c_str() LOG_
+
+	executeDirect(strSQL);
+
+	reopen();
+
 	return ERR_NONE;
 }
 
@@ -2369,14 +2452,14 @@ void LB_STDCALL lbDatabaseLayerQuery::setAutoRefresh(bool b) {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
-		_CL_LOG << "Warning: Noting to update." LOG_
+		_LOG << "Warning: Noting to update." LOG_
 		return ERR_NONE;
 	}
 	if (mode == 1) {
 		// Add mode
 		mode = 0;
 		if (tables.Count() > 1) {
-			_CL_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		
@@ -2412,12 +2495,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
             }
             catch (DatabaseLayerException& e)
             {
-				_CL_LOG << "Error: Adding a row failed." LOG_
+				_LOG << "Error: Adding a row failed." LOG_
             }
 		}
 	} else {
 		if (tables.Count() > 1) {
-			_CL_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		
@@ -2425,9 +2508,18 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += tables[0];
 		strSQL += " SET ";
 		for (int i = 0; i < queryColumns.Count(); i++) {
-			if (i > 0) strSQL += ", ";
-			strSQL += queryColumns[i];
-			strSQL += " = ?";
+			if (getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar) {
+				if (i > 0) strSQL += ", ";
+				strSQL += queryColumns[i];
+				strSQL += " = '";
+				strSQL += queryValues[i];
+				strSQL += "'";
+			} else {
+				if (i > 0) strSQL += ", ";
+				strSQL += queryColumns[i];
+				strSQL += " = ";
+				strSQL += queryValues[i];
+			}
 		}
 		
 		strSQL += " WHERE ";
@@ -2435,28 +2527,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += " = ";
 		strSQL += currentCursorview[cursor];
 
-		_CL_LOG << "Update statement: " << strSQL.c_str() LOG_
+		_LOG << "Update statement: " << strSQL.c_str() LOG_
 
-		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
-
-		if (pStatement)
-		{
-			for (int i = 0; i < queryValues.Count(); i++) {
-				pStatement->SetParamString(i+1, queryValues[i]);
-			}
-
-            try
-            {
-				pStatement->RunQuery();
-            }
-            catch (DatabaseLayerException& e)
-            {
-				_CL_LOG << "Error: Updating a row failed." LOG_
-            }
-		}
+		executeDirect(strSQL);
 	}
 	queryColumns.Clear();
 	queryValues.Clear();
+
+	reopen();
 
 	return ERR_NONE;
 }

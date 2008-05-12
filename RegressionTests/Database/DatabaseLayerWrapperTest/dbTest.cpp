@@ -172,16 +172,18 @@ int main(int argc, char *argv[]) {
 		
 		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
 		query1->skipFKCollecting();
-		query1->query("drop table regressiontest");
-		query1->query("drop table test");
-		query1->query("drop table test1");
+		query1->query("-- Skip rewrite\n" "drop table regressiontest");
+		query1->query("-- Skip rewrite\n" "drop table test");
+		query1->query("-- Skip rewrite\n" "drop table test1");
 		
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
-		char* buf = "create table regressiontest ("
+		char* buf = "-- Skip rewrite\n"
+			"create table regressiontest ("
 			"id INTEGER PRIMARY KEY, "
-			"test char(100) DEFAULT 'Nothing', "
+			//"test char(100) DEFAULT 'Nothing', "
+			"test BPCHAR DEFAULT 'Nothing', "
 			"btest bool DEFAULT false, "
 			"btest1 bool DEFAULT false)";
 			
@@ -190,27 +192,25 @@ int main(int argc, char *argv[]) {
 			
 			
 		buf = 
-			"CREATE TABLE test ("
+			"CREATE TABLE \"test\" ("
 			"	id INTEGER PRIMARY KEY,"
-			"	test char(100),"
-			"	id_reg INTEGER,"
-			"	constraint fk_reg foreign key (id_reg) references regressiontest (id)"
-			")";
-		
+			"	test BPCHAR,"
+			"	id_reg INTEGER"
+			");\n"
+			"CREATE TABLE \"test1\" ("
+			"	id1 INTEGER PRIMARY KEY,"
+			"	test1 BPCHAR,"
+			"	id_reg1 INTEGER"
+			");\n"
+			"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg1\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
+			"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
+
+		printf("\n\nCreate database schema:\n%s\n\n", buf);
+
 		// I have problems which collecting foreign key data, if no result sets are there.
 		query->skipFKCollecting();
 		query->query(buf);
 			
-		buf = 
-			"CREATE TABLE test1 ("
-			"	id1 INTEGER PRIMARY KEY,"
-			"	test1 char(100),"
-			"	id_reg1 INTEGER,"
-			"	constraint fk_reg1 foreign key (id_reg1) references regressiontest (id)"
-			")";
-		
-		query->query(buf);
-		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 			
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
@@ -273,7 +273,6 @@ int main(int argc, char *argv[]) {
 		query2->update();
 		
 		query2->PrintData();
-		
 		query2->enableFKCollecting();
 		query2->query("select * from test1");
 		int fkcolumns = query2->getFKColumns();
