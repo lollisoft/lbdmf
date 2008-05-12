@@ -1104,6 +1104,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
 			q = database->getQuery("lbDMF", 0);
 		
+		if (forms == NULL) {
+			metaapp->msgBox("Error", "Forms object not loaded.");
+			return err;
+		}
+		
 		typ->setData(forms->getTyp());
 		
 		*sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
@@ -2392,6 +2397,12 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     document->setCloning(false);
 
     uk = metaapp->getActiveDocument();
+
+	if (uk == NULL) {
+		_LOG << "Error: Expected an 'active document' here!" LOG_
+		return;
+	}
+
     QI(uk, lb_I_Parameter, param)
 			
     *name = "ApplicationData";
