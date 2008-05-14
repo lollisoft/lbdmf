@@ -3712,7 +3712,9 @@ wxPropertyGrid::~wxPropertyGrid()
 {
     size_t i;
 
+#ifndef OSX
     DoSelectProperty(NULL);
+#endif
 
     // This should do prevent things from going too badly wrong
     m_iFlags &= ~(wxPG_FL_INITIALIZED);
