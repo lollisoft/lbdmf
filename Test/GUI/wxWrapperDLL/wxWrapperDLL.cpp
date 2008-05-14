@@ -1430,8 +1430,16 @@ lb_wxFrame::~lb_wxFrame() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 	
 	metaApp->setGUIMaximized(IsMaximized());
+	metaApp->save();
 
 #ifdef USE_WXAUI
+	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
+	
+	if (oldpg) {
+		m_mgr.DetachPane(oldpg);
+		oldpg->Close();
+	}
+	
 	// deinitialize the frame manager
 	m_mgr.UnInit();
 #endif
