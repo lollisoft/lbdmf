@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.150 2008/02/18 19:57:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.151 2008/05/14 18:36:16 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.150 $
+ * $Revision: 1.151 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.150 2008/02/18 19:57:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.151 2008/05/14 18:36:16 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.151  2008/05/14 18:36:16  lollisoft
+ * Save moved into the frame destructor.
+ *
  * Revision 1.150  2008/02/18 19:57:19  lollisoft
  * Added function to get a directory from the user.
  *
@@ -2144,7 +2147,7 @@ int MyApp::OnExit() {
 	
 	metaApp->unloadApplication();
 
-	metaApp->save();
+	//metaApp->save();
 	
 	PM->unload();
 	
