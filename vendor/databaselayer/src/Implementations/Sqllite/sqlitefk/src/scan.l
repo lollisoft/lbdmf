@@ -86,7 +86,7 @@ void
 yyerror (const char *message)
 {
        char    *p, *underline; 
-        int     buflen  = strlen(yy_current_buffer->yy_ch_buf); 
+        int     buflen  = strlen(YY_CURRENT_BUFFER->yy_ch_buf); 
 
         if (!buflen) 
                 fprintf(stderr, "parser: %s at or near \"%s\"", 

@@ -108,6 +108,15 @@ VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs`
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags` -I /usr/include -I /usr/include/libxml2
+C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs`
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+endif
+
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=

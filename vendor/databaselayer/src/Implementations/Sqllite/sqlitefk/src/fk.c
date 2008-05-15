@@ -444,9 +444,6 @@ char* rewriteSchemaOfDDL(char* sql_ddl) {
 #ifdef BUILD_LIBRARY
 	List *foreign_keys;
 #endif
-#ifndef BUILD_LIBRARY
-	char* sql_ddl = NULL;
-#endif
 
     schema = list_new();
     MemPoolCreate(&mempool, 4096);

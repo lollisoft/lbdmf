@@ -192,9 +192,9 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			wxString("	\"FKTable\" BPCHAR,") +
 			wxString("	\"FKColumn\" BPCHAR") +
 			wxString(");\n");
-			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL(strQuery.c_str()));
+			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
 		} else {
-			rewrittenQuery = wxString(rewriteSchemaOfDDL(strQuery.c_str()));
+			rewrittenQuery = wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
 		}
       wxString strErrorMessage = _("");
       char* szErrorMessage = NULL;

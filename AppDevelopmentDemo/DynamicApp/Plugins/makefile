@@ -17,6 +17,15 @@ endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
@@ -46,6 +55,17 @@ endif
 Path=$(PATH)
 
 ifeq ($(OSTYPE), solaris)
+
+TARGETDLL=so
+TARGETEXE=elf
+TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
+
+ALLTARGETS = \
+	lbDynamicAppStorage
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
 
 TARGETDLL=so
 TARGETEXE=elf

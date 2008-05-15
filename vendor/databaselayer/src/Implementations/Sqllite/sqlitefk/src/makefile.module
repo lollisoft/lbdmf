@@ -73,7 +73,7 @@ MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
+VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
 

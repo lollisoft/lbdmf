@@ -2491,7 +2491,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::remove() {
 
 	_LOG << "Update statement: " << strSQL.c_str() LOG_
 
-	executeDirect(strSQL);
+	executeDirect((char*) strSQL.c_str());
 
 	reopen();
 
@@ -2594,7 +2594,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		_LOG << "Update statement: " << strSQL.c_str() LOG_
 
-		executeDirect(strSQL);
+		executeDirect((char*) strSQL.c_str());
 	}
 	queryColumns.Clear();
 	queryValues.Clear();
