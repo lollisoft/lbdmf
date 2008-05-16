@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.57 2008/04/18 05:58:30 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.58 2008/05/16 06:39:19 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.58  2008/05/16 06:39:19  lollisoft
+ * Added switches to disable database backend settings.
+ *
  * Revision 1.57  2008/04/18 05:58:30  lollisoft
  * Added new methods to get ans set application and system database backend (the namespace of a plugin).
  *
@@ -453,8 +456,12 @@ protected:
 	bool isPropertyPanelLeft;
 	
 	// Internal (ODBC) is an empty string. Not empty is a plugin namespace.
+	bool _use_system_database_backend;
+	bool _use_application_database_backend;
 	char* _system_database_backend;
 	char* _application_database_backend;
+	//char* _system_database_backend_temp;
+	//char* _application_database_backend_temp;
 	char* _dirloc;
 	bool _force_use_database;
 	bool _autoload;

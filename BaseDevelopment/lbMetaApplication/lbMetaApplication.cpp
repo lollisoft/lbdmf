@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.133 $
+ * $Revision: 1.134 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.133 2008/05/12 21:46:47 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.134 2008/05/16 06:39:19 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.134  2008/05/16 06:39:19  lollisoft
+ * Added switches to disable database backend settings.
+ *
  * Revision 1.133  2008/05/12 21:46:47  lollisoft
  * Trim the database namespaces.
  *
@@ -567,6 +570,8 @@ lb_MetaApplication::lb_MetaApplication() {
 	isPropertyPanelFloating = false;
 	isPropertyPanelLeft = true;
 	
+	_use_application_database_backend = false;
+	_use_system_database_backend = false;
 	_application_database_backend = strdup("");
 	_system_database_backend = strdup("");
 	_dirloc = strdup(".");
@@ -1291,7 +1296,8 @@ char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
 	*Backend = _system_database_backend;
 	Backend->trim(); // Always trim spaces.
 	setSystemDatabaseBackend(Backend->charrep());
-	return _system_database_backend;
+	if (_use_system_database_backend) return _system_database_backend;
+	if (!_use_system_database_backend) return "";
 }
 
 char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
@@ -1299,7 +1305,9 @@ char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
 	*Backend = _application_database_backend;
 	Backend->trim(); // Always trim spaces.
 	setApplicationDatabaseBackend(Backend->charrep());
-	return _application_database_backend;
+	
+	if (_use_application_database_backend) return _application_database_backend;
+	if (!_use_application_database_backend) return "";
 }
 
 void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
@@ -1374,6 +1382,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 				}
 				toggleEvent("doAutoload");
 		}
+
+		if (strcmp(key->charrep(), "GeneralUse system Database backend") == 0) {
+				value->toLower();
+				if (strcmp(value->charrep(), "true") == 0) {
+					_use_system_database_backend = true;
+				} else {
+					_use_system_database_backend = false;
+				}
+		}
+
+		if (strcmp(key->charrep(), "GeneralUse application Database backend") == 0) {
+				value->toLower();
+				if (strcmp(value->charrep(), "true") == 0) {
+					_use_application_database_backend = true;
+				} else {
+					_use_application_database_backend = false;
+				}
+		}
 		
 		if (strcmp(key->charrep(), "GeneralPrefer database configuration") == 0) {
 				value->toLower();
@@ -1442,6 +1468,14 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	parameterGeneral->setData("System Database backend");
 	*value = _system_database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
+
+	parameterGeneral->setData("Use application Database backend");
+	b->setData(_use_application_database_backend);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+
+	parameterGeneral->setData("Use system Database backend");
+	b->setData(_use_system_database_backend);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
 	_LOG << "lb_MetaApplication::getParameter() returns as Application Database backend: " << _application_database_backend LOG_
 	_LOG << "lb_MetaApplication::getParameter() returns as System Database backend: " << _system_database_backend LOG_
