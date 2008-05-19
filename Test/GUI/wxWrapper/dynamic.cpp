@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.151 2008/05/14 18:36:16 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.152 2008/05/19 06:42:31 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.151 $
+ * $Revision: 1.152 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.151 2008/05/14 18:36:16 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.152 2008/05/19 06:42:31 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.152  2008/05/19 06:42:31  lollisoft
+ * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
+ *
  * Revision 1.151  2008/05/14 18:36:16  lollisoft
  * Save moved into the frame destructor.
  *
@@ -2254,11 +2257,11 @@ bool MyApp::OnInit(void)
 
     wxImage::AddHandler(new wxPNGHandler);
 
-    wxSplashScreen* splash = NULL;
+    lbSplashScreen* splash = NULL;
     wxBitmap bitmap;
     if (wxFile::Exists("splash.png") && bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
     {
-		splash = new wxSplashScreen(bitmap,
+		splash = new lbSplashScreen(wxGUI, bitmap,
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 		6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
@@ -2267,8 +2270,9 @@ bool MyApp::OnInit(void)
 #ifdef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP);
 #endif
+		wxGUI->splashCreated();
     } else if (wxFile::Exists("/usr/share/lbdmf/splash.png") && bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG)) {
-		splash = new wxSplashScreen(bitmap,
+		splash = new lbSplashScreen(wxGUI, bitmap,
 									wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
@@ -2277,6 +2281,7 @@ bool MyApp::OnInit(void)
 #ifdef OSX
 									wxSIMPLE_BORDER|wxSTAY_ON_TOP);
 #endif
+		wxGUI->splashCreated();
 	}	
 	wxYield();
 

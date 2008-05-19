@@ -79,6 +79,7 @@
 #include <wx/artprov.h>
 #include <wx/notebook.h>
 #include <wx/file.h>
+#include <wx/splash.h>
 
 #ifdef USE_PROPGRID
 // Necessary header file
@@ -587,6 +588,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	Connect( CLOSE_CURRENT_PAGE, -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnCloseCurrentPage );
+	
+	Connect( SHOW_PENDING_MESSAGES, -1, wxEVT_NULL,
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
 	
 	
 
@@ -1254,11 +1259,22 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
+	if (!splashOpened) {
         wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
 
         dialog.ShowModal();
-
-        return ERR_NONE;
+	} else {
+		if (pendingMessages == NULL) {
+			REQUEST(getModuleInstance(), lb_I_String, pendingMessages)
+			*pendingMessages = "";
+		}
+		
+		*pendingMessages += "\n";
+		*pendingMessages += windowTitle;
+		*pendingMessages += "\n";
+		*pendingMessages += msg;
+	}
+	return ERR_NONE;
 }
 /*...e*/
 lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
@@ -1401,6 +1417,29 @@ void LB_STDCALL lb_wxGUI::setIcon(char* name) {
 
 void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
 
+}
+
+void LB_STDCALL lb_wxGUI::splashDestroyed() {
+	splashOpened = false;
+	
+	if (frame) {
+		_LOG << "Add a pending event..." LOG_
+		wxCommandEvent event( wxEVT_NULL, SHOW_PENDING_MESSAGES );
+		event.SetEventObject( frame );
+		frame->AddPendingEvent(event);
+	}
+}
+
+void LB_STDCALL lb_wxGUI::splashCreated() {
+	splashOpened = true;
+}
+
+void LB_STDCALL lb_wxGUI::showPendingMessages() {
+	if (pendingMessages != NULL) {
+		msgBox("Pending messages", pendingMessages->charrep());
+		pendingMessages--;
+		pendingMessages.resetPtr();
+	}
 }
 /*...e*/
 
@@ -1664,7 +1703,12 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         		OnBuildMenu(event);
         	}
         	break;
-        default:
+	case SHOW_PENDING_MESSAGES:
+		if (gui) {
+			gui->showPendingMessages();
+		}
+		break;
+	default:
                 // Delegate all other events
                 {
                 	lbErrCodes err = ERR_NONE;
@@ -2584,6 +2628,23 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
+
+
+lbSplashScreen::lbSplashScreen(lb_I_GUI* gui, const wxBitmap& bitmap, long splashStyle, int milliseconds, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
+  wxSplashScreen(bitmap, splashStyle, milliseconds, parent, id, pos, size, style)
+{
+	_gui = gui;
+}
+
+lbSplashScreen::~lbSplashScreen() {
+	if (_gui) _gui->splashDestroyed();
+}
+/*
+void lbSplashScreen::OnCloseWindow(wxCloseEvent& event) {
+	if (_gui) _gui->splashDestroyed();
+}
+*/
+
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/

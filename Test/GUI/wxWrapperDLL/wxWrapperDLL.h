@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.30 2007/11/25 08:47:37 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.31 2008/05/19 06:42:31 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.31  2008/05/19 06:42:31  lollisoft
+ * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
+ *
  * Revision 1.30  2007/11/25 08:47:37  lollisoft
  * Added function to close current notebook page.
  *
@@ -193,6 +196,7 @@
 
 #define PGID					1007
 #define CLOSE_CURRENT_PAGE		1008
+#define SHOW_PENDING_MESSAGES	1009
 
 class lb_wxGUI;
 
@@ -437,7 +441,8 @@ public:
 	        notebook = NULL;
 		dialog = NULL;
 		sizerMain = NULL;
-		
+		splashOpened = false;
+
 	}
 
 	virtual ~lb_wxGUI() { 
@@ -568,6 +573,11 @@ public:
 
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
+
+	void LB_STDCALL splashDestroyed();
+	void LB_STDCALL splashCreated();
+	void LB_STDCALL showPendingMessages();
+
         
 	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
 
@@ -588,26 +598,37 @@ public:
 
 	void LB_STDCALL closeCurrentPage();
 
-        int eventCount;
+	int eventCount;
         
-        lb_I_Unknown* _main_frame;
-        lb_I_Dispatcher* myDispatcher;
+	lb_I_Unknown* _main_frame;
+	lb_I_Dispatcher* myDispatcher;
         
-        lb_I_Query* sampleQuery;
+	lb_I_Query* sampleQuery;
         
-        bool handlersInitialized;
-        
-        lb_I_DatabaseForm* dialog;
-        wxNotebook* notebook;
+	bool handlersInitialized;
+    bool splashOpened;
+
+	lb_I_DatabaseForm* dialog;
+	wxNotebook* notebook;
 	wxBoxSizer* sizerMain;
 
-        // The frame has the main dispatcher and is a wxEventHandler subclass
-        lb_wxFrame* frame;
+	// The frame has the main dispatcher and is a wxEventHandler subclass
+	lb_wxFrame* frame;
 	
+	UAP(lb_I_String, pendingMessages)
 	UAP(lb_I_Container, forms)
 	char buffer[100];
 };
 /*...e*/
+
+class DLLEXPORT lbSplashScreen : public wxSplashScreen {
+public:
+	lbSplashScreen(lb_I_GUI* gui, const wxBitmap& bitmap, long splashStyle, int milliseconds, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP);
+	virtual ~lbSplashScreen();
+	
+	//void OnCloseWindow(wxCloseEvent& event);
+	lb_I_GUI* _gui;
+};
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus

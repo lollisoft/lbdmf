@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.58 2008/05/16 06:39:19 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.59 2008/05/19 06:42:31 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.59  2008/05/19 06:42:31  lollisoft
+ * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
+ *
  * Revision 1.58  2008/05/16 06:39:19  lollisoft
  * Added switches to disable database backend settings.
  *
@@ -424,6 +427,19 @@ public:
 	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
 	void					LB_STDCALL setApplicationDatabaseBackend(char* backend);
 
+	/** \brief Checks for availability of a database.
+	 * This function does the work to check, if any known database is available.
+	 * The check includes testing for an ODBC database named 'lbDMF' and for the
+	 * Sqlite version with this name.
+	 *
+	 * It returns false if no one is available.
+	 */
+	bool					LB_STDCALL checkForDatabases();
+	
+	/** \brief Installs a database.
+	 * This function installs the database.
+	 */
+	bool					LB_STDCALL installDatabase();
 
 protected:
 	lb_I_GUI* gui;
@@ -452,6 +468,9 @@ protected:
 	UAP(lb_I_User_Applications, User_Applications)
 //	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 
+	/// Types of databases available.
+	UAP(lb_I_Container, availableDatabaseTypes)
+	
 	bool isPropertyPanelFloating;
 	bool isPropertyPanelLeft;
 	
@@ -470,6 +489,21 @@ protected:
 	bool _GUIMaximized;
 	bool _logged_in;
 	bool _loading_object_data;
+	
+	int _check_for_databases_failure_step;
+	
+	enum {
+		META_DB_FAILURE_SYS_DB_BACKEND = 1,
+		META_DB_FAILURE_SYS_DB_INITIALIZE,
+		META_DB_FAILURE_SYS_DB_CONNECT,
+		META_DB_FAILURE_SYS_DB_SCHEMA, // The schema is not initialized
+		META_DB_FAILURE_SYS_DB_SCHEMAINSTALL, // Installation of the schema failed
+		META_DB_FAILURE_APP_DB_BACKEND,
+		META_DB_FAILURE_APP_DB_INITIALIZE,
+		META_DB_FAILURE_APP_DB_CONNECT,
+		META_DB_FAILURE_APP_DB_SCHEMA, // The schema is not initialized
+		META_DB_FAILURE_APP_DB_SCHEMAINSTALL // Installation of the schema failed
+	};
 	
 	bool _loaded;
 	

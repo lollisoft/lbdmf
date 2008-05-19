@@ -93,6 +93,7 @@ extern "C" {
 #include "wx/splitter.h"
 #include "wx/treectrl.h"
 #include <wx/notebook.h>
+#include <wx/splash.h>
 
 /*...e*/
 

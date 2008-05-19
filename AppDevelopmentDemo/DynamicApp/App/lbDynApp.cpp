@@ -1712,6 +1712,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 		}
 
+	/* Before the application is loaded, it should be checked, if any database system is available.
+	 * If not, at least a local Sqlite database should be setup with the use of the UML import feature.
+	 */
+
 	_LOG << "lbDynamicApplication::initialize('" << user << "', '" << app << "') called." LOG_
 	LogonApplication->setData(app);
 	

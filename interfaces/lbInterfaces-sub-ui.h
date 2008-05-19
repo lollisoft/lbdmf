@@ -279,6 +279,16 @@ public:
 	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) = 0;
 	
 	virtual void LB_STDCALL closeCurrentPage() = 0;
+	
+	/** \brief To get informed, when the splash closes.
+	 */
+	virtual void LB_STDCALL splashDestroyed() = 0;
+	
+	/** \brief A splash is shown.
+	 */
+	virtual void LB_STDCALL splashCreated() = 0;
+
+	virtual void LB_STDCALL showPendingMessages() = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
