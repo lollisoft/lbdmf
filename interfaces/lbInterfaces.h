@@ -2827,6 +2827,22 @@ public:
 	/** \brief Set a different application database backend.
 	 */
 	virtual void			LB_STDCALL setApplicationDatabaseBackend(char* backend) = 0;
+
+	/** \brief Use a different system database backend.
+	 */
+	virtual void			LB_STDCALL useSystemDatabaseBackend(bool backend) = 0;
+
+	/** \brief Use a different application database backend.
+	 */
+	virtual void			LB_STDCALL useApplicationDatabaseBackend(bool backend) = 0;
+
+	/** \brief Use a different system database backend.
+	 */
+	virtual bool			LB_STDCALL usingSystemDatabaseBackend() = 0;
+
+	/** \brief Use a different application database backend.
+	 */
+	virtual bool			LB_STDCALL usingApplicationDatabaseBackend() = 0;
 };
 /*...e*/
 

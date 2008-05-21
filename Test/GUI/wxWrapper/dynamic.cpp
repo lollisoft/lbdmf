@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.152 2008/05/19 06:42:31 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.153 2008/05/21 22:25:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.152 $
+ * $Revision: 1.153 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.152 2008/05/19 06:42:31 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.153 2008/05/21 22:25:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.153  2008/05/21 22:25:10  lollisoft
+ * Some improvements for working with Sqlite database.
+ *
  * Revision 1.152  2008/05/19 06:42:31  lollisoft
  * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
  *
@@ -2230,6 +2233,22 @@ bool MyApp::OnInit(void)
 
 	// Preload to enable flag modifications in plugins. Such as loading from database instead file
 	metaApp->load();
+
+	if (metaApp->usingSystemDatabaseBackend()) {
+		_LOG << "Have system database backend switch: true" LOG_
+	} else {
+		_LOG << "Have system database backend switch: false" LOG_
+	}
+
+	if (metaApp->usingApplicationDatabaseBackend()) {
+		_LOG << "Have application database backend switch: true" LOG_
+	} else {
+		_LOG << "Have application database backend switch: false" LOG_
+	}
+
+	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
+	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
+	lbBreak();
 
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();

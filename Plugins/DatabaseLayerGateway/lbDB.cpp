@@ -1571,7 +1571,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				} else {
 					plainQuery = theQuery;
 				}
-								
+				
 				if (cursorFeature) {
 					int pkeys = currentdbLayer->GetPrimaryKeys(tables[0]);
 					
@@ -1599,11 +1599,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						cursor = 0;
 						max_in_cursor = count;
 						selectCurrentRow();
+					} else {
+						cursorFeature = false;
 					}
-				} else {
-					cursorFeature = false;
 				}
-				
 			}
 		} else {
 			wxString theQuery = szSql;
@@ -1666,6 +1665,7 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 	value++;
 
 	///\todo Implement this.
+	value->setData(theResult->GetResultLong(column));
 
 	return value.getPtr();
 }
@@ -1709,6 +1709,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 
 int LB_STDCALL lbDatabaseLayerQuery::getColumns() {
 	SWORD count = 0;
+	
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return 0;
+	}
 	
 	ResultSetMetaData* metadata = theResult->GetMetaData();
 
@@ -3293,6 +3298,7 @@ bool LB_STDCALL lbDatabase::isConnected() {
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
+	connected = true;
     return ERR_NONE;
 }
 /*...e*/

@@ -873,6 +873,15 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 	*oStream << app->isPropertyPaneLayoutLeft();
 
 	*oStream << app->getLoadFromDatabase();
+	
+	*oStream << app->getApplicationDatabaseBackend();
+
+	*oStream << app->getSystemDatabaseBackend();
+
+	*oStream << app->usingApplicationDatabaseBackend();
+
+	*oStream << app->usingSystemDatabaseBackend();
+
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {

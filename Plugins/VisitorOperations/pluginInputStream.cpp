@@ -964,6 +964,20 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	*iStream >> b;
 	if (b) app->setLoadFromDatabase(true);
 	//else app->setLoadFromDatabase(false);
+
+	*iStream >> temp;
+	app->setApplicationDatabaseBackend(temp);
+
+	*iStream >> temp;
+	app->setSystemDatabaseBackend(temp);
+
+	*iStream >> b;
+	if (b) app->useApplicationDatabaseBackend(true);
+	else app->useApplicationDatabaseBackend(false);
+
+	*iStream >> b;
+	if (b) app->useSystemDatabaseBackend(true);
+	else app->useSystemDatabaseBackend(false);
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

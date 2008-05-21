@@ -1758,11 +1758,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "Using plugin database backend for UML import operation..." LOG_
+			_LOG << "lbDynamicApplication::initialize(): Using plugin database backend ..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
-			_LOG << "Using built in database backend for UML import operation..." LOG_
+			_LOG << "lbDynamicApplication::initialize(): Using built in database backend ..." LOG_
 		}
 
 		if (database == NULL) {
@@ -1788,7 +1788,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		LogonApplication->setData(app);
 		metaapp->setApplicationName(app);
 		
-	
 		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
 			metaapp->msgBox("Error", "No system database available!");
@@ -1916,7 +1915,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				}
 				
 				// Pass the applications ODBC database name.
-				isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), database.getPtr());			
+				isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), database.getPtr());
 				DBOperation = true;
 			}
 		}
@@ -2214,6 +2213,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
 
 		metaapp->getApplicationName(&appname);
+
+		_LOG << "Load the following application '" << appname->charrep() << "'." LOG_
 
 		if (*appname == "lbDMF Manager") {
 			

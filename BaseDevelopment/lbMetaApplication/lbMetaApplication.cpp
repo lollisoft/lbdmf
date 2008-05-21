@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.135 $
+ * $Revision: 1.136 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.135 2008/05/19 06:42:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.136 2008/05/21 22:25:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.136  2008/05/21 22:25:10  lollisoft
+ * Some improvements for working with Sqlite database.
+ *
  * Revision 1.135  2008/05/19 06:42:30  lollisoft
  * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
  *
@@ -785,21 +788,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
 		User_Applications->accept(*&fOp1);
 	}
-	
+
+/*	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
 	
+	_LOG << "Save application database backend: '" << _application_database_backend << "'" LOG_
 	*backend = _application_database_backend;
 	backend->accept(*&fOp1);
 
+	_LOG << "Save system database backend: '" << _system_database_backend << "'" LOG_
 	*backend = _system_database_backend;
 	backend->accept(*&fOp1);
 
 	usebackend->setData(_use_application_database_backend);
+	_LOG << "Save application database backend flag: '" << usebackend->charrep() << "'" LOG_
 	usebackend->accept(*&fOp1);
 	usebackend->setData(_use_system_database_backend);
+	_LOG << "Save system database backend flag: '" << usebackend->charrep() << "'" LOG_
 	usebackend->accept(*&fOp1);
-
+*/
 	fOp1->end();		
 
 	return ERR_NONE;
@@ -894,7 +902,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();
 			}
-			
+/*			
 			UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 			UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
 
@@ -906,10 +914,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			if (_system_database_backend != NULL) free(_system_database_backend);
 			_system_database_backend = strdup(backend->charrep());
 
+			_LOG << "Load application database backend: '" << _application_database_backend << "'" LOG_
+			_LOG << "Load system database backend: '" << _system_database_backend << "'" LOG_
+
 			usebackend->accept(*&fOp);
+			_LOG << "Load system database backend flag: '" << usebackend->charrep() << "'" LOG_
 			_use_application_database_backend = usebackend->getData();
 			usebackend->accept(*&fOp);
+			_LOG << "Load application database backend flag: '" << usebackend->charrep() << "'" LOG_
 			_use_system_database_backend = usebackend->getData();
+*/
 
 			fOp->end();
 			
@@ -1065,7 +1079,7 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 	if (sysSchemaQuery != NULL) {
 		if (sysSchemaQuery->query("select * from \"users\" where \"userid\"='user'") == ERR_NONE) {
 			if (((err = sysSchemaQuery->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			
+
 			} else {
 				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Error: No sysadmin account created." LOG_
 				_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_SCHEMA;
@@ -1365,8 +1379,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 			setStatusText("Info", "Loading application ...");
 			
+			_LOG << "Using database backend name '" << getSystemDatabaseBackend() << "'." LOG_
+			
 			loadApplication(u, a);
 			
+			_LOG << "Used database backend name '" << getSystemDatabaseBackend() << "'." LOG_
+
 			setStatusText("Info", "Loading application done.");
 			
 			free(a);
@@ -1514,6 +1532,22 @@ void		LB_STDCALL lb_MetaApplication::setApplicationDatabaseBackend(char* backend
 	*Backend = backend;
 	Backend->trim();
  	_application_database_backend = strdup(Backend->charrep());
+}
+
+void LB_STDCALL lb_MetaApplication::useSystemDatabaseBackend(bool backend) {
+	_use_system_database_backend = backend;
+}
+
+void LB_STDCALL lb_MetaApplication::useApplicationDatabaseBackend(bool backend) {
+	_use_application_database_backend = backend;
+}
+
+bool LB_STDCALL lb_MetaApplication::usingSystemDatabaseBackend() {
+	return _use_system_database_backend;
+}
+
+bool LB_STDCALL lb_MetaApplication::usingApplicationDatabaseBackend() {
+	return _use_application_database_backend;
 }
 
 

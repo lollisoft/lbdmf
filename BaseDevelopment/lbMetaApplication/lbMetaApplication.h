@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.59 2008/05/19 06:42:31 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.60 2008/05/21 22:25:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.60  2008/05/21 22:25:10  lollisoft
+ * Some improvements for working with Sqlite database.
+ *
  * Revision 1.59  2008/05/19 06:42:31  lollisoft
  * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
  *
@@ -426,6 +429,10 @@ public:
 	char*					LB_STDCALL getApplicationDatabaseBackend();
 	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
 	void					LB_STDCALL setApplicationDatabaseBackend(char* backend);
+	void					LB_STDCALL useSystemDatabaseBackend(bool backend);
+	void					LB_STDCALL useApplicationDatabaseBackend(bool backend);
+	bool					LB_STDCALL usingSystemDatabaseBackend();
+	bool					LB_STDCALL usingApplicationDatabaseBackend();
 
 	/** \brief Checks for availability of a database.
 	 * This function does the work to check, if any known database is available.

@@ -227,7 +227,7 @@ lbDatabaseInputStream::~lbDatabaseInputStream() {
 bool LB_STDCALL lbDatabaseInputStream::begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass) {
 	REQUEST(manager.getPtr(), lb_I_Database, db)
 	
-	bool ret = false;
+	bool ret = true;
 	
 	if (ConnectionName == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, ConnectionName)
@@ -245,7 +245,7 @@ bool LB_STDCALL lbDatabaseInputStream::begin(const char* connectionname, lb_I_Da
 		bool ret = _db->isConnected();
 
 		if (!ret) {
-			_CL_VERBOSE << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Must have a database connection." LOG_
+			_LOG << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Must have a database connection." LOG_
 		}
 
 		if (ConnectionName == NULL) {
@@ -1180,7 +1180,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) 
 			qN = q->getAsString(2);
 			qV = q->getAsString(3);
 			qAID = q->getAsLong(4);
-			
+			_LOG << "Add application parameter: " << qN->charrep() << ", " << qV->charrep() << ", " <<  qAID->getData() << ", " <<  qID->getData() LOG_
 			params->addParameter(qN->charrep(), qV->charrep(), qAID->getData(), qID->getData());
 		}
 	}
