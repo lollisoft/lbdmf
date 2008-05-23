@@ -92,7 +92,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) exe $(_MODULE) include,include/tv,include/cl,include/win32 \
-	*.cc \
+	*.cc *.cpp \
 	>> makefile
 endif
 
