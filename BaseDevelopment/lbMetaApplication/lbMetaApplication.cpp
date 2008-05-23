@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.136 $
+ * $Revision: 1.137 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.136 2008/05/21 22:25:10 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.137 2008/05/23 23:32:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.137  2008/05/23 23:32:35  lollisoft
+ * Fixed missing returns.
+ *
  * Revision 1.136  2008/05/21 22:25:10  lollisoft
  * Some improvements for working with Sqlite database.
  *
@@ -1505,7 +1508,7 @@ char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
 	Backend->trim(); // Always trim spaces.
 	setSystemDatabaseBackend(Backend->charrep());
 	if (_use_system_database_backend) return _system_database_backend;
-	if (!_use_system_database_backend) return "";
+	return "";
 }
 
 char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
@@ -1515,7 +1518,7 @@ char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
 	setApplicationDatabaseBackend(Backend->charrep());
 	
 	if (_use_application_database_backend) return _application_database_backend;
-	if (!_use_application_database_backend) return "";
+	return "";
 }
 
 void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
