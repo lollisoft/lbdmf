@@ -59,38 +59,43 @@ altertables:
 	altertable
         {
             if ($1) {
-				if ($$ == NULL) $$ = list_new();
+		Table* t = NULL;
+		List* l = NULL;
 
-                Table* t = (Table *) malloc(sizeof(Table));
+		if ($$ == NULL) $$ = list_new();
 
-				List* l = list_new();
+                t = (Table *) malloc(sizeof(Table));
+
+		l = list_new();
                 list_append(l, $1, TYPE_ALTERTABLE);
 
-				if ($1->type == ALTER_FK)
-					t->name = $1->fk->tab;
+		if ($1->type == ALTER_FK)
+			t->name = $1->fk->tab;
                 else
-					t->name = $1->pk->tab;
-				t->columns = l;
+			t->name = $1->pk->tab;
+		t->columns = l;
                 list_append(schema, t, TYPE_TABLE);
-			}
+		}
         }
     | altertables ';' altertable
         {
             if ($3) {
-				if ($$ == NULL) $$ = list_new();
+		Table* t = NULL;
+		List* l = NULL;
+		if ($$ == NULL) $$ = list_new();
 
-                Table* t = (Table *) malloc(sizeof(Table));
+                t = (Table *) malloc(sizeof(Table));
 
-				List* l = list_new();
+		l = list_new();
                 list_append(l, $3, TYPE_ALTERTABLE);
 
-				if ($3->type == ALTER_FK)
-					t->name = $3->fk->tab;
+		if ($3->type == ALTER_FK)
+			t->name = $3->fk->tab;
                 else
-					t->name = $3->pk->tab;
+			t->name = $3->pk->tab;
                 t->columns = l;
                 list_append(schema, t, TYPE_TABLE);
-			}
+		}
         }
     | error
         /* ignore errors outside

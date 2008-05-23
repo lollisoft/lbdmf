@@ -71,18 +71,18 @@ char* strrealloccat(char* toAppend) {
 
 int WriteFirstColumnRule(Table* table, Column* column, int cols) {
 	if (strcmp(column->type, "empty") != 0) {
+		char* templ = "CREATE TABLE \"%s\" (\n";
+		char* buffer = (char*) malloc(strlen(templ) + strlen(table->name)+1);
 		cols++;
-		char* _template = "CREATE TABLE \"%s\" (\n";
-		char* buffer = (char*) malloc(strlen(_template) + strlen(table->name)+1);
 		
-		sprintf(buffer, _template, table->name);
+		sprintf(buffer, templ, table->name);
 		strrealloccat(buffer);
 		
 		free(buffer);
-		_template = "\t\"%s\"\t%s";
-		buffer = (char*) malloc(strlen(_template) + strlen(column->col) + strlen(column->type)+1);
+		templ = "\t\"%s\"\t%s";
+		buffer = (char*) malloc(strlen(templ) + strlen(column->col) + strlen(column->type)+1);
 		
-		sprintf(buffer, _template, column->col, column->type);
+		sprintf(buffer, templ, column->col, column->type);
 		strrealloccat(buffer);
 		
 		return cols;
@@ -92,10 +92,10 @@ int WriteFirstColumnRule(Table* table, Column* column, int cols) {
 
 int WriteColumnRule(Table* table, Column* column, int cols) {
 	if (strcmp(column->type, "empty") != 0) {
-		char* _template = ",\n\t\"%s\"\t%s";
-		char* buffer = (char*) malloc(strlen(_template) + strlen(column->col) + strlen(column->type)+1);
+		char* _templ = ",\n\t\"%s\"\t%s";
+		char* buffer = (char*) malloc(strlen(_templ) + strlen(column->col) + strlen(column->type)+1);
 		cols++;
-		sprintf(buffer, _template, column->col, column->type);
+		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
 		return cols;
 	}
@@ -104,21 +104,21 @@ int WriteColumnRule(Table* table, Column* column, int cols) {
 
 int WriteFirstPrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 	if (strcmp(column->type, "empty") != 0) {
+		char* _templ = "\nCREATE TABLE \"%s\" (\n";
+		char* buffer = (char*) malloc(strlen(_templ) + strlen(table->name)+1);
 		cols++;
-		char* _template = "\nCREATE TABLE \"%s\" (\n";
-		char* buffer = (char*) malloc(strlen(_template) + strlen(table->name)+1);
 		
-		sprintf(buffer, _template, table->name);
+		sprintf(buffer, _templ, table->name);
 		strrealloccat(buffer);
 		
 		free(buffer);
-		_template = "\t\"%s\"\t%s PRIMARY KEY";
+		_templ = "\t\"%s\"\t%s PRIMARY KEY";
 		buffer = (char*) malloc(
-		strlen(_template) + 
+		strlen(_templ) + 
 		strlen(column->col) + 
 		strlen(column->type)+1);
 		
-		sprintf(buffer, _template, column->col, column->type);
+		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
 		
 		return cols;
@@ -128,10 +128,10 @@ int WriteFirstPrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 
 int WritePrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 	if (strcmp(column->type, "empty") != 0) {
-		char* _template = ",\n\t\"%s\"\t%s PRIMARY KEY";
-		char* buffer = (char*) malloc(strlen(_template) + strlen(column->col) + strlen(column->type)+1);
+		char* _templ = ",\n\t\"%s\"\t%s PRIMARY KEY";
+		char* buffer = (char*) malloc(strlen(_templ) + strlen(column->col) + strlen(column->type)+1);
 		cols++;
-		sprintf(buffer, _template, column->col, column->type);
+		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
 		return cols;
 	}
@@ -150,10 +150,10 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 		 */
 		if (fk->notnull)
 		{
-			char* _template = "ALTER TABLE \"%s\" ADD COLUMN \"%s\" INT;\n";
-			char* buffer = (char*) malloc(strlen(_template) + strlen(fk->tab) + strlen(fk->col)+1);
+			char* _templ = "ALTER TABLE \"%s\" ADD COLUMN \"%s\" INT;\n";
+			char* buffer = (char*) malloc(strlen(_templ) + strlen(fk->tab) + strlen(fk->col)+1);
 
-			sprintf(buffer, _template, table->name, fk->col);
+			sprintf(buffer, _templ, table->name, fk->col);
 			strrealloccat(buffer);
 		}
 		
@@ -162,10 +162,10 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 		 */
 		else
 		{
-			char* _template = "ALTER TABLE \"%s\" ADD COLUMN \"%s\" INT;\n";
-			char* buffer = (char*) malloc(strlen(_template) + strlen(fk->tab) + strlen(fk->col)+1);
+			char* _templ = "ALTER TABLE \"%s\" ADD COLUMN \"%s\" INT;\n";
+			char* buffer = (char*) malloc(strlen(_templ) + strlen(fk->tab) + strlen(fk->col)+1);
 
-			sprintf(buffer, _template, table->name, fk->col);
+			sprintf(buffer, _templ, table->name, fk->col);
 			strrealloccat(buffer);
 		}
 	}
@@ -175,10 +175,10 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 		/*
 		 * Columns that function as foreign keys
 		 */
-		char* _template = "ALTER TABLE \"%s\" ADD CONSTRAINT \"%s\" INT PRIMARY KEY;\n";
-		char* buffer = (char*) malloc(strlen(_template) + strlen(pk->tab) + strlen(pk->col)+1);
+		char* _templ = "ALTER TABLE \"%s\" ADD CONSTRAINT \"%s\" INT PRIMARY KEY;\n";
+		char* buffer = (char*) malloc(strlen(_templ) + strlen(pk->tab) + strlen(pk->col)+1);
 
-		sprintf(buffer, _template, pk->tab, pk->col);
+		sprintf(buffer, _templ, pk->tab, pk->col);
 		strrealloccat(buffer);
 	}
 #endif
@@ -188,15 +188,18 @@ void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
 	
 	if (at->type == ALTER_FK) {
+		char* _templ = NULL;
+		char* buffer = NULL;
+
 		fk = at->fk;
 
-		char* _template = "INSERT INTO \"lbDMF_ForeignKeys\" (\"PKTable\", \"PKColumn\", \"FKTable\", \"FKColumn\") VALUES ('%s', '%s', '%s', '%s');\n";
-		char* buffer = (char*) malloc(strlen(_template)+
+		_templ = "INSERT INTO \"lbDMF_ForeignKeys\" (\"PKTable\", \"PKColumn\", \"FKTable\", \"FKColumn\") VALUES ('%s', '%s', '%s', '%s');\n";
+		buffer = (char*) malloc(strlen(_templ)+
 							strlen(fk->ftab)+
 							strlen(fk->fcol)+
 							strlen(fk->tab)+
 							strlen(fk->col)+1);
-		sprintf(buffer, _template, fk->ftab, fk->fcol, fk->tab, fk->col);
+		sprintf(buffer, _templ, fk->ftab, fk->fcol, fk->tab, fk->col);
 		strrealloccat(buffer);
 	}
 }
@@ -211,36 +214,36 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 		 */
 		if (fk->notnull)
 		{
-			char* _template = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
+			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
-			char* buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _template, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
-			_template = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _template, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
-			_template = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
-			sprintf(buffer, _template, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
+			sprintf(buffer, _templ, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
 			strrealloccat(buffer);
 		}
 		
@@ -249,36 +252,36 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 		 */
 		else
 		{
-			char* _template = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
+			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
-			char* buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _template, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
-			_template = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _template, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 			
-			_template = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_template)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
-			sprintf(buffer, _template, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
+			sprintf(buffer, _templ, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
 			strrealloccat(buffer);
 		}
 	}
