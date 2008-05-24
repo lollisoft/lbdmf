@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.153 2008/05/21 22:25:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.154 2008/05/24 23:15:51 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.153 $
+ * $Revision: 1.154 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.153 2008/05/21 22:25:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.154 2008/05/24 23:15:51 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.154  2008/05/24 23:15:51  lollisoft
+ * Removed a hardcoded breakpoint :-)
+ *
  * Revision 1.153  2008/05/21 22:25:10  lollisoft
  * Some improvements for working with Sqlite database.
  *
@@ -2248,7 +2251,6 @@ bool MyApp::OnInit(void)
 
 	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
 	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
-	lbBreak();
 
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();
