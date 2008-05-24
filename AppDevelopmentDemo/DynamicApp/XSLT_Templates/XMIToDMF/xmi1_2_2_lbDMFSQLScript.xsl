@@ -110,6 +110,48 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 
+CREATE OR REPLACE FUNCTION GetOrCreateActiontype(varchar)
+  RETURNS int AS
+'
+declare
+actionid int;
+typename alias for $1;
+begin
+  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
+  if not actionid is null then
+    return actionid;
+  end if;
+  if actionid is null then
+	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
+	actionid = GetOrCreateActiontype(typename);
+  end if;
+return actionid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION ConnectActionToFormular(varchar, varchar)
+  RETURNS int AS
+'
+declare
+actionid int;
+action alias for $1;
+formular alias for $2;
+begin
+  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
+  if not actionid is null then
+    return actionid;
+  end if;
+  if actionid is null then
+	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
+	actionid = GetOrCreateActiontype(typename);
+  end if;
+return actionid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
 CREATE OR REPLACE FUNCTION GetFormularId(int, varchar)
   RETURNS int AS
 '
@@ -127,7 +169,7 @@ end;
 	
 	
 -- Package: <xsl:value-of select="@name"/>
-
+<xsl:variable name="applicationname" select="@name"/>
 
 select GetOrCreateApplication('<xsl:value-of select="@name"/>');
     <xsl:element name="package">
@@ -157,6 +199,8 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 -- Class is <xsl:value-of select="@name"/>
 <xsl:variable name="classname" select="@name"/>
 -- Initialize formular definition
+
+select "DropFormular"('<xsl:value-of select="../../@name"/>', '<xsl:value-of select="@name"/>');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', 'style.png', GetOrCreateApplication('<xsl:value-of select="../../@name"/>'), 1);
@@ -201,6 +245,31 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 </xsl:if>
 </xsl:for-each>
 
+<xsl:for-each select="UML:Classifier.feature/UML:Operation">
+
+<xsl:choose>
+	<xsl:when test="./UML:ModelElement.stereotype/UML:Stereotype/@name='callxslt'">
+-- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
+	
+	
+	</xsl:when>
+	<xsl:when test="./UML:ModelElement.stereotype/UML:Stereotype/@name='validator'">
+-- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
+
+<xsl:variable name="parameters" select="./UML:BehavioralFeature.parameter/@name"/>
+
+insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
+
+	</xsl:when>
+	<xsl:otherwise>
+	</xsl:otherwise>
+</xsl:choose>
+
+</xsl:for-each>
+
+
 insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateApplication('<xsl:value-of select="../../@name"/>'), GetFormularId(GetOrCreateApplication('<xsl:value-of select="../../@name"/>'), '<xsl:value-of select="@name"/>'));
     </xsl:element>
   </xsl:template>
@@ -244,7 +313,8 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
-<!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/>" <!--</xsl:if>-->
+<xsl:variable name="assocname" select="../../@name"/>
+<!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
 </xsl:if>
 </xsl:for-each>
   </xsl:template>
@@ -267,20 +337,22 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
 
 -- Have an association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
+
+<xsl:variable name="assocname" select="../../@name"/>
 	  
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(../../../../@name, ')'), '(')"/>
 -- Visible name is <xsl:value-of select="$assocVisibleName"/>
 <xsl:if test="$assocVisibleName!=''">
-insert into foreignkey_visibledata_mapping (fkname, fktable, pkname, pktable) values ('<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$thisClassName"/>', '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$otherClassName"/>');
+insert into foreignkey_visibledata_mapping (fkname, fktable, pkname, pktable) values ('<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>', '<xsl:value-of select="$thisClassName"/>', '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$otherClassName"/>');
 </xsl:if>
 </xsl:if>
 
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
 <xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
-<xsl:variable name="assocname" select="../../../../@name"/>
-<xsl:variable name="assocname1" select="substring-after(substring-before($assocname, ')'), '(')"/>
+<xsl:variable name="assocname2" select="../../../../@name"/>
+<xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
 <xsl:if test="$assocname1=''">
 insert into actions (name, typ, source, target) values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
 </xsl:if>

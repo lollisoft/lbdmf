@@ -120,7 +120,7 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
 "<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
 <xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
 </xsl:for-each>
-);
+) WITH OIDS;
     </xsl:element>
   </xsl:template>
 
@@ -167,11 +167,16 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+	  
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
--- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/>
 
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/>" INT;
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/>" )
+<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
+
+
+-- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/> with name <xsl:value-of select="$assocname"/>
+
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" INT;
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" )
    REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
 </xsl:if>
     </xsl:for-each>
@@ -193,7 +198,10 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
-select dropConstraint('<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID');
+
+<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
+
+select dropConstraint('<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID');
 </xsl:if>
     </xsl:for-each>
   </xsl:template>
