@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.91 $
+ * $Revision: 1.92 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.91 2008/05/03 07:00:37 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.92 2008/05/31 12:19:23 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.92  2008/05/31 12:19:23  lollisoft
+ * Removed dependency to non existing makefile. (LEX and YACC targets)
+ *
  * Revision 1.91  2008/05/03 07:00:37  lollisoft
  * Changed path to frameworks.
  *
@@ -1709,7 +1712,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.91 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.92 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1926,9 +1929,9 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   if ((targettype == LEX_TARGET) || (targettype == YACC_TARGET)) {
 	ObjExt(Name,ObjName,sizeof(ObjName));
 	if (targettype == LEX_TARGET) {
-		sprintf(Line, "lex.yy.c: makefile %s",Name);
+		sprintf(Line, "lex.yy.c: %s",Name);
 	} else {
-		sprintf(Line, "%soutput: makefile %s",ObjName,Name);
+		sprintf(Line, "%soutput: %s",ObjName,Name);
 	}
   } else {
 	ObjExt(Name,ObjName,sizeof(ObjName));
