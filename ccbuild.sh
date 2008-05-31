@@ -3,6 +3,9 @@ echo Cruise Control build started at: `pwd`
 echo all: BaseDevelopment > makefile
 echo \# >> makefile
 
+echo Updating full source tree to be save
+cvs update -d
+
 echo DEVROOT=`pwd` >> makefile
 
 i=0
