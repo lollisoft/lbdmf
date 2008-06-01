@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.168 $
+# * $Revision: 1.169 $
 # * $Name:  $
-# * $Id: Makefile,v 1.168 2008/05/10 17:42:06 lollisoft Exp $
+# * $Id: Makefile,v 1.169 2008/06/01 08:32:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.169  2008/06/01 08:32:51  lollisoft
+# * Try to install sqlite3 and databaselayer_sqllite while building it to resolve missing those libraries.
+# *
+# * This should be done better.
+# *
 # * Revision 1.168  2008/05/10 17:42:06  lollisoft
 # * Activated and deactivated some targets.
 # *
@@ -1188,6 +1193,7 @@ dummy:
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install
 
 ../vendor/databaselayer/tests: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite_tests -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES='*.cxx' -f $(MAKE_CONFIG_FILE)
@@ -1220,6 +1226,7 @@ dummy:
 ../vendor/sqlite: dummy
 	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install
 
 ../vendor/libxslt-1.1.21/libxslt: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
