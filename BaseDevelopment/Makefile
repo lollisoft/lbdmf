@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.169 $
+# * $Revision: 1.170 $
 # * $Name:  $
-# * $Id: Makefile,v 1.169 2008/06/01 08:32:51 lollisoft Exp $
+# * $Id: Makefile,v 1.170 2008/06/01 09:12:12 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.170  2008/06/01 09:12:12  lollisoft
+# * Changed order of building lex and yacc files. This builds from freshly checked out project.
+# *
 # * Revision 1.169  2008/06/01 08:32:51  lollisoft
 # * Try to install sqlite3 and databaselayer_sqllite while building it to resolve missing those libraries.
 # *
@@ -1187,11 +1190,11 @@ dummy:
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 
