@@ -19,6 +19,10 @@
 #include <string.h>
 #endif
 
+#ifndef __cplusplus
+#define bool int
+#endif
+
 #ifdef __WATCOMC__
 #define false FALSE
 #define true TRUE
