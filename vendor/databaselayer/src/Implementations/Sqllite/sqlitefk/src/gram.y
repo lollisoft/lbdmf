@@ -106,7 +106,7 @@ altertables:
 altertable:
 	ALTER TABLE '"' TOK_WORD '"' ADD CONSTRAINT '"' TOK_WORD '"' PRIMARY KEY '(' '"' TOK_WORD '"' ')'
         {
-            Altertable *constraint = malloc(sizeof(Altertable));
+            Altertable *constraint = (Altertable*) malloc(sizeof(Altertable));
 			constraint->type = ALTER_PK;
             constraint->pk = (PrimaryKey *) malloc(sizeof(PrimaryKey));
             constraint->pk->tab = $4;
@@ -116,7 +116,7 @@ altertable:
         }
 	| ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD PRIMARY KEY '(' TOK_WORD ')'
         {
-            Altertable *constraint = malloc(sizeof(Altertable));
+            Altertable *constraint = (Altertable*) malloc(sizeof(Altertable));
 			constraint->type = ALTER_PK;
             constraint->pk = (PrimaryKey *) malloc(sizeof(PrimaryKey));
             constraint->pk->tab = $3;
@@ -126,7 +126,7 @@ altertable:
         }
 	| ALTER TABLE TOK_WORD ADD CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
         {
-            Altertable *constraint = malloc(sizeof(Altertable));
+            Altertable *constraint = (Altertable*) malloc(sizeof(Altertable));
 			constraint->type = ALTER_FK;
             constraint->fk = (ForeignKey *) malloc(sizeof(ForeignKey));
             constraint->fk->tab = $3;
@@ -138,7 +138,7 @@ altertable:
         }
 	| ALTER TABLE '"' TOK_WORD '"' ADD CONSTRAINT '"' TOK_WORD '"' FOREIGN KEY '(' '"' TOK_WORD '"' ')' REFERENCES '"' TOK_WORD '"' '(' '"' TOK_WORD '"' ')'
         {
-            Altertable *constraint = malloc(sizeof(Altertable));
+            Altertable *constraint = (Altertable*) malloc(sizeof(Altertable));
 			constraint->type = ALTER_FK;
             constraint->fk = (ForeignKey *) malloc(sizeof(ForeignKey));
             constraint->fk->tab = $4;

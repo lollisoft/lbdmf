@@ -121,7 +121,7 @@ MemPoolStrdup (MemPool *pool, char *s)
 
 	if (s)
 	{
-		dst = MemPoolAlloc (pool, strlen(s) + 1);
+		dst = (char*) MemPoolAlloc (pool, strlen(s) + 1);
 		if (dst)
 			strcpy(dst, s);
 	}

@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.114 $
+# * $Revision: 1.115 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.114 2008/05/09 06:38:22 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.115 2008/06/01 12:30:30 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.115  2008/06/01 12:30:30  lollisoft
+# * Last changes to let compile under Linux to be prepared for cruise control.
+# *
 # * Revision 1.114  2008/05/09 06:38:22  lollisoft
 # * More porting changes for debian-ppc.
 # *
@@ -779,7 +782,7 @@ endif
 
 #-lefence
 CC =cc
-CPP=cc
+CPP=g++
 LD =cc -s
 CP =cp
 EXEDIR =

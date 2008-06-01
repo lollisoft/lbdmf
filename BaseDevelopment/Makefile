@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.170 $
+# * $Revision: 1.171 $
 # * $Name:  $
-# * $Id: Makefile,v 1.170 2008/06/01 09:12:12 lollisoft Exp $
+# * $Id: Makefile,v 1.171 2008/06/01 12:30:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.171  2008/06/01 12:30:30  lollisoft
+# * Last changes to let compile under Linux to be prepared for cruise control.
+# *
 # * Revision 1.170  2008/06/01 09:12:12  lollisoft
 # * Changed order of building lex and yacc files. This builds from freshly checked out project.
 # *
@@ -980,7 +983,6 @@ ALLDIRS = \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
-	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \

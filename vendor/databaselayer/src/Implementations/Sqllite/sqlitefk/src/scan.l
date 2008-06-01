@@ -92,7 +92,7 @@ yyerror (const char *message)
                 fprintf(stderr, "parser: %s at or near \"%s\"", 
                         message, yytext); 
 
-        underline = malloc(buflen); 
+        underline = (char*) malloc(buflen); 
         memset(underline, ' ', buflen); 
         *(underline + buflen) = '\0'; 
 
