@@ -62,6 +62,7 @@ OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook /usr/local/lib/libodbc.so
 endif    
 ifeq ($(OSTYPE), linux)
+CC=$(CPP)
 MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -DSUPPORT_FOREIGN_KEYS -DBUILD_LIBRARY
 C_SOOPS= $(C_SOOPS_WX)
