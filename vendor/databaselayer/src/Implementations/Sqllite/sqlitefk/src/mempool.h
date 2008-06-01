@@ -8,6 +8,12 @@ typedef unsigned char bool;
 typedef unsigned char bool;
 #endif
 
+#ifndef __cplusplus
+#if !defined(bool)
+typedef unsigned char bool;
+#endif
+#endif
+
 #define TRUE  1
 #define FALSE 0
 
