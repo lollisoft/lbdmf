@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.171 $
+# * $Revision: 1.172 $
 # * $Name:  $
-# * $Id: Makefile,v 1.171 2008/06/01 12:30:30 lollisoft Exp $
+# * $Id: Makefile,v 1.172 2008/06/01 18:24:20 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.172  2008/06/01 18:24:20  lollisoft
+# * Try ifneq for sqlite special install.
+# *
 # * Revision 1.171  2008/06/01 12:30:30  lollisoft
 # * Last changes to let compile under Linux to be prepared for cruise control.
 # *
@@ -690,12 +693,16 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
+	../vendor/tvision \
+	../vendor/tvision/examples/lbDMF \
+	../vendor/tvision/examples/dlgdsn \
+	../vendor/tvision/examples/listvi \
 	../AppDevelopment
 
 # Don't compile these every time.
 #	../vendor/propgrid \
-#	../vendor/tvision-set \
-#	../vendor/tvision-set/examples/lbDMF \
+#	../vendor/tvision \
+#	../vendor/tvision/examples/lbDMF \
 #	../vendor/wxReportWriter \
 
 endif
@@ -1228,10 +1235,18 @@ dummy:
 ../vendor/libxml2-2.6.29/bakefile: dummy
 	$(MAKE) -s -C $@ -f makefile.lbDMF
 
+ifeq ($(OSTYPE), linux)
 ../vendor/sqlite: dummy
 	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
+endif
+
+ifneq ($(OSTYPE), linux)
+../vendor/sqlite: dummy
+	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
 
 ../vendor/libxslt-1.1.21/libxslt: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
@@ -1245,8 +1260,20 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/tvision-set/examples/lbDMF: dummy
+../vendor/tvision/examples/lbDMF: dummy
 	$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/tvision/examples/listvi: dummy
+	$(MAKE) -s -C $@ -e MODULE=tvlistvi -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/tvision/examples/tcombo: dummy
+	$(MAKE) -s -C $@ -e MODULE=tvcombo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/tvision/examples/dlgdsn: dummy
+	$(MAKE) -s -C $@ -e MODULE=dlgdsn -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/wxReportWriter: dummy
