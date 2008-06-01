@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.172 $
+# * $Revision: 1.173 $
 # * $Name:  $
-# * $Id: Makefile,v 1.172 2008/06/01 18:24:20 lollisoft Exp $
+# * $Id: Makefile,v 1.173 2008/06/01 19:08:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.173  2008/06/01 19:08:23  lollisoft
+# * Removed installing instructions for Windows databaselayer and sqlite3 targets.
+# *
 # * Revision 1.172  2008/06/01 18:24:20  lollisoft
 # * Try ifneq for sqlite special install.
 # *
@@ -1198,6 +1201,7 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+ifneq ($(OSTYPE), Windows_NT)
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
@@ -1206,6 +1210,17 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
+../vendor/databaselayer/src/Implementations/Sqllite: dummy
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
 
 ../vendor/databaselayer/tests: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite_tests -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES='*.cxx' -f $(MAKE_CONFIG_FILE)
@@ -1235,14 +1250,14 @@ dummy:
 ../vendor/libxml2-2.6.29/bakefile: dummy
 	$(MAKE) -s -C $@ -f makefile.lbDMF
 
-ifeq ($(OSTYPE), linux)
+ifneq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
 	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif
 
-ifneq ($(OSTYPE), linux)
+ifeq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
 	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
