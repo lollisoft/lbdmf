@@ -4,6 +4,8 @@
 		
 		I also will discuss some problems while the development stages.
 
+		01.06.2008	Improve Cruise Control integration.
+
 		16.04.2008	Creating Sqlite Database script in usual way fails due to unsupported ALTER TABLE ADD CONSTRAINT.
 				Solution could be parsing these statements and separate the step of creating foreign keys to an
 				internal subsequent statement. While parsing them the statements could be rewritten to be triggers.
