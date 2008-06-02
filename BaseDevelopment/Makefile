@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.174 $
+# * $Revision: 1.175 $
 # * $Name:  $
-# * $Id: Makefile,v 1.174 2008/06/02 07:54:47 lollisoft Exp $
+# * $Id: Makefile,v 1.175 2008/06/02 11:47:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.175  2008/06/02 11:47:31  lollisoft
+# * Test failure
+# *
 # * Revision 1.174  2008/06/02 07:54:47  lollisoft
 # * Added some code for crosscompiling with OW on Linux.
 # *
@@ -612,7 +615,7 @@ prefix=$(HOME)
 endif
 
 endif
-
+.
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
 endif
