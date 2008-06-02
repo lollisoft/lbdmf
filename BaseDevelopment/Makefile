@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.178 $
+# * $Revision: 1.179 $
 # * $Name:  $
-# * $Id: Makefile,v 1.178 2008/06/02 12:21:30 lollisoft Exp $
+# * $Id: Makefile,v 1.179 2008/06/02 12:27:21 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.179  2008/06/02 12:27:21  lollisoft
+# * Testing failure works with jabber notification. Error removed.
+# *
 # * Revision 1.178  2008/06/02 12:21:30  lollisoft
 # * Test failure 2
 # *
@@ -615,7 +618,7 @@ prefix=$(HOME)
 endif
 
 endif
-.
+
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 
