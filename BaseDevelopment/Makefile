@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.173 $
+# * $Revision: 1.174 $
 # * $Name:  $
-# * $Id: Makefile,v 1.173 2008/06/01 19:08:23 lollisoft Exp $
+# * $Id: Makefile,v 1.174 2008/06/02 07:54:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.174  2008/06/02 07:54:47  lollisoft
+# * Added some code for crosscompiling with OW on Linux.
+# *
 # * Revision 1.173  2008/06/01 19:08:23  lollisoft
 # * Removed installing instructions for Windows databaselayer and sqlite3 targets.
 # *
@@ -614,6 +617,10 @@ ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
 endif
 
+ifeq ($(OSTYPE), Cross_OW)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 Path=$(PATH)
 
 
@@ -707,6 +714,17 @@ BASEDIRECTORIES= \
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF \
 #	../vendor/wxReportWriter \
+
+endif
+
+ifeq ($(OSTYPE), Cross_OW)
+BASEDIRECTORIES= \
+	../Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../Modules \
+	../RegressionTests \
+	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopment
 
 endif
 
@@ -1012,6 +1030,84 @@ ALLTARGETS = \
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
+
+TARGETDLL=dll
+TARGETXSLTDLL=xsltdll
+TARGETFRAMEWORK=dll
+TARGETSHARED=dll
+TARGETWXSHARED=dll
+TARGETEXE=exe
+TARGETWXEXE=exe
+TARGETPLUGIN=plugin
+TARGETWXPLUGIN=wxplugin
+TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_exe
+TARGETYACC=yacc
+TARGETLEX=lex
+
+bla = \
+	../../open-watcom
+
+ALLTARGETS = \
+	../../lib \
+	../../dll/libs \
+	../../plugins/libs \
+	lbHook \
+	lbtransfer \
+	lbcs \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/libxml2-2.6.29/bakefile \
+	../vendor/libxslt-1.1.21/libxslt \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	../Samples/HelloWorld \
+	../Doc/html \
+	$(BASEDIRECTORIES)
+
+#	../vendor/dbwrapcontrols
+# sqlitefk is included in Sqllite target, but may be used separately including this target.
+# When including this target, the include path for sql.h must pount to ./sqlite/src
+#	../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/build/mkmk
+
+ALLDIRS = \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+
+
+#$(DEVROOT_MAKE)/wxwin/wx/samples/report \
+#tvision: ../vendor/tvision
+#	Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2 \
+
+endif
+
+ifeq ($(OSTYPE), Cross_OW)
 
 TARGETDLL=dll
 TARGETXSLTDLL=xsltdll

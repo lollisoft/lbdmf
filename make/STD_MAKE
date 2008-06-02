@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.115 $
+# * $Revision: 1.116 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.115 2008/06/01 12:30:30 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.116 2008/06/02 07:54:47 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.116  2008/06/02 07:54:47  lollisoft
+# * Added some code for crosscompiling with OW on Linux.
+# *
 # * Revision 1.115  2008/06/01 12:30:30  lollisoft
 # * Last changes to let compile under Linux to be prepared for cruise control.
 # *
@@ -438,6 +441,15 @@ RELPATH=\\Projects\\CPP
 endif
 endif
 
+ifeq ($(OSTYPE), Cross_OW)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/CPP
+endif
+endif
+
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
@@ -732,6 +744,274 @@ PLUGINLIBDIR =$(DEVROOT_MAKE)/Projects/plugins/libs
 
 
 endif
+
+ifeq ($(OSTYPE), Cross_OW)
+
+# Set standard compiler
+COMPILER=WATCOM
+
+#COMPILER=MICROSOFT
+
+#MODE=_DEBUG
+MODE=
+DEBUG_MEMORY=no
+#DEBUG_MEMORY=yes
+
+#DEBUG_MEMORY_TYPE=mpatrol
+#DEBUG_MEMORY_TYPE=trmem
+
+WX_VERSION=28
+
+WX_DEBUG=
+ifeq ($(MODE), _DEBUG)
+WX_DEBUG=d
+endif
+
+WATCOM_SLASH=/
+
+STD_INCL_WATCOM_CPP =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
+endif  
+
+WATCOM_SLASH_CC=\\
+
+DEVROOT_CC=q:\\develop
+
+STD_INCL_WATCOM =-i=. -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h$(WATCOM_SLASH_CC)nt \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)interfaces \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
+			
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
+endif			
+
+#ANAKIN
+#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+#LOTHARBNOTEBOOK
+STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
+
+STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
+STD_INCL = $(STD_INCL_WATCOM)
+
+ifeq ($(DEBUG_MEMORY), yes)
+  ifeq ($(DEBUG_MEMORY_TYPE), trmem)
+    BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
+  endif
+  ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+    BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/libmpatrol.lib,
+  endif	
+endif
+
+ifeq ($(DEBUG_MEMORY), no)
+BASE_LIBS =
+endif
+
+WATCOM_WARN=-w3
+WATCOM_OPTIMIZE=-otexan
+WATCOM_RELAX_ALIAS=#-oa
+WATCOM_ERRCOUNT=-e25
+WATCOM_QUIET=-zq
+WATCOM_CALLING_CONV=-5r #-zz
+WATCOM_DLLTARGET=-bd
+WATCOM_LIBTARGET=
+WATCOM_THREAD_MODEL=#-bm
+
+ifeq ($(MODE), _DEBUG)
+WATCOM_STDDEBUG=-d2 -hd 
+WATCOM_OPTIMIZE=-od
+endif
+
+ifeq ($(DEBUG_MEMORY), yes)
+  ifeq ($(DEBUG_MEMORY_TYPE), trmem)
+    WATCOM_STDDEBUG+= -DDEBUG_MALLOC
+  endif
+  ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+    WATCOM_STDDEBUG+= -DUSE_MPATROL
+  endif
+endif
+
+WATCOM_STACK=-of+
+
+# Doesn't work for current code
+#-sg
+
+WATCOM_PROFILING=#-db -en -s
+
+WATCOM_STD_C_OPS= \
+-DWINDOWS \
+$(WATCOM_WARN) \
+$(WATCOM_ERRCOUNT) \
+$(WATCOM_QUIET) \
+$(WATCOM_OPTIMIZE) \
+$(WATCOM_RELAX_ALIAS) \
+$(WATCOM_THREAD_MODEL) \
+$(WATCOM_CALLING_CONV) \
+$(WATCOM_STACK) \
+$(WATCOM_PROFILING)
+
+WATCOM_STD_CPP_OPS= \
+-DWINDOWS \
+$(WATCOM_WARN) \
+$(WATCOM_ERRCOUNT) \
+$(WATCOM_QUIET) \
+$(WATCOM_OPTIMIZE) \
+$(WATCOM_RELAX_ALIAS) \
+$(WATCOM_THREAD_MODEL) \
+$(WATCOM_CALLING_CONV) \
+$(WATCOM_STACK) \
+$(WATCOM_PROFILING)
+
+OBJ =obj
+# Watcom -zp4
+C_EXEOPS_WATCOM=        $(WATCOM_STD_C_OPS) -bt=nt -mf #-hd
+
+C_EXEOPS_WATCOM_DEBUG=  $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
+
+C_DLLOPS_WATCOM   =     $(WATCOM_STD_C_OPS)                     $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+C_LIBOPS_WATCOM   =     $(WATCOM_STD_C_OPS)                     $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+
+CPP_EXEOPS_WATCOM=        $(WATCOM_STD_CPP_OPS) -bt=nt -mf #-hd
+
+CPP_EXEOPS_WATCOM_DEBUG=  $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
+
+CPP_DLLOPS_WATCOM   =     $(WATCOM_STD_CPP_OPS)                     $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+CPP_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+CPP_LIBOPS_WATCOM   =     $(WATCOM_STD_CPP_OPS)                     $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+CPP_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+CC =wcc386
+CPP =wpp386
+RM =del
+LEX=flex
+YACC=bison
+
+# Microsoft
+OUTDIR=.
+INTDIR=.
+#/D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch"
+MSC_BASIC_EXE      = /MT  /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+MSC_BASIC_EXE_NODBG= /O2         
+MSC_BASIC_EXE_DEBUG= /Gm /ZI /Od /YX /W3 
+
+
+
+#/Fp"$(INTDIR)\lbDOMConfig.pch"
+#/D "LBDOMCONFIG_EXPORTS"   /Ge    /Gd         /MTd          /O2   
+
+# alt
+#STD_MICROSOFT=\
+#/D "WINDOWS" \
+#/D "LB_RUNTIME_LINK" \
+#/D "WIN32" \
+#/D "NDEBUG" \
+#/D "_WINDOWS" \
+#/D "_MBCS" \
+#/D "_USRDLL" \
+#/YX \
+#/Fo"$(INTDIR)\\" \
+#/Fd"$(INTDIR)\\" \
+#/FD /c 
+
+
+#?/D__WINDOWS95__ 
+
+STD_MICROSOFT=\
+/D "WIN32" \
+/D "WINDOWS" \
+/D "_WINDOWS" \
+/D "__WINDOWS__" \
+/D "__WXMSW__" \
+/D "__WIN95__" \
+/D "__WIN32__" \
+/D WINVER=0x0400 \
+/D "STRICT" \
+/D "LB_RUNTIME_LINK" \
+/D "_MBCS" \
+/D "_USRDLL" \
+/YX \
+/Fo"$(INTDIR)\\" \
+/Fd"$(INTDIR)\\" \
+/FD /c 
+
+
+#                           /GZ
+C_EXEOPS_MICROSOFT =                                   /nologo /MT  /W3     /GX           $(STD_MICROSOFT)
+C_EXEOPS_MICROSOFT_DEBUG =  /F100000      /D __WXDEBUG__ /D DEBUG=1 /D _DEBUG /nologo /MDd /W3 /Od /GX   /ZI     $(STD_MICROSOFT)
+C_DLLOPS_MICROSOFT =                                   /nologo /MT  /W3     /GX           $(STD_MICROSOFT)
+C_DLLOPS_MICROSOFT_DEBUG =  /F100000      /D __WXDEBUG__ /D DEBUG=1 /D _DEBUG /nologo /MDd /W3 /Od /GX   /ZI     $(STD_MICROSOFT)
+
+LINK_MICROSOFT=link.exe
+ 
+LINK_MICROSOFT_OBJS=
+
+
+C_EXEOPS = $(C_EXEOPS_WATCOM$(MODE))
+C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
+C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
+
+CPP_EXEOPS = $(CPP_EXEOPS_WATCOM$(MODE))
+CPP_DLLOPS = $(CPP_DLLOPS_WATCOM$(MODE))
+CPP_LIBOPS = $(CPP_LIBOPS_WATCOM$(MODE))
+
+# Watcom
+L_EXEOPS_WATCOM = op symf d dwarf
+LINK_WATCOM =wlink op q op symf d dwarf
+L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
+
+# Microsoft
+#/pdb:"$(OUTDIR)\lbDOMConfig.pdb"
+#/out:"$(OUTDIR)\lbDOMConfig.dll"
+#/implib:"$(OUTDIR)\lbDOMConfig.lib"
+L_DLLOPS_MICROSOFT =kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib \
+shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo \
+/dll /incremental:yes /debug /machine:I386 \
+/libpath:"Q:\Develop\xml\xml4csrc3_3_1\Build\Win32\VC6" \
+/libpath:"F:\develop\NT\MSC\VC98\Lib"
+
+# Standard link ops
+L_EXEOPS = $(L_EXEOPS_WATCOM)
+LINK     = $(LINK_WATCOM)
+L_DLLOPS = $(L_DLLOPS_WATCOM)
+LNKDLLOPS = $(L_DLLOPS_WATCOM)
+
+CP =cp
+EXEDIR =$(DEVROOT_MAKE)/Projects/bin
+DLLDIR =$(DEVROOT_MAKE)/Projects/dll
+PLUGINDIR =$(DEVROOT_MAKE)/Projects/plugins
+
+LIBDIR =$(DEVROOT_MAKE)/Projects/lib
+DLLLIBDIR =$(DEVROOT_MAKE)/Projects/dll/libs
+PLUGINLIBDIR =$(DEVROOT_MAKE)/Projects/plugins/libs
+
+
+endif
+
 
 ifeq ($(OSTYPE), linux)
 
