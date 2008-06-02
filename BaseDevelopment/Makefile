@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.175 $
+# * $Revision: 1.176 $
 # * $Name:  $
-# * $Id: Makefile,v 1.175 2008/06/02 11:47:31 lollisoft Exp $
+# * $Id: Makefile,v 1.176 2008/06/02 11:51:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.176  2008/06/02 11:51:58  lollisoft
+# * Corrected failure test.
+# *
 # * Revision 1.175  2008/06/02 11:47:31  lollisoft
 # * Test failure
 # *
@@ -615,7 +618,7 @@ prefix=$(HOME)
 endif
 
 endif
-.
+
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
 endif
