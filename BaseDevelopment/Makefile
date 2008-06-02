@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.177 $
+# * $Revision: 1.178 $
 # * $Name:  $
-# * $Id: Makefile,v 1.177 2008/06/02 12:10:06 lollisoft Exp $
+# * $Id: Makefile,v 1.178 2008/06/02 12:21:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.178  2008/06/02 12:21:30  lollisoft
+# * Test failure 2
+# *
 # * Revision 1.177  2008/06/02 12:10:06  lollisoft
 # * Test failure
 # *
@@ -612,14 +615,14 @@ prefix=$(HOME)
 endif
 
 endif
-
+.
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 
 ifndef prefix
 prefix=$(HOME)
 endif
-.
+
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
