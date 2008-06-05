@@ -26,6 +26,10 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 MKMK=mkmk
 endif
+ifeq ($(OSTYPE), Cross_OW)
+MKMK=mkmk
+DEVROOT_MAKE=$(DEVROOT)
+endif
 _MODULE=$(MODULE)
 
 ifeq ($(TARGET), tvision_dll)
