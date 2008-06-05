@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.116 $
+# * $Revision: 1.117 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.116 2008/06/02 07:54:47 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.117 2008/06/05 19:25:08 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.117  2008/06/05 19:25:08  lollisoft
+# * First target (lbHook) compiles the cpp file with OW, but link fails propably due to wrong link commands.
+# *
 # * Revision 1.116  2008/06/02 07:54:47  lollisoft
 # * Added some code for crosscompiling with OW on Linux.
 # *
@@ -767,14 +770,16 @@ ifeq ($(MODE), _DEBUG)
 WX_DEBUG=d
 endif
 
+WATCOM_HOME=/home/lothar/WATCOM1.7
+
 WATCOM_SLASH=/
 
-STD_INCL_WATCOM_CPP =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
+STD_INCL_WATCOM_CPP =-i=.   -i=$(WATCOM_HOME)$(WATCOM_SLASH)h \
+			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)interfaces \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
   STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
@@ -783,16 +788,16 @@ ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
 endif  
 
-WATCOM_SLASH_CC=\\
+WATCOM_SLASH_CC=/
 
-DEVROOT_CC=q:\\develop
+DEVROOT_CC=$(HOME)/develop
 
-STD_INCL_WATCOM =-i=. -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h$(WATCOM_SLASH_CC)nt \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)interfaces \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)include \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
+STD_INCL_WATCOM =-i=. -i=$(WATCOM_HOME)$(WATCOM_SLASH)h \
+			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)interfaces \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
 			
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)		

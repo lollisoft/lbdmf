@@ -8,6 +8,7 @@ else
 RELPATH_MAKE=/Projects/CPP
 RELPATH=/Projects/CPP
 endif
+DEVROOT_MAKE=$(DEVROOT)
 include $(DEVROOT)$(RELPATH)/make/STD_MAKE
 endif
 
