@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.92 $
+ * $Revision: 1.93 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.92 2008/05/31 12:19:23 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.93 2008/06/05 19:36:32 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.93  2008/06/05 19:36:32  lollisoft
+ * Added crosscompiling stuff. Really beta !
+ *
  * Revision 1.92  2008/05/31 12:19:23  lollisoft
  * Removed dependency to non existing makefile. (LEX and YACC targets)
  *
@@ -383,6 +386,20 @@
 #define WXSHARED_TARGET  17
 #define FRAMEWORK_TARGET  18
 #define WXFRAMEWORK_TARGET  19
+
+#define LEX_TARGET 20
+#define YACC_TARGET 21
+
+
+// These are the new cross compiling targets
+// This is absolutely beta !
+
+#define EXE_TARGET_CROSS 200
+#define DLL_TARGET_CROSS 201
+#define LIB_TARGET_CROSS 202
+
+
+
 
 // Separate mkmk invoke to build the pice of make rule for generating the sources.
 // Generating an extra makefile for this would be callable before the real makefile would be build.
@@ -1712,7 +1729,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.92 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.93 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1956,6 +1973,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case DLL_TARGET:
+        case DLL_TARGET_CROSS:
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
@@ -2087,6 +2105,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 /*...swrite a wmake makefile:0:*/
   switch (targettype) {
         case DLL_TARGET:
+        case DLL_TARGET_CROSS:
                 #ifdef VERBOSE
                 printf("Making a dll target\n");
                 #endif
@@ -2131,6 +2150,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 				write_yacc_clean();
 				break;
         case DLL_TARGET:
+        case DLL_TARGET_CROSS:
                 writeDllTarget(ModuleName);
                 write_clean();
                 break;
@@ -2371,9 +2391,16 @@ int main(int argc, char *argv[])
         targettype = YACC_TARGET;
         target_ext = strdup("");
   }
+
+// These are the new cross compiling targets
+// This is absolutely beta !
+
+  if (strcmp(target, "DLL_CROSS") == 0) {
+        targettype = DLL_TARGET_CROSS;
+        target_ext = strdup(".dll");
+  }
+
   
-#define LEX_TARGET 20
-#define YACC_TARGET 21
 
 
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
