@@ -4,6 +4,7 @@
 
 		07.07.2008	Instance messaging tested with tcpdump tracing on port 5222 and 5223. There
 				was some communication, but it didn't came to me.
+				Try to record the raw communication.
 
 		01.06.2008	Improve Cruise Control integration.
 				
