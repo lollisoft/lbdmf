@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.94 $
+ * $Revision: 1.95 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.94 2008/06/07 07:45:24 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.95 2008/06/07 10:11:34 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.95  2008/06/07 10:11:34  lollisoft
+ * Beautified some code.
+ *
  * Revision 1.94  2008/06/07 07:45:24  lollisoft
  * Moving Open Watcom crosscompiling attempts to my other Linux box.
  *
@@ -1732,7 +1735,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.94 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.95 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -2144,14 +2147,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #else
 
   switch (targettype) {
-		case LEX_TARGET:
-				writeLexTarget(ModuleName);
-				write_lex_clean();
-				break;
-		case YACC_TARGET:
-				writeYaccTarget(ModuleName);
-				write_yacc_clean();
-				break;
+	case LEX_TARGET:
+		writeLexTarget(ModuleName);
+		write_lex_clean();
+		break;
+	case YACC_TARGET:
+		writeYaccTarget(ModuleName);
+		write_yacc_clean();
+		break;
         case DLL_TARGET:
         case DLL_TARGET_CROSS:
                 writeDllTarget(ModuleName);
@@ -2201,15 +2204,15 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 write_so_bundleTarget(ModuleName);
                 write_clean();
                 break;
-		case WXSHARED_TARGET:
+	case WXSHARED_TARGET:
                 write_wx_shared_Target(ModuleName);
                 write_clean();
                 break;
-		case FRAMEWORK_TARGET:
+	case FRAMEWORK_TARGET:
                 write_framework_Target(ModuleName);
                 write_clean();
                 break;
-		case WXFRAMEWORK_TARGET:
+	case WXFRAMEWORK_TARGET:
                 write_wx_framework_Target(ModuleName);
                 write_clean();
                 break;
