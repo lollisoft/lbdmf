@@ -129,6 +129,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
+CC=gcc
 MOD_INCL=$(STD_INCL) -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
