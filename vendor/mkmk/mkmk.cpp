@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.93 $
+ * $Revision: 1.94 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.93 2008/06/05 19:36:32 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.94 2008/06/07 07:45:24 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.94  2008/06/07 07:45:24  lollisoft
+ * Moving Open Watcom crosscompiling attempts to my other Linux box.
+ *
  * Revision 1.93  2008/06/05 19:36:32  lollisoft
  * Added crosscompiling stuff. Really beta !
  *
@@ -1729,7 +1732,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.93 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.94 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -2449,13 +2452,23 @@ int main(int argc, char *argv[])
 
   // Here the link information file should be created
 
-#ifdef __WATCOMC__  
-  printf("%s.lnk: makefile $(OBJS)\n", targetname);
-  printf("\t\techo NAME %s > $@\n", targetname);
-  
-  for (i=0; i<Sources.Count; i++) {
 
-	char FileName[256];
+
+  switch (targettype) {
+    case DLL_TARGET:
+    case DLL_TARGET_CROSS:
+    case LIB_TARGET:
+    case WXPLUGIN_TARGET:
+    case PLUGIN_TARGET:
+    case EXE_TARGET:
+    case TVISION_EXE:
+    case TVISION_DLL:
+      printf("%s.lnk: makefile $(OBJS)\n", targetname);
+      printf("\t\techo NAME %s > $@\n", targetname);
+  
+      for (i=0; i<Sources.Count; i++) {
+
+    	char FileName[256];
 	char ObjName[256];
 	
 	strcpy(FileName, ((TDepItem*)Sources[i])->Path);
@@ -2465,8 +2478,13 @@ int main(int argc, char *argv[])
   
 	printf("\t\techo FIL %s >> $@\n", ObjName);  	
   
+      }
+      break;
+    default:
+      break;
   }
-#endif
+
+  fprintf(stderr, "Creating dependency list.\n");
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);

@@ -240,6 +240,25 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
+
+ifeq ($(TARGET), dll_cross)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
+	@echo all: $(_MODULE).$(TARGET) >> makefile
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
+	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp $(CUSTOM_FILES) >> makefile
+
+endif
+
 ifeq ($(TARGET), xsltdll)
 
 makefile: makefile.module \

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.179 $
+# * $Revision: 1.180 $
 # * $Name:  $
-# * $Id: Makefile,v 1.179 2008/06/02 12:27:21 lollisoft Exp $
+# * $Id: Makefile,v 1.180 2008/06/07 07:45:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.180  2008/06/07 07:45:23  lollisoft
+# * Moving Open Watcom crosscompiling attempts to my other Linux box.
+# *
 # * Revision 1.179  2008/06/02 12:27:21  lollisoft
 # * Testing failure works with jabber notification. Error removed.
 # *
@@ -1124,7 +1127,7 @@ endif
 
 ifeq ($(OSTYPE), Cross_OW)
 
-TARGETDLL=dll
+TARGETDLL=dll_cross
 TARGETXSLTDLL=xsltdll
 TARGETFRAMEWORK=dll
 TARGETSHARED=dll
