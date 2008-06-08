@@ -131,7 +131,7 @@ REM ------------------------------------------------------------
 REM This stuff is added due to integrate Doxygen into my console
 REM ------------------------------------------------------------
 
-set BISON_SIMPLE=q:/develop/projects/bin/bison.simple
+set BISON_SIMPLE=%DEVROOT_MAKE%/projects/bin/bison.simple
 set path=%path%;%DEVLW%\develop\Tools\Perl\bin\
 
 REM -------------------
