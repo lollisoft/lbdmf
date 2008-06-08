@@ -35,9 +35,24 @@ goto BEGINENVIRONMENT:
 
 :DISTMODE
 
-set DEVLW=c:
-set BASE=lbDMF\develop
-set BASE_MAKE=lbDMF/develop
+if "%2"=="CC" goto CCBUILD:
+
+set DEVLW=C:
+set BASE=%DEVLW%\lbDMF\develop
+set BASE_MAKE=%DEVLW%/lbDMF/develop
+
+
+set DEVROOT=%DEVLW%\%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+
+goto BEGINENVIRONMENT:
+
+:CCBUILD
+
+set DEVLW=E:
+set BASE=Programme\CruiseControl\projects\lbDMF\develop
+set BASE_MAKE=Programme/CruiseControl/projects/lbDMF/develop
+
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
