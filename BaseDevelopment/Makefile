@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.180 $
+# * $Revision: 1.181 $
 # * $Name:  $
-# * $Id: Makefile,v 1.180 2008/06/07 07:45:23 lollisoft Exp $
+# * $Id: Makefile,v 1.181 2008/06/08 22:08:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.181  2008/06/08 22:08:47  lollisoft
+# * Avoid failures if tvision is not available.
+# *
 # * Revision 1.180  2008/06/07 07:45:23  lollisoft
 # * Moving Open Watcom crosscompiling attempts to my other Linux box.
 # *
@@ -1317,10 +1320,15 @@ dummy:
 
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
+	@echo Build Grammar makefile
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
+	@echo Build Lexer makefile
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
+	@echo Build Grammar file
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
+	@echo Build Lexer make
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
+	@echo Build Main makefile
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
@@ -1382,8 +1390,8 @@ endif
 	$(MAKE) -s -C $@
 
 ../vendor/tvision: dummy
-	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/tvision-set: dummy
 	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
