@@ -1,9 +1,6 @@
 #ifndef MEMPOOL_H
 #define MEMPOOL_H
 
-#ifndef BUILD_LIBRARY
-typedef unsigned char bool;
-#endif
 #ifdef __WATCOMC__
 typedef unsigned char bool;
 #endif
