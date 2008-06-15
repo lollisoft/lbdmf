@@ -16,15 +16,17 @@ wxArrayString ParseQueries(const wxString& strQuery)
 
   for ( int i=0; i<(int)strQuery.Length(); i++ )
   {
-      if ( strQuery.SubString(i, i) == _T("'") )
+      if ( strQuery.SubString(i, i) == _T("'") || strQuery.SubString(i, i) == _T("\""))
           bInQuote = !bInQuote;
       else if ( strQuery.SubString(i, i) == _T(";") && !bInQuote )
       {
           wxString str;
           str << strQuery.SubString(nLast, i);
           if (!IsEmptyQuery(str))
+		  {
+			printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
             returnArray.Add( str );
-
+		  }
           nLast = i + 1;
       }
   }
@@ -34,7 +36,10 @@ wxArrayString ParseQueries(const wxString& strQuery)
       wxString str;
       str << strQuery.SubString(nLast, strQuery.Length() - 1) << _T(";");
       if (!IsEmptyQuery(str))
+	  {
+		printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
         returnArray.Add( str );
+	  }
   }
 
   return returnArray;

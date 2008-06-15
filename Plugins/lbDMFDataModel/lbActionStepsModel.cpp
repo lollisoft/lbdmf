@@ -131,7 +131,7 @@ long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
-	_CL_VERBOSE << "Add a parameter to lbActionStepsModel: " << bezeichnung LOG_
+	_LOG << "Add a parameter to lbActionStepsModel: Bezeichnung: " << bezeichnung << ", ActionID = " << actionid LOG_
 
 	*Bezeichnung = bezeichnung;
 	ActionId->setData(actionid);

@@ -725,6 +725,8 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) {
 	int   count = 0;
 	*iStream >> count;
 
+	_LOG << "lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) called." LOG_
+
 	for (int i = 0; i < count; i++) {
 		long   ID;
 		char* Bezeichnung = NULL;

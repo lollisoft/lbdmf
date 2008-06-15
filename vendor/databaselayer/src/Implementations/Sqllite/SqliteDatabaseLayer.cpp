@@ -223,7 +223,6 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			}
 			return NULL;
 		}
-		
 		QueryArray = ParseQueries(strQuery);
     }
 	 
@@ -233,8 +232,6 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       wxString strErrorMessage = _("");
       wxString sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
 
-	  printf("Execute query: %s\n", sqlBuffer.c_str());
-      
 	  int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer.c_str(), 0, 0, &szErrorMessage);
 	    
       if (szErrorMessage != NULL)

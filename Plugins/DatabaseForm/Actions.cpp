@@ -597,7 +597,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		appActionSteps->finishActionStepIteration();
 		while (appActionSteps->hasMoreActionSteps()) {
 			appActionSteps->setNextActionStep();
-			
+			_LOG << "Sort entry ..." LOG_
 			actionid->setData(appActionSteps->getActionStepActionID());
 			
 			if (actionidcmp->equals(*&actionid)) {
@@ -618,6 +618,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			parameter->setData("id");
 			params->setUAPLong(*&parameter, *&stepid);
 				
+			_LOG << "Delegate action ..." LOG_
 			delegate(*&params);		
 		}
 		return;

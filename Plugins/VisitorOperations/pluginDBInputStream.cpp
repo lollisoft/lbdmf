@@ -1001,7 +1001,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Steps* action_steps) {
 	
 	q->skipFKCollecting();
 	
-	char *_actionquery = "select id, bezeichnung, actionid, a_order_nr, \"type\", what from action_steps";
+	char *_actionquery = "select \"id\", \"bezeichnung\", \"actionid\", \"a_order_nr\", \"type\", \"what\" from \"action_steps\"";
 	
 	if (q->query(_actionquery) != ERR_NONE) {
 		_LOG << "Error: Access to action_steps table failed. Read action_steps would be skipped." LOG_

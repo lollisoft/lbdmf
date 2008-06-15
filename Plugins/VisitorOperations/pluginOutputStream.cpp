@@ -651,11 +651,15 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Action_Steps* action_steps) {
 
 	count = action_steps->getActionStepCount();
 	*oStream << count;
-	
+
+	_LOG << "lbOutputStream::visit(lb_I_Action_Steps* action_steps) called." LOG_
+
 	action_steps->finishActionStepIteration();
 	
 	while (action_steps->hasMoreActionSteps()) {
 		action_steps->setNextActionStep();
+
+		_LOG << "lbOutputStream::visit(lb_I_Action_Steps* action_steps) writes an entry." LOG_
 		
 		*oStream << action_steps->getActionStepID();
 		*oStream << action_steps->getActionStepActionID();

@@ -1502,6 +1502,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		if (theResult != NULL) {
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
+				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
@@ -1560,13 +1561,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				if (theQuery.Upper().Contains("JOIN"))
 					cursorFeature = false;
 				
-				if (theQuery.Upper().Contains("WHERE")) {
+				if (theQuery.Upper().Contains(" WHERE ")) {
 					//cursorFeature = false;
 					whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
 					plainQuery = theQuery.SubString(0, theQuery.Upper().Find("WHERE") - 1);
 				}
 
-				if (theQuery.Upper().Contains("ORDER")) {
+				if (theQuery.Upper().Contains(" ORDER ")) {
 					plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
 				} else {
 					plainQuery = theQuery;
@@ -1583,8 +1584,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						tempSQL += " order by ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						
+						_LOG << "Created help query: " << tempSQL.c_str() LOG_
 						
-						DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
+						DatabaseResultSet* tempResult;
+						
+						try {
+							tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
+						} catch (DatabaseLayerException ex) {
+							_LOG << "lbDatabaseLayerQuery() Error: Catched an exeption while issuing temporary query! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << tempSQL.c_str() LOG_
+							return ERR_DB_QUERYFAILED;
+						}
 						
 						int count = 0;
 						if (tempResult && tempResult->Next()) {
@@ -1623,7 +1632,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		}
 		_dataFetched = true;
 		return ERR_NONE;
-	} catch (...) {
+	} catch (DatabaseLayerException ex) {
+		_LOG << "lbDatabaseLayerQuery::query() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << q LOG_
 		return ERR_DB_QUERYFAILED;
 	}
 	
@@ -2007,33 +2017,37 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumns\40\\41\:0:*/
 int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
-    return 0;
+	SWORD count = 0;
+	
+	if (currentdbLayer == NULL) {
+		_LOG << "Error: No connection opened." LOG_
+		return 0;
+	}
+	
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return 0;
+	}
+	
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+	return currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, Position)
-
-	UAP(lb_I_KeyBase, key_Position)
-	QI(Position, lb_I_KeyBase, key_Position)
-
-	Position->setData(pos);
-
-	if (primaryColumns->exists(&key_Position) != 0) {
-		UAP(lb_I_String, column)
-		UAP(lb_I_Unknown, uk)
-		
-		uk = primaryColumns->getElement(&key_Position);
-		QI(uk, lb_I_String, column)
-		column++;
-		
-		return column.getPtr();
-	
+	if (currentdbLayer == NULL) {
+		_LOG << "Error: No connection opened." LOG_
+		return 0;
 	}
 
-	return NULL;
+	wxString col = currentdbLayer->GetPrimaryKeyColumn(pos-1);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	*s = col.c_str();
+	s++;
+	
+	_LOG << "lbDatabaseLayerQuery::getPKColumn(" << pos-1 << ") returns " << s->charrep() LOG_
+	
+	return s.getPtr();
 }
 /*...e*/
 
@@ -2339,6 +2353,10 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	}
 
 	wxString cursorWhere = " WHERE ";
+	if (currentdbLayer == NULL) {
+		_LOG << "Error: table has no open connection!" LOG_
+		return false;
+	}
 	cursorWhere += currentdbLayer->GetPrimaryKeyColumn(0);
 	cursorWhere += " = ";
 	
