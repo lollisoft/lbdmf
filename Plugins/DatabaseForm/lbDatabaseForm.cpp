@@ -886,6 +886,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						DBerr = ReplacementColumnQuery->next();
 						
+						// Break out in case of no data (not peeking)
+						if (DBerr == ERR_DB_NODATA) break;
+						
 						data = ReplacementColumnQuery->getAsString(1);
 						
 						data->trim();
