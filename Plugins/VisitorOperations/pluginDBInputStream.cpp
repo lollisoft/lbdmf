@@ -1301,6 +1301,33 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
 											break;
 									}
+								} else {
+									_LOG << "Yes, is foreign column, but no mapping defined." LOG_
+
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Bit", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Float", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "String", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Binary", false, "", "", FormularID->getData());
+											break;
+											
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
 								}
 							}
 						} else {
