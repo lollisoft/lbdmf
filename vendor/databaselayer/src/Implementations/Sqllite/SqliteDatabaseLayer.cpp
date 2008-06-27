@@ -14,9 +14,6 @@ extern "C" {
 #ifndef __WATCOMC__
 #include <sqlitefk/src/sql.h>
 #endif
-#ifdef OSX
-#include <CoreFoundation/CFBase.h>
-#endif
 
 #include <wx/tokenzr.h>
 
