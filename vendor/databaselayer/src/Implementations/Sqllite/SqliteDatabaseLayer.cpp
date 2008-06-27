@@ -176,10 +176,6 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 {
   ResetErrorCodes();
 
-  if (strQuery == "select parametervalue from formular_parameters where formularid = 1 WHERE id = 1") {
-	Debugger();
-  }
-  
   if (m_pDatabase != NULL)
   {
     wxArrayString QueryArray;
