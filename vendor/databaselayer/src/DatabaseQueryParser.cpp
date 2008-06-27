@@ -24,7 +24,7 @@ wxArrayString ParseQueries(const wxString& strQuery)
           str << strQuery.SubString(nLast, i);
           if (!IsEmptyQuery(str))
 		  {
-			printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
+			//printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
             returnArray.Add( str );
 		  }
           nLast = i + 1;
@@ -37,7 +37,7 @@ wxArrayString ParseQueries(const wxString& strQuery)
       str << strQuery.SubString(nLast, strQuery.Length() - 1) << _T(";");
       if (!IsEmptyQuery(str))
 	  {
-		printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
+		//printf("ParseQueries('%s') found a query: %s.\n", strQuery.c_str(), str.c_str());
         returnArray.Add( str );
 	  }
   }

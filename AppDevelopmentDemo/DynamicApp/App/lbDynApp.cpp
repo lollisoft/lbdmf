@@ -575,6 +575,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 	bool isDBAvailable = false;
 	UAP(lb_I_DatabaseOperation, fOpDB)
 
+	_LOG << "lbDynamicApplication::loadDatabaseSchema() called." LOG_
 	
 	UAP(lb_I_Query, sampleQuery)
 	
@@ -1664,6 +1665,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			}
 		}
 	}		
+	
+	if (database == NULL) {
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+
+	}
+	
+	database->close();
+
 	
 	return ERR_NONE;
 }

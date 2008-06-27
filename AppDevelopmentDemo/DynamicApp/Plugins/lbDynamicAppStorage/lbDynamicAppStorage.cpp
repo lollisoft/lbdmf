@@ -1464,7 +1464,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				free(result);
 				return err;
 			} else {
-				_LOG << "Database has been created." LOG_
+				database->close();
+				_LOG << "Database schema has been created." LOG_
 				free(result);
 			}
 		}	
@@ -1600,7 +1601,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				
 				return err;
 			} else {
-				_LOG << "Database has been created." LOG_
+				database->close();
+				_LOG << "Database has been filled." LOG_
 				sampleQuery->enableFKCollecting();
 				free(result);
 			}

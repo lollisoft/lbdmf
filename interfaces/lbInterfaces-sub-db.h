@@ -400,8 +400,13 @@ public:
 	 */        
         virtual lbErrCodes LB_STDCALL last() = 0;
 
+	/**
+	 * \brief Enables refreshing resultset.
+	 */
+	virtual void	LB_STDCALL reopen() = 0;
 
-	virtual void	   LB_STDCALL reopen() = 0;
+	virtual void	LB_STDCALL close() = 0;
+	virtual void	LB_STDCALL open() = 0;
 
 	/** \brief Build new SQL query with where clause.
 	 *
@@ -944,6 +949,8 @@ public:
 	 * \brief Initializion of the database backend.
 	 */
 	virtual lbErrCodes	LB_STDCALL init() = 0;
+	virtual void	LB_STDCALL close() = 0;
+	virtual void	LB_STDCALL open(char* connectionname) = 0;
 
 	virtual lbErrCodes	LB_STDCALL setUser(char* _user) = 0;
 	virtual lbErrCodes	LB_STDCALL setDB(char* _db) = 0;

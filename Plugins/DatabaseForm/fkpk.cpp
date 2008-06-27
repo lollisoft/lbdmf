@@ -174,6 +174,8 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 		_LOG << "Error: Should have got some columns from the query: " << buffer LOG_
 	}
 	
+	sampleQuery->close();
+	
 	free(buffer);
 	
 	cBoxPKNames->Enable();
@@ -256,67 +258,79 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 				break;
 		}
 		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
-	} else {
-		char* dbbackend = meta->getSystemDatabaseBackend();
-		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "Using plugin database backend for UML import operation..." LOG_
-		} else {
-			// Use built in
-			REQUEST(getModuleInstance(), lb_I_Database, database)
-			_LOG << "Using built in database backend for UML import operation..." LOG_
-		}
-
-		if (database == NULL) {
-			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-			return;
-		}
-		
-		database->init();
-		
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
-		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
-		UAP(lb_I_String, PKTable)
-		UAP(lb_I_String, T)
-			
-		T = sourceQuery->getTableName((char*) FKName.c_str());
-		char* fkTable = strdup(T->charrep());
-		
-		char* p = strdup(FKName.c_str());
-		
-		PKTable = sourceQuery->getPKTable(p);
-		
-		free(p);
-		
-		// Delete the entry, we now will put into the configuration
-		
-		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
-		
-		UAP(lb_I_Query, query)
-			
-		char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
-		
-		int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
-		
-		char* buffer = (char*) malloc(size);
-		
-		buffer[0] = 0;
-		
-		sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
-		
-		query = database->getQuery("lbDMF", 0);
-		
-		query->skipFKCollecting();
-		query->query(buffer);
-		query->enableFKCollecting();
 	}
+	
+	// Always add the field to the database. The datamodel didn't put it back to the database yet.
+	char* dbbackend = meta->getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		return;
+	}
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+	
+	UAP(lb_I_String, PKTable)
+	UAP(lb_I_String, T)
+		
+	T = sourceQuery->getTableName((char*) FKName.c_str());
+	char* fkTable = strdup(T->charrep());
+	
+	char* p = strdup(FKName.c_str());
+	
+	PKTable = sourceQuery->getPKTable(p);
+	
+	free(p);
+	
+	// Delete the entry, we now will put into the configuration
+	
+	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+	
+	UAP(lb_I_Query, query)
+		
+	char* buf;
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		buf = "--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('%s','%s', '%s', '%s')";
+	} else {
+		buf = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+	}
+	
+	int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
+	
+	char* buffer = (char*) malloc(size);
+	
+	buffer[0] = 0;
+	
+	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+	
+	sourceQuery->close();
+	database->close();
+
+	query = database->getQuery("lbDMF", 0);
+	
+	query->skipFKCollecting();
+	query->query(buffer);
+	query->enableFKCollecting();
+	query->close();
+	database->close();
+	
 	
 	if (cBoxFKNames->GetCount() > 0) {
 		cBoxFKNames->SetSelection(-1);

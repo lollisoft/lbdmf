@@ -35,6 +35,7 @@
 
 #include <iostream>
 
+class DatabaseLayer;
 
 class lbDatabase :
 public lb_I_Database
@@ -48,6 +49,8 @@ public:
         virtual ~lbDatabase();
 
 	lbErrCodes	LB_STDCALL init();
+	void	LB_STDCALL close();
+	void	LB_STDCALL open(char* connectionname);
 	
 	bool		LB_STDCALL isConnected();
 	
@@ -80,6 +83,7 @@ private:
 	char*	 user;
 	char*	 db;
 	bool	 connected;
+	DatabaseLayer* dbl;
 
 	UAP(lb_I_Container, connPooling)
 };

@@ -15,6 +15,8 @@ extern "C" {
 #include <sqlitefk/src/sql.h>
 #endif
 
+#include <CoreFoundation/CFBase.h>
+
 
 #include <wx/tokenzr.h>
 
@@ -174,6 +176,10 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 {
   ResetErrorCodes();
 
+  if (strQuery == "select parametervalue from formular_parameters where formularid = 1 WHERE id = 1") {
+	Debugger();
+  }
+  
   if (m_pDatabase != NULL)
   {
     wxArrayString QueryArray;
@@ -217,10 +223,11 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			{
 				SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 				strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-				printf(strErrorMessage);
+				printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
 				sqlite3_free(szErrorMessage);
 				return NULL;
 			}
+			printf("SqliteDatabaseLayer::RunQueryWithResults(...) Succeeded direct statement.\n");
 			return NULL;
 		}
 		QueryArray = ParseQueries(strQuery);
@@ -232,13 +239,15 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       wxString strErrorMessage = _("");
       wxString sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
 
+	  printf("Execute splitted query: %s\n", QueryArray[i].c_str());
+
 	  int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer.c_str(), 0, 0, &szErrorMessage);
 	    
       if (szErrorMessage != NULL)
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		printf(strErrorMessage);
+		printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
         sqlite3_free(szErrorMessage);
         return NULL;
       }
@@ -247,22 +256,27 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         SetErrorMessage(strErrorMessage);
+		printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
         ThrowDatabaseException();
         return NULL;
       }
     }
 
+    printf("Execute splitted query: %s\n", QueryArray[QueryArray.size()-1].c_str());
+
     // Create a Prepared statement for the last SQL statement and get a result set from it
     SqlitePreparedStatement* pStatement = (SqlitePreparedStatement*)PrepareStatement(QueryArray[QueryArray.size()-1], false);
     SqliteResultSet* pResultSet = new SqliteResultSet(pStatement, true);
-    if (pResultSet)
+    if (pResultSet) {
       pResultSet->SetEncoding(GetEncoding());
-
+	}
+	
     LogResultSetForCleanup(pResultSet);
     return pResultSet;
   }
   else
   {
+    printf("Error: SqliteDatabaseLayer::RunQueryWithResults() has no database handle!\n");
     return NULL;
   }
 }
@@ -535,53 +549,13 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 			arrPKCols.Add(PKColumn);
 			arrPKTables.Add(PKTable);
 		}
+		
+		CloseResultSet(system_query);
+		system_query = NULL;
+		
 		return arrFKCols.Count();
 	}
 
-#ifdef Bla	
-	if (m_fklist) list_destroy((List*)m_fklist);
-	
-	// Workaround: Parser may fail and m_fklist->len is wrong.
-	int realitems = 0;
-	
-	wxString sysQ = wxString("select sql from sqlite_master where tbl_name = '");
-	sysQ += table;
-	sysQ += "'";
-	
-	DatabaseResultSet* system_query = RunQueryWithResults(sysQ);
-	
-	if (system_query->Next()) {
-		wxString result = 	system_query->GetResultString(1);
-		// Parser needs this
-		result += ";";
-		printf("Get foreign key list for %s.\n", result.c_str());
-		//result = result.Lower();
-		m_fklist = (void*) getForeignKeyList((char*) table.c_str(), (char*) result.c_str());
-		
-		if (m_fklist)	{
-			ListItem* item = list_head((List*) m_fklist);
-			
-			arrFKCols.Clear();
-			arrPKCols.Clear();
-			arrPKTables.Clear();
-			
-			for (int i = 0; i < ((List*) m_fklist)->len; i++) {
-				if (item == NULL) break; 
-				ForeignKey *fk = (ForeignKey *)list_data(item);
-				if (fk == NULL) break;
-				arrFKCols.Add(fk->col);
-				arrPKCols.Add(fk->fcol);
-				arrPKTables.Add(fk->ftab);
-				realitems++;
-				item = list_next(item);
-				if (item == NULL) break; 
-			}
-			
-			((List*) m_fklist)->len = realitems;
-			return realitems;
-		}
-	}
-#endif
 	return 0;
 }
 

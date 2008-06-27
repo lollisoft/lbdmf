@@ -492,7 +492,19 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		_DBPass->setData(DBPass);
 	}
 
+	database->close();
+	
 	sampleQuery = database->getQuery(DBName, 0);
+	
+	
+	// Test to insert some data
+	UAP(lb_I_Query, queryinsert1)
+	queryinsert1 = database->getQuery(DBName, 0);
+	err = queryinsert1->query("--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('...', '...', '...', '...')");
+
+	
+	
+	
 /*...e*/
 		
 /*...svariables:8:*/
@@ -702,6 +714,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
 				fkpkPanel->show();
 				fkpkPanel->destroy();
+				
+				database->open(DBName);
+				sampleQuery->enableFKCollecting();
+				sampleQuery->open();
+				sampleQuery->first();
+				//sampleQuery->PrintData();
 				
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {

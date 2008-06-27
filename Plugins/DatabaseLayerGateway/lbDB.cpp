@@ -211,6 +211,7 @@ public:
 		preparingFKColumns = 0;
 		cursorname = NULL;
 		fetchstatus = 0;
+		theResult = NULL;
 		max_in_cursor_default = max_in_cursor = 100;
 		
 		if (ReadOnlyColumns == NULL) {
@@ -219,6 +220,7 @@ public:
 	}
 	
 	virtual ~lbDatabaseLayerQuery() {
+		close();
 		if (szSql != NULL) {
 			_CL_VERBOSE << "lbDatabaseLayerQuery::~lbDatabaseLayerQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
 			free(szSql);
@@ -233,7 +235,6 @@ public:
 			lpszTable = NULL;
 		}
 		if (cursorname != NULL) free (cursorname);
-		if (currentdbLayer && currentdbLayer->IsOpen()) currentdbLayer->Close(); 
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -325,6 +326,8 @@ public:
 	void						LB_STDCALL setAutoRefresh(bool b);
 	
 	void						LB_STDCALL reopen();
+	void						LB_STDCALL close();
+	void						LB_STDCALL open();
 	
 #ifdef UNBOUND
 	virtual char*				LB_STDCALL getChar(int column);
@@ -455,6 +458,7 @@ private:
 	wxString plainQuery;	// The columns including 'FROM'
 	wxString joinClause;	// If there are JOIN rules
 	wxString whereClause;	// If there are where clauses
+	wxString orderRule;		// If there are order rules
 	
 	wxString cursorWhere;	// Actiual cursor position
 	
@@ -1413,8 +1417,17 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, bool ro) {
+	_LOG << "lbDatabaseLayerQuery::init(...) called." LOG_
 	currentdbLayer = dbLayer;
+	
+	if (currentdbLayer) {
+		_LOG << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer available." LOG_
+	} else {
+		_LOG << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer not available." LOG_
+	}
+	
 	if (!dbLayer || !dbLayer->IsOpen()) {
+		_LOG << "Error: database not opened!" LOG_
 		return ERR_DB_INIT;
 	}
 	
@@ -1477,6 +1490,11 @@ lb_I_Query::lbDBCaseSensity    LB_STDCALL lbDatabaseLayerQuery::getCaseSensity()
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
+	if (bind) {
+		_LOG << "lbDatabaseLayerQuery::query('" << q << "', true) called." LOG_
+	} else {
+		_LOG << "lbDatabaseLayerQuery::query('" << q << "', false) called." LOG_
+	}
 	lbDatabaseLayerBoundColumns* boundcols = NULL;
 
 	// Maybe cursor possible
@@ -1488,9 +1506,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		return ERR_DB_QUERYFAILED;
 	}
 	
-	if (szSql != NULL) free(szSql);
-	
-	szSql = strdup(q);
+	if (szSql != q) {
+		if (szSql != NULL) free(szSql);
+		szSql = strdup(q);
+	}
 	
 	if (theResult != NULL) {
 		///\todo Cleanup resultset.
@@ -1500,6 +1519,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
 		
 		if (theResult != NULL) {
+			_LOG << "Have got a resultset for '" << szSql << "'" LOG_
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
 				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
@@ -1565,13 +1585,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					//cursorFeature = false;
 					whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
 					plainQuery = theQuery.SubString(0, theQuery.Upper().Find("WHERE") - 1);
+				} else {
+					if (theQuery.Upper().Contains(" ORDER ")) {
+						plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
+					} else {
+						plainQuery = theQuery;
+					}
 				}
 
-				if (theQuery.Upper().Contains(" ORDER ")) {
-					plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
-				} else {
-					plainQuery = theQuery;
-				}
 				
 				if (cursorFeature) {
 					int pkeys = currentdbLayer->GetPrimaryKeys(tables[0]);
@@ -1627,7 +1648,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			if (theQuery.Upper().Contains("CREATE")) {
 				return ERR_NONE;
 			}
-
+			_LOG << "Error: Query '" << szSql << "' failed!" LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		_dataFetched = true;
@@ -2221,6 +2242,36 @@ void LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	absolute(backup_cursor);
 }
 
+void LB_STDCALL lbDatabaseLayerQuery::close() {
+	_CL_LOG << "lbDatabaseLayerQuery::close() called." LOG_
+
+	if (currentdbLayer && currentdbLayer->IsOpen()) {
+		bool closed = currentdbLayer->CloseResultSet(theResult);
+		if (closed) {
+			if (szSql) {
+				_CL_LOG << "lbDatabaseLayerQuery::close() closed the resultset (" << szSql << ")." LOG_
+			} else {
+				_CL_LOG << "lbDatabaseLayerQuery::close() closed the resultset." LOG_
+			}
+		} else {
+			if (szSql) {
+				_CL_LOG << "lbDatabaseLayerQuery::close() don't closed the resultset (" << szSql << ")." LOG_
+			} else {
+				_CL_LOG << "lbDatabaseLayerQuery::close() don't closed the resultset." LOG_
+			}
+		}
+		
+		if (theResult) {
+			theResult = NULL;
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseLayerQuery::open() {
+	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
+	query(szSql, true);
+}
+
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	if (cursor < 0) {
 		// Handle underflow
@@ -2265,6 +2316,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		max_in_cursor = count;
 		// Position the cursor at the end
 		cursor = count-1;
+		
+		currentdbLayer->CloseResultSet(tempResult);
 	} else if (cursor >= max_in_cursor) {
 		// Handle overflow
 		
@@ -2307,6 +2360,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			max_in_cursor = count;
 			// Position the cursor at the end
 			cursor = count-1;
+
+			currentdbLayer->CloseResultSet(tempResult);
 		} else {
 			wxString tempSQL = "SELECT ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
@@ -2349,6 +2404,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			max_in_cursor = count;
 			
 			cursor = 0;
+			
+			currentdbLayer->CloseResultSet(tempResult);
 		}
 	}
 
@@ -2371,6 +2428,9 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	if (theResult && theResult->Next()) {
 		ResultSetMetaData* metadata = theResult->GetMetaData();
 		for (int i = 1; i <= metadata->GetColumnCount(); i++) {
+			UAP(lb_I_String, name)
+			name = getColumnName(i);
+			_LOG << "Check field '" << name->charrep() << "'" LOG_
 			if (theResult->IsFieldNull(i)) 
 				setNull(i, true);
 			else
@@ -2379,7 +2439,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 
 		return true;
 	}
-	_CL_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
+	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
 	return false;
 }
 
@@ -3170,13 +3230,19 @@ void lbDatabaseLayerBoundColumn::setReadonly(bool updateable) {
 class lbConnection : public lb_I_Connection
 {
 public:
-        lbConnection()  {
+    lbConnection()  {
 	    ref = STARTREF;
 	    _dbname = NULL;
 	    _dbuser = NULL;
+		dbl = NULL;
 	}
-        virtual ~lbConnection() {
-        	_CL_VERBOSE << "lbConnection::~lbConnection() called" LOG_
+	
+    virtual ~lbConnection() {
+		_LOG << "lbConnection::~lbConnection() called." LOG_
+		if (dbl) {
+			_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
+			dbl->Close();
+		}
 		if (_dbname) free(_dbname);
 		if (_dbuser) free(_dbuser);
 	}
@@ -3210,18 +3276,17 @@ public:
 	    if (name) strcpy(_dbuser, name);
 	}
 	
-	virtual void LB_STDCALL setConnection(HDBC _hdbc) {
-	    hdbc = _hdbc;
+	virtual void LB_STDCALL setConnection(DatabaseLayer* _dbl) {
+		dbl = _dbl;
 	}
 	
-	virtual HDBC LB_STDCALL getConnection() { return hdbc; }
+	virtual DatabaseLayer* LB_STDCALL getConnection() { return dbl; }
 	
 protected:
 
+	DatabaseLayer* dbl;
 	char* _dbname;
 	char* _dbuser;
-	
-	HDBC     hdbc;
 };
 /*...e*/
 
@@ -3234,6 +3299,7 @@ IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbConnection::setData() called." LOG_
 	
 	UAP(lb_I_Connection, con)
 	QI(uk, lb_I_Connection, con)
@@ -3242,8 +3308,18 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	
 	if (con.getPtr() != NULL) {
 	    connection = (lbConnection*) con.getPtr();
-	    
-	    hdbc = connection->getConnection();
+		_LOG << "lbConnection::setData() called and copies the connection." LOG_
+
+		dbl = connection->getConnection();
+		if (dbl) {
+			_LOG << "lbConnection::setData() the connection instance is available." LOG_
+			if (dbl->IsOpen()) {
+				_LOG << "lbConnection::setData() the connection instance is open." LOG_
+			}
+		}
+	    _dbname = connection->getDBName();
+	    _dbuser = connection->getDBUser();
+		connection->setConnection(NULL); // Only one instance should have the database instance.
 	}
 	
 	return ERR_NOT_IMPLEMENTED;
@@ -3268,11 +3344,69 @@ lbDatabase::lbDatabase() {
 	db = NULL;
 	connPooling = NULL;
 	connected = false;
-	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
+	dbl = NULL;
+	_LOG << "lbDatabase::lbDatabase() called." LOG_
 }
 
 lbDatabase::~lbDatabase() {
 	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+	close();
+}
+
+void	LB_STDCALL lbDatabase::close() {
+	_CL_LOG << "lbDatabase::close() called." LOG_
+	if (connPooling != NULL) {
+		_CL_LOG << "lbDatabase::close() Info: Connection pool initialized." LOG_
+		connPooling->deleteAll();
+		connPooling--;
+		connPooling.resetPtr();
+	}
+}
+
+void	LB_STDCALL lbDatabase::open(char* connectionname) {
+	lbErrCodes err = ERR_NONE;
+	if (connectionname == NULL) {
+		_LOG << "lbDatabase::getQuery() Error: Did not got a connection name." LOG_
+		return;
+	}
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(connName, lb_I_KeyBase, key)
+
+	*connName = connectionname;
+
+	if (connPooling == NULL) {
+		_LOG << "lbDatabase::open() Initialize connection pooling." LOG_
+		REQUEST(getModuleInstance(), lb_I_Container, connPooling)
+	}
+
+
+	if (connPooling->exists(&key) == 1) {
+		uk = connPooling->getElement(&key);
+		lbConnection* conn = (lbConnection*) uk.getPtr();
+		
+		dbl = conn->getConnection();
+	} else {
+		dbl = new SqliteDatabaseLayer();
+		lbConnection* conn = new lbConnection();
+		conn->setModuleManager(*&manager, __FILE__, __LINE__);
+		conn->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+
+		conn->setDBName(connectionname);
+		conn->setConnection(dbl);
+
+		if (connPooling->exists(&key) == 0) {
+			connPooling->insert(&uk, &key);
+		}
+	}
+
+	if (dbl == NULL) dbl = new SqliteDatabaseLayer();
+	if (!dbl->IsOpen()) dbl->Open(connectionname);
+	
+
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
@@ -3316,6 +3450,7 @@ bool LB_STDCALL lbDatabase::isConnected() {
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
+	_LOG << "lbDatabase::connect('" << connectionname << "') called." LOG_
 	connected = true;
     return ERR_NONE;
 }
@@ -3325,13 +3460,7 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 	lbDatabaseLayerQuery* query = new lbDatabaseLayerQuery;
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
-	if (connectionname == NULL) {
-		_LOG << "lbDatabase::getQuery() Error: Did not got a connection name." LOG_
-		return NULL;
-	}
-
-	DatabaseLayer* dbl = new SqliteDatabaseLayer();
-	dbl->Open(connectionname);
+	open(connectionname);
 
 	if (query->init(dbl) != ERR_NONE) {
 		_LOG << "ERROR: Initializion of query has been failed!" LOG_
@@ -3531,6 +3660,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 			dbl->CloseResultSet(pResult);
 			pResult = NULL;
 		}
+
 	}
 	
 	return columns.getPtr();

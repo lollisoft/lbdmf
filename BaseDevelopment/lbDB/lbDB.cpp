@@ -385,6 +385,8 @@ public:
 	void		LB_STDCALL setAutoRefresh(bool b);
 
 	void		LB_STDCALL reopen();
+	void	LB_STDCALL close();
+	void	LB_STDCALL open();
 
 #ifdef UNBOUND
         virtual char* 		LB_STDCALL getChar(int column);
@@ -3143,6 +3145,13 @@ void LB_STDCALL lbQuery::unbind() {
 	if (boundColumns != NULL) boundColumns->unbind();
 }
 
+void LB_STDCALL lbQuery::close() {
+}
+
+void LB_STDCALL lbQuery::open() {
+}
+
+
 /*...svoid LB_STDCALL lbQuery\58\\58\reopen\40\\41\:0:*/
 void LB_STDCALL lbQuery::reopen() {
 	RETCODE retcode;
@@ -5225,7 +5234,9 @@ public:
         virtual ~lbDatabase();
 
 	lbErrCodes	LB_STDCALL init();
-	
+	void	LB_STDCALL close();
+	void	LB_STDCALL open(char* connectionname);
+
 	bool		LB_STDCALL isConnected();
 	
 	/**
@@ -5304,6 +5315,14 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
 	return ERR_NONE;
 }
 /*...e*/
+
+void	LB_STDCALL lbDatabase::close() {
+}
+
+void	LB_STDCALL lbDatabase::open(char* connectionname) {
+}
+
+
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "lbInstanceReference::setData(...) not implemented yet" LOG_

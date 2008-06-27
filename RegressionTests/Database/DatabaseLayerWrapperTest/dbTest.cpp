@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 		
 		_CL_LOG << "Database regression tests..." LOG_
 			
-			DatabaseWrapper->init();
+		DatabaseWrapper->init();
 		
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
@@ -167,6 +167,8 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
 			
+			
+		
 		query = DatabaseWrapper->getQuery("lbDMF", 0);
 		
 		
@@ -175,7 +177,7 @@ int main(int argc, char *argv[]) {
 		query1->query("-- Skip rewrite\n" "drop table regressiontest");
 		query1->query("-- Skip rewrite\n" "drop table test");
 		query1->query("-- Skip rewrite\n" "drop table test1");
-		
+	
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
@@ -210,7 +212,7 @@ int main(int argc, char *argv[]) {
 		// I have problems which collecting foreign key data, if no result sets are there.
 		query->skipFKCollecting();
 		query->query(buf);
-			
+		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 			
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
@@ -221,7 +223,57 @@ int main(int argc, char *argv[]) {
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 6', 0, 1)");
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 7', 1, 0)");
 
+		query1->query("insert into test (test,id_reg) values('Bla 1',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 2',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 3',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 4',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 5',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 6',1)");
+		query1->query("insert into test (test,id_reg) values('Bla 7',1)");
+
+		UAP(lb_I_Query, queryread1)
+		UAP(lb_I_Query, queryinsert1)
+		UAP(lb_I_Query, queryinsert2)
+
+		queryread1 = DatabaseWrapper->getQuery("lbDMF", 0);
+		queryread1->enableFKCollecting();
+
+		queryinsert1 = DatabaseWrapper->getQuery("lbDMF", 0);
+
+		err = queryinsert1->query("--Skip Rewrite\ndelete from \"foreignkey_visibledata_mapping\" where \"fkname\" = '...'");
+		err = queryinsert1->query("--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('...', '...', '...', '...')");
+		err = queryinsert1->query("--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('...', '...', '...', '...')");
+
+		queryinsert1->query("select id, fkname, fktable, pkname, pktable from foreignkey_visibledata_mapping");
+		queryinsert1->PrintData();
+
+		err = queryread1->query("select id, test, id_reg from test");
+
+		if (err != ERR_NONE) {
+			_CL_LOG << "Error: Query 'select id, test, id_reg from test' failed." LOG_
+		}
+
+		err = queryread1->first();
+		
+		if ((err == ERR_NONE) || (err == ERR_DB_NODATA)) {
+			_CL_LOG << "Error: No data found for query." LOG_
+		}
+
+		queryread1->close();
+		DatabaseWrapper->close();
+
+		DatabaseWrapper->open("lbDMF");
+		queryinsert2 = DatabaseWrapper->getQuery("lbDMF", 0);
+		err = queryinsert2->query("--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('...', '...', '...', '...')");
+
+		queryread1->open();
+
+		queryinsert2->query("select id, fkname, fktable, pkname, pktable from foreignkey_visibledata_mapping");
+		queryinsert2->PrintData();
+
 		//query1->enableFKCollecting();
+		
+		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
 		query1->query("select id, test, btest, btest1 from regressiontest");
 		
 		query1->PrintData();
@@ -423,6 +475,29 @@ int main(int argc, char *argv[]) {
 			_CL_LOG << "TableName: " << pktableName->charrep() << ", ColumnName: " << pkcolumnName->charrep() << ", KeySequence: " << pkkeySequence->charrep() LOG_
 		}
 		
+		UAP(lb_I_Query, queryread)
+		UAP(lb_I_Query, queryinsert)
+			
+		queryread = DatabaseWrapper->getQuery("lbDMF", 0);
+		err = queryread->query("select * from test");
+
+		if (err != ERR_NONE) {
+			_CL_LOG << "Error: Query 'select * from test' failed." LOG_
+		}
+
+		err = queryread->first();
+		
+		if ((err == ERR_NONE) || (err == ERR_DB_NODATA)) {
+			_CL_LOG << "Error: No data found for query." LOG_
+		}
+		
+		queryinsert = DatabaseWrapper->getQuery("lbDMF", 0);
+
+		err = queryinsert->query("insert into test1 (test1) values ('bla')");
+
+		if (err != ERR_NONE) {
+			_CL_LOG << "Error: Insert into table failed." LOG_
+		}
 		
 		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 
