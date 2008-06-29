@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.47 2008/04/10 06:43:44 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.48 2008/06/29 17:15:26 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.48  2008/06/29 17:15:26  lollisoft
+ * Asking for showing visible fields for foreign keys now works. It get saved and also the usual form editing actions would be saved.
+ *
+ * There is still aproblem when only one field gets asked. So it will result in an index out of range error. And propably asking while opening a detail form is buggy.
+ *
  * Revision 1.47  2008/04/10 06:43:44  lollisoft
  * Corrected non select statement handling.
  *
@@ -249,7 +254,9 @@ public:
 	void LB_STDCALL init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass);
 
 	void LB_STDCALL show() { ShowModal (); };
-	void LB_STDCALL destroy() { Destroy(); };
+	void LB_STDCALL destroy() {
+		Destroy();
+	};
 	
 	/**
 	 * Column has been selected.
@@ -289,7 +296,6 @@ public:
 	UAP(lb_I_Container, ComboboxMapperList)
 	UAP(lb_I_Query, sourceQuery)
 	UAP(lb_I_Database, queryDB)
-
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.

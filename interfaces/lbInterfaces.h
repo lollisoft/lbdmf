@@ -1896,9 +1896,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 	lbErrCodes err = ERR_NONE; \
 	if (singleton_##name.get() == NULL) { \
 	        clsname* instance = new clsname(); \
-		if (!_TRMemValidate(instance)) { \
-			_LOG << "Error: Singleton functor " << #name << " doesn't use TRMem's operator new !" LOG_ \
-		} \
+			if (!_TRMemValidate(instance)) { \
+				_LOG << "Error: Singleton functor " << #name << " doesn't use TRMem's operator new !" LOG_ \
+			} \
 	        *uk = NULL; \
 	        char buf[100] = ""; \
 	        track_Object(instance, "IMPLEMENT_SINGLETON_FUNCTOR - Instantiating"); \

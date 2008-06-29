@@ -492,19 +492,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		_DBPass->setData(DBPass);
 	}
 
-	database->close();
-	
 	sampleQuery = database->getQuery(DBName, 0);
-	
-	
-	// Test to insert some data
-	UAP(lb_I_Query, queryinsert1)
-	queryinsert1 = database->getQuery(DBName, 0);
-	err = queryinsert1->query("--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('...', '...', '...', '...')");
 
-	
-	
-	
 /*...e*/
 		
 /*...svariables:8:*/
@@ -714,13 +703,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
 				fkpkPanel->show();
 				fkpkPanel->destroy();
-				
-				database->open(DBName);
-				sampleQuery->enableFKCollecting();
-				sampleQuery->open();
-				sampleQuery->first();
-				//sampleQuery->PrintData();
-				
+				meta->setLoadFromDatabase(true);
+
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
@@ -746,6 +730,34 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						}
 					}
 				}
+				
+				database->open(DBName);
+				sampleQuery--;
+				sampleQuery = database->getQuery(DBName, 0);
+				sampleQuery->query(SQLString->charrep(), false);
+
+				// Rebind the query and fetch the first entry as it was before finding out foreign keys.
+				if (sampleQuery->bind() != ERR_NONE) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
+
+					*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
+					
+					*msglog = _trans("Failed to bind columns for query:\n\n");
+					*msglog += SQLString->charrep();
+					*msglog += _trans("\n\nDatabase: ");
+					*msglog += _DBName->charrep();
+					*msglog += _trans("\nUser: ");
+					*msglog += _DBUser->charrep();
+
+					_LOG << msglog->charrep() LOG_
+
+					meta->msgBox(_trans("Error"), msg->charrep());
+					return;
+				}
+
+				sampleQuery->first();
+				
 			}
 
 #ifdef USE_FKPK_QUERY			
@@ -810,6 +822,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
 				FKColumnQuery->query(buffer);
 				err = FKColumnQuery->first();
+				
+				sampleQuery->open();
 			}
 #else
 			err = ERR_NONE;

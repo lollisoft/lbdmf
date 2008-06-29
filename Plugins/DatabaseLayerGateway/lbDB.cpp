@@ -1602,6 +1602,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						tempSQL += " from ";
 						tempSQL += tables[0];
+						
+						if (whereClause != "") {
+							tempSQL += " ";
+							tempSQL += whereClause;
+							tempSQL += " ";
+						}
+						
 						tempSQL += " order by ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						
@@ -2281,7 +2288,15 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " FROM ";
 		tempSQL += tables[0];
-		tempSQL += " WHERE ";
+
+		if (whereClause != "") {
+			tempSQL += " ";
+			tempSQL += whereClause;
+			tempSQL += " AND ";
+		} else {
+			tempSQL += " WHERE ";
+		}
+		
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " < ";
 		tempSQL += currentCursorview[0];
@@ -2329,6 +2344,14 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " FROM ";
 			tempSQL += tables[0];
+
+			if (whereClause != "") {
+				tempSQL += " ";
+				tempSQL += whereClause;
+			} else {
+				tempSQL += " WHERE ";
+			}
+		
 			tempSQL += " ORDER BY ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
@@ -2369,7 +2392,15 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += tables[0];
 			
 			if (currentCursorview.Count() > 0) {
-				tempSQL += " WHERE ";
+
+				if (whereClause != "") {
+					tempSQL += " ";
+					tempSQL += whereClause;
+					tempSQL += " AND ";
+				} else {
+					tempSQL += " WHERE ";
+				}
+		
 				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 				tempSQL += " > ";
 			
@@ -3238,9 +3269,9 @@ public:
 	}
 	
     virtual ~lbConnection() {
-		_LOG << "lbConnection::~lbConnection() called." LOG_
+		_CL_LOG << "lbConnection::~lbConnection() called." LOG_
 		if (dbl) {
-			_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
+			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
 			dbl->Close();
 		}
 		if (_dbname) free(_dbname);
@@ -3330,13 +3361,13 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 
 //lb_I_Container* lbDatabase::connPooling = NULL;
 
-BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDatabase)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDatabaseLayerDatabase)
 	ADD_INTERFACE(lb_I_Database)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDatabase, lbDatabase)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbDatabaseLayerDatabase, lbDatabaseLayerDatabase)
 
-lbDatabase::lbDatabase() {
+lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() {
 	ref = STARTREF;
 	henv = 0;
 	hdbc = 0;
@@ -3345,28 +3376,28 @@ lbDatabase::lbDatabase() {
 	connPooling = NULL;
 	connected = false;
 	dbl = NULL;
-	_LOG << "lbDatabase::lbDatabase() called." LOG_
+	_LOG << "lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() called." LOG_
 }
 
-lbDatabase::~lbDatabase() {
-	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() {
+	_CL_LOG << "lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() called." LOG_
 	close();
 }
 
-void	LB_STDCALL lbDatabase::close() {
-	_CL_LOG << "lbDatabase::close() called." LOG_
+void	LB_STDCALL lbDatabaseLayerDatabase::close() {
+	_CL_LOG << "lbDatabaseLayerDatabase::close() called." LOG_
 	if (connPooling != NULL) {
-		_CL_LOG << "lbDatabase::close() Info: Connection pool initialized." LOG_
+		_CL_LOG << "lbDatabaseLayerDatabase::close() Info: Connection pool initialized." LOG_
 		connPooling->deleteAll();
 		connPooling--;
 		connPooling.resetPtr();
 	}
 }
 
-void	LB_STDCALL lbDatabase::open(char* connectionname) {
+void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	if (connectionname == NULL) {
-		_LOG << "lbDatabase::getQuery() Error: Did not got a connection name." LOG_
+		_LOG << "lbDatabaseLayerDatabase::getQuery() Error: Did not got a connection name." LOG_
 		return;
 	}
 
@@ -3379,7 +3410,7 @@ void	LB_STDCALL lbDatabase::open(char* connectionname) {
 	*connName = connectionname;
 
 	if (connPooling == NULL) {
-		_LOG << "lbDatabase::open() Initialize connection pooling." LOG_
+		_LOG << "lbDatabaseLayerDatabase::open() Initialize connection pooling." LOG_
 		REQUEST(getModuleInstance(), lb_I_Container, connPooling)
 	}
 
@@ -3409,53 +3440,53 @@ void	LB_STDCALL lbDatabase::open(char* connectionname) {
 
 }
 
-/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabase::init() {
+/*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\init\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::init() {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "lbInstanceReference::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setUser(char* _user) {
 	if (user != NULL) free(user);
 	user = (char*) malloc(strlen(_user)+1);
 	user[0] = 0;
 	strcpy(user, _user);
-	_CL_VERBOSE << "lbDatabase::setUser('" << user << "') called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::setUser('" << user << "') called." LOG_
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setDB(char* _db) {
 	if (db != NULL) free(db);
 	db = (char*) malloc(strlen(_db)+1);
 	db[0] = 0;
 	strcpy(db, _db);
-	_CL_VERBOSE << "lbDatabase::setDB('" << db << "') called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::setDB('" << db << "') called." LOG_
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* pass) {
-	_CL_VERBOSE << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(char* connectionname, char* pass) {
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
 	return connect(connectionname, db, user, pass);
 }
 
-bool LB_STDCALL lbDatabase::isConnected() {
+bool LB_STDCALL lbDatabaseLayerDatabase::isConnected() {
 	return connected;
 }
 
-/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
-	_LOG << "lbDatabase::connect('" << connectionname << "') called." LOG_
+/*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
+	_LOG << "lbDatabaseLayerDatabase::connect('" << connectionname << "') called." LOG_
 	connected = true;
     return ERR_NONE;
 }
 /*...e*/
-lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) {
+lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, int readonly) {
 	lbErrCodes err = ERR_NONE;
 	lbDatabaseLayerQuery* query = new lbDatabaseLayerQuery;
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
@@ -3476,7 +3507,7 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 }
 /*...e*/
 
-lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
 ///\todo Implement.
@@ -3501,7 +3532,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	return container.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columns++;
@@ -3666,7 +3697,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	return columns.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
@@ -3742,7 +3773,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	return columns.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)

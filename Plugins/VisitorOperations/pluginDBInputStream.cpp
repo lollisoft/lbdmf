@@ -1190,6 +1190,12 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 		
+	/// \todo There is a problem when using Sqlite database wrapper and the cursor emulation.
+	
+	/*
+	 * The where clause would propably replaced wrongly by the ID = 1 where clause.
+	 */
+		
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
@@ -1230,7 +1236,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
-				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Get query object for " << ConnectionName->charrep() LOG_
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
 				form_query = db->getQuery(ConnectionName->charrep(), 0);
 				
 				form_query->enableFKCollecting();
@@ -1265,8 +1271,8 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							
 							T = form_query->getTableName(name->charrep());
 							
-							sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
-									"where FKName = '%s' and FKTable = '%s'", name->charrep(), T->charrep());
+							sprintf(buffer, "select pkname, pktable	from foreignkey_visibledata_mapping "
+									"where fkname = '%s' and fktable = '%s'", name->charrep(), T->charrep());
 							
 							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
 								UAP(lb_I_String, PKName)
@@ -1391,7 +1397,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
-				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Get query object for " << ConnectionName->charrep() LOG_
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
 				form_query = db->getQuery(ConnectionName->charrep(), 0);
 				
 				form_query->enableFKCollecting();
@@ -1421,8 +1427,8 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							char* buffer = (char*) malloc(1000);
 							buffer[0] = 0;
 							
-							sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
-									"where FKName = '%s' and FKTable = '%s'", name->charrep(), form_query->getTableName(name->charrep()));
+							sprintf(buffer, "select pkname, pktable	from foreignkey_visibledata_mapping "
+									"where fkname = '%s' and fktable = '%s'", name->charrep(), form_query->getTableName(name->charrep()));
 							
 							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
 								UAP(lb_I_String, PKName)

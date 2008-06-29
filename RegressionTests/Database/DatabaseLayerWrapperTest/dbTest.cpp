@@ -87,11 +87,11 @@ int main(int argc, char *argv[]) {
 	mm = getModuleInstance();
 
 	UAP_REQUEST(mm, lb_I_String, preload)
+	UAP_REQUEST(mm, lb_I_PluginManager, PM)
 	
 	//PM->initialize();
 	
 	{
-		UAP_REQUEST(mm, lb_I_PluginManager, PM)
 		//UAP_REQUEST(mm, lb_I_Database, preloaddb)
 		UAP(lb_I_Unknown, ukDatabaseWrapper)
 		UAP(lb_I_Database, DatabaseWrapper)
@@ -502,9 +502,10 @@ int main(int argc, char *argv[]) {
 		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 
 		//preloaddb.resetPtr();
-		PM->unload();
-		unHookAll();
 	}
+
+	PM->unload();
+	unHookAll();
 
 }
 

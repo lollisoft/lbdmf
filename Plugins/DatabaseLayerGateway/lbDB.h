@@ -37,7 +37,7 @@
 
 class DatabaseLayer;
 
-class lbDatabase :
+class lbDatabaseLayerDatabase :
 public lb_I_Database
 {
 private:
@@ -45,8 +45,8 @@ private:
 	DECLARE_LB_UNKNOWN()
 
 public:
-        lbDatabase();
-        virtual ~lbDatabase();
+        lbDatabaseLayerDatabase();
+        virtual ~lbDatabaseLayerDatabase();
 
 	lbErrCodes	LB_STDCALL init();
 	void	LB_STDCALL close();
@@ -96,10 +96,9 @@ extern "C" {
 /*...e*/
 
 //lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
-DECLARE_SINGLETON_FUNCTOR(instanceOfDatabase)
+DECLARE_SINGLETON_FUNCTOR(instanceOflbDatabaseLayerDatabase)
 DECLARE_FUNCTOR(instanceOfConnection)
 DECLARE_FUNCTOR(instanceOfDBInterfaceRepository)
-DECLARE_FUNCTOR(instanceOfDatabaseForm)
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
 }

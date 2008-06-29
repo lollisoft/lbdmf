@@ -135,10 +135,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (impl == NULL) {
-		lbDatabase* Gateway = new lbDatabase();
-		Gateway->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
-		QI(Gateway, lb_I_Unknown, impl)
+		instanceOflbDatabaseLayerDatabase(&impl, manager.getPtr(), __FILE__, __LINE__);
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -150,13 +147,8 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (impl == NULL) {
-
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
-	
-		lbDatabase* Gateway = new lbDatabase();
-		Gateway->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
-		QI(Gateway, lb_I_Unknown, impl)
+		instanceOflbDatabaseLayerDatabase(&impl, manager.getPtr(), __FILE__, __LINE__);
 	}
 	
 	lb_I_Unknown* r = impl.getPtr();
@@ -167,9 +159,10 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::getImplementation() {
 void LB_STDCALL lbPluginDatabase::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
-	if (impl != NULL) {
+/*	if (impl != NULL) {
 		impl->release(__FILE__, __LINE__);
 		impl.resetPtr();
 	}
+*/
 }
 

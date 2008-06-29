@@ -98,6 +98,9 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	ref = STARTREF;
 	pass = 0;
 	_FoimularID = -1; 
+	_DBUser = NULL;
+	_DBPass = NULL;
+	_DBName = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(long FormularID) 
@@ -107,15 +110,18 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	ref = STARTREF;
 	pass = 0;
 	_FoimularID = FormularID; 
+	_DBUser = NULL;
+	_DBPass = NULL;
+	_DBName = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
-
-	if (_DBUser) free(_DBUser);
-	if (_DBPass) free(_DBPass);
-	if (_DBName) free(_DBName);
-
+	if (_DBUser != NULL) free(_DBUser);
+	if (_DBPass != NULL) free(_DBPass);
+	if (_DBName != NULL) free(_DBName);
+	sourceQuery.resetPtr(); // Propably a reference count problem 
 }
+
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
 
