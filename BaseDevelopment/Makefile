@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.181 $
+# * $Revision: 1.182 $
 # * $Name:  $
-# * $Id: Makefile,v 1.181 2008/06/08 22:08:47 lollisoft Exp $
+# * $Id: Makefile,v 1.182 2008/07/13 08:02:15 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.182  2008/07/13 08:02:15  lollisoft
+# * Builds before update to Mac OS X 10.5
+# *
 # * Revision 1.181  2008/06/08 22:08:47  lollisoft
 # * Avoid failures if tvision is not available.
 # *
@@ -761,6 +764,7 @@ BASEDIRECTORIES= \
 	../AppDevelopment \
 	../ServerPlugins \
 	../ClientPlugins \
+	../vendor/tvision \
 	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
