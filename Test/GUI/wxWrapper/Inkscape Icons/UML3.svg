@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Bouml (http://bouml.free.fr/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="198" height="136" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="182" y="32" width="3" height="91" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="64" y="120" width="121" height="3" />
+	<rect fill="#ffffc0" stroke="black" stroke-width="1" stroke-opacity="1" x="60" y="28" width="122" height="92" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="121" y="43">Adresse</text>
+	<line stroke="black" stroke-opacity="1" x1="60" y1="46" x2="182" y2="46" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="64" y="61">Strasse : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="64" y="77">Hausnummer : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="64" y="93">Stadt : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="64" y="109">Plz : string</text>
+	<line stroke="black" stroke-opacity="1" x1="60" y1="112" x2="182" y2="112" />
+</g>
+</svg>

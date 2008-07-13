@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Bouml (http://bouml.free.fr/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="199" height="147" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="183" y="27" width="3" height="107" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="63" y="131" width="123" height="3" />
+	<rect fill="#ffffc0" stroke="black" stroke-width="1" stroke-opacity="1" x="59" y="23" width="124" height="108" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="121" y="38">Artikel</text>
+	<line stroke="black" stroke-opacity="1" x1="59" y1="41" x2="183" y2="41" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="63" y="56">Name : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="63" y="72">Preis : float</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="63" y="88">Einheit : int</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="63" y="104">Beschreibung : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="63" y="120">Menge : float</text>
+	<line stroke="black" stroke-opacity="1" x1="59" y1="123" x2="183" y2="123" />
+</g>
+</svg>

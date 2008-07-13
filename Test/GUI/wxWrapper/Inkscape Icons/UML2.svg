@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Bouml (http://bouml.free.fr/) -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="189" height="131" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g>
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="173" y="43" width="3" height="75" />
+	<rect fill="#808080" stroke="none" stroke-opacity="1" x="59" y="115" width="117" height="3" />
+	<rect fill="#ffffc0" stroke="black" stroke-width="1" stroke-opacity="1" x="55" y="39" width="118" height="76" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" font-weight="bold" text-anchor="middle" x="114" y="54">Kunde</text>
+	<line stroke="black" stroke-opacity="1" x1="55" y1="57" x2="173" y2="57" />
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="59" y="72">Kundennummer : int</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="59" y="88">Firmenname : string</text>
+	<text font-family="Helvetica" font-size="13" fill="#000000" xml:space="preserve" x="59" y="104">Notiz : bigstring</text>
+	<line stroke="black" stroke-opacity="1" x1="55" y1="107" x2="173" y2="107" />
+</g>
+</svg>
