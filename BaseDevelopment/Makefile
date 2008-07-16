@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.182 $
+# * $Revision: 1.183 $
 # * $Name:  $
-# * $Id: Makefile,v 1.182 2008/07/13 08:02:15 lollisoft Exp $
+# * $Id: Makefile,v 1.183 2008/07/16 10:04:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.183  2008/07/16 10:04:40  lollisoft
+# * Deactivated AppDevelopment target in cruisecontrol build.
+# *
 # * Revision 1.182  2008/07/13 08:02:15  lollisoft
 # * Builds before update to Mac OS X 10.5
 # *
@@ -688,12 +691,23 @@ BASEDIRECTORIES= \
 endif
 
 ifeq ($(OSTYPE), linux)
+ifndef CRUISECONTROL
 BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment
+endif
+
+ifdef CRUISECONTROL
+BASEDIRECTORIES= \
+	../Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../Modules \
+	../RegressionTests
+endif
+
 
 #	../ServerPlugins \
 #	../ClientPlugins
