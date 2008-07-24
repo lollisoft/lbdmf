@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -339,8 +339,8 @@ int main(int argc, char *argv[]) {
 /*...e*/
 
 /*...sCLONE_TEST:16:*/
-		#ifdef CLONE_TEST
-		UAP(lb_I_Container, clone)
+	#ifdef CLONE_TEST
+	UAP(lb_I_Container, clone)
 	
 		uk = container->clone(__FILE__, __LINE__);
 		QI(uk, lb_I_Container, clone)

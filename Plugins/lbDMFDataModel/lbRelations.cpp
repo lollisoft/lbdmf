@@ -405,6 +405,8 @@ long  LB_STDCALL lbApplicationFormularsRelationModel::addRelation(long app_id, l
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
+	_LOG << "lbApplicationFormularsRelationModel::addRelation(" << app_id << ", " << user_id << ", " << _id << ")." LOG_
+	
 	FormularID->setData(user_id);
 	AppID->setData(app_id);
 	ID->setData(_id);

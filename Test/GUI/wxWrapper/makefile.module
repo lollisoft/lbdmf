@@ -142,13 +142,19 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DWXUSINGDLL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
 
+ifeq ($(OSNAME), Panther)
+AUIFRAMEWORK=-framework wxAUI
+else
+AUIFRAMEWORK=
+endif
+
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
-L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
 endif
 
 ifeq ($(DEBUG), no)
-L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
 endif
 VENDORLIBS=
 endif

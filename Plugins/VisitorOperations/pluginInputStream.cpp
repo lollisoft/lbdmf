@@ -944,7 +944,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	
 	*iStream >> temp;
 	app->setUserName(temp);
-
+	
+	_LOG << "Metaapplication has got the username: '" << temp << "'." LOG_
+	
 	*iStream >> b;
 	app->setAutoload(b);
 	

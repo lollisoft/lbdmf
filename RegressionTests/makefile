@@ -55,6 +55,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
 	Database \
+	ContainerTest \
 	Basetypes \
 	Memory \
 	MetaApplication \
@@ -74,6 +75,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
 	Database \
+	ContainerTest \
 	Basetypes \
 	Memory \
 	MetaApplication \
@@ -96,6 +98,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
 	Database \
+	ContainerTest \
 	Basetypes \
 	Memory \
 	MetaApplication \
@@ -117,6 +120,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Refresh \
 	Database/FKTest \
 	Database \
+	ContainerTest \
 	Basetypes \
 	Memory \
 	MetaApplication \
@@ -170,6 +174,10 @@ Database/Plain-ODBC-Test-Blob: dummy
 
 Database/Plain-ODBC-Test-Refresh: dummy
 	$(MAKE) -C $@ -e MODULE=plainODBCTestRefresh -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+ContainerTest: dummy
+	$(MAKE) -C $@ -e MODULE=ContainerTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 Database: dummy

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.183 $
+# * $Revision: 1.184 $
 # * $Name:  $
-# * $Id: Makefile,v 1.183 2008/07/16 10:04:40 lollisoft Exp $
+# * $Id: Makefile,v 1.184 2008/07/24 20:53:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.184  2008/07/24 20:53:36  lollisoft
+# * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+# *
 # * Revision 1.183  2008/07/16 10:04:40  lollisoft
 # * Deactivated AppDevelopment target in cruisecontrol build.
 # *
@@ -1493,12 +1496,16 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
+ifeq ($(OSNAME), Panther)
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+endif
 
 ../vendor/wxaui-0.9.1/sample: dummy
+ifeq ($(OSNAME), Panther)
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+endif
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)

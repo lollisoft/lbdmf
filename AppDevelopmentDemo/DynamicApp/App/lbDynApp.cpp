@@ -2548,12 +2548,16 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
+	_LOG << "Load application formulars of '" << app << "' with ID = '" << meta->getApplicationID() << "' for user '" << user << "'." LOG_
+	
 	if ((forms != NULL) && (ApplicationFormulars != NULL)) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, AppIDComp)
 		int unused;
 		bool toolbaradded = false;
 		AppID->setData(meta->getApplicationID());
+
+		_LOG << "Load the formulars by document ..." LOG_
 		
 		char* ed = strdup(_trans("&Edit"));
 		char* menu = strdup(_trans(app));
@@ -2565,6 +2569,8 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 		while (ApplicationFormulars->hasMoreRelations()) {
 			ApplicationFormulars->setNextRelation();
 			AppIDComp->setData(ApplicationFormulars->getApplicationID());
+			
+			_LOG << "Check formular ID = '" << ApplicationFormulars->getFormularID() << "' and their application ID = '" << ApplicationFormulars->getApplicationID() << "'." LOG_ 
 			
 			if (AppIDComp->equals(*&AppID)) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, EventName)
@@ -2619,8 +2625,11 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 		bool toolbaradded = false;
 		int unused;
 		
+		_LOG << "Load the formulars by database access (fallback) ..." LOG_
+		
 		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			meta->msgBox("Error", "Failed to connect to required system database. (No local file available)");
+			_LOG << "Error: Failed to get a connection to the system database." LOG_
 			return;
 		}
 		

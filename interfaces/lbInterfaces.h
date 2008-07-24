@@ -661,9 +661,18 @@ typedef unsigned short u_short;
 typedef unsigned short byte;
 typedef unsigned short u_short;
 #endif
-
+#ifdef OSX
+#if (OSNAME == Panther)
 typedef unsigned long DWORD;
-
+#endif
+#if (OSTYPE == Leopard)
+//typedef unsigned int DWORD; // Leopard with IODBC
+typedef unsigned long DWORD;
+#endif
+#endif
+#ifndef OSX
+typedef unsigned long DWORD;
+#endif
 typedef unsigned short LB_DATA;
 typedef unsigned short u_short;
 /*...e*/

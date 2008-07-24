@@ -92,7 +92,7 @@
 #endif
 
 #ifdef USE_WXAUI
-#include <manager.h>
+#include <wx/aui/aui.h>
 #endif
 
 /*...e*/
@@ -2066,7 +2066,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 				
 #ifdef USE_WXAUI
-		m_mgr.AddPane(maintb, wxPaneInfo().
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
 			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
 			  ToolbarPane().Top().
 			  Fixed().
@@ -2134,7 +2134,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #ifdef USE_WXAUI
 		m_mgr.DetachPane(maintb);
 
-		m_mgr.AddPane(maintb, wxPaneInfo().
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
 			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
 			  ToolbarPane().Top().
 			  Fixed().
@@ -2172,7 +2172,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #endif
 				
 #ifdef USE_WXAUI
-		m_mgr.AddPane(tb, wxPaneInfo().
+		m_mgr.AddPane(tb, wxAuiPaneInfo().
 					  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
 					  ToolbarPane().Top().
 					  //Fixed().
@@ -2296,7 +2296,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #ifdef USE_WXAUI			
 			m_mgr.DetachPane(tb);
 			
-			m_mgr.AddPane(tb, wxPaneInfo().
+			m_mgr.AddPane(tb, wxAuiPaneInfo().
 				  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
         		          ToolbarPane().Top().
 						  //Fixed().
@@ -2306,7 +2306,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane(wxT("Main Toolbar")).window;
 			m_mgr.DetachPane(maintb);
 			
-			m_mgr.AddPane(maintb, wxPaneInfo().
+			m_mgr.AddPane(maintb, wxAuiPaneInfo().
 				  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
         		          ToolbarPane().Top().
 						  //Fixed().
@@ -2617,7 +2617,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 */
 		
 
-		m_mgr.AddPane(pg, wxPaneInfo().
+		m_mgr.AddPane(pg, wxAuiPaneInfo().
 			Name(wxT("Properties")).Caption(wxT("Properties")).
 			//Float().FloatingPosition(GetStartPosition()).
 			Left().

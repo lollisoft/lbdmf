@@ -3017,7 +3017,19 @@ lb_I_String* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		SQLPOINTER	CharacterAttributePtr;
 		SQLSMALLINT	BufferLength;
 		SQLSMALLINT	StringLengthPtr = 0;
+
+/// \todo Check related code for this changes.		
+#ifndef OSX		
 		SQLPOINTER	NumericAttributePtr;
+#endif
+#ifdef OSX
+	#if (OSNAME == Leopard)
+		//SQLINTEGER* NumericAttributePtr; // Leopard IODBC
+		SQLPOINTER	NumericAttributePtr;
+	#else
+		SQLPOINTER	NumericAttributePtr;
+	#endif
+#endif
 		
 		SQLINTEGER	Int = 0;
 		

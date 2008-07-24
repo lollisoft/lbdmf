@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.117 $
+# * $Revision: 1.118 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.117 2008/06/05 19:25:08 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.118 2008/07/24 20:53:36 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.118  2008/07/24 20:53:36  lollisoft
+# * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+# *
 # * Revision 1.117  2008/06/05 19:25:08  lollisoft
 # * First target (lbHook) compiles the cpp file with OW, but link fails propably due to wrong link commands.
 # *
@@ -1187,6 +1190,19 @@ endif
 
 ifeq ($(OSTYPE), osx)
 
+OSVERSION_=$(OSVERSION)
+OSPLATFORM_=$(OSPLATFORM)
+
+#OSVERSION=9.0.0
+#OSPLATFORM=ppc
+
+
+ifeq ($(OSVERSION_), 9.0.0)
+OSNAME=Leopard
+else
+OSNAME=Panther
+endif
+
 COMPILER_VERSION=
 #COMPILER_VERSION=-4
 
@@ -1210,8 +1226,8 @@ endif
 ifeq ($(DEBUG), yes)
 C_OPS   = -c -g -DUNIX -DLINUX -DOSX
 endif
-C_SOOPS = $(C_OPS)
-C_ELFOPS= $(C_OPS)
+C_SOOPS = $(C_OPS) -D$(OSNAME)
+C_ELFOPS= $(C_OPS) -D$(OSNAME)
 L_OPS   = -o
 LIBS    = #-lc /usr/lib/libSystem.dylib #-lcurses #-llibstdc++
 #-lefence

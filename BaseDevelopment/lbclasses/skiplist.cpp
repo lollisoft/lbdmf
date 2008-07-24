@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.53 2008/02/12 21:36:27 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.54 2008/07/24 20:53:36 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.54  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.53  2008/02/12 21:36:27  lollisoft
  * Added code that allows to store parameter sets into the meta application file.
  *
@@ -404,6 +407,10 @@ lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
 		}
 	
 	return ERR_NONE;
+}
+
+void LB_STDCALL SkipList::setCloning(bool doClone) {
+	cloning = doClone;
 }
 
 SkipList::SkipList() {

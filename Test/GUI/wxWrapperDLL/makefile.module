@@ -144,11 +144,18 @@ endif
 C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DWXUSINGDLL `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
+
+ifeq ($(OSNAME), Panther)
+AUIFRAMEWORK=-framework wxAUI
+else
+AUIFRAMEWORK=
+endif
+
 ifeq ($(DEBUG), yes)
-L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
 ifeq ($(DEBUG), no)
-L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 endif
 

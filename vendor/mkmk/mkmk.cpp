@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.95 $
+ * $Revision: 1.96 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.95 2008/06/07 10:11:34 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.96 2008/07/24 20:53:36 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.96  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.95  2008/06/07 10:11:34  lollisoft
  * Beautified some code.
  *
@@ -875,7 +878,7 @@ void writeBundleTarget(char* modulename) {
   // Write Mac OS X Bundle
   printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
   printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
-  printf("\t\t-$(HOME)/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
+  printf("\t\t-$(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
   printf("\t\trm -Rf %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
@@ -886,16 +889,20 @@ void writeBundleTarget(char* modulename) {
   
   printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
   printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
-  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
+#ifdef OSNAME_Panther
+  printf("\t\t-rm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
+#endif
   printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
 
   printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
+#ifdef OSNAME_Panther
+  printf("\t\t-cp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
+#endif
   printf("\t\tcp -R $(prefix)/Library/Frameworks/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
   printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
-  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
   printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
   printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 //  printf("\t\t\n", modulename);
@@ -1735,7 +1742,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.95 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.96 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

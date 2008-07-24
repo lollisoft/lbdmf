@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.119 $
+ * $Revision: 1.120 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.119 2007/11/16 20:53:19 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.120 2008/07/24 20:53:36 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.120  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.119  2007/11/16 20:53:19  lollisoft
  * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
  *
@@ -584,6 +587,9 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(SkipList)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void LB_STDCALL SkipList::setCloning(bool doClone) {
+	cloning = doClone;
+}
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "SkipList::setData(...) not implemented yet" LOG_
@@ -3368,6 +3374,10 @@ lbModuleContainer::lbModuleContainer() {
 lbModuleContainer::~lbModuleContainer() {
 }
 
+
+void LB_STDCALL lbModuleContainer::setCloning(bool doClone) {
+	cloning = doClone;
+}
 
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbModuleContainer)
 

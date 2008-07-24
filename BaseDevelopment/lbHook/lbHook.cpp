@@ -937,7 +937,8 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 	_Modules* temp_skipped = NULL;
 
 	if (lb_log) {
-		lb_log->release(__FILE__, __LINE__);
+		_LOG << "unHookAll() releases log instance. This should be the last entry for this process." LOG_
+		//lb_log->release(__FILE__, __LINE__);
 	}
 
 	if (locale != NULL) {

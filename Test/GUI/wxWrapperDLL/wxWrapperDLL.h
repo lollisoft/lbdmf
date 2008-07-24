@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.31 2008/05/19 06:42:31 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.32 2008/07/24 20:53:36 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.32  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.31  2008/05/19 06:42:31  lollisoft
  * Added code to check for availability of any database. Corrected splash screen and modal dialog problems.
  *
@@ -324,7 +327,7 @@ public:
 	bool LB_STDCALL isPanelUsage() { return panelUsage; }
 	
 #ifdef USE_WXAUI
-	wxFrameManager& getAUIManager() { return m_mgr; }
+	wxAuiManager& getAUIManager() { return m_mgr; }
 #endif		
 
 
@@ -409,7 +412,7 @@ public:
 	
 #ifdef USE_WXAUI
 private:
-	wxFrameManager m_mgr;
+	wxAuiManager m_mgr;
 	DECLARE_EVENT_TABLE()
 #endif		
 

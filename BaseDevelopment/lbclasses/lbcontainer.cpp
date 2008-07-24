@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.29 2007/04/22 13:34:11 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.30 2008/07/24 20:53:36 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.30  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.29  2007/04/22 13:34:11  lollisoft
  * Minor change in include location.
  *
@@ -212,13 +215,11 @@ lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+void LB_STDCALL lbContainer::setCloning(bool doClone) {
+	cloning = doClone;
+}
 
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbContainer)
-
-
-
-
-
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
         ADD_INTERFACE(lb_I_Element)

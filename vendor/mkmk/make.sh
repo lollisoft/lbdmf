@@ -16,8 +16,20 @@ if [ $OSTYPE = linux ]; then
 CPP=g++
 fi
 
+if [ $OSTYPE = osx ]; then
 
-$CPP mkmk.cpp -c -DUNIX \
+if [ $OSVERSION = 9.0.0 ]; then
+OSNAME=Leopard
+else
+OSNAME=Panther
+endif
+fi
+
+fi
+
+echo $OSNAME
+
+$CPP mkmk.cpp -c -DUNIX -DOSNAME=$OSNAME \
     -I /usr/include \
     -I ../dosdir
 

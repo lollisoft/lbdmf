@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.78 2008/02/12 21:36:27 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.79 2008/07/24 20:53:36 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.79  2008/07/24 20:53:36  lollisoft
+ * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
+ *
  * Revision 1.78  2008/02/12 21:36:27  lollisoft
  * Added code that allows to store parameter sets into the meta application file.
  *
@@ -1194,7 +1197,7 @@ protected: \
         \
         virtual void LB_STDCALL deleteAll(); \
         virtual void LB_STDCALL detachAll() { canDeleteObjects = false; } \
-		virtual void LB_STDCALL setCloning(bool doClone=true) { cloning = doClone; } \
+		virtual void LB_STDCALL setCloning(bool doClone=true); \
 		virtual lb_I_KeyBase* LB_STDCALL currentKey(); \
 protected: \
     int count; \
