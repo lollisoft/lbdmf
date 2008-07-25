@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.54 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.55 2008/07/25 16:43:50 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.55  2008/07/25 16:43:50  lollisoft
+ * Fixed application crash at exit.
+ *
  * Revision 1.54  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -453,7 +456,9 @@ int LB_STDCALL SkipList::Count() {
         return count; 
 } 
 /*...e*/
-
+void LB_STDCALL SkipList::detachAll() {
+	canDeleteObjects = false;
+}
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() {
 	if (can_dump() == 1) {

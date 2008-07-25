@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.79 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.80 2008/07/25 16:43:50 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.80  2008/07/25 16:43:50  lollisoft
+ * Fixed application crash at exit.
+ *
  * Revision 1.79  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -1196,7 +1199,7 @@ protected: \
         virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e); \
         \
         virtual void LB_STDCALL deleteAll(); \
-        virtual void LB_STDCALL detachAll() { canDeleteObjects = false; } \
+        virtual void LB_STDCALL detachAll(); \
 		virtual void LB_STDCALL setCloning(bool doClone=true); \
 		virtual lb_I_KeyBase* LB_STDCALL currentKey(); \
 protected: \
@@ -1368,6 +1371,7 @@ void LB_STDCALL classname::deleteAll() { \
     RELEASE(container_data); \
 \
 } \
+void LB_STDCALL classname::detachAll() { canDeleteObjects = false; } \
 \
 int LB_STDCALL classname::exists(lb_I_KeyBase** const key) { \
     if (getElement(key) == NULL) return 0; \

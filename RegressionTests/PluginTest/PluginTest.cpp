@@ -198,7 +198,7 @@ int main(int argc, char *argv[]) {
 		
 					pl->initialize();
 				
-					_CL_LOG << "Plugin name: " << pl->getName() LOG_
+					_CL_LOG << "Plugin name: " << pl->getName() << " from " << pl->getModule() << "." LOG_
 				
 					COUT << "Load (y/n) ? ";
 					CIN >> answer;

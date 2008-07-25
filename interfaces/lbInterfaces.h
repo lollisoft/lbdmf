@@ -3812,8 +3812,8 @@ void LB_STDCALL cls::enumPlugins() { \
 	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace) \
 	Pl##plugin##namespace->setModule(_module->charrep()); \
 	Pl##plugin##namespace->setName(#plugin); \
-	Pl##plugin##namespace->setNamespace(#namespace);
-
+	Pl##plugin##namespace->setNamespace(#namespace); \
+	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << "' in '" << _module->charrep() << "' added." LOG_
 
 #define END_PLUGINS() }
 

@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.55 2007/11/16 20:53:19 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.56 2008/07/25 16:43:50 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.56  2008/07/25 16:43:50  lollisoft
+ * Fixed application crash at exit.
+ *
  * Revision 1.55  2007/11/16 20:53:19  lollisoft
  * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
  *
@@ -892,8 +895,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 				QI(uk, lb_I_PluginModule, plM)
 		
-				_CL_LOG << "Got a plugin module with " << plM->getRefCount() << " references." LOG_
-
 				if (PluginContainer != NULL) {
 					PluginContainer--;
 					PluginContainer.resetPtr();
@@ -905,8 +906,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 					return NULL;
 				}
-				
-				_CL_LOG << "Got a PluginContainer with " << PluginContainer->getRefCount() << " references." LOG_
 
 				if (PluginContainer->Count() == 0) {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
@@ -1247,7 +1246,7 @@ lbPlugin::lbPlugin() {
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
 	if (implementation != NULL) 
-		_CL_LOG << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
+		_CL_VERBOSE << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
 
 	if (_module) free(_module);
 	if (_name) free(_name);
@@ -1272,7 +1271,7 @@ lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	// getAttached increments reference, but this is not needed here. 
 	implementation--;
 	
-        return ERR_NOT_IMPLEMENTED;
+	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 /*...svoid LB_STDCALL lbPlugin\58\\58\setPluginManager\40\lb_I_PluginManager\42\ plM\41\:0:*/
@@ -1434,13 +1433,13 @@ void LB_STDCALL lbPlugin::initialize() {
 
 	preinitialize();
 
-	_CL_LOG << "lbPlugin::initialize() has preinitialized underlying class." LOG_
+	_CL_VERBOSE << "lbPlugin::initialize() has preinitialized underlying class." LOG_
 
 	if (isPreInitialized && !postInitialized) {
 		UAP(lb_I_PluginImpl, impl)		
 		QI(implementation, lb_I_PluginImpl, impl)
 
-		_CL_LOG << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
+		_CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
 		impl->initialize();
 	}
 	_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_

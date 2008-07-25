@@ -2247,6 +2247,29 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			if (plDynamicAppStorageUMLXMIImport != NULL) {
 				ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
 				
+				//exportApplicationToXMLBuffer
+				
+				UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
+				UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
+				
+				plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
+				
+				// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
+				if (plDynamicAppStorageXMLFormat != NULL) {
+					ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
+					
+					if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
+						eman->registerEvent("exportApplicationToXMLBuffer", unused);
+						
+						dispatcher->addEventHandlerFn(this, 
+													  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
+						
+						//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
+					}
+				} else {
+					_LOG << "Warning: No XsltTransformer as a lb_I_DelegatedAction available." LOG_
+				}
+				
 				if (eman->resolveEvent("importUMLXMIDocIntoApplication", unused) == ERR_EVENT_NOTREGISTERED) {
 					eman->registerEvent("importUMLXMIDocIntoApplication", unused);
 					
@@ -2282,28 +2305,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 */
 					editProperties(NULL);
 				}
-				
-				//exportApplicationToXMLBuffer
-				
-				UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
-				UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
-					
-				plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
-
-				// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
-				if (plDynamicAppStorageXMLFormat != NULL) {
-					ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
-					
-					if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
-						eman->registerEvent("exportApplicationToXMLBuffer", unused);
-						
-						dispatcher->addEventHandlerFn(this, 
-													  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
-						
-						//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
-					}
-				}
-				
 			}					
 		} else {
 			if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();

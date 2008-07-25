@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.120 $
+ * $Revision: 1.121 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.120 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.121 2008/07/25 16:43:50 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.121  2008/07/25 16:43:50  lollisoft
+ * Fixed application crash at exit.
+ *
  * Revision 1.120  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -625,6 +628,9 @@ void LB_STDCALL SkipList::deleteAll() {
 	skipiterator = NULL;
 } 
 /*...e*/
+void LB_STDCALL SkipList::detachAll() {
+	canDeleteObjects = false;
+}
 /*...sSkipList\58\\58\exists\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) { 
     lb_I_Unknown* s = search(*key);
