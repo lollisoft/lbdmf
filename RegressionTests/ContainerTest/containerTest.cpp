@@ -91,6 +91,24 @@ void fillContainer(lb_I_Container* container) {
 	}
 }
 
+void searchContainerElement(lb_I_Container* container, int i) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
+	QI(IData, lb_I_KeyBase, key)
+	
+	IData->setData(i);
+	
+	if (container->exists(&key) == 1) {
+		UAP(lb_I_String, SData)
+		UAP(lb_I_Unknown, uk)
+		uk = container->getElement(&key);
+		QI(uk, lb_I_String, SData)
+		_CL_LOG << "Found element: " << SData->charrep() LOG_
+	} else {
+		_CL_LOG << "Don't found element: " << i LOG_
+	}
+}
 
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
@@ -119,5 +137,17 @@ int main(int argc, char *argv[]) {
 	fillContainer(*&container1);
 	printContainer(*&container1);
 
+	searchContainerElement(*&container, 1);
+	searchContainerElement(*&container, 2);
+	searchContainerElement(*&container, 9);
+	searchContainerElement(*&container, 10);
+	searchContainerElement(*&container, 5);
+	searchContainerElement(*&container, 6);
+	searchContainerElement(*&container, 3);
+	searchContainerElement(*&container, 4);
+	searchContainerElement(*&container, 7);
+	searchContainerElement(*&container, 8);
+	searchContainerElement(*&container, 4711);
+	
 	return 0;
 }
