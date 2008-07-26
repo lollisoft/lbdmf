@@ -32,11 +32,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.56 2008/07/25 16:43:50 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.57 2008/07/26 07:37:33 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.57  2008/07/26 07:37:33  lollisoft
+ * Log some usefull messages. This identified the plugin problem.
+ * Propably load failure interferes other plugins in the registry.
+ *
  * Revision 1.56  2008/07/25 16:43:50  lollisoft
  * Fixed application crash at exit.
  *
@@ -436,7 +440,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 	
-	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
+	_LOG << "Try to load module '" << module << "'" LOG_
 		
 	char* pluginDir = NULL;
 	
@@ -484,7 +488,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 		
 /*...sTry to load a plugin module:8:*/
 	if (PluginModules->exists(&key) != 0) {
-		_CL_LOG << "Warning: Plugin already registered." LOG_
+		_LOG << "Warning: Plugin already registered. (" << pluginName->charrep() << ")" LOG_
 		free(pluginModule);
 		free(pluginDir);
 	} else {
@@ -506,6 +510,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 						
 				plM->setModule(pluginModule);
 				plM->initialize();
+				_LOG << "Info: Plugin registered. (" << pluginName->charrep() << ")" LOG_
 					
 				free(pluginModule);
 				free(pluginDir);
@@ -527,10 +532,9 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 			UAP(lb_I_PluginModule, plM)
 			QI(ukPlugin1, lb_I_PluginModule, plM)
 					
-			_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
-					
 			plM->setModule(pluginModule);
 			plM->initialize();
+			_LOG << "Info: Plugin registered. (" << pluginName->charrep() << ")" LOG_
 				
 			free(pluginModule);
 			free(pluginDir);
