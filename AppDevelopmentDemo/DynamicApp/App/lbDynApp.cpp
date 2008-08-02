@@ -157,7 +157,7 @@ public:
 	/** \brief Setup the systemdatabase.
 	 *
 	 * This function is used to initialize the system database with the devault content.
-	 * The default content
+	 * Depending on the used database system, there would be done different steps.
 	 */
 	lbErrCodes LB_STDCALL setupSystemDatabase(lb_I_Unknown* uk);
 
@@ -422,7 +422,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL lbDynamicApplication::setupSystemDatabase(lb_I_Unknown* uk) {
-	_CL_LOG << "lbDynamicApplication::setupSystemDatabase() called." LOG_
+	metaapp->msgBox("Info", "Setup application repository now.");
 	return ERR_NONE;
 }
 
@@ -1814,6 +1814,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
 			metaapp->msgBox("Error", "No system database available!");
+
+// Not really reachable when module not loaded.
+
+/*
+			if (eman->resolveEvent("evtsetupSystemDatabase", unused) == ERR_EVENT_NOTREGISTERED) {
+				eman->registerEvent("evtsetupSystemDatabase", unused);
+				
+				dispatcher->addEventHandlerFn(this, 
+											  (lbEvHandler) &lbDynamicApplication::setupSystemDatabase, "evtsetupSystemDatabase");
+				
+				metaapp->addMenuEntry(_trans("&File"), "Initially setup Application repository", "evtsetupSystemDatabase", "");
+			}
+*/
 		} else {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 			if (pl != NULL)	ukPl = pl->getImplementation();
