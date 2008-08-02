@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.137 $
+ * $Revision: 1.138 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.137 2008/05/23 23:32:35 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.138 2008/08/02 07:24:48 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.138  2008/08/02 07:24:48  lollisoft
+ * Activated database checks.
+ *
  * Revision 1.137  2008/05/23 23:32:35  lollisoft
  * Fixed missing returns.
  *
@@ -1030,7 +1033,7 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 	// Currently unimplemented.
 	
 	// Too unsave now (Sqlite check fails on selecting sysadmin account)
-	return true;
+	//return true;
 	
 	if (_check_for_databases_failure_step == -2) return false; // Failed prior. Outer loop must break.
 	
@@ -1147,6 +1150,8 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 		appSchemaQuery = app_database->getQuery(LogonApplication->charrep(), 0);
 		
 		if (appSchemaQuery != NULL) {
+            // How to do this check and how to inform the responsible
+            // application about to setup. Should this be done here ?
 		} else {
 			_check_for_databases_failure_step = META_DB_FAILURE_APP_DB_BACKEND;
 			return false;
@@ -1327,14 +1332,25 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_INITIALIZE) {
 			msgBox("Error", "Initialize system database backend failed!");
+            
+            // Any database system is available, but no schema nor configuration.
+            // Create one and ise it.
+
+			msgBox("Info", "Attempt to install an initial system database.");
+            if (!installDatabase()) {
+            }
+			
 			break;
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_CONNECT) {
 			msgBox("Error", "Connect to system database backend failed!");
-			break;
-		}
 
-		if (!installDatabase()) {
+            // Assume no database available. Use local Sqlite variant.
+            setSystemDatabaseBackend("DatabaselayerGateway");
+            setApplicationDatabaseBackend("DatabaselayerGateway");
+            useSystemDatabaseBackend(true);
+            useApplicationDatabaseBackend(true);
+			break;
 		}
 	}
 	
