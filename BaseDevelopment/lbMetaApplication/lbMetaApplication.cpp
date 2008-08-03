@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.138 $
+ * $Revision: 1.139 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.138 2008/08/02 07:24:48 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.139 2008/08/03 09:14:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.139  2008/08/03 09:14:42  lollisoft
+ * Implemented automatic installation of an initial database.
+ *
  * Revision 1.138  2008/08/02 07:24:48  lollisoft
  * Activated database checks.
  *
@@ -1085,7 +1088,7 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 	if (sysSchemaQuery != NULL) {
 		if (sysSchemaQuery->query("select * from \"users\" where \"userid\"='user'") == ERR_NONE) {
 			if (((err = sysSchemaQuery->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
-
+				return true;
 			} else {
 				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Error: No sysadmin account created." LOG_
 				_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_SCHEMA;
@@ -1101,7 +1104,8 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
 		return false;
 	}
-	
+
+#ifdef bla
 	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
 		// Check, if a database for this application needs to be installed.
 		
@@ -1158,12 +1162,97 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 		}
 		
 	}
-
+#endif
 	return true;
 }
 
 bool LB_STDCALL lb_MetaApplication::installDatabase() {
-	return false;
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, sysSchemaQuery)
+	UAP(lb_I_Database, database)
+
+	char* dbbackend = getSystemDatabaseBackend();
+	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+	}
+	
+	if (database == NULL) {
+		_LOG << "Error: Could not load database backend for system db, either plugin or built in version." LOG_
+		
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
+		
+		return false;
+	}
+	if (database->init() != ERR_NONE) {
+		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to initialize database." LOG_
+		
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+		
+		return false;
+	}
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database." LOG_
+		
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_CONNECT;
+		
+		return false;
+	}
+	
+	// Check. if the system database schema is initialized.
+	sysSchemaQuery = database->getQuery("lbDMF", 0);
+	
+	if (sysSchemaQuery != NULL) {
+		// Here it goes on with installation.
+		UAP(lb_I_String, SQL)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputApp)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputSys)
+		
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			inputApp->setFileName("../../../Database/lbDMF-Sqlite-ApplicationDB.sql");
+			inputApp->open();
+			SQL = inputApp->getAsString();
+			sysSchemaQuery->skipFKCollecting();
+			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				return false;
+			}
+			
+			inputSys->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
+			inputSys->open();
+			SQL = inputSys->getAsString();
+			sysSchemaQuery->skipFKCollecting();
+			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				return false;
+			}
+		} else {
+			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sql");
+			inputApp->open();
+			SQL = inputApp->getAsString();
+			sysSchemaQuery->skipFKCollecting();
+			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				return false;
+			}
+		}
+	}		
+	
+	msgBox("Info", "This application is running the first time on this computer,\nor your prior configured database is not available anyhow.\n\nPlease inform your administrator, if the database is not available.\n\nOtherwise, you currently work in a local initial database version.");
+	
+	return true;
 }
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
@@ -1327,30 +1416,28 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		if (_check_for_databases_failure_step == -2) break; // 
 
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_BACKEND) {
-			msgBox("Error", "No system database backed available. Check your installation and logfile!");
+			msgBox("Error", "No system database backed available. Please check your installation and logfile!");
 			break;
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_INITIALIZE) {
-			msgBox("Error", "Initialize system database backend failed!");
+			msgBox("Error", "Initialize system database backend failed. Please check your installation and logfile!");
             
-            // Any database system is available, but no schema nor configuration.
-            // Create one and ise it.
-
-			msgBox("Info", "Attempt to install an initial system database.");
-            if (!installDatabase()) {
-            }
-			
 			break;
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_CONNECT) {
-			msgBox("Error", "Connect to system database backend failed!");
-
             // Assume no database available. Use local Sqlite variant.
-            setSystemDatabaseBackend("DatabaselayerGateway");
-            setApplicationDatabaseBackend("DatabaselayerGateway");
+            setSystemDatabaseBackend("DatabaseLayerGateway");
+            setApplicationDatabaseBackend("DatabaseLayerGateway");
             useSystemDatabaseBackend(true);
             useApplicationDatabaseBackend(true);
-			break;
+			
+			if (!installDatabase()) {
+				msgBox("Error", "Connect to system database backend failed and fallback to local database variant failed too!");	
+				break;
+			}
+		}
+		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_SCHEMA) {
+			installDatabase();
 		}
 	}
 	
@@ -2936,7 +3023,19 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	
 		_LOG << "Info: Have no applications in '" << Applications->getClassName() << "'. Create the list from database." LOG_
 	
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+		
+		char* dbbackend = getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+		}
+		
 		UAP(lb_I_Query, sampleQuery)
 		database->init();
 
@@ -3200,7 +3299,19 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+
+		char* dbbackend = getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+		}
+		
 		database->init();
 		
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
