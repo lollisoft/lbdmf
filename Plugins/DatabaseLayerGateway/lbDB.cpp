@@ -2348,8 +2348,6 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			if (whereClause != "") {
 				tempSQL += " ";
 				tempSQL += whereClause;
-			} else {
-				tempSQL += " WHERE ";
 			}
 		
 			tempSQL += " ORDER BY ";
@@ -3392,6 +3390,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 		connPooling--;
 		connPooling.resetPtr();
 	}
+	if (dbl) dbl->Close();
 }
 
 void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
