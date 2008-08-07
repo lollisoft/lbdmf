@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.139 $
+ * $Revision: 1.140 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.139 2008/08/03 09:14:42 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.140 2008/08/07 17:25:44 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.140  2008/08/07 17:25:44  lollisoft
+ * Using different path per platform.
+ *
  * Revision 1.139  2008/08/03 09:14:42  lollisoft
  * Implemented automatic installation of an initial database.
  *
@@ -1221,7 +1224,19 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputSys)
 		
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+#ifdef WINDOWS
+			inputApp->setFileName("..\\Database\\lbDMF-Sqlite-ApplicationDB.sql");
+#endif
+#ifdef OSX
 			inputApp->setFileName("../../../Database/lbDMF-Sqlite-ApplicationDB.sql");
+#endif
+#ifdef SOLARIS
+			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
+#endif
+#ifdef LINUX
+			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
+#endif
+
 			inputApp->open();
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
@@ -1230,7 +1245,18 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				return false;
 			}
 			
-			inputSys->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
+#ifdef WINDOWS
+			inputApp->setFileName("..\\Database\\lbDMF-Sqlite-SystemDB.sql");
+#endif
+#ifdef OSX
+			inputApp->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
+#endif
+#ifdef SOLARIS
+			inputApp->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+#endif
+#ifdef LINUX
+			inputApp->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+#endif
 			inputSys->open();
 			SQL = inputSys->getAsString();
 			sysSchemaQuery->skipFKCollecting();
@@ -1239,7 +1265,18 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				return false;
 			}
 		} else {
-			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sql");
+#ifdef WINDOWS
+			inputApp->setFileName("..\\Database\\lbDMF-PostgreSQL.sq");
+#endif
+#ifdef OSX
+			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sq");
+#endif
+#ifdef SOLARIS
+			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sq");
+#endif
+#ifdef LINUX
+			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sq");
+#endif
 			inputApp->open();
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
