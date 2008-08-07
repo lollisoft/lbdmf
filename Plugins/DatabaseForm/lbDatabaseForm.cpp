@@ -1519,6 +1519,10 @@ _CL_LOG << "Connect event handlers" LOG_
 		deleteButton->Disable();
 	}
 	_created = true;
+	
+	if (sampleQuery->getColumns() == 0) {
+		meta->msgBox("Warning", "Database backend does not contain any columns.");
+	}
 }
 /*...e*/
 
@@ -2141,9 +2145,12 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			
-			*newWhereClause += ") or ";
-	
+			*newWhereClause += ") ";
+
 			err = PKQuery->next();
+			
+			if (err != ERR_DB_NODATA) 
+				*newWhereClause += " or ";
 		}
 		
 		if (err == WARN_DB_NODATA) {
@@ -2277,6 +2284,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
+	_LOG << "Create a new query based on query: " << getQuery() << " and where clause: " << newWhereClause->charrep() LOG_
+	
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
 	_LOG << "Have created new query: '" << newQuery->charrep() << "'" LOG_ 
@@ -2634,9 +2643,12 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				}
 /*...e*/
 			
-			*newWhereClause += ") or ";
-	
+			*newWhereClause += ") ";
+			
 			err = PKQuery->next();
+			
+			if (err != ERR_DB_NODATA) 
+				*newWhereClause += " or ";
 		}
 		
 		if (err == WARN_DB_NODATA) {
