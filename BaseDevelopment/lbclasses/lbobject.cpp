@@ -129,8 +129,22 @@ void LB_STDCALL lbLocale::setTranslationData(lb_I_Unknown* uk) {
 /*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
 /// \todo Add default language in insert statement. This enables automatic creation of new languages, if selected.
 void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	if (translations == NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Database, database)
+		
+		char* dbbackend = meta->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
 		
 		_LOG << "Translate text with SQL statements..." LOG_
 		
@@ -196,7 +210,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 				
 				buffer[0] = 0;
 			
-			sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
+			sprintf(buffer, "insert into translations (text, translated, language) values('%s', '%s', '%s')", to_translate, to_translate, _lang);
 			
 			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
 			UAP(lb_I_Query, sampleQuery1)
@@ -211,7 +225,18 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		sampleQuery->enableFKCollecting();
 	} else {
 		if (translations->selectText(to_translate, _lang) == false) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+			UAP(lb_I_Database, database)
+			
+			char* dbbackend = meta->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
 			
 			_LOG << "Translate text with SQL statements..." LOG_
 			
@@ -241,7 +266,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 				
 				buffer[0] = 0;
 			
-			sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
+			sprintf(buffer, "insert into translations (text, translated, language) values('%s', '%s', '%s')", to_translate, to_translate, _lang);
 			
 			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
 			UAP(lb_I_Query, sampleQuery1)

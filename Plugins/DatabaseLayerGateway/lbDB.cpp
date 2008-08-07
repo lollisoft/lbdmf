@@ -2054,6 +2054,9 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 	
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
+		if (szSql) {
+			_LOG << "The last SQL query was " << szSql LOG_ 
+		}
 		return 0;
 	}
 	
@@ -2141,14 +2144,20 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char* name) {
-		ResultSetMetaData* metadata = theResult->GetMetaData();
-		
-		for(int i=1;i<=metadata->GetColumnCount();i++) {
-			if (metadata->GetColumnName(i) == wxString(name)) {
-				return getColumnType(i);
-			}
-		}
+	if (!theResult) {
+		_LOG << "lbDatabaseLayerQuery::getColumnType('" << name << "') Error: No result set available for this operation!" LOG_
 		return lbDBColumnUnknown;
+	}
+	
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+	
+	for(int i=1;i<=metadata->GetColumnCount();i++) {
+		if (metadata->GetColumnName(i) == wxString(name)) {
+			return getColumnType(i);
+		}
+	}
+	
+	return lbDBColumnUnknown;
 }
 /*...e*/
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\setReadonly\40\char\42\ column\44\ bool updateable\41\:0:*/
@@ -2214,14 +2223,24 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 char lbDatabaseLayerQuery_column_Name[100] = "";
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	///\todo Implement
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		if (szSql) {
+			_LOG << "The last SQL query was " << szSql LOG_ 
+		}
+		*t = "Error";
+		t++;
+		return t.getPtr(); 
+	}
+	
 	ResultSetMetaData* metadata = theResult->GetMetaData();
 	if (metadata->GetColumnCount() < col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
 	wxString column = metadata->GetColumnName(col);
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	
 	*t = (char*) column.c_str();
 	t++;
@@ -2247,6 +2266,9 @@ void LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	int backup_cursor = cursor;
 	query(szSql, true);
 	absolute(backup_cursor);
+	if (theResult = NULL) {
+			_LOG << "Error: Got no resultset after a reopen!" LOG_
+	}
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::close() {
@@ -2277,6 +2299,9 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 void LB_STDCALL lbDatabaseLayerQuery::open() {
 	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
 	query(szSql, true);
+	if (theResult = NULL) {
+		_LOG << "Error: Got no resultset after a open!" LOG_
+	}	
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
@@ -2499,7 +2524,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::first() {
 	///\todo Implement
 	if (cursorFeature == false) return ERR_NONE;
-	
+	if (_dataFetched == false) return ERR_DB_NODATA;
+
 	cursor = max_in_cursor;
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
 		cursor = 0;
@@ -2522,7 +2548,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::first() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::next() {
 	///\todo Implement
-	
+	if (_dataFetched == false) return ERR_DB_NODATA;
+
 	if (cursorFeature == true) {
 		cursor++;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
@@ -2538,6 +2565,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::next() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 	///\todo Implement
+	if (_dataFetched == false) return ERR_DB_NODATA;
+
 	if (cursorFeature == false) return ERR_NONE;
 	if (cursorFeature == true) {
 		cursor--;
@@ -2549,6 +2578,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
 	///\todo Implement
+	if (_dataFetched == false) return ERR_DB_NODATA;
+
 	if (cursorFeature == false) return ERR_NONE;
 	if (cursorFeature == true) {
 		cursor = max_in_cursor+1;

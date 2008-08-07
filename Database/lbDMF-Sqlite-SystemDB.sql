@@ -35,6 +35,7 @@ INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUE
 INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
 INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open master form', 'instanceOflbMasterFormAction', 'lbDatabaseForm');
 INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport');
+INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
 
 		
 		-- Class Benutzer of type FORM found.
@@ -92,6 +93,8 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'Formul
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'Formulare', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Formulare', 1);
 
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltype) values ('toolbarimage', 'Formulare', 1, 'toolbarimagefile');
 
 -- Association from Formulare to Formular_Parameter
 -- Select action type IsMasterDetail: Prop_Formulare_2_Formular_Parameter_7, IsDetailMaster: 
@@ -238,6 +241,13 @@ INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT
 
 -- Create operation definitions
 
+-- Generate codegeneration operation 'Codegenerieren' for 'Anwendungen'
+
+INSERT OR IGNORE INTO "actions" (name, typ, source) VALUES ('Codegenerieren', 1, 'name');
+INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, 'lala', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = 'Codegenerieren'));
+INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = 'Anwendungen'), (select id from actions where name = 'Codegenerieren'), 'evt_Anwendungen_Codegenerieren');
+
+	
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
 
 		-- Class AnwendungenFormulare of type FORM found.
@@ -249,14 +259,10 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'AnwendungenFormulare', 'AnwendungenFormulare verwalten', 'manageAnwendungenFormulare', 'Edit data of AnwendungenFormulare', 'app_formulare.png', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
 
 
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('', 'formularid', '', '');
-	
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('', 'anwendungid', '', '');
-	
 
 -- Create query for  (AnwendungenFormulare_20)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
-SELECT 'query', 'select "formularid", "anwendungid" from ""', id FROM "formulare" WHERE name = 'AnwendungenFormulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+SELECT 'query', 'select  from ""', id FROM "formulare" WHERE name = 'AnwendungenFormulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'AnwendungenFormulare', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'AnwendungenFormulare', 1);
