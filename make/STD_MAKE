@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.119 $
+# * $Revision: 1.120 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.119 2008/08/08 11:30:30 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.120 2008/08/08 12:00:13 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.120  2008/08/08 12:00:13  lollisoft
+# * No malloc debugger active when checked in.
+# *
 # * Revision 1.119  2008/08/08 11:30:30  lollisoft
 # * Tries on Linux
 # *
@@ -1030,7 +1033,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-DEBUG_MEMORY=yes
+DEBUG_MEMORY=no
 DEBUG=yes
 
 
