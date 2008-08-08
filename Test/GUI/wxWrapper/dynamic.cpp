@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.154 2008/05/24 23:15:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.155 2008/08/08 11:30:30 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.154 $
+ * $Revision: 1.155 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.154 2008/05/24 23:15:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.155 2008/08/08 11:30:30 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.155  2008/08/08 11:30:30  lollisoft
+ * Tries on Linux
+ *
  * Revision 1.154  2008/05/24 23:15:51  lollisoft
  * Removed a hardcoded breakpoint :-)
  *
@@ -2154,7 +2157,11 @@ int MyApp::OnExit() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 	
+	_CL_LOG << "Unload application ..." LOG_
+	
 	metaApp->unloadApplication();
+
+	_CL_LOG << "Unloaded application." LOG_
 
 	//metaApp->save();
 	

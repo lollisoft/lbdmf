@@ -1537,6 +1537,8 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	lbErrCodes err = ERR_NONE;
+
+	_CL_LOG << "lbDynamicApplication::uninitialize() called." LOG_
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -1687,6 +1689,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	
 	database->close();
 
+	_CL_LOG << "lbDynamicApplication::uninitialize() leaving." LOG_
 	
 	return ERR_NONE;
 }

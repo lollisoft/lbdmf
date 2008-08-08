@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.184 $
+# * $Revision: 1.185 $
 # * $Name:  $
-# * $Id: Makefile,v 1.184 2008/07/24 20:53:36 lollisoft Exp $
+# * $Id: Makefile,v 1.185 2008/08/08 11:30:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.185  2008/08/08 11:30:30  lollisoft
+# * Tries on Linux
+# *
 # * Revision 1.184  2008/07/24 20:53:36  lollisoft
 # * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
 # *
@@ -1027,7 +1030,6 @@ ALLDIRS = \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/test \
-	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1035,6 +1037,8 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
+
+#	../vendor/dbwrapcontrols
 endif
 
 ifndef RPMBUILD

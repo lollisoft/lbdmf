@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.140 $
+ * $Revision: 1.141 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.140 2008/08/07 17:25:44 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.141 2008/08/08 11:30:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.141  2008/08/08 11:30:30  lollisoft
+ * Tries on Linux
+ *
  * Revision 1.140  2008/08/07 17:25:44  lollisoft
  * Using different path per platform.
  *
@@ -1246,18 +1249,21 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			}
 			
 #ifdef WINDOWS
-			inputApp->setFileName("..\\Database\\lbDMF-Sqlite-SystemDB.sql");
+			inputSys->setFileName("..\\Database\\lbDMF-Sqlite-SystemDB.sql");
 #endif
 #ifdef OSX
-			inputApp->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
+			inputSys->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
 #endif
 #ifdef SOLARIS
-			inputApp->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
 #endif
 #ifdef LINUX
-			inputApp->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
 #endif
-			inputSys->open();
+			if (!inputSys->open()) {
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
+				return false;
+			}
 			SQL = inputSys->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
@@ -1266,16 +1272,16 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			}
 		} else {
 #ifdef WINDOWS
-			inputApp->setFileName("..\\Database\\lbDMF-PostgreSQL.sq");
+			inputApp->setFileName("..\\Database\\lbDMF-PostgreSQL.sql");
 #endif
 #ifdef OSX
-			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sq");
+			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sql");
 #endif
 #ifdef SOLARIS
-			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sq");
+			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
 #endif
 #ifdef LINUX
-			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sq");
+			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
 #endif
 			inputApp->open();
 			SQL = inputApp->getAsString();
@@ -1286,7 +1292,19 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			}
 		}
 	}		
-	
+#ifdef LINUX
+	UAP_REQUEST(getModuleInstance(), lb_I_String, installdir)
+	char* home = 
+#if defined(WINDOWS)
+	getenv("USERPROFILE");
+#endif
+#if defined(UNIX) || defined(LINUX) || defined(OSX)
+	getenv("HOME");
+#endif
+	*installdir = home;
+	*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
+	setDirLocation(installdir->charrep());
+#endif	
 	msgBox("Info", "This application is running the first time on this computer,\nor your prior configured database is not available anyhow.\n\nPlease inform your administrator, if the database is not available.\n\nOtherwise, you currently work in a local initial database version.");
 	
 	return true;
@@ -1876,19 +1894,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 	if (app != NULL) {
-		app->uninitialize();
-		app--;
-		app.resetPtr();
-		
 		if (activeDocuments != NULL) {
 			_LOG << "Manually delete all active documents." LOG_
 			activeDocuments->deleteAll();
 			_LOG << "Deleted all active documents." LOG_
 		}
+
+		app->uninitialize();
+		app--;
+		app.resetPtr();
 	}
 
 	uninitLocale();
-	_LOG << "lb_MetaApplication::unloadApplication() ready." LOG_
+	_CL_LOG << "lb_MetaApplication::unloadApplication() ready." LOG_
 	return ERR_NONE;
 }
 

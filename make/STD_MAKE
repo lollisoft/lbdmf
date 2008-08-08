@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.118 $
+# * $Revision: 1.119 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.118 2008/07/24 20:53:36 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.119 2008/08/08 11:30:30 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.119  2008/08/08 11:30:30  lollisoft
+# * Tries on Linux
+# *
 # * Revision 1.118  2008/07/24 20:53:36  lollisoft
 # * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
 # *
@@ -773,12 +776,16 @@ ifeq ($(MODE), _DEBUG)
 WX_DEBUG=d
 endif
 
-WATCOM_HOME=/home/lothar/WATCOM1.7
+WATCOM_WIN32_HOME=/usr/share/openwatcom
+WATCOM_HOME=/usr/lib/openwatcom
 
 WATCOM_SLASH=/
 
-STD_INCL_WATCOM_CPP =-i=.   -i=$(WATCOM_HOME)$(WATCOM_SLASH)h \
+STD_INCL_WATCOM_CPP =-i=.   \
+			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h \
 			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
+			-i=$(WATCOM_WIN32_HOME)$(WATCOM_SLASH)h \
+			-i=$(WATCOM_WIN32_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)interfaces \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
@@ -1023,8 +1030,8 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-DEBUG_MEMORY=no
-DEBUG=no
+DEBUG_MEMORY=yes
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
