@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.96 $
+ * $Revision: 1.97 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.96 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.97 2008/08/12 08:38:59 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.97  2008/08/12 08:38:59  lollisoft
+ * Bugfix for an array overflow. To be fixed in a better way later.
+ *
  * Revision 1.96  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -853,15 +856,21 @@ char* TIncludeParser::BasicParse(char *FileName)
 /*...svoid ObjExt\40\char \42\s\44\ char \42\ObjName\44\ int Len\41\:0:*/
 void ObjExt(char *s, char *ObjName, int Len)
 {
-  int l;
+	// Copy max Len characters
+	ObjName[0] = 0;
+	strcpy(ObjName, s);
+	
+	// Strip extension.
+	int len = strlen(ObjName);
+	for (int i = len; i >= 0; i--) {
+		if (ObjName[i] == '.') {
+			ObjName[i] = 0;
+			break;
+		}
+	}
 
-  memset(ObjName,0,Len);
-  l=strlen(s)-1;
-  if (l<1) return;
-  while (l>=0 && s[l]!='.') l--;
-  if (l>=0 && l<Len) memcpy(ObjName,s,l+1);
-  if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
-	strcat(ObjName,"$(OBJ)");
+	if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
+	strcat(ObjName,".$(OBJ)");
 }
 /*...e*/
 
@@ -1742,7 +1751,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.96 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.97 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1903,11 +1912,12 @@ void replace(char* to, char* match, char* replace) {
 
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
+/// Todo: Reimplement without hardcoded sizes. There was a buffer overflow !
   char ObjName[800] = "";
   char ObjNameC[800] = "";
   char NameC[800] = "";
   char SExt[100] = "";
-  char Line[120] = "";
+  char Line[800] = "";
 
   int  CPPFlag = 0;
 
@@ -1967,7 +1977,10 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 	ObjExt(Name,ObjName,sizeof(ObjName));
 	sprintf(Line, "%s: makefile %s",ObjName,Name);
   }
-  
+/*  
+  fprintf(stderr, "Name is       '%s'.\n", Name);
+  fprintf(stderr, "Objectname is '%s'.\n", ObjName);
+*/	
   strcpy(ObjNameC, ObjName);
   
   replace(ObjNameC, "/", "\\\\");
