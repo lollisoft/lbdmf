@@ -69,8 +69,16 @@ typedef struct table
     List *columns;
 } Table;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 List* getForeignKeyList(char* _table, char* sql_ddl);
 
 char* rewriteSchemaOfDDL(char* sql_ddl);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

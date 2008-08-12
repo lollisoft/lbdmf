@@ -54,7 +54,7 @@ endif
 ifeq ($(OSTYPE), linux-debian-ppc)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook -lc /usr/lib/libodbc.so
+VENDORLIBS=-L$(prefix)/lib -llbHook -lc /usr/local/lib/libodbc.so
 endif    
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
