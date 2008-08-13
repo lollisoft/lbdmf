@@ -141,15 +141,18 @@ endif
 ifeq (($DEBUG), yes)
 C_OPS=-g
 endif
+
 C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DWXUSINGDLL `wx-config --inplace --cxxflags` 
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=
 
 ifeq ($(OSNAME), Panther)
+C_SOOPS= $(C_SOOPS_WX) -DOSVERSION=Panther
 AUIFRAMEWORK=-framework wxAUI
 else
+C_SOOPS= $(C_SOOPS_WX) -DOSVERSION=Leopard
 AUIFRAMEWORK=
 endif
+
+VENDORLIBS=
 
 ifeq ($(DEBUG), yes)
 L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 

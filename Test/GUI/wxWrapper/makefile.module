@@ -150,7 +150,7 @@ endif
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
-L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load -o
 endif
 
 ifeq ($(DEBUG), no)

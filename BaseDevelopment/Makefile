@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.185 $
+# * $Revision: 1.186 $
 # * $Name:  $
-# * $Id: Makefile,v 1.185 2008/08/08 11:30:30 lollisoft Exp $
+# * $Id: Makefile,v 1.186 2008/08/13 06:53:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.186  2008/08/13 06:53:32  lollisoft
+# * Changes to get code again compiled under Mac OS X 10.3.9. But there is an issue with wxWrapper target and Rez.
+# *
 # * Revision 1.185  2008/08/08 11:30:30  lollisoft
 # * Tries on Linux
 # *
@@ -642,6 +645,19 @@ DEVROOT_MAKE=$(DEVROOT)
 
 ifndef prefix
 prefix=$(HOME)
+endif
+
+OSVERSION_=$(OSVERSION)
+OSPLATFORM_=$(OSPLATFORM)
+
+#OSVERSION=9.0.0
+#OSPLATFORM=ppc
+
+
+ifeq ($(OSVERSION_), 9.0.0)
+OSNAME=Leopard
+else
+OSNAME=Panther
 endif
 
 endif

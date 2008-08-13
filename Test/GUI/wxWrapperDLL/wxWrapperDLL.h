@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.32 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.33 2008/08/13 06:53:32 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.33  2008/08/13 06:53:32  lollisoft
+ * Changes to get code again compiled under Mac OS X 10.3.9. But there is an issue with wxWrapper target and Rez.
+ *
  * Revision 1.32  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -203,36 +206,20 @@
 
 class lb_wxGUI;
 
-	class ToolCount {
+	class DLLEXPORT ToolCount {
 	public:
-		ToolCount(wxString& _name) {
-			count = 0;
-			name = 	_name;
-		}
-
-		wxString& getName() {
-			return name;
-		}
-		
-		void incCount() {
-			count++;
-		}
-		
-		void decCount() {
-			count--;
-		}
-		
-		int getCount() {
-			return count;
-		}
-		
+		ToolCount(wxString& _name);
+		virtual ~ToolCount();
+		wxString& getName();
+		void incCount();
+		void decCount();
+		int getCount();
 		wxString name;
 		int count;
 	};
 	
 WX_DECLARE_LIST(ToolCount, ToolCountList);
 
-WX_DEFINE_LIST(ToolCountList);
 
 /*...sclass lb_wxFrame:0:*/
 /**

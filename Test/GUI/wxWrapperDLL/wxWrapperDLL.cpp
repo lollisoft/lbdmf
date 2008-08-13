@@ -92,7 +92,13 @@
 #endif
 
 #ifdef USE_WXAUI
+#if (OSVERSION == Panther)
+#define wxAuiPaneInfo wxPaneInfo
+#define wxAuiManager wxFrameManager
+#include <manager.h>
+#else
 #include <wx/aui/aui.h>
+#endif
 #endif
 
 /*...e*/
@@ -487,6 +493,33 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 }
 /*...e*/
 /*...e*/
+
+WX_DEFINE_LIST(ToolCountList);
+
+ToolCount::ToolCount(wxString& _name) {
+	count = 0;
+	name = 	_name;
+}
+
+ToolCount::~ToolCount() {
+}
+
+wxString& ToolCount::getName() {
+	return name;
+}
+		
+void ToolCount::incCount() {
+	count++;
+}
+		
+void ToolCount::decCount() {
+	count--;
+}
+		
+int ToolCount::getCount() {
+	return count;
+}
+
 
 /*...sclass lb_wxFrame:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
