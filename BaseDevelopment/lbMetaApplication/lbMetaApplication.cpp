@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.141 $
+ * $Revision: 1.142 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.141 2008/08/08 11:30:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.142 2008/08/18 06:11:58 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.142  2008/08/18 06:11:58  lollisoft
+ * Fix for OS X.
+ *
  * Revision 1.141  2008/08/08 11:30:30  lollisoft
  * Tries on Linux
  *
@@ -1237,7 +1240,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
 #endif
 #ifdef LINUX
+#ifndef OSX
 			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
+#endif
 #endif
 
 			inputApp->open();
@@ -1258,7 +1263,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
 #endif
 #ifdef LINUX
+#ifndef OSX
 			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+#endif
 #endif
 			if (!inputSys->open()) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
@@ -1281,7 +1288,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
 #endif
 #ifdef LINUX
+#ifndef OSX
 			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
+#endif
 #endif
 			inputApp->open();
 			SQL = inputApp->getAsString();
