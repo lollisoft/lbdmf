@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.142 $
+ * $Revision: 1.143 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.142 2008/08/18 06:11:58 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.143 2008/08/25 14:54:32 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.143  2008/08/25 14:54:32  lollisoft
+ * Added fix for WIndows based installation path.
+ *
  * Revision 1.142  2008/08/18 06:11:58  lollisoft
  * Fix for OS X.
  *
@@ -1245,7 +1248,17 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 #endif
 #endif
 
-			inputApp->open();
+			if (!inputApp->open()) {
+#ifdef WINDOWS
+				// Try the path for a typical Windows installation
+				inputApp->setFileName("Database\\lbDMF-Sqlite-ApplicationDB.sql");
+				if (!inputApp->open()) {
+					msgBox("Info", "Installation of builtin database failed.");
+					return false;
+				}
+#endif
+			}
+			
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
@@ -1268,8 +1281,15 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 #endif
 #endif
 			if (!inputSys->open()) {
-				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
-				return false;
+#ifdef WINDOWS
+				// Try the path for a typical Windows installation
+				inputSys->setFileName("Database\\lbDMF-Sqlite-SystemDB.sql");
+				if (!inputSys->open()) {
+					_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
+					msgBox("Info", "Installation of builtin database failed.");
+					return false;
+				}
+#endif
 			}
 			SQL = inputSys->getAsString();
 			sysSchemaQuery->skipFKCollecting();
@@ -1292,7 +1312,16 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
 #endif
 #endif
-			inputApp->open();
+			if (!inputApp->open()) {
+#ifdef WINDOWS
+				inputApp->setFileName("Database\\lbDMF-PostgreSQL.sql");
+#endif
+				if (!inputApp->open()) {
+					_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
+					msgBox("Info", "Installation of builtin database failed.");
+					return false;
+				}
+			}
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
