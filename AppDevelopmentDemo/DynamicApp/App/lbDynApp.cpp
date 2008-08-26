@@ -617,7 +617,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 	}
 	
 	_CL_LOG << "Load database schema from target database ..." LOG_
-		
+	
+	metaapp->setStatusText("Info", "Begin fetching schema ...");
+
+	
 	if (isDBAvailable) {
 		AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'primary keys'")
 		AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
@@ -648,11 +651,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		
 		if (strcmp(appParams->getParameter("DBName", AppID->getData()), "lbDMF") == 0) {
 			// Is system database
+			metaapp->setStatusText("Info", "Target database is system database ...");
+
 			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using system database." LOG_
 			formularfields->accept(*&fOpDB);
+			metaapp->setStatusText("Info", "Reading primary keys ...");
 			dbPrimaryKeys->accept(*&fOpDB);
+			metaapp->setStatusText("Info", "Reading foreign keys ...");
 			dbForeignKeys->accept(*&fOpDB);
+			metaapp->setStatusText("Info", "Reading tables ...");
 			dbTables->accept(*&fOpDB);
+			metaapp->setStatusText("Info", "Reading columns ...");
 			dbColumns->accept(*&fOpDB);
 			fOpDB->end();
 		} else {
@@ -661,6 +670,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+			
+			metaapp->setStatusText("Info", "Target database is application database ...");
 
 /************/
 			char* dbbackend = metaapp->getApplicationDatabaseBackend();
@@ -712,6 +723,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			}
 		}
 		
+		metaapp->setStatusText("Info", "Storing fetched data into internal data model ...");
 
 		if ((dbPrimaryKeys != NULL) && 
 			(dbForeignKeys != NULL) && 
@@ -725,6 +737,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			*name = "ApplicationData";
 			param->getUAPContainer(*&name, *&document);
 			
+			metaapp->setStatusText("Info", "Storing formularfields ...");
+
 			*name = "FormularFields";
 			QI(formularfields, lb_I_Unknown, uk)
 			// The container allows multiple entries by key.
@@ -732,21 +746,29 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
+			metaapp->setStatusText("Info", "Storing primary keys ...");
+
 			*name = "DBPrimaryKeys";
 			QI(dbPrimaryKeys, lb_I_Unknown, uk)
 			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
+			metaapp->setStatusText("Info", "Storing foreign keys ...");
+
 			*name = "DBForeignKeys";
 			QI(dbForeignKeys, lb_I_Unknown, uk)
 			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
+			metaapp->setStatusText("Info", "Storing tables ...");
+
 			*name = "DBTables";
 			QI(dbTables, lb_I_Unknown, uk)
 			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
+			metaapp->setStatusText("Info", "Storing columns ...");
+
 			*name = "DBColumns";
 			QI(dbColumns, lb_I_Unknown, uk)
 			if (document->exists(&key) == 1) document->remove(&key);
