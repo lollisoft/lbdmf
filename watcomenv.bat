@@ -38,8 +38,8 @@ goto BEGINENVIRONMENT:
 if "%2"=="CC" goto CCBUILD:
 
 set DEVLW=C:
-set BASE=%DEVLW%\lbDMF\develop
-set BASE_MAKE=%DEVLW%/lbDMF/develop
+set BASE=lbDMF\develop
+set BASE_MAKE=lbDMF/develop
 
 
 set DEVROOT=%DEVLW%\%BASE%
