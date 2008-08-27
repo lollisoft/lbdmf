@@ -2266,7 +2266,7 @@ void LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	int backup_cursor = cursor;
 	query(szSql, true);
 	absolute(backup_cursor);
-	if (theResult = NULL) {
+	if (theResult == NULL) {
 			_LOG << "Error: Got no resultset after a reopen!" LOG_
 	}
 }
@@ -2299,7 +2299,7 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 void LB_STDCALL lbDatabaseLayerQuery::open() {
 	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
 	query(szSql, true);
-	if (theResult = NULL) {
+	if (theResult == NULL) {
 		_LOG << "Error: Got no resultset after a open!" LOG_
 	}	
 }
