@@ -3547,15 +3547,37 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 	
 	wxArrayString tables = dbl->GetTables();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	
-	QI(table, lb_I_Unknown, uk)
 	QI(table, lb_I_KeyBase, key)
 	
 	for (int i = 0; i < tables.Count(); i++) {
 		*table = tables[i].c_str();
-		 container->insert(&uk, &key);
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+		QI(param, lb_I_Unknown, uk)
+		
+		*value = (const char*) "";
+		*name = "TableCatalog";
+		param->setUAPString(*&name, *&value);
+		*value = (const char*) "";
+		*name = "TableSchema";
+		param->setUAPString(*&name, *&value);
+		*value = (const char*) tables[i].c_str();
+		*name = "TableName";
+		param->setUAPString(*&name, *&value);
+		*value = (const char*) "";
+		*name = "TableTyp";
+		param->setUAPString(*&name, *&value);
+		*value = (const char*) "";
+		*name = "TableRemarks";
+		param->setUAPString(*&name, *&value);
+		
+		container->insert(&uk, &key);
 	}
 
 	container++;
