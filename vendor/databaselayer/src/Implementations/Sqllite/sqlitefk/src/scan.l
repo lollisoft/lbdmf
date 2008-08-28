@@ -27,7 +27,7 @@ int buflen = 0;
 %x DQUOTED
 %x COMMENT
 
-type       (int)|(integer)|(bool)|(boolean)|(varchar\([0-9]+\))|(char\([0-9]+\))|(datetime)|(text)|(bpchar)
+type       (int)|(integer)|(bool)|(boolean)|(varchar\([0-9]+\))|(char\([0-9]+\))|(datetime)|(text)|(bpchar)|(decimal)|(date)|(bytea)
 
 %%
 <QUOTED,DQUOTED>[a-zA-Z0-9_-]+ { bufcat(yytext, yyleng); }
