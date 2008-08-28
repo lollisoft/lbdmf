@@ -276,7 +276,15 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActionStepTransitions != NULL) &&
 		(appActionSteps != NULL)) {
 
+	
 		*oStream << "<lbDMF applicationid=\"";
+
+		// Save currently used database backend information. It could be used to determine what to to in the XSLT templates.
+		// If exported, the information may be changed.
+		
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		*oStream << "\" backend=\"" << dbbackend;
+
 #ifdef OSX		
 		*oStream << AppID->charrep() << "\" platform=\"osx\">\n";
 #else
