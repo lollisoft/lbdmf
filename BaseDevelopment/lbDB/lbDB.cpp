@@ -5152,51 +5152,24 @@ void lbBoundColumn::setReadonly(bool updateable) {
 class lbConnection : public lb_I_Connection
 {
 public:
-        lbConnection()  {
-	    ref = STARTREF;
-	    _dbname = NULL;
-	    _dbuser = NULL;
-	}
-        virtual ~lbConnection() {
-        	_CL_VERBOSE << "lbConnection::~lbConnection() called" LOG_
-		if (_dbname) free(_dbname);
-		if (_dbuser) free(_dbuser);
-	}
+	lbConnection();
+	
+    virtual ~lbConnection();
 
 	DECLARE_LB_UNKNOWN()
 
 
-	virtual char* LB_STDCALL getDBName() { return _dbname; }
-	virtual char* LB_STDCALL getDBUser() { return _dbuser; }
+	virtual char* LB_STDCALL getDBName();
+	virtual char* LB_STDCALL getDBUser();
 
 //-- Private interface -----------------------------------------
-	virtual void LB_STDCALL setDBName(char* name) {
-	    if (_dbname) {
-		free(_dbname);
-		_dbname = NULL;
-	    }
-	    
-	    _dbname = (char*) malloc(strlen(name)+1);
-	    
-	    if (name) strcpy(_dbname, name);
-	}
+	virtual void LB_STDCALL setDBName(char* name);
 	
-	virtual void LB_STDCALL setDBUser(char* name) {
-	    if (_dbuser) {
-		free(_dbuser);
-		_dbuser = NULL;
-	    }
-	    
-	    _dbuser = (char*) malloc(strlen(name)+1);
-	    
-	    if (name) strcpy(_dbuser, name);
-	}
+	virtual void LB_STDCALL setDBUser(char* name);
 	
-	virtual void LB_STDCALL setConnection(HDBC _hdbc) {
-	    hdbc = _hdbc;
-	}
+	virtual void LB_STDCALL setConnection(HDBC _hdbc);
 	
-	virtual HDBC LB_STDCALL getConnection() { return hdbc; }
+	virtual HDBC LB_STDCALL getConnection();
 	
 protected:
 
@@ -5214,6 +5187,57 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 
+lbConnection::lbConnection()  {
+	    ref = STARTREF;
+	    _dbname = NULL;
+	    _dbuser = NULL;
+}
+
+lbConnection::~lbConnection() {
+		_CL_VERBOSE << "lbConnection::~lbConnection() called" LOG_
+		if (_dbname) free(_dbname);
+		if (_dbuser) free(_dbuser);
+}
+
+char* LB_STDCALL lbConnection::getDBName() { 
+	return _dbname;
+}
+
+char* LB_STDCALL lbConnection::getDBUser() { 
+	return _dbuser;
+}
+	
+//-- Private interface -----------------------------------------
+void LB_STDCALL lbConnection::setDBName(char* name) {
+    if (_dbname) {
+		free(_dbname);
+		_dbname = NULL;
+    }
+	    
+    _dbname = (char*) malloc(strlen(name)+1);
+    
+    if (name) strcpy(_dbname, name);
+}
+	
+void LB_STDCALL lbConnection::setDBUser(char* name) {
+    if (_dbuser) {
+		free(_dbuser);
+		_dbuser = NULL;
+    }
+	    
+    _dbuser = (char*) malloc(strlen(name)+1);
+	    
+    if (name) strcpy(_dbuser, name);
+}
+	
+void LB_STDCALL lbConnection::setConnection(HDBC _hdbc) {
+    hdbc = _hdbc;
+}
+	
+HDBC LB_STDCALL lbConnection::getConnection() { 
+	return hdbc; 
+}
+	
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
