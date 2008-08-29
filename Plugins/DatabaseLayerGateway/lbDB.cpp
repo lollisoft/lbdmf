@@ -3365,6 +3365,7 @@ void LB_STDCALL lbConnection::setDBName(char* name) {
 	}
 	
 	_dbname = (char*) malloc(strlen(name)+1);
+	_dbname[0] = 0;
 	
 	if (name) strcpy(_dbname, name);
 }
@@ -3376,7 +3377,8 @@ void LB_STDCALL lbConnection::setDBUser(char* name) {
 	}
 	
 	_dbuser = (char*) malloc(strlen(name)+1);
-	
+	_dbuser[0] = 0;
+
 	if (name) strcpy(_dbuser, name);
 }
 
@@ -3408,8 +3410,8 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 				_LOG << "lbConnection::setData() the connection instance is open." LOG_
 			}
 		}
-	    _dbname = connection->getDBName();
-	    _dbuser = connection->getDBUser();
+		if (connection->getDBName()) _dbname = strdup(connection->getDBName());
+	    if (connection->getDBUser()) _dbuser = strdup(connection->getDBUser());
 		connection->setConnection(NULL); // Only one instance should have the database instance.
 	}
 	
