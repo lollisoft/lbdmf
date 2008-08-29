@@ -1031,10 +1031,16 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbFileLocation::setData(lb_I_Unknown* uk) {
 	lbErrCodes err= ERR_NONE;
-	UAP(lb_I_FileLocation, f)
-	QI(uk, lb_I_FileLocation, f)
 	
-	setData(f->getData());
+	if (uk) {
+		UAP(lb_I_FileLocation, f)
+		QI(uk, lb_I_FileLocation, f)
+		
+		setData(f->getData());
+	} else {
+		_LOG << "WARNING: File not given as an unknown object (NULL pointer)!" LOG_
+		setData("");
+	}
 	
 	return err;
 }
@@ -1110,10 +1116,16 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbDirLocation::setData(lb_I_Unknown* uk) {
 	lbErrCodes err= ERR_NONE;
-	UAP(lb_I_DirLocation, f)
-	QI(uk, lb_I_DirLocation, f)
 	
-	setData(f->getData());
+	if (uk) {
+		UAP(lb_I_DirLocation, f)
+		QI(uk, lb_I_DirLocation, f)
+		
+		setData(f->getData());
+	} else {
+		_LOG << "WARNING: Directory not given as an unknown object (NULL pointer)!" LOG_
+		setData("");
+	}
 	
 	return err;
 }
