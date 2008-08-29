@@ -2984,30 +2984,33 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 			bi = *(int*) buffer;
 			
 			if (bi != 0) {
+				result->setData("true");
+			} else {
+				result->setData("false");
+			}	
 #endif
 #ifndef OSX
-				bool b = *(bool*) buffer;
-				if (b == true) {
+			bool b = *(bool*) buffer;
+			if (b == true) {
+				result->setData("true");
+			} else {
+				result->setData("false");
+			}	
 #endif
-					result->setData("true");
-				}
-				else {
-					result->setData("false");
-				}	
-			}
+		}
 			break;
 #endif
-	        default:
-	        	_CL_VERBOSE << "lbDatabaseLayerBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
-	        	break;
-		}
-		/* Pointer doesn't get changed.
-		char* buf = (char*) malloc(20);
-		sprintf(buf, "(%p)", buffer);
-		*result += buf;
-		free(buf);
-		*/
-		return ERR_NONE;
+		default:
+			_CL_VERBOSE << "lbDatabaseLayerBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+			break;
+	}
+	/* Pointer doesn't get changed.
+	 char* buf = (char*) malloc(20);
+	 sprintf(buf, "(%p)", buffer);
+	 *result += buf;
+	 free(buf);
+	 */
+	return ERR_NONE;
 }
 /*...e*/
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromLong(lb_I_Long* set, int mode) {
@@ -3290,57 +3293,24 @@ void lbDatabaseLayerBoundColumn::setReadonly(bool updateable) {
 class lbConnection : public lb_I_Connection
 {
 public:
-    lbConnection()  {
-	    ref = STARTREF;
-	    _dbname = NULL;
-	    _dbuser = NULL;
-		dbl = NULL;
-	}
+    lbConnection();
 	
-    virtual ~lbConnection() {
-		_CL_LOG << "lbConnection::~lbConnection() called." LOG_
-		if (dbl) {
-			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
-			dbl->Close();
-		}
-		if (_dbname) free(_dbname);
-		if (_dbuser) free(_dbuser);
-	}
-
+    virtual ~lbConnection();
+	
 	DECLARE_LB_UNKNOWN()
 
 
-	virtual char* LB_STDCALL getDBName() { return _dbname; }
-	virtual char* LB_STDCALL getDBUser() { return _dbuser; }
+	virtual char* LB_STDCALL getDBName();
+	virtual char* LB_STDCALL getDBUser();
 
 //-- Private interface -----------------------------------------
-	virtual void LB_STDCALL setDBName(char* name) {
-	    if (_dbname) {
-		free(_dbname);
-		_dbname = NULL;
-	    }
-	    
-	    _dbname = (char*) malloc(strlen(name)+1);
-	    
-	    if (name) strcpy(_dbname, name);
-	}
+	virtual void LB_STDCALL setDBName(char* name);
 	
-	virtual void LB_STDCALL setDBUser(char* name) {
-	    if (_dbuser) {
-		free(_dbuser);
-		_dbuser = NULL;
-	    }
-	    
-	    _dbuser = (char*) malloc(strlen(name)+1);
-	    
-	    if (name) strcpy(_dbuser, name);
-	}
+	virtual void LB_STDCALL setDBUser(char* name);
 	
-	virtual void LB_STDCALL setConnection(DatabaseLayer* _dbl) {
-		dbl = _dbl;
-	}
+	virtual void LB_STDCALL setConnection(DatabaseLayer* _dbl);
 	
-	virtual DatabaseLayer* LB_STDCALL getConnection() { return dbl; }
+	virtual DatabaseLayer* LB_STDCALL getConnection();
 	
 protected:
 
@@ -3356,6 +3326,67 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbConnection)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
+
+lbConnection::lbConnection() {
+	ref = STARTREF;
+	_dbname = NULL;
+	_dbuser = NULL;
+	dbl = NULL;
+}
+
+lbConnection::~lbConnection() {
+	_CL_LOG << "lbConnection::~lbConnection() called." LOG_
+	if (dbl) {
+		_CL_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
+		dbl->Close();
+	} else {
+		if (_dbname) {
+			_CL_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set (" << _dbname << ")" LOG_
+		} else {
+			_CL_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set." LOG_
+		}
+	}
+	if (_dbname) free(_dbname);
+	if (_dbuser) free(_dbuser);
+}
+
+char* LB_STDCALL lbConnection::getDBName() {
+	return _dbname;
+}
+
+char* LB_STDCALL lbConnection::getDBUser() { 
+	return _dbuser;
+}
+
+void LB_STDCALL lbConnection::setDBName(char* name) {
+	if (_dbname) {
+		free(_dbname);
+		_dbname = NULL;
+	}
+	
+	_dbname = (char*) malloc(strlen(name)+1);
+	
+	if (name) strcpy(_dbname, name);
+}
+
+void LB_STDCALL lbConnection::setDBUser(char* name) {
+	if (_dbuser) {
+		free(_dbuser);
+		_dbuser = NULL;
+	}
+	
+	_dbuser = (char*) malloc(strlen(name)+1);
+	
+	if (name) strcpy(_dbuser, name);
+}
+
+void LB_STDCALL lbConnection::setConnection(DatabaseLayer* _dbl) {
+	dbl = _dbl;
+}
+
+DatabaseLayer* LB_STDCALL lbConnection::getConnection() { 
+	return dbl;
+}
 
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
