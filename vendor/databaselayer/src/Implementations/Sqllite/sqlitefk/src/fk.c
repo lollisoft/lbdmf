@@ -448,6 +448,11 @@ char* rewriteSchemaOfDDL(char* sql_ddl) {
 	List *foreign_keys;
 #endif
 
+	if (rewrittenSchemaDDL) {
+		free(rewrittenSchemaDDL);
+		rewrittenSchemaDDL = NULL;
+	}
+	
     schema = list_new();
     MemPoolCreate(&mempool, 4096);
     /* yyparse will fill the schema with
