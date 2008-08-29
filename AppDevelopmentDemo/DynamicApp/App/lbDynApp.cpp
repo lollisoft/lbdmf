@@ -220,6 +220,14 @@ protected:
 	UAP(lb_I_Boolean, UsePlugin)
 
 	UAP(lb_I_FileLocation, XMIFileUMLProject)
+	
+	/** \brief Import settings file
+	 *
+	 * This file get's written each time an UML import happens. With the settings file it is possible to control the way of import.
+	 * For sample the system database may be an ODBC PostgreSQL or a Sqlite database backend (for now), thus the settings file
+	 * will contain that information before the transformation begins.
+	 */
+	UAP(lb_I_FileLocation, XSLFileSettings)
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP(lb_I_Boolean, UseOtherXSLFile)
@@ -246,11 +254,13 @@ lbDynamicApplication::lbDynamicApplication() {
 	REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 
 	REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
+	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
 	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
 	
 	XMIFileUMLProject->setData("");
+	XSLFileSettings->setData("");
 	XSLFileSystemDatabase->setData("");
 	XSLFileApplicationDatabase->setData("");
 	
@@ -318,6 +328,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		parameterXSL->setData("Ask for other XSL files");
 		boolXSL->setData(UseOtherXSLFile->getData());
 		paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
+		
+		parameterXSL->setData("XSL file for settings");
+		fileXSL->setData(XSLFileSettings->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 		
 		parameterXSL->setData("XSL file for system database");
 		fileXSL->setData(XSLFileSystemDatabase->getData());
@@ -493,10 +507,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 					}
 		}
 
-		if (strcmp(key->charrep(), "Transformation settingsXSL file for system database") == 0) {
-					XSLFileSystemDatabase->setData(value->charrep());
+		if (strcmp(key->charrep(), "Transformation settingsXSL file for settings") == 0) {
+			XSLFileSettings->setData(value->charrep());
 		}
-
+		
+		if (strcmp(key->charrep(), "Transformation settingsXSL file for system database") == 0) {
+			XSLFileSystemDatabase->setData(value->charrep());
+		}
+		
 		if (strcmp(key->charrep(), "Transformation settingsXSL file for application database") == 0) {
 					XSLFileApplicationDatabase->setData(value->charrep());
 		}
@@ -514,6 +532,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	QI(ukDoc, lb_I_Parameter, document)
 								
 	if (document != NULL) {
+		
+		*paramname = "XSLFileSettings";
+		document->setUAPFileLocation(*&paramname, *&XSLFileSettings);
 		*paramname = "XSLFileSystemDatabase";
 		document->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
 		*paramname = "XSLFileApplicationDatabase";
@@ -550,6 +571,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	temp_params->setUAPBoolean(*&paramname, *&UsePlugin);
 	*paramname = "UseOtherXSLFile";
 	temp_params->setUAPBoolean(*&paramname, *&UseOtherXSLFile);
+	*paramname = "XSLFileSettings";
+	temp_params->setUAPFileLocation(*&paramname, *&XSLFileSettings);
 	*paramname = "XSLFileSystemDatabase";
 	temp_params->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
 	*paramname = "XSLFileApplicationDatabase";
@@ -1631,6 +1654,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			QI(UsePlugin, lb_I_Unknown, uk)
 			ApplicationData->insert(&uk, &key);
 			
+			*name = "XSLFileSettings";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(XSLFileSettings, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
 			*name = "XSLFileSystemDatabase";
 			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
 			QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
@@ -2425,11 +2453,16 @@ void LB_STDCALL lbDynamicApplication::saveDataToActiveDocument() {
     document->insert(&uk, &key);
 	_LOG << "Have UsePlugin switch from active document: " << UsePlugin->charrep() LOG_
 
+    *name = "XSLFileSettings";
+	QI(XSLFileSettings, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+	
     *name = "XSLFileSystemDatabase";
 	QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
 	if (document->exists(&key) == 1) document->remove(&key);
     document->insert(&uk, &key);
-
+	
     *name = "XSLFileApplicationDatabase";
 	QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
 	if (document->exists(&key) == 1) document->remove(&key);
@@ -2514,11 +2547,15 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     uk = document->getElement(&key);
 	UsePlugin->setData(*&uk);
 	_LOG << "Have UsePlugin switch from active document: " << UsePlugin->charrep() LOG_
-
+	
+    *name = "XSLFileSettings";
+    uk = document->getElement(&key);
+	XSLFileSettings->setData(*&uk);
+	
     *name = "XSLFileSystemDatabase";
     uk = document->getElement(&key);
 	XSLFileSystemDatabase->setData(*&uk);
-
+	
     *name = "XSLFileApplicationDatabase";
     uk = document->getElement(&key);
 	XSLFileApplicationDatabase->setData(*&uk);
@@ -2537,6 +2574,8 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	
 
 	// UML import routines currently rely on this.
+	*name = "XSLFileSettings";
+	param->setUAPFileLocation(*&name, *&XSLFileSettings);
 	*name = "XSLFileSystemDatabase";
 	param->setUAPFileLocation(*&name, *&XSLFileSystemDatabase);
 	*name = "XSLFileApplicationDatabase";
@@ -2567,6 +2606,8 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	temp_params->setUAPBoolean(*&name, *&UsePlugin);
 	*name = "UseOtherXSLFile";
 	temp_params->setUAPBoolean(*&name, *&UseOtherXSLFile);
+	*name = "XSLFileSettings";
+	temp_params->setUAPFileLocation(*&name, *&XSLFileSettings);
 	*name = "XSLFileSystemDatabase";
 	temp_params->setUAPFileLocation(*&name, *&XSLFileSystemDatabase);
 	*name = "XSLFileApplicationDatabase";
