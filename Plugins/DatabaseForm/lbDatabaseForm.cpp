@@ -2912,6 +2912,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	//if (noDataAvailable) return ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
+	if (!database->isConnected()) {
+		sampleQuery = database->getQuery(_DBName->charrep(), 0);
+
+		sampleQuery->enableFKCollecting();
+		sampleQuery->query(SQLString->charrep(), true);
+		sampleQuery->setAutoRefresh(meta->getAutorefreshData());
+	}
+	
 	SetName(formName);
 
 	int columns = sampleQuery->getColumns();

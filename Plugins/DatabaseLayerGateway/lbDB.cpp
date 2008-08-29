@@ -3453,6 +3453,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 		connPooling.resetPtr();
 	}
 	if (dbl) dbl->Close();
+	connected = false;
 }
 
 void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
@@ -3498,7 +3499,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	if (dbl == NULL) dbl = new SqliteDatabaseLayer();
 	if (!dbl->IsOpen()) dbl->Open(connectionname);
 	
-
+	connected = true;
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\init\40\\41\:0:*/
@@ -3543,7 +3544,7 @@ bool LB_STDCALL lbDatabaseLayerDatabase::isConnected() {
 /*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
 	_LOG << "lbDatabaseLayerDatabase::connect('" << connectionname << "') called." LOG_
-	connected = true;
+	//connected = true;
     return ERR_NONE;
 }
 /*...e*/
