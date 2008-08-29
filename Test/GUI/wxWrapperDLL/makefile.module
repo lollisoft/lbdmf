@@ -145,10 +145,10 @@ endif
 C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DWXUSINGDLL `wx-config --inplace --cxxflags` 
 
 ifeq ($(OSNAME), Panther)
-C_SOOPS= $(C_SOOPS_WX) -DOSVERSION=Panther
+C_SOOPS= $(C_SOOPS_WX) -DOSVERSION_Panther
 AUIFRAMEWORK=-framework wxAUI
 else
-C_SOOPS= $(C_SOOPS_WX) -DOSVERSION=Leopard
+C_SOOPS= $(C_SOOPS_WX) -DOSVERSION_Leopard
 AUIFRAMEWORK=
 endif
 
