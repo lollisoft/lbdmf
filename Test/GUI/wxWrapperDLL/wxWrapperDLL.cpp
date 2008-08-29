@@ -91,14 +91,22 @@
 
 #endif
 
-#ifdef USE_WXAUI
-#if (OSVERSION == Panther)
+#ifndef OSX
 #define wxAuiPaneInfo wxPaneInfo
 #define wxAuiManager wxFrameManager
 #include <manager.h>
-#else
-#include <wx/aui/aui.h>
 #endif
+
+#ifdef OSX
+ #ifdef USE_WXAUI 
+  #ifdef OSVERSION_Panther
+   #define wxAuiPaneInfo wxPaneInfo
+   #define wxAuiManager wxFrameManager
+   #include <manager.h>
+  #else
+   #include <wx/aui/aui.h>
+  #endif
+ #endif
 #endif
 
 /*...e*/
