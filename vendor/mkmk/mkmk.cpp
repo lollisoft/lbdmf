@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.97 $
+ * $Revision: 1.98 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.97 2008/08/12 08:38:59 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.98 2008/08/29 16:52:38 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.98  2008/08/29 16:52:38  lollisoft
+ * Bugfix for crashes when the execution path was long. (Buffer overflow)
+ *
  * Revision 1.97  2008/08/12 08:38:59  lollisoft
  * Bugfix for an array overflow. To be fixed in a better way later.
  *
@@ -476,8 +479,8 @@ int split(const char split_char, char *string, char ***array)
 //------------------------- Dependency list -------------------------
 
 struct TDepItem {
-  char Name[80];
-  char Path[80];
+  char Name[PATH_MAX];
+  char Path[PATH_MAX];
 };
 
 class TDepList:public TDynArray {
@@ -553,8 +556,8 @@ void TDepList::AddMask(char *Mask)
   TDepItem i;
   dd_ffblk _ffblk;
   bool Done;
-  char Path[80] = "";
-  char Name[80] = "";
+  char Path[PATH_MAX] = "";
+  char Name[PATH_MAX] = "";
 
   memset(&i,0,sizeof(i));
 
@@ -587,7 +590,7 @@ class TIncludeParser {
     void setIncludes(char** iPathList, int _count);
     TDepList l;
   private:
-    char FilePath[80];
+    char FilePath[PATH_MAX];
     bool Comment,bCPP;
     char** InclPathList;
     int count;
@@ -606,7 +609,7 @@ void TIncludeParser::AddInclude(char *IncName)
 {
   char s[160];
   char* Found;
-  char Path[255] = "";
+  char Path[PATH_MAX] = "";
   char realfile[1000] = "";
   
 /*...sSearch the real place:0:*/
@@ -706,9 +709,9 @@ void TIncludeParser::ParseCLine(char *s)
 #endif
 /*...e*/
 /// \todo Find a better way to skip wrong include detections.
-	if (strcmp(p1, "") != 0) {
-    	    AddInclude(p1);
-	}
+        if (strcmp(p1, "") != 0) {
+            AddInclude(p1);
+        }
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
         printf("Added\n");
@@ -856,21 +859,21 @@ char* TIncludeParser::BasicParse(char *FileName)
 /*...svoid ObjExt\40\char \42\s\44\ char \42\ObjName\44\ int Len\41\:0:*/
 void ObjExt(char *s, char *ObjName, int Len)
 {
-	// Copy max Len characters
-	ObjName[0] = 0;
-	strcpy(ObjName, s);
-	
-	// Strip extension.
-	int len = strlen(ObjName);
-	for (int i = len; i >= 0; i--) {
-		if (ObjName[i] == '.') {
-			ObjName[i] = 0;
-			break;
-		}
-	}
+        // Copy max Len characters
+        ObjName[0] = 0;
+        strcpy(ObjName, s);
+        
+        // Strip extension.
+        int len = strlen(ObjName);
+        for (int i = len; i >= 0; i--) {
+                if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                }
+        }
 
-	if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
-	strcat(ObjName,".$(OBJ)");
+        if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
+        strcat(ObjName,".$(OBJ)");
 }
 /*...e*/
 
@@ -1514,24 +1517,24 @@ void write_wx_framework_Target(char* modulename) {
   printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
   printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
   printf("\t\techo \\<dict\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>English\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
-  printf("\t\techo 	\\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
-  printf("\t\techo 	\\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>6.0\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>FMWK\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>????\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>1.0\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>English\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo      \\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo      \\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>6.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>FMWK\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>????\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>1.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>\\</string\\> >> Info.plist\n");
   printf("\t\techo \\</dict\\> >> Info.plist\n");
   printf("\t\techo \\</plist\\> >> Info.plist\n");
 
@@ -1599,24 +1602,24 @@ void write_framework_Target(char* modulename) {
   printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
   printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
   printf("\t\techo \\<dict\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>English\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
-  printf("\t\techo 	\\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
-  printf("\t\techo 	\\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>6.0\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>FMWK\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>????\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>1.0\\</string\\> >> Info.plist\n");
-  printf("\t\techo 	\\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
-  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>English\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo      \\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo      \\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>6.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>FMWK\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>????\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>1.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo      \\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
+  printf("\t\techo      \\<string\\>\\</string\\> >> Info.plist\n");
   printf("\t\techo \\</dict\\> >> Info.plist\n");
   printf("\t\techo \\</plist\\> >> Info.plist\n");
 
@@ -1751,7 +1754,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.97 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.98 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1825,7 +1828,7 @@ void WriteHeader(FILE *f, char *ExeName)
 /*...svoid ListFiles\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[120],FName[80];
+  char s[120],FName[PATH_MAX];
   int i;
   TDepItem *d;
 
@@ -1854,7 +1857,7 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...svoid ListFilesWithComma\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[120],FName[80];
+  char s[120],FName[PATH_MAX];
   int i;
   TDepItem *d;
 
@@ -1889,25 +1892,25 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 int depCount = 0;
 
 void replace(char* to, char* match, char* replace) {
-	char rep[800] = "";
-	char repl[800] = "";
-	char* t;
-	strcpy(rep, to);
+        char rep[800] = "";
+        char repl[800] = "";
+        char* t;
+        strcpy(rep, to);
 
-	t = strtok(rep, match);
-	
-	while (t != NULL) {
-		strcat(repl, t);
-		strcat(repl, replace);
-		
-		t = strtok(NULL, match);
-	}
+        t = strtok(rep, match);
+        
+        while (t != NULL) {
+                strcat(repl, t);
+                strcat(repl, replace);
+                
+                t = strtok(NULL, match);
+        }
 
-	repl[strlen(repl)-2] = 0;
+        repl[strlen(repl)-2] = 0;
 
-	to[0] = 0;
-	
-	strcpy(to, repl);
+        to[0] = 0;
+        
+        strcpy(to, repl);
 }
 
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
@@ -1942,45 +1945,45 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   // two pass mechanism are workable. I choose the first to get a solution for this earlier. 
 
   if (strcmp(SExt, ".L") == 0) {
-  	CPPFlag = 0;
-  	strcpy(Compiler, "$(LEX)");
+        CPPFlag = 0;
+        strcpy(Compiler, "$(LEX)");
   }
   
   if (strcmp(SExt, ".Y") == 0) {
-  	CPPFlag = 0;
-  	strcpy(Compiler, "$(YACC)");
+        CPPFlag = 0;
+        strcpy(Compiler, "$(YACC)");
   }
   
   if (strcmp(SExt, ".C") == 0) {
-  	CPPFlag = 0;
-  	strcpy(Compiler, "$(CC)");
+        CPPFlag = 0;
+        strcpy(Compiler, "$(CC)");
   }
   
   if (strcmp(SExt, ".CPP") == 0) {
-  	CPPFlag = 1;
-  	strcpy(Compiler, "$(CPP)");
+        CPPFlag = 1;
+        strcpy(Compiler, "$(CPP)");
   }
   
   if (strcmp(SExt, ".CC") == 0) {
-  	CPPFlag = 1;
-  	strcpy(Compiler, "$(CPP)");
+        CPPFlag = 1;
+        strcpy(Compiler, "$(CPP)");
   }
   
   if ((targettype == LEX_TARGET) || (targettype == YACC_TARGET)) {
-	ObjExt(Name,ObjName,sizeof(ObjName));
-	if (targettype == LEX_TARGET) {
-		sprintf(Line, "lex.yy.c: %s",Name);
-	} else {
-		sprintf(Line, "%soutput: %s",ObjName,Name);
-	}
+        ObjExt(Name,ObjName,sizeof(ObjName));
+        if (targettype == LEX_TARGET) {
+                sprintf(Line, "lex.yy.c: %s",Name);
+        } else {
+                sprintf(Line, "%soutput: %s",ObjName,Name);
+        }
   } else {
-	ObjExt(Name,ObjName,sizeof(ObjName));
-	sprintf(Line, "%s: makefile %s",ObjName,Name);
+        ObjExt(Name,ObjName,sizeof(ObjName));
+        sprintf(Line, "%s: makefile %s",ObjName,Name);
   }
 /*  
   fprintf(stderr, "Name is       '%s'.\n", Name);
   fprintf(stderr, "Objectname is '%s'.\n", ObjName);
-*/	
+*/      
   strcpy(ObjNameC, ObjName);
   
   replace(ObjNameC, "/", "\\\\");
@@ -1989,12 +1992,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   int len;
   
   switch (targettype) {
-		case LEX_TARGET:
+                case LEX_TARGET:
                 printf("\t\t@%s -i %s\n\n", Compiler, Name);
-				break;
-		case YACC_TARGET:
+                                break;
+                case YACC_TARGET:
                 printf("\t\t@%s -d -v %s\n\n", Compiler, Name);
-				break;
+                                break;
         case LIB_TARGET:
                 printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
@@ -2003,27 +2006,27 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
-        	printf("\t\t@echo Build %s\n", NameC);
-        	
-        	if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
-        	if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
+                printf("\t\t@echo Build %s\n", NameC);
+                
+                if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
 /*
                 if (depCount == 0) {
-                	printf("\t\t@echo NAME %s > %s.lnk\n", targetname, targetname);
+                        printf("\t\t@echo NAME %s > %s.lnk\n", targetname, targetname);
                 }
-               	printf("\t\t@echo FIL %s >> %s.lnk\n", ObjName, targetname);
-               	depCount++;
+                printf("\t\t@echo FIL %s >> %s.lnk\n", ObjName, targetname);
+                depCount++;
 */
                 break;
         case EXE_TARGET:
-				len = strlen(ObjName);
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-/*				len = strlen(ObjNameC);
+/*                              len = strlen(ObjNameC);
                 for (int i = len; i >= 0; i--) {
                     if (ObjNameC[i] == '.') {
                         ObjNameC[i] = 0;
@@ -2032,75 +2035,75 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 }
 */
 
-				printf("\t\t@echo Build %s\n", NameC);
-				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
-				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
+                                printf("\t\t@echo Build %s\n", NameC);
+                                if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
+                                if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
 //                if (CPPFlag == 0) printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
 //                if (CPPFlag == 1) printf("\t\t@%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, Name, ObjName);
                 break;
         case ELF_TARGET:
-	case ELF_BUNDLE_TARGET:
-				len = strlen(ObjName);
+        case ELF_BUNDLE_TARGET:
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-				printf("\t\t@echo Build %s\n", NameC);
+                                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 break;
-	case SO_BUNDLE_TARGET:
-				len = strlen(ObjName);
+        case SO_BUNDLE_TARGET:
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-				printf("\t\t@echo Build %s\n", NameC);
+                                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 break;
         case SO_TARGET:
         case SOPLUGIN_TARGET:
                 {
-				len = strlen(ObjName);
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-				printf("\t\t@echo Build %s\n", NameC);
+                                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         case WXSO_TARGET:
-	case WXSHARED_TARGET:
+        case WXSHARED_TARGET:
     case WXSOPLUGIN_TARGET:
                 {
-				len = strlen(ObjName);
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-				printf("\t\t@echo Build %s\n", NameC);
+                                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
     case FRAMEWORK_TARGET:
     case WXFRAMEWORK_TARGET:
                 {
-				len = strlen(ObjName);
+                                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-				printf("\t\t@echo Build %s\n", NameC);
+                                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
@@ -2114,15 +2117,15 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 {
   char Line[120] = "";
 
-	if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) {
-		printf("OBJS =");
-		
-		ListFiles(f,Line,l,true);
-		Line[0] = 0;
-		
-		printf("OBJLIST =");
-		ListFilesWithComma(f,Line,l,true);
-	}
+        if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) {
+                printf("OBJS =");
+                
+                ListFiles(f,Line,l,true);
+                Line[0] = 0;
+                
+                printf("OBJLIST =");
+                ListFilesWithComma(f,Line,l,true);
+        }
 #ifndef UNIX
 //  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
 #endif
@@ -2167,14 +2170,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #else
 
   switch (targettype) {
-	case LEX_TARGET:
-		writeLexTarget(ModuleName);
-		write_lex_clean();
-		break;
-	case YACC_TARGET:
-		writeYaccTarget(ModuleName);
-		write_yacc_clean();
-		break;
+        case LEX_TARGET:
+                writeLexTarget(ModuleName);
+                write_lex_clean();
+                break;
+        case YACC_TARGET:
+                writeYaccTarget(ModuleName);
+                write_yacc_clean();
+                break;
         case DLL_TARGET:
         case DLL_TARGET_CROSS:
                 writeDllTarget(ModuleName);
@@ -2224,15 +2227,15 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 write_so_bundleTarget(ModuleName);
                 write_clean();
                 break;
-	case WXSHARED_TARGET:
+        case WXSHARED_TARGET:
                 write_wx_shared_Target(ModuleName);
                 write_clean();
                 break;
-	case FRAMEWORK_TARGET:
+        case FRAMEWORK_TARGET:
                 write_framework_Target(ModuleName);
                 write_clean();
                 break;
-	case WXFRAMEWORK_TARGET:
+        case WXFRAMEWORK_TARGET:
                 write_wx_framework_Target(ModuleName);
                 write_clean();
                 break;
@@ -2319,18 +2322,18 @@ int main(int argc, char *argv[])
   }
 
   if (strcmp(target, "TVISION_DLL") == 0) {
-  	targettype = TVISION_DLL;
-  	target_ext = strdup(".dll");
+        targettype = TVISION_DLL;
+        target_ext = strdup(".dll");
   }
   
   if (strcmp(target, "TVISION_USR_DLL") == 0) {
-  	targettype = TVISION_DLL;
-  	target_ext = strdup(".dll");
+        targettype = TVISION_DLL;
+        target_ext = strdup(".dll");
   }
   
   if (strcmp(target, "TVISION_EXE") == 0) {
-  	targettype = TVISION_EXE;
-  	target_ext = strdup(".exe");
+        targettype = TVISION_EXE;
+        target_ext = strdup(".exe");
   }
   
   if (strcmp(target, "ELF") == 0) {
@@ -2491,15 +2494,15 @@ int main(int argc, char *argv[])
   
       for (i=0; i<Sources.Count; i++) {
 
-    	char FileName[256];
-	char ObjName[256];
-	
-	strcpy(FileName, ((TDepItem*)Sources[i])->Path);
-	strcat(FileName, ((TDepItem*)Sources[i])->Name);
+        char FileName[256];
+        char ObjName[256];
+        
+        strcpy(FileName, ((TDepItem*)Sources[i])->Path);
+        strcat(FileName, ((TDepItem*)Sources[i])->Name);
 
-	ObjExt(FileName,ObjName,sizeof(ObjName));
+        ObjExt(FileName,ObjName,sizeof(ObjName));
   
-	printf("\t\techo FIL %s >> $@\n", ObjName);  	
+        printf("\t\techo FIL %s >> $@\n", ObjName);     
   
       }
       break;
