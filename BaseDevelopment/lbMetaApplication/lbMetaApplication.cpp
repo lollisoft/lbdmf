@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.143 $
+ * $Revision: 1.144 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.143 2008/08/25 14:54:32 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.144 2008/08/30 06:59:44 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.144  2008/08/30 06:59:44  lollisoft
+ * Added a comment to restart the application after initial installation.
+ *
  * Revision 1.143  2008/08/25 14:54:32  lollisoft
  * Added fix for WIndows based installation path.
  *
@@ -1343,7 +1346,12 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
 	setDirLocation(installdir->charrep());
 #endif	
-	msgBox("Info", "This application is running the first time on this computer,\nor your prior configured database is not available anyhow.\n\nPlease inform your administrator, if the database is not available.\n\nOtherwise, you currently work in a local initial database version.");
+	msgBox("Info",  
+	"This application is running the first time on this computer,\n"
+    "or your prior configured database is not available anyhow.\n\n"
+    "Please inform your administrator, if the database is not available.\n\n"
+    "Otherwise, you currently work in a local initial database version.\n\n"
+    "To simply use the application, restart and login.");
 	
 	return true;
 }
