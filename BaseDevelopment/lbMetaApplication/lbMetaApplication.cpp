@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.144 $
+ * $Revision: 1.145 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.144 2008/08/30 06:59:44 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.145 2008/08/30 09:23:37 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.145  2008/08/30 09:23:37  lollisoft
+ * Initial setup works and also the autoload of 'lbDMF Manager'.
+ *
  * Revision 1.144  2008/08/30 06:59:44  lollisoft
  * Added a comment to restart the application after initial installation.
  *
@@ -1331,6 +1334,8 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				return false;
 			}
+			sysSchemaQuery->close();
+			database->close();
 		}
 	}		
 #ifdef LINUX
@@ -1351,7 +1356,23 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
     "or your prior configured database is not available anyhow.\n\n"
     "Please inform your administrator, if the database is not available.\n\n"
     "Otherwise, you currently work in a local initial database version.\n\n"
-    "To simply use the application, restart and login.");
+	"And you are automatically logged in as an 'administrator'.\n\n"
+	"For security considerations please change the password for\n"
+	"your user account, wich is currently the default 'user'.");
+	
+	if (LogonUser == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+	LogonUser->setData("user");
+
+	if (LogonApplication == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+	LogonApplication->setData("lbDMF Manager");
+	
+	setAutoload(true);
+	setGUIMaximized(true); // Otherwise the toolbar is bigger than frame width. Default size should be changed.
+	save(); // Save, because otherwise the usage of DatabaseLayerGateway gets overwritten by created standard version of first try of loading the file.
 	
 	return true;
 }
@@ -2079,7 +2100,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 					free(applicationName);
 
 		} else {
-			UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+			UAP(lb_I_Database, database)
+			
+			char* dbbackend = getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+			}
+
 			UAP(lb_I_Query, sampleQuery)
 			
 			database->init();
