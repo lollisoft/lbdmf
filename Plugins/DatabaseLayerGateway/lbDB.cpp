@@ -2350,7 +2350,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	absolute(backup_cursor);
 	if (theResult == NULL) {
 			_LOG << "Error: Got no resultset after a reopen!" LOG_
+		return ERR_DB_QUERYFAILED;
 	}
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::close() {
