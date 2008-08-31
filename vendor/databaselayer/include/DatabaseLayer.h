@@ -116,6 +116,8 @@ public:
 
   /// Retrieve the primary key table name of the current foreign key
   virtual wxString& GetForeignKeyPKTable(const int index) = 0;
+	
+	virtual bool GetColumnNullable(const wxString& table, const wxString& column) = 0;
 
   // Database single result retrieval API contributed by Guru Kathiresan
   /// With the GetSingleResultX API, two additional exception types are thrown:

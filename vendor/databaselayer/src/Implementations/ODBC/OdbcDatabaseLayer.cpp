@@ -565,6 +565,11 @@ wxArrayString OdbcDatabaseLayer::GetColumns(const wxString& table)
   return returnArray;
 }
 
+bool OdbcDatabaseLayer::GetColumnNullable(const wxString& table, const wxString& column) {
+	throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "OdbcDatabaseLayer::GetColumnNullable not implemented.");
+	return true;
+}
+
 int OdbcDatabaseLayer::GetPrimaryKeys(const wxString& table) {
   int count = 0;
   throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");

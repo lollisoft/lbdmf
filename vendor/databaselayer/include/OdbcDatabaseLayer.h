@@ -78,6 +78,8 @@ public:
   virtual wxString& GetPrimaryKeyColumn(const int index);
   virtual wxString& GetPrimaryKeySequence(const int index);
 
+  virtual bool GetColumnNullable(const wxString& table, const wxString& column);
+	
 #ifdef SUPPORT_FOREIGN_KEYS
   virtual wxArrayString GetForeignKeys(const wxString& table);
 #endif

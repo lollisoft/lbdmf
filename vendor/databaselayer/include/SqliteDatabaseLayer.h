@@ -87,6 +87,8 @@ public:
   /// Retrieve the primary key table name of the current foreign key
   virtual wxString& GetForeignKeyPKTable(const int index);
 
+  virtual bool GetColumnNullable(const wxString& table, const wxString& column);
+
   static int TranslateErrorCode(int nCode);
 
 private:

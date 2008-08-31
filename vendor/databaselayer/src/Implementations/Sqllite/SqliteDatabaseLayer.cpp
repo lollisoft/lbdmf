@@ -477,6 +477,28 @@ bool SqliteDatabaseLayer::ViewExists(const wxString& view)
   return bReturn;
 }
 
+bool SqliteDatabaseLayer::GetColumnNullable(const wxString& table, const wxString& column) {
+	char const *pzDataType;    /* OUTPUT: Declared data type */
+	char const *pzCollSeq;     /* OUTPUT: Collation sequence name */
+	int pNotNull;              /* OUTPUT: True if NOT NULL constraint exists */
+	int pPrimaryKey;           /* OUTPUT: True if column part of PK */
+	int pAutoinc;               /* OUTPUT: True if column is auto-increment */
+
+	sqlite3_table_column_metadata(
+								  m_pDatabase,		/* Connection handle */
+								  NULL,				/* Database name or NULL */
+								  table.c_str(),		/* Table name */
+								  column.c_str(), /* Column name */
+								  &pzDataType,		/* OUTPUT: Declared data type */
+								  &pzCollSeq,			/* OUTPUT: Collation sequence name */
+								  &pNotNull,			/* OUTPUT: True if NOT NULL constraint exists */
+								  &pPrimaryKey,		/* OUTPUT: True if column part of PK */
+								  &pAutoinc			/* OUTPUT: True if column is auto-increment */
+								  );
+
+	return !pNotNull;
+}
+
 int SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
   int count = 0;
   char const *pzDataType;    /* OUTPUT: Declared data type */
