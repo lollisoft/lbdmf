@@ -3944,7 +3944,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		} else {
 			// Delete fields and set foreign key columns to NULL
 			
-			lbDBClear();
+			if (sampleQuery->dataFetched()) 
+				lbDBClear(); // Clear fields and two step mode
+			else
+				lbDBUpdate(); // Read fields and add in one step
 			
 			errUpdate = ERR_NONE;
 		}
@@ -4173,6 +4176,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 					}
 				}
 				_LOG << "lbDatabasePanel::lbDBAdd() Actually update record data." LOG_
+				
+				lbDBUpdate();
+				
 				if (sampleQuery->update() == ERR_NONE) {
 					if (sampleQuery->last() == ERR_NONE)
 						lbDBRead();
