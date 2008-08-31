@@ -384,9 +384,9 @@ public:
 		
 	void		LB_STDCALL setAutoRefresh(bool b);
 
-	void		LB_STDCALL reopen();
-	void	LB_STDCALL close();
-	void	LB_STDCALL open();
+	lbErrCodes	LB_STDCALL reopen();
+	void		LB_STDCALL close();
+	lbErrCodes	LB_STDCALL open();
 
 #ifdef UNBOUND
         virtual char* 		LB_STDCALL getChar(int column);
@@ -3160,22 +3160,25 @@ void LB_STDCALL lbQuery::unbind() {
 void LB_STDCALL lbQuery::close() {
 }
 
-void LB_STDCALL lbQuery::open() {
+lbErrCodes LB_STDCALL lbQuery::open() {
+	return ERR_NONE;
 }
 
 
 /*...svoid LB_STDCALL lbQuery\58\\58\reopen\40\\41\:0:*/
-void LB_STDCALL lbQuery::reopen() {
+lbErrCodes LB_STDCALL lbQuery::reopen() {
 	RETCODE retcode;
-	
+	lbErrCodes err = ERR_NONE;
 	if (hstmt != NULL) {
 	        retcode = SQLFreeStmt (hstmt, SQL_CLOSE);
 	}
 
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
-
+	if (retcode != SQL_SUCCESS) {
+		dbError("SQLExecDirect()", hstmt);
+		return ERR_DB_QUERYFAILED;
+	}
 	boundColumns->rebind();
 	if (cursor > 0 ) 
 		if (absolute(cursor) == ERR_DB_NODATA) {
@@ -3185,6 +3188,8 @@ void LB_STDCALL lbQuery::reopen() {
 		}
 	else
 		first();
+	
+	return ERR_NONE;
 }
 /*...e*/
 

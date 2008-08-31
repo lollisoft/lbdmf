@@ -403,10 +403,10 @@ public:
 	/**
 	 * \brief Enables refreshing resultset.
 	 */
-	virtual void	LB_STDCALL reopen() = 0;
+	virtual lbErrCodes	LB_STDCALL reopen() = 0;
 
 	virtual void	LB_STDCALL close() = 0;
-	virtual void	LB_STDCALL open() = 0;
+	virtual lbErrCodes	LB_STDCALL open() = 0;
 
 	/** \brief Build new SQL query with where clause.
 	 *
