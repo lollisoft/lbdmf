@@ -283,19 +283,19 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		// If exported, the information may be changed.
 		
 		char* dbbackend = meta->getSystemDatabaseBackend();
-		*oStream << "\" backend=\"" << dbbackend;
 
+		*oStream << AppID->charrep() << "\" backend=\"" << dbbackend << 
 #ifdef OSX		
-		*oStream << AppID->charrep() << "\" platform=\"osx\">\n";
+		"\" platform=\"osx\">\n";
 #else
 #ifdef LINUX		
-		*oStream << AppID->charrep() << "\" platform=\"linux\">\n";
+		"\" platform=\"linux\">\n";
 #else		
 #ifdef WINDOWS		
-		*oStream << AppID->charrep() << "\" platform=\"windows\">\n";
+		"\" platform=\"windows\">\n";
 #else		
 #ifdef SOLARIS		
-		*oStream << AppID->charrep() << "\" platform=\"solaris\">\n";
+		"\" platform=\"solaris\">\n";
 #endif		
 #endif		
 #endif		
