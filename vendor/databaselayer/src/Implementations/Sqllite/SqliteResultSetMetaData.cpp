@@ -26,8 +26,10 @@ int SqliteResultSetMetaData::GetColumnType(int i)
     returnType = COLUMN_STRING;
   else if (columnTypeString.IsSameAs(_("DOUBLE")) || columnTypeString.IsSameAs(_("FLOAT")))
     returnType = COLUMN_DOUBLE;
+  else if (columnTypeString.StartsWith(_("TEXT")))
+	  returnType = COLUMN_TEXT;
   else if (columnTypeString.StartsWith(_("BOOL")))
-    returnType = COLUMN_BOOL;
+	  returnType = COLUMN_BOOL;
   else if (columnTypeString.IsSameAs(_("BLOB")))
     returnType = COLUMN_BLOB;
   else if (columnTypeString.IsSameAs(_("DATE")) || columnTypeString.IsSameAs(_("DATETIME")) || columnTypeString.IsSameAs(_("TIMESTAMP")))
