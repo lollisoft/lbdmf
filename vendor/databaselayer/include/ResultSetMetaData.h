@@ -47,6 +47,7 @@ public:
     COLUMN_BOOL,
     COLUMN_BLOB,
     COLUMN_DATE,
+    COLUMN_TEXT,
   };
 };
 
