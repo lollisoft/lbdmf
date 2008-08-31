@@ -325,9 +325,9 @@ public:
 	
 	void						LB_STDCALL setAutoRefresh(bool b);
 	
-	void						LB_STDCALL reopen();
+	lbErrCodes					LB_STDCALL reopen();
 	void						LB_STDCALL close();
-	void						LB_STDCALL open();
+	lbErrCodes					LB_STDCALL open();
 	
 #ifdef UNBOUND
 	virtual char*				LB_STDCALL getChar(int column);
@@ -1522,6 +1522,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			_LOG << "Have got a resultset for '" << szSql << "'" LOG_
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
+
+				ResultSetMetaData* metadata = theResult->GetMetaData();
+				
+				// Get all tables once
+				int count = metadata->GetColumnCount();
+				for (int i = 1; i <= count; i++) {
+					wxString table = metadata->GetTableForColumn(i);
+					if (tables.Index(table) == wxNOT_FOUND) tables.Add(table);
+				}
+
 				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
 				return ERR_DB_NODATA;
 			} else {
@@ -1712,7 +1722,11 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
 
 	///\todo Implement this.
+	wxMemoryBuffer buffer;
 
+	if (theResult) theResult->GetResultBlob(column, buffer);
+	
+	binarydata->append(buffer.GetData(), buffer.GetBufSize());
 	binarydata->append((void*) "", 1);
 
 	binarydata++;
@@ -1732,12 +1746,51 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(const char* colu
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_BinaryData* value) {
 	///\todo Implement this.
+	UAP(lb_I_String, name)
+	name = getColumnName(column);
+	
+	wxString tempSQL = "UPDATE ";
+	tempSQL += tables[0];
+	tempSQL += " SET ";
+	tempSQL += name->charrep();
+	tempSQL += " = ? WHERE ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " = ";
+	tempSQL += currentCursorview[cursor];
+	
+	PreparedStatement* pStatement = currentdbLayer->PrepareStatement(tempSQL);
+
+	if (pStatement) {
+		pStatement->SetParamBlob(1, value->getData(), value->getSize());
+		pStatement->RunQuery();
+	}
 
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb_I_BinaryData* value) {
 	///\todo Implement this.
+
+	wxString tempSQL = "UPDATE ";
+	tempSQL += tables[0];
+	tempSQL += " SET ";
+	tempSQL += column;
+	tempSQL += " = ? WHERE ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " = ";
+	tempSQL += currentCursorview[cursor];
+	
+	PreparedStatement* pStatement = currentdbLayer->PrepareStatement(tempSQL);
+	
+	for (int i = 1; i <= getColumns(); i++) {
+		UAP(lb_I_String, name)
+		name = getColumnName(i);
+		
+		if (strcmp(name->charrep(), column) == 0 && pStatement) {
+			pStatement->SetParamBlob(1, value->getData(), value->getSize());
+			pStatement->RunQuery();
+		}
+	}
 
 	return ERR_NONE;
 }
@@ -2083,11 +2136,29 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 /*...e*/
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNullable(int pos) {
-	return boundColumns->isNullable(pos);
+	if (currentdbLayer == NULL) {
+		_LOG << "Error: No connection opened." LOG_
+		return 0;
+	}
+	UAP(lb_I_String, columnName)
+	UAP(lb_I_String, tableName)
+	columnName = getColumnName(pos);
+	tableName = getTableName(columnName->charrep());
+
+	return currentdbLayer->GetColumnNullable(tableName->charrep(), columnName->charrep());
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
-	return boundColumns->isNullable(name);
+	if (currentdbLayer == NULL) {
+		_LOG << "Error: No connection opened." LOG_
+		return 0;
+	}
+	UAP_REQUEST(getModuleInstance(), lb_I_String, columnName)
+	UAP(lb_I_String, tableName)
+	*columnName = name;
+	tableName = getTableName(columnName->charrep());
+	
+	return currentdbLayer->GetColumnNullable(tableName->charrep(), columnName->charrep());
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
@@ -2136,9 +2207,14 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 			case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
 			case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
 			case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
+			case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
 			case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
 			case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
-			default: return lbDBColumnUnknown;
+			default: 
+			{
+				_LOG << "Warning: Column type not known: " << type LOG_
+				return lbDBColumnUnknown;
+			}
 		}
 }
 /*...e*/
@@ -2261,10 +2337,16 @@ void LB_STDCALL lbDatabaseLayerQuery::unbind() {
 }
 
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\reopen\40\\41\:0:*/
-void LB_STDCALL lbDatabaseLayerQuery::reopen() {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	///\todo Implement
 	int backup_cursor = cursor;
-	query(szSql, true);
+	lbErrCodes err = query(szSql, true);
+	
+	if ((err == ERR_DB_QUERYFAILED) || (err == ERR_DB_NODATA)) {
+		_LOG << "Warning: Reopen of current statement failed." LOG_
+		return err;
+	}
+	
 	absolute(backup_cursor);
 	if (theResult == NULL) {
 			_LOG << "Error: Got no resultset after a reopen!" LOG_
@@ -2296,12 +2378,17 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 	}
 }
 
-void LB_STDCALL lbDatabaseLayerQuery::open() {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
-	query(szSql, true);
+	lbErrCodes err = ERR_NONE;
+	if ((err = query(szSql, true)) != ERR_NONE) {
+		return err;
+	}
 	if (theResult == NULL) {
 		_LOG << "Error: Got no resultset after a open!" LOG_
-	}	
+		return ERR_DB_QUERYFAILED;
+	}
+	return ERR_NONE;
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
@@ -2651,6 +2738,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		_LOG << "Warning: Noting to update." LOG_
 		return ERR_NONE;
 	}
+
 	if (mode == 1) {
 		// Add mode
 		mode = 0;
