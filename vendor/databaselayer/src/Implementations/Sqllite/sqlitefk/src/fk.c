@@ -216,7 +216,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 		{
 			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
-				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
+				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL) AND NOT new.%s IS NULL\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
@@ -226,7 +226,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
-				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
+				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL) AND NOT new.%s IS NULL\n"
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
