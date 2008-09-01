@@ -3582,7 +3582,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 		conn->setModuleManager(*&manager, __FILE__, __LINE__);
 		conn->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 
-		conn->setDBName(connectionname);
+		conn->setDBName(connName->charrep());
 		conn->setConnection(dbl);
 
 		if (connPooling->exists(&key) == 0) {
@@ -3591,7 +3591,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	}
 
 	if (dbl == NULL) dbl = new SqliteDatabaseLayer();
-	if (!dbl->IsOpen()) dbl->Open(connectionname);
+	if (!dbl->IsOpen()) dbl->Open(connName->charrep());
 	
 	connected = true;
 }
