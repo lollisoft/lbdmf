@@ -2892,15 +2892,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 						}
 						break;
 					case lb_I_Query::lbDBColumnBinary:
-					{
-						try {
+						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
 						
 							tx->SetValue(wxString(""));
 						}
-						catch (...) {
-						}
-					}
 						break;
 					case lb_I_Query::lbDBColumnUnknown:
 						break;
