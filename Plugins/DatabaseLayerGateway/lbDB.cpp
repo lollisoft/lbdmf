@@ -3563,6 +3563,8 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 
 	*connName = connectionname;
 
+	*connName += ".db3";
+	
 	if (connPooling == NULL) {
 		_LOG << "lbDatabaseLayerDatabase::open() Initialize connection pooling." LOG_
 		REQUEST(getModuleInstance(), lb_I_Container, connPooling)
