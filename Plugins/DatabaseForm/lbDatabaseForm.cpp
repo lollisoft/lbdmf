@@ -2891,6 +2891,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 							tx->SetValue(wxString(""));
 						}
 						break;
+					case lb_I_Query::lbDBColumnBinary:
+					{
+						try {
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+						
+							tx->SetValue(wxString(""));
+						}
+						catch (...) {
+						}
+					}
+						break;
 					case lb_I_Query::lbDBColumnUnknown:
 						break;
 				}
@@ -3946,9 +3957,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			
 			if (sampleQuery->dataFetched()) 
 				lbDBClear(); // Clear fields and two step mode
-			else
+			else {
 				lbDBUpdate(); // Read fields and add in one step
-			
+				sampleQuery->reopen();
+				sampleQuery->first();
+				lbDBRead();
+				DISABLE_FOR_ONE_DATA()
+				return ERR_NONE;
+			}			
 			errUpdate = ERR_NONE;
 		}
 	} else {
