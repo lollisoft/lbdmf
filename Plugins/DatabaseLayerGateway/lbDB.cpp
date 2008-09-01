@@ -217,6 +217,10 @@ public:
 		if (ReadOnlyColumns == NULL) {
 			REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
 		}
+		if (binaryDataColumns == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, binaryDataColumns)
+			binaryDataColumns->setCloning(false); // Don't clone these big data.
+		}
 	}
 	
 	virtual ~lbDatabaseLayerQuery() {
@@ -419,7 +423,9 @@ private:
 	UAP(lb_I_Container, mapPKTable_PKColumns_To_FKName)
 		
 	UAP(lb_I_Container, ReadOnlyColumns)
-		
+	
+	UAP(lb_I_Container, binaryDataColumns)
+	
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns)
 #endif
@@ -1746,9 +1752,21 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(const char* colu
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_BinaryData* value) {
 	///\todo Implement this.
+	lbErrCodes err = ERR_NONE;
+
 	UAP(lb_I_String, name)
 	name = getColumnName(column);
 	
+	UAP(lb_I_Unknown, ukValue)
+	UAP(lb_I_KeyBase, key)
+	
+	QI(name, lb_I_KeyBase, key)
+	QI(value, lb_I_Unknown, ukValue)
+	
+	if (binaryDataColumns->exists(&key)) binaryDataColumns->remove(&key);
+	binaryDataColumns->insert(&ukValue, &key);
+	
+/*	
 	wxString tempSQL = "UPDATE ";
 	tempSQL += tables[0];
 	tempSQL += " SET ";
@@ -1764,13 +1782,27 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_Binar
 		pStatement->SetParamBlob(1, value->getData(), value->getSize());
 		pStatement->RunQuery();
 	}
-
+*/
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb_I_BinaryData* value) {
 	///\todo Implement this.
+	lbErrCodes err = ERR_NONE;
 
+	UAP(lb_I_Unknown, ukValue)
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	
+	*name = column;
+	
+	QI(name, lb_I_KeyBase, key)
+	QI(value, lb_I_Unknown, ukValue)
+	
+	if (binaryDataColumns->exists(&key)) binaryDataColumns->remove(&key);
+	binaryDataColumns->insert(&ukValue, &key);
+	
+/*	
 	wxString tempSQL = "UPDATE ";
 	tempSQL += tables[0];
 	tempSQL += " SET ";
@@ -1791,7 +1823,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 			pStatement->RunQuery();
 		}
 	}
-
+*/
 	return ERR_NONE;
 }
 
@@ -2735,6 +2767,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setAutoRefresh(bool b) {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
+	lbErrCodes err = ERR_NONE;
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
 		_LOG << "Warning: Noting to update." LOG_
@@ -2757,6 +2790,23 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			strSQL += queryColumns[i];
 		}
 		
+		if (binaryDataColumns->Count() > 0) {
+			binaryDataColumns->finishIteration();
+			
+			while (binaryDataColumns->hasMoreElements()) {
+				UAP(lb_I_Unknown, ukBinary)
+				UAP(lb_I_BinaryData, binary)
+				UAP(lb_I_String, name)
+				UAP(lb_I_KeyBase, key)
+				
+				ukBinary = binaryDataColumns->nextElement();
+				key = binaryDataColumns->currentKey();
+				
+				strSQL += ", ";
+				strSQL += key->charrep();
+			}
+		}
+		
 		strSQL += " ) VALUES (";
 
 		for (int i = 0; i < queryValues.Count(); i++) {
@@ -2767,6 +2817,27 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				strSQL += "?";
 		}
 
+		if (binaryDataColumns->Count() > 0) {
+			binaryDataColumns->finishIteration();
+			
+			while (binaryDataColumns->hasMoreElements()) {
+				UAP(lb_I_Unknown, ukBinary)
+				UAP(lb_I_BinaryData, binary)
+				UAP(lb_I_String, name)
+				UAP(lb_I_KeyBase, key)
+				
+				ukBinary = binaryDataColumns->nextElement();
+				key = binaryDataColumns->currentKey();
+				QI(ukBinary, lb_I_BinaryData, binary)
+				
+				if (binary->getData() == NULL) {
+					strSQL += ", NULL";
+				} else {
+					strSQL += ", ?";
+				}
+			}
+		}
+		
 		strSQL += " )";
 
 		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
@@ -2776,15 +2847,38 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			for (int i = 0; i < queryValues.Count(); i++) {
 				pStatement->SetParamString(i+1, queryValues[i]);
 			}
+			
+			int offset = queryValues.Count();
 
+			if (binaryDataColumns->Count() > 0) {
+				binaryDataColumns->finishIteration();
+				
+				while (binaryDataColumns->hasMoreElements()) {
+					UAP(lb_I_Unknown, ukBinary)
+					UAP(lb_I_BinaryData, binary)
+					UAP(lb_I_String, name)
+					UAP(lb_I_KeyBase, key)
+					
+					ukBinary = binaryDataColumns->nextElement();
+					key = binaryDataColumns->currentKey();
+					QI(ukBinary, lb_I_BinaryData, binary)
+					
+					if (binary->getData() == NULL) {
+					} else {
+						pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
+					}					
+				}
+			}
+			
             try
             {
 				pStatement->RunQuery();
+				_LOG << "Added a new row." LOG_
 				last();
             }
             catch (DatabaseLayerException& e)
             {
-				_LOG << "Error: Adding a row failed." LOG_
+				_LOG << "Error: Adding a row failed (" << strSQL.c_str() << ")" LOG_
             }
 		}
 	} else {
@@ -2809,31 +2903,85 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			} else {
 				if (i > 0) strSQL += ", ";
-				if (isNull(i+1)) {
+				if (isNull(i+1) && queryValues[i] == "") {
 					strSQL += queryColumns[i];
 					strSQL += " = NULL";
 				} else {
 					strSQL += queryColumns[i];
 					strSQL += " = ";
-					strSQL += queryValues[i];
+					if (queryValues[i].Trim() == "") {
+						strSQL += "NULL";
+					} else {
+						strSQL += queryValues[i];
+					}
 				}
 			}
 		}
 		
+		if (binaryDataColumns->Count() > 0) {
+			binaryDataColumns->finishIteration();
+			
+			while (binaryDataColumns->hasMoreElements()) {
+				UAP(lb_I_Unknown, ukBinary)
+				UAP(lb_I_BinaryData, binary)
+				UAP(lb_I_KeyBase, key)
+				
+				ukBinary = binaryDataColumns->nextElement();
+				key = binaryDataColumns->currentKey();
+				QI(ukBinary, lb_I_BinaryData, binary)
+
+				if (binary->getData() != NULL) {
+					strSQL += ", ";
+					strSQL += key->charrep();
+					strSQL += " = ?";
+				}
+			}
+		}
+				
 		strSQL += " WHERE ";
 		strSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		strSQL += " = ";
 		strSQL += currentCursorview[cursor];
 
+		PreparedStatement* pStatement = NULL;
+		
+		try {
+			 pStatement = currentdbLayer->PrepareStatement(strSQL);
+		} catch (...) {
+			_LOG << "Update query failed: " << strSQL.c_str() LOG_
+			return ERR_DB_UPDATEFAILED;
+		}
+
+		int paramNo = 0;
+		if (binaryDataColumns->Count() > 0) {
+			binaryDataColumns->finishIteration();
+			
+			while (binaryDataColumns->hasMoreElements()) {
+				UAP(lb_I_Unknown, ukBinary)
+				UAP(lb_I_BinaryData, binary)
+				UAP(lb_I_String, name)
+				
+				ukBinary = binaryDataColumns->nextElement();
+				QI(ukBinary, lb_I_BinaryData, binary)
+				if (binary->getData() != NULL) {
+					pStatement->SetParamBlob(++paramNo, binary->getData(), binary->getSize());
+				}
+			}
+		}
+		
 		_LOG << "Update statement: " << strSQL.c_str() LOG_
 
-		executeDirect((char*) strSQL.c_str());
+		pStatement->RunQuery();
 	}
 	queryColumns.Clear();
 	queryValues.Clear();
 
 	reopen();
 
+	if (binaryDataColumns->Count() > 0) {
+		binaryDataColumns->deleteAll();
+	}
+	
 	return ERR_NONE;
 }
 
