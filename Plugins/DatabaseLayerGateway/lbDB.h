@@ -76,6 +76,7 @@ public:
 	lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
 	lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
 	
+	DatabaseLayer* LB_STDCALL getBackend(char* connectionname);
 private:
 	RETCODE  retcode;
 	HENV     henv;	

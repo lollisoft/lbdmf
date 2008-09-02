@@ -2426,11 +2426,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	
 	if (currentdbLayer == NULL) {
 		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Database, database)
 		if (uk == NULL) {
 			_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 			instanceOflbDatabaseLayerDatabase(&uk, manager.getPtr(), __FILE__, __LINE__);
 		}
-		uk->queryInterface("lb_I_Database", (void**) &currentdbLayer, __FILE__, __LINE__);
+		uk->queryInterface("lb_I_Database", (void**) &database, __FILE__, __LINE__);
+		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName);
 		if (!currentdbLayer->IsOpen()) currentdbLayer->Open(dbName);
 	}
 	
@@ -3716,6 +3718,11 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 	connected = false;
 }
 
+DatabaseLayer* LB_STDCALL lbDatabaseLayerDatabase::getBackend(char* connectionname) {
+	open(connectionname);
+	return dbl;
+}
+
 void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	if (connectionname == NULL) {
@@ -3816,12 +3823,8 @@ lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, i
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
 	open(connectionname);
-	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-
-	*connName = connectionname;
-	*connName += ".db3"; 
 	
-	if (query->init(dbl, connName->charrep()) != ERR_NONE) {
+	if (query->init(dbl, connectionname) != ERR_NONE) {
 		_LOG << "ERROR: Initializion of query has been failed!" LOG_
 		
 		//return NULL;
