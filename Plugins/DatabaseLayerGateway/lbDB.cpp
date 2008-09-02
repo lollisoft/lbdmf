@@ -348,7 +348,7 @@ public:
 	lbErrCodes					LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
 #endif        
 	
-	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, bool ro = false);
+	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, char* dbname, bool ro = false);
 	
 	lbErrCodes					LB_STDCALL executeDirect(char* SQL);
 	
@@ -404,6 +404,7 @@ private:
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
 	char*   szSql;
+	char*	dbName;
 	int		databound;
 	int     firstfetched;
 	int		_readonly; // readonly = 1, else = 0
@@ -1422,9 +1423,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 	return ERR_DB_INIT;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, bool ro) {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, char* dbname, bool ro) {
 	_LOG << "lbDatabaseLayerQuery::init(...) called." LOG_
 	currentdbLayer = dbLayer;
+	if (dbName) free(dbName);
+	dbName = NULL;
+	if (dbname) dbName = strdup(dbname);
 	
 	if (currentdbLayer) {
 		_LOG << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer available." LOG_
@@ -2318,6 +2322,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
+	if (theResult == NULL) open();
 	ResultSetMetaData* metadata = theResult->GetMetaData();
 	wxString table = metadata->GetTableForColumn(columnName);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
@@ -2409,12 +2414,26 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 		if (theResult) {
 			theResult = NULL;
 		}
+		
+		currentdbLayer = NULL;
 	}
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
 	lbErrCodes err = ERR_NONE;
+	
+	if (currentdbLayer == NULL) {
+		UAP(lb_I_Unknown, uk)
+		if (uk == NULL) {
+			_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
+			instanceOflbDatabaseLayerDatabase(&uk, manager.getPtr(), __FILE__, __LINE__);
+		}
+		uk->queryInterface("lb_I_Database", (void**) &currentdbLayer, __FILE__, __LINE__);
+		if (!currentdbLayer->IsOpen()) currentdbLayer->Open(dbName);
+	}
+	
+	
 	if ((err = query(szSql, true)) != ERR_NONE) {
 		return err;
 	}
@@ -3796,8 +3815,12 @@ lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, i
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
 	open(connectionname);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 
-	if (query->init(dbl) != ERR_NONE) {
+	*connName = connectionname;
+	*connName += ".db3"; 
+	
+	if (query->init(dbl, connName->charrep()) != ERR_NONE) {
 		_LOG << "ERROR: Initializion of query has been failed!" LOG_
 		
 		//return NULL;
