@@ -1406,7 +1406,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		
 		err = actionQuery->first();
 		
-		/*...sloop through and find actions:16:*/
+/*...sloop through and find actions:16:*/
 		while (err == ERR_NONE) {
 			UAP(lb_I_String, action)
 			UAP(lb_I_String, actionWhat)
@@ -1431,8 +1431,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			err = actionQuery->next();
 		}
 		
-		/*...e*/
-		/*...sget last action:16:*/
+/*...e*/
+/*...sget last action:16:*/
 		if (err == WARN_DB_NODATA) {
 			UAP(lb_I_String, action)
 			UAP(lb_I_String, actionWhat)
