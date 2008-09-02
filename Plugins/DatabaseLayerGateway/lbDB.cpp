@@ -212,6 +212,7 @@ public:
 		cursorname = NULL;
 		fetchstatus = 0;
 		theResult = NULL;
+		dbName = NULL;
 		max_in_cursor_default = max_in_cursor = 100;
 		
 		if (ReadOnlyColumns == NULL) {
