@@ -221,7 +221,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
@@ -232,7 +232,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "END;\n";
 			free(buffer);
 			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
