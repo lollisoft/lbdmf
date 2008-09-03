@@ -3883,6 +3883,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 						
 						DBerr = ReplacementColumnQuery->next();
 						
+						// Break out in case of no data (not peeking)
+						if (DBerr == ERR_DB_NODATA) break;
+
 						data = ReplacementColumnQuery->getAsString(1);
 						
 						data->trim();
