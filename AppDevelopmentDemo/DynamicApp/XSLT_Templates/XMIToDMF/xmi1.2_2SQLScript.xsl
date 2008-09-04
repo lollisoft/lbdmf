@@ -1,4 +1,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:UML="org.omg.xmi.namespace.UML" exclude-result-prefixes="UML">
+
+<!-- This file must be generated before this template could be applied. -->
+<xsl:import href="XMISettings.xsl"/>
+
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -72,6 +76,51 @@
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
+
+<!-- Create some required functions -->
+
+<xsl:if test="$targetdatabase = ''">
+-- dropconstraint("varchar", "varchar")
+--
+-- Drops a constraint if it exists.
+
+CREATE OR REPLACE FUNCTION dropconstraint("varchar", "varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+declare tt alias for $2;
+begin
+  select conname into tres from pg_constraint where conname = $2;
+  if not tres is null then
+    execute ''alter table "'' || $1 || ''" drop constraint "'' || $2 || ''"'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+-- dropTable("varchar")
+--
+-- This function drops a table, if it exists.
+
+CREATE OR REPLACE FUNCTION dropTable("varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+declare tt alias for $1;
+begin
+  select tablename into tres from pg_tables where tablename = $1;
+  if not tres is null then
+    execute ''DROP TABLE "'' || $1 || ''"'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+</xsl:if>
+
 <!--
     <xsl:variable name="stereoTypeID" select="UML:ModelElement.stereotype/@xmi.idref"/>
 
@@ -110,7 +159,10 @@
     <!-- ****************** CLASS ********************* -->
     <xsl:variable name="classID" select="@xmi.id"/>
     <xsl:element name="class">
--- Class is <xsl:value-of select="@name"/>
+-- Class is <xsl:value-of select="@name"/> <xsl:value-of select="$targetdatabase"/> 
+
+<xsl:if test="$targetdatabase = ''">
+
 select dropTable('<xsl:value-of select="@name"/>');
 
 CREATE TABLE "<xsl:value-of select="@name"/>" (
@@ -121,11 +173,27 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
 <xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
 </xsl:for-each>
 ) WITH OIDS;
+
+</xsl:if>
+
+<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+CREATE TABLE "<xsl:value-of select="@name"/>" (
+"ID" INTEGER PRIMARY KEY<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
+<xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+"<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
+<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
+</xsl:for-each>
+<xsl:call-template name="ForeignColumnForClass_12"><xsl:with-param name="id" select="$classID"/></xsl:call-template>
+);
+
+</xsl:if>
+
     </xsl:element>
   </xsl:template>
 
   <xsl:template name="convertTypes_DBTypes">
     <xsl:param name="typename"/>
+<xsl:if test="$targetdatabase = ''">
     <xsl:choose>
       <xsl:when test="$typename='int'">INTEGER</xsl:when>
       <xsl:when test="$typename='float'">DECIMAL</xsl:when>
@@ -134,7 +202,18 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
       <xsl:when test="$typename='bigstring'">bytea</xsl:when>
       <xsl:when test="$typename='image'">bytea</xsl:when>
     </xsl:choose>
-
+</xsl:if>
+<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+    <xsl:choose>
+      <xsl:when test="$typename='int'">INTEGER</xsl:when>
+      <xsl:when test="$typename='float'">DECIMAL</xsl:when>
+      <xsl:when test="$typename='date'">DATE</xsl:when>
+      <xsl:when test="$typename='string'">CHAR(100)</xsl:when>
+      <xsl:when test="$typename='text'">TEXT</xsl:when>
+      <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
+      <xsl:when test="$typename='image'">BYTEA</xsl:when>
+    </xsl:choose>
+</xsl:if>
   </xsl:template>
 
   <xsl:template name="genAssociations">
@@ -175,10 +254,33 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
 
 -- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/> with name <xsl:value-of select="$assocname"/>
 
+<xsl:if test="$targetdatabase = ''">
 ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" INT;
+</xsl:if>
 ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" )
    REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
 </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="ForeignColumnForClass_12">
+    <xsl:param name="id"/>
+    <!-- UML1.4: -->
+    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
+      <!-- Choose only association ends where navigable is true. -->
+      <xsl:variable name="thisEnd" select="../.."/>
+      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
+      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
+      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
+      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
+      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
+      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
+      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
+      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+	  
+<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">,
+<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
+"<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" INTEGER</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -201,7 +303,12 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
 
 <xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
 
+<xsl:if test="$targetdatabase = ''">
 select dropConstraint('<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID');
+</xsl:if>
+<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+-- Drop a constraint
+</xsl:if>
 </xsl:if>
     </xsl:for-each>
   </xsl:template>

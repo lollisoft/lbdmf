@@ -186,7 +186,7 @@
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
--- CREATE TABLE <xsl:value-of select="$TableName"/>
+-- CREATE Sqlite TABLE <xsl:value-of select="$TableName"/>
 CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:if test="position()!=1">,</xsl:if>
 <xsl:variable name="Aggregation" select="@aggregation"/>
@@ -451,6 +451,7 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
+			<xsl:when test="$backendType='text'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">BYTEA</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
@@ -491,6 +492,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
+			<xsl:when test="$backendType='text'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">BYTEA</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
@@ -522,6 +524,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
     <xsl:param name="TargetDatabaseVersion"/>
 <xsl:variable name="DatatypeID" select="./type/@xmi:idref"/>
 <xsl:variable name="backendType" select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
+
 <xsl:choose>
 	<xsl:when test="$TargetDatabaseType='PostgreSQL'">
 		<xsl:choose>
@@ -532,6 +535,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
+			<xsl:when test="$backendType='text'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">BYTEA</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
@@ -575,6 +579,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
+			<xsl:when test="$backendType='text'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">BYTEA</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
@@ -591,7 +596,8 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@n
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );</xsl:if>
 			</xsl:if>
 			</xsl:otherwise>
-			<xsl:if test="./@association!=''"><xsl:if test="./@aggregation='none'">INTEGER</xsl:if></xsl:if>
+<!--			<xsl:if test="./@association!=''"><xsl:if test="./@aggregation='none'">INTEGER</xsl:if></xsl:if>
+-->
 		</xsl:choose>
 	</xsl:when>
 </xsl:choose>

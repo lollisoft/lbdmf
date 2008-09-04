@@ -7,8 +7,15 @@
 <xsl:output method="text"/>
 
 <!-- ********** Select your database target ********** -->
+
 <xsl:variable name="TargetDBType" select="'Sqlite'"/>
 <xsl:variable name="TargetDBVersion" select="'1.2.3'"/>
+
+<!--
+<xsl:variable name="TargetDBType" select="'PostgreSQL'"/>
+<xsl:variable name="TargetDBVersion" select="'7.4'"/>
+-->
+
 <!-- ************************************************* -->
 
 	<xsl:template match="text()|@*">
