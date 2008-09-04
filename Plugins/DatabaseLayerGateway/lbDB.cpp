@@ -1647,10 +1647,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						int count = 0;
 						if (tempResult && tempResult->Next()) {
 							count++;
-							currentCursorview.Add(tempResult->GetResultString(1));
+							wxString value = tempResult->GetResultString(1);
+							//_LOG << "Fill ID list with item " << value.c_str() LOG_
+							currentCursorview.Add(value);
 							while (tempResult->Next()) {
 								count++;
-								currentCursorview.Add(tempResult->GetResultString(1));
+								value = tempResult->GetResultString(1);
+								//_LOG << "Fill ID list with item " << value.c_str() LOG_
+								currentCursorview.Add(value);
 								if (count == max_in_cursor) break;
 							}
 						}
@@ -2378,6 +2382,7 @@ void LB_STDCALL lbDatabaseLayerQuery::unbind() {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	///\todo Implement
 	int backup_cursor = cursor;
+	currentCursorview.Clear();
 	lbErrCodes err = query(szSql, true);
 	
 	if ((err == ERR_DB_QUERYFAILED) || (err == ERR_DB_NODATA)) {
@@ -2533,10 +2538,14 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			int count = 0;
 			if ((tempResult != NULL) && tempResult->Next()) {
 				count++;
-				tempCursorview.Add(tempResult->GetResultString(1));
+				wxString value = tempResult->GetResultString(1);
+				//_LOG << "Fill ID list with item " << value.c_str() LOG_
+				tempCursorview.Add(value);
 				while (tempResult->Next()) {
 					count++;
-					tempCursorview.Add(tempResult->GetResultString(1));
+					value = tempResult->GetResultString(1);
+					//_LOG << "Fill ID list with item " << value.c_str() LOG_
+					tempCursorview.Add(value);
 					if (count == max_in_cursor) break;
 				}
 			}
@@ -2589,10 +2598,14 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			int count = 0;
 			if (tempResult && tempResult->Next()) {
 				count++;
-				currentCursorview.Add(tempResult->GetResultString(1));
+				wxString value = tempResult->GetResultString(1);
+				//_LOG << "Fill ID list with item " << value.c_str() LOG_
+				currentCursorview.Add(value);
 				while (tempResult->Next()) {
 					count++;
-					currentCursorview.Add(tempResult->GetResultString(1));
+					value = tempResult->GetResultString(1);
+					//_LOG << "Fill ID list with item " << value.c_str() LOG_
+					currentCursorview.Add(value);
 					if (count == max_in_cursor) break;
 				}
 			}
@@ -2640,6 +2653,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	return false;
 }
 
+/// \todo Deeper check required.
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	///\todo Implement
 	if (cursorFeature == false) return ERR_NONE;
@@ -2652,13 +2666,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 		return ERR_NONE;
 	}
 	if (max_in_cursor-1 < 0) {
-		currentCursorview[0] = "0";
+		//currentCursorview[0] = "0";
 		cursor = 0;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
 		_dataFetched = true;
 		return ERR_NONE;
 	}
-	currentCursorview[max_in_cursor-1] = "0";
+	//currentCursorview[max_in_cursor-1] = "0";
 	if (!selectCurrentRow()) return ERR_DB_NODATA;
 	_dataFetched = true;
 	return ERR_NONE;
