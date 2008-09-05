@@ -3858,7 +3858,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 ///\todo Implement.
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
-	dbl->Open(connectionname);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+	*connName = connectionname;
+	*connName += ".db3";
+	dbl->Open(connName->charrep());
 	
 	wxArrayString tables = dbl->GetTables();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
@@ -3905,7 +3908,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	columns++;
 	
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
-	dbl->Open(connectionname);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+	*connName = connectionname;
+	*connName += ".db3";
+	dbl->Open(connName->charrep());
 	
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
@@ -4080,7 +4086,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 	long ind = 0;
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
-	dbl->Open(connectionname);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+	*connName = connectionname;
+	*connName += ".db3";
+	dbl->Open(connName->charrep());
 	
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
@@ -4156,7 +4165,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 	long ind = 0;
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
-	dbl->Open(connectionname);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+	*connName = connectionname;
+	*connName += ".db3";
+	dbl->Open(connName->charrep());
 	
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
