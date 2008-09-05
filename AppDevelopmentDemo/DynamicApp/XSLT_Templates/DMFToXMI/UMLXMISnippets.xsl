@@ -200,11 +200,11 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-						&lt;ownedOperation xmi:type="uml:Operation" name="<xsl:value-of select="$OperationName"/>" xmi:id="Action_<xsl:value-of select="$OperationName"/><xsl:value-of select="@xmi:id"/>" visibility="public" isAbstract="false"&gt;
+						&lt;ownedOperation xmi:type="uml:Operation" name="<xsl:value-of select="$OperationName"/>" xmi:id="Action_<xsl:value-of select="$OperationName"/><xsl:value-of select="@ID"/>" visibility="public" isAbstract="false"&gt;
 							&lt;xmi:Extension extender="Bouml"&gt;
 								&lt;stereotype name="lbDMF:codegeneration"/&gt;
 							&lt;/xmi:Extension&gt;
-							&lt;ownedParameter xmi:type="uml:Parameter" name="<xsl:value-of select="//actions/action[@ID=$ActionID]/@source"/>" xmi:id="Param_<xsl:value-of select="$OperationName"/>_param_<xsl:value-of select="@xmi:id"/>" direction="in"&gt;
+							&lt;ownedParameter xmi:type="uml:Parameter" name="<xsl:value-of select="//actions/action[@ID=$ActionID]/@source"/>" xmi:id="Param_<xsl:value-of select="$OperationName"/>_param_<xsl:value-of select="@ID"/>" direction="in"&gt;
 								&lt;type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/&gt;
 							&lt;/ownedParameter&gt;
 						&lt;/ownedOperation&gt;
