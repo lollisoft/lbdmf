@@ -22,7 +22,7 @@ int SqliteResultSetMetaData::GetColumnType(int i)
   
   if (columnTypeString.IsSameAs(_("INTEGER")) || columnTypeString.IsSameAs(_("INT")) || columnTypeString.IsSameAs(_("LONG")))
     returnType = COLUMN_INTEGER;
-  else if (columnTypeString.IsSameAs(_("STRING")) || columnTypeString.StartsWith(_("VARCHAR")) || columnTypeString.StartsWith(_("CHAR")))
+  else if (columnTypeString.IsSameAs(_("STRING")) || columnTypeString.StartsWith(_("BPCHAR")) || columnTypeString.StartsWith(_("VARCHAR")) || columnTypeString.StartsWith(_("CHAR")))
     returnType = COLUMN_STRING;
   else if (columnTypeString.IsSameAs(_("DOUBLE")) || columnTypeString.IsSameAs(_("FLOAT")))
     returnType = COLUMN_DOUBLE;
@@ -39,6 +39,7 @@ int SqliteResultSetMetaData::GetColumnType(int i)
 
   if (returnType == COLUMN_UNKNOWN)
   {
+	  printf("Warning: Unknown column: %s\n", columnTypeString.c_str());
     int columnType = sqlite3_column_type(m_pSqliteStatement, i-1);
     switch (columnType)
     {
