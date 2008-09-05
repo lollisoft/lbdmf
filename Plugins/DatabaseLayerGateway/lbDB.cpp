@@ -3975,22 +3975,27 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 			*name = "DataType";
 			param->setUAPLong(*&name, *&typeLong);
 			
+			// Implement mapping to the same as of PostgreSQL typenames !!!
+			/// \todo What is here the best type naming for all the different databases ?
 			switch (colTypeLong)
 			{
 				case ResultSetMetaData::COLUMN_INTEGER:
-					*typeName = "COLUMN_INTEGER";
+					*typeName = "int4";
 					break;
 				case ResultSetMetaData::COLUMN_DOUBLE:
-					*typeName = "COLUMN_DOUBLE";
+					*typeName = "Float";
 					break;
 				case ResultSetMetaData::COLUMN_STRING:
-					*typeName = "COLUMN_STRING";
+					*typeName = "bpchar";
 					break;
 				case ResultSetMetaData::COLUMN_BOOL:
-					*typeName = "COLUMN_BOOL";
+					*typeName = "Bit";
 					break;
 				case ResultSetMetaData::COLUMN_BLOB:
-					*typeName = "COLUMN_BLOB";
+					*typeName = "bytea";
+					break;
+				case ResultSetMetaData::COLUMN_TEXT:
+					*typeName = "text";
 					break;
 				case ResultSetMetaData::COLUMN_NULL:
 					*typeName = "COLUMN_NULL";
