@@ -2387,6 +2387,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	
 	if ((err == ERR_DB_QUERYFAILED) || (err == ERR_DB_NODATA)) {
 		_LOG << "Warning: Reopen of current statement failed." LOG_
+		if ((err = open()) != ERR_NONE) {
+			_LOG << "Error: Reopen connection propably failed too." LOG_
+		}
 		return err;
 	}
 	
@@ -2437,11 +2440,15 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 			instanceOflbDatabaseLayerDatabase(&uk, manager.getPtr(), __FILE__, __LINE__);
 		}
 		uk->queryInterface("lb_I_Database", (void**) &database, __FILE__, __LINE__);
-		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName);
-		if (!currentdbLayer->IsOpen()) currentdbLayer->Open(dbName);
+		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName); // Internally open is called, thus .db3 is appended.
 	}
 	
-	
+	if (!currentdbLayer->IsOpen()) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
+		*connName = dbName;
+		*connName += ".db3";
+		currentdbLayer->Open(connName->charrep());
+	}
 	if ((err = query(szSql, true)) != ERR_NONE) {
 		return err;
 	}
@@ -2876,6 +2883,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		
 		strSQL += " )";
 
+		_LOG << "Insert statement: " << strSQL.c_str() LOG_
+		
 		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
 
 		if (pStatement)
@@ -2916,6 +2925,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
             {
 				_LOG << "Error: Adding a row failed (" << strSQL.c_str() << ")" LOG_
             }
+		} else {
+			_LOG << "Insert statement failed." LOG_
 		}
 	} else {
 		if (tables.Count() > 1) {
@@ -2973,7 +2984,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			}
 		}
-				
+		
 		strSQL += " WHERE ";
 		strSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		strSQL += " = ";
@@ -3014,6 +3025,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 	reopen();
 
+	if (currentCursorview.Count() == 0) {
+		_LOG << "Error: Reopen failed." LOG_
+	}
+	
 	if (binaryDataColumns->Count() > 0) {
 		binaryDataColumns->deleteAll();
 	}
