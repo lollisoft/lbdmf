@@ -1606,6 +1606,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					//cursorFeature = false;
 					whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
 					plainQuery = theQuery.SubString(0, theQuery.Upper().Find("WHERE") - 1);
+
+					// Strip off the order by clause
+					if (whereClause.Upper().Contains(" ORDER ")) {
+						whereClause = whereClause.SubString(0, whereClause.Upper().Find("ORDER") - 1);
+					}
 				} else {
 					if (theQuery.Upper().Contains(" ORDER ")) {
 						plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
@@ -1630,6 +1635,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 							tempSQL += " ";
 						}
 						
+						/* What about the order by clauses that are no based on primary keys ?
+						 * It could be used the values of that ordering to be filled in the currentCursorview.
+						 * To avoid the problem if there are, for sample 500 rows with the same 'ordering key',
+						 * The primary key could be added at the end of the order list.
+						 */ 
 						tempSQL += " order by ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						
