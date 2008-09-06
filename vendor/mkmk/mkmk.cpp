@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.98 $
+ * $Revision: 1.99 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.98 2008/08/29 16:52:38 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.99 2008/09/06 15:54:55 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.99  2008/09/06 15:54:55  lollisoft
+ * Changed copying sym files for dll and plugins into the same directory as the plugins and dlls are copied.
+ *
+ * Open Watcom seems to have changed some search algorythms for the sym files.
+ *
  * Revision 1.98  2008/08/29 16:52:38  lollisoft
  * Bugfix for crashes when the execution path was long. (Buffer overflow)
  *
@@ -1089,7 +1094,7 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(DLLDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
 
@@ -1175,7 +1180,7 @@ void writePluginTarget(char* modulename) {
   printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(PLUGINDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
@@ -1754,7 +1759,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.98 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.99 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
