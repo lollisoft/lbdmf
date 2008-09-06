@@ -878,6 +878,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						QI(f, lb_I_DatabaseForm, master)						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
+						// The connection may be closed.
+						master->reopen();
 						master->getPrimaryColumns();
 						*column = master->getColumnName(1);
 						*table = master->getTableName(column->charrep());
