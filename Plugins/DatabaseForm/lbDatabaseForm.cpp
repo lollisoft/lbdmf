@@ -3954,16 +3954,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		} else {
 			// Delete fields and set foreign key columns to NULL
 			
-			if (sampleQuery->dataFetched()) 
-				lbDBClear(); // Clear fields and two step mode
-			else {
-				lbDBUpdate(); // Read fields and add in one step
-				sampleQuery->reopen();
-				sampleQuery->first();
-				lbDBRead();
-				DISABLE_FOR_ONE_DATA()
-				return ERR_NONE;
-			}			
+			if (sampleQuery->dataFetched()) lbDBClear(); // Clear fields and two step mode
 			errUpdate = ERR_NONE;
 		}
 	} else {
@@ -4134,6 +4125,16 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	}
 /*...e*/
 
+	// Instead of deleting fields on no data do the add operation in one step.
+	if (!sampleQuery->dataFetched()) {
+		lbDBUpdate();
+		sampleQuery->reopen();
+		sampleQuery->first();
+		lbDBRead();
+		DISABLE_FOR_ONE_DATA()
+		return ERR_NONE;
+	}
+	
 	_CL_LOG << "Determine update failed..." LOG_
 
 	if (errUpdate == ERR_UPDATE_FAILED) {
