@@ -101,6 +101,8 @@ private:
   
   void* m_fklist;
   void* m_schema;
+  
+  wxString dbName;
   sqlite3* m_pDatabase;
 };
 

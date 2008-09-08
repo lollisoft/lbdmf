@@ -58,6 +58,8 @@ bool SqliteDatabaseLayer::Open(const wxString& strDatabase)
   //if (m_pDatabase == NULL)
   //  m_pDatabase = new sqlite3;
 
+  dbName = strDatabase;
+
   wxCharBuffer databaseNameBuffer = ConvertToUnicodeStream(strDatabase);
   int nReturn = sqlite3_open(databaseNameBuffer, &m_pDatabase);
   if (nReturn != SQLITE_OK)
