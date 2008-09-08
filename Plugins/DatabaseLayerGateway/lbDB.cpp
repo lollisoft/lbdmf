@@ -2989,9 +2989,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				_LOG << "Added a new row." LOG_
 				last();
             }
-            catch (DatabaseLayerException& e)
+            catch (DatabaseLayerException& ex)
             {
-				_LOG << "Error: Adding a row failed (" << strSQL.c_str() << ")" LOG_
+				_LOG << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
             }
 		} else {
 			_LOG << "Insert statement failed." LOG_
@@ -3091,7 +3091,23 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		
 		_LOG << "Update statement: " << strSQL.c_str() LOG_
 
-		pStatement->RunQuery();
+		try {
+			pStatement->RunQuery();
+		}
+		catch (DatabaseLayerException ex) {
+			if (!currentdbLayer->IsOpen()) {
+				_LOG << "Error: Update statement failed. Database is not open, retry update after opening the database." LOG_
+				open();
+				try {
+					pStatement->RunQuery();
+				}
+				catch (...) {
+					_LOG << "Error: Update statement after reoprning failed too." LOG_
+				}
+			} else {
+				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
+			}
+		}
 	}
 	queryColumns.Clear();
 	queryValues.Clear();
