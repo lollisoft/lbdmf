@@ -63,6 +63,10 @@ bool SqliteResultSet::Next()
 	
   int nReturn = sqlite3_step(m_pSqliteStatement);
  
+	if (nReturn == SQLITE_BUSY) {
+		wxLogError(_("Error, busy condition.\n"));
+	}
+	
   if (nReturn != SQLITE_ROW)
     sqlite3_reset(m_pSqliteStatement);
 
