@@ -152,6 +152,10 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
     wxCharBuffer sqlBuffer = ConvertToUnicodeStream(*start);
     int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer, 0, 0, &szErrorMessage);
   
+	  if (nReturn == SQLITE_BUSY) {
+		  wxLogError(_("Error, busy condition.\n"));
+	  }
+	  
     if (szErrorMessage != NULL)
     {
       strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
@@ -234,15 +238,12 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       wxString strErrorMessage = _("");
       wxString sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
 
-	  printf("Execute splitted query: %s\n", QueryArray[i].c_str());
-
 	  int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer.c_str(), 0, 0, &szErrorMessage);
 	    
       if (szErrorMessage != NULL)
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
         sqlite3_free(szErrorMessage);
         return NULL;
       }
@@ -251,13 +252,10 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         SetErrorMessage(strErrorMessage);
-		printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
         ThrowDatabaseException();
         return NULL;
       }
     }
-
-    printf("Execute splitted query: %s\n", QueryArray[QueryArray.size()-1].c_str());
 
     // Create a Prepared statement for the last SQL statement and get a result set from it
     SqlitePreparedStatement* pStatement = (SqlitePreparedStatement*)PrepareStatement(QueryArray[QueryArray.size()-1], false);
