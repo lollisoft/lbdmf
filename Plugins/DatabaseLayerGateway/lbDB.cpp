@@ -1718,6 +1718,13 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 
 	*string = theResult->GetResultString(column).c_str();
 	
+	if (getColumnType(column) == lbDBColumnBit) {
+        if (*string == "1") {
+            *string = "true";
+        } else {
+            *string = "false";
+        }
+	}	
 	return string.getPtr();
 }
 
@@ -2460,6 +2467,40 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		currentdbLayer->Open(connName->charrep());
 	}
 	if ((err = query(szSql, true)) != ERR_NONE) {
+	
+        wxString theQuery = szSql;
+        wxString whereClause;
+        wxString plainQuery;
+        
+	
+		if (theQuery.Upper().Contains(" WHERE ")) {
+			//cursorFeature = false;
+			whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
+			plainQuery = theQuery.SubString(0, theQuery.Upper().Find("WHERE") - 1);
+
+			// Strip off the order by clause
+			if (whereClause.Upper().Contains(" ORDER ")) {
+				whereClause = whereClause.SubString(0, whereClause.Upper().Find("ORDER") - 1);
+			}
+		} else {
+			if (theQuery.Upper().Contains(" ORDER ")) {
+				plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
+			} else {
+				plainQuery = theQuery;
+			}
+		}
+
+        if (query((char*) plainQuery.c_str(), true) != ERR_NONE) {
+            _LOG << "Error: There is really no data available after opening the connection." LOG_
+            _LOG << "Query: '" << plainQuery.c_str() << "'" LOG_
+            
+            if (query("select name, tbl_name from sqlite_master", true) == ERR_NONE) {
+                PrintData(false);
+            }
+        }
+
+        err = query((char*) theQuery.c_str(), true);
+	
 		return err;
 	}
 	if (theResult == NULL) {
@@ -2769,13 +2810,30 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, l
 		return ERR_DB_READONLY;
 	}
 	
-	if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
-		queryValues[queryColumns.Index(columnName->charrep())] = value->charrep();
+	if (getColumnType(columnName->charrep()) == lbDBColumnBit) {
+        if (*value == "true") {
+            if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
+                queryValues[queryColumns.Index(columnName->charrep())] = "1";
+            } else {
+                queryColumns.Add(columnName->charrep());
+                queryValues.Add("1");
+            }        
+        } else {
+            if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
+                queryValues[queryColumns.Index(columnName->charrep())] = "0";
+            } else {
+                queryColumns.Add(columnName->charrep());
+                queryValues.Add("0");
+            }        
+        }
 	} else {
-		queryColumns.Add(columnName->charrep());
-		queryValues.Add(value->charrep());
-	}
-
+        if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
+            queryValues[queryColumns.Index(columnName->charrep())] = value->charrep();
+        } else {
+            queryColumns.Add(columnName->charrep());
+            queryValues.Add(value->charrep());
+        }
+    }
 	return ERR_NONE;
 }
 
@@ -2942,6 +3000,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		if (tables.Count() > 1) {
 			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
+		}
+		
+		if (currentCursorview.Count() == 0) {
+            _LOG << "Error: Have no data loaded. Thus updating is impossible." LOG_
+			return ERR_DB_NODATA;
 		}
 		
 		wxString strSQL = _("UPDATE ");

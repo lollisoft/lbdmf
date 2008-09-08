@@ -1,4 +1,6 @@
 /*...sLicence:0:*/
+/*...sLicence:0:*/
+/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -245,6 +247,9 @@ lbDatabasePanel::lbDatabasePanel()
 	_created = false;
 	fa = NULL;
 	FFI = NULL;
+	if (SQLWhere == NULL) {
+		REQUEST(getModuleInstance(), lb_I_String, SQLWhere)
+	}
 }
 /*...e*/
 /*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
@@ -2286,6 +2291,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	_LOG << "Create a new query based on query: " << getQuery() << " and where clause: " << newWhereClause->charrep() LOG_
 	
+	setFilter(newWhereClause->charrep());
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
 	_LOG << "Have created new query: '" << newQuery->charrep() << "'" LOG_ 
@@ -2770,7 +2776,9 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	newQuery->setData(getQuery());
 	
-	*newQuery += newWhereClause->charrep();
+	setFilter(newWhereClause->charrep());
+
+	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 	
 	_LOG << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
 	
@@ -2818,10 +2826,6 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
 void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
-	if (SQLWhere == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
-	}
-
 	if (filter != NULL) SQLWhere->setData(filter);
 }
 /*...e*/
@@ -3697,6 +3701,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 				fkpkPanel->show();
 				fkpkPanel->destroy();
+
+				database->open(DBName->charrep());
+				sampleQuery--;
+				sampleQuery = database->getQuery(DBName->charrep(), 0);
+                
+                char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
+				sampleQuery->query(newSql, false);
+				free(newSql);
 				
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
