@@ -829,6 +829,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				err = FKColumnQuery->first();
 				
 				sampleQuery->open();
+				if (!sampleQuery->dataFetched()) err = ERR_DB_NODATA;
 			}
 #else
 			err = ERR_NONE;
@@ -840,7 +841,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
 
-				UAP(lb_I_String, s)
+				UAP(lb_I_Long, l)
 				
 #ifdef USE_FKPK_QUERY			
 				PKName = FKColumnQuery->getAsString(1);
@@ -852,9 +853,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name->charrep());
 				
-				s = sampleQuery->getAsString(i);
+				long old_fk = -1;
 				
-				int old_fk = atoi(s->charrep());
+				if (sampleQuery->dataFetched()) {
+					l = sampleQuery->getAsLong(i);
+					old_fk = l->getData();
+				}
 				
 				buffer[0] = 0;
 				
@@ -880,7 +884,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 /*...sHave data to fill into the combobox and create mappings:104:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 					
 					data = ReplacementColumnQuery->getAsString(1);
 					
@@ -889,9 +893,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					if (*data == "") *data = "<empty>";
 					if (data->charrep() == NULL) *data = "<empty>";
 					
-					possible_fk = ReplacementColumnQuery->getAsString(2);
+					possible_fk = ReplacementColumnQuery->getAsLong(2);
 					
-					int possible_fk_pos = atoi(possible_fk->charrep());
+					long possible_fk_pos = possible_fk->getData();
 					
 					cbox->Append(wxString(data->charrep()));
 					
@@ -906,18 +910,18 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					cbox_pos++;
 					
 					QI(key, lb_I_KeyBase, key_cbox_pos)
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
 
-					possible_fk_int->setData(possible_fk_pos);
+					possible_fk_long->setData(possible_fk_pos);
 
-					QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
+					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
 					
 					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
 					if (DBerr != WARN_DB_NODATA)
 					// Only if not WARN_DB_NODATA					
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-						UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 						UAP(lb_I_Unknown, uk_possible_fk)
 						UAP(lb_I_KeyBase, key_cbox_pos)
 						
@@ -933,9 +937,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						if (*data == "") *data = "<empty>";
 						if (data->charrep() == NULL) *data = "<empty>";
 						
-						possible_fk = ReplacementColumnQuery->getAsString(2);
+						possible_fk = ReplacementColumnQuery->getAsLong(2);
 					
-						possible_fk_pos = atoi(possible_fk->charrep());
+						possible_fk_pos = possible_fk->getData();
 					
 						cbox->Append(wxString(data->charrep()));
 					
@@ -945,11 +949,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						cbox_pos++;
 						
 						QI(key, lb_I_KeyBase, key_cbox_pos)
-						UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
 						
-						possible_fk_int->setData(possible_fk_pos);
+						possible_fk_long->setData(possible_fk_pos);
 						
-						QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
+						QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
 					
 						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
@@ -2039,7 +2043,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	if (err == ERR_NONE) {
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
-		UAP(lb_I_String, colValue)
+		UAP(lb_I_Long, colValue)
 
 		err = PKQuery->first();
 
@@ -2053,7 +2057,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(i);
+				colValue = PKQuery->getAsLong(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
@@ -2105,7 +2109,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...sBuild expression for last column:32:*/
 			c = PKQuery->getColumnName(columns);
 			*colName = c->charrep();
-			colValue = PKQuery->getAsString(columns);
+			colValue = PKQuery->getAsLong(columns);
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
@@ -2165,7 +2169,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(i);
+				colValue = PKQuery->getAsLong(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
@@ -2219,7 +2223,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...sBuild expression for last column:32:*/
 			c = PKQuery->getColumnName(columns);
 			*colName = c->charrep();
-			colValue = PKQuery->getAsString(columns);
+			colValue = PKQuery->getAsLong(columns);
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
@@ -2988,16 +2992,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					} else {
 						UAP(lb_I_Integer, FK_id)
 					
-						QI(uk_mapping, lb_I_Integer, FK_id)
-					
-						int p = FK_id->getData();
-					
-						char pp[20] = "";
-						
-						sprintf(pp, "%d", p);
-					
+						QI(uk_mapping, lb_I_Long, FK_id)
+	
 						col->setData(name->charrep());
-						val->setData(pp);
+						val->setData(FK_id->charrep());
 					
 						sampleQuery->setNull(name->charrep(), false);
 						sampleQuery->setString(*&col, *&val);
@@ -3183,7 +3181,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				
 				lbErrCodes err = ERR_NONE;
 
-				UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+				UAP_REQUEST(manager.getPtr(), lb_I_Long, key)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 
 				cbName->setData(name->charrep());
@@ -3202,17 +3200,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				
 				if (count != 0) {
 					char *newFK = NULL;
-					UAP(lb_I_String, s)
+					UAP(lb_I_Long, l)
 
-					s = sampleQuery->getAsString(i);
+					key = sampleQuery->getAsLong(i);
 	
-					newFK = (char*) malloc(strlen(s->charrep()) + 1);
-					newFK[0] = 0;
-								
-					strcpy(newFK, s->charrep());
-				
-					key->setData(atoi(newFK));
-				
 					UAP(lb_I_KeyBase, key_FK_id)
 				
 					QI(key, lb_I_KeyBase, key_FK_id)
@@ -3226,17 +3217,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 						UAP(lb_I_Integer, sel)
 					        UAP(lb_I_Unknown, e)
 					        e = cbMapper->nextElement();
-					        QI(e, lb_I_Integer, sel)
+					        QI(e, lb_I_Long, sel)
 				        
-					        if (sel->getData() == atoi(newFK)) {
+					        if (sel->equals(*&key)) {
 					        	cbox->SetSelection(cbPos);
 					        }
 					        cbPos++;
-					}
-				
-					if (newFK) {
-					    free(newFK);
-					    newFK = NULL;
 					}
 				}
 /*...e*/
@@ -3552,7 +3538,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) called." LOG_
-	sampleQuery->reopen();
 	
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
@@ -3578,6 +3563,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 
 		return ERR_DB_NODATA;
 	}
+
+	database->close();
+	
+	sampleQuery->open();
+	sampleQuery->reopen();
 
 	lbDBRead();
 
@@ -3707,6 +3697,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				sampleQuery = database->getQuery(DBName->charrep(), 0);
                 
                 char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
+				_LOG << "Got a new query for reopen: " << newSql LOG_
 				sampleQuery->query(newSql, false);
 				free(newSql);
 				
@@ -3809,7 +3800,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 
 				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
 
-				UAP(lb_I_String, s)
+				UAP(lb_I_Long, l)
 				
 #ifdef USE_FKPK_QUERY			
 				PKName = FKColumnQuery->getAsString(1);
@@ -3824,9 +3815,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				cbox->Clear();
 				//cbox->SetName(name->charrep());
 				
-				s = sampleQuery->getAsString(i);
+				l = sampleQuery->getAsLong(i);
 				
-				int old_fk = atoi(s->charrep());
+				int old_fk = l->getData();
 				
 				buffer[0] = 0;
 				
@@ -3987,13 +3978,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_KeyBase, key)
 			
-			UAP(lb_I_String, value)
+			UAP(lb_I_Long, value)
 			
 			uk = MasterDetailRelationData->getElementAt(i);
 			key = MasterDetailRelationData->getKeyAt(i);
 			
 			
-			QI(uk, lb_I_String, value)
+			QI(uk, lb_I_Long, value)
 			
 			_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
 
@@ -4032,17 +4023,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				int count = cbMapper->Count();
 				
 				if (count != 0) {
-					char *newFK = NULL;
-
-					newFK = (char*) malloc(strlen(value->charrep()) + 1);
-					newFK[0] = 0;
-								
-					strcpy(newFK, value->charrep());
-				
-					key1->setData(atoi(newFK));
-				
+					key1->setData(value->getData());
 					UAP(lb_I_KeyBase, key_FK_id)
-				
 					QI(key1, lb_I_KeyBase, key_FK_id)
 				
 					UAP(lb_I_Unknown, uk_cbBoxPosition)
@@ -4056,18 +4038,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 						UAP(lb_I_Integer, sel)
 					        UAP(lb_I_Unknown, e)
 					        e = cbMapper->nextElement();
-					        QI(e, lb_I_Integer, sel)
+					        QI(e, lb_I_Long, sel)
 				        
-					        if (sel->getData() == atoi(newFK)) {
+					        if (sel->equals(*&key_FK_id)) {
 					        	selected = true;
 					        	cbox->SetSelection(cbPos);
 					        }
 					        cbPos++;
-					}
-					
-					if (newFK) {
-					    free(newFK);
-					    newFK = NULL;
 					}
 				} else {
 					_LOG << "lbDatabasePanel::lbDBAdd() Error: Have no combobox mapper values." LOG_
