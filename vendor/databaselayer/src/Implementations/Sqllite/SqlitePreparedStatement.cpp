@@ -40,6 +40,7 @@ void SqlitePreparedStatement::Close()
   {
     if ((*start) != NULL)
     {
+      //wxLogError(_("SqlitePreparedStatement::Close() closes a statement."));
       sqlite3_finalize((sqlite3_stmt*)(*start));
       (*start) = NULL;
       //wxDELETE(*start);
@@ -231,6 +232,12 @@ void SqlitePreparedStatement::RunQuery()
   {
     int nReturn = sqlite3_step((sqlite3_stmt*)(*start));
  
+	  int autocommit = sqlite3_get_autocommit(m_pDatabase);
+	  
+	  if (autocommit == 0) {
+		wxLogError(_("Warning: Database is not in autocommit mode.\n"));
+	  }
+	  
     if (nReturn != SQLITE_ROW)
       sqlite3_reset((sqlite3_stmt*)(*start));
 
