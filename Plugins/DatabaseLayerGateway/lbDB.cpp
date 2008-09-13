@@ -1622,6 +1622,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		///\todo Cleanup resultset.
 	}
 	
+	if (strcmp(szSql, "COMMIT") == 0) {
+		currentdbLayer->RunQuery(szSql);
+		return ERR_NONE;
+	}
+	
 	try {
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
 		
@@ -1641,6 +1646,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 
 				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
+				
+				// As figured out by the translation function
+				
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
@@ -1768,6 +1776,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						}
 						cursor = 0;
 						max_in_cursor = count;
+						
+						theResult->Close();
+						
 						selectCurrentRow();
 					} else {
 						cursorFeature = false;
@@ -2003,9 +2014,11 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 		if (value == NULL) {
 			_LOG << "Error: Column is not of type lb_I_String!" LOG_
 			REQUEST(getModuleInstance(), lb_I_String, value)
+			*value = "";
 		}
 	} else {
 		REQUEST(getModuleInstance(), lb_I_String, value)
+		*value = "";
 	}
 	
 	// Caller get's an owner
@@ -2041,10 +2054,10 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 		QI(uk, lb_I_Long, value)
 		if (value == NULL) {
 			_LOG << "Error: Column is not of type lb_I_Long!" LOG_
-			REQUEST(getModuleInstance(), lb_I_String, value)
+			REQUEST(getModuleInstance(), lb_I_Long, value)
 		}
 	} else {
-		REQUEST(getModuleInstance(), lb_I_String, value)
+		REQUEST(getModuleInstance(), lb_I_Long, value)
 	}
 	
 	// Caller get's an owner
@@ -3382,68 +3395,125 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += " )";
 
 		_LOG << "Insert statement: " << strSQL.c_str() LOG_
-		
+
+#define USE_IMMEDIALY_CLOSE
 #ifdef USE_IMMEDIALY_CLOSE
-		PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+			PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
 #endif
 #ifndef USE_IMMEDIALY_CLOSE
-		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
+			PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
 #endif
-		if (pStatement)
-		{
-			for (int i = 0; i < queryValues.Count(); i++) {
-				pStatement->SetParamString(i+1, queryValues[i]);
-			}
-			
-			int offset = queryValues.Count();
-
-			if (binaryDataColumns->Count() > 0) {
-				binaryDataColumns->finishIteration();
-				
-				while (binaryDataColumns->hasMoreElements()) {
-					UAP(lb_I_Unknown, ukBinary)
-					UAP(lb_I_BinaryData, binary)
-					UAP(lb_I_String, name)
-					UAP(lb_I_KeyBase, key)
-					
-					ukBinary = binaryDataColumns->nextElement();
-					key = binaryDataColumns->currentKey();
-					QI(ukBinary, lb_I_BinaryData, binary)
-					
-					if (binary->getData() == NULL) {
-					} else {
-						pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
-					}					
+			if (pStatement)
+			{
+				for (int i = 0; i < queryValues.Count(); i++) {
+					pStatement->SetParamString(i+1, queryValues[i]);
 				}
-			}
-			
-            try
-            {
-				pStatement->RunQuery();
-				_LOG << "Added a new row." LOG_
+				
+				int offset = queryValues.Count();
+				
+				if (binaryDataColumns->Count() > 0) {
+					binaryDataColumns->finishIteration();
+					
+					while (binaryDataColumns->hasMoreElements()) {
+						UAP(lb_I_Unknown, ukBinary)
+						UAP(lb_I_BinaryData, binary)
+						UAP(lb_I_String, name)
+						UAP(lb_I_KeyBase, key)
+						
+						ukBinary = binaryDataColumns->nextElement();
+						key = binaryDataColumns->currentKey();
+						QI(ukBinary, lb_I_BinaryData, binary)
+						
+						if (binary->getData() == NULL) {
+						} else {
+							pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
+						}					
+					}
+				}
+				
+				try
+				{
+					pStatement->RunQuery();
+					_LOG << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-				pStatement->Close();
-				delete pStatement;
-				pStatement = NULL;
+					pStatement->Close();
+					delete pStatement;
+					pStatement = NULL;
 #endif
-/*				
-				char* sqlBackup = strdup(szSql);
-				skipFKCollecting();
-				query("pragma database_list;", false);
-				PrintData(false);
-				szSql = sqlBackup;
-				open();
-				enableFKCollecting();
-*/				
-				//last();
-            }
-            catch (DatabaseLayerException& ex)
-            {
-				_LOG << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
-            }
-		} else {
-			_LOG << "Insert statement failed." LOG_
-		}
+					/*				
+					 char* sqlBackup = strdup(szSql);
+					 skipFKCollecting();
+					 query("pragma database_list;", false);
+					 PrintData(false);
+					 szSql = sqlBackup;
+					 open();
+					 enableFKCollecting();
+					 */				
+					//last();
+				}
+				catch (DatabaseLayerException& ex)
+				{
+					_LOG << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
+					
+					try {
+						pStatement->Close();
+						delete pStatement;
+						pStatement = NULL;
+						currentdbLayer->Close();
+						open();
+
+#define USE_IMMEDIALY_CLOSE
+#ifdef USE_IMMEDIALY_CLOSE
+						PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+#endif
+#ifndef USE_IMMEDIALY_CLOSE
+						PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
+#endif
+						if (pStatement)
+						{
+							for (int i = 0; i < queryValues.Count(); i++) {
+								pStatement->SetParamString(i+1, queryValues[i]);
+							}
+							
+							int offset = queryValues.Count();
+							
+							if (binaryDataColumns->Count() > 0) {
+								binaryDataColumns->finishIteration();
+								
+								while (binaryDataColumns->hasMoreElements()) {
+									UAP(lb_I_Unknown, ukBinary)
+									UAP(lb_I_BinaryData, binary)
+									UAP(lb_I_String, name)
+									UAP(lb_I_KeyBase, key)
+									
+									ukBinary = binaryDataColumns->nextElement();
+									key = binaryDataColumns->currentKey();
+									QI(ukBinary, lb_I_BinaryData, binary)
+									
+									if (binary->getData() == NULL) {
+									} else {
+										pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
+									}					
+								}
+							}
+
+							pStatement->RunQuery();
+							_LOG << "Added a new row." LOG_
+#ifdef USE_IMMEDIALY_CLOSE
+							pStatement->Close();
+							delete pStatement;
+							pStatement = NULL;
+#endif							
+						}
+					}
+					catch (DatabaseLayerException& ex)
+					{
+						_LOG << "Error: Retry adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
+					}
+				}
+			} else {
+				_LOG << "Insert statement failed." LOG_
+			}
 	} else {
 		if (tables.Count() > 1) {
 			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
@@ -3511,10 +3581,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += " = ";
 		strSQL += currentCursorview[cursor];
 
+#define USE_IMMEDIALY_CLOSE
 		PreparedStatement* pStatement = NULL;
 		
 		try {
-			 pStatement = currentdbLayer->PrepareStatement(strSQL);
+#ifdef USE_IMMEDIALY_CLOSE
+			pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+#endif
+#ifndef USE_IMMEDIALY_CLOSE
+			pStatement = currentdbLayer->PrepareStatement(strSQL);
+#endif
 		} catch (...) {
 			_LOG << "Update query failed: " << strSQL.c_str() LOG_
 			return ERR_DB_UPDATEFAILED;
@@ -3541,6 +3617,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		try {
 			pStatement->RunQuery();
+			
+#ifdef USE_IMMEDIALY_CLOSE
+			pStatement->Close();
+			delete pStatement;
+#endif
 		}
 		catch (DatabaseLayerException ex) {
 			if (!currentdbLayer->IsOpen()) {
@@ -4168,7 +4249,13 @@ lbConnection::~lbConnection() {
 		} else {
 			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: -)" LOG_
 		}
-		dbl->Close();
+		try {
+			dbl->Close();
+		}
+		catch (DatabaseLayerException& ex)
+		{
+			_LOG << "Error: closing database failed (Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
+		}
 	} else {
 		if (_dbname) {
 			_CL_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set (" << _dbname << ")" LOG_

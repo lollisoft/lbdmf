@@ -559,6 +559,7 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Database, DatabaseWrapper1)
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
+		UAP(lb_I_Query, query2)
 		UAP(lb_I_Query, queryLock)
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -572,6 +573,7 @@ int main(int argc, char *argv[]) {
 
 		query = DatabaseWrapper->getQuery("Database A", 0);
 		query1 = DatabaseWrapper1->getQuery("Database B", 0);
+		query2 = DatabaseWrapper1->getQuery("Database B", 0);
 
 		_CL_LOG << "Print data from Database A ..." LOG_
 		
@@ -699,7 +701,35 @@ int main(int argc, char *argv[]) {
 		query1->setString(*&column, *&value);
 
 		query1->update();
+		query1->first();
+		query1->PrintData(false);
 
+		
+		_CL_LOG "Now Database B, test has added data, but not finished. Try to change some of them in a new query." LOG_
+		query2 = DatabaseWrapper1->getQuery("Database B", 0);
+
+		if (query2->query("select ID, test, id_reg from test") != ERR_NONE) {
+			_CL_LOG << "Error: Failed to create query." LOG_
+		}
+		query2->first();
+
+		*column = "id_reg";
+		*value = "1";
+		query2->setString(*&column, *&value);
+
+		*column = "test";
+		*value = "some modified value 2 ";
+		len = strlen(value->charrep()+1);
+		buffer = malloc(len);
+		memcpy(buffer, value->charrep(), len);
+		binary->setData(buffer, len);
+		free(buffer);
+		query2->setBinaryData(column->charrep(), *&binary);
+		
+		query2->update();
+		query2->first();
+		query2->PrintData(false);
+		
 		query = DatabaseWrapper->getQuery("Database A", 0);
 		query->query("select ID, test, btest, btest1 from regressiontest");
 		query->first();

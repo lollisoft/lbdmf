@@ -1,350 +1,153 @@
-
--- Association Adresse -> Lieferant
+-- Association Templates -> Template
 -- Drop a constraint
 
--- Association Adresse -> Kunde
+-- Association Templates -> Includes
 -- Drop a constraint
 
--- Association Adresse -> Konkurrenten
+-- Association Template -> TemplateParameters
 -- Drop a constraint
 
--- Association Kunde -> Rechnung
+-- Association Template -> Dependencies
 -- Drop a constraint
 
--- Association Kunde -> Auftrag
+-- Association Template -> Dependencies
 -- Drop a constraint
 
--- Association Kunde -> Angebot
+-- Association Template -> Includes
 -- Drop a constraint
 
--- Association Auftrag -> Auftragspositionen
+-- Association Cartridge -> Templates
 -- Drop a constraint
 
--- Association Auftrag -> Rechnung
--- Drop a constraint
-
--- Association Auftragspositionen -> Auftrag
--- Drop a constraint
-
--- Association Artikel -> Angebotspositionen
--- Drop a constraint
-
--- Association Artikel -> Auftragspositionen
--- Drop a constraint
-
--- Association Artikel -> Rechnungspositionen
--- Drop a constraint
-
--- Association Angebot -> Angebotspositionen
--- Drop a constraint
-
--- Association Angebot -> Auftrag
--- Drop a constraint
-
--- Association Rechnung -> Rechnungspositionen
--- Drop a constraint
-
--- Association Lieferant -> Artikel
--- Drop a constraint
-
--- Association Kontakte -> Kunde
--- Drop a constraint
-
--- Association Kontakte -> Konkurrenten
--- Drop a constraint
-
--- Class is AdresseDatabaseLayerGateway
-CREATE TABLE "Adresse" (
-"ID" INTEGER PRIMARY KEY,
-
-"Strasse" CHAR(100),
-
-"Hausnummer" CHAR(100),
-
-"Stadt" CHAR(100),
-
-"Plz" CHAR(100),
-
-"Lieferant" INTEGER,
-
-"Kunde" INTEGER,
-
-"Konkurrenten" INTEGER
-);
-
-
--- Class is KundeDatabaseLayerGateway
-CREATE TABLE "Kunde" (
-"ID" INTEGER PRIMARY KEY,
-
-"Kundennummer" INTEGER,
-
-"Firmenname" CHAR(100),
-
-"Notiz" TEXT,
-
-"Rechnung" INTEGER,
-
-"Auftrag" INTEGER,
-
-"Angebot" INTEGER
-);
-
-
--- Class is AuftragDatabaseLayerGateway
-CREATE TABLE "Auftrag" (
-"ID" INTEGER PRIMARY KEY,
-
-"Auftragsdatum" DATE,
-
-"Gesamtpreis" DECIMAL,
-
-"Auftragsnummer" INTEGER,
-
-"Auftragspositionen" INTEGER,
-
-"Rechnung" INTEGER
-);
-
-
--- Class is AuftragspositionenDatabaseLayerGateway
-CREATE TABLE "Auftragspositionen" (
-"ID" INTEGER PRIMARY KEY,
-
-"Preis" DECIMAL,
-
-"Menge" INTEGER,
-
-"Auftrag" INTEGER
-);
-
-
--- Class is ArtikelDatabaseLayerGateway
-CREATE TABLE "Artikel" (
+-- Class is TemplatesDatabaseLayerGateway
+CREATE TABLE "Templates" (
 "ID" INTEGER PRIMARY KEY,
 
 "Name" CHAR(100),
 
-"Preis" DECIMAL,
+"Purpose" CHAR(100),
 
-"Einheit" INTEGER,
+"Description" TEXT,
 
-"Beschreibung" CHAR(100),
+"Aproved" BOOL,
 
-"Menge" DECIMAL,
-
-"Angebotspositionen" INTEGER,
-
-"Auftragspositionen" INTEGER,
-
-"Rechnungspositionen" INTEGER
+"Cartridge" INTEGER
 );
 
 
--- Class is AngebotDatabaseLayerGateway
-CREATE TABLE "Angebot" (
-"ID" INTEGER PRIMARY KEY,
-
-"Angebotsnummer" INTEGER,
-
-"Angebotsdatum" DATE,
-
-"Gesamtpreis" DECIMAL,
-
-"Angebotspositionen" INTEGER,
-
-"Auftrag" INTEGER
-);
-
-
--- Class is AngebotspositionenDatabaseLayerGateway
-CREATE TABLE "Angebotspositionen" (
-"ID" INTEGER PRIMARY KEY,
-
-"Menge" DECIMAL,
-
-"Preis" DECIMAL
-);
-
-
--- Class is RechnungDatabaseLayerGateway
-CREATE TABLE "Rechnung" (
-"ID" INTEGER PRIMARY KEY,
-
-"Rechnungsnummer" INTEGER,
-
-"Rechnungsdatum" DATE,
-
-"Gesamtpreis" DECIMAL,
-
-"Rechnungspositionen" INTEGER
-);
-
-
--- Class is RechnungspositionenDatabaseLayerGateway
-CREATE TABLE "Rechnungspositionen" (
-"ID" INTEGER PRIMARY KEY,
-
-"Preis" DECIMAL,
-
-"menge" INTEGER
-);
-
-
--- Class is LieferantDatabaseLayerGateway
-CREATE TABLE "Lieferant" (
-"ID" INTEGER PRIMARY KEY,
-
-"Lieferantennummer" INTEGER,
-
-"Name" CHAR(100),
-
-"Artikel" INTEGER
-);
-
-
--- Class is KontakteDatabaseLayerGateway
-CREATE TABLE "Kontakte" (
+-- Class is TemplateDatabaseLayerGateway
+CREATE TABLE "Template" (
 "ID" INTEGER PRIMARY KEY,
 
 "Name" CHAR(100),
 
-"Vorname" CHAR(100),
+"Description" TEXT,
 
-"Telefon" CHAR(100),
+"Code" TEXT,
 
-"Fax" CHAR(100),
+"Aproved" BOOL,
 
-"eMail" CHAR(100),
-
-"Bild" BYTEA,
-
-"Notiz" TEXT,
-
-"Kunde" INTEGER,
-
-"Konkurrenten" INTEGER
+"Templates" INTEGER
 );
 
 
--- Class is KonkurrentenDatabaseLayerGateway
-CREATE TABLE "Konkurrenten" (
+-- Class is TemplateParametersDatabaseLayerGateway
+CREATE TABLE "TemplateParameters" (
 "ID" INTEGER PRIMARY KEY,
 
-"Firmenname" CHAR(100),
+"Name" CHAR(100),
 
-"Webadresse" CHAR(100),
+"Description" TEXT,
 
-"Kurzbeschreibung" CHAR(100),
+"Template" INTEGER
+);
 
-"Langbeschreibung" TEXT
+
+-- Class is ValidatorDatabaseLayerGateway
+CREATE TABLE "Validator" (
+"ID" INTEGER PRIMARY KEY
+);
+
+
+-- Class is DependenciesDatabaseLayerGateway
+CREATE TABLE "Dependencies" (
+"ID" INTEGER PRIMARY KEY,
+
+"Description" TEXT,
+
+"Purpose" CHAR(100),
+
+"Template" INTEGER,
+
+"Template" INTEGER
+);
+
+
+-- Class is IncludesDatabaseLayerGateway
+CREATE TABLE "Includes" (
+"ID" INTEGER PRIMARY KEY,
+
+"Description" TEXT,
+
+"Purpose" CHAR(100),
+
+"Templates" INTEGER,
+
+"Template" INTEGER
+);
+
+
+-- Class is CartridgeDatabaseLayerGateway
+CREATE TABLE "Cartridge" (
+"ID" INTEGER PRIMARY KEY,
+
+"Name" CHAR(100),
+
+"Descrption" TEXT,
+
+"Purpose" CHAR(100)
 );
 
 
 
 
--- Association Lieferant -> Adresse with name 
-ALTER TABLE "Lieferant" ADD CONSTRAINT "fk_Lieferant_Adresse_ID" FOREIGN KEY ( "Adresse" )
-   REFERENCES "Adresse" ( "ID" );
+-- Association Template -> Templates with name 
+ALTER TABLE "Template" ADD CONSTRAINT "fk_Template_Templates_ID" FOREIGN KEY ( "Templates" )
+   REFERENCES "Templates" ( "ID" );
 
 
 
--- Association Kunde -> Adresse with name 
-ALTER TABLE "Kunde" ADD CONSTRAINT "fk_Kunde_Adresse_ID" FOREIGN KEY ( "Adresse" )
-   REFERENCES "Adresse" ( "ID" );
+-- Association Includes -> Templates with name XSLTFile
+ALTER TABLE "Includes" ADD CONSTRAINT "fk_Includes_TemplatesXSLTFile_ID" FOREIGN KEY ( "TemplatesXSLTFile" )
+   REFERENCES "Templates" ( "ID" );
 
 
 
--- Association Konkurrenten -> Adresse with name 
-ALTER TABLE "Konkurrenten" ADD CONSTRAINT "fk_Konkurrenten_Adresse_ID" FOREIGN KEY ( "Adresse" )
-   REFERENCES "Adresse" ( "ID" );
+-- Association TemplateParameters -> Template with name 
+ALTER TABLE "TemplateParameters" ADD CONSTRAINT "fk_TemplateParameters_Template_ID" FOREIGN KEY ( "Template" )
+   REFERENCES "Template" ( "ID" );
 
 
 
--- Association Rechnung -> Kunde with name 
-ALTER TABLE "Rechnung" ADD CONSTRAINT "fk_Rechnung_Kunde_ID" FOREIGN KEY ( "Kunde" )
-   REFERENCES "Kunde" ( "ID" );
+-- Association Dependencies -> Template with name RequiredBy
+ALTER TABLE "Dependencies" ADD CONSTRAINT "fk_Dependencies_TemplateRequiredBy_ID" FOREIGN KEY ( "TemplateRequiredBy" )
+   REFERENCES "Template" ( "ID" );
 
 
 
--- Association Auftrag -> Kunde with name 
-ALTER TABLE "Auftrag" ADD CONSTRAINT "fk_Auftrag_Kunde_ID" FOREIGN KEY ( "Kunde" )
-   REFERENCES "Kunde" ( "ID" );
+-- Association Dependencies -> Template with name Requires
+ALTER TABLE "Dependencies" ADD CONSTRAINT "fk_Dependencies_TemplateRequires_ID" FOREIGN KEY ( "TemplateRequires" )
+   REFERENCES "Template" ( "ID" );
 
 
 
--- Association Angebot -> Kunde with name 
-ALTER TABLE "Angebot" ADD CONSTRAINT "fk_Angebot_Kunde_ID" FOREIGN KEY ( "Kunde" )
-   REFERENCES "Kunde" ( "ID" );
+-- Association Includes -> Template with name Template
+ALTER TABLE "Includes" ADD CONSTRAINT "fk_Includes_TemplateTemplate_ID" FOREIGN KEY ( "TemplateTemplate" )
+   REFERENCES "Template" ( "ID" );
 
 
 
--- Association Auftragspositionen -> Auftrag with name 
-ALTER TABLE "Auftragspositionen" ADD CONSTRAINT "fk_Auftragspositionen_Auftrag_ID" FOREIGN KEY ( "Auftrag" )
-   REFERENCES "Auftrag" ( "ID" );
+-- Association Templates -> Cartridge with name 
+ALTER TABLE "Templates" ADD CONSTRAINT "fk_Templates_Cartridge_ID" FOREIGN KEY ( "Cartridge" )
+   REFERENCES "Cartridge" ( "ID" );
 
-
-
--- Association Rechnung -> Auftrag with name 
-ALTER TABLE "Rechnung" ADD CONSTRAINT "fk_Rechnung_Auftrag_ID" FOREIGN KEY ( "Auftrag" )
-   REFERENCES "Auftrag" ( "ID" );
-
-
-
--- Association Auftrag -> Auftragspositionen with name 
-ALTER TABLE "Auftrag" ADD CONSTRAINT "fk_Auftrag_Auftragspositionen_ID" FOREIGN KEY ( "Auftragspositionen" )
-   REFERENCES "Auftragspositionen" ( "ID" );
-
-
-
--- Association Angebotspositionen -> Artikel with name 
-ALTER TABLE "Angebotspositionen" ADD CONSTRAINT "fk_Angebotspositionen_Artikel_ID" FOREIGN KEY ( "Artikel" )
-   REFERENCES "Artikel" ( "ID" );
-
-
-
--- Association Auftragspositionen -> Artikel with name 
-ALTER TABLE "Auftragspositionen" ADD CONSTRAINT "fk_Auftragspositionen_Artikel_ID" FOREIGN KEY ( "Artikel" )
-   REFERENCES "Artikel" ( "ID" );
-
-
-
--- Association Rechnungspositionen -> Artikel with name 
-ALTER TABLE "Rechnungspositionen" ADD CONSTRAINT "fk_Rechnungspositionen_Artikel_ID" FOREIGN KEY ( "Artikel" )
-   REFERENCES "Artikel" ( "ID" );
-
-
-
--- Association Angebotspositionen -> Angebot with name 
-ALTER TABLE "Angebotspositionen" ADD CONSTRAINT "fk_Angebotspositionen_Angebot_ID" FOREIGN KEY ( "Angebot" )
-   REFERENCES "Angebot" ( "ID" );
-
-
-
--- Association Auftrag -> Angebot with name 
-ALTER TABLE "Auftrag" ADD CONSTRAINT "fk_Auftrag_Angebot_ID" FOREIGN KEY ( "Angebot" )
-   REFERENCES "Angebot" ( "ID" );
-
-
-
--- Association Rechnungspositionen -> Rechnung with name 
-ALTER TABLE "Rechnungspositionen" ADD CONSTRAINT "fk_Rechnungspositionen_Rechnung_ID" FOREIGN KEY ( "Rechnung" )
-   REFERENCES "Rechnung" ( "ID" );
-
-
-
--- Association Artikel -> Lieferant with name 
-ALTER TABLE "Artikel" ADD CONSTRAINT "fk_Artikel_Lieferant_ID" FOREIGN KEY ( "Lieferant" )
-   REFERENCES "Lieferant" ( "ID" );
-
-
-
--- Association Kunde -> Kontakte with name 
-ALTER TABLE "Kunde" ADD CONSTRAINT "fk_Kunde_Kontakte_ID" FOREIGN KEY ( "Kontakte" )
-   REFERENCES "Kontakte" ( "ID" );
-
-
-
--- Association Konkurrenten -> Kontakte with name 
-ALTER TABLE "Konkurrenten" ADD CONSTRAINT "fk_Konkurrenten_Kontakte_ID" FOREIGN KEY ( "Kontakte" )
-   REFERENCES "Kontakte" ( "ID" );

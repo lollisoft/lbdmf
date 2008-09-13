@@ -335,6 +335,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	query->query(buffer);
 	query->enableFKCollecting();
 	query->close();
+
 	database->close();
 	
 	

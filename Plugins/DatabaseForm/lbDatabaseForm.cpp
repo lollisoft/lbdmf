@@ -3563,7 +3563,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 
 		return ERR_DB_NODATA;
 	}
-
+	
 	database->close();
 	
 	sampleQuery->open();
@@ -3843,7 +3843,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 /*...sHave data to fill into the combobox and create mappings:104:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 					
 					data = ReplacementColumnQuery->getAsString(1);
 					
@@ -3852,9 +3852,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 					if (*data == "") *data = "<empty>";
 					if (data->charrep() == NULL) *data = "<empty>";
 					
-					possible_fk = ReplacementColumnQuery->getAsString(2);
+					possible_fk = ReplacementColumnQuery->getAsLong(2);
 					
-					int possible_fk_pos = atoi(possible_fk->charrep());
+					long possible_fk_pos = possible_fk->getData();
 					
 					cbox->Append(wxString(data->charrep()));
 					
@@ -3869,18 +3869,18 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 					cbox_pos++;
 					
 					QI(key, lb_I_KeyBase, key_cbox_pos)
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
 
-					possible_fk_int->setData(possible_fk_pos);
+					possible_fk_long->setData(possible_fk_pos);
 
-					QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
+					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
 					
 					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
 					if (DBerr != WARN_DB_NODATA)
 					// Only if not WARN_DB_NODATA					
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-						UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 						UAP(lb_I_Unknown, uk_possible_fk)
 						UAP(lb_I_KeyBase, key_cbox_pos)
 						
@@ -3896,9 +3896,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 						if (*data == "") *data = "<empty>";
 						if (data->charrep() == NULL) *data = "<empty>";
 						
-						possible_fk = ReplacementColumnQuery->getAsString(2);
+						possible_fk = ReplacementColumnQuery->getAsLong(2);
 					
-						possible_fk_pos = atoi(possible_fk->charrep());
+						possible_fk_pos = possible_fk->getData();
 					
 						cbox->Append(wxString(data->charrep()));
 					
@@ -3908,11 +3908,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 						cbox_pos++;
 						
 						QI(key, lb_I_KeyBase, key_cbox_pos)
-						UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
 						
-						possible_fk_int->setData(possible_fk_pos);
+						possible_fk_long->setData(possible_fk_pos);
 						
-						QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
+						QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
 					
 						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
