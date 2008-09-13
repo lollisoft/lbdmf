@@ -213,6 +213,7 @@ public:
 		fetchstatus = 0;
 		theResult = NULL;
 		dbName = NULL;
+		cachedRowIndex = 1;
 		max_in_cursor_default = max_in_cursor = 100;
 		
 		if (ReadOnlyColumns == NULL) {
@@ -222,6 +223,13 @@ public:
 			REQUEST(getModuleInstance(), lb_I_Container, binaryDataColumns)
 			binaryDataColumns->setCloning(false); // Don't clone these big data.
 		}
+		if (cachedDataColumns == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedDataColumns)
+		}
+		if (cachedDataRows == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedDataRows)
+		}
+		
 	}
 	
 	virtual ~lbDatabaseLayerQuery() {
@@ -370,6 +378,12 @@ public:
 	 */
 	bool						LB_STDCALL selectCurrentRow();
 	
+	/** \brief Select the cached row at current cachedRowIndex.
+	 * A cached row is one of several rows for a statement where no cursor feature is present. The cursor behaviour therefore
+	 * is implemented on cached data.
+	 */
+	lbErrCodes					LB_STDCALL selectCachedRow();
+	
 	/**
 	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
 	 * This function is public in class level, not on interface level.
@@ -397,6 +411,7 @@ private:
 	/// Indicates a look forward to indicate if any more data is available.
 	bool 	peeking;
 	
+	int		cachedRowIndex;
 	bool	haveData;
 	HENV    henv;
 	HDBC    hdbc;
@@ -427,6 +442,12 @@ private:
 	UAP(lb_I_Container, ReadOnlyColumns)
 	
 	UAP(lb_I_Container, binaryDataColumns)
+
+	/* \brief When there is a JOIN in the query or more than one table in the select statement.
+	 * This container is filled with all the data from the query. Each row contains a cachedDataColumns container.
+	 */
+	UAP(lb_I_Container, cachedDataRows)
+	UAP(lb_I_Container, cachedDataColumns)
 	
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns)
@@ -1391,16 +1412,90 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintHeader() {
 
 void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 	UAP(lb_I_String, s)
+	UAP(lb_I_Long, l)
 	int cols = getColumns();
 	
 	for (int i = 1; i <= cols-1; i++) {
 		UAP(lb_I_String, s)
-	        s = getAsString(i);
-	        s->trim();
-	        printf("%19s", s->charrep());
-	};
+		UAP(lb_I_Long, l)
+		switch (getColumnType(i)) {
+			case lbDBColumnBit:
+				s = getAsString(i);
+				break;
+			case lbDBColumnChar:
+				s = getAsString(i);
+				break;
+			case lbDBColumnInteger:
+			{
+				REQUEST(getModuleManager(), lb_I_String, s)
+				l = getAsLong(i);
+				*s = l->charrep();
+			}
+				break;
+			case lbDBColumnBigInteger:
+			{
+				REQUEST(getModuleManager(), lb_I_String, s)
+				l = getAsLong(i);
+				*s = l->charrep();
+			}
+				break;
+			case lbDBColumnBinary:
+			{
+				REQUEST(getModuleManager(), lb_I_String, s)
+				*s = "Binary column";
+			}
+				break;
+			case lbDBColumnDate:
+				s = getAsString(i);
+				break;
+			case lbDBColumnFloat:
+				s = getAsString(i);
+				break;
+			default:
+				REQUEST(getModuleManager(), lb_I_String, s)
+				*s = "Unknown column";
+		}
+		s->trim();
+        printf("%19s", s->charrep());
+	}
 
-	s = getAsString(cols);
+	switch (getColumnType(cols)) {
+		case lbDBColumnBit:
+			s = getAsString(cols);
+			break;
+		case lbDBColumnChar:
+			s = getAsString(cols);
+			break;
+		case lbDBColumnInteger:
+		{
+			REQUEST(getModuleManager(), lb_I_String, s)
+			l = getAsLong(cols);
+			*s = l->charrep();
+		}
+			break;
+		case lbDBColumnBigInteger:
+		{
+			REQUEST(getModuleManager(), lb_I_String, s)
+			l = getAsLong(cols);
+			*s = l->charrep();
+		}
+			break;
+		case lbDBColumnBinary:
+		{
+			REQUEST(getModuleManager(), lb_I_String, s)
+			*s = "Binary column";
+		}
+			break;
+		case lbDBColumnDate:
+			s = getAsString(cols);
+			break;
+		case lbDBColumnFloat:
+			s = getAsString(cols);
+			break;
+		default:
+			REQUEST(getModuleManager(), lb_I_String, s)
+			*s = "Unknown column";
+	}
 	s->trim();
 	printf("%19s\n", s->charrep());
 }
@@ -1501,6 +1596,7 @@ lb_I_Query::lbDBCaseSensity    LB_STDCALL lbDatabaseLayerQuery::getCaseSensity()
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
+	lbErrCodes err = ERR_NONE;
 	if (bind) {
 		_LOG << "lbDatabaseLayerQuery::query('" << q << "', true) called." LOG_
 	} else {
@@ -1531,6 +1627,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		
 		if (theResult != NULL) {
 			_LOG << "Have got a resultset for '" << szSql << "'" LOG_
+			_dataFetched = false;
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
 
@@ -1547,6 +1644,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
+				_dataFetched = true;
 				if (skipFKCollections == 0) prepareFKList();
 							
 
@@ -1674,6 +1772,188 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					} else {
 						cursorFeature = false;
 					}
+				} else {					
+					UAP(lb_I_KeyBase, rowKey)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, Row)
+					QI(Row, lb_I_KeyBase, rowKey)
+					ResultSetMetaData* metadata = theResult->GetMetaData();
+					// Cache the data, because after a finish, no data will be given back.
+					cachedDataColumns->deleteAll();
+					
+					int row = 1;
+					Row->setData(row);
+					
+					for (int i_cache = 1; i_cache <= getColumns(); i_cache++) {
+						UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
+						UAP(lb_I_KeyBase, key)
+						UAP(lb_I_Unknown, uk)
+						I->setData(i_cache);
+						QI(I, lb_I_KeyBase, key)
+						
+						switch (getColumnType(i_cache)) {
+							case lbDBColumnBit:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+								*string = theResult->GetResultString(i_cache).c_str();
+								if (*string == "1") {
+									*string = "true";
+								} else {
+									*string = "false";
+								}
+								QI(string, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnChar:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+								*string = theResult->GetResultString(i_cache).c_str();
+								QI(string, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnInteger:
+							{
+								UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+								value->setData(theResult->GetResultLong(i_cache));
+								QI(value, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnBigInteger:
+							{
+								UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+								value->setData(theResult->GetResultLong(i_cache));
+								QI(value, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnBinary:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
+								wxMemoryBuffer buffer;
+								
+								if (theResult) theResult->GetResultBlob(i_cache, buffer);
+								
+								binarydata->append(buffer.GetData(), buffer.GetBufSize());
+								binarydata->append((void*) "", 1);
+								QI(binarydata, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnDate:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+								*string = theResult->GetResultString(i_cache).c_str();
+								QI(string, lb_I_Unknown, uk)
+							}
+								break;
+							case lbDBColumnFloat:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+								*string = theResult->GetResultString(i_cache).c_str();
+								QI(string, lb_I_Unknown, uk)
+							}
+								break;
+							default:
+							{
+								UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+								*string = theResult->GetResultString(i_cache).c_str();
+								_LOG << "Warning: Have got unknown column (value = " << string->charrep() << ")!" LOG_
+								QI(string, lb_I_Unknown, uk)
+							}
+								break;
+						}
+						
+						cachedDataColumns->insert(&uk, &key);
+					}
+
+					UAP(lb_I_Unknown, ukcachedDataColumns)
+					QI(cachedDataColumns, lb_I_Unknown, ukcachedDataColumns)
+					
+					cachedDataRows->insert(&ukcachedDataColumns, &rowKey);
+					
+					// Cache the complete resultset and finish.
+					while (theResult->Next()) {
+						Row->setData(++row);
+						cachedDataColumns->deleteAll();
+
+						for (int i_cache = 1; i_cache <= getColumns(); i_cache++) {
+							UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
+							UAP(lb_I_KeyBase, key)
+							UAP(lb_I_Unknown, uk)
+							I->setData(i_cache);
+							QI(I, lb_I_KeyBase, key)
+							
+							switch (getColumnType(i_cache)) {
+								case lbDBColumnBit:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+									*string = theResult->GetResultString(i_cache).c_str();
+									if (*string == "1") {
+										*string = "true";
+									} else {
+										*string = "false";
+									}
+									QI(string, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnChar:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+									*string = theResult->GetResultString(i_cache).c_str();
+									QI(string, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnInteger:
+								{
+									UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+									value->setData(theResult->GetResultLong(i_cache));
+									QI(value, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnBigInteger:
+								{
+									UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+									value->setData(theResult->GetResultLong(i_cache));
+									QI(value, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnBinary:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
+									wxMemoryBuffer buffer;
+									
+									if (theResult) theResult->GetResultBlob(i_cache, buffer);
+									
+									binarydata->append(buffer.GetData(), buffer.GetBufSize());
+									binarydata->append((void*) "", 1);
+									QI(binarydata, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnDate:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+									*string = theResult->GetResultString(i_cache).c_str();
+									QI(string, lb_I_Unknown, uk)
+								}
+									break;
+								case lbDBColumnFloat:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+									*string = theResult->GetResultString(i_cache).c_str();
+									QI(string, lb_I_Unknown, uk)
+								}
+									break;
+								default:
+								{
+									UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+									*string = theResult->GetResultString(i_cache).c_str();
+									_LOG << "Warning: Have got unknown column (value = " << string->charrep() << ")!" LOG_
+									QI(string, lb_I_Unknown, uk)
+								}
+									break;
+							}
+							
+							cachedDataColumns->insert(&uk, &key);
+						}
+						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
+					}
 				}
 			}
 		} else {
@@ -1709,23 +1989,31 @@ char* LB_STDCALL lbDatabaseLayerQuery::getChar(int column) {
 #endif
 #ifndef UNBOUND
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
-	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_String, value)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
+	QI(col, lb_I_KeyBase, key)
+	col->setData(column);
+	
+	if (cachedDataColumns->exists(&key) == 1) {
+		uk = cachedDataColumns->getElement(&key);
+		QI(uk, lb_I_String, value)
+		if (value == NULL) {
+			_LOG << "Error: Column is not of type lb_I_String!" LOG_
+			REQUEST(getModuleInstance(), lb_I_String, value)
+		}
+	} else {
+		REQUEST(getModuleInstance(), lb_I_String, value)
+	}
 	
 	// Caller get's an owner
-	string++;
+	value++;
 
 	///\todo Implement this.
 
-	*string = theResult->GetResultString(column).c_str();
-	
-	if (getColumnType(column) == lbDBColumnBit) {
-        if (*string == "1") {
-            *string = "true";
-        } else {
-            *string = "false";
-        }
-	}	
-	return string.getPtr();
+	return value.getPtr();
 }
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(const char* column) {
@@ -1740,17 +2028,35 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(const char* column) {
 }
 
 lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Long, value)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
+	QI(col, lb_I_KeyBase, key)
+	col->setData(column);
+	
+	if (cachedDataColumns->exists(&key) == 1) {
+		uk = cachedDataColumns->getElement(&key);
+		QI(uk, lb_I_Long, value)
+		if (value == NULL) {
+			_LOG << "Error: Column is not of type lb_I_Long!" LOG_
+			REQUEST(getModuleInstance(), lb_I_String, value)
+		}
+	} else {
+		REQUEST(getModuleInstance(), lb_I_String, value)
+	}
+	
 	// Caller get's an owner
 	value++;
-
+	
 	///\todo Implement this.
-	value->setData(theResult->GetResultLong(column));
-
+	
 	return value.getPtr();
 }
 
 lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
+#ifdef bla
 	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
 
 	///\todo Implement this.
@@ -1763,6 +2069,34 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
 
 	binarydata++;
 	return binarydata.getPtr();
+#endif
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_BinaryData, value)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
+	QI(col, lb_I_KeyBase, key)
+	col->setData(column);
+	
+	if (cachedDataColumns->exists(&key) == 1) {
+		uk = cachedDataColumns->getElement(&key);
+		QI(uk, lb_I_BinaryData, value)
+		if (value == NULL) {
+			_LOG << "Error: Column is not of type lb_I_Long!" LOG_
+			REQUEST(getModuleInstance(), lb_I_BinaryData, value)
+		}
+	} else {
+		REQUEST(getModuleInstance(), lb_I_BinaryData, value)
+	}
+	
+	value->append((void*) "", 1);
+
+	// Caller get's an owner
+	value++;
+	
+	///\todo Implement this.
+	
+	return value.getPtr();
 }
 
 lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(const char* column) {
@@ -2467,40 +2801,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		currentdbLayer->Open(connName->charrep());
 	}
 	if ((err = query(szSql, true)) != ERR_NONE) {
-	
-        wxString theQuery = szSql;
-        wxString whereClause;
-        wxString plainQuery;
-        
-	
-		if (theQuery.Upper().Contains(" WHERE ")) {
-			//cursorFeature = false;
-			whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
-			plainQuery = theQuery.SubString(0, theQuery.Upper().Find("WHERE") - 1);
-
-			// Strip off the order by clause
-			if (whereClause.Upper().Contains(" ORDER ")) {
-				whereClause = whereClause.SubString(0, whereClause.Upper().Find("ORDER") - 1);
-			}
-		} else {
-			if (theQuery.Upper().Contains(" ORDER ")) {
-				plainQuery = theQuery.SubString(0, theQuery.Upper().Find("ORDER") - 1);
-			} else {
-				plainQuery = theQuery;
-			}
-		}
-
-        if (query((char*) plainQuery.c_str(), true) != ERR_NONE) {
-            _LOG << "Error: There is really no data available after opening the connection." LOG_
-            _LOG << "Query: '" << plainQuery.c_str() << "'" LOG_
-            
-            if (query("select name, tbl_name from sqlite_master", true) == ERR_NONE) {
-                PrintData(false);
-            }
-        }
-
-        err = query((char*) theQuery.c_str(), true);
-	
 		return err;
 	}
 	if (theResult == NULL) {
@@ -2511,6 +2811,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
+	lbErrCodes err = ERR_NONE;
 	if (cursor < 0) {
 		// Handle underflow
 		// Try to read 100 more key values less than the first key in currentCursorview: currentCursorview[0]-1
@@ -2702,9 +3003,100 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			if (theResult->IsFieldNull(i)) 
 				setNull(i, true);
 			else
-				setNull(i, false);			
+				setNull(i, false);
 		}
 
+		// Cache the data, because after a finish, no data will be given back.
+		
+		cachedDataColumns->deleteAll();
+		
+		for (int i_cache = 1; i_cache <= getColumns(); i_cache++) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, uk)
+			I->setData(i_cache);
+			QI(I, lb_I_KeyBase, key)
+
+			switch (getColumnType(i_cache)) {
+				case lbDBColumnBit:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+					*string = theResult->GetResultString(i_cache).c_str();
+					if (*string == "1") {
+						*string = "true";
+					} else {
+						*string = "false";
+					}
+					QI(string, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnChar:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+					*string = theResult->GetResultString(i_cache).c_str();
+					QI(string, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnInteger:
+				{
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+					value->setData(theResult->GetResultLong(i_cache));
+					QI(value, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnBigInteger:
+				{
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+					value->setData(theResult->GetResultLong(i_cache));
+					QI(value, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnBinary:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
+					wxMemoryBuffer buffer;
+					
+					if (theResult) theResult->GetResultBlob(i_cache, buffer);
+					
+					binarydata->append(buffer.GetData(), buffer.GetBufSize());
+					binarydata->append((void*) "", 1);
+					QI(binarydata, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnDate:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+					*string = theResult->GetResultString(i_cache).c_str();
+					QI(string, lb_I_Unknown, uk)
+				}
+					break;
+				case lbDBColumnFloat:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+					*string = theResult->GetResultString(i_cache).c_str();
+					QI(string, lb_I_Unknown, uk)
+				}
+					break;
+				default:
+				{
+					UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+					*string = theResult->GetResultString(i_cache).c_str();
+					_LOG << "Warning: Have got unknown column (value = " << string->charrep() << ")!" LOG_
+					QI(string, lb_I_Unknown, uk)
+				}
+					break;
+			}
+			
+			cachedDataColumns->insert(&uk, &key);
+		}
+		
+		
+		
+		// Force a finish with an error message when there was more than one row that is unexpected in this cursor algorithm.
+		while (theResult->Next()) {
+			_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Warning: Simulated cursor gave back more than one row." LOG_
+		}
+		
 		return true;
 	}
 	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
@@ -2736,10 +3128,40 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::selectCachedRow() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, row)
+	UAP(lb_I_KeyBase, key)
+	QI(row, lb_I_KeyBase, key)
+	
+	row->setData(cachedRowIndex);
+	
+	if (cachedDataRows->exists(&key) == 1) {
+		UAP(lb_I_Unknown, uk)
+		
+		uk = cachedDataRows->getElement(&key);
+		cachedDataColumns--;
+		cachedDataColumns.resetPtr();
+		QI(uk, lb_I_Container, cachedDataColumns)
+		
+		if (cachedDataColumns == NULL) {
+				_LOG << "Error: Stored element is not of type lb_I_Container (" << uk->getClassName() << ")!" LOG_
+		}
+		
+		return ERR_NONE;	
+	} else {
+		return ERR_DB_NODATA;
+	}
+}
+
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::first() {
 	///\todo Implement
-	if (cursorFeature == false) return ERR_NONE;
 	if (_dataFetched == false) return ERR_DB_NODATA;
+
+	if (cursorFeature == false) {
+		cachedRowIndex = 1;
+		return selectCachedRow();
+	}
 
 	cursor = max_in_cursor;
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
@@ -2771,10 +3193,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::next() {
 		_dataFetched = true;
 		return ERR_NONE;
 	} else {
-		if (theResult->Next() == true) {
-			_dataFetched = true;
-			return ERR_NONE;
-		} else return ERR_DB_NODATA;
+		cachedRowIndex++;
+		return selectCachedRow();
 	}
 }
 
@@ -2782,7 +3202,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 	///\todo Implement
 	if (_dataFetched == false) return ERR_DB_NODATA;
 
-	if (cursorFeature == false) return ERR_NONE;
+	if (cursorFeature == false) {
+		cachedRowIndex--;
+		return selectCachedRow();
+	}
+
 	if (cursorFeature == true) {
 		cursor--;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
@@ -2795,7 +3219,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
 	///\todo Implement
 	if (_dataFetched == false) return ERR_DB_NODATA;
 
-	if (cursorFeature == false) return ERR_NONE;
+	if (cursorFeature == false) {
+		cachedRowIndex = cachedDataRows->Count();
+		return selectCachedRow();
+	}
 	if (cursorFeature == true) {
 		cursor = max_in_cursor+1;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
@@ -2838,7 +3265,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, l
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::add() {
-
+	if (cursorFeature == false) return ERR_DB_READONLY;
 	if (_readonly == 1) return ERR_DB_READONLY;
 
 	mode = 1;
@@ -2855,6 +3282,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::add() {
 
 //#define CREATE_DYNAMIC_STATEMENTS
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::remove() {
+	if (cursorFeature == false) return ERR_DB_READONLY;
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
 	wxString strSQL = _("DELETE FROM ");
@@ -2879,6 +3307,8 @@ void LB_STDCALL lbDatabaseLayerQuery::setAutoRefresh(bool b) {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	lbErrCodes err = ERR_NONE;
+	if (cursorFeature == false) return ERR_DB_READONLY;
+
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
 		_LOG << "Warning: Noting to update." LOG_
@@ -2953,8 +3383,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		_LOG << "Insert statement: " << strSQL.c_str() LOG_
 		
+#ifdef USE_IMMEDIALY_CLOSE
+		PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+#endif
+#ifndef USE_IMMEDIALY_CLOSE
 		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
-
+#endif
 		if (pStatement)
 		{
 			for (int i = 0; i < queryValues.Count(); i++) {
@@ -2987,7 +3421,21 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
             {
 				pStatement->RunQuery();
 				_LOG << "Added a new row." LOG_
-				last();
+#ifdef USE_IMMEDIALY_CLOSE
+				pStatement->Close();
+				delete pStatement;
+				pStatement = NULL;
+#endif
+/*				
+				char* sqlBackup = strdup(szSql);
+				skipFKCollecting();
+				query("pragma database_list;", false);
+				PrintData(false);
+				szSql = sqlBackup;
+				open();
+				enableFKCollecting();
+*/				
+				//last();
             }
             catch (DatabaseLayerException& ex)
             {
@@ -3715,7 +4163,11 @@ lbConnection::lbConnection() {
 lbConnection::~lbConnection() {
 	_CL_LOG << "lbConnection::~lbConnection() called." LOG_
 	if (dbl) {
-		_CL_LOG << "lbConnection::~lbConnection() closes dbl connection." LOG_
+		if (_dbname) {
+			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: " << _dbname << ")" LOG_
+		} else {
+			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: -)" LOG_
+		}
 		dbl->Close();
 	} else {
 		if (_dbname) {
@@ -3831,6 +4283,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 		connPooling->deleteAll();
 		connPooling--;
 		connPooling.resetPtr();
+		_CL_LOG << "lbDatabaseLayerDatabase::close() Info: Connection pool cleaned up." LOG_
 	}
 	if (dbl) dbl->Close();
 	connected = false;
