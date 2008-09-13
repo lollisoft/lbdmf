@@ -74,6 +74,152 @@ lb_I_Unknown* findPluginByInterfaceAndNamespace(char* _interface, char* _namespa
 	return NULL;
 }
 
+lb_I_Database* loadDatabase() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Database, DatabaseWrapper)
+	UAP(lb_I_Unknown, ukDatabaseWrapper)
+	ukDatabaseWrapper = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
+	
+	if (ukDatabaseWrapper == NULL) {
+		_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
+		//preloaddb.resetPtr();
+		//preloaddb = NULL;
+		PM->unload();
+		unHookAll();
+		exit(1);
+	} else {
+		QI(ukDatabaseWrapper, lb_I_Database, DatabaseWrapper)
+		if (DatabaseWrapper == NULL) {
+			_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
+			//preloaddb.resetPtr();
+			PM->unload();
+			unHookAll();
+			exit(1);
+		}
+	}
+	DatabaseWrapper++;
+	return DatabaseWrapper.getPtr();
+}
+
+void initAndConnect(lb_I_Database* db, char* dbname) {
+	db->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	db->connect(dbname, dbname, lbDMFUser, lbDMFPasswd);
+}
+
+void dropTables(lb_I_Query* q) {
+	q->skipFKCollecting();
+	q->query("-- Skip rewrite\n" "drop table regressiontest");
+	q->query("-- Skip rewrite\n" "drop table test");
+	q->query("-- Skip rewrite\n" "drop table test1");
+}
+
+void createTables(lb_I_Query* q) {
+	char* buf = "-- Skip rewrite\n"
+	"create table regressiontest ("
+	"id INTEGER PRIMARY KEY, "
+	//"test char(100) DEFAULT 'Nothing', "
+	"test BPCHAR DEFAULT 'Nothing', "
+	"btest bool DEFAULT false, "
+	"btest1 bool DEFAULT false)";
+	
+	q->skipFKCollecting();
+	q->query(buf);
+	
+	
+	buf = 
+	"CREATE TABLE \"test\" ("
+	"	id INTEGER PRIMARY KEY,"
+	"	test TEXT,"
+	"	id_reg INTEGER"
+	");\n"
+	"CREATE TABLE \"test1\" ("
+	"	id1 INTEGER PRIMARY KEY,"
+	"	test1 BPCHAR,"
+	"	id_reg INTEGER"
+	");\n"
+	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
+	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
+	
+	//printf("\n\nCreate database schema:\n%s\n\n", buf);
+	
+	// I have problems which collecting foreign key data, if no result sets are there.
+	q->skipFKCollecting();
+	q->query(buf);
+}
+
+void initDatabaseA(lb_I_Query* q) {
+	char* buf = "-- Skip rewrite\n"
+	"create table regressiontest ("
+	"id INTEGER PRIMARY KEY, "
+	//"test char(100) DEFAULT 'Nothing', "
+	"test BPCHAR DEFAULT 'Nothing', "
+	"btest bool DEFAULT false, "
+	"btest1 bool DEFAULT false)";
+	
+	q->skipFKCollecting();
+	q->query(buf);
+
+	buf = 
+	"CREATE TABLE \"test\" ("
+	"	id INTEGER PRIMARY KEY,"
+	"	test BPCHAR,"
+	"	id_reg INTEGER"
+	");\n"
+	"CREATE TABLE \"test1\" ("
+	"	id1 INTEGER PRIMARY KEY,"
+	"	test1 BPCHAR,"
+	"	id_reg1 INTEGER"
+	");\n"
+	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg1\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
+	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
+	
+	//printf("\n\nCreate database schema:\n%s\n\n", buf);
+	
+	// I have problems which collecting foreign key data, if no result sets are there.
+	q->skipFKCollecting();
+	q->query(buf);
+}
+
+void initDatabaseB(lb_I_Query* q) {
+	char* buf = "-- Skip rewrite\n"
+	"create table regressiontest ("
+	"	\"ID\" INTEGER PRIMARY KEY,"
+	"	test BPCHAR DEFAULT 'Nothing', "
+	"	btest bool DEFAULT false, "
+	"	btest1 bool DEFAULT false)";
+	
+	q->skipFKCollecting();
+	q->query(buf);
+	
+	buf = 
+	"CREATE TABLE \"test\" ("
+	"	\"ID\" INTEGER PRIMARY KEY,"
+	"	test BPCHAR,"
+	"	id_reg INTEGER"
+	");\n"
+	"CREATE TABLE \"test1\" ("
+	"	\"ID\" INTEGER PRIMARY KEY,"
+	"	test BPCHAR,"
+	"	id_reg INTEGER"
+	");\n"
+	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"ID\" );\n"
+	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"ID\" )\n";
+	
+	//printf("\n\nCreate database schema:\n%s\n\n", buf);
+	
+	// I have problems which collecting foreign key data, if no result sets are there.
+	q->skipFKCollecting();
+	q->query(buf);
+}
+
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
@@ -89,147 +235,40 @@ int main(int argc, char *argv[]) {
 	UAP_REQUEST(mm, lb_I_String, preload)
 	UAP_REQUEST(mm, lb_I_PluginManager, PM)
 	
-	//PM->initialize();
-	
+	PM->initialize();
+
+#ifdef bla
+	_CL_LOG << "Database regression tests..." LOG_
 	{
 		//UAP_REQUEST(mm, lb_I_Database, preloaddb)
-		UAP(lb_I_Unknown, ukDatabaseWrapper)
 		UAP(lb_I_Database, DatabaseWrapper)
-		
-		UAP(lb_I_Unknown, ukDatabaseWrapper1)
 		UAP(lb_I_Database, DatabaseWrapper1)
-
-		UAP(lb_I_Unknown, ukDatabaseWrapper2)
 		UAP(lb_I_Database, DatabaseWrapper2)
 		
-		
-		ukDatabaseWrapper = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
-		
-		if (ukDatabaseWrapper == NULL) {
-			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
-			//preloaddb.resetPtr();
-			//preloaddb = NULL;
-			PM->unload();
-			unHookAll();
-			return 0;
-		} else {
-			QI(ukDatabaseWrapper, lb_I_Database, DatabaseWrapper)
-			if (DatabaseWrapper == NULL) {
-				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
-				//preloaddb.resetPtr();
-				PM->unload();
-				unHookAll();
-				return 0;
-			}
-		}
-		
-		ukDatabaseWrapper1 = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
-		
-		if (ukDatabaseWrapper1 == NULL) {
-			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
-			return 0;
-		} else {
-			QI(ukDatabaseWrapper1, lb_I_Database, DatabaseWrapper1)
-			if (DatabaseWrapper1 == NULL) {
-				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
-				return 0;
-			}
-		}
-
-		ukDatabaseWrapper2 = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
-		
-		if (ukDatabaseWrapper2 == NULL) {
-			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
-			return 0;
-		} else {
-			QI(ukDatabaseWrapper2, lb_I_Database, DatabaseWrapper2)
-			if (DatabaseWrapper2 == NULL) {
-				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
-				return 0;
-			}
-		}
-		
-		_CL_LOG << "Database regression tests..." LOG_
+		DatabaseWrapper = loadDatabase();
+		DatabaseWrapper1 = loadDatabase();
+		DatabaseWrapper2 = loadDatabase();
 			
-		DatabaseWrapper->init();
-		
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
-		DatabaseWrapper->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+		initAndConnect(*&DatabaseWrapper, "lbDMF");
+
 		UAP(lb_I_Query, query2)
 		UAP(lb_I_Query, query3)
 		UAP(lb_I_Query, queryA)
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
-			
-			
 		
 		query = DatabaseWrapper->getQuery("lbDMF", 0);
-		
-		
 		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
-		query1->skipFKCollecting();
-		query1->query("-- Skip rewrite\n" "drop table regressiontest");
-		query1->query("-- Skip rewrite\n" "drop table test");
-		query1->query("-- Skip rewrite\n" "drop table test1");
-	
+
+		dropTables(*&query1);	
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
-		char* buf = "-- Skip rewrite\n"
-			"create table regressiontest ("
-			"id INTEGER PRIMARY KEY, "
-			//"test char(100) DEFAULT 'Nothing', "
-			"test BPCHAR DEFAULT 'Nothing', "
-			"btest bool DEFAULT false, "
-			"btest1 bool DEFAULT false)";
-			
-		query->skipFKCollecting();
-		query->query(buf);
-			
-			
-		buf = 
-			"CREATE TABLE \"test\" ("
-			"	id INTEGER PRIMARY KEY,"
-			"	test BPCHAR,"
-			"	id_reg INTEGER"
-			");\n"
-			"CREATE TABLE \"test1\" ("
-			"	id1 INTEGER PRIMARY KEY,"
-			"	test1 BPCHAR,"
-			"	id_reg1 INTEGER"
-			");\n"
-			"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg1\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
-			"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
-
-		printf("\n\nCreate database schema:\n%s\n\n", buf);
-
-		// I have problems which collecting foreign key data, if no result sets are there.
-		query->skipFKCollecting();
-		query->query(buf);
+		createTables(*&query);
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
-			
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 2', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 3', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 4', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 5', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 6', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 7', 1, 0)");
 
-		query1->query("insert into test (test,id_reg) values('Bla 1',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 2',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 3',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 4',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 5',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 6',1)");
-		query1->query("insert into test (test,id_reg) values('Bla 7',1)");
+		insertTestdata(*&query1);
 
 		UAP(lb_I_Query, queryread1)
 		UAP(lb_I_Query, queryinsert1)
@@ -281,8 +320,8 @@ int main(int argc, char *argv[]) {
 		
 		DatabaseWrapper1->init();
 		
-		lbDMFPasswd = getenv("lbDMFPasswd");
-		lbDMFUser   = getenv("lbDMFUser");
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
 		
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -372,8 +411,16 @@ int main(int argc, char *argv[]) {
 			uk = tables->nextElement();
 			
 			QI(uk, lb_I_String, s)
-			
-			_CL_LOG << "Table: " << s->charrep() LOG_
+
+			if (s != NULL) {
+				if (s->charrep() == NULL) {
+					_CL_LOG << "Table: ''" LOG_
+				} else {
+					_CL_LOG << "Table: " << s->charrep() LOG_
+				}
+			} else {
+				_CL_LOG << "Error: Haven't got a table string object." LOG_
+			}
 		}
 
 		UAP(lb_I_Container, columns)
@@ -503,9 +550,202 @@ int main(int argc, char *argv[]) {
 
 		//preloaddb.resetPtr();
 	}
+#endif
+	
+	_CL_LOG << "Test two database files reopening problem ..." LOG_
+	
+	{
+		UAP(lb_I_Database, DatabaseWrapper)
+		UAP(lb_I_Database, DatabaseWrapper1)
+		UAP(lb_I_Query, query)
+		UAP(lb_I_Query, query1)
+		UAP(lb_I_Query, queryLock)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 
+		DatabaseWrapper = loadDatabase();
+		DatabaseWrapper1 = loadDatabase();
+		
+		initAndConnect(*&DatabaseWrapper, "Database A");
+		initAndConnect(*&DatabaseWrapper1, "Database B");
+
+		query = DatabaseWrapper->getQuery("Database A", 0);
+		query1 = DatabaseWrapper1->getQuery("Database B", 0);
+
+		_CL_LOG << "Print data from Database A ..." LOG_
+		
+		query->query("select ID, test, btest, btest1 from regressiontest");
+		query->first();
+		if (query->first() == ERR_NONE) {
+			query->PrintData(false);
+		}
+		query->query("select ID, test, id_reg from test");
+		query->first();
+		if (query->first() == ERR_NONE) {
+			query->PrintData(false);
+		}
+		
+		_CL_LOG << "Print data from Database B ..." LOG_
+
+		query1->query("select ID, test, btest, btest1 from regressiontest");
+		query1->first();
+		if (query1->first() == ERR_NONE) {
+			query1->PrintData(false);
+		}
+		query1->query("select ID, test, id_reg from test");
+		query1->first();
+		if (query1->first() == ERR_NONE) {
+			query1->PrintData(false);
+		}
+		
+		_CL_LOG << "Recreate the tables ..." LOG_
+		
+		DatabaseWrapper->close();
+		query--;
+		query.resetPtr();
+		query1--;
+		query1.resetPtr();
+
+		query = DatabaseWrapper->getQuery("Database A", 0);
+		query1 = DatabaseWrapper1->getQuery("Database B", 0);
+
+		dropTables(*&query);
+		dropTables(*&query1);
+		
+		initDatabaseA(*&query);
+		initDatabaseB(*&query1);
+		
+		_CL_LOG << " Insert test data ..." LOG_
+		
+		// Create initial data and close.
+		query->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
+		query->query("insert into regressiontest (test,btest,btest1) values('Bla 2', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 2', 1, 0)");
+		query->query("insert into regressiontest (test,btest,btest1) values('Bla 3', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 3', 1, 0)");
+		DatabaseWrapper->close();
+		query--;
+		query.resetPtr();
+		query1--;
+		query1.resetPtr();
+		
+		_CL_LOG << "Closed database to begin test ..." LOG_
+
+		query1 = DatabaseWrapper1->getQuery("Database B", 0);
+		query1->query("select ID, test, id_reg from test");
+		query1->first();
+		
+		_CL_LOG << "Print data from Database B (must be empty before lock) ..." LOG_
+		if (query1->first() == ERR_NONE) {
+			query1->PrintData(false);
+		}
+		
+		_CL_LOG << "Change in Database B to lock on regressiontest ..." LOG_
+
+		queryLock = DatabaseWrapper1->getQuery("Database B", 0);
+		queryLock->query("select ID, test, btest, btest1 from regressiontest");
+		queryLock->first();
+		
+		*column = "test";
+		*value = "some value";
+		queryLock->setString(*&column, *&value);
+		
+		*column = "btest";
+		*value = "false";
+		queryLock->setString(*&column, *&value);
+		
+		*column = "btest1";
+		*value = "true";
+		queryLock->setString(*&column, *&value);
+		queryLock->update();
+
+		_CL_LOG << "Try add in Database B on test ..." LOG_
+
+		query1->add();
+
+		*column = "test";
+		*value = "some other value 1 ";
+
+		UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
+		
+		int len = strlen(value->charrep()+1);
+		void* buffer = malloc(len);
+		memcpy(buffer, value->charrep(), len);
+		binary->setData(buffer, len);
+		free(buffer);
+		query1->setBinaryData(column->charrep(), *&binary);
+
+		*column = "id_reg";
+		*value = "1";
+		query1->setString(*&column, *&value);
+		
+		query1->update();
+
+		query1->add();
+		*column = "test";
+		*value = "some other value 2 ";
+
+		len = strlen(value->charrep()+1);
+		buffer = malloc(len);
+		memcpy(buffer, value->charrep(), len);
+		binary->setData(buffer, len);
+		free(buffer);
+		query1->setBinaryData(column->charrep(), *&binary);
+
+		*column = "id_reg";
+		*value = "1";
+		query1->setString(*&column, *&value);
+
+		query1->update();
+
+		query = DatabaseWrapper->getQuery("Database A", 0);
+		query->query("select ID, test, btest, btest1 from regressiontest");
+		query->first();
+		
+		*column = "test";
+		*value = "some value";
+		query->setString(*&column, *&value);
+		
+		*column = "btest";
+		*value = "false";
+		query->setString(*&column, *&value);
+		
+		*column = "btest1";
+		*value = "true";
+		query->setString(*&column, *&value);
+		query->update();
+		
+		query1->close();
+		DatabaseWrapper1->close();
+
+		_CL_LOG << "Print data from Database B ..." LOG_
+
+		query1->open();
+		if (query1->first() == ERR_NONE) {
+			query1->PrintData(false);
+		}
+		
+		query1->close();
+		DatabaseWrapper1->close();
+		
+		query1->open();
+		if (query1->first() == ERR_NONE) {
+			query1->PrintData(false);
+		}
+		
+		_CL_LOG << "Print data from Database A ..." LOG_
+
+		query->open();
+		if (query->first() == ERR_NONE) {
+			query->PrintData(false);
+		}
+		
+	}
+	
 	PM->unload();
-	unHookAll();
+	//unHookAll();
 
 }
 
