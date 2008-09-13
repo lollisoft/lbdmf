@@ -173,9 +173,9 @@ protected:
   void CloseStatements();
   
   /// Add result set object pointer to the list for "garbage collection"
-  void LogResultSetForCleanup(DatabaseResultSet* pResultSet) { m_ResultSets.insert(pResultSet); }
+	void LogResultSetForCleanup(DatabaseResultSet* pResultSet);
   /// Add prepared statement object pointer to the list for "garbage collection"
-  void LogStatementForCleanup(PreparedStatement* pStatement) { m_Statements.insert(pStatement); }
+	void LogStatementForCleanup(PreparedStatement* pStatement);
   
 private:
   int GetSingleResultInt(const wxString& strSQL, const wxVariant* field);

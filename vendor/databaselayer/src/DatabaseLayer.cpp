@@ -28,19 +28,35 @@ void DatabaseLayer::CloseResultSets()
   DatabaseResultSetHashSet::iterator stop = m_ResultSets.end();
   while (start != stop)
   {
+    //wxLogError(_("Close a resultset.\n"));
     delete (*start);
     start++;
   }
   m_ResultSets.clear();
 }
 
+
+/// Add result set object pointer to the list for "garbage collection"
+void DatabaseLayer::LogResultSetForCleanup(DatabaseResultSet* pResultSet) {
+	m_ResultSets.insert(pResultSet);
+}
+
+/// Add prepared statement object pointer to the list for "garbage collection"
+void DatabaseLayer::LogStatementForCleanup(PreparedStatement* pStatement) { 
+	m_Statements.insert(pStatement); 
+}
+
+
+
 void DatabaseLayer::CloseStatements()
 {
   // Iterate through all of the statements and close them all
+  //wxLogError(_("Close statements.\n"));
   DatabaseStatementHashSet::iterator start = m_Statements.begin();
   DatabaseStatementHashSet::iterator stop = m_Statements.end();
   while (start != stop)
   {
+    //wxLogError(_("Close a statement.\n"));
     delete (*start);
     start++;
   }
