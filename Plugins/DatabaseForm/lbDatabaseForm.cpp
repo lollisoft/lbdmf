@@ -211,7 +211,8 @@ void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
 /*...slbDatabasePanel:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
-        ADD_INTERFACE(lb_I_DatabaseForm)
+	ADD_INTERFACE(lb_I_Window)
+	ADD_INTERFACE(lb_I_DatabaseForm)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabasePanel, lbDatabasePanel)
