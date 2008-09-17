@@ -30,7 +30,7 @@
 ** the version number) and changes its name to "SQLITE_DLLEXPORT sqlite3.h" as
 ** part of the build process.
 **
-** @(#) $Id: sqlite3.h,v 1.4 2008/09/17 07:44:15 lollisoft Exp $
+** @(#) $Id: sqlite3.h,v 1.5 2008/09/17 08:21:05 lollisoft Exp $
 */
 #ifdef WINDOWS
 #ifndef SQLITE_DLLEXPORT
@@ -2730,6 +2730,41 @@ int SQLITE_DLLEXPORT sqlite3_get_autocommit(SQLITE_DLLEXPORT sqlite3*);
 */
 SQLITE_DLLEXPORT sqlite3 * sqlite3_db_handle(SQLITE_DLLEXPORT sqlite3_stmt*);
 
+	
+
+/*
+ ** CAPI3REF:  Find the next prepared statement {F13140}
+ **
+ ** Return a pointer to the next [prepared statement] after pStmt
+ ** associated with [database connection] pDb.  If pStmt is NULL
+ ** then return a pointer to the first [prepared statement] associated
+ ** with the [database connection] pDb.  If no [prepared statement]
+ ** satisfies the conditions of this routine, return NULL.
+ **
+ ** INVARIANTS:
+ **
+ ** {F13143} If D is a [database connection] that holds one or more
+ **          unfinalized [prepared statements] and S is a NULL pointer,
+ **          then [sqlite3_next_stmt(D, S)] routine shall return a pointer
+ **          to one of the [prepared statements] associated with D.
+ **
+ ** {F13146} If D is a [database connection] that holds no
+ **          unfinalized [prepared statements] and S is a NULL pointer,
+ **          then [sqlite3_next_stmt(D, S)] routine shall return a NULL
+ **          pointer.
+ **
+ ** {F13149} If S is a [prepared statement] in [database connection] D
+ **          and S is not the last [prepared statement] in D, then
+ **          [sqlite3_next_stmt(D, S)] routine shall return a pointer
+ **          to the next [prepared statement] in D after S.
+ **
+ ** {F13152} If S is the last [prepared statement] in [database connection] D
+ **          then [sqlite3_next_stmt(D, S)] routine shall return a NULL
+ **          pointer.
+ **
+ */
+SQLITE_DLLEXPORT sqlite3_stmt *sqlite3_next_stmt(sqlite3 *pDb, sqlite3_stmt *pStmt);
+	
 
 /*
 ** CAPI3REF: Commit And Rollback Notification Callbacks
