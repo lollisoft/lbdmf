@@ -13,7 +13,7 @@
 ** interface, and routines that contribute to loading the database schema
 ** from disk.
 **
-** $Id: prepare.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** $Id: prepare.c,v 1.3 2008/09/17 07:44:15 lollisoft Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"
@@ -620,7 +620,7 @@ int sqlite3Reprepare(Vdbe *p){
   sqlite3 *db;
 
   assert( sqlite3_mutex_held(sqlite3VdbeDb(p)->mutex) );
-  zSql = sqlite3VdbeGetSql(p);
+  zSql = sqlite3_sql((sqlite3_stmt *)p);
   if( zSql==0 ){
     return 0;
   }

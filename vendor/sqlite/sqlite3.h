@@ -30,7 +30,7 @@
 ** the version number) and changes its name to "SQLITE_DLLEXPORT sqlite3.h" as
 ** part of the build process.
 **
-** @(#) $Id: sqlite3.h,v 1.3 2007/11/16 20:53:20 lollisoft Exp $
+** @(#) $Id: sqlite3.h,v 1.4 2008/09/17 07:44:15 lollisoft Exp $
 */
 #ifdef WINDOWS
 #ifndef SQLITE_DLLEXPORT
@@ -1640,7 +1640,25 @@ int SQLITE_DLLEXPORT sqlite3_prepare16_v2(
   const void **pzTail     /* OUT: Pointer to unused portion of zSql */
 );
 
+	
 /*
+ ** Retrieve the original SQL statement associated with a compiled statement
+ ** in UTF-8 encoding.
+ **
+ ** If the compiled SQL statement passed as an argument was compiled using
+ ** either sqlite3_prepare_v2 or sqlite3_prepare16_v2, then this function
+ ** returns a pointer to a nul-terminated string containing a copy of
+ ** the original SQL statement. The pointer is valid until the statement
+ ** is deleted using sqlite3_finalize().
+ **
+ ** If the statement was compiled using either of the legacy interfaces 
+ ** sqlite3_prepare() or sqlite3_prepare16(), this function returns NULL.
+ ** 
+ ****** EXPERIMENTAL - subject to change without notice **************
+ */
+SQLITE_DLLEXPORT const char * sqlite3_sql(sqlite3_stmt *pStmt);
+
+	/*
 ** CAPI3REF:  Dynamically Typed Value Object
 **
 ** SQLite uses dynamic typing for the values it stores.  Values can 
