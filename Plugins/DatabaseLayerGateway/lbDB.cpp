@@ -1648,7 +1648,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
 				
 				// As figured out by the translation function
-				theResult->Close();
+				// Keep for meta data
+				//theResult->Close();
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -1778,7 +1779,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						cursor = 0;
 						max_in_cursor = count;
 						
-						theResult->Close();
+						// Keep for meta data
+						//theResult->Close();
 						
 						selectCurrentRow();
 					} else {
@@ -1966,7 +1968,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						}
 						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
 					}
-                    theResult->Close();
+					// Keep for meta data
+					//theResult->Close();
 				}
 			}
 		} else {
@@ -3112,7 +3115,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Warning: Simulated cursor gave back more than one row." LOG_
 		}
 		
-		theResult->Close();
+		// Keep for meta data
+		//theResult->Close();
 		
 		return true;
 	}
