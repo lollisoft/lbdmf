@@ -1648,6 +1648,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
 				
 				// As figured out by the translation function
+				theResult->Close();
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -1965,6 +1966,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						}
 						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
 					}
+                    theResult->Close();
 				}
 			}
 		} else {
@@ -2784,11 +2786,11 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 			}
 		}
 		
-		if (theResult) {
-			theResult = NULL;
-		}
-		
 		currentdbLayer = NULL;
+	}
+
+	if (theResult) {
+		theResult = NULL;
 	}
 }
 
@@ -3109,6 +3111,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		while (theResult->Next()) {
 			_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Warning: Simulated cursor gave back more than one row." LOG_
 		}
+		
+		theResult->Close();
 		
 		return true;
 	}
@@ -3459,6 +3463,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 						pStatement->Close();
 						delete pStatement;
 						pStatement = NULL;
+						theResult = NULL; // It will go invalid.
 						currentdbLayer->Close();
 						open();
 
