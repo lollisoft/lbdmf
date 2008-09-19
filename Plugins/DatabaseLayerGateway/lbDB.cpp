@@ -1649,7 +1649,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				
 				// As figured out by the translation function
 				// Keep for meta data
-				//theResult->Close();
+				theResult->Close();
+				
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -1780,7 +1781,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						max_in_cursor = count;
 						
 						// Keep for meta data
-						//theResult->Close();
+						theResult->Close();
 						
 						selectCurrentRow();
 					} else {
@@ -1969,7 +1970,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
 					}
 					// Keep for meta data
-					//theResult->Close();
+					theResult->Close();
 				}
 			}
 		} else {
@@ -2209,16 +2210,23 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 #endif
 
 int LB_STDCALL lbDatabaseLayerQuery::getColumns() {
-	SWORD count = 0;
-	
+	ResultSetMetaData* metadata;
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
 		return 0;
 	}
 	
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	
+	if (tempResult != NULL) {
+		metadata = tempResult->GetMetaData();
+	}
 
-	return metadata->GetColumnCount();
+	int count = metadata->GetColumnCount();
+	
+	currentdbLayer->CloseResultSet(tempResult);
+	
+	return count;
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::hasColumnName(char* name) {
@@ -2383,11 +2391,23 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
-	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)	
+	ResultSetMetaData* metadata;
+	
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		*s = "";
+		s++;
+		return s.getPtr();
+	}
+	
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+
+	if (tempResult != NULL) {
+		metadata = tempResult->GetMetaData();
+	}
 	
 	wxString table = metadata->GetTableForColumn(wxString(FKName));
-	
 
 	int fkcolumns = currentdbLayer->GetForeignKeys(table);
 	
@@ -2395,10 +2415,13 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 		if (currentdbLayer->GetForeignKeyFKColumn(i) == wxString(FKName)) {
 			*s = currentdbLayer->GetForeignKeyPKColumn(i).c_str();
 			s++;
+			currentdbLayer->CloseResultSet(tempResult);
 			return s.getPtr();
 		}
 	}
 	*s = "";
+	s++;
+	if (tempResult) currentdbLayer->CloseResultSet(tempResult);
     return s.getPtr();
 }
 /*...e*/
@@ -2523,8 +2546,16 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 		return 0;
 	}
 	
-	ResultSetMetaData* metadata = theResult->GetMetaData();
-	return currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+
+	if (tempResult) {
+		ResultSetMetaData* metadata = tempResult->GetMetaData();
+		int keys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
+		currentdbLayer->CloseResultSet(tempResult);
+		return keys;
+	} else {
+		return 0;
+	}
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
@@ -2572,9 +2603,19 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return false;
+	}
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
 
-	return isNull(metadata->GetColumnName(pos).c_str());
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
+
+	bool bNull = isNull(metadata->GetColumnName(pos).c_str());
+	
+	currentdbLayer->CloseResultSet(tempResult);
+
+	return bNull;
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
@@ -2587,9 +2628,18 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return 0;
+	}
+	
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
 
-	return setNull(metadata->GetColumnName(pos).c_str(), b);
+	bool bSet = setNull(metadata->GetColumnName(pos).c_str(), b);
+	currentdbLayer->CloseResultSet(tempResult);
+
+	return bSet;
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
@@ -2608,24 +2658,32 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int pos) {
-		ResultSetMetaData* metadata = theResult->GetMetaData();
-		
-		int type = metadata->GetColumnType(pos);
-		
-		switch (type) {
-			case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
-			case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
-			case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
-			case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
-			case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
-			case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
-			case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
-			default: 
-			{
-				_LOG << "Warning: Column type not known: " << type LOG_
-				return lbDBColumnUnknown;
-			}
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return lbDBColumnUnknown;
+	}
+	
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
+	
+	int type = metadata->GetColumnType(pos);
+	
+	currentdbLayer->CloseResultSet(tempResult);
+	
+	switch (type) {
+		case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
+		case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
+		case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
+		case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
+		case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
+		case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
+		case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
+		default: 
+		{
+			_LOG << "Warning: Column type not known: " << type LOG_
+			return lbDBColumnUnknown;
 		}
+	}
 }
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
@@ -2635,14 +2693,24 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char*
 		return lbDBColumnUnknown;
 	}
 	
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return lbDBColumnUnknown;
+	}
+	
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
 	
 	for(int i=1;i<=metadata->GetColumnCount();i++) {
 		if (metadata->GetColumnName(i) == wxString(name)) {
-			return getColumnType(i);
+			lb_I_Query::lbDBColumnTypes colType = getColumnType(i);
+			currentdbLayer->CloseResultSet(tempResult);
+
+			return colType;
 		}
 	}
-	
+	currentdbLayer->CloseResultSet(tempResult);
+
 	return lbDBColumnUnknown;
 }
 /*...e*/
@@ -2696,13 +2764,21 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
-	if (theResult == NULL) open();
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	if (theResult == NULL) {
+		_LOG << "Error: No resultset available." LOG_
+		return 0;
+	}
+	
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
 	wxString table = metadata->GetTableForColumn(columnName);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	
 	*t = (char*) table.c_str();
 	t++;
+	currentdbLayer->CloseResultSet(tempResult);
+	
 	return t.getPtr();
 }
 /*...e*/
@@ -2722,7 +2798,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 		return t.getPtr(); 
 	}
 	
-	ResultSetMetaData* metadata = theResult->GetMetaData();
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
 	if (metadata->GetColumnCount() < col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
@@ -2731,6 +2809,8 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 	
 	*t = (char*) column.c_str();
 	t++;
+	currentdbLayer->CloseResultSet(tempResult);
+	
 	return t.getPtr();
 }
 /*...e*/
@@ -2773,6 +2853,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 void LB_STDCALL lbDatabaseLayerQuery::close() {
 	_CL_LOG << "lbDatabaseLayerQuery::close() called." LOG_
 
+#ifdef bla
 	if (currentdbLayer && currentdbLayer->IsOpen()) {
 		bool closed = currentdbLayer->CloseResultSet(theResult);
 		if (closed) {
@@ -2791,7 +2872,8 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 		
 		currentdbLayer = NULL;
 	}
-
+#endif
+	
 	if (theResult) {
 		theResult = NULL;
 	}
@@ -3116,7 +3198,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		}
 		
 		// Keep for meta data
-		//theResult->Close();
+		theResult->Close();
 		
 		return true;
 	}
@@ -4381,7 +4463,14 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 		connPooling.resetPtr();
 		_CL_LOG << "lbDatabaseLayerDatabase::close() Info: Connection pool cleaned up." LOG_
 	}
-	if (dbl) dbl->Close();
+	try {
+		if (dbl) dbl->Close();
+	}
+	catch (DatabaseLayerException ex) {
+		_LOG << "lbDatabaseLayerDatabase::close() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << "." LOG_
+	}
+	
+	
 	connected = false;
 }
 
