@@ -243,9 +243,44 @@ void SqlitePreparedStatement::RunQuery()
 
     if ((nReturn != SQLITE_ROW) && (nReturn != SQLITE_DONE))
     {
-      SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(nReturn));
-      SetErrorMessage(ConvertFromUnicodeStream(sqlite3_errmsg(m_pDatabase)));
+      const char* err_msg = NULL;
+      char* open_statements = NULL;
+
+      sqlite3_stmt* pStmt = NULL;
+      const char* zSql = NULL;
+      pStmt = sqlite3_next_stmt(m_pDatabase, pStmt);
+
+
+      err_msg = sqlite3_errmsg(m_pDatabase);
+      SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+
+
+      if (pStmt != NULL) {
+          zSql = sqlite3_sql(pStmt);
+          open_statements = (char*) malloc(strlen(err_msg) + strlen(zSql) + 2 + 1);
+          open_statements[0] = 0;
+          open_statements = strcat(open_statements, err_msg);
+          open_statements = strcat(open_statements, zSql);
+          open_statements = strcat(open_statements, ", \n");
+
+        while ((pStmt = sqlite3_next_stmt(m_pDatabase, pStmt)) != NULL) {
+          char* temp = NULL;
+          temp = (char*) malloc(strlen(open_statements) + strlen(zSql) + 2 + 1);
+          temp[0] = 0;
+          temp = strcat(temp, open_statements);
+          temp = strcat(temp, zSql);
+          temp = strcat(temp, ", \n");
+          free(open_statements);
+          open_statements = temp;
+        }
+        SetErrorMessage(open_statements);
+      } else {
+        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+        SetErrorMessage(ConvertFromUnicodeStream(err_msg));
+      }
+
       ThrowDatabaseException();
+
       return;
     }
     start++;
