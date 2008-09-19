@@ -214,6 +214,7 @@ public:
 		theResult = NULL;
 		dbName = NULL;
 		cachedRowIndex = 1;
+		skipAutoQuery = false;
 		max_in_cursor_default = max_in_cursor = 100;
 		
 		if (ReadOnlyColumns == NULL) {
@@ -410,7 +411,7 @@ private:
 	
 	/// Indicates a look forward to indicate if any more data is available.
 	bool 	peeking;
-	
+	bool    skipAutoQuery;
 	int		cachedRowIndex;
 	bool	haveData;
 	HENV    henv;
@@ -2900,6 +2901,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		*connName += ".db3";
 		currentdbLayer->Open(connName->charrep());
 	}
+	
+	if (skipAutoQuery) return ERR_NONE;
+	
 	if ((err = query(szSql, true)) != ERR_NONE) {
 		return err;
 	}
@@ -3551,7 +3555,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 						pStatement = NULL;
 						theResult = NULL; // It will go invalid.
 						currentdbLayer->Close();
+                        skipAutoQuery = true;
 						open();
+						skipAutoQuery = false;
 
 #define USE_IMMEDIALY_CLOSE
 #ifdef USE_IMMEDIALY_CLOSE
@@ -3594,11 +3600,21 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							pStatement->Close();
 							delete pStatement;
 							pStatement = NULL;
+                            currentdbLayer->Close();
+                            open();
 #endif							
 						}
 					}
 					catch (DatabaseLayerException& ex)
 					{
+						skipAutoQuery = false;
+						if (pStatement) {
+							pStatement->Close();
+							delete pStatement;
+							pStatement = NULL;
+                            currentdbLayer->Close();
+                            open();
+						}
 						_LOG << "Error: Retry adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
 					}
 				}
