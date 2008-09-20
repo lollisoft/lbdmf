@@ -215,6 +215,7 @@ public:
 		dbName = NULL;
 		cachedRowIndex = 1;
 		skipAutoQuery = false;
+		numPrimaryKeys = 0;
 		max_in_cursor_default = max_in_cursor = 100;
 		
 		if (ReadOnlyColumns == NULL) {
@@ -229,6 +230,21 @@ public:
 		}
 		if (cachedDataRows == NULL) {
 			REQUEST(getModuleInstance(), lb_I_Container, cachedDataRows)
+		}
+		if (cachedColumnNames == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnNames)
+		}
+		if (cachedColumnTableNames == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTableNames)
+		}
+		if (cachedColumnTypes == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTypes)
+		}
+		if (cachedColumnPrimaryColumns == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnPrimaryColumns)
+		}
+		if (cachedColumnForeignColumnsToPrimaryColumns == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
 		}
 		
 	}
@@ -385,6 +401,14 @@ public:
 	 */
 	lbErrCodes					LB_STDCALL selectCachedRow();
 	
+	/** \brief Create meta information.
+	 */
+	void						LB_STDCALL createMetaInformation();
+	
+	/** \brief Destroy meta information.
+	 */
+	void						LB_STDCALL destroyMetaInformation();
+	
 	/**
 	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
 	 * This function is public in class level, not on interface level.
@@ -422,6 +446,7 @@ private:
 	RETCODE retcode;
 	char*   szSql;
 	char*	dbName;
+	int		numPrimaryKeys;
 	int		databound;
 	int     firstfetched;
 	int		_readonly; // readonly = 1, else = 0
@@ -450,6 +475,19 @@ private:
 	UAP(lb_I_Container, cachedDataRows)
 	UAP(lb_I_Container, cachedDataColumns)
 	
+
+	
+	/* \brief Caching some meta information of the current query.
+	 *
+	 */
+	UAP(lb_I_Container, cachedColumnTableNames)
+	UAP(lb_I_Container, cachedColumnNames)
+	UAP(lb_I_Container, cachedColumnTypes)
+
+	UAP(lb_I_Container, cachedColumnPrimaryColumns)
+	// Maps foreign columns to their primary columns.
+	UAP(lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
+
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns)
 #endif
@@ -1299,6 +1337,89 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 UAP(lb_I_Integer, key)
 
+void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
+	lbErrCodes err = ERR_NONE;
+	// Be sure
+	destroyMetaInformation();
+	
+	if (szSql) {
+		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+		
+		if (tempResult != NULL) {
+			int count = 0;
+			ResultSetMetaData* metadata = tempResult->GetMetaData();
+			count = metadata->GetColumnCount();
+			
+			for(int i=1;i<=count;i++) {
+				UAP_REQUEST(getModuleManager(), lb_I_String, name)
+				UAP_REQUEST(getModuleManager(), lb_I_String, tablename)
+				UAP_REQUEST(getModuleManager(), lb_I_Integer, type)
+				UAP_REQUEST(getModuleManager(), lb_I_Integer, columnIndex)
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_Unknown, ukT)
+				UAP(lb_I_Unknown, ukTable)
+				
+				QI(columnIndex, lb_I_KeyBase, key)
+				QI(name, lb_I_Unknown, uk)
+				QI(type, lb_I_Unknown, ukT)
+				QI(tablename, lb_I_Unknown, ukTable)
+				
+				columnIndex->setData(i);
+				
+				lb_I_Query::lbDBColumnTypes colType = getColumnType(i);
+
+				type->setData(metadata->GetColumnType(i));
+				wxString column = metadata->GetColumnName(i);
+
+				*name = column.c_str();
+				
+				cachedColumnNames->insert(&uk, &key);
+				cachedColumnTypes->insert(&ukT, &key);
+				
+				// Store the number of primary keys for the table of the first column.
+				/// \todo Joins and multible tables not supported yet.
+				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
+
+				wxString table = metadata->GetTableForColumn(column);
+				*tablename = table.c_str();
+				
+				// Store the table name per column
+				cachedColumnTableNames->insert(&ukTable, &key);
+				
+				// Creating the mapping from foreign key to their primary column
+				int fkcolumns = currentdbLayer->GetForeignKeys(table);
+				
+				for (int ifk = 0; i<fkcolumns;i++) {
+					if (currentdbLayer->GetForeignKeyFKColumn(ifk) == column) {
+						UAP(lb_I_Unknown, ukPK)
+						UAP(lb_I_KeyBase, keyForeign)
+						UAP_REQUEST(getModuleManager(), lb_I_String, pkColumn)
+						*pkColumn = currentdbLayer->GetForeignKeyPKColumn(ifk).c_str();
+						
+						QI(name, lb_I_KeyBase, keyForeign)
+						QI(pkColumn, lb_I_Unknown, ukPK)
+						
+						cachedColumnForeignColumnsToPrimaryColumns->insert(&ukPK, &keyForeign);
+					}
+				}
+				
+			}
+		}
+		
+		currentdbLayer->CloseResultSet(tempResult);
+	}	
+	
+}
+
+void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
+	cachedColumnTableNames->deleteAll();
+	cachedColumnNames->deleteAll();
+	cachedColumnTypes->deleteAll();
+	
+	cachedColumnPrimaryColumns->deleteAll();
+	cachedColumnForeignColumnsToPrimaryColumns->deleteAll();
+}
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setData(lb_I_Unknown * uk) {
 	_CL_LOG << "lbDatabaseLayerQuery::setData(...): Not implemented yet" LOG_
@@ -1652,6 +1773,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				// Keep for meta data
 				theResult->Close();
 				
+				createMetaInformation();
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -1992,6 +2114,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			return ERR_DB_QUERYFAILED;
 		}
 		_dataFetched = true;
+		createMetaInformation();
 		return ERR_NONE;
 	} catch (DatabaseLayerException ex) {
 		_LOG << "lbDatabaseLayerQuery::query() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << q LOG_
@@ -2216,16 +2339,8 @@ int LB_STDCALL lbDatabaseLayerQuery::getColumns() {
 		_LOG << "Error: No resultset available." LOG_
 		return 0;
 	}
-	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-	
-	if (tempResult != NULL) {
-		metadata = tempResult->GetMetaData();
-	}
 
-	int count = metadata->GetColumnCount();
-	
-	currentdbLayer->CloseResultSet(tempResult);
+	int count = cachedColumnNames->Count();
 	
 	return count;
 }
@@ -2392,8 +2507,11 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
-	UAP_REQUEST(getModuleInstance(), lb_I_String, s)	
-	ResultSetMetaData* metadata;
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, FK)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
@@ -2401,28 +2519,18 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 		s++;
 		return s.getPtr();
 	}
-	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
 
-	if (tempResult != NULL) {
-		metadata = tempResult->GetMetaData();
-	}
+	*FK = FKName;
+	QI(FK, lb_I_KeyBase, key)
 	
-	wxString table = metadata->GetTableForColumn(wxString(FKName));
-
-	int fkcolumns = currentdbLayer->GetForeignKeys(table);
-	
-	for (int i = 0; i<fkcolumns;i++) {
-		if (currentdbLayer->GetForeignKeyFKColumn(i) == wxString(FKName)) {
-			*s = currentdbLayer->GetForeignKeyPKColumn(i).c_str();
-			s++;
-			currentdbLayer->CloseResultSet(tempResult);
-			return s.getPtr();
-		}
+	if (cachedColumnForeignColumnsToPrimaryColumns->exists(&key) == 1) {
+		uk = cachedColumnForeignColumnsToPrimaryColumns->getElement(&key);
+		QI(uk, lb_I_String, s)
+		s++;
+		return s.getPtr();
 	}
 	*s = "";
 	s++;
-	if (tempResult) currentdbLayer->CloseResultSet(tempResult);
     return s.getPtr();
 }
 /*...e*/
@@ -2547,16 +2655,7 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 		return 0;
 	}
 	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-
-	if (tempResult) {
-		ResultSetMetaData* metadata = tempResult->GetMetaData();
-		int keys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
-		currentdbLayer->CloseResultSet(tempResult);
-		return keys;
-	} else {
-		return 0;
-	}
+	return numPrimaryKeys;
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
@@ -2608,15 +2707,10 @@ bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
 		_LOG << "Error: No resultset available." LOG_
 		return false;
 	}
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
-
-	bool bNull = isNull(metadata->GetColumnName(pos).c_str());
+	UAP(lb_I_String, columnName)
+	columnName = getColumnName(pos);
 	
-	currentdbLayer->CloseResultSet(tempResult);
-
-	return bNull;
+	return isNull(columnName->charrep());
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
@@ -2633,14 +2727,10 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
 		_LOG << "Error: No resultset available." LOG_
 		return 0;
 	}
-	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
+	UAP(lb_I_String, columnName)
+	columnName = getColumnName(pos);
 
-	bool bSet = setNull(metadata->GetColumnName(pos).c_str(), b);
-	currentdbLayer->CloseResultSet(tempResult);
-
-	return bSet;
+	return setNull(columnName->charrep(), b);
 }
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
@@ -2659,36 +2749,52 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int pos) {
+	lbErrCodes err = ERR_NONE;
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
 		return lbDBColumnUnknown;
 	}
+
+	UAP(lb_I_Integer, type)
+	UAP_REQUEST(getModuleManager(), lb_I_Integer, index)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
+	index->setData(pos);
+	QI(index, lb_I_KeyBase, key)
 	
-	int type = metadata->GetColumnType(pos);
-	
-	currentdbLayer->CloseResultSet(tempResult);
-	
-	switch (type) {
-		case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
-		case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
-		case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
-		case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
-		case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
-		case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
-		case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
-		default: 
-		{
-			_LOG << "Warning: Column type not known: " << type LOG_
-			return lbDBColumnUnknown;
+	if (cachedColumnTypes->exists(&key) == 1) {
+		uk = cachedColumnTypes->getElement(&key);
+		QI(uk, lb_I_Integer, type)
+
+		int t = type->getData();
+		
+		switch (t) {
+			case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
+			case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
+			case ResultSetMetaData::COLUMN_DOUBLE: return lbDBColumnFloat;
+			case ResultSetMetaData::COLUMN_BOOL: return lbDBColumnBit;
+			case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
+			case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
+			case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
+			default: 
+			{
+				_LOG << "Warning: Column type not known: " << t LOG_
+				return lbDBColumnUnknown;
+			}
 		}
 	}
+	_LOG << "Error: Type for column not stored: " << pos LOG_
+	return lbDBColumnUnknown;
 }
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char* name) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleManager(), lb_I_String, Name)
+	
+	*Name = name;
+	
 	if (!theResult) {
 		_LOG << "lbDatabaseLayerQuery::getColumnType('" << name << "') Error: No result set available for this operation!" LOG_
 		return lbDBColumnUnknown;
@@ -2699,18 +2805,23 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char*
 		return lbDBColumnUnknown;
 	}
 	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
-	
-	for(int i=1;i<=metadata->GetColumnCount();i++) {
-		if (metadata->GetColumnName(i) == wxString(name)) {
-			lb_I_Query::lbDBColumnTypes colType = getColumnType(i);
-			currentdbLayer->CloseResultSet(tempResult);
-
-			return colType;
+	cachedColumnNames->finishIteration();
+	while (cachedColumnNames->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_String, column)
+		UAP(lb_I_Integer, index)
+		
+		uk = cachedColumnNames->nextElement();
+		QI(uk, lb_I_String, column)
+		
+		if (column->equals(*&Name)) {
+			key = cachedColumnNames->currentKey();
+			QI(key, lb_I_Integer, index)
+			cachedColumnNames->finishIteration();
+			return getColumnType(index->getData());
 		}
 	}
-	currentdbLayer->CloseResultSet(tempResult);
 
 	return lbDBColumnUnknown;
 }
@@ -2765,28 +2876,51 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	*name = columnName;
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
 		return 0;
 	}
 	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	cachedColumnNames->finishIteration();
+	while (cachedColumnNames->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_String, column)
+		UAP(lb_I_Integer, index)
+		
+		uk = cachedColumnNames->nextElement();
+		QI(uk, lb_I_String, column)
+		
+		if (column->equals(*&name)) {
+			key = cachedColumnNames->currentKey();
+			QI(key, lb_I_Integer, index)
+			cachedColumnNames->finishIteration();
 
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
-	wxString table = metadata->GetTableForColumn(columnName);
-	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
-	
-	*t = (char*) table.c_str();
-	t++;
-	currentdbLayer->CloseResultSet(tempResult);
-	
-	return t.getPtr();
+			if (cachedColumnTableNames->exists(&key) == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, table)
+				uk = cachedColumnTableNames->getElement(&key);
+				QI(uk, lb_I_String, table)
+				table++;
+				return table.getPtr();
+			}
+		}
+	}
+	_LOG << "Error: Mapping of column name over index to table name not found." LOG_
+	*table = "";
+	table++;
+	return table.getPtr();
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbDatabaseLayerQuery_column_Name[100] = "";
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
+	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	///\todo Implement
 	if (theResult == NULL) {
@@ -2799,19 +2933,23 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 		return t.getPtr(); 
 	}
 	
-	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_String, column)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
 
-	ResultSetMetaData* metadata = tempResult->GetMetaData();
-	if (metadata->GetColumnCount() < col) {
-		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
+	index->setData(col);
+	QI(index, lb_I_KeyBase, key)
+	
+	if (cachedColumnNames->exists(&key) == 1) {
+		UAP(lb_I_Unknown, uk)
+		uk = cachedColumnNames->getElement(&key);
+		QI(uk, lb_I_String, column)
+		column++;
+		return column.getPtr();
 	}
-	wxString column = metadata->GetColumnName(col);
 	
-	
-	*t = (char*) column.c_str();
+	*t = "";
 	t++;
-	currentdbLayer->CloseResultSet(tempResult);
-	
 	return t.getPtr();
 }
 /*...e*/
