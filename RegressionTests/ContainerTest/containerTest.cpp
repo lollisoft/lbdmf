@@ -91,6 +91,34 @@ void fillContainer(lb_I_Container* container) {
 	}
 }
 
+void fillContainerFromDBProblems(lb_I_Container* container) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(IData, lb_I_KeyBase, key)
+	QI(SData, lb_I_Unknown, uk)
+	
+	int i = 0;
+	i++;
+	IData->setData(i);
+	*SData = "ID";
+	container->insert(&uk, &key);
+	i++;
+	IData->setData(i);
+	*SData = "test";
+	container->insert(&uk, &key);
+	i++;
+	IData->setData(i);
+	*SData = "id_reg";
+	container->insert(&uk, &key);
+	
+}
+
+
 void searchContainerElement(lb_I_Container* container, int i) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
@@ -148,6 +176,22 @@ int main(int argc, char *argv[]) {
 	searchContainerElement(*&container, 7);
 	searchContainerElement(*&container, 8);
 	searchContainerElement(*&container, 4711);
+	
+	container->deleteAll();
+	
+	fillContainerFromDBProblems(*&container);
+	
+	printContainer(*&container);
+
+	printf("Container has %d elements.\n", container->Count());
+	
+	container->deleteAll();
+
+	fillContainerFromDBProblems(*&container);
+	
+	printContainer(*&container);
+	
+	printf("Container has %d elements.\n", container->Count());
 	
 	return 0;
 }
