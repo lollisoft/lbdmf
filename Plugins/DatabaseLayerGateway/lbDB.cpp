@@ -1339,6 +1339,7 @@ UAP(lb_I_Integer, key)
 
 void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	lbErrCodes err = ERR_NONE;
+	int count = 0;
 	// Be sure
 	destroyMetaInformation();
 	
@@ -1346,7 +1347,6 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
 		
 		if (tempResult != NULL) {
-			int count = 0;
 			ResultSetMetaData* metadata = tempResult->GetMetaData();
 			count = metadata->GetColumnCount();
 			
@@ -1364,16 +1364,14 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 				QI(name, lb_I_Unknown, uk)
 				QI(type, lb_I_Unknown, ukT)
 				QI(tablename, lb_I_Unknown, ukTable)
-				
+
 				columnIndex->setData(i);
 				
-				lb_I_Query::lbDBColumnTypes colType = getColumnType(i);
-
 				type->setData(metadata->GetColumnType(i));
 				wxString column = metadata->GetColumnName(i);
 
 				*name = column.c_str();
-				
+
 				cachedColumnNames->insert(&uk, &key);
 				cachedColumnTypes->insert(&ukT, &key);
 				
@@ -1390,7 +1388,7 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 				// Creating the mapping from foreign key to their primary column
 				int fkcolumns = currentdbLayer->GetForeignKeys(table);
 				
-				for (int ifk = 0; i<fkcolumns;i++) {
+				for (int ifk = 0; ifk<fkcolumns;ifk++) {
 					if (currentdbLayer->GetForeignKeyFKColumn(ifk) == column) {
 						UAP(lb_I_Unknown, ukPK)
 						UAP(lb_I_KeyBase, keyForeign)
@@ -1405,11 +1403,18 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 				}
 				
 			}
+		} else {
+			_LOG << "Error: szSql resulted in no resultset!" LOG_
 		}
 		
 		currentdbLayer->CloseResultSet(tempResult);
-	}	
+	} else {
+			_LOG << "Error: szSql should have a value!" LOG_
+	}
 	
+	if (getColumns() != count) {
+		_LOG << "Error: Number of reported columns not equal to expected!" LOG_
+	}
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
