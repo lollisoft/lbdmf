@@ -1755,6 +1755,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		if (theResult != NULL) {
 			_LOG << "Have got a resultset for '" << szSql << "'" LOG_
 			_dataFetched = false;
+			createMetaInformation();
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
 
@@ -1772,8 +1773,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				// As figured out by the translation function
 				// Keep for meta data
 				theResult->Close();
-				
-				createMetaInformation();
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -2114,7 +2113,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			return ERR_DB_QUERYFAILED;
 		}
 		_dataFetched = true;
-		createMetaInformation();
 		return ERR_NONE;
 	} catch (DatabaseLayerException ex) {
 		_LOG << "lbDatabaseLayerQuery::query() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << q LOG_
