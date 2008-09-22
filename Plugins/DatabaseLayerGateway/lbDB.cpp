@@ -1802,15 +1802,31 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				wxString theQuery = wxString(szSql);
 			
 				if (theQuery.Upper().Contains("INSERT")) {
+					if (theResult) {
+						currentdbLayer->CloseResultSet(theResult);
+						theResult = NULL;
+					}
 					return ERR_NONE;
 				}
 				if (theQuery.Upper().Contains("UPDATE")) {
+					if (theResult) {
+						currentdbLayer->CloseResultSet(theResult);
+						theResult = NULL;
+					}
 					return ERR_NONE;
 				}
 				if (theQuery.Upper().Contains("DROP")) {
+					if (theResult) {
+						currentdbLayer->CloseResultSet(theResult);
+						theResult = NULL;
+					}
 					return ERR_NONE;
 				}
 				if (theQuery.Upper().Contains("CREATE")) {
+					if (theResult) {
+						currentdbLayer->CloseResultSet(theResult);
+						theResult = NULL;
+					}
 					return ERR_NONE;
 				}
 
