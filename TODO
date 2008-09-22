@@ -2,6 +2,17 @@
 		
 		I also will discuss some problems while the development stages.
 
+		22.09.2008	There are some remaining problems with sqlite based databases when opening
+				the 4th detailform over a master detail action. The problem is that there
+				are unexplainable database lock I was not yet capable of fixing by holding
+				the database statements as short as possible open.
+
+				The problem currently only occurs on Windows, but not on Mac. Other platforms
+				are not tested yet.
+
+				To avoid this behaviour, the form that could not be filled with data, should
+				be filled with a dummy entry if only that form is open. 
+
 		07.07.2008	Instance messaging tested with tcpdump tracing on port 5222 and 5223. There
 				was some communication, but it didn't came to me.
 				Try to record the raw communication. Another test.
