@@ -1777,7 +1777,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				
 				// As figured out by the translation function
 				// Keep for meta data
-				theResult->Close();
+				currentdbLayer->CloseResultSet(theResult);
 				
 				return ERR_DB_NODATA;
 			} else {
@@ -1924,7 +1924,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						max_in_cursor = count;
 						
 						// Keep for meta data
-						theResult->Close();
+						currentdbLayer->CloseResultSet(theResult);
 						
 						selectCurrentRow();
 					} else {
@@ -2113,7 +2113,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
 					}
 					// Keep for meta data
-					theResult->Close();
+					currentdbLayer->CloseResultSet(theResult);	
 				}
 			}
 		} else {
