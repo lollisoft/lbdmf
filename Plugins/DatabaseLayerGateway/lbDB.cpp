@@ -3359,9 +3359,11 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		}
 		
 		// Keep for meta data
-		theResult->Close();
+		currentdbLayer->CloseResultSet(theResult);
 		
 		return true;
+	} else {
+		if (theResult) currentdbLayer->CloseResultSet(theResult);
 	}
 	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
 	return false;
