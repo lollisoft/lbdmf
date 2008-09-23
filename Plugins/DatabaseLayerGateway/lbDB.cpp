@@ -2900,8 +2900,20 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	*name = columnName;
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
-		return 0;
+		_LOG << "Error: No resultset available. Try reopen." LOG_
+		if (reopen() != ERR_NONE) {
+			_LOG << "Error: Reopen failed." LOG_
+			*table = "";
+			table++;
+			return table.getPtr();
+		} else {
+			if (theResult == NULL) {
+				_LOG << "Error: No resultset after reopen available." LOG_
+				*table = "";
+				table++;
+				return table.getPtr();
+			}
+		}
 	}
 	
 	cachedColumnNames->finishIteration();
