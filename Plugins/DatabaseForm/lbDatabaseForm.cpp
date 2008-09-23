@@ -736,6 +736,20 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						}
 					}
 				}
+
+				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_KeyBase, key)
+				
+				QI(name, lb_I_KeyBase, key)
+				*name = "ApplicationData";
+				params->getUAPContainer(*&name, *&document);
+				
+				*name = "FormularFields";
+				if (document->exists(&key) == 1) document->remove(&key);
+				QI(formularfields, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
 				
 				database->open(DBName);
 				sampleQuery--;
@@ -3693,6 +3707,25 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				fkpkPanel->show();
 				fkpkPanel->destroy();
 
+				UAP(lb_I_Parameter, params)
+				UAP(lb_I_Unknown, uk)
+				uk = meta->getActiveDocument();
+				QI(uk, lb_I_Parameter, params)
+
+				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP(lb_I_KeyBase, key)
+				
+				QI(name, lb_I_KeyBase, key)
+				*name = "ApplicationData";
+				params->getUAPContainer(*&name, *&document);
+				
+				*name = "FormularFields";
+				if (document->exists(&key) == 1) document->remove(&key);
+				QI(formularfields, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+				
+				
 				database->open(DBName->charrep());
 				sampleQuery--;
 				sampleQuery = database->getQuery(DBName->charrep(), 0);
