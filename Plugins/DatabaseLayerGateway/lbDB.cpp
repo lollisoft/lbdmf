@@ -3109,6 +3109,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
 		
+		_LOG << "Cursor is < 0. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+		
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 		
 		max_in_cursor = max_in_cursor_default;
@@ -3158,6 +3160,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += " ORDER BY ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
+			
+			_LOG << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 			
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 			
@@ -3221,6 +3225,8 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			}
 			
+			_LOG << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 			
 			max_in_cursor = max_in_cursor_default;
@@ -3259,7 +3265,10 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	cursorWhere += currentdbLayer->GetPrimaryKeyColumn(0);
 	cursorWhere += " = ";
 	
-	if (currentCursorview.Count() == 0) return false;
+	if (currentCursorview.Count() == 0) {
+		_LOG << "Warning: No cursor data could be built up." LOG_
+		return false;
+	}
 	
 	cursorWhere += currentCursorview[cursor];
 
