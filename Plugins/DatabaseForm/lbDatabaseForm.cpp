@@ -3670,7 +3670,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				FID->setData(forms->getApplicationID());
 				
 				if (FID->equals(*&ID)) {
-					if (strcmp(formName, forms->getName()) == 0) {
+					if (strcmp(base_formName, forms->getName()) == 0) {
 						forms->finishFormularIteration();
 						formFound = true;
 						_LOG << "Found formular name in datamodel." LOG_
