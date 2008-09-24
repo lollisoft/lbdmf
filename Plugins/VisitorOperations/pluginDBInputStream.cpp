@@ -1241,7 +1241,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				
 				form_query->enableFKCollecting();
 				_LOG << "Execute query '" << formularquery->charrep() << "'" LOG_
-				if (form_query->query(formularquery->charrep()) == ERR_NONE) {
+				
+				lbErrCodes errQuery = form_query->query(formularquery->charrep());
+				
+				if ((errQuery == ERR_NONE) || (errQuery == ERR_DB_NODATA)) {
 					// formular query is valid
 					int columns = form_query->getColumns();
 					for (int i = 1; i <= columns; i++) {
@@ -1401,7 +1404,12 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				form_query = db->getQuery(ConnectionName->charrep(), 0);
 				
 				form_query->enableFKCollecting();
-				if (form_query->query(formularquery->charrep()) == ERR_NONE) {
+				
+				lbErrCodes errQuery = form_query->query(formularquery->charrep());
+				
+				// The second case will never happen unless the query implementation will return WARN_DB_NODATA and query_query results into no data.
+				// There is always a case of no data in the application tables, but there should always meta data available except the SQL of that query is wrong.
+				if ((errQuery == ERR_NONE) || (errQuery == ERR_DB_NODATA)) {
 					// formular query is valid
 					int columns = form_query->getColumns();
 					for (int i = 1; i <= columns; i++) {
