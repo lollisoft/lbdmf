@@ -39,6 +39,7 @@ class lb_I_Window : public lb_I_Unknown
 public:
 	virtual void LB_STDCALL create(int parentId) = 0;
 	virtual int  LB_STDCALL getId() = 0;
+	virtual void LB_STDCALL windowIsClosing(lb_I_Window* w) = 0;
 };
 
 /*...sclass lb_I_Form:0:*/
