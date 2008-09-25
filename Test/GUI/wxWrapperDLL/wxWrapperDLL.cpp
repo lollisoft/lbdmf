@@ -1384,18 +1384,40 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 		
 		if (f != NULL) {
 			for (int i = 0; i < num; i++) {
-				if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
-					notebook->SetPageText(i, f->getFormName());
-					notebook->SetSelection(i);
+				wxString pageText = notebook->GetPageText(i);
+				
+				wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
+				wxString token;
+				while ( tkz.HasMoreTokens() )
+				{
+					token += tkz.GetNextToken();
+
+					if (token == name) {
+						notebook->SetPageText(i, f->getFormName());
+						notebook->SetSelection(i);
+					}
+					
+					token += " - "; // If the base formname contains this in it's name, then there would be more than two tokens. Append and recompare.
 				}
 			}
 		} else {
 			lb_I_FixedDatabaseForm* f = findCustomDBForm(name);
 			if (f != NULL) {
 				for (int i = 0; i < num; i++) {
-					if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
-						notebook->SetPageText(i, f->getFormName());
-						notebook->SetSelection(i);
+					wxString pageText = notebook->GetPageText(i);
+					
+					wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
+					wxString token;
+					while ( tkz.HasMoreTokens() )
+					{
+						token += tkz.GetNextToken();
+						
+						if (token == name) {
+							notebook->SetPageText(i, f->getFormName());
+							notebook->SetSelection(i);
+						}
+						
+						token += " - "; // If the base formname contains this in it's name, then there would be more than two tokens. Append and recompare.
 					}
 				}
 			}
@@ -1417,6 +1439,8 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 	int sel = notebook->GetSelection();
 	
+	UAP(lb_I_Window, windowToClose)
+	
 	if (sel != wxNOT_FOUND)
 	{
 		wxWindow* w = notebook->GetCurrentPage();
@@ -1435,9 +1459,27 @@ void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 			QI(form, lb_I_Window, window)
 			
 			if ((window != NULL) && (window->getId() == w->GetId())) {
+				QI(form, lb_I_Window, windowToClose)
 				key = forms->currentKey();
 			}
+			
 		}
+		
+		forms->finishIteration();
+		while (forms->hasMoreElements()) {
+			lbErrCodes err = ERR_NONE;
+			
+			lb_I_Unknown* form = forms->nextElement();
+			
+			if (!form) continue;
+			
+			UAP(lb_I_Window, window)
+			QI(form, lb_I_Window, window)
+			
+			if (window != NULL) window->windowIsClosing(*&windowToClose);
+		}			
+		
+		windowToClose.resetPtr();
 		
 		if (key != NULL) {
 			forms->remove(&key);
