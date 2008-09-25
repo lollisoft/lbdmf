@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.48 2008/06/29 17:15:26 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.49 2008/09/25 10:19:35 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.49  2008/09/25 10:19:35  lollisoft
+ * Added a function to notify on closing a form. This did not
+ * really helped due to cached action classes contained also
+ * a pointer to the formular, but it may be helpful in general.
+ *
  * Revision 1.48  2008/06/29 17:15:26  lollisoft
  * Asking for showing visible fields for foreign keys now works. It get saved and also the usual form editing actions would be saved.
  *
@@ -258,6 +263,8 @@ public:
 		Destroy();
 	};
 	
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+
 	/**
 	 * Column has been selected.
 	 *
@@ -773,6 +780,9 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 /*...e*/
 
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+
+		
 	void LB_STDCALL activateActionButtons();
 	void LB_STDCALL deactivateActionButtons();
 
@@ -1030,6 +1040,8 @@ public:
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 /*...e*/
+
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 
 	/** \brief Handler for button actions
 	 *

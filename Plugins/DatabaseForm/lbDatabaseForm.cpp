@@ -146,16 +146,17 @@ extern "C" {
 /*...sclass lbOwnerDrawControl:0:*/
 class lbOwnerDrawControl :
         public lb_I_Control,
-        public wxControl {
-        
+public wxControl {
+	
 public:
 	lbOwnerDrawControl();
 	
 	virtual ~lbOwnerDrawControl();
-
+	
 	void LB_STDCALL create(int parentId) { }
 	int  LB_STDCALL getId() { return GetId(); }
-
+	
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 	void LB_STDCALL init(lb_I_Window* parent);
 	
 	void OnPaint(wxPaintEvent &event);
@@ -188,6 +189,9 @@ lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "lbOwnerDrawControl::setData(lb_I_Unknown* uk) not implemented." LOG_
 
 	return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbOwnerDrawControl::windowIsClosing(lb_I_Window* w) {
 }
 
 void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
@@ -1704,6 +1708,20 @@ lb_I_String* LB_STDCALL lbDatabasePanel::getColumnName(int pos) {
 	return sampleQuery->getColumnName(pos);
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::windowIsClosing(lb_I_Window* w) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_DatabaseForm, form)
+	QI(w, lb_I_DatabaseForm, form)
+	
+	if (form.getPtr() == _master) {
+		_master = NULL;
+	}
+	
+	if (form.getPtr() == _detail) {
+		_detail = NULL;
+	}
+}
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDatabasePanel::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
@@ -4910,6 +4928,10 @@ lb_I_String* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
 	return panel->getColumnName(pos);
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseDialog::windowIsClosing(lb_I_Window* w) {
+	panel->windowIsClosing(w);
+}
 
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {

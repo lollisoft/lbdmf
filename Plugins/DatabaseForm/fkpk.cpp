@@ -353,6 +353,9 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 }
 /*...e*/
 
+void LB_STDCALL lbConfigure_FK_PK_MappingDialog::windowIsClosing(lb_I_Window* w) {
+}
+
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unknown* uk) {
 	EndModal(wxID_OK);
 

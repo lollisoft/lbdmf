@@ -776,6 +776,17 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
 
+	UAP(lb_I_GUI, gui)
+	meta->getGUI(&gui);
+
+	UAP(lb_I_DatabaseForm, df)
+	df = gui->findDBForm(formularname->charrep());
+
+	if (df == NULL) {
+		_LOG << "Detailform '" << formularname->charrep() << "' nicht gefunden. Setze variable zurück." LOG_
+		detailForm = NULL;
+	}
+	
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
@@ -784,14 +795,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		
 		detailForm->setName(formularname->charrep(), parameter->charrep());
 
-		UAP(lb_I_GUI, gui)
+		_LOG << "Search the masterform '" << masterForm->charrep() << "'." LOG_
 		
-		meta->getGUI(&gui);
-
 		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
 		if (f == NULL) {
-			_CL_LOG << "Error: Bail out, no master form found." LOG_
+			_LOG << "Error: Bail out, no master form found." LOG_
 			return; 
 		}
 
@@ -800,10 +809,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		detailForm->updateFromMaster();
 		gui->showForm(formularname->charrep());	
 	} else {
-		UAP(lb_I_GUI, gui)
-		meta->getGUI(&gui);
-
-
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, docparams)
 			
@@ -864,9 +869,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						*parameter = " - ";
 						*parameter += SourceFieldValue->charrep();
 						form->setName(formularname->charrep(), parameter->charrep());
+						_LOG << "Search the masterform '" << masterForm->charrep() << "'." LOG_
 						f = gui->findDBForm(masterForm->charrep());
 						if (f == NULL) {
-							_CL_LOG << "Error: Bail out, no master form found." LOG_
+							_LOG << "Error: Bail out, no master form found." LOG_
 							
 							if (detailForm != NULL) {
 								// Cleanup
@@ -896,6 +902,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		}
 
 		// - old database variant -
+
+		_LOG << "Open detail form the old database way." LOG_
 
 		//lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
@@ -1321,7 +1329,18 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	params->setUAPLong(*&parameter, *&actionID);
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
-		
+	
+	UAP(lb_I_GUI, gui)
+	meta->getGUI(&gui);
+	
+	UAP(lb_I_DatabaseForm, df)
+	df = gui->findDBForm(formularname->charrep());
+	
+	if (df == NULL) {
+		_LOG << "Masterform '" << formularname->charrep() << "' nicht gefunden. Setze variable zurück." LOG_
+		masterForm = NULL;
+	}
+	
 	/// \todo This is a possible bug if there are more than one such form.
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
@@ -1331,10 +1350,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		
 		masterForm->setName(formularname->charrep(), parameter->charrep());
 				
-		UAP(lb_I_GUI, gui)
-		
-		meta->getGUI(&gui);
-
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
 
 		if (f == NULL) {
@@ -1347,10 +1362,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		masterForm->updateFromDetail();
 		gui->showForm(formularname->charrep());
 	} else {
-		UAP(lb_I_GUI, gui)
-		meta->getGUI(&gui);
-		
-
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, docparams)
 			
