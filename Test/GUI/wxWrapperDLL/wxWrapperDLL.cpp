@@ -1484,7 +1484,6 @@ void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 		if (key != NULL) {
 			forms->remove(&key);
 		}
-		msgBox("Info", "Now I will call notebook->DeletePage(sel);");
 		notebook->DeletePage(sel);
 	}
 	
@@ -1603,7 +1602,6 @@ void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
 
 void lb_wxFrame::OnCloseCurrentPage(wxCommandEvent& WXUNUSED(event) )
 {
-	gui->msgBox("Info", "Close current page ...");
 	if (gui) gui->closeCurrentPage();
 }
 
