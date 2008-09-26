@@ -642,10 +642,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	file_menu->Append(DYNAMIC_ABOUT	 , _trans("&About\tCtrl-A"));
 	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
-	file_menu->Append(CLOSE_CURRENT_PAGE, "&Close current page\tCtrl-c");
+	file_menu->Append(CLOSE_CURRENT_PAGE, _trans("&Close current page\tCtrl-c"));
 
 	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
-	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-l"));
+	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-R"));
 
 	menu_bar = new wxMenuBar;
 	menu_bar->Append(file_menu, _trans("&File"));
@@ -1437,6 +1437,8 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 }
 
 void LB_STDCALL lb_wxGUI::closeCurrentPage() {
+	if (!notebook) return;
+	
 	int sel = notebook->GetSelection();
 	
 	UAP(lb_I_Window, windowToClose)
