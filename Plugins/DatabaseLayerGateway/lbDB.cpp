@@ -3223,6 +3223,12 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				
 				tempSQL += " ORDER BY ";
 				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+			} else {
+				// No cursor data, but also try add the where clause.
+				if (whereClause != "") {
+					tempSQL += " ";
+					tempSQL += whereClause;
+				}
 			}
 			
 			_LOG << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
