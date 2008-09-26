@@ -1567,7 +1567,7 @@ void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
-				if (strcmp(forms->getName(), formName) == 0) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
 					long FormID = forms->getFormularID();
 					
 					while (formActions->hasMoreFormularActions()) {
@@ -1606,7 +1606,7 @@ void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
-				if (strcmp(forms->getName(), formName) == 0) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
 					long FormID = forms->getFormularID();
 					
 					while (formActions->hasMoreFormularActions()) {
@@ -3980,6 +3980,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 /*...e*/
 		}
 	}
+	
+	DISABLE_EOF()
 	
 	return ERR_NONE;
 }
