@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.145 $
+ * $Revision: 1.146 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.145 2008/08/30 09:23:37 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.146 2008/09/26 10:43:20 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.146  2008/09/26 10:43:20  lollisoft
+ * Removed shortcut.
+ *
  * Revision 1.145  2008/08/30 09:23:37  lollisoft
  * Initial setup works and also the autoload of 'lbDMF Manager'.
  *
@@ -1484,7 +1487,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	
 	addMenuBar(_trans("&Edit"));
 	
-	char* temp1 = _trans("&Autoload application\tCtrl-A");
+	char* temp1 = _trans("&Autoload application");
 	
 	char* mm1 = (char*) malloc(strlen(temp1)+1);
 	mm1[0] = 0;
