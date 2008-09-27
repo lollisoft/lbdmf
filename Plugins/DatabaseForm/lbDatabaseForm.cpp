@@ -2570,7 +2570,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	if (err == ERR_NONE) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
-		UAP(lb_I_String, colValue)
+		UAP(lb_I_Long, colValue)
 
 		err = PKQuery->first();
 
@@ -2585,7 +2585,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(i);
+				colValue = PKQuery->getAsLong(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
@@ -2637,7 +2637,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sBuild expression for one column:32:*/
 				c = PKQuery->getColumnName(columns);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(columns);
+				colValue = PKQuery->getAsLong(columns);
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
@@ -2702,7 +2702,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(i);
+				colValue = PKQuery->getAsLong(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
@@ -2753,7 +2753,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sBuild expression for one column:32:*/
 				c = PKQuery->getColumnName(columns);
 				*colName = c->charrep();
-				colValue = PKQuery->getAsString(columns);
+				colValue = PKQuery->getAsLong(columns);
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
@@ -3006,32 +3006,46 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
 					
-					QI(uk_cbMapper, lb_I_Container, cbMapper)
-					
-					key->setData(pos);
-					
-					UAP(lb_I_KeyBase, key_pos)
-					
-					QI(key, lb_I_KeyBase, key_pos)
-				
-					UAP(lb_I_Unknown, uk_mapping)
-					
-					uk_mapping = cbMapper->getElement(&key_pos);
-					
-					if (uk_mapping == NULL)  { 
-						if (!sampleQuery->isNullable(name->charrep())) {
-							if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
+					if (uk_cbMapper == NULL) {
+						_LOG << "Error: Could not find mapping container for '" << name->charrep() << "'. Key was '" << key_cbName->charrep() << "'. List of elements:" LOG_
+						
+						ComboboxMapperList->finishIteration();
+						
+						while (ComboboxMapperList->hasMoreElements() == 1) {
+							UAP(lb_I_Unknown, uk)
+							UAP(lb_I_KeyBase, key)
+							uk = ComboboxMapperList->nextElement();
+							key = ComboboxMapperList->currentKey();
+							_LOG << "Element '" << key->charrep() << "'." LOG_
 						}
 					} else {
-						UAP(lb_I_Integer, FK_id)
-					
-						QI(uk_mapping, lb_I_Long, FK_id)
-	
-						col->setData(name->charrep());
-						val->setData(FK_id->charrep());
-					
-						sampleQuery->setNull(name->charrep(), false);
-						sampleQuery->setString(*&col, *&val);
+						QI(uk_cbMapper, lb_I_Container, cbMapper)
+						
+						key->setData(pos);
+						
+						UAP(lb_I_KeyBase, key_pos)
+						
+						QI(key, lb_I_KeyBase, key_pos)
+						
+						UAP(lb_I_Unknown, uk_mapping)
+						
+						uk_mapping = cbMapper->getElement(&key_pos);
+						
+						if (uk_mapping == NULL)  { 
+							if (!sampleQuery->isNullable(name->charrep())) {
+								if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
+							}
+						} else {
+							UAP(lb_I_Integer, FK_id)
+							
+							QI(uk_mapping, lb_I_Long, FK_id)
+							
+							col->setData(name->charrep());
+							val->setData(FK_id->charrep());
+							
+							sampleQuery->setNull(name->charrep(), false);
+							sampleQuery->setString(*&col, *&val);
+						}
 					}
 				} else {
 					if (!sampleQuery->isNullable(name->charrep())) {
@@ -4051,59 +4065,63 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			if (w != NULL) {
 				if (sampleQuery->hasFKColumn(key->charrep()) == 1) {
 					_LOG << "lbDatabasePanel::lbDBAdd() Set dropdown control '" << 
-						key->charrep() << 
-						"' to '" << 
-						value->charrep() << "'" LOG_
-/*...sfill combo box with data:48:*/
-				wxChoice* cbox = (wxChoice*) w;
-				
-				lbErrCodes err = ERR_NONE;
-
-				UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-
-				cbName->setData(key->charrep());
-
-				UAP(lb_I_KeyBase, key_cbName)
-				UAP(lb_I_Unknown, uk_cbMapper)
-				UAP(lb_I_Container, cbMapper)
-
-				QI(cbName, lb_I_KeyBase, key_cbName)
-
-				uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
-
-				QI(uk_cbMapper, lb_I_Container, cbMapper)
-				
-				int count = cbMapper->Count();
-				
-				if (count != 0) {
-					key1->setData(value->getData());
-					UAP(lb_I_KeyBase, key_FK_id)
-					QI(key1, lb_I_KeyBase, key_FK_id)
-				
-					UAP(lb_I_Unknown, uk_cbBoxPosition)
-					UAP(lb_I_Integer, cbBoxPosition)
-				
-					int cbPos = 0;
-					bool selected = false;
+					key->charrep() << 
+					"' to '" << 
+					value->charrep() << "'" LOG_
+					/*...sfill combo box with data:48:*/
+					wxChoice* cbox = (wxChoice*) w;
 					
-				
-					while (cbMapper->hasMoreElements() == 1) {
-						UAP(lb_I_Integer, sel)
+					lbErrCodes err = ERR_NONE;
+					
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					
+					cbName->setData(key->charrep());
+					
+					UAP(lb_I_KeyBase, key_cbName)
+					UAP(lb_I_Unknown, uk_cbMapper)
+					UAP(lb_I_Container, cbMapper)
+					
+					QI(cbName, lb_I_KeyBase, key_cbName)
+					
+					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+					
+					QI(uk_cbMapper, lb_I_Container, cbMapper)
+					
+					int count = cbMapper->Count();
+					
+					if (count != 0) {
+						key1->setData(value->getData());
+						UAP(lb_I_KeyBase, key_FK_id)
+						QI(key1, lb_I_KeyBase, key_FK_id)
+						
+						UAP(lb_I_Unknown, uk_cbBoxPosition)
+						UAP(lb_I_Integer, cbBoxPosition)
+						
+						int cbPos = 0;
+						bool selected = false;
+						
+						cbMapper->finishIteration();
+						while (cbMapper->hasMoreElements() == 1) {
+							UAP(lb_I_Integer, sel)
 					        UAP(lb_I_Unknown, e)
 					        e = cbMapper->nextElement();
 					        QI(e, lb_I_Long, sel)
-				        
+							
 					        if (sel->equals(*&key_FK_id)) {
 					        	selected = true;
 					        	cbox->SetSelection(cbPos);
 					        }
 					        cbPos++;
+						}
+						
+						if (!selected) {
+							_LOG << "Error: Dropdown control couldn't correctly set." LOG_
+						}
+					} else {
+						_LOG << "lbDatabasePanel::lbDBAdd() Error: Have no combobox mapper values." LOG_
 					}
-				} else {
-					_LOG << "lbDatabasePanel::lbDBAdd() Error: Have no combobox mapper values." LOG_
-				}
-/*...e*/
+					/*...e*/
 				} else {
 					if (FFI->isSpecialColumn(key->charrep())) {
 						_CL_VERBOSE << "Set special control '" << 
