@@ -25,6 +25,7 @@
             
             73252 Lenningen (germany)
 */
+#define USE_IMMEDIALY_CLOSE
 #define USE_SQLITE
 
 #ifdef WINDOWS
@@ -3676,7 +3677,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		_LOG << "Insert statement: " << strSQL.c_str() LOG_
 
-#define USE_IMMEDIALY_CLOSE
 #ifdef USE_IMMEDIALY_CLOSE
 			PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
 #endif
@@ -3747,10 +3747,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 #define USE_IMMEDIALY_CLOSE
 #ifdef USE_IMMEDIALY_CLOSE
-						PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+						pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
 #endif
 #ifndef USE_IMMEDIALY_CLOSE
-						PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
+						pStatement = currentdbLayer->PrepareStatement(strSQL);
 #endif
 						if (pStatement)
 						{
@@ -3874,7 +3874,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += " = ";
 		strSQL += currentCursorview[cursor];
 
-#define USE_IMMEDIALY_CLOSE
+
 		PreparedStatement* pStatement = NULL;
 		
 		try {
@@ -3885,7 +3885,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			pStatement = currentdbLayer->PrepareStatement(strSQL);
 #endif
 		} catch (...) {
-			_LOG << "Update query failed: " << strSQL.c_str() LOG_
+			_LOG << "Preparing update query failed: " << strSQL.c_str() LOG_
 			return ERR_DB_UPDATEFAILED;
 		}
 
@@ -3917,8 +3917,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 #endif
 		}
 		catch (DatabaseLayerException ex) {
+			_LOG << "Error: Update statement failed." LOG_
 			if (!currentdbLayer->IsOpen()) {
-				_LOG << "Error: Update statement failed. Database is not open, retry update after opening the database." LOG_
+				_LOG << "Error: Database is not open, retry update after opening the database." LOG_
+#ifdef USE_IMMEDIALY_CLOSE
+				pStatement->Close();
+				delete pStatement;
+#endif
 				open();
 				try {
 					pStatement->RunQuery();
@@ -3928,6 +3933,64 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			} else {
 				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
+#ifdef USE_IMMEDIALY_CLOSE
+				pStatement->Close();
+				delete pStatement;
+#endif
+				pStatement = NULL;
+				theResult = NULL; // It will go invalid.
+				currentdbLayer->Close();
+				skipAutoQuery = true;
+				open();
+				skipAutoQuery = false;
+				
+				try {
+#ifdef USE_IMMEDIALY_CLOSE
+					pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
+#endif
+#ifndef USE_IMMEDIALY_CLOSE
+					pStatement = currentdbLayer->PrepareStatement(strSQL);
+#endif
+				} catch (...) {
+					_LOG << "Preparing update query failed: " << strSQL.c_str() LOG_
+					return ERR_DB_UPDATEFAILED;
+				}
+				
+				int paramNo = 0;
+				if (binaryDataColumns->Count() > 0) {
+					binaryDataColumns->finishIteration();
+					
+					while (binaryDataColumns->hasMoreElements()) {
+						UAP(lb_I_Unknown, ukBinary)
+						UAP(lb_I_BinaryData, binary)
+						UAP(lb_I_String, name)
+						
+						ukBinary = binaryDataColumns->nextElement();
+						QI(ukBinary, lb_I_BinaryData, binary)
+						if (binary->getData() != NULL) {
+							pStatement->SetParamBlob(++paramNo, binary->getData(), binary->getSize());
+						}
+					}
+				}
+				
+				_LOG << "Update statement: " << strSQL.c_str() LOG_
+				
+				try {
+					pStatement->RunQuery();
+					
+#ifdef USE_IMMEDIALY_CLOSE
+					pStatement->Close();
+					delete pStatement;
+#endif
+				} catch (DatabaseLayerException ex) {
+					_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
+#ifdef USE_IMMEDIALY_CLOSE
+					pStatement->Close();
+					delete pStatement;
+#endif
+					return ERR_DB_UPDATEFAILED;
+				}
+				
 			}
 		}
 	}
