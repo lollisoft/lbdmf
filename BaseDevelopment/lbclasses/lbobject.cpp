@@ -135,7 +135,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 	if (translations == NULL) {
 		UAP(lb_I_Database, database)
 		
-		char* dbbackend = meta->getApplicationDatabaseBackend();
+		char* dbbackend = meta->getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
