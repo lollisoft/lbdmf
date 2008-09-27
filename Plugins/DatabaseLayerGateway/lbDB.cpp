@@ -1629,6 +1629,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
+	_LOG << "lbDatabaseLayerQuery::executeDirect() called." LOG_
 	if (currentdbLayer != NULL) {
 		try {
 			if (!currentdbLayer->RunQuery(SQL)) {
@@ -1804,6 +1805,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			
 				if (theQuery.Upper().Contains("INSERT")) {
 					if (theResult) {
+						_LOG << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1811,6 +1813,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("UPDATE")) {
 					if (theResult) {
+						_LOG << "lbDatabaseLayerQuery::query() UPDATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1818,6 +1821,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("DROP")) {
 					if (theResult) {
+						_LOG << "lbDatabaseLayerQuery::query() DROP statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1825,6 +1829,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("CREATE")) {
 					if (theResult) {
+						_LOG << "lbDatabaseLayerQuery::query() CREATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -2119,16 +2124,24 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			}
 		} else {
 			wxString theQuery = szSql;
+			if (theQuery.Upper().Contains("DELETE")) {
+				_LOG << "lbDatabaseLayerQuery::query() DELETE statement issued that not has resulted in a resultset." LOG_
+				return ERR_NONE;
+			}
 			if (theQuery.Upper().Contains("INSERT")) {
+				_LOG << "lbDatabaseLayerQuery::query() INSERT statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("UPDATE")) {
+				_LOG << "lbDatabaseLayerQuery::query() UPDATE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("DROP")) {
+				_LOG << "lbDatabaseLayerQuery::query() DROP statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("CREATE")) {
+				_LOG << "lbDatabaseLayerQuery::query() CREATE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			_LOG << "Error: Query '" << szSql << "' failed!" LOG_
@@ -3716,8 +3729,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					pStatement->RunQuery();
 					_LOG << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-					pStatement->Close();
-					delete pStatement;
+					currentdbLayer->CloseStatement(pStatement);
+					//pStatement->Close();
+					//delete pStatement;
 					pStatement = NULL;
 #endif
 					/*				
@@ -3736,8 +3750,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					_LOG << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
 					
 					try {
-						pStatement->Close();
-						delete pStatement;
+						currentdbLayer->CloseStatement(pStatement);
+						//pStatement->Close();
+						//delete pStatement;
 						pStatement = NULL;
 						theResult = NULL; // It will go invalid.
 						currentdbLayer->Close();
@@ -3783,8 +3798,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							pStatement->RunQuery();
 							_LOG << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-							pStatement->Close();
-							delete pStatement;
+							currentdbLayer->CloseStatement(pStatement);
+							//pStatement->Close();
+							//delete pStatement;
 							pStatement = NULL;
                             currentdbLayer->Close();
                             open();
@@ -3795,8 +3811,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					{
 						skipAutoQuery = false;
 						if (pStatement) {
-							pStatement->Close();
-							delete pStatement;
+							currentdbLayer->CloseStatement(pStatement);
+							//pStatement->Close();
+							//delete pStatement;
 							pStatement = NULL;
                             currentdbLayer->Close();
                             open();
@@ -3912,8 +3929,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			pStatement->RunQuery();
 			
 #ifdef USE_IMMEDIALY_CLOSE
-			pStatement->Close();
-			delete pStatement;
+			currentdbLayer->CloseStatement(pStatement);
+			//pStatement->Close();
+			//delete pStatement;
+			pStatement = NULL;
 #endif
 		}
 		catch (DatabaseLayerException ex) {
@@ -3921,12 +3940,24 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			if (!currentdbLayer->IsOpen()) {
 				_LOG << "Error: Database is not open, retry update after opening the database." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-				pStatement->Close();
-				delete pStatement;
+				currentdbLayer->CloseStatement(pStatement);
+				//pStatement->Close();
+				//delete pStatement;
+				pStatement = NULL;
 #endif
+				theResult = NULL; // It will go invalid.
+				currentdbLayer->Close();
+				skipAutoQuery = true;
 				open();
+				skipAutoQuery = false;
 				try {
 					pStatement->RunQuery();
+#ifdef USE_IMMEDIALY_CLOSE
+					currentdbLayer->CloseStatement(pStatement);
+					//pStatement->Close();
+					//delete pStatement;
+					pStatement = NULL;
+#endif
 				}
 				catch (...) {
 					_LOG << "Error: Update statement after reoprning failed too." LOG_
@@ -3934,10 +3965,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			} else {
 				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-				pStatement->Close();
-				delete pStatement;
-#endif
+				currentdbLayer->CloseStatement(pStatement);
+				//pStatement->Close();
+				//delete pStatement;
 				pStatement = NULL;
+#endif
 				theResult = NULL; // It will go invalid.
 				currentdbLayer->Close();
 				skipAutoQuery = true;
@@ -3979,14 +4011,18 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					pStatement->RunQuery();
 					
 #ifdef USE_IMMEDIALY_CLOSE
-					pStatement->Close();
-					delete pStatement;
+					currentdbLayer->CloseStatement(pStatement);
+					//pStatement->Close();
+					//delete pStatement;
+					pStatement = NULL;
 #endif
 				} catch (DatabaseLayerException ex) {
 					_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
-					pStatement->Close();
-					delete pStatement;
+					currentdbLayer->CloseStatement(pStatement);
+					//pStatement->Close();
+					//delete pStatement;
+					pStatement = NULL;
 #endif
 					return ERR_DB_UPDATEFAILED;
 				}
