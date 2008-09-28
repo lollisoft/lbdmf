@@ -171,6 +171,40 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
     return false;
 
   wxArrayString QueryArray;
+	
+	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
+	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
+		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
+		// foreign keys.
+		wxString rewrittenQuery;
+		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
+			wxString createSystemTables;
+			
+			createSystemTables = 
+			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
+			wxString("	\"PKTable\" BPCHAR,") +
+			wxString("	\"PKColumn\" BPCHAR,") +
+			wxString("	\"FKTable\" BPCHAR,") +
+			wxString("	\"FKColumn\" BPCHAR") +
+			wxString(");\n");
+			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+		} else {
+			rewrittenQuery = wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+		}
+		wxString strErrorMessage = _("");
+		char* szErrorMessage = NULL;
+		int nReturn = sqlite3_exec(m_pDatabase, rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
+		if (szErrorMessage != NULL)
+		{
+			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+			strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+			printf(strErrorMessage);
+			sqlite3_free(szErrorMessage);
+			return NULL;
+		}
+		return NULL;
+	}	
+	
   if (bParseQuery)
     QueryArray = ParseQueries(strQuery);
   else
