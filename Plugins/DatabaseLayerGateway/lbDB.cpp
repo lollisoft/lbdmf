@@ -191,83 +191,9 @@ class lbDatabaseLayerQuery :
 public lb_I_Query
 {
 public:
-	lbDatabaseLayerQuery(int readonly = 1) { 
-		peeking = true;
-		ref = STARTREF;
-		_readonly = readonly; 
-		hdbc = 0; 
-		hstmt = 0; 
-		henv = 0;
-		hupdatestmt = 0;
-		databound = 0; 
-		count = 0; 
-		firstfetched = 0;
-		cols = 0;
-		cursor = 0;
-		haveData = false;
-		mode = 0;
-		_dataFetched = false;
-		_autoRefresh = false;
-		szSql = NULL;
-		preparingFKColumns = 0;
-		cursorname = NULL;
-		fetchstatus = 0;
-		theResult = NULL;
-		dbName = NULL;
-		cachedRowIndex = 1;
-		skipAutoQuery = false;
-		numPrimaryKeys = 0;
-		max_in_cursor_default = max_in_cursor = 100;
-		
-		if (ReadOnlyColumns == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
-		}
-		if (binaryDataColumns == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, binaryDataColumns)
-			binaryDataColumns->setCloning(false); // Don't clone these big data.
-		}
-		if (cachedDataColumns == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedDataColumns)
-		}
-		if (cachedDataRows == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedDataRows)
-		}
-		if (cachedColumnNames == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnNames)
-		}
-		if (cachedColumnTableNames == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTableNames)
-		}
-		if (cachedColumnTypes == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTypes)
-		}
-		if (cachedColumnPrimaryColumns == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnPrimaryColumns)
-		}
-		if (cachedColumnForeignColumnsToPrimaryColumns == NULL) {
-			REQUEST(getModuleInstance(), lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
-		}
-		
-	}
-	
-	virtual ~lbDatabaseLayerQuery() {
-		close();
-		if (szSql != NULL) {
-			_CL_VERBOSE << "lbDatabaseLayerQuery::~lbDatabaseLayerQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
-			free(szSql);
-		}
-		if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
-		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_
-				
-		// The global variable for getTableName() :-(
-		if (lpszTable) {
-			/// \todo Return a ministring object, that gets automatically deleted.
-			free(lpszTable);
-			lpszTable = NULL;
-		}
-		if (cursorname != NULL) free (cursorname);
-	}
-	
+	lbDatabaseLayerQuery(int readonly = 1);
+	virtual ~lbDatabaseLayerQuery();
+
 	DECLARE_LB_UNKNOWN()
 	
 	virtual						lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb);
@@ -1337,6 +1263,84 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseLayerQuery)
 END_IMPLEMENT_LB_UNKNOWN()
 
 UAP(lb_I_Integer, key)
+
+lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) { 
+	peeking = true;
+	ref = STARTREF;
+	_readonly = readonly; 
+	hdbc = 0; 
+	hstmt = 0; 
+	henv = 0;
+	hupdatestmt = 0;
+	databound = 0; 
+	count = 0; 
+	firstfetched = 0;
+	cols = 0;
+	cursor = 0;
+	haveData = false;
+	mode = 0;
+	_dataFetched = false;
+	_autoRefresh = false;
+	szSql = NULL;
+	preparingFKColumns = 0;
+	cursorname = NULL;
+	fetchstatus = 0;
+	theResult = NULL;
+	dbName = NULL;
+	cachedRowIndex = 1;
+	skipAutoQuery = false;
+	numPrimaryKeys = 0;
+	max_in_cursor_default = max_in_cursor = 100;
+	
+	if (ReadOnlyColumns == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
+	}
+	if (binaryDataColumns == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, binaryDataColumns)
+		binaryDataColumns->setCloning(false); // Don't clone these big data.
+	}
+	if (cachedDataColumns == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedDataColumns)
+	}
+	if (cachedDataRows == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedDataRows)
+	}
+	if (cachedColumnNames == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnNames)
+	}
+	if (cachedColumnTableNames == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTableNames)
+	}
+	if (cachedColumnTypes == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTypes)
+	}
+	if (cachedColumnPrimaryColumns == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnPrimaryColumns)
+	}
+	if (cachedColumnForeignColumnsToPrimaryColumns == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
+	}
+	
+}
+
+lbDatabaseLayerQuery::~lbDatabaseLayerQuery() {
+	close();
+	if (szSql != NULL) {
+		_CL_VERBOSE << "lbDatabaseLayerQuery::~lbDatabaseLayerQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
+		free(szSql);
+	}
+	if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
+		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_
+			
+			// The global variable for getTableName() :-(
+			if (lpszTable) {
+				/// \todo Return a ministring object, that gets automatically deleted.
+				free(lpszTable);
+				lpszTable = NULL;
+			}
+	if (cursorname != NULL) free (cursorname);
+}
+
 
 void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	lbErrCodes err = ERR_NONE;
