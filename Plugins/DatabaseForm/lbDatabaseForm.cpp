@@ -2133,7 +2133,8 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 		}
 	}
 	
-DISABLE_EOF()
+    DISABLE_EOF()
+    return ERR_NONE;
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
