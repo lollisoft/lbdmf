@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.186 $
+# * $Revision: 1.187 $
 # * $Name:  $
-# * $Id: Makefile,v 1.186 2008/08/13 06:53:32 lollisoft Exp $
+# * $Id: Makefile,v 1.187 2008/10/03 14:35:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.187  2008/10/03 14:35:14  lollisoft
+# * Added unit test target for the database layer modul.
+# *
 # * Revision 1.186  2008/08/13 06:53:32  lollisoft
 # * Changes to get code again compiled under Mac OS X 10.3.9. But there is an issue with wxWrapper target and Rez.
 # *
@@ -844,12 +847,12 @@ ALLTARGETS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/databaselayer/tests \
 	../vendor/dbwrapcontrols \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
 
 #	../vendor/wxARG/src \
-#	../vendor/databaselayer/tests \
 #	../vendor/wxShapeFramework/src \
 #	../vendor/wxShapeFramework/example \
 #	../vendor/databaselayer/tests \
