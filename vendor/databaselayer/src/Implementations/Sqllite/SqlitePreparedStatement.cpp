@@ -256,15 +256,19 @@ void SqlitePreparedStatement::RunQuery()
 
 
       if (pStmt != NULL) {
+		  //m_Statements.push_back(pStmt);
           zSql = sqlite3_sql(pStmt);
-          open_statements = (char*) malloc(strlen(err_msg) + strlen(zSql) + 2 + 1);
+          open_statements = (char*) malloc(strlen(err_msg) + strlen(zSql) + 2 + 2 + 1);
           open_statements[0] = 0;
           open_statements = strcat(open_statements, err_msg);
+          open_statements = strcat(open_statements, "\n");
           open_statements = strcat(open_statements, zSql);
           open_statements = strcat(open_statements, ", \n");
 
         while ((pStmt = sqlite3_next_stmt(m_pDatabase, pStmt)) != NULL) {
           char* temp = NULL;
+		  //m_Statements.push_back(pStmt);
+  		  zSql = sqlite3_sql(pStmt);
           temp = (char*) malloc(strlen(open_statements) + strlen(zSql) + 2 + 1);
           temp[0] = 0;
           temp = strcat(temp, open_statements);
