@@ -627,8 +627,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 			 &lb_wxFrame::OnVerbose );
 	
 	Connect( CLOSE_CURRENT_PAGE, -1, wxEVT_COMMAND_MENU_SELECTED,
-			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-			 &lb_wxFrame::OnCloseCurrentPage );
+			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			&lb_wxFrame::OnCloseCurrentPage );
+	
+	Connect( REFRESHALL_FORMS, -1, wxEVT_COMMAND_MENU_SELECTED,
+			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			&lb_wxFrame::OnRefreshAll );
 	
 	Connect( SHOW_PENDING_MESSAGES, -1, wxEVT_NULL,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -643,6 +647,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
 	file_menu->Append(CLOSE_CURRENT_PAGE, _trans("&Close current page\tCtrl-c"));
+	file_menu->Append(REFRESHALL_FORMS, _trans("Refresh all forms"));
 
 	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
 	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-R"));
@@ -1491,6 +1496,82 @@ void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 	
 }
 
+void LB_STDCALL lb_wxGUI::refreshAll() {
+	if (forms == NULL) {
+		_LOG << "lb_wxGUI::cleanup() has nothing to clean up. Forms list is not initialized." LOG_
+		return;
+	} 
+	
+	if (forms->Count() == 0) {
+		_LOG << "Info: No forms to be destroyed." LOG_
+		return;
+	}
+	
+	forms->finishIteration();
+	while (forms->hasMoreElements()) {
+		lbErrCodes err = ERR_NONE;
+		
+		lb_I_Unknown* form = forms->nextElement();
+		
+		if (!form) continue;
+		
+		_LOG << "Refresh a dynamic form '" << form->getClassName() << "'." LOG_
+		
+		UAP(lb_I_DatabaseForm, d)		
+		QI(form, lb_I_DatabaseForm, d)
+		UAP(lb_I_FixedDatabaseForm, fd)		
+		QI(form, lb_I_FixedDatabaseForm, fd)
+		
+		if (d != NULL) {
+			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
+			
+			d->close(); // Avoid invalid database object while closing.
+			_LOG << "Destroyed the dynamic form." LOG_
+		}
+
+/*
+		if (fd != NULL) {
+			_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+			fd->destroy();
+			fd.resetPtr();
+			_LOG << "Destroyed the custom form." LOG_
+		}
+*/
+	}
+
+	forms->finishIteration();
+	while (forms->hasMoreElements()) {
+		lbErrCodes err = ERR_NONE;
+		
+		lb_I_Unknown* form = forms->nextElement();
+		
+		if (!form) continue;
+		
+		_LOG << "Refresh a dynamic form '" << form->getClassName() << "'." LOG_
+		
+		UAP(lb_I_DatabaseForm, d)		
+		QI(form, lb_I_DatabaseForm, d)
+		UAP(lb_I_FixedDatabaseForm, fd)		
+		QI(form, lb_I_FixedDatabaseForm, fd)
+		
+		if (d != NULL) {
+			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
+			
+			d->open(); // Avoid invalid database object while closing.
+			_LOG << "Destroyed the dynamic form." LOG_
+		}
+		
+		/*
+		 if (fd != NULL) {
+		 _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+		 fd->destroy();
+		 fd.resetPtr();
+		 _LOG << "Destroyed the custom form." LOG_
+		 }
+		 */
+	}
+}
+
 void LB_STDCALL lb_wxGUI::setIcon(char* name) {
 	#ifdef __WXMSW__
 	    frame->SetIcon(wxIcon("mondrian"));
@@ -1605,6 +1686,10 @@ void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
 void lb_wxFrame::OnCloseCurrentPage(wxCommandEvent& WXUNUSED(event) )
 {
 	if (gui) gui->closeCurrentPage();
+}
+
+void lb_wxFrame::OnRefreshAll(wxCommandEvent& event) {
+	if (gui) gui->refreshAll();
 }
 
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/

@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.33 2008/08/13 06:53:32 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.34 2008/10/03 14:20:24 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.34  2008/10/03 14:20:24  lollisoft
+ * Added a functionality to refresh the database forms.
+ * This may be usefull when a database lock occures.
+ *
  * Revision 1.33  2008/08/13 06:53:32  lollisoft
  * Changes to get code again compiled under Mac OS X 10.3.9. But there is an issue with wxWrapper target and Rez.
  *
@@ -203,6 +207,7 @@
 #define PGID					1007
 #define CLOSE_CURRENT_PAGE		1008
 #define SHOW_PENDING_MESSAGES	1009
+#define REFRESHALL_FORMS		1010
 
 class lb_wxGUI;
 
@@ -254,6 +259,7 @@ public:
 	void OnQuit(wxCommandEvent& event);
 	void OnVerbose(wxCommandEvent& event);
 	void OnCloseCurrentPage(wxCommandEvent& event);
+	void OnRefreshAll(wxCommandEvent& event);
 	/**
 	 * Displays the about form of the application.
 	 */
@@ -587,6 +593,7 @@ public:
 	lbErrCodes LB_STDCALL cleanup();
 
 	void LB_STDCALL closeCurrentPage();
+	void LB_STDCALL refreshAll();
 
 	int eventCount;
         
