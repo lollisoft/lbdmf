@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.80 $
+ * $Revision: 1.81 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.80 2008/07/25 16:43:50 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.81 2008/10/03 14:32:27 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.81  2008/10/03 14:32:27  lollisoft
+ * Added a functionality to refresh the database forms.
+ * This may be usefull when a database lock occures.
+ *
  * Revision 1.80  2008/07/25 16:43:50  lollisoft
  * Fixed application crash at exit.
  *
@@ -963,7 +967,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
 		if (doClone) { \
 			data = o->clone(__FILE__, __LINE__); \
 			if (data->getRefCount() > 1) { \
-				_CL_LOG << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_ \
+				_CL_VERBOSE << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_ \
 			} \
 		} else { \
 			o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__); \
@@ -974,7 +978,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
     if (key != NULL) { \
     	if (key->getRefCount() > 1) { \
-    	        _CL_LOG << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_ \
+    	        _CL_VERBOSE << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_ \
         } \
     } \
     if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ \
@@ -988,19 +992,19 @@ classname::~classname() { \
         if (key != NULL) { \
             key->setDebug(1); \
             if (key->getRefCount() > 1) { \
-            	_CL_LOG << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            	_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
             } \
             if (key->deleteState() != 1) { \
-            	_CL_LOG << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            	_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
             } \
             RELEASE(key); \
         } \
         if (data != NULL) { \
         	if (data->getRefCount() > 1) { \
-        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
+        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
         	} \
         	if (data->deleteState() != 1) { \
-        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
+        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
         	} \
 		RELEASE(data); \
         } \

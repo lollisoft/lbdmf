@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.49 2008/09/25 10:19:35 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.50 2008/10/03 14:28:06 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.50  2008/10/03 14:28:06  lollisoft
+ * Added a functionality to refresh the database forms.
+ * This may be usefull when a database lock occures.
+ *
  * Revision 1.49  2008/09/25 10:19:35  lollisoft
  * Added a function to notify on closing a form. This did not
  * really helped due to cached action classes contained also
@@ -696,6 +700,18 @@ public:
 
 	void  LB_STDCALL reopen();
 
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL close();
+	
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL open();
+		
 /*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
@@ -962,7 +978,19 @@ public:
 
 	void  LB_STDCALL reopen();
 
-/*...sData navigation and other handlers:8:*/
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL close();
+	
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL open();
+		
+	/*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
 	 * 

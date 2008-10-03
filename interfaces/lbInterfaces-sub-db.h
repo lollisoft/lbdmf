@@ -1110,6 +1110,18 @@ public:
 	 * Used in SQL actions to ensure valid data (after deletion of some data for sample).
 	 */
 	virtual void LB_STDCALL reopen() = 0;
+
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	virtual	lbErrCodes LB_STDCALL close() = 0;
+		
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	virtual lbErrCodes LB_STDCALL open() = 0;
 /*...e*/
 };
 /*...e*/
@@ -1196,6 +1208,18 @@ public:
 	virtual int LB_STDCALL getControls() = 0;
 
 	virtual lb_I_String* LB_STDCALL getColumnName(int pos) = 0;
+
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	virtual	lbErrCodes LB_STDCALL close() = 0;
+		
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	virtual lbErrCodes LB_STDCALL open() = 0;
 /*...e*/
 };
 

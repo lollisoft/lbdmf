@@ -1646,17 +1646,494 @@ void LB_STDCALL lbDatabasePanel::addLabel(char* text, wxSizer* sizer, bool hideT
 }
 
 void  LB_STDCALL lbDatabasePanel::reopen() {
-	sampleQuery->reopen();
-	
-	prevButton->Enable();
-	firstButton->Enable();
-	lastButton->Enable();
-	nextButton->Enable();
-	deleteButton->Enable();
+	/*
+	 sampleQuery->reopen();
+	 
+	 prevButton->Enable();
+	 firstButton->Enable();
+	 lastButton->Enable();
+	 nextButton->Enable();
+	 deleteButton->Enable();
+	 
+	 if (sampleQuery->isFirst()) lbDBFirst(NULL);
+	 if (sampleQuery->isLast()) lbDBLast(NULL);
+	 lbDBRead();
+	 */
+	lbDBRefresh(NULL);
+}
 
-	if (sampleQuery->isFirst()) lbDBFirst(NULL);
-	if (sampleQuery->isLast()) lbDBLast(NULL);
+lbErrCodes  LB_STDCALL lbDatabasePanel::close() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::close() called." LOG_
+	
+	if (database == NULL) {
+		char* dbbackend = meta->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+		
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		database->init();
+	}
+	
+	if (err == ERR_DB_NODATA) {
+		DISABLE_FOR_NO_DATA()
+		
+		return ERR_DB_NODATA;
+	}
+	
+	_LOG << "lbDatabasePanel::close() closes the database." LOG_
+	database->close();
+	return ERR_NONE;
+}
+
+lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::open() called." LOG_
+	
+	if (database == NULL) {
+		char* dbbackend = meta->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+		
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		database->init();
+	}
+
+	
+	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::open() opens the database." LOG_
+	database->open(_DBName->charrep());
+	sampleQuery--;
+	sampleQuery = database->getQuery(_DBName->charrep(), 0);
+	char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
+	_LOG << "Got a new query for reopen: " << newSql LOG_
+	sampleQuery->query(newSql, false);
+	free(newSql);
+	
+	// Rebind the query and fetch the first entry as it was before finding out foreign keys.
+	if (sampleQuery->bind() != ERR_NONE) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
+		
+		*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
+		
+		*msglog = _trans("Failed to bind columns for query:\n\n");
+		*msglog += SQLString->charrep();
+		*msglog += _trans("\n\nDatabase: ");
+		*msglog += _DBName->charrep();
+		*msglog += _trans("\nUser: ");
+		*msglog += _DBUser->charrep();
+		
+		_LOG << msglog->charrep() LOG_
+		
+		meta->msgBox(_trans("Error"), msg->charrep());
+		return ERR_DB_NODATA;
+	}
+	
+	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::open() fetches a record." LOG_
+	sampleQuery->first();
+	
 	lbDBRead();
+	
+	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
+	
+	int columns = sampleQuery->getColumns();
+	
+	for (int co = 1; co <= columns; co++) {
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(co);
+		
+		if (FFI->isReadonly(name->charrep())) {
+			sampleQuery->setReadonly(name->charrep());
+		}
+	}
+	
+	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
+	
+	for(int i = 1; i <= columns; i++) {
+		UAP(lb_I_String, name)
+		
+		bool createdControl = false;
+		
+		UAP(lb_I_Query, FKColumnQuery)
+		UAP(lb_I_Query, FKColumnQuery1)
+		
+		name = sampleQuery->getColumnName(i);
+		
+		bool hideThisColumn = false;
+		
+		if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
+			/*...sCreate a combobox:32:*/
+			lbErrCodes err = ERR_NONE;
+			
+			// Create a mapping instance for this combo box
+			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
+			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+			UAP(lb_I_KeyBase, key_cbName)
+			
+			QI(cbName, lb_I_KeyBase, key_cbName)
+			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper)
+			
+			// This is the input parameter
+			
+			*cbName = name->charrep();
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+			UAP(lb_I_KeyBase, key)
+			
+			UAP(lb_I_String, t)
+			
+			t = sampleQuery->getPKTable(name->charrep());
+			
+			table->setData(t->charrep());
+			
+			QI(table, lb_I_KeyBase, key)
+			
+			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
+			
+			if (ComboboxMapperList->exists(&key_cbName) == 1) {
+				ComboboxMapperList->remove(&key_cbName);
+			}
+			
+			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
+			
+			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
+			
+			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper)
+			
+			char* buffer = (char*) malloc(1000);
+			buffer[0] = 0;
+			
+			bool definitionFound = false;
+			bool formFound = false;
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
+			ID->setData(meta->getApplicationID());
+			
+			forms->finishFormularIteration();
+			while (forms->hasMoreFormulars()) {
+				forms->setNextFormular();
+				FID->setData(forms->getApplicationID());
+				
+				if (FID->equals(*&ID)) {
+					if (strcmp(base_formName, forms->getName()) == 0) {
+						forms->finishFormularIteration();
+						formFound = true;
+						_LOG << "Found formular name in datamodel." LOG_
+						break;
+					}
+				}
+			}
+			
+			if (formFound == false) {
+				_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
+			}
+			
+			long FormID = forms->getFormularID();
+			
+			formularfields->finishFieldsIteration();
+			while (formularfields->hasMoreFields()) {
+				formularfields->setNextField();
+				
+				if (formularfields->getFormularID() == FormID) {
+					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
+						definitionFound = true;
+						formularfields->finishFieldsIteration();
+						break;
+					}
+				}
+			}
+			
+			if (definitionFound == false) {
+				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
+				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				// Pass through the target connection and the current query	
+				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+				fkpkPanel->show();
+				fkpkPanel->destroy();
+				
+				UAP(lb_I_Parameter, params)
+				UAP(lb_I_Unknown, uk)
+				uk = meta->getActiveDocument();
+				QI(uk, lb_I_Parameter, params)
+				
+				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP(lb_I_KeyBase, key)
+				
+				QI(name, lb_I_KeyBase, key)
+				*name = "ApplicationData";
+				params->getUAPContainer(*&name, *&document);
+				
+				*name = "FormularFields";
+				if (document->exists(&key) == 1) document->remove(&key);
+				QI(formularfields, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+				
+				
+				database->open(DBName->charrep());
+				sampleQuery--;
+				sampleQuery = database->getQuery(DBName->charrep(), 0);
+                
+                char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
+				_LOG << "Got a new query for reopen: " << newSql LOG_
+				sampleQuery->query(newSql, false);
+				free(newSql);
+				
+				long ID = meta->getApplicationID();
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
+					
+					if (forms->getApplicationID() == ID) {
+						if (strcmp(formName, forms->getName()) == 0) {
+							forms->finishFormularIteration();
+							break;
+						}
+					}
+				}
+				
+				long FormID = forms->getFormularID();
+				
+				while (formularfields->hasMoreFields()) {
+					formularfields->setNextField();
+					
+					if (formularfields->getFormularID() == FormID) {
+						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
+							definitionFound = true;
+							formularfields->finishFieldsIteration();
+							break;
+						}
+					}
+				}
+			}
+			
+#ifdef USE_FKPK_QUERY			
+			/*...sGet column to display instead key:56:*/
+			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
+					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
+			
+			UAP(lb_I_Database, lbDMF_DB)
+			char* dbbackend = meta->getSystemDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, lbDMF_DB, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, lbDMF_DB)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+			
+			if (lbDMF_DB == NULL) {
+				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+			}
+			lbDMF_DB->init();
+			
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+			
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+			
+			lbDMF_DB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+			
+			FKColumnQuery = lbDMF_DB->getQuery("lbDMF", 0);
+			
+			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
+			
+			FKColumnQuery->query(buffer);
+			
+			err = FKColumnQuery->first();
+			/*...e*/
+			
+			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
+			
+			// Define this function in my data model
+			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
+			
+			// ------------------
+			
+			if (err == ERR_DB_NODATA) {
+				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
+				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				// Pass through the target connection and the current query	
+				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+				fkpkPanel->show();
+				fkpkPanel->destroy();
+				
+				FKColumnQuery1 = FKColumnQuery.getPtr();
+				FKColumnQuery.resetPtr();
+				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
+				FKColumnQuery->query(buffer);
+				err = FKColumnQuery->first();
+			}
+#else
+			err = ERR_NONE;
+#endif			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				/*...sHave mapping to visible data for the combobox:64:*/
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				
+				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
+				
+				UAP(lb_I_Long, l)
+				
+#ifdef USE_FKPK_QUERY			
+				PKName = FKColumnQuery->getAsString(1);
+				PKTable = FKColumnQuery->getAsString(2);
+#else
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable(); 
+#endif					
+				
+				wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
+				wxChoice *cbox = (wxChoice*) w;
+				cbox->Clear();
+				//cbox->SetName(name->charrep());
+				
+				l = sampleQuery->getAsLong(i);
+				
+				int old_fk = l->getData();
+				
+				buffer[0] = 0;
+				
+				*TargetPKColumn = sampleQuery->getPKColumn(name->charrep());
+				
+				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
+				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
+				
+				_LOG << "Fill combobox based on the following query: " << buffer LOG_
+				
+				UAP(lb_I_Query, ReplacementColumnQuery)
+				
+				database->connect(_DBName->charrep(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
+				
+				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
+				
+				ReplacementColumnQuery->query(buffer);
+				
+				lbErrCodes DBerr = ReplacementColumnQuery->first();
+				
+				int cbox_pos = 0;
+				
+				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+					/*...sHave data to fill into the combobox and create mappings:104:*/
+					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+					
+					data = ReplacementColumnQuery->getAsString(1);
+					
+					data->trim();
+					
+					if (*data == "") *data = "<empty>";
+					if (data->charrep() == NULL) *data = "<empty>";
+					
+					possible_fk = ReplacementColumnQuery->getAsLong(2);
+					
+					long possible_fk_pos = possible_fk->getData();
+					
+					cbox->Append(wxString(data->charrep()));
+					
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					
+					UAP(lb_I_Unknown, uk_possible_fk)
+					UAP(lb_I_KeyBase, key_cbox_pos)
+					
+					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
+					
+					key->setData(cbox_pos);
+					cbox_pos++;
+					
+					QI(key, lb_I_KeyBase, key_cbox_pos)
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+					
+					possible_fk_long->setData(possible_fk_pos);
+					
+					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
+					
+					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
+					
+					if (DBerr != WARN_DB_NODATA)
+						// Only if not WARN_DB_NODATA					
+						while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+							UAP(lb_I_Unknown, uk_possible_fk)
+							UAP(lb_I_KeyBase, key_cbox_pos)
+							
+							DBerr = ReplacementColumnQuery->next();
+							
+							// Break out in case of no data (not peeking)
+							if (DBerr == ERR_DB_NODATA) break;
+							
+							data = ReplacementColumnQuery->getAsString(1);
+							
+							data->trim();
+							
+							if (*data == "") *data = "<empty>";
+							if (data->charrep() == NULL) *data = "<empty>";
+							
+							possible_fk = ReplacementColumnQuery->getAsLong(2);
+							
+							possible_fk_pos = possible_fk->getData();
+							
+							cbox->Append(wxString(data->charrep()));
+							
+							if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
+							
+							key->setData(cbox_pos);
+							cbox_pos++;
+							
+							QI(key, lb_I_KeyBase, key_cbox_pos)
+							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+							
+							possible_fk_long->setData(possible_fk_pos);
+							
+							QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
+							
+							ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
+							
+							if (DBerr == WARN_DB_NODATA) break;
+						}
+					
+					/*...e*/
+				}
+				/*...e*/
+			}
+			
+			free(buffer);
+			/*...e*/
+		}
+	}
+	
+DISABLE_EOF()
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
@@ -3582,426 +4059,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) called." LOG_
+	close();
 	
-	if (database == NULL) {
-		char* dbbackend = meta->getApplicationDatabaseBackend();
-		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "Using plugin database backend for UML import operation..." LOG_
-		} else {
-			// Use built in
-			REQUEST(getModuleInstance(), lb_I_Database, database)
-			_LOG << "Using built in database backend for UML import operation..." LOG_
-		}
-
-		if (database == NULL) {
-			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
-		}
-		database->init();
-	}
-	
-	if (err == ERR_DB_NODATA) {
-		DISABLE_FOR_NO_DATA()
-
-		return ERR_DB_NODATA;
-	}
-	
-	database->close();
-	
-	sampleQuery->open();
-	sampleQuery->reopen();
-
-	lbDBRead();
-
-	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
-
-	int columns = sampleQuery->getColumns();
-
-	for (int co = 1; co <= columns; co++) {
-		UAP(lb_I_String, name)
-		name = sampleQuery->getColumnName(co);
-
-		if (FFI->isReadonly(name->charrep())) {
-		        sampleQuery->setReadonly(name->charrep());
-		}
-	}
-
-	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
-
-	for(int i = 1; i <= columns; i++) {
-		UAP(lb_I_String, name)
-
-		bool createdControl = false;
-
-		UAP(lb_I_Query, FKColumnQuery)
-		UAP(lb_I_Query, FKColumnQuery1)
-		
-		name = sampleQuery->getColumnName(i);
-
-		bool hideThisColumn = false;
-
-		if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
-/*...sCreate a combobox:32:*/
-			lbErrCodes err = ERR_NONE;
-
-			// Create a mapping instance for this combo box
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
-
-			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-			UAP(lb_I_KeyBase, key_cbName)
-			
-			QI(cbName, lb_I_KeyBase, key_cbName)
-			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper)
-
-			// This is the input parameter
-
-			*cbName = name->charrep();
-			
-			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
-			UAP(lb_I_KeyBase, key)
-	
-			UAP(lb_I_String, t)
-	
-			t = sampleQuery->getPKTable(name->charrep());
-	
-			table->setData(t->charrep());
-	
-			QI(table, lb_I_KeyBase, key)
-	
-			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
-			
-			if (ComboboxMapperList->exists(&key_cbName) == 1) {
-				ComboboxMapperList->remove(&key_cbName);
-			}
-			
-			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
-
-			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
-			
-			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper)
-			
-			char* buffer = (char*) malloc(1000);
-			buffer[0] = 0;
-
-			bool definitionFound = false;
-			bool formFound = false;
-
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-			ID->setData(meta->getApplicationID());
-			
-			forms->finishFormularIteration();
-			while (forms->hasMoreFormulars()) {
-				forms->setNextFormular();
-				FID->setData(forms->getApplicationID());
-				
-				if (FID->equals(*&ID)) {
-					if (strcmp(base_formName, forms->getName()) == 0) {
-						forms->finishFormularIteration();
-						formFound = true;
-						_LOG << "Found formular name in datamodel." LOG_
-						break;
-					}
-				}
-			}
-			
-			if (formFound == false) {
-						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
-			}
-			
-			long FormID = forms->getFormularID();
-			
-			formularfields->finishFieldsIteration();
-			while (formularfields->hasMoreFields()) {
-				formularfields->setNextField();
-				
-				if (formularfields->getFormularID() == FormID) {
-					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
-						definitionFound = true;
-						formularfields->finishFieldsIteration();
-						break;
-					}
-				}
-			}
-			
-			if (definitionFound == false) {
-				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
-				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-				fkpkPanel->show();
-				fkpkPanel->destroy();
-
-				UAP(lb_I_Parameter, params)
-				UAP(lb_I_Unknown, uk)
-				uk = meta->getActiveDocument();
-				QI(uk, lb_I_Parameter, params)
-
-				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-				UAP(lb_I_KeyBase, key)
-				
-				QI(name, lb_I_KeyBase, key)
-				*name = "ApplicationData";
-				params->getUAPContainer(*&name, *&document);
-				
-				*name = "FormularFields";
-				if (document->exists(&key) == 1) document->remove(&key);
-				QI(formularfields, lb_I_Unknown, uk)
-				document->insert(&uk, &key);
-				
-				
-				database->open(DBName->charrep());
-				sampleQuery--;
-				sampleQuery = database->getQuery(DBName->charrep(), 0);
-                
-                char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
-				_LOG << "Got a new query for reopen: " << newSql LOG_
-				sampleQuery->query(newSql, false);
-				free(newSql);
-				
-				long ID = meta->getApplicationID();
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
-					
-					if (forms->getApplicationID() == ID) {
-						if (strcmp(formName, forms->getName()) == 0) {
-							forms->finishFormularIteration();
-							break;
-						}
-					}
-				}
-				
-				long FormID = forms->getFormularID();
-				
-				while (formularfields->hasMoreFields()) {
-					formularfields->setNextField();
-					
-					if (formularfields->getFormularID() == FormID) {
-						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
-							definitionFound = true;
-							formularfields->finishFieldsIteration();
-							break;
-						}
-					}
-				}
-			}
-
-#ifdef USE_FKPK_QUERY			
-/*...sGet column to display instead key:56:*/
-			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
-					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
-
-			UAP(lb_I_Database, lbDMF_DB)
-			char* dbbackend = meta->getSystemDatabaseBackend();
-			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, lbDMF_DB, "'database plugin'")
-				_LOG << "Using plugin database backend for UML import operation..." LOG_
-			} else {
-				// Use built in
-				REQUEST(getModuleInstance(), lb_I_Database, lbDMF_DB)
-				_LOG << "Using built in database backend for UML import operation..." LOG_
-			}
-
-			if (lbDMF_DB == NULL) {
-				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
-			}
-			lbDMF_DB->init();
-
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
-
-			if (!lbDMFUser) lbDMFUser = "dba";
-			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-			lbDMF_DB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-
-			FKColumnQuery = lbDMF_DB->getQuery("lbDMF", 0);
-			
-			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
-			
-			FKColumnQuery->query(buffer);
-			
-			err = FKColumnQuery->first();
-/*...e*/
-			
-			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
-			
-			// Define this function in my data model
-			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
-			
-			// ------------------
-			
-			if (err == ERR_DB_NODATA) {
-				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
-				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-				fkpkPanel->show();
-				fkpkPanel->destroy();
-
-				FKColumnQuery1 = FKColumnQuery.getPtr();
-				FKColumnQuery.resetPtr();
-				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
-				FKColumnQuery->query(buffer);
-				err = FKColumnQuery->first();
-			}
-#else
-			err = ERR_NONE;
-#endif			
-			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-/*...sHave mapping to visible data for the combobox:64:*/
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-
-				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
-
-				UAP(lb_I_Long, l)
-				
-#ifdef USE_FKPK_QUERY			
-				PKName = FKColumnQuery->getAsString(1);
-				PKTable = FKColumnQuery->getAsString(2);
-#else
-				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->getFKTable(); 
-#endif					
-
-				wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
-				wxChoice *cbox = (wxChoice*) w;
-				cbox->Clear();
-				//cbox->SetName(name->charrep());
-				
-				l = sampleQuery->getAsLong(i);
-				
-				int old_fk = l->getData();
-				
-				buffer[0] = 0;
-				
-				*TargetPKColumn = sampleQuery->getPKColumn(name->charrep());
-				
-				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
-				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
-				
-				_LOG << "Fill combobox based on the following query: " << buffer LOG_
-				
-				UAP(lb_I_Query, ReplacementColumnQuery)
-				
-				database->connect(_DBName->charrep(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
-				
-				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
-				
-				ReplacementColumnQuery->query(buffer);
-				
-				lbErrCodes DBerr = ReplacementColumnQuery->first();
-				
-				int cbox_pos = 0;
-				
-				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-/*...sHave data to fill into the combobox and create mappings:104:*/
-					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
-					
-					data = ReplacementColumnQuery->getAsString(1);
-					
-					data->trim();
-					
-					if (*data == "") *data = "<empty>";
-					if (data->charrep() == NULL) *data = "<empty>";
-					
-					possible_fk = ReplacementColumnQuery->getAsLong(2);
-					
-					long possible_fk_pos = possible_fk->getData();
-					
-					cbox->Append(wxString(data->charrep()));
-					
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-					
-					UAP(lb_I_Unknown, uk_possible_fk)
-					UAP(lb_I_KeyBase, key_cbox_pos)
-					
-					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-					
-					key->setData(cbox_pos);
-					cbox_pos++;
-					
-					QI(key, lb_I_KeyBase, key_cbox_pos)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
-
-					possible_fk_long->setData(possible_fk_pos);
-
-					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-					
-					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-					
-					if (DBerr != WARN_DB_NODATA)
-					// Only if not WARN_DB_NODATA					
-					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
-						UAP(lb_I_Unknown, uk_possible_fk)
-						UAP(lb_I_KeyBase, key_cbox_pos)
-						
-						DBerr = ReplacementColumnQuery->next();
-						
-						// Break out in case of no data (not peeking)
-						if (DBerr == ERR_DB_NODATA) break;
-
-						data = ReplacementColumnQuery->getAsString(1);
-						
-						data->trim();
-						
-						if (*data == "") *data = "<empty>";
-						if (data->charrep() == NULL) *data = "<empty>";
-						
-						possible_fk = ReplacementColumnQuery->getAsLong(2);
-					
-						possible_fk_pos = possible_fk->getData();
-					
-						cbox->Append(wxString(data->charrep()));
-					
-						if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-					
-						key->setData(cbox_pos);
-						cbox_pos++;
-						
-						QI(key, lb_I_KeyBase, key_cbox_pos)
-						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
-						
-						possible_fk_long->setData(possible_fk_pos);
-						
-						QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-					
-						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-					
-						if (DBerr == WARN_DB_NODATA) break;
-					}
-					
-/*...e*/
-				}
-/*...e*/
-			}
-
-			free(buffer);
-/*...e*/
-		}
-	}
-	
-	DISABLE_EOF()
+	open();
 	
 	return ERR_NONE;
 }
-
-
-
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
@@ -5007,6 +5070,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 
 void  LB_STDCALL lbDatabaseDialog::reopen() {
 	panel->reopen();
+}
+
+lbErrCodes  LB_STDCALL lbDatabaseDialog::close() {
+	return panel->close();
+}
+
+lbErrCodes  LB_STDCALL lbDatabaseDialog::open() {
+	return panel->open();
 }
 
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
