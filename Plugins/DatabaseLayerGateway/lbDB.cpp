@@ -1935,6 +1935,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						
 						// Keep for meta data
 						currentdbLayer->CloseResultSet(theResult);
+						currentdbLayer->CloseResultSet(tempResult);
 						
 						selectCurrentRow();
 					} else {
@@ -3080,6 +3081,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		}
 		uk->queryInterface("lb_I_Database", (void**) &database, __FILE__, __LINE__);
 		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName); // Internally open is called, thus .db3 is appended.
+		_LOG << "lbDatabaseLayerQuery::open() Recreated currentdbLayer instance." LOG_
 	}
 	
 	if (!currentdbLayer->IsOpen()) {
@@ -3087,6 +3089,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		*connName = dbName;
 		*connName += ".db3";
 		currentdbLayer->Open(connName->charrep());
+		_LOG << "lbDatabaseLayerQuery::open() Opened database." LOG_
 	}
 	
 	if (skipAutoQuery) return ERR_NONE;
@@ -3103,6 +3106,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	lbErrCodes err = ERR_NONE;
+	
+	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
+	
 	if (cursor < 0) {
 		// Handle underflow
 		// Try to read 100 more key values less than the first key in currentCursorview: currentCursorview[0]-1
@@ -3618,8 +3624,22 @@ void LB_STDCALL lbDatabaseLayerQuery::setAutoRefresh(bool b) {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	lbErrCodes err = ERR_NONE;
+	// Save the last cursor position.
+	int pos = cursor;
 	if (cursorFeature == false) return ERR_DB_READONLY;
 
+	if (!currentdbLayer) {
+		skipAutoQuery = true;
+		open();
+		skipAutoQuery = false;
+	}
+	
+	if (!currentdbLayer->IsOpen()) {
+		skipAutoQuery = true;
+		open();
+		skipAutoQuery = false;
+	}
+	
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
 		_LOG << "Warning: Noting to update." LOG_
@@ -3734,20 +3754,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					_LOG << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
-					//pStatement->Close();
-					//delete pStatement;
 					pStatement = NULL;
+
+					theResult = NULL; // It will go invalid.
+					currentdbLayer->Close();
+					open();
+					absolute(pos);
 #endif
-					/*				
-					 char* sqlBackup = strdup(szSql);
-					 skipFKCollecting();
-					 query("pragma database_list;", false);
-					 PrintData(false);
-					 szSql = sqlBackup;
-					 open();
-					 enableFKCollecting();
-					 */				
-					//last();
 				}
 				catch (DatabaseLayerException& ex)
 				{
@@ -3755,16 +3768,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					
 					try {
 						currentdbLayer->CloseStatement(pStatement);
-						//pStatement->Close();
-						//delete pStatement;
 						pStatement = NULL;
 						theResult = NULL; // It will go invalid.
 						currentdbLayer->Close();
                         skipAutoQuery = true;
 						open();
 						skipAutoQuery = false;
-
-#define USE_IMMEDIALY_CLOSE
+						
 #ifdef USE_IMMEDIALY_CLOSE
 						pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
 #endif
@@ -3803,11 +3813,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							_LOG << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 							currentdbLayer->CloseStatement(pStatement);
-							//pStatement->Close();
-							//delete pStatement;
 							pStatement = NULL;
                             currentdbLayer->Close();
-                            open();
+							open();
 #endif							
 						}
 					}
@@ -3816,11 +3824,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 						skipAutoQuery = false;
 						if (pStatement) {
 							currentdbLayer->CloseStatement(pStatement);
-							//pStatement->Close();
-							//delete pStatement;
 							pStatement = NULL;
                             currentdbLayer->Close();
                             open();
+							absolute(pos);
 						}
 						_LOG << "Error: Retry adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
 					}
@@ -3934,9 +3941,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			
 #ifdef USE_IMMEDIALY_CLOSE
 			currentdbLayer->CloseStatement(pStatement);
-			//pStatement->Close();
-			//delete pStatement;
+			_LOG << "Updated a row." LOG_
 			pStatement = NULL;
+			theResult = NULL; // It will go invalid.
+			currentdbLayer->Close();
+			open();
+			absolute(pos);
 #endif
 		}
 		catch (DatabaseLayerException ex) {
@@ -3945,8 +3955,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				_LOG << "Error: Database is not open, retry update after opening the database." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
-				//pStatement->Close();
-				//delete pStatement;
 				pStatement = NULL;
 #endif
 				theResult = NULL; // It will go invalid.
@@ -3958,8 +3966,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					pStatement->RunQuery();
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
-					//pStatement->Close();
-					//delete pStatement;
 					pStatement = NULL;
 #endif
 				}
@@ -3970,8 +3976,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
-				//pStatement->Close();
-				//delete pStatement;
 				pStatement = NULL;
 #endif
 				theResult = NULL; // It will go invalid.
@@ -4016,16 +4020,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
-					//pStatement->Close();
-					//delete pStatement;
 					pStatement = NULL;
+					currentdbLayer->Close();
+					skipAutoQuery = true;
+					open();
+					skipAutoQuery = false;
 #endif
 				} catch (DatabaseLayerException ex) {
 					_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
-					//pStatement->Close();
-					//delete pStatement;
 					pStatement = NULL;
 #endif
 					return ERR_DB_UPDATEFAILED;
@@ -4038,6 +4042,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	queryValues.Clear();
 
 	reopen();
+	absolute(pos);
 
 	if (currentCursorview.Count() == 0) {
 		_LOG << "Error: Reopen failed." LOG_
@@ -4705,7 +4710,7 @@ DatabaseLayer* LB_STDCALL lbConnection::getConnection() {
 
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	_LOG << "lbConnection::setData() called." LOG_
+	_CL_LOG << "lbConnection::setData() called." LOG_
 	
 	UAP(lb_I_Connection, con)
 	QI(uk, lb_I_Connection, con)
@@ -4714,14 +4719,16 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	
 	if (con.getPtr() != NULL) {
 	    connection = (lbConnection*) con.getPtr();
-		_LOG << "lbConnection::setData() called and copies the connection." LOG_
+		_CL_LOG << "lbConnection::setData() called and copies the connection." LOG_
 
 		dbl = connection->getConnection();
 		if (dbl) {
-			_LOG << "lbConnection::setData() the connection instance is available." LOG_
+			_CL_LOG << "lbConnection::setData() the connection instance is available." LOG_
 			if (dbl->IsOpen()) {
-				_LOG << "lbConnection::setData() the connection instance is open." LOG_
+				_CL_LOG << "lbConnection::setData() the connection instance is open." LOG_
 			}
+		} else {
+			_CL_LOG << "lbConnection::setData() the connection instance is NOT available." LOG_
 		}
 		if (connection->getDBName()) _dbname = strdup(connection->getDBName());
 	    if (connection->getDBUser()) _dbuser = strdup(connection->getDBUser());
