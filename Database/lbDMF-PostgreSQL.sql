@@ -303,12 +303,12 @@ CREATE TABLE "action_steps" (
 	"id" SERIAL,
 --,,
 	"actionid" INTEGER,
-	"bezeichnung" BPCHAR,
+	"bezeichnung" CHAR(255),
 	"a_order_nr" INTEGER,
 --,,
 	"type" INTEGER,
-	"what" BPCHAR
-);
+	"what" CHAR(255)
+) WITH OIDS;
 
 -- Class action_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -323,10 +323,10 @@ CREATE TABLE "action_types" (
 --,,
 --,,
 	"id" SERIAL,
-	"bezeichnung" BPCHAR,
-	"action_handler" BPCHAR,
-	"module" BPCHAR
-);
+	"bezeichnung" CHAR(255),
+	"action_handler" CHAR(255),
+	"module" CHAR(255)
+) WITH OIDS;
 
 -- Class actions of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -341,12 +341,12 @@ CREATE TABLE "actions" (
 --,,
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
+	"name" CHAR(255),
 --,,
 	"typ" INTEGER,
-	"source" BPCHAR,
+	"source" CHAR(255),
 	"target" INTEGER
-);
+) WITH OIDS;
 
 -- Class anwendungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -364,12 +364,12 @@ CREATE TABLE "anwendungen" (
 --,,
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
-	"titel" BPCHAR,
-	"modulename" BPCHAR,
-	"functor" BPCHAR,
-	"interface" BPCHAR
-);
+	"name" CHAR(255),
+	"titel" CHAR(255),
+	"modulename" CHAR(255),
+	"functor" CHAR(255),
+	"interface" CHAR(255)
+) WITH OIDS;
 
 -- Class anwendungen_formulare of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -386,7 +386,7 @@ CREATE TABLE "anwendungen_formulare" (
 	"anwendungid" INTEGER,
 --,,
 	"formularid" INTEGER
-);
+) WITH OIDS;
 
 -- Class anwendungs_parameter of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -399,11 +399,11 @@ CREATE TABLE "anwendungen_formulare" (
 CREATE TABLE "anwendungs_parameter" (
 	
 	"id" SERIAL,
-	"parametername" BPCHAR,
-	"parametervalue" BPCHAR,
+	"parametername" CHAR(255),
+	"parametervalue" CHAR(255),
 --,,
 	"anwendungid" INTEGER
-);
+) WITH OIDS;
 
 -- Class anwendungsberechtigungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -420,7 +420,7 @@ CREATE TABLE "anwendungsberechtigungen" (
 	"iduser" INTEGER,
 --,,
 	"idformular" INTEGER
-);
+) WITH OIDS;
 
 -- Class applevel_plugin_registry of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -434,7 +434,7 @@ CREATE TABLE "applevel_plugin_registry" (
 	
 	"id" SERIAL,
 	"anwendungid" INTEGER
-);
+) WITH OIDS;
 
 -- Class codegentarget of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -447,12 +447,12 @@ CREATE TABLE "applevel_plugin_registry" (
 CREATE TABLE "codegentarget" (
 	
 	"id" SERIAL,
-	"name" BPCHAR,
-	"titel" BPCHAR,
-	"modulename" BPCHAR,
-	"functor" BPCHAR,
-	"interface" BPCHAR
-);
+	"name" CHAR(255),
+	"titel" CHAR(255),
+	"modulename" CHAR(255),
+	"functor" CHAR(255),
+	"interface" CHAR(255)
+) WITH OIDS;
 
 -- Class column_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -465,12 +465,12 @@ CREATE TABLE "codegentarget" (
 CREATE TABLE "column_types" (
 	
 	"id" SERIAL,
-	"name" BPCHAR,
-	"tablename" BPCHAR,
+	"name" CHAR(255),
+	"tablename" CHAR(255),
 	"ro" BOOLEAN,
 	"specialcolumn" BOOLEAN,
-	"controltype" BPCHAR
-);
+	"controltype" CHAR(255)
+) WITH OIDS;
 
 -- Class foreignkey_visibledata_mapping of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -483,11 +483,11 @@ CREATE TABLE "column_types" (
 CREATE TABLE "foreignkey_visibledata_mapping" (
 	
 	"id" SERIAL,
-	"fkname" BPCHAR,
-	"fktable" BPCHAR,
-	"pkname" BPCHAR,
-	"pktable" BPCHAR
-);
+	"fkname" CHAR(255),
+	"fktable" CHAR(255),
+	"pkname" CHAR(255),
+	"pktable" CHAR(255)
+) WITH OIDS;
 
 -- Class formular_actions of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -504,8 +504,8 @@ CREATE TABLE "formular_actions" (
 	"formular" INTEGER,
 --,,
 	"action" INTEGER,
-	"event" BPCHAR
-);
+	"event" CHAR(255)
+) WITH OIDS;
 
 -- Class formular_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -518,11 +518,11 @@ CREATE TABLE "formular_actions" (
 CREATE TABLE "formular_parameters" (
 	
 	"id" SERIAL,
-	"parametername" BPCHAR,
-	"parametervalue" BPCHAR,
+	"parametername" CHAR(255),
+	"parametervalue" CHAR(255),
 --,,
 	"formularid" INTEGER
-);
+) WITH OIDS;
 
 -- Class formulare of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -539,17 +539,17 @@ CREATE TABLE "formulare" (
 --,,
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
-	"menuname" BPCHAR,
+	"name" CHAR(255),
+	"menuname" CHAR(255),
 	"menuorder" INTEGER,
-	"eventname" BPCHAR,
-	"menuhilfe" BPCHAR,
-	"toolbarimage" BPCHAR,
+	"eventname" CHAR(255),
+	"menuhilfe" CHAR(255),
+	"toolbarimage" CHAR(255),
 --,,
 	"anwendungid" INTEGER,
 --,,
 	"typ" INTEGER
-);
+) WITH OIDS;
 
 -- Class formulartypen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -563,12 +563,12 @@ CREATE TABLE "formulartypen" (
 	
 --,,
 	"id" SERIAL,
-	"handlermodule" BPCHAR,
-	"handlerfunctor" BPCHAR,
-	"handlerinterface" BPCHAR,
-	"namespace" BPCHAR,
-	"beschreibung" BPCHAR
-);
+	"handlermodule" CHAR(255),
+	"handlerfunctor" CHAR(255),
+	"handlerinterface" CHAR(255),
+	"namespace" CHAR(255),
+	"beschreibung" CHAR(255)
+) WITH OIDS;
 
 -- Class lbDMF_ForeignKeys of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -580,11 +580,11 @@ CREATE TABLE "formulartypen" (
 -- CREATE TABLE lbDMF_ForeignKeys
 CREATE TABLE "lbDMF_ForeignKeys" (
 	
-	"PKTable" BPCHAR,
-	"PKColumn" BPCHAR,
-	"FKTable" BPCHAR,
-	"FKColumn" BPCHAR
-);
+	"PKTable" CHAR(255),
+	"PKColumn" CHAR(255),
+	"FKTable" CHAR(255),
+	"FKColumn" CHAR(255)
+) WITH OIDS;
 
 -- Class regressiontest of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -597,10 +597,10 @@ CREATE TABLE "lbDMF_ForeignKeys" (
 CREATE TABLE "regressiontest" (
 	
 	"id" SERIAL,
-	"test" BPCHAR,
+	"test" CHAR(255),
 	"btest" BOOLEAN,
 	"btest1" BOOLEAN
-);
+) WITH OIDS;
 
 -- Class report_element_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -614,9 +614,9 @@ CREATE TABLE "report_element_types" (
 	
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
-	"description" BPCHAR
-);
+	"name" CHAR(255),
+	"description" CHAR(255)
+) WITH OIDS;
 
 -- Class report_elements of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -634,13 +634,13 @@ CREATE TABLE "report_elements" (
 	"reportid" INTEGER,
 --,,
 	"typ" INTEGER,
-	"name" BPCHAR,
+	"name" CHAR(255),
 	"x" INTEGER,
 	"y" INTEGER,
 	"w" INTEGER,
 	"h" INTEGER,
-	"description" BPCHAR
-);
+	"description" CHAR(255)
+) WITH OIDS;
 
 -- Class report_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -655,9 +655,9 @@ CREATE TABLE "report_parameters" (
 	"id" SERIAL,
 --,,
 	"reportid" INTEGER,
-	"name" BPCHAR,
+	"name" CHAR(255),
 	"value" INTEGER
-);
+) WITH OIDS;
 
 -- Class report_texts of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -673,8 +673,8 @@ CREATE TABLE "report_texts" (
 --,,
 	"elementid" INTEGER,
 	"line" INTEGER,
-	"text" BPCHAR
-);
+	"text" CHAR(255)
+) WITH OIDS;
 
 -- Class reports of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -689,9 +689,9 @@ CREATE TABLE "reports" (
 --,,
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
-	"description" BPCHAR
-);
+	"name" CHAR(255),
+	"description" CHAR(255)
+) WITH OIDS;
 
 -- Class translations of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -704,10 +704,10 @@ CREATE TABLE "reports" (
 CREATE TABLE "translations" (
 	
 	"id" SERIAL,
-	"text" BPCHAR,
-	"translated" BPCHAR,
-	"language" BPCHAR
-);
+	"text" CHAR(255),
+	"translated" CHAR(255),
+	"language" CHAR(255)
+) WITH OIDS;
 
 -- Class user_anwendungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -724,7 +724,7 @@ CREATE TABLE "user_anwendungen" (
 	"userid" INTEGER,
 --,,
 	"anwendungenid" INTEGER
-);
+) WITH OIDS;
 
 -- Class users of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -739,13 +739,13 @@ CREATE TABLE "users" (
 --,,
 --,,
 	"id" SERIAL,
-	"name" BPCHAR,
-	"vorname" BPCHAR,
-	"userid" BPCHAR,
-	"passwort" BPCHAR,
+	"name" CHAR(255),
+	"vorname" CHAR(255),
+	"userid" CHAR(255),
+	"passwort" CHAR(255),
 --,,
 	"lastapp" INTEGER
-);
+) WITH OIDS;
 
 -- Class Benutzer of type FORM found.
 				
@@ -1076,7 +1076,11 @@ begin
 	insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
 	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
 	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''CRM'', applicationid);
+	if applicationname = ''lbDMF Manager'' then
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
+	else
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF Manager'', applicationid);
+	end if;
   end if;
 return applicationid;
 end;
@@ -1168,7 +1172,7 @@ select dropformular('lbDMF Manager', 'Benutzer');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Benutzer', 'Benutzer verwalten', 'manageBenutzer', 'Edit data of Benutzer', 'kuser.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "vorname", "userid", "passwort" from "users" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "vorname", "userid", "passwort" from "users" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'Benutzer', true);
 
 
@@ -1185,7 +1189,7 @@ select dropformular('lbDMF Manager', 'Formulare');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formulare', 'Formulare verwalten', 'manageFormulare', 'Edit data of Formulare', 'kpersonalizer.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "toolbarimage", "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "toolbarimage", "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formulare', true);
 
 
@@ -1202,7 +1206,7 @@ select dropformular('lbDMF Manager', 'Formular_Parameter');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formular_Parameter', 'Formular_Parameter verwalten', 'manageFormular_Parameter', 'Edit data of Formular_Parameter', 'formular_params.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formular_Parameter', true);
 
 
@@ -1219,7 +1223,7 @@ select dropformular('lbDMF Manager', 'AnwendungenBenutzer');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('AnwendungenBenutzer', 'AnwendungenBenutzer verwalten', 'manageAnwendungenBenutzer', 'Edit data of AnwendungenBenutzer', 'User_application.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "userid", "anwendungenid" from "user_anwendungen" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenBenutzer'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "userid", "anwendungenid" from "user_anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenBenutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'AnwendungenBenutzer', true);
 
 
@@ -1236,7 +1240,7 @@ select dropformular('lbDMF Manager', 'FormulareAnwendung');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('FormulareAnwendung', 'FormulareAnwendung verwalten', 'manageFormulareAnwendung', 'Edit data of FormulareAnwendung', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "anwendungid", "formularid" from "anwendungen_formulare" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'FormulareAnwendung'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "anwendungid", "formularid" from "anwendungen_formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'FormulareAnwendung'));
 insert into column_types (name, tablename, ro) values ('ID', 'FormulareAnwendung', true);
 
 
@@ -1253,7 +1257,7 @@ select dropformular('lbDMF Manager', 'Anwendungen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Anwendungen', 'Anwendungen verwalten', 'manageAnwendungen', 'Edit data of Anwendungen', 'kthememgr.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "titel", "modulename", "functor", "interface" from "anwendungen" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "titel", "modulename", "functor", "interface" from "anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungen', true);
 
 
@@ -1270,7 +1274,7 @@ select dropformular('lbDMF Manager', 'AnwendungenFormulare');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('AnwendungenFormulare', 'AnwendungenFormulare verwalten', 'manageAnwendungenFormulare', 'Edit data of AnwendungenFormulare', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select  from "" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenFormulare'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select  from "" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenFormulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'AnwendungenFormulare', true);
 
 
@@ -1287,7 +1291,7 @@ select dropformular('lbDMF Manager', 'Aktionen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Aktionen', 'Aktionen verwalten', 'manageAktionen', 'Edit data of Aktionen', 'cache.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "name", "typ", "source", "target" from "actions" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "name", "typ", "source", "target" from "actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionen', true);
 
 
@@ -1304,7 +1308,7 @@ select dropformular('lbDMF Manager', 'Uebersetzungen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Uebersetzungen', 'Uebersetzungen verwalten', 'manageUebersetzungen', 'Edit data of Uebersetzungen', 'babelfish.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "text", "translated" from "translations" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Uebersetzungen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "text", "translated" from "translations" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Uebersetzungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Uebersetzungen', true);
 
 
@@ -1321,7 +1325,7 @@ select dropformular('lbDMF Manager', 'Formularaktionenzuordnen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formularaktionenzuordnen', 'Formularaktionenzuordnen verwalten', 'manageFormularaktionenzuordnen', 'Edit data of Formularaktionenzuordnen', 'actions_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "formular", "action", "event" from "formular_actions" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "formular", "action", "event" from "formular_actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formularaktionenzuordnen', true);
 
 
@@ -1338,7 +1342,7 @@ select dropformular('lbDMF Manager', 'Anwendungsparameter');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Anwendungsparameter', 'Anwendungsparameter verwalten', 'manageAnwendungsparameter', 'Edit data of Anwendungsparameter', 'app_params.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "anwendungid" from "anwendungs_parameter" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "anwendungid" from "anwendungs_parameter" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungsparameter', true);
 
 
@@ -1355,7 +1359,7 @@ select dropformular('lbDMF Manager', 'Aktionsschrittezuordnen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Aktionsschrittezuordnen', 'Aktionsschrittezuordnen verwalten', 'manageAktionsschrittezuordnen', 'Edit data of Aktionsschrittezuordnen', 'action_steps.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "actionid", "bezeichnung", "a_order_nr", "type", "what" from "action_steps" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "actionid", "bezeichnung", "a_order_nr", "type", "what" from "action_steps" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionsschrittezuordnen', true);
 
 
@@ -1372,7 +1376,7 @@ select dropformular('lbDMF Manager', 'Reportdefinitionen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Reportdefinitionen', 'Reportdefinitionen verwalten', 'manageReportdefinitionen', 'Edit data of Reportdefinitionen', 'print_class.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "description" from "reports" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "description" from "reports" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportdefinitionen', true);
 
 
@@ -1389,7 +1393,7 @@ select dropformular('lbDMF Manager', 'Reportparameter');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Reportparameter', 'Reportparameter verwalten', 'manageReportparameter', 'Edit data of Reportparameter', 'kword.png', getorcreateapplication('lbDMF Manager'), 1);
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "reportid", "name", "value" from "report_parameters" order by "ID"', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "reportid", "name", "value" from "report_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportparameter', true);
 
 
