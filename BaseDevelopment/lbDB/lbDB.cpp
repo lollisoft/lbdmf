@@ -3306,7 +3306,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	}
 	
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-		_LOG << "lbQuery::first(): Error while fetching next row" LOG_
+		_LOG << "lbQuery::first(): Error while fetching next row. Query is '" << szSql << "'" LOG_
 		//dbError("SQLExtendedFetch()", hstmt);
 		
 		// Unsave !!
@@ -5336,6 +5336,8 @@ lbDatabase::lbDatabase() {
 
 lbDatabase::~lbDatabase() {
 	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+	if (user) free(user);
+	if (db) free(db);
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
@@ -5430,6 +5432,10 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
+	*ConnectionName += "-";
+	*ConnectionName += user;
+	
+	setUser(user);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
@@ -5553,7 +5559,9 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
-	
+	*ConnectionName += "-";
+	*ConnectionName += user;
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
 	
@@ -5572,6 +5580,8 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 			hdbc = c->getConnection();
 			connected = true;
 		}
+	} else {
+		_LOG << "Error: Did not have a pooled connection for '" << ConnectionName->charrep() << "'" LOG_
 	}
 
 	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
