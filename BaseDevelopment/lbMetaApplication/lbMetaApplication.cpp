@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.146 $
+ * $Revision: 1.147 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.146 2008/09/26 10:43:20 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.147 2008/10/19 17:04:13 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.147  2008/10/19 17:04:13  lollisoft
+ * Using system account on internal database in installDatabase(). Changed logging function name in getApplications().
+ *
  * Revision 1.146  2008/09/26 10:43:20  lollisoft
  * Removed shortcut.
  *
@@ -1192,15 +1195,26 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	UAP(lb_I_Query, sysSchemaQuery)
 	UAP(lb_I_Database, database)
 
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
 	char* dbbackend = getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
 	} else {
 		// Use built in
 		REQUEST(getModuleInstance(), lb_I_Database, database)
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+
+		if (!lbDMFUser) lbDMFUser = "postgres";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
 	}
 	
 	if (database == NULL) {
@@ -1218,11 +1232,6 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		return false;
 	}
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database." LOG_
@@ -3166,11 +3175,11 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+			_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
-			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+			_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
 		}
 		
 		UAP(lb_I_Query, sampleQuery)
