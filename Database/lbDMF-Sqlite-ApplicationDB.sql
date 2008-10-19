@@ -191,7 +191,7 @@ CREATE TABLE "codegentarget" (
 -- CREATE Sqlite TABLE column_types
 CREATE TABLE "column_types" (
 	
-	"id" INTEGER,
+	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"tablename" BPCHAR,
 	"ro" BOOLEAN,

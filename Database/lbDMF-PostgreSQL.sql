@@ -78,7 +78,8 @@ CREATE TABLE column_types
   tablename char(100) NOT NULL,
   ro BOOL DEFAULT false,
   specialColumn BOOL DEFAULT false,
-  controlType char(100) DEFAULT ''
+  controlType char(100) DEFAULT '',
+  PRIMARY KEY (id)
 ) WITH OIDS;
 --...e
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
