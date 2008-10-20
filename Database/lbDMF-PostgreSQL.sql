@@ -1069,6 +1069,14 @@ begin
 	if uid is null then
 		INSERT INTO "users" (userid, passwort, lastapp) values (''user'', ''TestUser'', (select id FROM "anwendungen" WHERE "name" = ''lbDMF Manager''));
 		INSERT INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") VALUES (''lb_I_DatabaseForm'','''',''-'','''',''Dynamisch aufgebautes Datenbankformular'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Buttonpress'', '''', '''');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''SQL query'', ''instanceOflbSQLQueryAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open form'', ''instanceOflbFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open detail form'', ''instanceOflbDetailFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open master form'', ''instanceOflbMasterFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open Database Report'', ''instanceOflbDBReportAction'', ''lbDatabaseReport'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Perform XSLT transformation'', ''instanceOflbDMFXslt'', ''lbDMFXslt'');
+
 	end if;
 
 
@@ -1172,10 +1180,21 @@ select dropformular('lbDMF Manager', 'Benutzer');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Benutzer', 'Benutzer verwalten', 'manageBenutzer', 'Edit data of Benutzer', 'kuser.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "vorname", "userid", "passwort" from "users" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'Benutzer', true);
 
 
+-- Association from Benutzer to AnwendungenBenutzer
+-- Select action type IsMasterDetail: Prop_Benutzer_1_AnwendungenBenutzer_4, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('AnwendungenBenutzer', 1, 'userid');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for AnwendungenBenutzer', 1, 'AnwendungenBenutzer', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'AnwendungenBenutzer' and source = 'userid'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Benutzer' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'AnwendungenBenutzer' and source = 'userid'), 'action_master_detail_Prop_Benutzer_1_AnwendungenBenutzer_4');
+
+	
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
@@ -1189,10 +1208,34 @@ select dropformular('lbDMF Manager', 'Formulare');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formulare', 'Formulare verwalten', 'manageFormulare', 'Edit data of Formulare', 'kpersonalizer.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formulare', 'anwendungid', 'anwendungen', 'name');
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formulare', 'typ', 'formulartypen', 'beschreibung');
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "toolbarimage", "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formulare', true);
 
 
+-- Association from Formulare to Formular_Parameter
+-- Select action type IsMasterDetail: Prop_Formulare_2_Formular_Parameter_3, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Formular_Parameter', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formular_Parameter', 1, 'Formular_Parameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Formular_Parameter' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Formular_Parameter' and source = 'name'), 'action_master_detail_Prop_Formulare_2_Formular_Parameter_3');
+
+	
+-- Association from Formulare to Formularaktionenzuordnen
+-- Select action type IsMasterDetail: Prop_Formulare_2_Formularaktionenzuordnen_10, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Formularaktionenzuordnen', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formularaktionenzuordnen', 1, 'Formularaktionenzuordnen', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Formularaktionenzuordnen' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Formularaktionenzuordnen' and source = 'name'), 'action_master_detail_Prop_Formulare_2_Formularaktionenzuordnen_10');
+
+	
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
@@ -1205,6 +1248,10 @@ select dropformular('lbDMF Manager', 'Formular_Parameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formular_Parameter', 'Formular_Parameter verwalten', 'manageFormular_Parameter', 'Edit data of Formular_Parameter', 'formular_params.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_parameters', 'formularid', 'formulare', 'name');
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formular_Parameter', true);
@@ -1223,6 +1270,12 @@ select dropformular('lbDMF Manager', 'AnwendungenBenutzer');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('AnwendungenBenutzer', 'AnwendungenBenutzer verwalten', 'manageAnwendungenBenutzer', 'Edit data of AnwendungenBenutzer', 'User_application.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('user_anwendungen', 'userid', 'users', 'userid');
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('user_anwendungen', 'anwendungenid', 'anwendungen', 'name');
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "userid", "anwendungenid" from "user_anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenBenutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'AnwendungenBenutzer', true);
 
@@ -1239,6 +1292,12 @@ select dropformular('lbDMF Manager', 'FormulareAnwendung');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('FormulareAnwendung', 'FormulareAnwendung verwalten', 'manageFormulareAnwendung', 'Edit data of FormulareAnwendung', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungen_formulare', 'anwendungid', 'anwendungen', 'name');
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungen_formulare', 'formularid', 'formulare', 'name');
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "anwendungid", "formularid" from "anwendungen_formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'FormulareAnwendung'));
 insert into column_types (name, tablename, ro) values ('ID', 'FormulareAnwendung', true);
@@ -1257,10 +1316,30 @@ select dropformular('lbDMF Manager', 'Anwendungen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Anwendungen', 'Anwendungen verwalten', 'manageAnwendungen', 'Edit data of Anwendungen', 'kthememgr.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "titel", "modulename", "functor", "interface" from "anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungen', true);
 
 
+-- Association from Anwendungen to Formulare
+-- Select action type IsMasterDetail: Prop_Anwendungen_6_Formulare_2, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Formulare', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formulare', 1, 'Formulare', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Formulare' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Formulare' and source = 'name'), 'action_master_detail_Prop_Anwendungen_6_Formulare_2');
+
+	
+-- Association from Anwendungen to Anwendungsparameter
+-- Select action type IsMasterDetail: Prop_Anwendungen_6_Anwendungsparameter_11, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Anwendungsparameter', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Anwendungsparameter', 1, 'Anwendungsparameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Anwendungsparameter' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Anwendungsparameter' and source = 'name'), 'action_master_detail_Prop_Anwendungen_6_Anwendungsparameter_11');
+
+	
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
@@ -1273,6 +1352,8 @@ select dropformular('lbDMF Manager', 'AnwendungenFormulare');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('AnwendungenFormulare', 'AnwendungenFormulare verwalten', 'manageAnwendungenFormulare', 'Edit data of AnwendungenFormulare', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select  from "" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenFormulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'AnwendungenFormulare', true);
@@ -1291,10 +1372,23 @@ select dropformular('lbDMF Manager', 'Aktionen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Aktionen', 'Aktionen verwalten', 'manageAktionen', 'Edit data of Aktionen', 'cache.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'typ', 'action_types', 'bezeichnung');
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "name", "typ", "source", "target" from "actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionen', true);
 
 
+-- Association from Aktionen to Aktionsschrittezuordnen
+-- Select action type IsMasterDetail: Prop_Aktionen_8_Aktionsschrittezuordnen_12, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Aktionsschrittezuordnen', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Aktionsschrittezuordnen', 1, 'Aktionsschrittezuordnen', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Aktionsschrittezuordnen' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Aktionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Aktionsschrittezuordnen' and source = 'name'), 'action_master_detail_Prop_Aktionen_8_Aktionsschrittezuordnen_12');
+
+	
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
@@ -1307,6 +1401,8 @@ select dropformular('lbDMF Manager', 'Uebersetzungen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Uebersetzungen', 'Uebersetzungen verwalten', 'manageUebersetzungen', 'Edit data of Uebersetzungen', 'babelfish.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "text", "translated" from "translations" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Uebersetzungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Uebersetzungen', true);
@@ -1325,6 +1421,12 @@ select dropformular('lbDMF Manager', 'Formularaktionenzuordnen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Formularaktionenzuordnen', 'Formularaktionenzuordnen verwalten', 'manageFormularaktionenzuordnen', 'Edit data of Formularaktionenzuordnen', 'actions_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_actions', 'formular', 'formulare', 'name');
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_actions', 'action', 'actions', 'name');
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "formular", "action", "event" from "formular_actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formularaktionenzuordnen', true);
 
@@ -1341,6 +1443,10 @@ select dropformular('lbDMF Manager', 'Anwendungsparameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Anwendungsparameter', 'Anwendungsparameter verwalten', 'manageAnwendungsparameter', 'Edit data of Anwendungsparameter', 'app_params.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungs_parameter', 'anwendungid', 'anwendungen', 'name');
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametername", "parametervalue", "anwendungid" from "anwendungs_parameter" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungsparameter', true);
@@ -1359,6 +1465,12 @@ select dropformular('lbDMF Manager', 'Aktionsschrittezuordnen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Aktionsschrittezuordnen', 'Aktionsschrittezuordnen verwalten', 'manageAktionsschrittezuordnen', 'Edit data of Aktionsschrittezuordnen', 'action_steps.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('action_steps', 'actionid', 'actions', 'name');
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('action_steps', 'type', 'action_types', 'bezeichnung');
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "id", "actionid", "bezeichnung", "a_order_nr", "type", "what" from "action_steps" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionsschrittezuordnen', true);
 
@@ -1376,10 +1488,21 @@ select dropformular('lbDMF Manager', 'Reportdefinitionen');
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Reportdefinitionen', 'Reportdefinitionen verwalten', 'manageReportdefinitionen', 'Edit data of Reportdefinitionen', 'print_class.png', getorcreateapplication('lbDMF Manager'), 1);
 
+
+
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "description" from "reports" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportdefinitionen', true);
 
 
+-- Association from Reportdefinitionen to Reportparameter
+-- Select action type IsMasterDetail: Prop_Reportdefinitionen_13_Reportparameter_14, IsDetailMaster: 
+-- Build up a master detail action
+
+insert into actions (name, typ, source) values ('Reportparameter', 1, 'name');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Reportparameter', 1, 'Reportparameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'Reportparameter' and source = 'name'));
+insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Reportdefinitionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'Reportparameter' and source = 'name'), 'action_master_detail_Prop_Reportdefinitionen_13_Reportparameter_14');
+
+	
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
@@ -1392,6 +1515,10 @@ select dropformular('lbDMF Manager', 'Reportparameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('Reportparameter', 'Reportparameter verwalten', 'manageReportparameter', 'Edit data of Reportparameter', 'kword.png', getorcreateapplication('lbDMF Manager'), 1);
+
+
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('report_parameters', 'reportid', 'reports', 'name');
+
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "reportid", "name", "value" from "report_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportparameter', true);
