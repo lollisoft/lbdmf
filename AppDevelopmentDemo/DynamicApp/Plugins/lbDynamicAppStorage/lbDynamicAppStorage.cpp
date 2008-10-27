@@ -828,7 +828,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	
 	*name = "XSLFileSettings";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_String, XSLFileSettings)
+	QI(uk, lb_I_FileLocation, XSLFileSettings)
 
 				
 
