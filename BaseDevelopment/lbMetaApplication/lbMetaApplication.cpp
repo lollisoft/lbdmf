@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.147 $
+ * $Revision: 1.148 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.147 2008/10/19 17:04:13 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.148 2008/10/27 18:59:34 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.148  2008/10/27 18:59:34  lollisoft
+ * Moved uninitialize call before deletion of active document.
+ *
  * Revision 1.147  2008/10/19 17:04:13  lollisoft
  * Using system account on internal database in installDatabase(). Changed logging function name in getApplications().
  *
@@ -1973,13 +1976,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 	if (app != NULL) {
+		app->uninitialize(); // Internally saves the active document. Thus do not move this behind the following if block.
+
 		if (activeDocuments != NULL) {
 			_LOG << "Manually delete all active documents." LOG_
 			activeDocuments->deleteAll();
 			_LOG << "Deleted all active documents." LOG_
 		}
 
-		app->uninitialize();
 		app--;
 		app.resetPtr();
 	}
