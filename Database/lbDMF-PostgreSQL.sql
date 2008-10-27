@@ -1178,7 +1178,7 @@ end;
 select dropformular('lbDMF Manager', 'Benutzer');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Benutzer', 'Benutzer verwalten', 'manageBenutzer', 'Edit data of Benutzer', 'kuser.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Benutzer', 'Benutzer verwalten', 'manageBenutzer', 'Edit data of Benutzer', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 
@@ -1206,7 +1206,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Formulare');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Formulare', 'Formulare verwalten', 'manageFormulare', 'Edit data of Formulare', 'kpersonalizer.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Formulare', 'Formulare verwalten', 'manageFormulare', 'Edit data of Formulare', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formulare', 'anwendungid', 'anwendungen', 'name');
@@ -1247,7 +1247,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Formular_Parameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Formular_Parameter', 'Formular_Parameter verwalten', 'manageFormular_Parameter', 'Edit data of Formular_Parameter', 'formular_params.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Formular_Parameter', 'Formular_Parameter verwalten', 'manageFormular_Parameter', 'Edit data of Formular_Parameter', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_parameters', 'formularid', 'formulare', 'name');
@@ -1268,7 +1268,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'AnwendungenBenutzer');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('AnwendungenBenutzer', 'AnwendungenBenutzer verwalten', 'manageAnwendungenBenutzer', 'Edit data of AnwendungenBenutzer', 'User_application.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('AnwendungenBenutzer', 'AnwendungenBenutzer verwalten', 'manageAnwendungenBenutzer', 'Edit data of AnwendungenBenutzer', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('user_anwendungen', 'userid', 'users', 'userid');
@@ -1291,7 +1291,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'FormulareAnwendung');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('FormulareAnwendung', 'FormulareAnwendung verwalten', 'manageFormulareAnwendung', 'Edit data of FormulareAnwendung', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('FormulareAnwendung', 'FormulareAnwendung verwalten', 'manageFormulareAnwendung', 'Edit data of FormulareAnwendung', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungen_formulare', 'anwendungid', 'anwendungen', 'name');
@@ -1314,7 +1314,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Anwendungen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Anwendungen', 'Anwendungen verwalten', 'manageAnwendungen', 'Edit data of Anwendungen', 'kthememgr.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Anwendungen', 'Anwendungen verwalten', 'manageAnwendungen', 'Edit data of Anwendungen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 
@@ -1351,7 +1351,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'AnwendungenFormulare');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('AnwendungenFormulare', 'AnwendungenFormulare verwalten', 'manageAnwendungenFormulare', 'Edit data of AnwendungenFormulare', 'app_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('AnwendungenFormulare', 'AnwendungenFormulare verwalten', 'manageAnwendungenFormulare', 'Edit data of AnwendungenFormulare', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 
@@ -1370,7 +1370,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Aktionen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Aktionen', 'Aktionen verwalten', 'manageAktionen', 'Edit data of Aktionen', 'cache.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Aktionen', 'Aktionen verwalten', 'manageAktionen', 'Edit data of Aktionen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'typ', 'action_types', 'bezeichnung');
@@ -1400,7 +1400,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Uebersetzungen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Uebersetzungen', 'Uebersetzungen verwalten', 'manageUebersetzungen', 'Edit data of Uebersetzungen', 'babelfish.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Uebersetzungen', 'Uebersetzungen verwalten', 'manageUebersetzungen', 'Edit data of Uebersetzungen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 
@@ -1419,7 +1419,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Formularaktionenzuordnen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Formularaktionenzuordnen', 'Formularaktionenzuordnen verwalten', 'manageFormularaktionenzuordnen', 'Edit data of Formularaktionenzuordnen', 'actions_formulare.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Formularaktionenzuordnen', 'Formularaktionenzuordnen verwalten', 'manageFormularaktionenzuordnen', 'Edit data of Formularaktionenzuordnen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_actions', 'formular', 'formulare', 'name');
@@ -1442,7 +1442,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Anwendungsparameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Anwendungsparameter', 'Anwendungsparameter verwalten', 'manageAnwendungsparameter', 'Edit data of Anwendungsparameter', 'app_params.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Anwendungsparameter', 'Anwendungsparameter verwalten', 'manageAnwendungsparameter', 'Edit data of Anwendungsparameter', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungs_parameter', 'anwendungid', 'anwendungen', 'name');
@@ -1463,7 +1463,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Aktionsschrittezuordnen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Aktionsschrittezuordnen', 'Aktionsschrittezuordnen verwalten', 'manageAktionsschrittezuordnen', 'Edit data of Aktionsschrittezuordnen', 'action_steps.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Aktionsschrittezuordnen', 'Aktionsschrittezuordnen verwalten', 'manageAktionsschrittezuordnen', 'Edit data of Aktionsschrittezuordnen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('action_steps', 'actionid', 'actions', 'name');
@@ -1486,7 +1486,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Reportdefinitionen');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Reportdefinitionen', 'Reportdefinitionen verwalten', 'manageReportdefinitionen', 'Edit data of Reportdefinitionen', 'print_class.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Reportdefinitionen', 'Reportdefinitionen verwalten', 'manageReportdefinitionen', 'Edit data of Reportdefinitionen', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 
@@ -1514,7 +1514,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 select dropformular('lbDMF Manager', 'Reportparameter');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('Reportparameter', 'Reportparameter verwalten', 'manageReportparameter', 'Edit data of Reportparameter', 'kword.png', getorcreateapplication('lbDMF Manager'), 1);
+	values ('Reportparameter', 'Reportparameter verwalten', 'manageReportparameter', 'Edit data of Reportparameter', '', getorcreateapplication('lbDMF Manager'), 1);
 
 
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('report_parameters', 'reportid', 'reports', 'name');
