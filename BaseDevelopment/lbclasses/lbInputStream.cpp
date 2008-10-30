@@ -315,9 +315,7 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& _string) {
 #endif
 	
 	*_istream >> size;
-	
-	buf = (char*) malloc(size+1);
-	
+
 	_istream->ignore(1, '\n');
 #ifndef __WATCOMC__ 
 	getline(*_istream, s);
@@ -326,10 +324,11 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& _string) {
 #endif
 #ifdef __WATCOMC__ 
 	//*_istream >> s;
+	if (_string != NULL) free(_string);
+	buf = (char*) malloc(size+1);
 	_istream->getline(buf, size+1);
 	_string = buf;
 #endif
-
 
 	return *this;
 }

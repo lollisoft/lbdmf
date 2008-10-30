@@ -299,8 +299,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		*iStream >> ParameterName;
 		*iStream >> ParameterClassName;
 		
-		_LOG << "Reading object name '" << ParameterName << "' of type '" << ParameterClassName << "'." LOG_ 
-		
 		*paramname = ParameterName;
 		
 		if (strcmp(ParameterClassName, p->getClassName()) == 0) {
@@ -309,14 +307,14 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		}
 		else
 		if (strcmp(ParameterClassName, f->getClassName()) == 0) {
-			char* _f;
+			char* _f = NULL;
 			*iStream >> _f;
 			f->setData(_f);
 			params->setUAPFileLocation(*&paramname, *&f);
 		}
 		else
 		if (strcmp(ParameterClassName, s->getClassName()) == 0) {
-			char* _s;
+			char* _s = NULL;
 			*iStream >> _s;
 			*s = _s;
 			params->setUAPString(*&paramname, *&s);
@@ -335,7 +333,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 			b->setData(_b);
 			params->setUAPBoolean(*&paramname, *&b);
 		} else {
-			_LOG << "lbInputStreamOpr::visit(lb_I_Parameter* params) Error: Not supported type '" << ParameterClassName << "'" LOG_
+			_CL_LOG << "lbInputStreamOpr::visit(lb_I_Parameter* params) Error: Not supported type '" << ParameterClassName << "'" LOG_
 		}
 	}
 }
@@ -930,7 +928,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_User_Applications* user_app) {
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
-	_CL_LOG << "lbInputStreamOpr::visit(): Read data of meta application." LOG_
+	_CL_LOG << "lbInputStreamOpr::visit(lb_I_MetaApplication* app): Read data of meta application." LOG_
 
 	char* temp = NULL;
 	bool  b;
@@ -938,7 +936,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	
 	*iStream >> b;
 	app->setAutorefreshData(b);
-	
+
 	*iStream >> temp;
 	app->setApplicationName(temp);
 	
@@ -982,6 +980,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	*iStream >> b;
 	if (b) app->useSystemDatabaseBackend(true);
 	else app->useSystemDatabaseBackend(false);
+	_CL_LOG << "lbInputStreamOpr::visit(lb_I_MetaApplication* app): Read data of meta application done." LOG_
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

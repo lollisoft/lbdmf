@@ -846,6 +846,13 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	
 	_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 
+	if (frame->isPanelUsage()) {
+		while (notebook && notebook->GetPageCount() > 0) {
+			notebook->RemovePage(0);
+		}
+	}
+
+
 	return ERR_NONE;
 }
 /*...e*/
