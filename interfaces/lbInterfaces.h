@@ -1522,7 +1522,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	} \
 \
 	if (uk->getRefCount() > 1) { \
-		_CL_LOG << "Cloned object has %d references" << uk->getRefCount() LOG_ \
+		_CL_LOG << "Cloned object of type " << uk->getClassName() << " has " << uk->getRefCount() << " references" LOG_ \
 	} \
 	return uk; \
 \
