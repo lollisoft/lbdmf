@@ -34,7 +34,7 @@
 
 
 -- DROP TABLE action_steps
-DROP TABLE "action_steps";
+exec dropTable 'action_steps';
 
 -- Class action_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -43,7 +43,7 @@ DROP TABLE "action_steps";
 
 
 -- DROP TABLE action_types
-DROP TABLE "action_types";
+exec dropTable 'action_types';
 
 -- Class actions of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -52,7 +52,7 @@ DROP TABLE "action_types";
 
 
 -- DROP TABLE actions
-DROP TABLE "actions";
+exec dropTable 'actions';
 
 -- Class anwendungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -61,7 +61,7 @@ DROP TABLE "actions";
 
 
 -- DROP TABLE anwendungen
-DROP TABLE "anwendungen";
+exec dropTable 'anwendungen';
 
 -- Class anwendungen_formulare of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -70,7 +70,7 @@ DROP TABLE "anwendungen";
 
 
 -- DROP TABLE anwendungen_formulare
-DROP TABLE "anwendungen_formulare";
+exec dropTable 'anwendungen_formulare';
 
 -- Class anwendungs_parameter of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -79,7 +79,7 @@ DROP TABLE "anwendungen_formulare";
 
 
 -- DROP TABLE anwendungs_parameter
-DROP TABLE "anwendungs_parameter";
+exec dropTable 'anwendungs_parameter';
 
 -- Class anwendungsberechtigungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -88,7 +88,7 @@ DROP TABLE "anwendungs_parameter";
 
 
 -- DROP TABLE anwendungsberechtigungen
-DROP TABLE "anwendungsberechtigungen";
+exec dropTable 'anwendungsberechtigungen';
 
 -- Class applevel_plugin_registry of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -97,7 +97,7 @@ DROP TABLE "anwendungsberechtigungen";
 
 
 -- DROP TABLE applevel_plugin_registry
-DROP TABLE "applevel_plugin_registry";
+exec dropTable 'applevel_plugin_registry';
 
 -- Class codegentarget of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -106,7 +106,7 @@ DROP TABLE "applevel_plugin_registry";
 
 
 -- DROP TABLE codegentarget
-DROP TABLE "codegentarget";
+exec dropTable 'codegentarget';
 
 -- Class column_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -115,7 +115,7 @@ DROP TABLE "codegentarget";
 
 
 -- DROP TABLE column_types
-DROP TABLE "column_types";
+exec dropTable 'column_types';
 
 -- Class foreignkey_visibledata_mapping of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -124,7 +124,7 @@ DROP TABLE "column_types";
 
 
 -- DROP TABLE foreignkey_visibledata_mapping
-DROP TABLE "foreignkey_visibledata_mapping";
+exec dropTable 'foreignkey_visibledata_mapping';
 
 -- Class formular_actions of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -133,7 +133,7 @@ DROP TABLE "foreignkey_visibledata_mapping";
 
 
 -- DROP TABLE formular_actions
-DROP TABLE "formular_actions";
+exec dropTable 'formular_actions';
 
 -- Class formular_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -142,7 +142,7 @@ DROP TABLE "formular_actions";
 
 
 -- DROP TABLE formular_parameters
-DROP TABLE "formular_parameters";
+exec dropTable 'formular_parameters';
 
 -- Class formulare of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -151,7 +151,7 @@ DROP TABLE "formular_parameters";
 
 
 -- DROP TABLE formulare
-DROP TABLE "formulare";
+exec dropTable 'formulare';
 
 -- Class formulartypen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -160,7 +160,7 @@ DROP TABLE "formulare";
 
 
 -- DROP TABLE formulartypen
-DROP TABLE "formulartypen";
+exec dropTable 'formulartypen';
 
 -- Class lbDMF_ForeignKeys of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -169,7 +169,7 @@ DROP TABLE "formulartypen";
 
 
 -- DROP TABLE lbDMF_ForeignKeys
-DROP TABLE "lbDMF_ForeignKeys";
+exec dropTable 'lbDMF_ForeignKeys';
 
 -- Class regressiontest of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -178,7 +178,7 @@ DROP TABLE "lbDMF_ForeignKeys";
 
 
 -- DROP TABLE regressiontest
-DROP TABLE "regressiontest";
+exec dropTable 'regressiontest';
 
 -- Class report_element_types of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -187,7 +187,7 @@ DROP TABLE "regressiontest";
 
 
 -- DROP TABLE report_element_types
-DROP TABLE "report_element_types";
+exec dropTable 'report_element_types';
 
 -- Class report_elements of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -196,7 +196,7 @@ DROP TABLE "report_element_types";
 
 
 -- DROP TABLE report_elements
-DROP TABLE "report_elements";
+exec dropTable 'report_elements';
 
 -- Class report_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -205,7 +205,7 @@ DROP TABLE "report_elements";
 
 
 -- DROP TABLE report_parameters
-DROP TABLE "report_parameters";
+exec dropTable 'report_parameters';
 
 -- Class report_texts of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -214,7 +214,7 @@ DROP TABLE "report_parameters";
 
 
 -- DROP TABLE report_texts
-DROP TABLE "report_texts";
+exec dropTable 'report_texts';
 
 -- Class reports of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -223,7 +223,7 @@ DROP TABLE "report_texts";
 
 
 -- DROP TABLE reports
-DROP TABLE "reports";
+exec dropTable 'reports';
 
 -- Class translations of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -232,7 +232,7 @@ DROP TABLE "reports";
 
 
 -- DROP TABLE translations
-DROP TABLE "translations";
+exec dropTable 'translations';
 
 -- Class user_anwendungen of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -241,7 +241,7 @@ DROP TABLE "translations";
 
 
 -- DROP TABLE user_anwendungen
-DROP TABLE "user_anwendungen";
+exec dropTable 'user_anwendungen';
 
 -- Class users of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -250,7 +250,7 @@ DROP TABLE "user_anwendungen";
 
 
 -- DROP TABLE users
-DROP TABLE "users";
+exec dropTable 'users';
 
 -- Class Benutzer of type FORM found.
 				
