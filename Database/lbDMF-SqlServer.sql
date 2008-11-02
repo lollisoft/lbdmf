@@ -915,8 +915,17 @@ ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 		
 -- Generate application table action_steps for lbDMFManager_Entities
 -- Generate application table action_types for lbDMFManager_Entities
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type_1" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+ALTER TABLE "actions" ADD CONSTRAINT "cst_action_types_id_actions_typ_3" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
 -- Generate application table actions for lbDMFManager_Entities
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_actions_id_action_steps_actionid_2" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_actions_id_formular_actions_action_9" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
 -- Generate application table anwendungen for lbDMFManager_Entities
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_id_anwendungen_formulare_anwendungid_4" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungen_id_anwendungs_parameter_anwendungid_6" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_12" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_18" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+ALTER TABLE "users" ADD CONSTRAINT "cst_anwendungen_id_users_lastapp_20" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 -- Generate application table anwendungen_formulare for lbDMFManager_Entities
 -- Generate application table anwendungs_parameter for lbDMFManager_Entities
 -- Generate application table anwendungsberechtigungen for lbDMFManager_Entities
@@ -927,14 +936,25 @@ ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 -- Generate application table formular_actions for lbDMFManager_Entities
 -- Generate application table formular_parameters for lbDMFManager_Entities
 -- Generate application table formulare for lbDMFManager_Entities
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_5" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_formulare_id_anwendungsberechtigungen_idformular_7" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formulare_id_formular_actions_formular_10" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
+ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formulare_id_formular_parameters_formularid_11" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
 -- Generate application table formulartypen for lbDMFManager_Entities
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulartypen_id_formulare_typ_13" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
 -- Generate application table lbDMF_ForeignKeys for lbDMFManager_Entities
 -- Generate application table regressiontest for lbDMFManager_Entities
 -- Generate application table report_element_types for lbDMFManager_Entities
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_element_types_id_report_elements_typ_14" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
 -- Generate application table report_elements for lbDMFManager_Entities
+ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_elements_id_report_texts_elementid_17" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
 -- Generate application table report_parameters for lbDMFManager_Entities
 -- Generate application table report_texts for lbDMFManager_Entities
 -- Generate application table reports for lbDMFManager_Entities
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_reports_id_report_elements_reportid_15" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_reports_id_report_parameters_reportid_16" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
 -- Generate application table translations for lbDMFManager_Entities
 -- Generate application table user_anwendungen for lbDMFManager_Entities
 -- Generate application table users for lbDMFManager_Entities
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_8" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_users_id_user_anwendungen_userid_19" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
