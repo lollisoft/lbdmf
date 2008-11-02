@@ -30,6 +30,154 @@
 -- Class action_steps of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
+-- Generate application table action_steps for lbDMFManager_Entities
+-- Class action_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table action_types for lbDMFManager_Entities
+ALTER TABLE "action_steps" DROP CONSTRAINT "cst_action_types_id_action_steps_type_1";
+ALTER TABLE "actions" DROP CONSTRAINT "cst_action_types_id_actions_typ_3";
+-- Class actions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table actions for lbDMFManager_Entities
+ALTER TABLE "action_steps" DROP CONSTRAINT "cst_actions_id_action_steps_actionid_2";
+ALTER TABLE "formular_actions" DROP CONSTRAINT "cst_actions_id_formular_actions_action_9";
+-- Class anwendungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table anwendungen for lbDMFManager_Entities
+ALTER TABLE "anwendungen_formulare" DROP CONSTRAINT "cst_anwendungen_id_anwendungen_formulare_anwendungid_4";
+ALTER TABLE "anwendungs_parameter" DROP CONSTRAINT "cst_anwendungen_id_anwendungs_parameter_anwendungid_6";
+ALTER TABLE "formulare" DROP CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_12";
+ALTER TABLE "user_anwendungen" DROP CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_18";
+ALTER TABLE "users" DROP CONSTRAINT "cst_anwendungen_id_users_lastapp_20";
+-- Class anwendungen_formulare of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table anwendungen_formulare for lbDMFManager_Entities
+-- Class anwendungs_parameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table anwendungs_parameter for lbDMFManager_Entities
+-- Class anwendungsberechtigungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table anwendungsberechtigungen for lbDMFManager_Entities
+-- Class applevel_plugin_registry of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table applevel_plugin_registry for lbDMFManager_Entities
+-- Class codegentarget of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table codegentarget for lbDMFManager_Entities
+-- Class column_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table column_types for lbDMFManager_Entities
+-- Class foreignkey_visibledata_mapping of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table foreignkey_visibledata_mapping for lbDMFManager_Entities
+-- Class formular_actions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formular_actions for lbDMFManager_Entities
+-- Class formular_parameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formular_parameters for lbDMFManager_Entities
+-- Class formulare of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formulare for lbDMFManager_Entities
+ALTER TABLE "anwendungen_formulare" DROP CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_5";
+ALTER TABLE "anwendungsberechtigungen" DROP CONSTRAINT "cst_formulare_id_anwendungsberechtigungen_idformular_7";
+ALTER TABLE "formular_actions" DROP CONSTRAINT "cst_formulare_id_formular_actions_formular_10";
+ALTER TABLE "formular_parameters" DROP CONSTRAINT "cst_formulare_id_formular_parameters_formularid_11";
+-- Class formulartypen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formulartypen for lbDMFManager_Entities
+ALTER TABLE "formulare" DROP CONSTRAINT "cst_formulartypen_id_formulare_typ_13";
+-- Class lbDMF_ForeignKeys of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table lbDMF_ForeignKeys for lbDMFManager_Entities
+-- Class regressiontest of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table regressiontest for lbDMFManager_Entities
+-- Class report_element_types of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table report_element_types for lbDMFManager_Entities
+ALTER TABLE "report_elements" DROP CONSTRAINT "cst_report_element_types_id_report_elements_typ_14";
+-- Class report_elements of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table report_elements for lbDMFManager_Entities
+ALTER TABLE "report_texts" DROP CONSTRAINT "cst_report_elements_id_report_texts_elementid_17";
+-- Class report_parameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table report_parameters for lbDMFManager_Entities
+-- Class report_texts of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table report_texts for lbDMFManager_Entities
+-- Class reports of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table reports for lbDMFManager_Entities
+ALTER TABLE "report_elements" DROP CONSTRAINT "cst_reports_id_report_elements_reportid_15";
+ALTER TABLE "report_parameters" DROP CONSTRAINT "cst_reports_id_report_parameters_reportid_16";
+-- Class translations of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table translations for lbDMFManager_Entities
+-- Class user_anwendungen of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table user_anwendungen for lbDMFManager_Entities
+-- Class users of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table users for lbDMFManager_Entities
+ALTER TABLE "anwendungsberechtigungen" DROP CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_8";
+ALTER TABLE "user_anwendungen" DROP CONSTRAINT "cst_users_id_user_anwendungen_userid_19";
+-- Class Benutzer of type FORM found.
+				
+-- Class Formulare of type FORM found.
+				
+-- Class Formular_Parameter of type FORM found.
+				
+-- Class AnwendungenBenutzer of type FORM found.
+				
+-- Class FormulareAnwendung of type FORM found.
+				
+-- Class Anwendungen of type FORM found.
+				
+-- Class AnwendungenFormulare of type FORM found.
+				
+-- Class Aktionen of type FORM found.
+				
+-- Class Uebersetzungen of type FORM found.
+				
+-- Class Formularaktionenzuordnen of type FORM found.
+				
+-- Class Anwendungsparameter of type FORM found.
+				
+-- Class Aktionsschrittezuordnen of type FORM found.
+				
+-- Class Reportdefinitionen of type FORM found.
+				
+-- Class Reportparameter of type FORM found.
+				
+-- Class action_steps of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
 -- Generate application table action_steps for lbDMFManager_Entities. Tagtet database: 'MSSQL'
 
 
