@@ -289,7 +289,7 @@ DROP TABLE "users";
 -- CREATE TABLE action_steps
 CREATE TABLE "action_steps" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"actionid" INTEGER,
 	"bezeichnung" char(255),
@@ -310,7 +310,7 @@ CREATE TABLE "action_types" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"bezeichnung" char(255),
 	"action_handler" char(255),
 	"module" char(255)
@@ -327,7 +327,7 @@ CREATE TABLE "actions" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 --,
 	"typ" INTEGER,
@@ -349,7 +349,7 @@ CREATE TABLE "anwendungen" (
 --,
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"titel" char(255),
 	"modulename" char(255),
@@ -366,7 +366,7 @@ CREATE TABLE "anwendungen" (
 -- CREATE TABLE anwendungen_formulare
 CREATE TABLE "anwendungen_formulare" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"anwendungid" INTEGER,
 --,
@@ -382,7 +382,7 @@ CREATE TABLE "anwendungen_formulare" (
 -- CREATE TABLE anwendungs_parameter
 CREATE TABLE "anwendungs_parameter" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"parametername" char(255),
 	"parametervalue" char(255),
 --,
@@ -398,7 +398,7 @@ CREATE TABLE "anwendungs_parameter" (
 -- CREATE TABLE anwendungsberechtigungen
 CREATE TABLE "anwendungsberechtigungen" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"iduser" INTEGER,
 --,
@@ -414,7 +414,7 @@ CREATE TABLE "anwendungsberechtigungen" (
 -- CREATE TABLE applevel_plugin_registry
 CREATE TABLE "applevel_plugin_registry" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"anwendungid" INTEGER
 );
 
@@ -427,7 +427,7 @@ CREATE TABLE "applevel_plugin_registry" (
 -- CREATE TABLE codegentarget
 CREATE TABLE "codegentarget" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"titel" char(255),
 	"modulename" char(255),
@@ -444,7 +444,7 @@ CREATE TABLE "codegentarget" (
 -- CREATE TABLE column_types
 CREATE TABLE "column_types" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"tablename" char(255),
 	"ro" BIT,
@@ -461,7 +461,7 @@ CREATE TABLE "column_types" (
 -- CREATE TABLE foreignkey_visibledata_mapping
 CREATE TABLE "foreignkey_visibledata_mapping" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"fkname" char(255),
 	"fktable" char(255),
 	"pkname" char(255),
@@ -477,7 +477,7 @@ CREATE TABLE "foreignkey_visibledata_mapping" (
 -- CREATE TABLE formular_actions
 CREATE TABLE "formular_actions" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"formular" INTEGER,
 --,
@@ -494,7 +494,7 @@ CREATE TABLE "formular_actions" (
 -- CREATE TABLE formular_parameters
 CREATE TABLE "formular_parameters" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"parametername" char(255),
 	"parametervalue" char(255),
 --,
@@ -514,7 +514,7 @@ CREATE TABLE "formulare" (
 --,
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"menuname" char(255),
 	"menuorder" INTEGER,
@@ -537,7 +537,7 @@ CREATE TABLE "formulare" (
 CREATE TABLE "formulartypen" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"handlermodule" char(255),
 	"handlerfunctor" char(255),
 	"handlerinterface" char(255),
@@ -569,7 +569,7 @@ CREATE TABLE "lbDMF_ForeignKeys" (
 -- CREATE TABLE regressiontest
 CREATE TABLE "regressiontest" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"test" char(255),
 	"btest" BIT,
 	"btest1" BIT
@@ -585,7 +585,7 @@ CREATE TABLE "regressiontest" (
 CREATE TABLE "report_element_types" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"description" char(255)
 );
@@ -600,7 +600,7 @@ CREATE TABLE "report_element_types" (
 CREATE TABLE "report_elements" (
 	
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"reportid" INTEGER,
 --,
@@ -622,7 +622,7 @@ CREATE TABLE "report_elements" (
 -- CREATE TABLE report_parameters
 CREATE TABLE "report_parameters" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"reportid" INTEGER,
 	"name" char(255),
@@ -638,7 +638,7 @@ CREATE TABLE "report_parameters" (
 -- CREATE TABLE report_texts
 CREATE TABLE "report_texts" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"elementid" INTEGER,
 	"line" INTEGER,
@@ -656,7 +656,7 @@ CREATE TABLE "reports" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"description" char(255)
 );
@@ -670,7 +670,7 @@ CREATE TABLE "reports" (
 -- CREATE TABLE translations
 CREATE TABLE "translations" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"text" char(255),
 	"translated" char(255),
 	"language" char(255)
@@ -685,7 +685,7 @@ CREATE TABLE "translations" (
 -- CREATE TABLE user_anwendungen
 CREATE TABLE "user_anwendungen" (
 	
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 --,
 	"userid" INTEGER,
 --,
@@ -703,7 +703,7 @@ CREATE TABLE "users" (
 	
 --,
 --,
-	"id" INTEGER,
+	"id" INTEGER NOT NULL,
 	"name" char(255),
 	"vorname" char(255),
 	"userid" char(255),
