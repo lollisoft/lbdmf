@@ -67,7 +67,7 @@ lbApplications::lbApplications() {
 /*...e*/
 /*...slbApplications\58\\58\\126\lbApplications\40\\41\:0:*/
 lbApplications::~lbApplications() {
-	_CL_LOG << "lbApplications::~lbApplications() called." LOG_
+	_CL_VERBOSE << "lbApplications::~lbApplications() called." LOG_
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbApplications\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/
@@ -135,7 +135,7 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	*Functor = functor;
 	*Interface = _interface;
 
-	_LOG << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
+	_CL_VERBOSE << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
 
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&_ID);

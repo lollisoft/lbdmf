@@ -59,11 +59,11 @@ lbFormularParameters::lbFormularParameters() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbFormularParameters::lbFormularParameters() called." LOG_
+	_CL_VERBOSE << "lbFormularParameters::lbFormularParameters() called." LOG_
 }
 
 lbFormularParameters::~lbFormularParameters() {
-	_CL_LOG << "lbFormularParameters::~lbFormularParameters() called." LOG_
+	_CL_VERBOSE << "lbFormularParameters::~lbFormularParameters() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularParameters::setData(lb_I_Unknown*) {
@@ -269,11 +269,11 @@ lbColumnTypes::lbColumnTypes() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentReadonly)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbColumnTypes::lbColumnTypes() called." LOG_
+	_CL_VERBOSE << "lbColumnTypes::lbColumnTypes() called." LOG_
 }
 
 lbColumnTypes::~lbColumnTypes() {
-	_CL_LOG << "lbColumnTypes::~lbColumnTypes() called." LOG_
+	_CL_VERBOSE << "lbColumnTypes::~lbColumnTypes() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbColumnTypes::setData(lb_I_Unknown*) {
@@ -478,7 +478,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbApplicationParameters::lbApplicationParameters() {
 	ref = STARTREF;
-	_CL_VERBOSE << "lbApplicationParameters::lbApplicationParameters() called." LOG_
+
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
@@ -486,11 +486,11 @@ lbApplicationParameters::lbApplicationParameters() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbApplicationParameters::lbApplicationParameters() called." LOG_
+	_CL_VERBOSE << "lbApplicationParameters::lbApplicationParameters() called." LOG_
 }
 
 lbApplicationParameters::~lbApplicationParameters() {
-	_CL_LOG << "lbApplicationParameters::~lbApplicationParameters() called." LOG_
+	_CL_VERBOSE << "lbApplicationParameters::~lbApplicationParameters() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbApplicationParameters::setData(lb_I_Unknown*) {

@@ -109,7 +109,7 @@ long		LB_STDCALL lbReports::addReport(const char* name, const char* description,
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_LOG << "lbReports::addReport('" << name << "', '" << description << "', '" << _id << "') called." LOG_
+	_CL_VERBOSE << "lbReports::addReport('" << name << "', '" << description << "', '" << _id << "') called." LOG_
 
 	*Name = name;
 	*Description = description;
@@ -338,7 +338,7 @@ long		LB_STDCALL lbReportParameters::addParameter(long reportid, const char* nam
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_LOG << "lbReportParameters::addParameter('" << reportid << "', '" << name << "', '" << value << "', '" << _id << "') called." LOG_
+	_CL_VERBOSE << "lbReportParameters::addParameter('" << reportid << "', '" << name << "', '" << value << "', '" << _id << "') called." LOG_
 
 	*Name = name;
 	*Value = value;
@@ -589,7 +589,7 @@ long		LB_STDCALL lbReportElements::addElement(long reportid, const char* name, l
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_LOG << "lbReportElements::addElement('" << reportid << "', '" << name << "', '" << typ << "', '" << x << "', '" << y << "', '" << w << "', '" << h << "', '" << description << "', '" << _id << "') called." LOG_
+	_CL_VERBOSE << "lbReportElements::addElement('" << reportid << "', '" << name << "', '" << typ << "', '" << x << "', '" << y << "', '" << w << "', '" << h << "', '" << description << "', '" << _id << "') called." LOG_
 
 	*Name = name;
 	*Description = description;
@@ -881,7 +881,7 @@ long		LB_STDCALL lbReportElementTypes::addElementType(const char* name, const ch
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_LOG << "lbReportElementTypes::addElementType('" << name << "', '" << description << "', '" << _id << "') called." LOG_
+	_CL_VERBOSE << "lbReportElementTypes::addElementType('" << name << "', '" << description << "', '" << _id << "') called." LOG_
 
 	*Name = name;
 	*Description = description;

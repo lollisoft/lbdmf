@@ -59,11 +59,12 @@ lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_VERBOSE << "lbUserApplicationRelationModel::lbUserApplicationRelationModel() called." LOG_
 }
 /*...e*/
 /*...slbUserApplicationRelationModel\58\\58\\126\lbUserApplicationRelationModel\40\\41\:0:*/
 lbUserApplicationRelationModel::~lbUserApplicationRelationModel() {
-	_CL_LOG << "lbUserApplicationRelationModel::~lbUserApplicationRelationModel() called." LOG_
+	_CL_VERBOSE << "lbUserApplicationRelationModel::~lbUserApplicationRelationModel() called." LOG_
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbUserApplicationRelationModel\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/
@@ -382,11 +383,12 @@ lbApplicationFormularsRelationModel::lbApplicationFormularsRelationModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_VERBOSE << "lbApplicationFormularsRelationModel::lbApplicationFormularsRelationModel() called." LOG_
 }
 /*...e*/
 /*...slbApplicationFormularsRelationModel\58\\58\\126\lbApplicationFormularsRelationModel\40\\41\:0:*/
 lbApplicationFormularsRelationModel::~lbApplicationFormularsRelationModel() {
-	_CL_LOG << "lbApplicationFormularsRelationModel::~lbApplicationFormularsRelationModel() called." LOG_
+	_CL_VERBOSE << "lbApplicationFormularsRelationModel::~lbApplicationFormularsRelationModel() called." LOG_
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbApplicationFormularsRelationModel\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/

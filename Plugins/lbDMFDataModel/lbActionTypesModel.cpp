@@ -60,11 +60,11 @@ lbActionTypesModel::lbActionTypesModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentActionTypesModule)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_LOG << "lbActionTypesModel::lbActionTypesModel() called." LOG_
+	_CL_VERBOSE << "lbActionTypesModel::lbActionTypesModel() called." LOG_
 }
 
 lbActionTypesModel::~lbActionTypesModel() {
-	_LOG << "lbActionTypesModel::~lbActionTypesModel() called." LOG_
+	_CL_VERBOSE << "lbActionTypesModel::~lbActionTypesModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbActionTypesModel::setData(lb_I_Unknown*) {

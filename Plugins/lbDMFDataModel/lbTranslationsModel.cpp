@@ -69,11 +69,11 @@ lbTranslationsModel::lbTranslationsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
-	_CL_LOG << "lbTranslationsModel::lbTranslationsModel() called." LOG_
+	_CL_VERBOSE << "lbTranslationsModel::lbTranslationsModel() called." LOG_
 }
 
 lbTranslationsModel::~lbTranslationsModel() {
-	_CL_LOG << "lbTranslationsModel::~lbTranslationsModel() called." LOG_
+	_CL_VERBOSE << "lbTranslationsModel::~lbTranslationsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbTranslationsModel::setData(lb_I_Unknown*) {

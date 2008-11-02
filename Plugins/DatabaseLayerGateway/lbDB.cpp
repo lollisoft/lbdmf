@@ -1432,23 +1432,23 @@ void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setData(lb_I_Unknown * uk) {
-	_CL_LOG << "lbDatabaseLayerQuery::setData(...): Not implemented yet" LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::setData(...): Not implemented yet" LOG_
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setView(lb_I_ColumnBinding* cb) {
-	_LOG << "lbDatabaseLayerQuery::setView(...): Not implemented yet" LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::setView(...): Not implemented yet" LOG_
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::registerView(lb_I_MVC_View* view) {
-	_LOG << "lbDatabaseLayerQuery::registerView(...): Not implemented yet" LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::registerView(...): Not implemented yet" LOG_
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::unregisterView(lb_I_MVC_View* view) {
-	_LOG << "lbDatabaseLayerQuery::unregisterView(...): Not implemented yet" LOG_
-        return ERR_NONE;
+	_CL_VERBOSE << "lbDatabaseLayerQuery::unregisterView(...): Not implemented yet" LOG_
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::skipFKCollecting() {
@@ -1653,16 +1653,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, char* dbname, bool ro) {
-	_LOG << "lbDatabaseLayerQuery::init(...) called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) called." LOG_
 	currentdbLayer = dbLayer;
 	if (dbName) free(dbName);
 	dbName = NULL;
 	if (dbname) dbName = strdup(dbname);
 	
 	if (currentdbLayer) {
-		_LOG << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer available." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer available." LOG_
 	} else {
-		_LOG << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer not available." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer not available." LOG_
 	}
 	
 	if (!dbLayer || !dbLayer->IsOpen()) {
@@ -1671,7 +1671,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, char* d
 	}
 	
 	if (ro) {
-		_CL_LOG << "Set actual query to be readonly." LOG_
+		_CL_VERBOSE << "Set actual query to be readonly." LOG_
 		_readonly = 1;
 	} else _readonly = 0;
 	
@@ -1731,9 +1731,9 @@ lb_I_Query::lbDBCaseSensity    LB_STDCALL lbDatabaseLayerQuery::getCaseSensity()
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 	lbErrCodes err = ERR_NONE;
 	if (bind) {
-		_LOG << "lbDatabaseLayerQuery::query('" << q << "', true) called." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::query('" << q << "', true) called." LOG_
 	} else {
-		_LOG << "lbDatabaseLayerQuery::query('" << q << "', false) called." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::query('" << q << "', false) called." LOG_
 	}
 	lbDatabaseLayerBoundColumns* boundcols = NULL;
 
@@ -1764,7 +1764,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
 		
 		if (theResult != NULL) {
-			_LOG << "Have got a resultset for '" << szSql << "'" LOG_
+			_CL_VERBOSE << "Have got a resultset for '" << szSql << "'" LOG_
 			_dataFetched = false;
 			createMetaInformation();
 			if (!theResult->Next()) {
@@ -1779,7 +1779,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					if (tables.Index(table) == wxNOT_FOUND) tables.Add(table);
 				}
 
-				_LOG << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
 				
 				// As figured out by the translation function
 				// Keep for meta data
@@ -1809,7 +1809,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 			
 				if (theQuery.Upper().Contains("INSERT")) {
 					if (theResult) {
-						_LOG << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
+						_CL_VERBOSE << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1817,7 +1817,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("UPDATE")) {
 					if (theResult) {
-						_LOG << "lbDatabaseLayerQuery::query() UPDATE statement issued that has resulted in a resultset and data." LOG_
+						_CL_VERBOSE << "lbDatabaseLayerQuery::query() UPDATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1825,7 +1825,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("DROP")) {
 					if (theResult) {
-						_LOG << "lbDatabaseLayerQuery::query() DROP statement issued that has resulted in a resultset and data." LOG_
+						_CL_VERBOSE << "lbDatabaseLayerQuery::query() DROP statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1833,7 +1833,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 				if (theQuery.Upper().Contains("CREATE")) {
 					if (theResult) {
-						_LOG << "lbDatabaseLayerQuery::query() CREATE statement issued that has resulted in a resultset and data." LOG_
+						_CL_VERBOSE << "lbDatabaseLayerQuery::query() CREATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
 						theResult = NULL;
 					}
@@ -1905,7 +1905,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						tempSQL += " order by ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						
-						_LOG << "Created help query: " << tempSQL.c_str() LOG_
+						_CL_VERBOSE << "Created help query: " << tempSQL.c_str() LOG_
 						
 						DatabaseResultSet* tempResult;
 						
@@ -2130,26 +2130,26 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (theQuery.Upper().Contains("DELETE")) {
-				_LOG << "lbDatabaseLayerQuery::query() DELETE statement issued that not has resulted in a resultset." LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() DELETE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("INSERT")) {
-				_LOG << "lbDatabaseLayerQuery::query() INSERT statement issued that not has resulted in a resultset." LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() INSERT statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("UPDATE")) {
-				_LOG << "lbDatabaseLayerQuery::query() UPDATE statement issued that not has resulted in a resultset." LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() UPDATE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("DROP")) {
-				_LOG << "lbDatabaseLayerQuery::query() DROP statement issued that not has resulted in a resultset." LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() DROP statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
 			if (theQuery.Upper().Contains("CREATE")) {
-				_LOG << "lbDatabaseLayerQuery::query() CREATE statement issued that not has resulted in a resultset." LOG_
+				_CL_VERBOSE << "lbDatabaseLayerQuery::query() CREATE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
 			}
-			_LOG << "Error: Query '" << szSql << "' failed!" LOG_
+			_CL_VERBOSE << "Error: Query '" << szSql << "' failed!" LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		_dataFetched = true;
@@ -2430,7 +2430,7 @@ int LB_STDCALL lbDatabaseLayerQuery::getFKColumns() {
 	if (skipFKCollections == 1) return 0;
 
 	if (ForeignColumns == NULL) {
-		_CL_LOG << "Error: List of foreign columns is not initialized!" LOG_
+		_LOG << "Error: List of foreign columns is not initialized!" LOG_
 		return 0;
 	}
 
@@ -2464,7 +2464,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(int pos) {
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* primary) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_LOG << "lbDatabaseLayerQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	UAP(lb_I_KeyBase, key_PKTable_PKName)
@@ -2478,7 +2478,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* pri
 	UAP(lb_I_String, FKName)
 
 	if (mapPKTable_PKColumns_To_FKName == NULL) {
-		_CL_LOG << "Error: There were no foreign keys collected. (" << table << ", " << primary << ")" LOG_
+		_LOG << "Error: There were no foreign keys collected. (" << table << ", " << primary << ")" LOG_
 		return NULL;
 	}
 
@@ -2494,7 +2494,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* pri
 			key = mapPKTable_PKColumns_To_FKName->currentKey();
 			QI(value, lb_I_String, s)
 			
-			_LOG << "Element in 'mapPKTable_PKColumns_To_FKName' : " << s->charrep() << "' with key '" << key->charrep() << "'" LOG_
+			_CL_VERBOSE << "Element in 'mapPKTable_PKColumns_To_FKName' : " << s->charrep() << "' with key '" << key->charrep() << "'" LOG_
 		}
 		
 		return NULL;
@@ -2580,10 +2580,6 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	lbErrCodes err = ERR_NONE;
 	void* that = this;
 
-	if (this == NULL) {
-		_CL_LOG << "Fatal: Called member function on invalid object (lbDatabaseLayerQuery::prepareFKList(), NULL) !" LOG_ 
-	}
-
 	if (!_TRMemValidate(this)) {
 		lbBreak();
 	}
@@ -2599,10 +2595,6 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 		REQUEST(getModuleInstance(), lb_I_Container, ForeignColumns)
 	} else {
 		ForeignColumns->deleteAll();
-	}
-
-	if (ForeignColumns == NULL) {
-		_CL_LOG << "FATAL: ForeignColumns could note be initialized!" LOG_
 	}
 
 	if (skipFKCollections == 1) {
@@ -2681,14 +2673,14 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 	SWORD count = 0;
 	
 	if (currentdbLayer == NULL) {
-		_LOG << "Error: No connection opened." LOG_
+		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
 	}
 	
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "Error: No resultset available." LOG_
 		if (szSql) {
-			_LOG << "The last SQL query was " << szSql LOG_ 
+			_CL_VERBOSE << "The last SQL query was " << szSql LOG_ 
 		}
 		return 0;
 	}
@@ -2699,7 +2691,7 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 	if (currentdbLayer == NULL) {
-		_LOG << "Error: No connection opened." LOG_
+		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
 	}
 
@@ -2708,7 +2700,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 	*s = col.c_str();
 	s++;
 	
-	_LOG << "lbDatabaseLayerQuery::getPKColumn(" << pos-1 << ") returns " << s->charrep() LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::getPKColumn(" << pos-1 << ") returns " << s->charrep() LOG_
 	
 	return s.getPtr();
 }
@@ -2716,7 +2708,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNullable(int pos) {
 	if (currentdbLayer == NULL) {
-		_LOG << "Error: No connection opened." LOG_
+		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
 	}
 	UAP(lb_I_String, columnName)
@@ -2729,7 +2721,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::isNullable(int pos) {
 
 bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
 	if (currentdbLayer == NULL) {
-		_LOG << "Error: No connection opened." LOG_
+		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
 	}
 	UAP_REQUEST(getModuleInstance(), lb_I_String, columnName)
@@ -2742,7 +2734,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "Error: No resultset available." LOG_
 		return false;
 	}
 	UAP(lb_I_String, columnName)
@@ -2762,7 +2754,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
 
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "Error: No resultset available." LOG_
 		return 0;
 	}
 	UAP(lb_I_String, columnName)
@@ -2789,7 +2781,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "Error: No resultset available." LOG_
 		return lbDBColumnUnknown;
 	}
 
@@ -2822,7 +2814,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 			}
 		}
 	}
-	_LOG << "Error: Type for column not stored: " << pos LOG_
+	_CL_VERBOSE << "Error: Type for column not stored: " << pos LOG_
 	return lbDBColumnUnknown;
 }
 /*...e*/
@@ -2834,12 +2826,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char*
 	*Name = name;
 	
 	if (!theResult) {
-		_LOG << "lbDatabaseLayerQuery::getColumnType('" << name << "') Error: No result set available for this operation!" LOG_
-		return lbDBColumnUnknown;
-	}
-	
-	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::getColumnType('" << name << "') Error: No result set available for this operation!" LOG_
 		return lbDBColumnUnknown;
 	}
 	
@@ -2869,9 +2856,9 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 	lbErrCodes err = ERR_NONE;
 
 	if (updateable == true) 
-		_CL_LOG << "lbDatabaseLayerQuery::setReadonly(" << column << ", TRUE)" LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(" << column << ", TRUE)" LOG_
 	else
-		_CL_LOG << "lbDatabaseLayerQuery::setReadonly(" << column << ", FALSE)" LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(" << column << ", FALSE)" LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 	
@@ -2888,21 +2875,16 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 	}
 
 	if (!ReadOnlyColumns->exists(&key) && updateable == true) {
-		_CL_LOG << "lbDatabaseLayerQuery::setReadonly(...) calls ReadOnlyColumns->insert(...)." LOG_
 		ReadOnlyColumns->insert(&uk, &key);
 	}
 	
 	if (ReadOnlyColumns->exists(&key) && updateable == false) {
-		_CL_LOG << "lbDatabaseLayerQuery::setReadonly(...) calls ReadOnlyColumns->remove(&key)." LOG_
 		ReadOnlyColumns->remove(&key);
 	}
 
 	if (boundColumns.getPtr() != NULL) {
-		_CL_LOG << "lbDatabaseLayerQuery::setReadonly(...) calls boundColumns->setReadonly(...)." LOG_
 		boundColumns->setReadonly(column, updateable);
 	}
-	
-	_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(...) returns." LOG_
 }
 /*...e*/
 /*...sbool LB_STDCALL lbDatabaseLayerQuery\58\\58\getReadonly\40\char\42\ column\41\:0:*/
@@ -2919,7 +2901,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	*name = columnName;
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available. Try reopen." LOG_
+		_CL_VERBOSE << "Error: No resultset available. Try reopen." LOG_
 		if (reopen() != ERR_NONE) {
 			_LOG << "Error: Reopen failed." LOG_
 			*table = "";
@@ -2974,9 +2956,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	///\todo Implement
 	if (theResult == NULL) {
-		_LOG << "Error: No resultset available." LOG_
+		_CL_VERBOSE << "Error: No resultset available." LOG_
 		if (szSql) {
-			_LOG << "The last SQL query was " << szSql LOG_ 
+			_CL_VERBOSE << "The last SQL query was " << szSql LOG_ 
 		}
 		*t = "Error";
 		t++;
@@ -3024,7 +3006,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	lbErrCodes err = query(szSql, true);
 	
 	if ((err == ERR_DB_QUERYFAILED) || (err == ERR_DB_NODATA)) {
-		_LOG << "Warning: Reopen of current statement failed." LOG_
+		_CL_VERBOSE << "Warning: Reopen of current statement failed." LOG_
 		if ((err = open()) != ERR_NONE) {
 			_LOG << "Error: Reopen connection propably failed too." LOG_
 		}
@@ -3033,14 +3015,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	
 	absolute(backup_cursor);
 	if (theResult == NULL) {
-			_LOG << "Error: Got no resultset after a reopen!" LOG_
+		_LOG << "Error: Got no resultset after a reopen!" LOG_
 		return ERR_DB_QUERYFAILED;
 	}
 	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::close() {
-	_CL_LOG << "lbDatabaseLayerQuery::close() called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::close() called." LOG_
 
 #ifdef bla
 	if (currentdbLayer && currentdbLayer->IsOpen()) {
@@ -3069,7 +3051,7 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
-	_LOG << "lbDatabaseLayerQuery::open() called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::open() called." LOG_
 	lbErrCodes err = ERR_NONE;
 	
 	if (currentdbLayer == NULL) {
@@ -3081,7 +3063,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		}
 		uk->queryInterface("lb_I_Database", (void**) &database, __FILE__, __LINE__);
 		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName); // Internally open is called, thus .db3 is appended.
-		_LOG << "lbDatabaseLayerQuery::open() Recreated currentdbLayer instance." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Recreated currentdbLayer instance." LOG_
 	}
 	
 	if (!currentdbLayer->IsOpen()) {
@@ -3089,7 +3071,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		*connName = dbName;
 		*connName += ".db3";
 		currentdbLayer->Open(connName->charrep());
-		_LOG << "lbDatabaseLayerQuery::open() Opened database." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Opened database." LOG_
 	}
 	
 	if (skipAutoQuery) return ERR_NONE;
@@ -3107,7 +3089,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	lbErrCodes err = ERR_NONE;
 	
-	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
 	
 	if (cursor < 0) {
 		// Handle underflow
@@ -3133,7 +3115,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
 		
-		_LOG << "Cursor is < 0. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+		_CL_VERBOSE << "Cursor is < 0. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 		
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 		
@@ -3185,7 +3167,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
 			
-			_LOG << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+			_CL_VERBOSE << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 			
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 			
@@ -3255,7 +3237,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				}
 			}
 			
-			_LOG << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+			_CL_VERBOSE << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 			
@@ -3296,7 +3278,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	cursorWhere += " = ";
 	
 	if (currentCursorview.Count() == 0) {
-		_LOG << "Warning: No cursor data could be built up." LOG_
+		_CL_VERBOSE << "Warning: No cursor data could be built up." LOG_
 		return false;
 	}
 	
@@ -3311,7 +3293,6 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		for (int i = 1; i <= metadata->GetColumnCount(); i++) {
 			UAP(lb_I_String, name)
 			name = getColumnName(i);
-			_LOG << "Check field '" << name->charrep() << "'" LOG_
 			if (theResult->IsFieldNull(i)) 
 				setNull(i, true);
 			else
@@ -3416,7 +3397,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	} else {
 		if (theResult) currentdbLayer->CloseResultSet(theResult);
 	}
-	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
 	return false;
 }
 
@@ -3550,7 +3531,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, lb_I_String* value) {
 	if (_readonly == 1) {
-		_CL_LOG << "Error: Query is readonly." LOG_
+		_CL_VERBOSE << "Error: Query is readonly." LOG_
 		return ERR_DB_READONLY;
 	}
 	
@@ -3609,7 +3590,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::remove() {
 	strSQL += " = ";
 	strSQL += currentCursorview[cursor];
 
-	_LOG << "Update statement: " << strSQL.c_str() LOG_
+	_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
 
 	executeDirect((char*) strSQL.c_str());
 
@@ -3642,7 +3623,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
-		_LOG << "Warning: Noting to update." LOG_
+		_CL_VERBOSE << "Warning: Noting to update." LOG_
 		return ERR_NONE;
 	}
 
@@ -3650,7 +3631,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		// Add mode
 		mode = 0;
 		if (tables.Count() > 1) {
-			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			_CL_VERBOSE << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		
@@ -3712,7 +3693,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		
 		strSQL += " )";
 
-		_LOG << "Insert statement: " << strSQL.c_str() LOG_
+		_CL_VERBOSE << "Insert statement: " << strSQL.c_str() LOG_
 
 #ifdef USE_IMMEDIALY_CLOSE
 			PreparedStatement* pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
@@ -3751,7 +3732,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				try
 				{
 					pStatement->RunQuery();
-					_LOG << "Added a new row." LOG_
+					_CL_VERBOSE << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
 					pStatement = NULL;
@@ -3764,7 +3745,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 				catch (DatabaseLayerException& ex)
 				{
-					_LOG << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
+					_CL_VERBOSE << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
 					
 					try {
 						currentdbLayer->CloseStatement(pStatement);
@@ -3810,7 +3791,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							}
 
 							pStatement->RunQuery();
-							_LOG << "Added a new row." LOG_
+							_CL_VERBOSE << "Added a new row." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 							currentdbLayer->CloseStatement(pStatement);
 							pStatement = NULL;
@@ -3833,11 +3814,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					}
 				}
 			} else {
-				_LOG << "Insert statement failed." LOG_
+				_LOG << "Insert statement failed. No statement object could be created." LOG_
 			}
 	} else {
 		if (tables.Count() > 1) {
-			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			_CL_VERBOSE << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		
@@ -3934,14 +3915,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			}
 		}
 		
-		_LOG << "Update statement: " << strSQL.c_str() LOG_
+		_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
 
 		try {
 			pStatement->RunQuery();
 			
 #ifdef USE_IMMEDIALY_CLOSE
 			currentdbLayer->CloseStatement(pStatement);
-			_LOG << "Updated a row." LOG_
+			_CL_VERBOSE << "Updated a row." LOG_
 			pStatement = NULL;
 			theResult = NULL; // It will go invalid.
 			currentdbLayer->Close();
@@ -3950,9 +3931,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 #endif
 		}
 		catch (DatabaseLayerException ex) {
-			_LOG << "Error: Update statement failed." LOG_
+			_CL_VERBOSE << "Error: Update statement failed." LOG_
 			if (!currentdbLayer->IsOpen()) {
-				_LOG << "Error: Database is not open, retry update after opening the database." LOG_
+				_CL_VERBOSE << "Error: Database is not open, retry update after opening the database." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
 				pStatement = NULL;
@@ -3973,7 +3954,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					_LOG << "Error: Update statement after reoprning failed too." LOG_
 				}
 			} else {
-				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
+				_CL_VERBOSE << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
 				pStatement = NULL;
@@ -4013,7 +3994,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					}
 				}
 				
-				_LOG << "Update statement: " << strSQL.c_str() LOG_
+				_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
 				
 				try {
 					pStatement->RunQuery();
@@ -4045,7 +4026,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	absolute(pos);
 
 	if (currentCursorview.Count() == 0) {
-		_LOG << "Error: Reopen failed." LOG_
+		_CL_VERBOSE << "Error: Reopen failed." LOG_
 	}
 	
 	if (binaryDataColumns->Count() > 0) {

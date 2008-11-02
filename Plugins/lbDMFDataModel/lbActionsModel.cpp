@@ -62,11 +62,11 @@ lbActionsModel::lbActionsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	
-	_CL_LOG << "lbActionsModel::lbActionsModel() called." LOG_
+	_CL_VERBOSE << "lbActionsModel::lbActionsModel() called." LOG_
 }
 
 lbActionsModel::~lbActionsModel() {
-	_CL_LOG << "lbActionsModel::~lbActionsModel() called." LOG_
+	_CL_VERBOSE << "lbActionsModel::~lbActionsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbActionsModel::setData(lb_I_Unknown*) {

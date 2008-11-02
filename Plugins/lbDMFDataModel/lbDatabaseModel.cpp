@@ -59,11 +59,11 @@ lbDBTableModel::lbDBTableModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentRemarks)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbDBTableModel::lbDBTableModel() called." LOG_
+	_CL_VERBOSE << "lbDBTableModel::lbDBTableModel() called." LOG_
 }
 
 lbDBTableModel::~lbDBTableModel() {
-	_CL_LOG << "lbDBTableModel::~lbDBTableModel() called." LOG_
+	_CL_VERBOSE << "lbDBTableModel::~lbDBTableModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbDBTableModel::setData(lb_I_Unknown*) {
@@ -395,11 +395,11 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
+	_CL_VERBOSE << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
 }
 
 lbDBColumnsModel::~lbDBColumnsModel() {
-	_CL_LOG << "lbDBColumnsModel::~lbDBColumnsModel() called." LOG_
+	_CL_VERBOSE << "lbDBColumnsModel::~lbDBColumnsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbDBColumnsModel::setData(lb_I_Unknown*) {
@@ -764,11 +764,11 @@ lbDBForeignKeysModel::lbDBForeignKeysModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
 	REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbDBForeignKeysModel::lbDBForeignKeysModel() called." LOG_
+	_CL_VERBOSE << "lbDBForeignKeysModel::lbDBForeignKeysModel() called." LOG_
 }
 
 lbDBForeignKeysModel::~lbDBForeignKeysModel() {
-	_CL_LOG << "lbDBForeignKeysModel::~lbDBForeignKeysModel() called." LOG_
+	_CL_VERBOSE << "lbDBForeignKeysModel::~lbDBForeignKeysModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbDBForeignKeysModel::setData(lb_I_Unknown*) {
@@ -1210,11 +1210,11 @@ lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
-	_CL_LOG << "lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() called." LOG_
+	_CL_VERBOSE << "lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() called." LOG_
 }
 
 lbDBPrimaryKeysModel::~lbDBPrimaryKeysModel() {
-	_CL_LOG << "lbDBPrimaryKeysModel::~lbDBPrimaryKeysModel() called." LOG_
+	_CL_VERBOSE << "lbDBPrimaryKeysModel::~lbDBPrimaryKeysModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbDBPrimaryKeysModel::setData(lb_I_Unknown*) {

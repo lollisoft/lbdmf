@@ -61,11 +61,11 @@ lbFormularActionsModel::lbFormularActionsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentFormularActionEvent)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbFormularActionsModel::lbFormularActionsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularActionsModel::lbFormularActionsModel() called." LOG_
 }
 
 lbFormularActionsModel::~lbFormularActionsModel() {
-	_CL_LOG << "lbFormularActionsModel::~lbFormularActionsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularActionsModel::~lbFormularActionsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularActionsModel::setData(lb_I_Unknown*) {

@@ -62,11 +62,11 @@ lbFormularsModel::lbFormularsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentTyp)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_LOG << "lbFormularsModel::lbFormularsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularsModel::lbFormularsModel() called." LOG_
 }
 
 lbFormularsModel::~lbFormularsModel() {
-	_CL_LOG << "lbFormularsModel::~lbFormularsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularsModel::~lbFormularsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularsModel::setData(lb_I_Unknown*) {
@@ -427,11 +427,11 @@ lbFormularFieldsModel::lbFormularFieldsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	uniqueID = 0;
-	_CL_LOG << "lbFormularFieldsModel::lbFormularFieldsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularFieldsModel::lbFormularFieldsModel() called." LOG_
 }
 
 lbFormularFieldsModel::~lbFormularFieldsModel() {
-	_CL_LOG << "lbFormularFieldsModel::~lbFormularFieldsModel() called." LOG_
+	_CL_VERBOSE << "lbFormularFieldsModel::~lbFormularFieldsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularFieldsModel::setData(lb_I_Unknown*) {

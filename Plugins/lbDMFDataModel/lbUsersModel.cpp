@@ -59,10 +59,11 @@ lbUsersModel::lbUsersModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserID)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_VERBOSE << "lbUsersModel::lbUsersModel() called." LOG_
 }
 
 lbUsersModel::~lbUsersModel() {
-	_CL_LOG << "lbUsersModel::~lbUsersModel() called." LOG_
+	_CL_VERBOSE << "lbUsersModel::~lbUsersModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbUsersModel::setData(lb_I_Unknown*) {

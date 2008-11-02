@@ -60,7 +60,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbActionStepsModel::lbActionStepsModel() {
 	ref = STARTREF;
-	_LOG << "lbActionStepsModel::lbActionStepsModel() called." LOG_
+	_CL_VERBOSE << "lbActionStepsModel::lbActionStepsModel() called." LOG_
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionStepID)
@@ -73,7 +73,7 @@ lbActionStepsModel::lbActionStepsModel() {
 }
 
 lbActionStepsModel::~lbActionStepsModel() {
-	_LOG << "lbActionStepsModel::~lbActionStepsModel() called." LOG_
+	_CL_VERBOSE << "lbActionStepsModel::~lbActionStepsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbActionStepsModel::setData(lb_I_Unknown*) {
@@ -131,7 +131,7 @@ long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
-	_LOG << "Add a parameter to lbActionStepsModel: Bezeichnung: " << bezeichnung << ", ActionID = " << actionid LOG_
+	_CL_VERBOSE << "Add a parameter to lbActionStepsModel: Bezeichnung: " << bezeichnung << ", ActionID = " << actionid LOG_
 
 	*Bezeichnung = bezeichnung;
 	ActionId->setData(actionid);
@@ -395,7 +395,7 @@ IMPLEMENT_FUNCTOR(instanceOflbActionStepTransitionsModel, lbActionStepTransition
 
 lbActionStepTransitionsModel::lbActionStepTransitionsModel() {
 	ref = STARTREF;
-	_LOG << "lbActionStepTransitionsModel::lbActionStepTransitionsModel() called." LOG_
+	_CL_VERBOSE << "lbActionStepTransitionsModel::lbActionStepTransitionsModel() called." LOG_
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
@@ -408,7 +408,7 @@ lbActionStepTransitionsModel::lbActionStepTransitionsModel() {
 }
 
 lbActionStepTransitionsModel::~lbActionStepTransitionsModel() {
-	_LOG << "lbActionStepTransitionsModel::~lbActionStepTransitionsModel() called." LOG_
+	_CL_VERBOSE << "lbActionStepTransitionsModel::~lbActionStepTransitionsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbActionStepTransitionsModel::setData(lb_I_Unknown*) {
@@ -465,7 +465,7 @@ long  LB_STDCALL lbActionStepTransitionsModel::addTransition(const char* decisio
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_LOG << "long  LB_STDCALL lbActionStepTransitionsModel::addTransition(...) called." LOG_
+	_CL_VERBOSE << "long  LB_STDCALL lbActionStepTransitionsModel::addTransition(...) called." LOG_
 
 	*Description = description;
 	SrcActionId->setData(src_actionid);
