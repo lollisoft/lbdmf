@@ -801,6 +801,12 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		_LOG << "Info: No forms to be destroyed." LOG_
 	}
 	
+	if (frame->isPanelUsage()) {
+		while (notebook && notebook->GetPageCount() > 0) {
+			notebook->RemovePage(0);
+		}
+	}
+	
 	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
@@ -845,13 +851,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	forms->detachAll();
 	
 	_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-
-	if (frame->isPanelUsage()) {
-		while (notebook && notebook->GetPageCount() > 0) {
-			notebook->RemovePage(0);
-		}
-	}
-
 
 	return ERR_NONE;
 }
