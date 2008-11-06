@@ -1071,6 +1071,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 	
 	if (haveLoadedDBModel == false) {
 		metaapp->setStatusText("Info", "Loading target database schema ...");
+		/** \todo Create an event for formulars that store actually selected entry.
+		 * To be read here for desision what schema should be loaded.
+		 */
 		loadDatabaseSchema(NULL);
 		if (haveLoadedDBModel == false) {
 			metaapp->msgBox("Error", "Failed to load target database schema.\n\nThis is required for XML export.");

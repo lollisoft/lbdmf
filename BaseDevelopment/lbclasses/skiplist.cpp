@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.55 2008/07/25 16:43:50 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.56 2008/11/06 18:45:34 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.56  2008/11/06 18:45:34  lollisoft
+ * Some bugfixes.
+ *
  * Revision 1.55  2008/07/25 16:43:50  lollisoft
  * Fixed application crash at exit.
  *
@@ -311,23 +314,23 @@ lbSkipListElement::lbSkipListElement(const lb_I_Element &e) {
 
 /*...sSkipNode implementation:0:*/
 SkipNode::SkipNode() {
-    	myLevel = MAXLEVEL;
-    	//value = NULL;
+   	myLevel = MAXLEVEL;
+   	//value = NULL;
     	
-    	forward = new SkipNode* [myLevel+1];
-    	for (int i=0; i<=myLevel; i++)
-    	    forward[i] = NULL;
+   	forward = new SkipNode* [myLevel+1];
+   	for (int i=0; i<=myLevel; i++)
+  	    forward[i] = NULL;
 }
     
 SkipNode::SkipNode(lb_I_Element* r, int level) {
-        myLevel = level;
-        value = r;
-
-        if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
-        forward = new SkipNode* [level+1];
-
-        for (int i=0; i<=level; i++)
-            forward[i] = NULL;
+    myLevel = level;
+    value = r;
+	
+    if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
+    forward = new SkipNode* [level+1];
+	
+    for (int i=0; i<=level; i++)
+        forward[i] = NULL;
 }
 
 SkipNode::~SkipNode() { 
@@ -417,6 +420,7 @@ void LB_STDCALL SkipList::setCloning(bool doClone) {
 }
 
 SkipList::SkipList() {
+	ref = STARTREF;
 	iteration = 0;
 	canDeleteObjects = true;
 	head = NULL; //new SkipNode();
@@ -424,7 +428,6 @@ SkipList::SkipList() {
 	flag = 1;
 	level = MAXLEVEL;
 	count = 0;
-	ref = STARTREF;
 	cloning = true;
 	_currentKey = NULL;
 }
@@ -606,8 +609,8 @@ lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) {
     lb_I_Unknown* e = search(*key);
     
     if (e == NULL) {
-	_LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
-	_LOG << "SkipList::getElement(...) searched for '" << (*key)->charrep() << "'" LOG_
+	_CL_VERBOSE << "SkipList::getElement(...) returns a NULL pointer!" LOG_
+	_CL_VERBOSE << "SkipList::getElement(...) searched for '" << (*key)->charrep() << "'" LOG_
     }
     
     return e;
@@ -723,7 +726,7 @@ void SkipList::insert(Elem newValue) { // Insert into skiplist
 		  e = x->forward[i] != NULL ? x->forward[i]->value.getPtr() : NULL;
 		  
 		  if ((x->forward[i] != NULL) && (x->forward[i]->value.getPtr() == NULL)) {
-			  _CL_LOG << "FATAL: Skiplist may be corrupted!" LOG_
+			  _LOG << "FATAL: Skiplist may be corrupted!" LOG_
 		  }
 	  }
 	  update[i] = x;              // Keep track of end at level i

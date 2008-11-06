@@ -1334,7 +1334,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			if (oStream->open()) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
 				*oStream << "</xsl:stylesheet>\n";
 				oStream->close();
 			}
