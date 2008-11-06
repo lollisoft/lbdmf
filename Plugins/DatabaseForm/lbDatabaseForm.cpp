@@ -467,6 +467,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	}
 	
 	char* dbbackend = meta->getApplicationDatabaseBackend();
+	
+	if (strcmp(DBName, "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+		dbbackend = meta->getSystemDatabaseBackend();
+	}
+	
+	
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
@@ -1669,6 +1675,11 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::close() {
 	
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
+
+		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+			dbbackend = meta->getSystemDatabaseBackend();
+		}
+
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
@@ -1704,6 +1715,11 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 	
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
+		
+		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+			dbbackend = meta->getSystemDatabaseBackend();
+		}
+
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
@@ -2517,6 +2533,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	char* dbbackend = meta->getApplicationDatabaseBackend();
+
+	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+		dbbackend = meta->getSystemDatabaseBackend();
+	}
+
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
@@ -3009,6 +3030,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	char* dbbackend = meta->getApplicationDatabaseBackend();
+
+	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+		dbbackend = meta->getSystemDatabaseBackend();
+	}
+
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")

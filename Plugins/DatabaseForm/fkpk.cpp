@@ -144,7 +144,12 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	sprintf(buffer, buf, PKTable->charrep());
 	
 	UAP(lb_I_Database, queryDB)
-	char* dbbackend = meta->getSystemDatabaseBackend();
+	char* dbbackend = meta->getApplicationDatabaseBackend();
+
+	if (strcmp(_DBName, "lbDMF") == 0) {
+		dbbackend = meta->getSystemDatabaseBackend();
+	}
+	
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, queryDB, "'database plugin'")

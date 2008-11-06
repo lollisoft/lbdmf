@@ -1874,7 +1874,8 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			meta->setStatusText("Info", msg->charrep());
 
 			UAP(lb_I_Database, db)
-			char* dbbackend = meta->getApplicationDatabaseBackend();
+			char* dbbackend = meta->getSystemDatabaseBackend();
+
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
@@ -1965,7 +1966,8 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	sprintf(q, buf, myActionID);
 
 	UAP(lb_I_Database, db)
-	dbbackend = meta->getApplicationDatabaseBackend();
+	dbbackend = meta->getSystemDatabaseBackend();
+
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
@@ -2184,7 +2186,7 @@ void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 			meta->setStatusText("Info", msg->charrep());
 
 			UAP(lb_I_Database, db)
-			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			char* dbbackend = metaapp->getSystemDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
@@ -2275,7 +2277,7 @@ void LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	sprintf(q, buf, myActionID);
 
 	UAP(lb_I_Database, db)
-	char* dbbackend = metaapp->getApplicationDatabaseBackend();
+	char* dbbackend = metaapp->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
@@ -2493,7 +2495,7 @@ void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 			meta->setStatusText("Info", msg->charrep());
 
 			UAP(lb_I_Database, db)
-			char* dbbackend = metaapp->getApplicationDatabaseBackend();
+			char* dbbackend = metaapp->getSystemDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
@@ -2584,7 +2586,7 @@ void LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	sprintf(q, buf, myActionID);
 
 	UAP(lb_I_Database, db)
-	char* dbbackend = metaapp->getApplicationDatabaseBackend();
+	char* dbbackend = metaapp->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, db, "'database plugin'")
