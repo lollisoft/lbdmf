@@ -1190,8 +1190,28 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 	
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
-		
+    UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Parameter, document)
+	UAP(lb_I_Unknown, uk)
+
+	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+
+	visit(*&appParams); // Do an additional load of application parameters. This avoids much code changes.
+
+	uk = metaapp->getActiveDocument();
+	
+	if (uk == NULL) {
+		_LOG << "Error: Expected an 'active document' here!" LOG_
+		return;
+	}
+	
+    QI(uk, lb_I_Parameter, document)
+	
+	
 	/// \todo There is a problem when using Sqlite database wrapper and the cursor emulation.
 	
 	/*
@@ -1240,46 +1260,37 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				formularquery = query_query->getAsString(1);
 				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
 
-				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_Database, customDB)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
-				UAP(lb_I_ApplicationParameter, appParams)
 				
-				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-				UAP(lb_I_Unknown, ukDoc)
-				UAP(lb_I_Parameter, document)
-				ukDoc = metaapp->getActiveDocument();
-				QI(ukDoc, lb_I_Parameter, document)
+				*dbname = "";
+				*dbuser = "";
+				*dbpass = "";
 				
-				document->setCloning(false);
-				
-				UAP(lb_I_KeyBase, key)
-				UAP_REQUEST(getModuleInstance(), lb_I_Container, doc)
-				doc->setCloning(false);
-				
-				*name = "ApplicationData";
-				document->getUAPContainer(*&name, *&doc);
-				*name = "AppParams";
-				QI(name, lb_I_KeyBase, key)
-				uk = doc->getElement(&key);
-				QI(uk, lb_I_ApplicationParameter, appParams)
-			
+				char* dbbackend = metaapp->getApplicationDatabaseBackend();
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
+				} else {
+					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
+				}
+
 				// Get the application ID, that would be stored inside the XML document
 				UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 				*name = "SaveApplicationID";
-				document->getUAPInteger(*&name, *&AppID);	
-
+				
+				AppID->setData(1); // The default
+				
+				document->getUAPInteger(*&name, *&AppID);
+				
 				*dbname = appParams->getParameter("DBName", AppID->getData());
 				*dbuser = appParams->getParameter("DBUser", AppID->getData());
 				*dbpass = appParams->getParameter("DBPass", AppID->getData());
 				
-				
 				metaapp->setStatusText("Info", "Target database is application database ...");
 				
 				/************/
-				char* dbbackend = metaapp->getApplicationDatabaseBackend();
 				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 					AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
@@ -1298,13 +1309,31 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				customDB->init();
 				/************/
 				
-				if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
-					_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
-					/// \todo Implement fallback to Sqlite3.
-					metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					// It is the plugin that currently only supports local Sqlite
+					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0); // Use retrieved database name
+					}
+				} else {
+					if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
+
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0);
+					}
 				}
 				
-				form_query = customDB->getQuery(dbname->charrep(), 0);
 				
 				form_query->enableFKCollecting();
 				_LOG << "Execute query '" << formularquery->charrep() << "'" LOG_
