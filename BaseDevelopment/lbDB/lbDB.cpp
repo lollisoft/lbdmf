@@ -1756,7 +1756,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
 		_LOG << "lbQuery::query(...) failed. (" << szSql << "). Error code: " << (long) retcode LOG_
-        dbError("SQLExecDirect()", hstmt);
+        //dbError("SQLExecDirect()", hstmt);
 		return ERR_DB_QUERYFAILED;
         }
 
