@@ -689,14 +689,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			fOpDB->end();
 		} else {
 			UAP(lb_I_Database, customDB)
+			UAP(lb_I_Database, custom_formularfieldsDB)
 			UAP(lb_I_DatabaseOperation, fOpCustomDB)
+			UAP(lb_I_DatabaseOperation, fOpCustomformularfieldsDB)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
 			
 			metaapp->setStatusText("Info", "Target database is application database ...");
 
-/************/
+			/************/
 			char* dbbackend = metaapp->getApplicationDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -707,15 +709,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 				REQUEST(getModuleInstance(), lb_I_Database, customDB)
 				_LOG << "Using built in database backend for UML import operation..." LOG_
 			}
-
+			
 			if (customDB == NULL) {
 				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
 			}
-
+			
 			customDB->init();
-/************/
-
+			/************/
+			
 			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using custom database." LOG_
 			
 			*dbname = appParams->getParameter("DBName", AppID->getData());
@@ -730,12 +732,44 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 				if (pl != NULL)	ukPl = pl->getImplementation();
 				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
-				
+
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+				if (pl != NULL)	ukPl = pl->getImplementation();
+				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomformularfieldsDB)
+					
 				if (fOpCustomDB != NULL) {
 					_LOG << "Reading custom configuration from " << dbname->charrep() << "." LOG_
 					fOpCustomDB->begin(dbname->charrep(), customDB.getPtr());
 					
-					formularfields->accept(*&fOpCustomDB);
+					/************/
+					char* dbbackend = metaapp->getSystemDatabaseBackend();
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, custom_formularfieldsDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, custom_formularfieldsDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+					
+					if (custom_formularfieldsDB == NULL) {
+						_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+						return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+					}
+
+					if ((custom_formularfieldsDB != NULL) && (custom_formularfieldsDB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+						_LOG << "Fatal: No system database available. Cannot read formular fields model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						metaapp->msgBox("Fatal", "No system database available. Cannot read formular fields model for custom application!");
+						fOpCustomDB->end();
+						return ERR_DB_CONNECT;
+					}
+					
+					custom_formularfieldsDB->init();
+					/************/
+					
+					if (fOpCustomformularfieldsDB != NULL) formularfields->accept(*&fOpCustomformularfieldsDB);
 					dbPrimaryKeys->accept(*&fOpCustomDB);
 					dbForeignKeys->accept(*&fOpCustomDB);
 					dbTables->accept(*&fOpCustomDB);
