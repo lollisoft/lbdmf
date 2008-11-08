@@ -1755,8 +1755,8 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
-        	//dbError("SQLExecDirect()", hstmt);
 		_LOG << "lbQuery::query(...) failed. (" << szSql << "). Error code: " << (long) retcode LOG_
+        dbError("SQLExecDirect()", hstmt);
 		return ERR_DB_QUERYFAILED;
         }
 
@@ -5600,6 +5600,7 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 
 lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabase::getTables(" << connectionname << ") called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
 	tables++;
 	
@@ -5626,6 +5627,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 			hdbc = c->getConnection();
 			connected = true;
 		}
+	} else {
+        _LOG << "Error: No pooled connection found." LOG_
 	}
 	
 	tables->setCloning(false);
@@ -5738,6 +5741,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 
 lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabase::getColumns(" << connectionname << ") called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columns++;
 
@@ -5766,6 +5770,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 			hdbc = c->getConnection();
 			connected = true;
 		}
+	} else {
+        _LOG << "Error: No pooled connection found." LOG_
 	}
 	
 	columns->setCloning(false);
@@ -5960,7 +5966,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
-	_LOG << "lbDatabase::getPrimaryKeys() called." LOG_
+	_LOG << "lbDatabase::getPrimaryKeys(" << connectionname << ") called." LOG_
 #define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
 #define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
@@ -6010,6 +6016,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 			hdbc = c->getConnection();
 			connected = true;
 		}
+	} else {
+        _LOG << "Error: No pooled connection found." LOG_
 	}
 		
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
@@ -6118,6 +6126,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 
 lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabase::getForeignKeys(" << connectionname << ") called." LOG_
 #define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
 #define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, ForeignKeys)
@@ -6179,6 +6188,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 			hdbc = c->getConnection();
 			connected = true;
 		}
+	} else {
+        _LOG << "Error: No pooled connection found." LOG_
 	}
 	
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
