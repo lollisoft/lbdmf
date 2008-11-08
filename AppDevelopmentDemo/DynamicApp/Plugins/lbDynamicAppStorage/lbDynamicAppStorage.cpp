@@ -1324,7 +1324,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 		document->getUAPString(*&param, *&DBPass);
 	}
 
-	// Write the settings file here ...
+	// Write the settings file for the application database here ...
 	
 	if (XSLFileSettings->charrep() != NULL) {
 		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
@@ -1523,6 +1523,24 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	// Read the stylesheet document to import application definition into system database
 	
 	metaapp->setStatusText("Info", "Importing lbDMF application definition ...");
+
+	// Write the settings file for the application database here ...
+	
+	if (XSLFileSettings->charrep() != NULL) {
+		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+			
+			oStream->setFileName(XSLFileSettings->charrep());
+			if (oStream->open()) {
+				oStream->setBinary();
+				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/>\n";
+				*oStream << "</xsl:stylesheet>\n";
+				oStream->close();
+			}
+		}
+	}
+
 
 	if (metaapp->askYesNo("Would you create the application definition for the application to be imported into the system database ?")) {
 		UAP(lb_I_String, styledoc)
