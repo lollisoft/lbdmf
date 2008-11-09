@@ -1227,7 +1227,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 	q->skipFKCollecting();
 	// Get all formulars, even one is custom
-	if (q->query("select id from formulare") != ERR_NONE) {
+	if (q->query("select id, anwendungid from formulare") != ERR_NONE) {
 		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
 		return;
 	}
@@ -1242,6 +1242,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 		
 		FormularID = q->getAsLong(1);
+		AnwendungID = q->getAsLong(2);
 
 		query_query = db->getQuery("lbDMF", 0);
 		
@@ -1276,17 +1277,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
 				}
 
-				// Get the application ID, that would be stored inside the XML document
-				UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
-				*name = "SaveApplicationID";
-				
-				AppID->setData(1); // The default
-				
-				document->getUAPInteger(*&name, *&AppID);
-				
-				*dbname = appParams->getParameter("DBName", AppID->getData());
-				*dbuser = appParams->getParameter("DBUser", AppID->getData());
-				*dbpass = appParams->getParameter("DBPass", AppID->getData());
+				*dbname = appParams->getParameter("DBName", AnwendungID->getData());
+				*dbuser = appParams->getParameter("DBUser", AnwendungID->getData());
+				*dbpass = appParams->getParameter("DBPass", AnwendungID->getData());
 				
 				metaapp->setStatusText("Info", "Target database is application database ...");
 				
