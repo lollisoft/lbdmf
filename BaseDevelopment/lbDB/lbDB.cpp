@@ -2663,7 +2663,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
-	
+	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, metaapp)
 	char buffer[1000] = "";
 	
 	/* For each column in the table for the current query try to select the PKTable and associate it to
@@ -2680,19 +2680,29 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	
 	char* table = T->charrep();
-	
-	lb_I_Module* m = getModuleManager();
+	char* sysdbbackend = metaapp->getSystemDatabaseBackend();
 
-        UAP_REQUEST(m, lb_I_Database, db)
-        db->init();
+	UAP(lb_I_Database, db)
+
+	if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend, db, "'database plugin'")
+		_LOG << "Using plugin database backend for UML import operation..." LOG_
+	} else {
+		// Use built in
+		REQUEST(getModuleInstance(), lb_I_Database, db)
+		_LOG << "Using built in database backend for UML import operation..." LOG_
+	}
+		
+	db->init();
 	
-        char* user = getenv("lbDMFUser");
-        char* pass = getenv("lbDMFPasswd");
+	char* user = getenv("lbDMFUser");
+	char* pass = getenv("lbDMFPasswd");
 	
-        if (!user) user = "dba";
-        if (!pass) pass = "trainres";
+	if (!user) user = "dba";
+	if (!pass) pass = "trainres";
 	
-        db->connect("lbDMF", "lbDMF", user, pass);
+	db->connect("lbDMF", "lbDMF", user, pass);
 
 	
 	for (int i = 1; i <= getColumns(); i++) { 
@@ -2720,12 +2730,12 @@ void LB_STDCALL lbQuery::prepareFKList() {
 			err = q->first();
 
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+				UAP_REQUEST(getModuleManager(), lb_I_String, FKName)
+				UAP_REQUEST(getModuleManager(), lb_I_String, PKTable)
+				UAP_REQUEST(getModuleManager(), lb_I_String, PKName)
+				UAP_REQUEST(getModuleManager(), lb_I_String, PKTable_PKName)
 	
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+				UAP_REQUEST(getModuleManager(), lb_I_String, PKColumn)
 	
 				PKTable = q->getAsString(1);
 				PKName = q->getAsString(2);
