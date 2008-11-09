@@ -1290,7 +1290,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					// It is the system database
 					if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend, customDB, "'database plugin'")
 						_LOG << "Using plugin database backend for UML import operation..." LOG_
 					} else {
 						// Use built in
