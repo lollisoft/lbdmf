@@ -1271,6 +1271,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				*dbpass = "";
 				
 				char* dbbackend = metaapp->getApplicationDatabaseBackend();
+				char* sysdbbackend = metaapp->getSystemDatabaseBackend();
 				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
 				} else {
@@ -1284,15 +1285,31 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				metaapp->setStatusText("Info", "Target database is application database ...");
 				
 				/************/
-				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-					AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
-					_LOG << "Using plugin database backend for UML import operation..." LOG_
+				
+				if (strcmp(dbname->charrep(), "lbDMF") == 0) {
+					// It is the system database
+					if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
 				} else {
-					// Use built in
-					REQUEST(getModuleInstance(), lb_I_Database, customDB)
-					_LOG << "Using built in database backend for UML import operation..." LOG_
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
 				}
+				
+				
 				
 				if (customDB == NULL) {
 					_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
