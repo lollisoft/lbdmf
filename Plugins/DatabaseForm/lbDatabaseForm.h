@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.50 2008/10/03 14:28:06 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.51 2008/11/13 19:03:09 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.51  2008/11/13 19:03:09  lollisoft
+ * Added a new action 'open application'.
+ *
  * Revision 1.50  2008/10/03 14:28:06  lollisoft
  * Added a functionality to refresh the database forms.
  * This may be usefull when a database lock occures.
@@ -434,6 +437,25 @@ class lbSQLQueryAction : public lb_I_DelegatedAction
 public:
 	lbSQLQueryAction();
 	virtual ~lbSQLQueryAction();
+
+	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL execute(lb_I_Parameter* params);
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+	long myActionID;
+	UAP(lb_I_Database, db)
+};
+/*...e*/
+/*...sclass lbExecuteAction:0:*/
+class lbExecuteAction : public lb_I_DelegatedAction
+{
+public:
+	lbExecuteAction();
+	virtual ~lbExecuteAction();
 
 	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
