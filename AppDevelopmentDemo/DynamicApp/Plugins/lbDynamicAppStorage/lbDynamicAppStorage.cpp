@@ -1486,7 +1486,19 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			database->init();
 			
 			if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
-				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. No spaces are in the database name.\n3. Database is created.\n4. Login credentials are correct.");
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				*msg = "Could not login to given database.\n";
+				*msg += "Please check the following:\n\n";
+				*msg += "1. ODBC setup is correct.\n";
+				*msg += "2. No spaces are in the database name.\n";
+				*msg += "3. Database is created.\n";
+				*msg += "4. Login credentials are correct.\n\n";
+				*msg += "(Is the following setup correct:\nDatabase: ";
+				*msg += DBName->charrep();
+				*msg += "\nUser: ";
+				*msg += DBUser->charrep();
+				*msg += " ?";
+				metaapp->msgBox("Error", msg->charrep());
 				return ERR_DB_CONNECT;
 			}
 			
@@ -1648,7 +1660,19 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 			
 			if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. Database is created.\n3. Login credentials are correct.");
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				*msg = "Could not login to given database.\n";
+				*msg += "Please check the following:\n\n";
+				*msg += "1. ODBC setup is correct.\n";
+				*msg += "2. No spaces are in the database name.\n";
+				*msg += "3. Database is created.\n";
+				*msg += "4. Login credentials are correct.\n\n";
+				*msg += "(Is the following setup correct:\nDatabase: ";
+				*msg += DBName->charrep();
+				*msg += "\nUser: ";
+				*msg += DBUser->charrep();
+				*msg += " ?";
+				metaapp->msgBox("Error", msg->charrep());
 				return ERR_DB_CONNECT;
 			}
 			
