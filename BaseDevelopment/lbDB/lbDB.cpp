@@ -5608,6 +5608,11 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 }
 /*...e*/
 
+/* A form could be displayed to reduce the tables to be extracted per call.
+ * This could be implemented by a meta application function as a 'data selector' view.
+ */
+	
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getTables(" << connectionname << ") called." LOG_
@@ -5749,6 +5754,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	return tables.getPtr();
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getColumns(" << connectionname << ") called." LOG_
@@ -5974,6 +5980,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	return columns.getPtr();
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getPrimaryKeys(" << connectionname << ") called." LOG_
@@ -6134,6 +6141,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	return PrimaryKeys.getPtr();
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getForeignKeys(" << connectionname << ") called." LOG_
