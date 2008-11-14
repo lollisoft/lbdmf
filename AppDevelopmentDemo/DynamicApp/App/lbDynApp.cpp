@@ -769,10 +769,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 					custom_formularfieldsDB->init();
 					/************/
 					
-					if (fOpCustomformularfieldsDB != NULL) formularfields->accept(*&fOpCustomformularfieldsDB);
+					if (fOpCustomformularfieldsDB != NULL) {
+						fOpCustomformularfieldsDB->begin(dbname->charrep(), custom_formularfieldsDB.getPtr());
+						formularfields->accept(*&fOpCustomformularfieldsDB);
+					}
+					metaapp->setStatusText("Info", "Reading primary keys ...");
 					dbPrimaryKeys->accept(*&fOpCustomDB);
+					metaapp->setStatusText("Info", "Reading foreign keys ...");
 					dbForeignKeys->accept(*&fOpCustomDB);
+					metaapp->setStatusText("Info", "Reading tables ...");
 					dbTables->accept(*&fOpCustomDB);
+					metaapp->setStatusText("Info", "Reading columns ...");
 					dbColumns->accept(*&fOpCustomDB);
 					
 					fOpCustomDB->end();
