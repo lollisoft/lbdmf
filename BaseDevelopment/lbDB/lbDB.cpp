@@ -5608,11 +5608,6 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 }
 /*...e*/
 
-/* A form could be displayed to reduce the tables to be extracted per call.
- * This could be implemented by a meta application function as a 'data selector' view.
- */
-	
-/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getTables(" << connectionname << ") called." LOG_
@@ -5754,7 +5749,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	return tables.getPtr();
 }
 
-/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getColumns(" << connectionname << ") called." LOG_
@@ -5815,6 +5809,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	if (retcode != SQL_SUCCESS)
 	{
 		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		meta->setStatusText("Info", "Get columns failed.");
 		return columns.getPtr();
 	}
 
@@ -5858,7 +5853,24 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		 SQLBindCol(hstmt, 18, SQL_C_CHAR, szIsNullable, TAB_LEN, &cbIsNullable);
 		 
 		 
-		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameDatetimeSubtypeCode)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameDataType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameBufferLength)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameDecimalDigits)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameNumPrecRadix)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameNullable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameRemarks)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnDefault)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameSQLDataType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameCharOctetLength)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameOrdinalPosition)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameIsNullable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameTypeName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnSize)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 
@@ -5870,13 +5882,36 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		
 		_LOG << "lbDatabase::getColumns() short before fetching column informations." LOG_
 
+		*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
+		*nameTableCatalog = "TableCatalog";
+		*nameTableSchema = "TableSchema";
+		*nameTableName = "TableName";
+		*nameColumnName = "ColumnName";
+		*nameDataType = "DataType";
+		*nameTypeName = "TypeName";
+		*nameBufferLength = "BufferLength";
+		*nameDecimalDigits = "DecimalDigits";
+		*nameNumPrecRadix = "NumPrecRadix";
+		*nameNullable = "Nullable";
+		*nameRemarks = "Remarks";
+		*nameColumnDefault = "ColumnDefault";
+		*nameSQLDataType = "SQLDataType";
+		*nameCharOctetLength = "CharOctetLength";
+		*nameOrdinalPosition = "OrdinalPosition";
+		*nameIsNullable = "IsNullable";
+		*nameColumnSize = "ColumnSize";
+
+		long columnsPortion = 0;
+		long columnsImported = 0;
+
 		while(retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-				 _LOG << "Error: Some error happened while fetching tables." LOG_
-				 columns->deleteAll();
-				 SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
-				 return columns.getPtr();
+				_LOG << "Error: Some error happened while fetching columns." LOG_
+				meta->setStatusText("Info", "Get columns failed.");
+				columns->deleteAll();
+				SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+				return columns.getPtr();
 			 }
 			 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
 				 ;   /* Process fetched data */
@@ -5884,89 +5919,79 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 					 
 				 number->setData((long)DatetimeSubtypeCode);
-				 *name = "DatetimeSubtypeCode";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameDatetimeSubtypeCode, *&number);
 				 
 				 *value = (const char*) szCatalog;
-				 *name = "TableCatalog";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameTableCatalog, *&value);
 				 
 				 *value = (const char*) szSchema;
-				 *name = "TableSchema";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameTableSchema, *&value);
 				 
 				 *value = (const char*) szTableName;
-				 *name = "TableName";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameTableName, *&value);
 				 
 				 *value = (const char*) szColumnName;
-				 *name = "ColumnName";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameColumnName, *&value);
 				 
 				 number->setData((long)DataType);
-				 *name = "DataType";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameDataType, *&number);
 				 
 				 *value = (const char*) szTypeName;
-				 *name = "TypeName";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameTypeName, *&value);
 				 
 				 number->setData((long)BufferLength);
-				 *name = "BufferLength";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameBufferLength, *&number);
 				 
 				 number->setData((long)DecimalDigits);
-				 *name = "DecimalDigits";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameDecimalDigits, *&number);
 				 
 				 number->setData((long)NumPrecRadix);
-				 *name = "NumPrecRadix";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameNumPrecRadix, *&number);
 				 
 				 number->setData((long)Nullable);
-				 *name = "Nullable";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameNullable, *&number);
 				 
 				 *value = (const char*) szRemarks;
-				 *name = "Remarks";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameRemarks, *&value);
 				 
 				 *value = (const char*) szColumnDefault;
-				 *name = "ColumnDefault";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameColumnDefault, *&value);
 				 
 				 number->setData((long)SQLDataType);
-				 *name = "SQLDataType";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameSQLDataType, *&number);
 				 
 				 number->setData((long)CharOctetLength);
-				 *name = "CharOctetLength";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameCharOctetLength, *&number);
 				 
 				 number->setData((long)OrdinalPosition);
-				 *name = "OrdinalPosition";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameOrdinalPosition, *&number);
 				 
 				 *value = (const char*) szIsNullable;
-				 *name = "IsNullable";
-				 param->setUAPString(*&name, *&value);
+				 param->setUAPString(*&nameIsNullable, *&value);
 				 
 				 number->setData((long)ColumnSize);
-				 *name = "ColumnSize";
-				 param->setUAPLong(*&name, *&number);
+				 param->setUAPLong(*&nameColumnSize, *&number);
 
 				 index->setData(++i);
 				 
 				 UAP(lb_I_Unknown, uk)
 				 QI(param, lb_I_Unknown, uk)
-				 
-				*msg = "Get column ";
-				*msg += (const char*) szColumnName;
-				*msg += " of table ";
-				*msg += (const char*) szTableName;
-				*msg += " ...";
+				
+				 columnsPortion++;
 
-				meta->setStatusText("Info", msg->charrep());
+				 if (columnsPortion == 100) {
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+					columnsImported += columnsPortion;
+					columnsPortion = 0;
+					l->setData(columnsImported);
+	
+					*msg = "Got ";
+					*msg += l->charrep();
+					*msg += " of columns ...";
+
+					meta->setStatusText("Info", msg->charrep());
+
+				 }
 				 
 				 
 				columns->insert(&uk, &key);
@@ -5980,7 +6005,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	return columns.getPtr();
 }
 
-/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getPrimaryKeys(" << connectionname << ") called." LOG_
@@ -6141,7 +6165,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	return PrimaryKeys.getPtr();
 }
 
-/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes (in the visitor and by adding a function to insert that container).
 lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getForeignKeys(" << connectionname << ") called." LOG_
@@ -6238,83 +6261,90 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	UAP(lb_I_Container, tables)
 	
 	
-	tables = getTables(connectionname);
+	//tables = getTables(connectionname);
 	
 	
-	while (tables->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_Parameter, param)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
-		uk = tables->nextElement();
-		QI(uk, lb_I_Parameter, param)
+	//while (tables->hasMoreElements() == 1) {
+		//UAP(lb_I_Unknown, uk)
+		//UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+		//UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
+		//uk = tables->nextElement();
 			
-		*paramname = "TableName";
-		param->getUAPString(*&paramname, *&tablename);
+		//*paramname = "TableName";
+		//param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);        
+		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, /*(SQLCHAR*) tablename->charrep()*/NULL, 0/*SQL_NTS*/);        
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
-			UAP(lb_I_KeyBase, key)
-			QI(index, lb_I_KeyBase, key)
+		//UAP(lb_I_KeyBase, key)
+		QI(index, lb_I_KeyBase, key)
 			
-			long i = 0;
+		long i = 0;
 		
-		_LOG << "Extract foreign key from table '" << tablename->charrep() << "'." LOG_
+		//_LOG << "Extract foreign key from table '" << tablename->charrep() << "'." LOG_
 		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, namePKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, namePKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, namePKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, namePKTableColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameFKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameFKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameFKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameFKTableColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameKeySequence)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameUpdateRule)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, nameDeleteRule)
+
+		*namePKTableCatalog = "PKTableCatalog";
+		*namePKTableSchema = "PKTableSchema";
+		*namePKTableName = "PKTableName";
+		*namePKTableColumnName = "PKTableColumnName";
+		*nameFKTableCatalog = "FKTableCatalog";
+		*nameFKTableSchema = "FKTableSchema";
+		*nameFKTableName = "FKTableName";
+		*nameFKTableColumnName = "FKTableColumnName";
+		*nameKeySequence = "KeySequence";
+		*nameUpdateRule = "UpdateRule";
+		*nameDeleteRule = "DeleteRule";
+
+
 		while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 				UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 				UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
-				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 				
-				*name = "PKTableCatalog";
 				*value = (const char*) PKTableCatalog;
-				param->setUAPString(*&name, *&value);
-				*name = "PKTableSchema";
+				param->setUAPString(*&namePKTableCatalog, *&value);
 				*value = (const char*) PKTableSchema;
-				param->setUAPString(*&name, *&value);
-				*name = "PKTableName";
+				param->setUAPString(*&namePKTableSchema, *&value);
 				*value = (const char*) PKTableName;
-				param->setUAPString(*&name, *&value);
-				*name = "PKTableColumnName";
+				param->setUAPString(*&namePKTableName, *&value);
 				*value = (const char*) PKTableColumnName;
-				param->setUAPString(*&name, *&value);
+				param->setUAPString(*&namePKTableColumnName, *&value);
 				
-				*name = "FKTableCatalog";
 				*value = (const char*) FKTableCatalog;
-				param->setUAPString(*&name, *&value);
-				*name = "FKTableSchema";
+				param->setUAPString(*&nameFKTableCatalog, *&value);
 				*value = (const char*) FKTableSchema;
-				param->setUAPString(*&name, *&value);
-				*name = "FKTableName";
+				param->setUAPString(*&nameFKTableSchema, *&value);
 				*value = (const char*) FKTableName;
-				param->setUAPString(*&name, *&value);
-				*name = "FKTableColumnName";
+				param->setUAPString(*&nameFKTableName, *&value);
 				*value = (const char*) FKTableColumnName;
-				param->setUAPString(*&name, *&value);
-				
-				
-				
-				*name = "KeySequence";
+				param->setUAPString(*&nameFKTableColumnName, *&value);
+
 				number->setData(KeySequence);
-				param->setUAPLong(*&name, *&number);
-				
-				*name = "UpdateRule";
+				param->setUAPLong(*&nameKeySequence, *&number);
 				number->setData(UpdateRule);
-				param->setUAPLong(*&name, *&number);
-				
-				*name = "DeleteRule";
+				param->setUAPLong(*&nameUpdateRule, *&number);
 				number->setData(DeleteRule);
-				param->setUAPLong(*&name, *&number);
+				param->setUAPLong(*&nameDeleteRule, *&number);
 				
 				index->setData(++i);
 				
 				UAP(lb_I_Unknown, uk)
 					QI(param, lb_I_Unknown, uk)
-					
+/*					
 					*msg = "Get foreign column ";
 					*msg += (const char*) FKTableColumnName;
 					*msg += " of table ";
@@ -6326,14 +6356,14 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 					*msg += " ...";
 
 					meta->setStatusText("Info", msg->charrep());
-	
-					_LOG << "Extract foreign key from table '" << tablename->charrep() << "': " << msg->charrep() LOG_
+*/	
+					//_LOG << "Extract foreign key from table '" << tablename->charrep() << "': " << msg->charrep() LOG_
 					
 					ForeignKeys->insert(&uk, &key);
 			}
 		}
 		SQLFreeStmt(hstmt, SQL_CLOSE);
-	}
+	//}
 	
 	SQLFreeStmt(hstmt, SQL_DROP);
 
