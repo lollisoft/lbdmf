@@ -1108,7 +1108,7 @@ begin
   end if;
   if actionid is null then
 	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
-	actionid = getorcreateactiontype"(typename);
+	actionid = "getorcreateactiontype"(typename);
   end if;
 return actionid;
 end;
