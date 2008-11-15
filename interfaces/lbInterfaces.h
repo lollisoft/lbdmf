@@ -3418,6 +3418,11 @@ public:
 };
 /*...e*/
 
+/** \brief A class to store database table information.
+ *
+ * This is the internal storage for database table information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_DBTables : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id = -1) = 0;
