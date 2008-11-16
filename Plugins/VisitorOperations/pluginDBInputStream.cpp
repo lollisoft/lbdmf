@@ -597,6 +597,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -667,6 +668,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 	}	
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -719,6 +721,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 	}	
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -729,6 +732,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	
 	UAP(lb_I_Container, Tables)
 	
+	// When using the optional parameter to let db fill the data directly into the model
 	Tables = db->getTables(ConnectionName->charrep());
 	
 	long i = 0;
@@ -761,6 +765,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	}	
 }
 
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	lbErrCodes err = ERR_NONE;
 
@@ -847,25 +852,25 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 		uk = Columns->nextElement();
 		QI(uk, lb_I_Parameter, param)
 
-		param->getUAPString(*&nameTableCatalog, *&szCatalog);
-		param->getUAPString(*&nameTableSchema, *&szSchema);
+//		param->getUAPString(*&nameTableCatalog, *&szCatalog);
+//		param->getUAPString(*&nameTableSchema, *&szSchema);
 		param->getUAPString(*&nameTableName, *&szTableName);
 		param->getUAPString(*&nameColumnName, *&szColumnName);
 		
-		param->getUAPLong(*&nameDataType, *&DataType);
+//		param->getUAPLong(*&nameDataType, *&DataType);
 		param->getUAPString(*&nameTypeName, *&szTypeName);
 		param->getUAPLong(*&nameColumnSize, *&ColumnSize);
-		param->getUAPLong(*&nameBufferLength, *&BufferLength);
-		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
-		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
-		param->getUAPLong(*&nameNullable, *&Nullable);
-		param->getUAPString(*&nameRemarks, *&szRemarks);
-		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
-		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
-		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
-		param->getUAPLong(*&nameCharOctetLength, *&CharOctetLength);
-		param->getUAPLong(*&nameOrdinalPosition, *&OrdinalPosition);
-		param->getUAPString(*&nameIsNullable, *&szIsNullable);
+//		param->getUAPLong(*&nameBufferLength, *&BufferLength);
+//		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
+//		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
+//		param->getUAPLong(*&nameNullable, *&Nullable);
+//		param->getUAPString(*&nameRemarks, *&szRemarks);
+//		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
+//		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
+//		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
+//		param->getUAPLong(*&nameCharOctetLength, *&CharOctetLength);
+//		param->getUAPLong(*&nameOrdinalPosition, *&OrdinalPosition);
+//		param->getUAPString(*&nameIsNullable, *&szIsNullable);
 
 		 columnsPortion++;
 
@@ -885,6 +890,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 		 }
 
 
+>>>>>>> 1.36
 		columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
 	}
 }

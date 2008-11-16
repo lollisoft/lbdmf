@@ -5904,6 +5904,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		long columnsPortion = 0;
 		long columnsImported = 0;
 
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramFactory)
+		
 		while(retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
@@ -5916,16 +5918,20 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 			 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
 				 ;   /* Process fetched data */
 				 
-				 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+				 UAP(lb_I_Parameter, param)
+				 UAP(lb_I_Unknown, uk)
+				 
+				 uk = paramFactory->clone(__FILE__, __LINE__);
+				 QI(uk, lb_I_Parameter, param)
 					 
 				 number->setData((long)DatetimeSubtypeCode);
 				 param->setUAPLong(*&nameDatetimeSubtypeCode, *&number);
 				 
-				 *value = (const char*) szCatalog;
-				 param->setUAPString(*&nameTableCatalog, *&value);
+//				 *value = (const char*) szCatalog;
+//				 param->setUAPString(*&nameTableCatalog, *&value);
 				 
-				 *value = (const char*) szSchema;
-				 param->setUAPString(*&nameTableSchema, *&value);
+//				 *value = (const char*) szSchema;
+//				 param->setUAPString(*&nameTableSchema, *&value);
 				 
 				 *value = (const char*) szTableName;
 				 param->setUAPString(*&nameTableName, *&value);
@@ -5933,50 +5939,47 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 *value = (const char*) szColumnName;
 				 param->setUAPString(*&nameColumnName, *&value);
 				 
-				 number->setData((long)DataType);
-				 param->setUAPLong(*&nameDataType, *&number);
+//				 number->setData((long)DataType);
+//				 param->setUAPLong(*&nameDataType, *&number);
 				 
 				 *value = (const char*) szTypeName;
 				 param->setUAPString(*&nameTypeName, *&value);
 				 
-				 number->setData((long)BufferLength);
-				 param->setUAPLong(*&nameBufferLength, *&number);
+//				 number->setData((long)BufferLength);
+//				 param->setUAPLong(*&nameBufferLength, *&number);
 				 
-				 number->setData((long)DecimalDigits);
-				 param->setUAPLong(*&nameDecimalDigits, *&number);
+//				 number->setData((long)DecimalDigits);
+//				 param->setUAPLong(*&nameDecimalDigits, *&number);
 				 
-				 number->setData((long)NumPrecRadix);
-				 param->setUAPLong(*&nameNumPrecRadix, *&number);
+//				 number->setData((long)NumPrecRadix);
+//				 param->setUAPLong(*&nameNumPrecRadix, *&number);
 				 
-				 number->setData((long)Nullable);
-				 param->setUAPLong(*&nameNullable, *&number);
+//				 number->setData((long)Nullable);
+//				 param->setUAPLong(*&nameNullable, *&number);
 				 
-				 *value = (const char*) szRemarks;
-				 param->setUAPString(*&nameRemarks, *&value);
+//				 *value = (const char*) szRemarks;
+//				 param->setUAPString(*&nameRemarks, *&value);
 				 
-				 *value = (const char*) szColumnDefault;
-				 param->setUAPString(*&nameColumnDefault, *&value);
+//				 *value = (const char*) szColumnDefault;
+//				 param->setUAPString(*&nameColumnDefault, *&value);
 				 
-				 number->setData((long)SQLDataType);
-				 param->setUAPLong(*&nameSQLDataType, *&number);
+//				 number->setData((long)SQLDataType);
+//				 param->setUAPLong(*&nameSQLDataType, *&number);
 				 
-				 number->setData((long)CharOctetLength);
-				 param->setUAPLong(*&nameCharOctetLength, *&number);
+//				 number->setData((long)CharOctetLength);
+//				 param->setUAPLong(*&nameCharOctetLength, *&number);
 				 
-				 number->setData((long)OrdinalPosition);
-				 param->setUAPLong(*&nameOrdinalPosition, *&number);
+//				 number->setData((long)OrdinalPosition);
+//				 param->setUAPLong(*&nameOrdinalPosition, *&number);
 				 
-				 *value = (const char*) szIsNullable;
-				 param->setUAPString(*&nameIsNullable, *&value);
+//				 *value = (const char*) szIsNullable;
+//				 param->setUAPString(*&nameIsNullable, *&value);
 				 
 				 number->setData((long)ColumnSize);
 				 param->setUAPLong(*&nameColumnSize, *&number);
 
 				 index->setData(++i);
 				 
-				 UAP(lb_I_Unknown, uk)
-				 QI(param, lb_I_Unknown, uk)
-				
 				 columnsPortion++;
 
 				 if (columnsPortion == 100) {
