@@ -326,10 +326,11 @@ lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
 		UAP(lb_I_Container, c)
 		
 		c = source->getParameterList();
+		if (c != NULL) {
+			uk = c->clone(__FILE__, __LINE__);
 		
-		uk = c->clone(__FILE__, __LINE__);
-		
-		QI(uk, lb_I_Container,  parameters)
+			QI(uk, lb_I_Container,  parameters)
+		}
 	}
 		
 	return ERR_NOT_IMPLEMENTED;
