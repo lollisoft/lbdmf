@@ -5833,24 +5833,24 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 		 /* Bind columns in result set to buffers */
 							 
-		 SQLBindCol(hstmt, 1, SQL_C_CHAR, szCatalog, TAB_LEN,&cbCatalog);
-		 SQLBindCol(hstmt, 2, SQL_C_CHAR, szSchema, TAB_LEN, &cbSchema);
+		 //SQLBindCol(hstmt, 1, SQL_C_CHAR, szCatalog, TAB_LEN,&cbCatalog);
+		 //SQLBindCol(hstmt, 2, SQL_C_CHAR, szSchema, TAB_LEN, &cbSchema);
 		 SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, TAB_LEN,&cbTableName);
 		 SQLBindCol(hstmt, 4, SQL_C_CHAR, szColumnName, TAB_LEN, &cbColumnName);
-		 SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
+		 //SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
 		 SQLBindCol(hstmt, 6, SQL_C_CHAR, szTypeName, TAB_LEN, &cbTypeName);
 		 SQLBindCol(hstmt, 7, SQL_C_SLONG, &ColumnSize, 0, &cbColumnSize);
-		 SQLBindCol(hstmt, 8, SQL_C_SLONG, &BufferLength, 0, &cbBufferLength);
-		 SQLBindCol(hstmt, 9, SQL_C_SSHORT, &DecimalDigits, 0, &cbDecimalDigits);
-		 SQLBindCol(hstmt, 10, SQL_C_SSHORT, &NumPrecRadix, 0, &cbNumPrecRadix);
-		 SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable);
-		 SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
-		 SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
-		 SQLBindCol(hstmt, 14, SQL_C_SSHORT, &SQLDataType, 0, &cbSQLDataType);
-		 SQLBindCol(hstmt, 15, SQL_C_SSHORT, &DatetimeSubtypeCode, 0, &cbDatetimeSubtypeCode);
-		 SQLBindCol(hstmt, 16, SQL_C_SLONG, &CharOctetLength, 0, &cbCharOctetLength);
-		 SQLBindCol(hstmt, 17, SQL_C_SLONG, &OrdinalPosition, 0, &cbOrdinalPosition);
-		 SQLBindCol(hstmt, 18, SQL_C_CHAR, szIsNullable, TAB_LEN, &cbIsNullable);
+		 //SQLBindCol(hstmt, 8, SQL_C_SLONG, &BufferLength, 0, &cbBufferLength);
+		 //SQLBindCol(hstmt, 9, SQL_C_SSHORT, &DecimalDigits, 0, &cbDecimalDigits);
+		 //SQLBindCol(hstmt, 10, SQL_C_SSHORT, &NumPrecRadix, 0, &cbNumPrecRadix);
+		 //SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable);
+		 //SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
+		 //SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
+		 //SQLBindCol(hstmt, 14, SQL_C_SSHORT, &SQLDataType, 0, &cbSQLDataType);
+		 //SQLBindCol(hstmt, 15, SQL_C_SSHORT, &DatetimeSubtypeCode, 0, &cbDatetimeSubtypeCode);
+		 //SQLBindCol(hstmt, 16, SQL_C_SLONG, &CharOctetLength, 0, &cbCharOctetLength);
+		 //SQLBindCol(hstmt, 17, SQL_C_SLONG, &OrdinalPosition, 0, &cbOrdinalPosition);
+		 //SQLBindCol(hstmt, 18, SQL_C_CHAR, szIsNullable, TAB_LEN, &cbIsNullable);
 		 
 		 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, nameDatetimeSubtypeCode)
