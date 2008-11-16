@@ -890,7 +890,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 		 }
 
 
->>>>>>> 1.36
 		columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
 	}
 }
