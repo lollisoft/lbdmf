@@ -97,6 +97,7 @@
 
 #ifdef OSX
 #include <sys/malloc.h>
+#include <time.h>
 #endif
 
 #ifndef OSX
@@ -229,8 +230,13 @@
 #define _LOG \
 	if (isInitializing() != 0) { \
 	} else { \
-	        LOG_INSTANCE \
-		*(getLoggerInstance()) << "Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+		time_t Zeitstempel; \
+		tm *nun; \
+		Zeitstempel = time(0); \
+		nun = localtime(&Zeitstempel); \
+		LOG_INSTANCE \
+		*(getLoggerInstance()) << nun->tm_year+1900 << '.' << nun->tm_mon+1 << '.' << nun->tm_mday \
+		<< " - " << nun->tm_hour << ':' << nun->tm_min << ':' << nun->tm_sec << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 /*...e*/
 /*...s LOG_:0:*/
