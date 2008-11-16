@@ -33,7 +33,7 @@
 
 class lbSkipListElement;
 typedef lb_I_Element* Elem;
-#define MAXLEVEL 9
+#define MAXLEVEL 20
 
 
 /*...sclass SkipNode:0:*/
