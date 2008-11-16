@@ -97,8 +97,9 @@
 
 #ifdef OSX
 #include <sys/malloc.h>
-#include <time.h>
 #endif
+
+#include <time.h>
 
 #ifndef OSX
 #ifndef MEMTRACK
