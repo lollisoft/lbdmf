@@ -5752,8 +5752,21 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getColumns(" << connectionname << ") called." LOG_
+
+	// Container that contains container with 1000 elements to speed up.
+	// There is a performance break in at about 15000 columns
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columnsPageContainer)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
-	columns++;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columnTypes)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnTypeName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnTypeKey)
+	UAP(lb_I_Unknown, ctuk)
+	UAP(lb_I_KeyBase, ctkey)
+
+	QI(ColumnTypeKey, lb_I_KeyBase, ctkey)
+	QI(ColumnTypeName, lb_I_Unknown, ctuk)
+
+	columnsPageContainer++;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
@@ -5762,6 +5775,9 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, page)
+	int _page = 0;
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
 	
@@ -5784,6 +5800,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
         _LOG << "Error: No pooled connection found." LOG_
 	}
 	
+	columnsPageContainer->setCloning(false);
 	columns->setCloning(false);
 
 	SQLCHAR       szCatalog[TAB_LEN], szSchema[TAB_LEN];
@@ -5874,6 +5891,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 
+		UAP(lb_I_String, valueRef)
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 		UAP(lb_I_KeyBase, key)
 		QI(index, lb_I_KeyBase, key)
@@ -5882,6 +5901,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		
 		_LOG << "lbDatabase::getColumns() short before fetching column informations." LOG_
 
+/*
 		*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
 		*nameTableCatalog = "TableCatalog";
 		*nameTableSchema = "TableSchema";
@@ -5900,12 +5920,34 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		*nameOrdinalPosition = "OrdinalPosition";
 		*nameIsNullable = "IsNullable";
 		*nameColumnSize = "ColumnSize";
+*/
+		*nameDatetimeSubtypeCode = "1";
+		*nameTableCatalog = "2";
+		*nameTableSchema = "3";
+		*nameTableName = "4";
+		*nameColumnName = "5";
+		*nameDataType = "6";
+		*nameTypeName = "7";
+		*nameBufferLength = "8";
+		*nameDecimalDigits = "9";
+		*nameNumPrecRadix = "10";
+		*nameNullable = "11";
+		*nameRemarks = "12";
+		*nameColumnDefault = "13";
+		*nameSQLDataType = "14";
+		*nameCharOctetLength = "15";
+		*nameOrdinalPosition = "16";
+		*nameIsNullable = "17";
+		*nameColumnSize = "18";
+
 
 		long columnsPortion = 0;
 		long columnsImported = 0;
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramFactory)
 		
+		char* lastTableName = NULL;
+
 		while(retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
@@ -5923,9 +5965,33 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 
 				 uk = paramFactory->clone(__FILE__, __LINE__);
 				 QI(uk, lb_I_Parameter, param)
-					 
-				 number->setData((long)DatetimeSubtypeCode);
-				 param->setUAPLong(*&nameDatetimeSubtypeCode, *&number);
+
+				 if (lastTableName == NULL) { 
+					 REQUEST(getModuleInstance(), lb_I_String, valueRef)
+					 lastTableName = strdup((char const*) szTableName);
+					 *valueRef = (const char*) szTableName;
+					 param->setCloning(false);
+					 param->setUAPString(*&nameTableName, *&valueRef);
+					 param->setCloning(true);
+				 } else {
+					 if (strcmp((char const*) szTableName, (char const*)lastTableName) == 0) {
+						 // Keep reference
+						 //*valueRef = (const char*) szTableName;
+						 param->setCloning(false);
+						 param->setUAPString(*&nameTableName, *&valueRef);
+						 param->setCloning(true);
+					 } else {
+						 REQUEST(getModuleInstance(), lb_I_String, valueRef)
+						 lastTableName = strdup((char const*) szTableName);
+						 *valueRef = (const char*) szTableName;
+						 param->setCloning(false);
+						 param->setUAPString(*&nameTableName, *&valueRef);
+						 param->setCloning(true);
+					 }
+				 }
+
+//				 number->setData((long)DatetimeSubtypeCode);
+//				 param->setUAPLong(*&nameDatetimeSubtypeCode, *&number);
 				 
 //				 *value = (const char*) szCatalog;
 //				 param->setUAPString(*&nameTableCatalog, *&value);
@@ -5933,17 +5999,26 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 //				 *value = (const char*) szSchema;
 //				 param->setUAPString(*&nameTableSchema, *&value);
 				 
-				 *value = (const char*) szTableName;
-				 param->setUAPString(*&nameTableName, *&value);
-				 
 				 *value = (const char*) szColumnName;
 				 param->setUAPString(*&nameColumnName, *&value);
 				 
 //				 number->setData((long)DataType);
 //				 param->setUAPLong(*&nameDataType, *&number);
 				 
-				 *value = (const char*) szTypeName;
-				 param->setUAPString(*&nameTypeName, *&value);
+				 *ColumnTypeKey = (const char*) szTypeName;
+				 *ColumnTypeName = (const char*) szTypeName;
+				 
+				 if (columnTypes->exists(&ctkey) == 0) { // Insert to get its reference
+					columnTypes->insert(&ctuk, &ctkey);
+					ColumnTypeName--;
+				 }
+				 ctuk = columnTypes->getElement(&ctkey);
+				 QI(ctuk, lb_I_String, ColumnTypeName)
+
+				 param->setCloning(false);
+				 param->setUAPString(*&nameTypeName, *&ColumnTypeName); // Insert a reference
+				 param->setCloning(true);
+
 				 
 //				 number->setData((long)BufferLength);
 //				 param->setUAPLong(*&nameBufferLength, *&number);
@@ -5998,14 +6073,33 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 
 				 
 				columns->insert(&uk, &key);
+
+				_page++;
+
+				if (_page == 1000) {
+					UAP(lb_I_Unknown, uk)
+					QI(columns, lb_I_Unknown, uk)
+					columnsPageContainer->insert(&uk, &key);
+					columns--;
+					REQUEST(getModuleInstance(), lb_I_Container, columns)
+					_page = 0;
+				}
 			 }
 		 }
 	}
 	
+	if (_page < 1000) {
+		UAP(lb_I_Unknown, uk)
+		QI(columns, lb_I_Unknown, uk)
+		columnsPageContainer->insert(&uk, &key);
+		columns--;
+		REQUEST(getModuleInstance(), lb_I_Container, columns)
+	}
+
 	
 	SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
 	
-	return columns.getPtr();
+	return columnsPageContainer.getPtr();
 }
 
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
