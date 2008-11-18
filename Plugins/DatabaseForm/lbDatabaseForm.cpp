@@ -2825,8 +2825,22 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
-	_LOG << "Create a new query based on query: " << getQuery() << " and where clause: " << newWhereClause->charrep() LOG_
+  wxString tempw = newWhereClause->charrep();
+  
+  /// \todo This is a quick hack for filtering directly on columns.
+  if (tempw.Upper() == " WHERE ") {
+  	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
+
+    *newWhereClause = " WHERE \"";
+    *newWhereClause += SourceFieldName->charrep();
+    *newWhereClause += "\" = ";
+    if (isChar) *newWhereClause += "'";
+    *newWhereClause  += SourceFieldValue->charrep();
+    if (isChar) *newWhereClause += "'";
+  }
 	
+	_LOG << "Create a new query based on query: " << getQuery() << " and where clause: " << newWhereClause->charrep() LOG_
+
 	setFilter(newWhereClause->charrep());
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
