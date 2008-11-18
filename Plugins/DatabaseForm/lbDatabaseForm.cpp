@@ -3716,6 +3716,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 	SetName(formName);
 
+  lbDBClear();
+
 	int columns = sampleQuery->getColumns();
 	
 	for (int i = 1; i <= columns; i++) {
@@ -3982,6 +3984,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
+  lbDBClear();
+
 	lbErrCodes err = sampleQuery->next();
 
 	// Skip all deleted rows
@@ -4021,6 +4025,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
+
+	lbDBClear();
 
 	lbErrCodes err = sampleQuery->previous();
 
