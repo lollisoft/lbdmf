@@ -797,10 +797,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
-	UAP(lb_I_Container, Columns)
+	UAP(lb_I_Container, Pages)
 	
-	Columns = db->getColumns(ConnectionName->charrep());
-	
+	Pages = db->getColumns(ConnectionName->charrep());
+
+	columns->addPagedConainer(*&Pages);
+
+	return;
+#ifdef bla
 	long i = 0;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, szCatalog)
@@ -822,7 +826,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, DatetimeSubtypeCode)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, CharOctetLength)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, OrdinalPosition)
-
+/*
 	*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
 	*nameTableCatalog = "TableCatalog";
 	*nameTableSchema = "TableSchema";
@@ -841,57 +845,87 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	*nameOrdinalPosition = "OrdinalPosition";
 	*nameIsNullable = "IsNullable";
 	*nameColumnSize = "ColumnSize";
+*/
+
+	*nameDatetimeSubtypeCode = "1";
+	*nameTableCatalog = "2";
+	*nameTableSchema = "3";
+	*nameTableName = "4";
+	*nameColumnName = "5";
+	*nameDataType = "6";
+	*nameTypeName = "7";
+	*nameBufferLength = "8";
+	*nameDecimalDigits = "9";
+	*nameNumPrecRadix = "10";
+	*nameNullable = "11";
+	*nameRemarks = "12";
+	*nameColumnDefault = "13";
+	*nameSQLDataType = "14";
+	*nameCharOctetLength = "15";
+	*nameOrdinalPosition = "16";
+	*nameIsNullable = "17";
+	*nameColumnSize = "18";
 
 	long columnsPortion = 0;
 	long columnsImported = 0;
 
-	while (Columns->hasMoreElements() == 1) {
+	// Outer loop over the pages.
+	while (Pages->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_Parameter, param)
-		
-		uk = Columns->nextElement();
-		QI(uk, lb_I_Parameter, param)
+			UAP(lb_I_Container, Columns)
 
-//		param->getUAPString(*&nameTableCatalog, *&szCatalog);
-//		param->getUAPString(*&nameTableSchema, *&szSchema);
-		param->getUAPString(*&nameTableName, *&szTableName);
-		param->getUAPString(*&nameColumnName, *&szColumnName);
-		
-//		param->getUAPLong(*&nameDataType, *&DataType);
-		param->getUAPString(*&nameTypeName, *&szTypeName);
-		param->getUAPLong(*&nameColumnSize, *&ColumnSize);
-//		param->getUAPLong(*&nameBufferLength, *&BufferLength);
-//		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
-//		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
-//		param->getUAPLong(*&nameNullable, *&Nullable);
-//		param->getUAPString(*&nameRemarks, *&szRemarks);
-//		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
-//		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
-//		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
-//		param->getUAPLong(*&nameCharOctetLength, *&CharOctetLength);
-//		param->getUAPLong(*&nameOrdinalPosition, *&OrdinalPosition);
-//		param->getUAPString(*&nameIsNullable, *&szIsNullable);
+			uk = Pages->nextElement();
+		QI(uk, lb_I_Container, Columns)
 
-		 columnsPortion++;
+			while (Columns->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+					UAP(lb_I_Parameter, param)
 
-		 if (columnsPortion == 100) {
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
-			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-			columnsImported += columnsPortion;
-			columnsPortion = 0;
-			l->setData(columnsImported);
-	
-			*msg = "Copied ";
-			*msg += l->charrep();
-			*msg += " of columns into datamodel ...";
+					uk = Columns->nextElement();
+				QI(uk, lb_I_Parameter, param)
 
-			meta->setStatusText("Info", msg->charrep());
+					//		param->getUAPString(*&nameTableCatalog, *&szCatalog);
+					//		param->getUAPString(*&nameTableSchema, *&szSchema);
+					param->getUAPString(*&nameTableName, *&szTableName);
+				param->getUAPString(*&nameColumnName, *&szColumnName);
 
-		 }
+				//		param->getUAPLong(*&nameDataType, *&DataType);
+				param->getUAPString(*&nameTypeName, *&szTypeName);
+				param->getUAPLong(*&nameColumnSize, *&ColumnSize);
+				//		param->getUAPLong(*&nameBufferLength, *&BufferLength);
+				//		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
+				//		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
+				//		param->getUAPLong(*&nameNullable, *&Nullable);
+				//		param->getUAPString(*&nameRemarks, *&szRemarks);
+				//		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
+				//		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
+				//		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
+				//		param->getUAPLong(*&nameCharOctetLength, *&CharOctetLength);
+				//		param->getUAPLong(*&nameOrdinalPosition, *&OrdinalPosition);
+				//		param->getUAPString(*&nameIsNullable, *&szIsNullable);
+
+				columnsPortion++;
+
+				if (columnsPortion == 100) {
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+						columnsImported += columnsPortion;
+					columnsPortion = 0;
+					l->setData(columnsImported);
+
+					*msg = "Copied ";
+					*msg += l->charrep();
+					*msg += " of columns into datamodel ...";
+
+					meta->setStatusText("Info", msg->charrep());
+
+				}
 
 
-		columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
+				columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
+			}
 	}
+#endif
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
@@ -1310,6 +1344,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
 				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
+/*
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempformularquery)
+        *tempformularquery = formularquery->charrep();
+        char* t = tempformularquery->stristr(formularquery->charrep(), "WHERE");
+        t[0] = 0;
+        *formularquery = tempformularquery;
+        *formularquery += " LIMIT 1";
+*/
 
 				UAP(lb_I_Database, customDB)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)

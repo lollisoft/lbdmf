@@ -3837,8 +3837,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				if (isNull(i+1)) {
 					strSQL += " = NULL";
 				} else {
+          wxString temp = queryValues[i];
+          temp.Replace("'", "''");
 					strSQL += " = '";
-					strSQL += queryValues[i];
+  				strSQL += temp;
 					strSQL += "'";
 				}
 			} else {
@@ -3852,7 +3854,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					if (queryValues[i].Trim() == "") {
 						strSQL += "NULL";
 					} else {
-						strSQL += queryValues[i];
+            wxString temp = queryValues[i];
+            temp.Replace("'", "''");
+						strSQL += temp;
 					}
 				}
 			}
@@ -4939,9 +4943,14 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 
 lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columnsPageContainer)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
-	columns++;
+	columnsPageContainer++;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	meta->setStatusText("Info", "Get columns ...");
+
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	*connName = connectionname;
@@ -4955,6 +4964,11 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	
 	wxArrayString tables = dbl->GetTables();
 
+	UAP(lb_I_KeyBase, key)
+	int _page = 0;
+	long columnsPortion = 0;
+	long columnsImported = 0;
+
 	for (int i = 0; i < tables.Count(); i++) {
 		wxString table = tables[i];
 		
@@ -4967,7 +4981,6 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 		pMetaData = pResult->GetMetaData();
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
-		UAP(lb_I_KeyBase, key)
 		QI(index, lb_I_KeyBase, key)
 		
 		// 1-based
@@ -4985,30 +4998,30 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dummyString)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, dummyLong)
 			
-			dummyLong->setData((long)0);
-			*name = "DatetimeSubtypeCode";
-			param->setUAPLong(*&name, *&dummyLong);
+//			dummyLong->setData((long)0);
+//			*name = "DatetimeSubtypeCode";
+//			param->setUAPLong(*&name, *&dummyLong);
 			
-			*dummyString = (const char*) "sqlite";
-			*name = "TableCatalog";
-			param->setUAPString(*&name, *&dummyString);
+//			*dummyString = (const char*) "sqlite";
+//			*name = "TableCatalog";
+//			param->setUAPString(*&name, *&dummyString);
 			
-			*dummyString = (const char*) "lbDMF";
-			*name = "TableSchema";
-			param->setUAPString(*&name, *&dummyString);
+//			*dummyString = (const char*) "lbDMF";
+//			*name = "TableSchema";
+//			param->setUAPString(*&name, *&dummyString);
 			
 			*TableName = (const char*) table.c_str();
-			*name = "TableName";
+			*name = "4";
 			param->setUAPString(*&name, *&TableName);
 			
 			*colName = pMetaData->GetColumnName(ii).c_str();
-			*name = "ColumnName";
+			*name = "5";
 			param->setUAPString(*&name, *&colName);
 			
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
-			typeLong->setData((long)colTypeLong);
-			*name = "DataType";
-			param->setUAPLong(*&name, *&typeLong);
+//			typeLong->setData((long)colTypeLong);
+//			*name = "DataType";
+//			param->setUAPLong(*&name, *&typeLong);
 			
 			// Implement mapping to the same as of PostgreSQL typenames !!!
 			/// \todo What is here the best type naming for all the different databases ?
@@ -5039,51 +5052,51 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 					*typeName = "COLUMN_UNKNOWN";
 					break;
 			};
-			*name = "TypeName";
+			*name = "7";
 			param->setUAPString(*&name, *&typeName);
 			
-			dummyLong->setData((long)-1);
-			*name = "BufferLength";
-			param->setUAPLong(*&name, *&dummyLong);
+//			dummyLong->setData((long)-1);
+//			*name = "BufferLength";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "DecimalDigits";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "NumPrecRadix";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "Nullable";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			*dummyString = (const char*) "";
+//			*name = "Remarks";
+//			param->setUAPString(*&name, *&dummyString);
+			
+//			*dummyString = (const char*) "";
+//			*name = "ColumnDefault";
+//			param->setUAPString(*&name, *&dummyString);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "SQLDataType";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "CharOctetLength";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			dummyLong->setData((long)-1);
+//			*name = "OrdinalPosition";
+//			param->setUAPLong(*&name, *&dummyLong);
+			
+//			*dummyString = (const char*) "";
+//			*name = "IsNullable";
+//			param->setUAPString(*&name, *&dummyString);
 			
 			dummyLong->setData((long)-1);
-			*name = "DecimalDigits";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			dummyLong->setData((long)-1);
-			*name = "NumPrecRadix";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			dummyLong->setData((long)-1);
-			*name = "Nullable";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			*dummyString = (const char*) "";
-			*name = "Remarks";
-			param->setUAPString(*&name, *&dummyString);
-			
-			*dummyString = (const char*) "";
-			*name = "ColumnDefault";
-			param->setUAPString(*&name, *&dummyString);
-			
-			dummyLong->setData((long)-1);
-			*name = "SQLDataType";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			dummyLong->setData((long)-1);
-			*name = "CharOctetLength";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			dummyLong->setData((long)-1);
-			*name = "OrdinalPosition";
-			param->setUAPLong(*&name, *&dummyLong);
-			
-			*dummyString = (const char*) "";
-			*name = "IsNullable";
-			param->setUAPString(*&name, *&dummyString);
-			
-			dummyLong->setData((long)-1);
-			*name = "ColumnSize";
+			*name = "18";
 			param->setUAPLong(*&name, *&dummyLong);
 			
 			UAP(lb_I_Unknown, uk)
@@ -5091,6 +5104,32 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 				
 			index->setData(++ind);
 			columns->insert(&uk, &key);
+
+			_page++;
+			columnsPortion++;
+
+			 if (columnsPortion == 100) {
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+				columnsImported += columnsPortion;
+				columnsPortion = 0;
+				l->setData(columnsImported);
+	
+				*msg = "Got ";
+				*msg += l->charrep();
+				*msg += " of columns ...";
+
+				meta->setStatusText("Info", msg->charrep());
+
+			 }
+
+			if (_page == 1000) {
+				UAP(lb_I_Unknown, uk)
+				QI(columns, lb_I_Unknown, uk)
+				columnsPageContainer->insert(&uk, &key);
+				columns--;
+				REQUEST(getModuleInstance(), lb_I_Container, columns)
+				_page = 0;
+			}
 		}
 		
 		if (pMetaData != NULL)
@@ -5106,8 +5145,16 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 		}
 
 	}
-	
-	return columns.getPtr();
+
+	if (_page < 1000) {
+		UAP(lb_I_Unknown, uk)
+		QI(columns, lb_I_Unknown, uk)
+		columnsPageContainer->insert(&uk, &key);
+		columns--;
+		REQUEST(getModuleInstance(), lb_I_Container, columns)
+	}
+
+	return columnsPageContainer.getPtr();
 }
 
 lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connectionname) {

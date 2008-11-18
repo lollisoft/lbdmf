@@ -386,6 +386,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbDBColumnsModel::lbDBColumnsModel() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_Container, Columns)
+	REQUEST(getModuleInstance(), lb_I_Container, ColumnsPages)
+
+	ColumnsPages->setCloning(false);
+	Columns->setCloning(false);
+
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
 	REQUEST(getModuleInstance(), lb_I_String, currentTyp)
@@ -394,7 +399,35 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentisFK)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
+	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
+
+	REQUEST(getModuleInstance(), lb_I_String, Name)
+	REQUEST(getModuleInstance(), lb_I_String, TableName)
+	REQUEST(getModuleInstance(), lb_I_String, Typ)
+	REQUEST(getModuleInstance(), lb_I_String, pkField)
+	REQUEST(getModuleInstance(), lb_I_String, pkTable)
+	REQUEST(getModuleInstance(), lb_I_Long, IsFK)
+	REQUEST(getModuleInstance(), lb_I_Long, ID)
+	REQUEST(getModuleInstance(), lb_I_Long, Len)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
+
+	REQUEST(getModuleInstance(), lb_I_String, paramnameName)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameTableName)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameTyp)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameLen)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameIsFK)
+	REQUEST(getModuleInstance(), lb_I_String, paramnamePKField)
+	REQUEST(getModuleInstance(), lb_I_String, paramnamePKTable)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameID)
+	REQUEST(getModuleInstance(), lb_I_String, paramnamemarked)
+
+	*paramnameName = "5";
+	*paramnameTableName = "4";
+	*paramnameTyp = "7";
+	*paramnameLen = "18";
+	*paramnameID = "ID";
+	*paramnamemarked = "marked";
+
 	_CL_VERBOSE << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
 }
 
@@ -403,37 +436,54 @@ lbDBColumnsModel::~lbDBColumnsModel() {
 }
 
 lbErrCodes LB_STDCALL lbDBColumnsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbDBColumnsModel::setData(lb_I_Unknown*) not implemented." LOG_
-	return ERR_NOT_IMPLEMENTED;
-}
+#ifdef bla
+	UAP(lb_I_Container, cont)
 
-long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id) {
-	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, Typ)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, pkField)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, pkTable)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, IsFK)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, Len)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDatetimeSubtypeCode)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameBufferLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDecimalDigits)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNumPrecRadix)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameRemarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnDefault)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameSQLDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameCharOctetLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameOrdinalPosition)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameIsNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTypeName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnSize)
 
-	*Name = name;
-	*TableName = tablename;
-	*Typ = typ;
-	Len->setData(len);
-	if (isfk)
-		IsFK->setData((long) 1);
-	else
-		IsFK->setData((long) 0);
-	*pkField = PKField;
-	*pkTable = PKTable;
-	
-	ID->setData(_id);
-	
+	*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
+	*nameTableCatalog = "TableCatalog";
+	*nameTableSchema = "TableSchema";
+	*nameTableName = "TableName";
+	*nameColumnName = "ColumnName";
+	*nameDataType = "DataType";
+	*nameTypeName = "TypeName";
+	*nameBufferLength = "BufferLength";
+	*nameDecimalDigits = "DecimalDigits";
+	*nameNumPrecRadix = "NumPrecRadix";
+	*nameNullable = "Nullable";
+	*nameRemarks = "Remarks";
+	*nameColumnDefault = "ColumnDefault";
+	*nameSQLDataType = "SQLDataType";
+	*nameCharOctetLength = "CharOctetLength";
+	*nameOrdinalPosition = "OrdinalPosition";
+	*nameIsNullable = "IsNullable";
+	*nameColumnSize = "ColumnSize";
+
+
+	QI(uk, lb_I_Container, cont)
+
+	if (cont != NULL) {
+		// Given is a container, propably generated from lbDB::getClumns()
+		// Check the first entry about the correct columns, that are needed here
+
 	*paramname = "Name";
 	param->setUAPString(*&paramname, *&Name);
 	*paramname = "TableName";
@@ -453,6 +503,71 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, 
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 
+
+	}
+	
+#endif
+
+	return ERR_NOT_IMPLEMENTED;
+}
+
+bool		LB_STDCALL lbDBColumnsModel::addPagedConainer(lb_I_Container* pagedContainer) {
+	if (Columns != NULL) Columns--;
+
+	ColumnsPages = pagedContainer;
+	ColumnsPages++;
+	return true;
+}
+
+void LB_STDCALL lbDBColumnsModel::lookupPage(int index) {
+	lbErrCodes err = ERR_NONE;
+	int page = ((index % 1000) + 1);
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pageKey)
+	UAP(lb_I_KeyBase, key)
+	QI(pageKey, lb_I_KeyBase, key)
+
+	pageKey->setData(page);
+
+	if (ColumnsPages->exists(&key) == 1) {
+		UAP(lb_I_Unknown, uk)
+		uk = ColumnsPages->getElement(&key);
+		QI(uk, lb_I_Container, Columns)
+	} else {
+		UAP(lb_I_Unknown, uk)
+		REQUEST(getModuleInstance(), lb_I_Container, Columns)
+		QI(Columns, lb_I_Unknown, uk)
+
+		ColumnsPages->insert(&uk, &key);
+	}
+}
+
+long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+
+	// Get the corresponding container page.
+	lookupPage(_id);
+
+	*Name = name;
+	*TableName = tablename;
+	*Typ = typ;
+	Len->setData(len);
+	if (isfk)
+		IsFK->setData((long) 1);
+	else
+		IsFK->setData((long) 0);
+	*pkField = PKField;
+	*pkTable = PKTable;
+	
+	ID->setData(_id);
+	
+	param->setUAPString(*&paramnameName, *&Name);
+	param->setUAPString(*&paramnameTableName, *&TableName);
+	param->setUAPString(*&paramnameTyp, *&Typ);
+	param->setUAPLong(*&paramnameLen, *&Len);
+	param->setUAPLong(*&paramnameID, *&ID);
+	param->setUAPLong(*&paramnamemarked, *&marked);
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
 	QI(ID, lb_I_KeyBase, key)
@@ -465,6 +580,8 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, 
 
 void		LB_STDCALL lbDBColumnsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
+
+/*
 	Columns->finishIteration();
 	while (hasMoreColumns()) {
 		setNextColumn();
@@ -479,9 +596,11 @@ void		LB_STDCALL lbDBColumnsModel::deleteUnmarked() {
 			Columns->finishIteration();
 		}
 	}
+*/
 }
 
 void		LB_STDCALL lbDBColumnsModel::deleteMarked() {
+	/*
 	lbErrCodes err = ERR_NONE;
 	Columns->finishIteration();
 	while (hasMoreColumns()) {
@@ -497,11 +616,14 @@ void		LB_STDCALL lbDBColumnsModel::deleteMarked() {
 			Columns->finishIteration();
 		}
 	}
+	*/
 }
 
 bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 	lbErrCodes err = ERR_NONE;
-	
+
+	lookupPage(user_id);
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
@@ -516,22 +638,12 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 	if (uk != NULL) {
 		QI(uk, lb_I_Parameter, param)
 
-		*paramname = "Name";
-		param->getUAPString(*&paramname, *&currentName);
-		*paramname = "TableName";
-		param->getUAPString(*&paramname, *&currentTableName);
-		*paramname = "Typ";
-		param->getUAPString(*&paramname, *&currentTyp);
-		*paramname = "IsFK";
-		param->getUAPLong(*&paramname, *&currentisFK);
-		*paramname = "PKField";
-		param->getUAPString(*&paramname, *&currentPKField);
-		*paramname = "PKTable";
-		param->getUAPString(*&paramname, *&currentPKTable);
-		*paramname = "ID";
-		param->getUAPLong(*&paramname, *&currentID);
-		*paramname = "marked";
-		param->getUAPLong(*&paramname, *&marked);
+		param->getUAPString(*&paramnameName, *&currentName);
+		param->getUAPString(*&paramnameTableName, *&currentTableName);
+		param->getUAPString(*&paramnameTyp, *&currentTyp);
+		param->getUAPLong(*&paramnameLen, *&currentLen);
+		param->getUAPLong(*&paramnameID, *&currentID);
+		param->getUAPLong(*&paramnamemarked, *&currentmarked);
 		
 		return true;
 	}
@@ -540,23 +652,65 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 }
 
 bool LB_STDCALL lbDBColumnsModel::ismarked() {
-	if (marked->getData() == (long) 1) return true;
+	if (currentmarked->getData() == (long) 1) return true;
 	return false;
 }
 
 void LB_STDCALL lbDBColumnsModel::mark() {
-	marked->setData((long) 1);
+	currentmarked->setData((long) 1);
 }
 
 void LB_STDCALL lbDBColumnsModel::unmark() {
-	marked->setData((long) 0);
+	currentmarked->setData((long) 0);
 }
 
 int  LB_STDCALL lbDBColumnsModel::getColumnCount() {
-	return Columns->Count();
+	lbErrCodes err = ERR_NONE;
+	int count = 0;
+	ColumnsPages->finishIteration();
+
+	while (ColumnsPages->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+
+		uk = ColumnsPages->nextElement();
+		QI(uk, lbI_Container, Columns)
+
+		count += Columns->Count();
+	}
+
+	return count;
 }
 
+bool LB_STDCALL lbDBColumnsModel::hasMorePages() {
+	return (ColumnsPages->hasMoreElements() == 1);
+}
+
+void LB_STDCALL lbDBColumnsModel::setNextPage() {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Unknown, uk)
+
+	uk = ColumnsPages->nextElement();
+	QI(uk, lb_I_Container, Columns)
+}
+
+void LB_STDCALL lbDBColumnsModel::finishPageIteration() {
+	ColumnsPages->finishIteration();
+	if (hasMorePages()) setNextPage();
+	Columns->finishIteration();
+}
+
+
 bool  LB_STDCALL lbDBColumnsModel::hasMoreColumns() {
+	if (Columns == NULL) finishPageIteration();
+	if (Columns->hasMoreElements() == 0) { // get next page if no more entries are in the current page
+		if (hasMorePages()) { // and there are more pages.
+			setNextPage();
+			finishColumnIteration();
+		} else {
+			return false;
+		}
+	}
+
 	return (Columns->hasMoreElements() == 1);
 }
 
@@ -565,31 +719,20 @@ void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
-		
+	
 	uk = Columns->nextElement();
 	QI(uk, lb_I_Parameter, param)
 		
-	*paramname = "Name";
-	param->getUAPString(*&paramname, *&currentName);
-	*paramname = "TableName";
-	param->getUAPString(*&paramname, *&currentTableName);
-	*paramname = "Typ";
-	param->getUAPString(*&paramname, *&currentTyp);
-	*paramname = "IsFK";
-	param->getUAPLong(*&paramname, *&currentisFK);
-	*paramname = "PKField";
-	param->getUAPString(*&paramname, *&currentPKField);
-	*paramname = "PKTable";
-	param->getUAPString(*&paramname, *&currentPKTable);
-	*paramname = "ID";
-	param->getUAPLong(*&paramname, *&currentID);
-	*paramname = "marked";
-	param->getUAPLong(*&paramname, *&marked);
-	
+	param->getUAPString(*&paramnameName, *&currentName);
+	param->getUAPString(*&paramnameTableName, *&currentTableName);
+	param->getUAPString(*&paramnameTyp, *&currentTyp);
+	param->getUAPLong(*&paramnameLen, *&currentLen);
+	param->getUAPLong(*&paramnameID, *&currentID);
+	param->getUAPLong(*&paramnamemarked, *&currentmarked);
 }
 
 void  LB_STDCALL lbDBColumnsModel::finishColumnIteration() {
-	Columns->finishIteration();
+	finishPageIteration();
 }
 
 char* LB_STDCALL lbDBColumnsModel::getColumnName() {
