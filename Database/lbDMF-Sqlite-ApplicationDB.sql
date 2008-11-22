@@ -243,7 +243,7 @@ CREATE TABLE "formular_parameters" (
 	
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
-	"parametervalue" BPCHAR,
+	"parametervalue" char(1000),
 --,
 	"formularid" INTEGER
 );
