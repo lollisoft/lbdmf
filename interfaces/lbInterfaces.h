@@ -798,11 +798,7 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 	target.setFile(__FILE__); \
 	target.setLine(__LINE__); \
 	{ \
-		char* iface = (char*) malloc(strlen(#interface)+1); \
-		strcpy(iface, #interface); \
-	 	err = source->queryInterface(iface, (void**) &target, __FILE__, __LINE__); \
-	 	free(iface); \
-	 	iface = NULL; \
+	 	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
 	}
 /*...e*/
 /*...e*/
@@ -3417,7 +3413,6 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
-
 /** \brief A class to store database table information.
  *
  * This is the internal storage for database table information. It will be used in the visitor plugin to transfer
@@ -3447,9 +3442,14 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
+/** \brief A class to store database column information.
+ *
+ * This is the internal storage for database column information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_DBColumns : public lb_I_Unknown {
 public:
-	virtual bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer);
+	virtual bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer) = 0;
 	virtual long		LB_STDCALL addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectColumn(long _id) = 0;
 	virtual int			LB_STDCALL getColumnCount() = 0;
@@ -3474,6 +3474,11 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
+/** \brief A class to store database foreign key information.
+ *
+ * This is the internal storage for database foreign key information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_DBForeignKeys : public lb_I_Unknown {
 public:
 	/** \brief Add a foreign key information.
@@ -3512,6 +3517,11 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
+/** \brief A class to store database primary key information.
+ *
+ * This is the internal storage for database primary key information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_DBPrimaryKeys : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
@@ -3540,7 +3550,11 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
-/// \brief List of database reports.
+/** \brief A class to store report information.
+ *
+ * This is the internal storage for report information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_Reports : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addReport(const char* name, const char* description, long _id = -1) = 0;
@@ -3556,6 +3570,11 @@ public:
 	virtual char*		LB_STDCALL getReportDescription() = 0;
 };
 
+/** \brief A class to store report parameter information.
+ *
+ * This is the internal storage for report parameter information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_ReportParameters : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addParameter(long reportid, const char* name, const char* value, long _id = -1) = 0;
@@ -3572,6 +3591,11 @@ public:
 	virtual char*		LB_STDCALL getParameterValue() = 0;
 };
 
+/** \brief A class to store report elements information.
+ *
+ * This is the internal storage for report elements information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_ReportElements : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addElement(long reportid, const char* name, long typ, long x, long y, long w, long h, const char* description, long _id = -1) = 0;
@@ -3593,6 +3617,11 @@ public:
 	virtual long		LB_STDCALL getElementH() = 0;
 };
 
+/** \brief A class to store report element types information.
+ *
+ * This is the internal storage for report element types information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_ReportElementTypes : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addElementType(const char* name, const char* description, long _id = -1) = 0;
@@ -3608,6 +3637,11 @@ public:
 	virtual char*		LB_STDCALL getElementDescription() = 0;
 };
 
+/** \brief A class to store report texts information.
+ *
+ * This is the internal storage for report texts information. It will be used in the visitor plugin to transfer
+ * the data between database meta information and internal file format or XML. 
+ */
 class lb_I_ReportTexts : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addText(long elementid, long line, const char* text, long _id = -1) = 0;
@@ -3635,12 +3669,12 @@ class lb_I_PluginImpl;
 class lb_I_PluginModule;
 class lb_I_ApplicationServerModul;
 
+/*...sclass lb_I_PluginManager:0:*/
 /** \brief The plugin manager
  *
  * The plugin manager should handle automatic loading of exsisting plugins and optionally
  * unload plugins by a plugin management dialog.
  */
-/*...sclass lb_I_PluginManager:0:*/
 class lb_I_PluginManager : public lb_I_Unknown {
 public:
 
@@ -3732,12 +3766,12 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_PluginModule:0:*/
 /** \brief Plugin module
  *
  * The plugin module is a class per module, that should list all included plugins for one
  * module. This should be similar to the BEGIN_IMPLEMENT_UNKNOWN and ADD_INTERFACE macros.
  */
-/*...sclass lb_I_PluginModule:0:*/
 class lb_I_PluginModule : public lb_I_Unknown {
 public:
 	/**
@@ -3865,12 +3899,12 @@ void LB_STDCALL cls::enumPlugins() { \
 
 /*...e*/
 
+/*...sclass lb_I_Plugin:0:*/
 /**
  * \brief Interface for single plugin (forwarder). 
  *
  * This should be a wrapper to the plugin implementation.
  */
-/*...sclass lb_I_Plugin:0:*/
 class lb_I_Plugin : public lb_I_Unknown {
 public:
 
@@ -3984,10 +4018,10 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_PluginImpl:0:*/
 /**
  * \brief This interface must be used for each plugin implementation.
  */
-/*...sclass lb_I_PluginImpl:0:*/
 class lb_I_PluginImpl : public lb_I_Unknown {
 public:
 
@@ -4043,6 +4077,14 @@ public:
 };
 /*...e*/
 
+/** \brief An application server module.
+ * This is an attempt to enable server side modules. They should either
+ * integrated in code or loaded as a plugin. When it is a plugin, a plugin
+ * wrapper could be used to encapsulate the server module.
+ *
+ * The code for client - server programming is very alpha and should really
+ * not yet used except testing.
+ */
 class lb_I_ApplicationServerModul : public lb_I_PluginModule {
 public:
 	virtual char* LB_STDCALL getServiceName() = 0;
@@ -4051,6 +4093,10 @@ public:
 	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
 };
 
+/** \brief An attempt to implement a proxy class for other interfaces.
+ * Better use CORBA or the like, if objects have to be used remotely.
+ * The development of such a functionality is not planned.
+ */
 class lb_I_Proxy {
 
 };
