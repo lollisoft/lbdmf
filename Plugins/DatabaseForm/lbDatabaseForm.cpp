@@ -2605,7 +2605,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 					           "', source field name '" << SourceFieldName->charrep() << 
 					           "' and source field value '" << SourceFieldValue->charrep() <<
 		        			   "' for detail form '" << formName << "'" LOG_
-					return;
+          goto HandleSimpleFilter;
+          //return;
 				}
 				
 				*newWhereClause += fk->charrep();
@@ -2657,7 +2658,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 				           "', source field name '" << SourceFieldName->charrep() << 
 				           "' and source field value '" << SourceFieldValue->charrep() <<
 	        			   "' for detail form '" << formName << "'" LOG_
-				return;
+	      goto HandleSimpleFilter;
+				//return;
 			}
 
 			*newWhereClause += fk->charrep();
@@ -2720,7 +2722,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 					           "', source field name '" << SourceFieldName->charrep() << 
 					           "' and source field value '" << SourceFieldValue->charrep() <<
 		        			   "' for detail form '" << formName << "'" LOG_
-					return;
+          goto HandleSimpleFilter;
+          //return;
 				}
 				
 				*newWhereClause += fk->charrep();
@@ -2776,7 +2779,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 						   
 				*newWhereClause += "'";
 				_LOG << "New where clause until yet: '" << newWhereClause->charrep() LOG_
-				return;
+	      goto HandleSimpleFilter;
+				//return;
 			}
 
 			*newWhereClause += "\"";
@@ -2822,14 +2826,20 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		_LOG << "Info: DBName: " << DBName->charrep() LOG_
 		_LOG << "Info: DBUser: " << DBUser->charrep() LOG_
 	}
+/// \todo Find a better solution.
+goto SkipHandleSimpleFilter;
+HandleSimpleFilter:
+  *newWhereClause = " WHERE ";
+SkipHandleSimpleFilter:
 
 	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
   wxString tempw = newWhereClause->charrep();
   
-  /// \todo This is a quick hack for filtering directly on columns.
   if (tempw.Upper() == " WHERE ") {
   	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
+
+    SourceFieldValue->replace("\\", "\\\\");
 
     *newWhereClause = " WHERE \"";
     *newWhereClause += SourceFieldName->charrep();
