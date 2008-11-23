@@ -753,7 +753,8 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 lbString::lbString() {
 	ref = STARTREF;
 	stringdata = NULL;
-	buffersize = 0L;
+	buffersize = stringsize = 0L;
+	allocationsize = 1; // Memory management may be do more.
 }
 
 lbString::~lbString() {
@@ -779,12 +780,23 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 		buffersize = strlen(toAppend)+1;
 		stringdata = (char*) malloc(buffersize);
 		stringdata[0] = 0;
+		stringsize = buffersize;
 	} else {
-		long s = strlen(stringdata)+strlen(toAppend)*2;
+		long s = stringsize+strlen(toAppend)*2;
 		if (buffersize >= s) {
+            stringsize = s;
 		} else {
+            if (buffersize > 1000) allocationsize = 200;
+            if (buffersize > 10000) allocationsize = 2000;
+            if (buffersize > 100000) allocationsize = 20000;
 			buffersize = s;
-			stringdata = (char*) malloc(s);
+			if (allocationsize > 1) {
+                stringdata = (char*) malloc(s+allocationsize);
+                buffersize += allocationsize;
+                stringsize = s;
+			} else {
+                stringdata = (char*) malloc(s);
+			}
 			stringdata[0] = 0;
 			strcat(stringdata, temp);
 			free(temp);
@@ -886,9 +898,11 @@ void LB_STDCALL lbString::setData(char const * p) {
 	if (p == NULL) return;
 
 	buffersize = strlen(p)+1;
-	stringdata = (char*) malloc(strlen(p)+1);
+	stringdata = (char*) malloc(buffersize);
 	stringdata[0] = 0;
 	strcpy(stringdata, p);
+	stringsize = buffersize;
+    allocationsize = 1;
 }
 
 #define NUL '\0'

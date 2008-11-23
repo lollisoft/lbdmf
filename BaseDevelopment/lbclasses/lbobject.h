@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbobject.h,v 1.43 2008/02/12 21:36:27 lollisoft Exp $
+ * $Id: lbobject.h,v 1.44 2008/11/23 09:13:54 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.44  2008/11/23 09:13:54  lollisoft
+ * If there would be created a big string in small steps, this is an attempt to
+ * reduce the overhead of calling strlen and malloc each time by using a
+ * bigger allocation size.
+ *
  * Revision 1.43  2008/02/12 21:36:27  lollisoft
  * Added code that allows to store parameter sets into the meta application file.
  *
@@ -409,7 +414,12 @@ private:
 
 	char keyType[10];
 	char* stringdata;
+	/// \brief Size of the buffer, not the length of the string.
 	long buffersize;
+	/// \brief The current length of the string. 
+	long stringsize;
+	/// \brief Minimum allocation size.
+	long allocationsize;
 };
 /*...e*/
 /*...sclass lbFileLocation:0:*/
