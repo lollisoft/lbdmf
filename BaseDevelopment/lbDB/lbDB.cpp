@@ -1799,6 +1799,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
 			prepareFKList();
+			_CL_VERBOSE << "lbQuery::prepareFKList() called." LOG_
 		}
 		
 		databound = 1;
@@ -1806,6 +1807,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 		_CL_LOG << "Do not prebind columns. You must call bind()." LOG_
 	}
 
+    _CL_LOG << "Leave lbQuery::query()." LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -2646,6 +2648,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	/* Close the cursor (the hstmt is still allocated). */
 
 	if (!_TRMemValidate(this)) {
+        _LOG << "Fatal: _TRMemValidate(this) failed!" LOG_
 		lbBreak();
 	}
 	
@@ -2659,6 +2662,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 // MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
 // Fallback to use manual queries. (Using MySQL-Max solved that)
+
+    _CL_VERBOSE << "Check in case of MySQL foreign keys have not been collected yet." LOG_
 
 	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
@@ -2782,6 +2787,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	}
 /*...e*/
 	}
+	
+	_CL_VERBOSE << "Leave lbQuery::prepareFKList()." LOG_
 }
 /*...e*/
 /*...sint LB_STDCALL lbQuery\58\\58\getPKColumns\40\\41\:0:*/
