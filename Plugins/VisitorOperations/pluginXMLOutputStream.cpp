@@ -446,6 +446,13 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 	_LOG << "lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) called" LOG_
 	*oStream << "<dbcolumns>" << "\n";
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleManager(), lb_I_String, msg)
+	UAP_REQUEST(getModuleManager(), lb_I_Long, All)
+	
+	long columns = 0L;
+	long allcolumns = 0L;
+	
 	dbcolumns->finishColumnIteration();
 	
 	while (dbcolumns->hasMoreColumns()) {
@@ -457,6 +464,21 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 		"\" typ=\"" << dbcolumns->getColumnTyp() <<
 		"\" len=\"" << dbcolumns->getColumnLen() <<
 		"\"/>" << "\n";
+        
+        columns++;
+	
+        if (columns == 1000L) {
+            allcolumns += columns;
+            columns  = 0L;
+            All->setData(allcolumns);
+            
+            *msg = "Written ";
+            *msg += All->charrep();
+            *msg += " columns to XML document.";
+            
+            meta->setStatusText("Info", msg->charrep());
+        }
+	
 	}
 
 	*oStream << "</dbcolumns>" << "\n";
