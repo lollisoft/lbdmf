@@ -1439,9 +1439,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				
 				form_query->enableFKCollecting();
 				_LOG << "Execute query '" << formularquery->charrep() << "'" LOG_
-				
+				setVerbose(true);
 				lbErrCodes errQuery = form_query->query(formularquery->charrep());
-				
+				setVerbose(false);
+				_LOG << "Done executing query '" << formularquery->charrep() << "'" LOG_
+
 				if ((errQuery == ERR_NONE) || (errQuery == ERR_DB_NODATA)) {
 					// formular query is valid
 					int columns = form_query->getColumns();
