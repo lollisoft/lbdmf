@@ -2618,6 +2618,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 		if (sb != NULL) {
 		    sb->SetStatusText(value->charrep(), index->getData() - 1);
 		    sb->Update();
+			wxYield();
 		}
 	
 		err = ERR_NONE;
