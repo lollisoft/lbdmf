@@ -467,7 +467,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
         
         columns++;
 	
-        if (columns == 1000L) {
+        if (columns == 100L) {
             allcolumns += columns;
             columns  = 0L;
             All->setData(allcolumns);
