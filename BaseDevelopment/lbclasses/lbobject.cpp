@@ -782,21 +782,24 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 		stringdata[0] = 0;
 		stringsize = buffersize;
 	} else {
-		long s = stringsize+strlen(toAppend)*2;
+		long s = stringsize+strlen(toAppend)+1;
 		if (buffersize >= s) {
             stringsize = s;
 		} else {
             if (buffersize > 1000) allocationsize = 200;
             if (buffersize > 10000) allocationsize = 2000;
             if (buffersize > 100000) allocationsize = 20000;
+
 			buffersize = s;
+
 			if (allocationsize > 1) {
                 stringdata = (char*) malloc(s+allocationsize);
                 buffersize += allocationsize;
-                stringsize = s;
 			} else {
                 stringdata = (char*) malloc(s);
 			}
+
+            stringsize = s;
 			stringdata[0] = 0;
 			strcat(stringdata, temp);
 			free(temp);
@@ -828,6 +831,8 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 
     long s = strlen(toAppend)+1;
 	
+	stringsize = s;
+	
 	if (stringdata == NULL) {
 		buffersize = s;
 		stringdata = (char*) malloc(s);
@@ -847,7 +852,6 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 			free(temp);
 		}
 	}
-	
 	return *this;
 }
 
@@ -894,6 +898,7 @@ void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
 	
 	stringdata = NULL;
+	stringsize = buffersize = 0L;
 	
 	if (p == NULL) return;
 
