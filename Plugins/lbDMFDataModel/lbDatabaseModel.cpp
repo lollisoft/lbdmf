@@ -705,7 +705,12 @@ bool  LB_STDCALL lbDBColumnsModel::hasMoreColumns() {
 	if (Columns->hasMoreElements() == 0) { // get next page if no more entries are in the current page
 		if (hasMorePages()) { // and there are more pages.
 			setNextPage();
-			finishColumnIteration();
+			if (Columns != NULL) {
+				Columns->finishIteration();
+			} else {
+				_LOG << "Error: Have a new page, so also expected a valid columns instance!" LOG_
+				return false;
+			}
 		} else {
 			return false;
 		}
