@@ -2482,6 +2482,10 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 
 /*...svoid LB_STDCALL lbQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbQuery::prepareFKList() {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
 	#define TAB_LEN 100
 	#define COL_LEN 100
 	
@@ -2575,13 +2579,33 @@ void LB_STDCALL lbQuery::prepareFKList() {
 /*...sOriginally for windows \40\foreign table\41\:8:*/
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
 	
-	retcode = SQLForeignKeys(hstmt,
-	         NULL, 0,      /* Primary catalog   */
-	         NULL, 0,      /* Primary schema   */
-	         NULL, 0,      /* Primary table   */
-	         NULL, 0,      /* Foreign catalog   */
-	         NULL, 0,      /* Foreign schema   */
-	         szTable, SQL_NTS); /* Foreign table   */
+
+	if (SomeBaseSettings != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+		*name = "GeneralDBSchemaname";
+		SomeBaseSettings->getUAPString(*&name, *&schema);
+
+		//retcode = SQLPrimaryKeys(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), (SQLCHAR*) tablename->charrep(), SQL_NTS);
+		retcode = SQLForeignKeys(hstmt,
+		         NULL, 0,      /* Primary catalog   */
+			     NULL, 0,      /* Primary schema   */
+		         NULL, 0,      /* Primary table   */
+		         NULL, 0,      /* Foreign catalog   */
+		         (unsigned char*) schema->charrep(), strlen(schema->charrep()),      /* Foreign schema   */
+		         szTable, SQL_NTS); /* Foreign table   */
+	} else {
+		//retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);
+		retcode = SQLForeignKeys(hstmt,
+		         NULL, 0,      /* Primary catalog   */
+			     NULL, 0,      /* Primary schema   */
+		         NULL, 0,      /* Primary table   */
+		         NULL, 0,      /* Foreign catalog   */
+		         NULL, 0,      /* Foreign schema   */
+		         szTable, SQL_NTS); /* Foreign table   */
+	}
+
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
 		_LOG << "SQLForeignKeys(...) failed!" LOG_
