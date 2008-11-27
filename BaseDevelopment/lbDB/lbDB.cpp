@@ -1799,7 +1799,6 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
 			prepareFKList();
-			_CL_VERBOSE << "lbQuery::prepareFKList() called." LOG_
 		}
 		
 		databound = 1;
@@ -1807,7 +1806,6 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 		_CL_LOG << "Do not prebind columns. You must call bind()." LOG_
 	}
 
-    _CL_LOG << "Leave lbQuery::query()." LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -2498,14 +2496,14 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	}
 
 	if (mapPKTable_PKColumns_To_FKName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
+		REQUEST(getModuleInstance(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
 	} else {
 		mapPKTable_PKColumns_To_FKName->deleteAll();
 	}
 
 
 	if (ForeignColumns == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+		REQUEST(getModuleInstance(), lb_I_Container, ForeignColumns)
 	} else {
 		ForeignColumns->deleteAll();
 	}
@@ -2605,10 +2603,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	      UAP_REQUEST(getModuleInstance(), lb_I_String, FKName)
+	      UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable)
 	      
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	      UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable_PKName)
 	      
 	      FKName->setData((char*) szFkCol);
 	      PKTable->setData((char*) szPkTable);
@@ -2648,7 +2646,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	/* Close the cursor (the hstmt is still allocated). */
 
 	if (!_TRMemValidate(this)) {
-        _LOG << "Fatal: _TRMemValidate(this) failed!" LOG_
 		lbBreak();
 	}
 	
@@ -2663,9 +2660,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 // MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
 // Fallback to use manual queries. (Using MySQL-Max solved that)
 
-    _CL_VERBOSE << "Check in case of MySQL foreign keys have not been collected yet." LOG_
+	if (ForeignColumns->Count() == 0) {	
+		_LOG << "Have not yet got any foreign keys." LOG_
 
-	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, metaapp)
@@ -2787,8 +2784,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	}
 /*...e*/
 	}
-	
-	_CL_VERBOSE << "Leave lbQuery::prepareFKList()." LOG_
 }
 /*...e*/
 /*...sint LB_STDCALL lbQuery\58\\58\getPKColumns\40\\41\:0:*/
@@ -6012,12 +6007,16 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 //				 number->setData((long)DataType);
 //				 param->setUAPLong(*&nameDataType, *&number);
 				 
+				 ColumnTypeName--;
+				 ColumnTypeName.resetPtr();
+				 REQUEST(getModuleInstance(), lb_I_String, ColumnTypeName)
+				 QI(ColumnTypeName, lb_I_Unknown, ctuk)
+
 				 *ColumnTypeKey = (const char*) szTypeName;
 				 *ColumnTypeName = (const char*) szTypeName;
 				 
 				 if (columnTypes->exists(&ctkey) == 0) { // Insert to get its reference
 					columnTypes->insert(&ctuk, &ctkey);
-					ColumnTypeName--;
 				 }
 				 ctuk = columnTypes->getElement(&ctkey);
 				 QI(ctuk, lb_I_String, ColumnTypeName)
@@ -6026,7 +6025,11 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 param->setUAPString(*&nameTypeName, *&ColumnTypeName); // Insert a reference
 				 param->setCloning(true);
 
-				 
+				 if (strcmp(ColumnTypeName->charrep(), (char const *) szTypeName) != 0) {
+					 _LOG << "Error: Stored typename is not the same as given. ('" << ColumnTypeName->charrep() << "' != '" << (char const *) szTypeName <<  "')" LOG_
+				 }
+
+
 //				 number->setData((long)BufferLength);
 //				 param->setUAPLong(*&nameBufferLength, *&number);
 				 
@@ -6121,6 +6124,9 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	meta->setStatusText("Info", "Get primary keys ...");
 
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
 	UCHAR TableCatalog[TAB_LEN];
 	UCHAR TableSchema[TAB_LEN];
 	UCHAR TableName[TAB_LEN];
@@ -6142,6 +6148,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
+	*ConnectionName += "-";
+	*ConnectionName += user;
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
@@ -6190,7 +6198,18 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 		*paramname = "TableName";
 		param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);
+		if (SomeBaseSettings != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+			*name = "GeneralDBSchemaname";
+			SomeBaseSettings->getUAPString(*&name, *&schema);
+
+			retcode = SQLPrimaryKeys(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), (SQLCHAR*) tablename->charrep(), SQL_NTS);
+		} else {
+			retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);
+		}
+
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 		UAP(lb_I_KeyBase, key)
@@ -6280,7 +6299,10 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	meta->setStatusText("Info", "Get foreign keys ...");
-		
+
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
 	UCHAR PKTableCatalog[TAB_LEN];
 	UCHAR PKTableSchema[TAB_LEN];
 	UCHAR PKTableName[TAB_LEN];
@@ -6314,6 +6336,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
+	*ConnectionName += "-";
+	*ConnectionName += user;
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
@@ -6365,19 +6389,31 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	UAP(lb_I_Container, tables)
 	
 	
-	//tables = getTables(connectionname);
+	tables = getTables(connectionname);
 	
 	
-	//while (tables->hasMoreElements() == 1) {
-		//UAP(lb_I_Unknown, uk)
-		//UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
-		//UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
-		//uk = tables->nextElement();
+	while (tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
+		uk = tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
 			
-		//*paramname = "TableName";
-		//param->getUAPString(*&paramname, *&tablename);
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, /*(SQLCHAR*) tablename->charrep()*/NULL, 0/*SQL_NTS*/);        
+		if (SomeBaseSettings != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+			*name = "GeneralDBSchemaname";
+			SomeBaseSettings->getUAPString(*&name, *&schema);
+
+			retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), (SQLCHAR*) tablename->charrep(), SQL_NTS);        
+		} else {
+			retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);        
+		}
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 		//UAP(lb_I_KeyBase, key)
@@ -6448,7 +6484,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 				
 				UAP(lb_I_Unknown, uk)
 					QI(param, lb_I_Unknown, uk)
-/*					
+					
 					*msg = "Get foreign column ";
 					*msg += (const char*) FKTableColumnName;
 					*msg += " of table ";
@@ -6460,14 +6496,14 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 					*msg += " ...";
 
 					meta->setStatusText("Info", msg->charrep());
-*/	
+
 					//_LOG << "Extract foreign key from table '" << tablename->charrep() << "': " << msg->charrep() LOG_
 					
 					ForeignKeys->insert(&uk, &key);
 			}
 		}
 		SQLFreeStmt(hstmt, SQL_CLOSE);
-	//}
+	}
 	
 	SQLFreeStmt(hstmt, SQL_DROP);
 
