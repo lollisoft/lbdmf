@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.51 2008/11/13 19:03:09 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.52 2008/12/09 18:08:50 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.52  2008/12/09 18:08:50  lollisoft
+ * Begun with the additional table view variant. This is currently active for the
+ * wxNotebook variant. The wxDialog is still the old version.
+ *
  * Revision 1.51  2008/11/13 19:03:09  lollisoft
  * Added a new action 'open application'.
  *
@@ -239,6 +243,7 @@
 #define __LB_DatabaseForm__
 
 #include <iostream>
+#include "wx/grid.h"
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
@@ -641,12 +646,33 @@ private:
 };
 /*...e*/
 
+/*...sclass lbOwnerDrawControl:0:*/
+class lbOwnerDrawControl :
+        public lb_I_Control,
+public wxControl {
+	
+public:
+	lbOwnerDrawControl();
+	
+	virtual ~lbOwnerDrawControl();
+	
+	void LB_STDCALL create(int parentId) { }
+	int  LB_STDCALL getId() { return GetId(); }
+	
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+	void LB_STDCALL init(lb_I_Window* parent);
+	
+	void OnPaint(wxPaintEvent &event);
+	
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_EVENT_TABLE()
+};
+
 /*...sclass lbDatabasePanel:0:*/
 /**
  * This is the sample database dialog for a wxWidgets based GUI.
  */
-
-
 class lbDatabasePanel :
 	public lb_I_DatabaseForm,
 	public wxPanel {
@@ -845,6 +871,19 @@ public:
 	 */
 	void OnPaint(wxCommandEvent& event);
 
+    int LB_STDCALL lookupColumnIndex(char* name);
+
+    // Helperfunctions that later may be factory functions for the controls.
+    void LB_STDCALL addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+
 	DECLARE_LB_UNKNOWN()
 
 /*...svariables:8:*/
@@ -898,6 +937,9 @@ public:
 	// List of button names to help activating / deactivating them on data availability. 
 	UAP(lb_I_Container, actionButtons)
 
+    UAP(lb_I_EventManager, eman)
+    UAP(lb_I_Dispatcher, dispatcher)
+
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
 	long l;
@@ -928,6 +970,340 @@ public:
 /*...e*/
 };
 /*...e*/
+
+
+class lbDatabaseTableViewPanel :
+	public lb_I_DatabaseForm,
+	public wxPanel {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
+	 */
+	lbDatabaseTableViewPanel();
+
+	/**
+	 * Destructor
+	 */
+	virtual ~lbDatabaseTableViewPanel();
+
+	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+
+	char*	   LB_STDCALL getFormName() { return formName; }
+
+	void LB_STDCALL create(int parentId);
+	int  LB_STDCALL getId() { return GetId(); }
+
+	void LB_STDCALL show() { Show (TRUE); };
+	void LB_STDCALL destroy() {
+		if (_created) Destroy();
+		_created = false;
+	};
+	
+/*...sfrom DatabaseForm interface:8:*/
+	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+
+	char* LB_STDCALL getQuery();
+
+	void LB_STDCALL setFilter(char* filter);
+	
+	const char* LB_STDCALL getControlValue(char* name);
+	
+/*...e*/
+
+	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+
+	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+	
+	void LB_STDCALL updateFromMaster();
+	
+	void LB_STDCALL updateFromDetail();
+
+	int LB_STDCALL getPrimaryColumns();
+	
+	const char* LB_STDCALL getControlValue(int pos);
+	int LB_STDCALL getControls();
+	
+	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
+	   
+	int LB_STDCALL getForeignColumns(char* primaryTable);
+	
+	lb_I_String* LB_STDCALL getForeignColumn(int pos);
+	   
+	bool LB_STDCALL isCharacterColumn(char* name);
+
+	void LB_STDCALL ignoreForeignKeys(char* toTable);
+
+	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	
+	lb_I_String* LB_STDCALL getColumnName(int pos);
+
+	void  LB_STDCALL reopen();
+
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL close();
+	
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL open();
+		
+/*...sData navigation and other handlers:8:*/
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 */
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 */
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 */
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 */
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 */
+	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
+
+	/**
+	 * Refresh the database query and refill the dropdown listboxes.
+	 */
+	lbErrCodes LB_STDCALL lbDBRefresh(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBUpdate();
+
+	/**
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 */
+
+	lbErrCodes LB_STDCALL lbDBClear();
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBRead();
+/*...e*/
+
+/*...sfrom EventHandler interface:8:*/
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+/*...e*/
+
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+
+		
+	void LB_STDCALL activateActionButtons();
+	void LB_STDCALL deactivateActionButtons();
+
+	/** \brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 */
+	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
+
+	void OnDispatch(wxCommandEvent& event);
+	void OnImageButtonClick(wxCommandEvent& event);
+	void OnMouseMove(wxMouseEvent& evt);
+
+	/** \brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 */
+	void OnPaint(wxCommandEvent& event);
+
+    void LB_STDCALL fillRow(int position);
+    void LB_STDCALL fillTable();
+    int LB_STDCALL lookupColumnIndex(char* name);
+
+    // Helperfunctions that later may be factory functions for the controls.
+    void LB_STDCALL addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+
+    void LB_STDCALL addSpecialColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+
+
+
+    // Old factory methods (obsolede ?)
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
+
+    // wxGrid based functions
+    void LB_STDCALL setColumnReadonly(int column);
+    void LB_STDCALL setColumnLabel(int column, char* name);
+    
+    void LB_STDCALL setCellCombo(int row, int col, lb_I_Container* s, lb_I_Long* current);
+    void LB_STDCALL setCellText(int row, int col, lb_I_String* s);
+    void LB_STDCALL setCellInteger(int row, int col, lb_I_Integer* s);
+    void LB_STDCALL setCellLong(int row, int col, lb_I_Long* s);
+    void LB_STDCALL setCellBool(int row, int col, lb_I_Boolean* s);
+    void LB_STDCALL setCellDate(int row, int col, lb_I_String* s);
+    void LB_STDCALL setCellFloat(int row, int col, lb_I_String* s);
+
+    void LB_STDCALL createTableViewControls(int columns);
+
+	DECLARE_LB_UNKNOWN()
+
+/*...svariables:8:*/
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
+	UAP(lb_I_String, SQLString)
+	UAP(lb_I_String, SQLWhere)
+
+	UAP(lb_I_String, _DBName)
+	UAP(lb_I_String, _DBUser)
+	UAP(lb_I_String, _DBPass)
+	
+	/*
+	 * Maps positions to id's for each displayed combo box.
+	 *
+	 * Store a container for each combo box with key(pos) and data(id). 
+	 */
+	UAP(lb_I_Container, ComboboxMapperList)
+	
+	/*
+	 * An image button will be loaded from a file name. This filename must be stored here.
+	 */
+	UAP(lb_I_Container, ImageButtonMapperList)
+	
+	/* Storage for all yet loaded actions. */
+	UAP(lb_I_Container, actions)
+
+	UAP(lb_I_String, app)
+	UAP(lb_I_String, masterForm)
+	UAP(lb_I_String, detailForm)
+	UAP(lb_I_String, SourceFieldName)
+	UAP(lb_I_String, SourceFieldValue)
+	UAP(lb_I_String, DBName)
+	UAP(lb_I_String, DBUser)
+	UAP(lb_I_String, DBPass)
+
+
+	UAP(lb_I_Container, ignoredPKTables)
+	UAP(lb_I_Container, MasterDetailRelationData)
+
+	// Preloaded data from database, if plugins are available.
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Formular_Actions, formActions)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+
+	// List of button names to help activating / deactivating them on data availability. 
+	UAP(lb_I_Container, actionButtons)
+
+    UAP(lb_I_EventManager, eman)
+    UAP(lb_I_Dispatcher, dispatcher)
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+	
+	wxWindow* refreshButton;
+	wxWindow* firstButton;
+	wxWindow* prevButton;
+	wxWindow* nextButton;
+	wxWindow* lastButton;
+	wxWindow* deleteButton;
+
+	bool allNaviDisabled;	
+	bool noDataAvailable;
+	bool isAdding;
+	bool _created;
+	
+	char* base_formName;
+	char* formName;
+	char* untranslated_formName;
+
+	FormularFieldInformation* FFI;
+	FormularActions* fa;
+
+	lb_I_DatabaseForm* _master;
+	lb_I_DatabaseForm* _detail;
+	lb_I_Parameter* _params;
+	
+	wxGrid* TableView;
+	UAP(lb_I_Parameter, currentRow)
+    /// Current page of numRows
+	long page;
+	int numRows;
+	
+/*...e*/
+};
 
 /*...sclass lbDatabaseDialog:0:*/
 class lbDatabaseDialog :

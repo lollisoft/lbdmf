@@ -118,7 +118,10 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseForm)
 
 BEGIN_PLUGINS(lbPluginModuleDatabaseForm)
-	ADD_PLUGIN(lbPluginDatabasePanel, GUIPanel)
+//	ADD_PLUGIN(lbPluginDatabasePanel, GUIPanel)
+//	ADD_PLUGIN(lbPluginDatabaseTableViewPanel, GUITableViewPanel)
+	ADD_PLUGIN(lbPluginDatabasePanel, GUITableViewPanel)
+	ADD_PLUGIN(lbPluginDatabaseTableViewPanel, GUIPanel)
 	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)
 END_PLUGINS()
 
