@@ -157,6 +157,8 @@ set path=C:\Program Files\GNU\WinCvs 1.2;%PATH%
 
 if "%2"=="CC" goto CCBUILD_END:
 
+rem set CONSOLE_DETACH=no
+rem wdw ..\..\bin\%1
 start %1
 
 :CCBUILD_END
