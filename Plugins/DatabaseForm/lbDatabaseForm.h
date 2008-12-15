@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.52 2008/12/09 18:08:50 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.53 2008/12/15 09:11:00 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.53  2008/12/15 09:11:00  lollisoft
+ * Added handlers for some user interaction.
+ *
  * Revision 1.52  2008/12/09 18:08:50  lollisoft
  * Begun with the additional table view variant. This is currently active for the
  * wxNotebook variant. The wxDialog is still the old version.
@@ -1187,7 +1190,9 @@ public:
     void LB_STDCALL addFloatColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addBinaryColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
-
+    // wxGrid event handler
+    void OnCellValueChanged( wxGridEvent& ev );
+    void OnSelectCell( wxGridEvent& ev );
 
     // Old factory methods (obsolede ?)
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
