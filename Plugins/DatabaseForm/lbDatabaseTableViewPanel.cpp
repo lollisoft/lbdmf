@@ -314,13 +314,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     // Code from DialogBlocks CreateControls
 
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-    SetSizer(itemBoxSizer2);
 
     wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
     itemBoxSizer2->Add(itemBoxSizer3, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer4, 0, wxGROW|wxALL, 0);
+    itemBoxSizer3->Add(itemBoxSizer4, 0, wxALL, 0);
 
     wxStaticText* itemStaticText5 = new wxStaticText( this, wxID_STATIC, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -358,8 +357,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     TableView->SetDefaultRowSize(25);
     TableView->SetColLabelSize(25);
     TableView->SetRowLabelSize(50);
+    //TableView->AutoSizeColumns(true);
     TableView->CreateGrid(0, 0/*columns*/, wxGrid::wxGridSelectCells);
-    itemBoxSizer12->Add(TableView, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer12->Add(TableView, 1, wxEXPAND, 5);
 
     wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
     itemBoxSizer2->Add(itemBoxSizer14, 0, wxGROW|wxALL, 0);
@@ -396,6 +396,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     CheckActivateFilter->SetValue(false);
     CheckActivateFilter->SetName(_T("CheckActivateFilter"));
     itemBoxSizer18->Add(CheckActivateFilter, 0, wxGROW|wxALL, 5);
+    
+    
+	this->Connect( ID_TableView,  -1, wxEVT_GRID_SELECT_CELL,
+	(wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &lbDatabaseTableViewPanel::OnSelectCell);
+    
+	this->Connect( ID_TableView,  -1, wxEVT_GRID_CELL_CHANGE,
+	(wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &lbDatabaseTableViewPanel::OnCellValueChanged);
+
+    SetAutoLayout(true);
+    SetSizer(itemBoxSizer2);
 }
 
 int LB_STDCALL lbDatabaseTableViewPanel::lookupColumnIndex(char* name) {
@@ -1308,8 +1318,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
 		deleteButton->Disable();
 	}
     TableView->EndBatch();
+    TableView->AutoSize();
 }
 
+void lbDatabaseTableViewPanel::OnSelectCell( wxGridEvent& ev ) {
+    _LOG << "lbDatabaseTableViewPanel::OnSelectCell(...) called." LOG_
+    ev.Skip();
+}
+
+void lbDatabaseTableViewPanel::OnCellValueChanged( wxGridEvent& ev ) {
+    _LOG << "lbDatabaseTableViewPanel::OnCellValueChanged(...) called." LOG_
+    ev.Skip();
+}
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
