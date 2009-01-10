@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.53 2008/12/15 09:11:00 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.54 2009/01/10 10:38:06 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.54  2009/01/10 10:38:06  lollisoft
+ * Added some class variables to access them.
+ *
  * Revision 1.53  2008/12/15 09:11:00  lollisoft
  * Added handlers for some user interaction.
  *
@@ -1301,7 +1304,12 @@ public:
 	lb_I_DatabaseForm* _detail;
 	lb_I_Parameter* _params;
 	
+	/// \brief The table with the data.
 	wxGrid* TableView;
+	
+	/// \brief The sizer that contains the buttons.
+	wxBoxSizer* buttonSizer;
+	
 	UAP(lb_I_Parameter, currentRow)
     /// Current page of numRows
 	long page;
