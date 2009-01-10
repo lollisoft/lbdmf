@@ -279,7 +279,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::registerEventHandler(lb_I_Dispat
 /*...e*/
 void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
 	char eventName[100] = "";
-	int ID_ComboFilterList;
+	int ID_ChoiceFilterList;
 	int ID_CheckFilterActive;
 	int ID_ButtonEditFilter;
 	int ID_ButtonDeleteFilter;
@@ -290,8 +290,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     int ID_ButtonDelete;
 	int ID_CheckActivateFilter;	
 		
-	sprintf(eventName, "%pComboFilterList", this);
-	eman->registerEvent(eventName, ID_ComboFilterList);
+	sprintf(eventName, "%pChoiceFilterList", this);
+	eman->registerEvent(eventName, ID_ChoiceFilterList);
 	sprintf(eventName, "%pCheckFilterActive", this);
 	eman->registerEvent(eventName, ID_CheckFilterActive);
 	sprintf(eventName, "%pButtonEditFilter", this);
@@ -312,90 +312,76 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
 	eman->registerEvent(eventName, ID_CheckActivateFilter);
 
     // Code from DialogBlocks CreateControls
-
+    lbDatabaseTableViewPanel* itemPanel1 = this;
+	
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-
+    itemPanel1->SetSizer(itemBoxSizer2);
+	
     wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer2->Add(itemBoxSizer3, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
+    itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxALL, 0);
+	
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer4, 0, wxALL, 0);
-
-    wxStaticText* itemStaticText5 = new wxStaticText( this, wxID_STATIC, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer3->Add(itemBoxSizer4, 0, wxGROW|wxALL, 0);
+	
+    wxStaticText* itemStaticText5 = new wxStaticText( itemPanel1, wxID_STATIC, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
+	
     wxArrayString itemComboBox6Strings;
-    wxComboBox* ComboFilterList = new wxComboBox( this, ID_ComboFilterList, _T(""), wxDefaultPosition, wxDefaultSize, itemComboBox6Strings, wxCB_DROPDOWN );
-    ComboFilterList->SetName(_T("ComboFilterList"));
-    itemBoxSizer4->Add(ComboFilterList, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxCheckBox* CheckFilterActive = new wxCheckBox( this, ID_CheckFilterActive, _("Active"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxComboBox* ChoiceFilterList = new wxComboBox( itemPanel1, ID_ChoiceFilterList, _T(""), wxDefaultPosition, wxDefaultSize, itemComboBox6Strings, wxCB_DROPDOWN );
+    ChoiceFilterList->SetName(_T("ChoiceFilterList"));
+    itemBoxSizer4->Add(ChoiceFilterList, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxCheckBox* CheckFilterActive = new wxCheckBox( itemPanel1, ID_CheckFilterActive, _("Active"), wxDefaultPosition, wxDefaultSize, 0 );
     CheckFilterActive->SetValue(false);
     CheckFilterActive->SetName(_T("CheckFilterActive"));
     itemBoxSizer4->Add(CheckFilterActive, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxButton* ButtonEditFilter = new wxButton( this, ID_ButtonEditFilter, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+    wxButton* ButtonEditFilter = new wxButton( itemPanel1, ID_ButtonEditFilter, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonEditFilter->SetName(_T("ButtonEditFilter"));
     itemBoxSizer4->Add(ButtonEditFilter, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxButton* ButtonDeleteFilter = new wxButton( this, ID_ButtonDeleteFilter, _("X"), wxDefaultPosition, wxSize(20, -1), 0 );
+	
+    wxButton* ButtonDeleteFilter = new wxButton( itemPanel1, ID_ButtonDeleteFilter, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonDeleteFilter->SetName(_T("ButtonDeleteFilter"));
     itemBoxSizer4->Add(ButtonDeleteFilter, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer10, 0, wxGROW|wxALL, 0);
-
-    wxStaticLine* itemStaticLine11 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-    itemBoxSizer10->Add(itemStaticLine11, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer12, 1, wxGROW|wxALL, 0);
-
-    TableView = new wxGrid( this, ID_TableView, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+	
+    itemBoxSizer4->Add(105, 5, 0, wxGROW|wxALL, 5);
+	
+    wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer3->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
+	
+    TableView = new wxGrid( itemPanel1, ID_TableView, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
     TableView->SetName(_T("TableView"));
     TableView->SetDefaultColSize(50);
     TableView->SetDefaultRowSize(25);
     TableView->SetColLabelSize(25);
     TableView->SetRowLabelSize(50);
-    //TableView->AutoSizeColumns(true);
-    TableView->CreateGrid(0, 0/*columns*/, wxGrid::wxGridSelectCells);
-    itemBoxSizer12->Add(TableView, 1, wxEXPAND, 5);
-
-    wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer2->Add(itemBoxSizer14, 0, wxGROW|wxALL, 0);
-
-    wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer14->Add(itemBoxSizer15, 1, wxGROW|wxALL, 0);
-
-    wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer15->Add(itemBoxSizer16, 1, wxGROW|wxALL, 5);
-
-    wxStaticLine* itemStaticLine17 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-    itemBoxSizer16->Add(itemStaticLine17, 1, wxGROW|wxALL, 0);
-
-    wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
-    itemBoxSizer15->Add(itemBoxSizer18, 0, wxALIGN_TOP|wxALL, 5);
-
-    wxButton* ButtonClose = new wxButton( this, ID_ButtonClose, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+    TableView->CreateGrid(0/*10*/, 0/*20*/, wxGrid::wxGridSelectCells);
+    itemBoxSizer11->Add(TableView, 1, wxGROW|wxALL, 0);
+	
+    wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
+	buttonSizer = itemBoxSizer13;
+    itemBoxSizer11->Add(itemBoxSizer13, 0, wxGROW|wxALL, 0);
+	
+    wxButton* ButtonClose = new wxButton( itemPanel1, ID_ButtonClose, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonClose->SetName(_T("ButtonClose"));
-    itemBoxSizer18->Add(ButtonClose, 0, wxGROW|wxALL, 5);
-
-    wxButton* ButtonNew = new wxButton( this, ID_ButtonNew, _("New"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer13->Add(ButtonClose, 0, wxGROW|wxALL, 5);
+	
+    wxButton* ButtonNew = new wxButton( itemPanel1, ID_ButtonNew, _("New"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonNew->SetName(_T("ButtonNew"));
-    itemBoxSizer18->Add(ButtonNew, 0, wxGROW|wxALL, 5);
-
-    wxButton* ButtonEdit = new wxButton( this, ID_ButtonEdit, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer13->Add(ButtonNew, 0, wxGROW|wxALL, 5);
+	
+    wxButton* ButtonEdit = new wxButton( itemPanel1, ID_ButtonEdit, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonEdit->SetName(_T("ButtonEdit"));
-    itemBoxSizer18->Add(ButtonEdit, 0, wxGROW|wxALL, 5);
-
-    wxButton* ButtonDelete = new wxButton( this, ID_ButtonDelete, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer13->Add(ButtonEdit, 0, wxGROW|wxALL, 5);
+	
+    wxButton* ButtonDelete = new wxButton( itemPanel1, ID_ButtonDelete, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonDelete->SetName(_T("ButtonDelete"));
-    itemBoxSizer18->Add(ButtonDelete, 0, wxGROW|wxALL, 5);
-
-    wxCheckBox* CheckActivateFilter = new wxCheckBox( this, ID_CheckActivateFilter, _("Activate filter"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer13->Add(ButtonDelete, 0, wxGROW|wxALL, 5);
+	
+    wxCheckBox* CheckActivateFilter = new wxCheckBox( itemPanel1, ID_CheckActivateFilter, _("Activate filter"), wxDefaultPosition, wxDefaultSize, 0 );
     CheckActivateFilter->SetValue(false);
     CheckActivateFilter->SetName(_T("CheckActivateFilter"));
-    itemBoxSizer18->Add(CheckActivateFilter, 0, wxGROW|wxALL, 5);
+    itemBoxSizer13->Add(CheckActivateFilter, 0, wxGROW|wxALL, 5);
     
     
 	this->Connect( ID_TableView,  -1, wxEVT_GRID_SELECT_CELL,
@@ -1737,7 +1723,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 							dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::OnActionButton, evName);
 							this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 											(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-							sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+							buttonSizer->Add(actionButton, 0, wxEXPAND | wxALL, 5);
 						}
 					}
 				}
@@ -1786,7 +1772,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 			dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::OnActionButton, eventName);
 			this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 						   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-			sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+			buttonSizer->Add(actionButton, 0, wxEXPAND | wxALL, 5);
 			_CL_LOG << "Added an action (while loop): " << eventName LOG_
 			free(eventName);
 			err = actionQuery->next();
@@ -1809,7 +1795,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 			dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::OnActionButton, eventName);
 			this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 						   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-			sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+			buttonSizer->Add(actionButton, 0, wxEXPAND | wxALL, 5);
 			_CL_LOG << "Added an action: " << eventName LOG_
 			free(eventName);
 		}
@@ -2032,6 +2018,8 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::open() called." LOG_
+	
+	return ERR_NOT_IMPLEMENTED;
 	
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
