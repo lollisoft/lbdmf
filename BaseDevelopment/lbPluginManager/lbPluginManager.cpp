@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.57 2008/07/26 07:37:33 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.58 2009/01/10 10:32:43 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.58  2009/01/10 10:32:43  lollisoft
+ * Return NULL if there is no implementation.
+ *
  * Revision 1.57  2008/07/26 07:37:33  lollisoft
  * Log some usefull messages. This identified the plugin problem.
  * Propably load failure interferes other plugins in the registry.
@@ -1471,7 +1474,8 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (implementation == NULL) {
-		_CL_LOG << "lbPlugin::peekImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
+		_LOG << "lbPlugin::peekImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
+		return NULL;
 	}
 	
 	UAP(lb_I_PluginImpl, impl)
