@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.187 $
+# * $Revision: 1.188 $
 # * $Name:  $
-# * $Id: Makefile,v 1.187 2008/10/03 14:35:14 lollisoft Exp $
+# * $Id: Makefile,v 1.188 2009/01/14 15:01:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.188  2009/01/14 15:01:02  lollisoft
+# * Fixed build system for solaris. Now basically the application works with sqlite.
+# *
 # * Revision 1.187  2008/10/03 14:35:14  lollisoft
 # * Added unit test target for the database layer modul.
 # *
@@ -957,6 +960,7 @@ TARGETDLL=so
 TARGETFRAMEWORK=so
 TARGETEXE=elf
 TARGETSHARED=so
+TARGETWXSHARED=so
 TARGETWXEXE=elf
 TARGETWXSO=wxso
 TARGET_TV_DLL=tvision_dll
@@ -999,6 +1003,7 @@ ALLDIRS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \

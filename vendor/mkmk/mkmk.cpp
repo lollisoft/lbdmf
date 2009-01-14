@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.99 $
+ * $Revision: 1.100 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.99 2008/09/06 15:54:55 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.100 2009/01/14 15:01:02 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.100  2009/01/14 15:01:02  lollisoft
+ * Fixed build system for solaris. Now basically the application works with sqlite.
+ *
  * Revision 1.99  2008/09/06 15:54:55  lollisoft
  * Changed copying sym files for dll and plugins into the same directory as the plugins and dlls are copied.
  *
@@ -347,6 +350,8 @@
   #define dd_name name
 
 #else
+
+  #include <limits.h>
 
   #include <dosdir.h>
 #endif
@@ -1759,7 +1764,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.99 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.100 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1979,7 +1984,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         if (targettype == LEX_TARGET) {
                 sprintf(Line, "lex.yy.c: %s",Name);
         } else {
-                sprintf(Line, "%soutput: %s",ObjName,Name);
+                sprintf(Line, "%s.output: %s",ObjName,Name);
         }
   } else {
         ObjExt(Name,ObjName,sizeof(ObjName));
