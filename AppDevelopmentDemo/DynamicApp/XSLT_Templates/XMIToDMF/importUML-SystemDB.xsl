@@ -4,17 +4,19 @@
 <xsl:import href="importUMLApplicationTables.xsl"/>
 <xsl:import href="createDefaultStoredProcs.xsl"/>
 
+<xsl:import href="XMISettings.xsl"/>
+
 <xsl:output method="text"/>
 
 <!-- ********** Select your database target ********** -->
 
-<xsl:variable name="TargetDBType" select="'Sqlite'"/>
-<xsl:variable name="TargetDBVersion" select="'1.2.3'"/>
-
 <!--
-<xsl:variable name="TargetDBType" select="'PostgreSQL'"/>
-<xsl:variable name="TargetDBVersion" select="'7.4'"/>
+<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
 -->
+<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+
+<xsl:variable name="TargetDBType"><xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if><xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if><xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if></xsl:variable>
+<xsl:variable name="TargetDBVersion"><xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if><xsl:if test="$targetdatabase = ' '">7.4</xsl:if><xsl:if test="$targetdatabase = ''">7.4</xsl:if></xsl:variable>
 
 <!-- ************************************************* -->
 

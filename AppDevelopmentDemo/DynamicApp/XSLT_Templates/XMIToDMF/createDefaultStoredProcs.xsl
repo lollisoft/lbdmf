@@ -12,8 +12,8 @@
 
 SET SESSION AUTHORIZATION 'postgres';
 
-DROP FUNCTION GetOrCreateApplication(varchar);
-DROP FUNCTION GetFormularId(int, varchar);
+--DROP FUNCTION getorCreateapplication(varchar);
+--DROP FUNCTION getformularid(int, varchar);
 
 CREATE OR REPLACE FUNCTION plpgsql_call_handler()
   RETURNS language_handler AS
@@ -25,11 +25,12 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 --CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
 
 
-CREATE OR REPLACE FUNCTION GetOrCreateApplication(varchar)
+CREATE OR REPLACE FUNCTION getorcreateapplication(varchar)
   RETURNS int AS
 '
 declare
 applicationid int;
+uid int;
 applicationname alias for $1;
 begin
   select id into applicationid from anwendungen where name =  applicationname;
@@ -38,18 +39,38 @@ begin
   end if;
   if applicationid is null then
 	insert into anwendungen (name, titel, modulename, functor, interface) values(applicationname, ''Application '' || applicationname, ''lbDynApp'', ''instanceOfApplication'', ''lb_I_Application'');
-	applicationid = GetOrCreateApplication(applicationname);
+
+	select id into uid from users where userid = ''user'';
+	if uid is null then
+		INSERT INTO "users" (userid, passwort, lastapp) values (''user'', ''TestUser'', (select id FROM "anwendungen" WHERE "name" = ''lbDMF Manager''));
+		INSERT INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") VALUES (''lb_I_DatabaseForm'','''',''-'','''',''Dynamisch aufgebautes Datenbankformular'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Buttonpress'', '''', '''');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''SQL query'', ''instanceOflbSQLQueryAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open form'', ''instanceOflbFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open detail form'', ''instanceOflbDetailFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open master form'', ''instanceOflbMasterFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open Database Report'', ''instanceOflbDBReportAction'', ''lbDatabaseReport'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Perform XSLT transformation'', ''instanceOflbDMFXslt'', ''lbDMFXslt'');
+
+	end if;
+
+
+	applicationid = getorcreateapplication(applicationname);
 	insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
 	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
 	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''CRM'', applicationid);
+	if applicationname = ''lbDMF Manager'' then
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
+	else
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''<xsl:value-of select="$ApplicationName"/>'', applicationid);
+	end if;
   end if;
 return applicationid;
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 
-CREATE OR REPLACE FUNCTION GetOrCreateActiontype(varchar)
+CREATE OR REPLACE FUNCTION getorcreateactiontype(varchar)
   RETURNS int AS
 '
 declare
@@ -62,14 +83,14 @@ begin
   end if;
   if actionid is null then
 	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
-	actionid = GetOrCreateActiontype(typename);
+	actionid = "getorcreateactiontype"(typename);
   end if;
 return actionid;
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 
-CREATE OR REPLACE FUNCTION ConnectActionToFormular(varchar, varchar)
+CREATE OR REPLACE FUNCTION connectactiontoformular(varchar, varchar)
   RETURNS int AS
 '
 declare
@@ -83,15 +104,36 @@ begin
   end if;
   if actionid is null then
 	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
-	actionid = GetOrCreateActiontype(typename);
+	actionid = "getorcreateactiontype"(typename);
   end if;
 return actionid;
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 
+CREATE OR REPLACE FUNCTION "dropformular"("varchar", "varchar")
+  RETURNS bool AS
+'
+declare appid int;
+declare formid int;
+declare appname alias for $1;
+declare formname alias for $2;
+begin
+	select id into appid from anwendungen where name = appname;
+	select id into formid from formulare where name = formname and anwendungid = appid;
 
-CREATE OR REPLACE FUNCTION GetFormularId(int, varchar)
+	delete from formular_parameters where formularid = formid;
+	delete from anwendungen_formulare where anwendungid = appid and formularid = formid;
+	delete from formular_actions where formular = formid;
+	delete from formulare where anwendungid = appid and id = formid;
+
+	return true;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
+CREATE OR REPLACE FUNCTION getformularid(int, varchar)
   RETURNS int AS
 '
 declare
@@ -144,6 +186,205 @@ INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUE
 INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport');
 INSERT OR IGNORE INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
 
+		</xsl:when>
+		<xsl:when test="$TargetDatabaseType='MSSQL'">
+-- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
+
+CREATE PROCEDURE DropTable @Table VARCHAR(50)
+AS
+BEGIN
+	DECLARE @Statement VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT 'DROP TABLE ' + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN ('U') AND upper(pr.name) = upper(@Proc)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement)
+			FETCH hSqlProc INTO @Statement
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END
+
+GO
+
+CREATE  PROCEDURE DropProc @Proc VARCHAR(50)
+AS
+BEGIN
+	DECLARE @Statement VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT 'DROP ' + case pr.xtype when 
+			'P' then 'PROCEDURE ' else 'FUNCTION ' end + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN ('P','FN','TF') AND upper(pr.name) = upper(@Proc)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement)
+			FETCH hSqlProc INTO @Statement
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END
+
+GO
+
+CREATE  PROC createapplication(@FNName varchar) AS
+BEGIN
+  declare @applicationid int;
+  declare @uid int;
+  declare @applicationname char(100);
+
+  set @applicationname = @FNName;
+  set @applicationid = (select id from anwendungen where name = @applicationname);
+  if @applicationid is null
+  begin
+	insert into anwendungen 
+	(name, titel, modulename, functor, interface) values(@applicationname, 'Application ' + @applicationname, 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
+	set @uid = (select id from users where userid = 'user')
+	if @uid is null 
+    begin
+		declare @appid as int
+		set @appid = (select id FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+		INSERT INTO "users" (userid, passwort, lastapp) values ('user', 'TestUser', @appid);
+		INSERT INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") VALUES ('lb_I_DatabaseForm','','-','','Dynamisch aufgebautes Datenbankformular');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Buttonpress', '', '');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('SQL query', 'instanceOflbSQLQueryAction', 'lbDatabaseForm');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open master form', 'instanceOflbMasterFormAction', 'lbDatabaseForm');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
+    end
+
+
+	--set @applicationid = getorcreateapplication(@applicationname);
+	insert into user_anwendungen (userid, anwendungenid) values (1, @applicationid);
+	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', 'dba', @applicationid);
+	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', 'trainres', @applicationid);
+	if @applicationname = 'lbDMF Manager' 
+    begin
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', 'lbDMF', @applicationid);
+	end
+	if @applicationname != 'lbDMF Manager' 
+    begin
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', 'name', @applicationid);
+	end
+  end
+end
+
+GO
+
+
+CREATE PROC getapplication(@FNName varchar) AS
+BEGIN
+  declare @applicationid int;
+  declare @uid int;
+  declare @applicationname char(100);
+
+  set @applicationname = @FNName;
+  set @applicationid = (select id from anwendungen where name = @applicationname);
+  if not @applicationid is null 
+  begin
+    return @applicationid
+  end
+  if @applicationid is null
+  begin
+	exec ('exec createapplication ' + @FNName)
+  end
+  set @applicationid = ('exec getapplication ' + @FNName)
+  Select @applicationid
+end
+
+GO
+
+
+/*
+CREATE FUNCTION getorcreateactiontype(varchar)
+  RETURNS int AS
+'
+declare
+actionid int;
+typename alias for $1;
+begin
+  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
+  if not actionid is null then
+    return actionid;
+  end if;
+  if actionid is null then
+	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
+	actionid = getorcreateactiontype"(typename);
+  end if;
+return actionid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION connectactiontoformular(varchar, varchar)
+  RETURNS int AS
+'
+declare
+actionid int;
+action alias for $1;
+formular alias for $2;
+begin
+  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
+  if not actionid is null then
+    return actionid;
+  end if;
+  if actionid is null then
+	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
+	actionid = "getorcreateactiontype"(typename);
+  end if;
+return actionid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION "dropformular"("varchar", "varchar")
+  RETURNS bool AS
+'
+declare appid int;
+declare formid int;
+declare appname alias for $1;
+declare formname alias for $2;
+begin
+	select id into appid from anwendungen where name = appname;
+	select id into formid from formulare where name = formname and anwendungid = appid;
+
+	delete from formular_parameters where formularid = formid;
+	delete from anwendungen_formulare where anwendungid = appid and formularid = formid;
+	delete from formular_actions where formular = formid;
+	delete from formulare where anwendungid = appid and id = formid;
+
+	return true;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
+CREATE OR REPLACE FUNCTION getformularid(int, varchar)
+  RETURNS int AS
+'
+declare
+formularid int;
+applicationid alias for $1;
+applicationname alias for $2;
+begin
+	select id into formularid from formulare where anwendungid = applicationid and name = applicationname;
+	return formularid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+*/
 		</xsl:when>
 		<xsl:otherwise>
 -- Error: Target database '<xsl:value-of select="$TargetDatabaseType"/>' does not support stored procedures.

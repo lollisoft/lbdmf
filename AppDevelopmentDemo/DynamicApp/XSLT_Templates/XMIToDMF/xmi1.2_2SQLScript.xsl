@@ -31,6 +31,28 @@
             73252 Lenningen (germany)
 -->
   <xsl:output method="text" indent="no"/>
+
+<!-- ********** Select your database target ********** -->
+
+<!--
+<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
+-->
+<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+
+
+<xsl:variable name="TargetDBType">
+	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
+	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+</xsl:variable>
+<xsl:variable name="TargetDBVersion">
+	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
+	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
+	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
+</xsl:variable>
+
+<!-- ************************************************* -->
+
   <xsl:template match="text()|@*">
     <xsl:value-of select="."/>
   </xsl:template>
@@ -79,7 +101,7 @@
 
 <!-- Create some required functions -->
 
-<xsl:if test="$targetdatabase = ''">
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
 -- dropconstraint("varchar", "varchar")
 --
 -- Drops a constraint if it exists.
@@ -120,6 +142,81 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 </xsl:if>
+<xsl:if test="$TargetDBType = 'MSSQL'">
+-- dropconstraint("varchar", "varchar")
+--
+-- Drops a constraint if it exists.
+exec sp_sqlexec '
+CREATE PROCEDURE lbDMF_DropConstraint(@Table VARCHAR(50), @Name VARCHAR(50))
+AS
+BEGIN
+	DECLARE @Statement1 VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT ''ALTER TABLE '' + @Table + '' DROP CONSTRAINT '' + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN (''F'') AND upper(pr.name) = upper(@Name)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement1
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement1)
+			FETCH hSqlProc INTO @Statement1
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END;
+';
+
+exec sp_sqlexec '
+CREATE PROCEDURE lbDMF_DropTable(@Table VARCHAR(50))
+AS
+BEGIN
+	DECLARE @Statement2 VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT ''DROP TABLE '' + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN (''U'') AND upper(pr.name) = upper(@Table)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement2
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement2)
+			FETCH hSqlProc INTO @Statement2
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END;
+';
+
+exec sp_sqlexec '
+CREATE PROCEDURE lbDMF_DropProc(@Name VARCHAR(50))
+AS
+BEGIN
+	DECLARE @Statement3 VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT ''DROP '' + case pr.xtype when 
+			''P'' then ''PROCEDURE '' else ''FUNCTION '' end + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN (''P'',''FN'',''TF'') AND upper(pr.name) = upper(@Name)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement3
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement3)
+			FETCH hSqlProc INTO @Statement3
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END;
+';
+
+</xsl:if>
 
 <!--
     <xsl:variable name="stereoTypeID" select="UML:ModelElement.stereotype/@xmi.idref"/>
@@ -153,15 +250,28 @@ end;
           <xsl:with-param name="classID" select="$classID"/>
         </xsl:call-template>
       </xsl:for-each>
+	  
+<xsl:if test="$TargetDBType = 'MSSQL'">
+exec  lbDMF_DropProc 'lbDMF_DropTable';
+
+exec  lbDMF_DropProc 'lbDMF_DropConstraint';
+
+exec  lbDMF_DropProc 'lbDMF_DropProc';
+
+</xsl:if>
+<xsl:if test="$TargetDBType = 'Sqlite'">
+-- Drop a constraint
+</xsl:if>
+	  
   </xsl:template>
 
   <xsl:template match="UML:Class">
     <!-- ****************** CLASS ********************* -->
     <xsl:variable name="classID" select="@xmi.id"/>
     <xsl:element name="class">
--- Class is <xsl:value-of select="@name"/> <xsl:value-of select="$targetdatabase"/> 
+-- Class is <xsl:value-of select="@name"/> <xsl:value-of select="$TargetDBType"/> 
 
-<xsl:if test="$targetdatabase = ''">
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
 
 select dropTable('<xsl:value-of select="@name"/>');
 
@@ -176,7 +286,22 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
 
 </xsl:if>
 
-<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+<xsl:if test="$TargetDBType = 'MSSQL'">
+
+exec lbDMF_DropTable '<xsl:value-of select="@name"/>';
+
+CREATE TABLE "<xsl:value-of select="@name"/>" (
+"ID" INTEGER IDENTITY (1, 1) NOT NULL,
+PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
+<xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+"<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
+<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
+</xsl:for-each>
+);
+
+</xsl:if>
+
+<xsl:if test="$TargetDBType = 'Sqlite'">
 CREATE TABLE "<xsl:value-of select="@name"/>" (
 "ID" INTEGER PRIMARY KEY<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
@@ -191,24 +316,44 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
     </xsl:element>
   </xsl:template>
 
+
   <xsl:template name="convertTypes_DBTypes">
     <xsl:param name="typename"/>
-<xsl:if test="$targetdatabase = ''">
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
     <xsl:choose>
       <xsl:when test="$typename='int'">INTEGER</xsl:when>
       <xsl:when test="$typename='float'">DECIMAL</xsl:when>
       <xsl:when test="$typename='date'">DATE</xsl:when>
-      <xsl:when test="$typename='string'">CHAR(100)</xsl:when>
+      <xsl:when test="$typename='shortstring'">CHAR(20)</xsl:when>
+      <xsl:when test="$typename='string'">CHAR(255)</xsl:when>
       <xsl:when test="$typename='bigstring'">bytea</xsl:when>
+      <xsl:when test="$typename='bool'">bool</xsl:when>
+      <xsl:when test="$typename='boolean'">bool</xsl:when>
       <xsl:when test="$typename='image'">bytea</xsl:when>
     </xsl:choose>
 </xsl:if>
-<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+<xsl:if test="$TargetDBType = 'MSSQL'">
     <xsl:choose>
       <xsl:when test="$typename='int'">INTEGER</xsl:when>
       <xsl:when test="$typename='float'">DECIMAL</xsl:when>
       <xsl:when test="$typename='date'">DATE</xsl:when>
-      <xsl:when test="$typename='string'">CHAR(100)</xsl:when>
+      <xsl:when test="$typename='shortstring'">CHAR(20)</xsl:when>
+      <xsl:when test="$typename='string'">CHAR(255)</xsl:when>
+      <xsl:when test="$typename='bigstring'">bytea</xsl:when>
+      <xsl:when test="$typename='bool'">bool</xsl:when>
+      <xsl:when test="$typename='boolean'">bool</xsl:when>
+      <xsl:when test="$typename='image'">bytea</xsl:when>
+    </xsl:choose>
+</xsl:if>
+<xsl:if test="$TargetDBType = 'Sqlite'">
+    <xsl:choose>
+      <xsl:when test="$typename='bool'">BOOL</xsl:when>
+      <xsl:when test="$typename='boolean'">BOOL</xsl:when>
+      <xsl:when test="$typename='int'">INTEGER</xsl:when>
+      <xsl:when test="$typename='float'">DECIMAL</xsl:when>
+      <xsl:when test="$typename='date'">DATE</xsl:when>
+      <xsl:when test="$typename='shortstring'">CHAR(20)</xsl:when>
+      <xsl:when test="$typename='string'">CHAR(255)</xsl:when>
       <xsl:when test="$typename='text'">TEXT</xsl:when>
       <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
       <xsl:when test="$typename='image'">BYTEA</xsl:when>
@@ -252,13 +397,32 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
 <xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
 
 
--- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/> with name <xsl:value-of select="$assocname"/>
+-- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/> with name '<xsl:value-of select="$assocname"/>'
 
-<xsl:if test="$targetdatabase = ''">
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" INT;
+
+<xsl:if test="$assocname=''">
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/>" INT;
 </xsl:if>
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>" )
-   REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+<xsl:if test="$TargetDBType = 'MSSQL'">
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD "<xsl:value-of select="$thisClassName"/>" INT;
+</xsl:if>
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+</xsl:if>
+
+<xsl:if test="$assocname!=''">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" )
+</xsl:if>
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$assocname"/>" INT;
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" )
+</xsl:if>
+<xsl:if test="$TargetDBType = 'MSSQL'">
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$assocname"/>" INT;
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+</xsl:if>
+</xsl:if>
 </xsl:if>
     </xsl:for-each>
   </xsl:template>
@@ -268,6 +432,7 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
     <!-- UML1.4: -->
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
+      <xsl:variable name="changeForeignKeyName" select="../@name"/>
       <xsl:variable name="thisEnd" select="../.."/>
       <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
       <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
@@ -279,8 +444,12 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
 	  
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">,
-<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
-"<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" INTEGER</xsl:if>
+<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type = $thisEndType]/@name"/>
+<xsl:if test="$assocname=''">
+"<xsl:value-of select="$otherClassName"/>" INTEGER</xsl:if>
+<xsl:if test="$assocname!=''">
+"<xsl:value-of select="$assocname"/>" INTEGER</xsl:if>
+</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -303,10 +472,13 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
 
 <xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
 
-<xsl:if test="$targetdatabase = ''">
+<xsl:if test="$TargetDBType = 'PostgreSQL'">
 select dropConstraint('<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID');
 </xsl:if>
-<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">
+<xsl:if test="$TargetDBType = 'MSSQL'">
+exec  lbDMF_DropConstraint '<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID';
+</xsl:if>
+<xsl:if test="$TargetDBType = 'Sqlite'">
 -- Drop a constraint
 </xsl:if>
 </xsl:if>
