@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.59 2009/01/31 09:58:03 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.60 2009/01/31 10:37:09 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.60  2009/01/31 10:37:09  lollisoft
+ * Bugfix: New version variable was not correctly initialized and not deleted at destruction.
+ *
  * Revision 1.59  2009/01/31 09:58:03  lollisoft
  * Added code for plugin versioning.
  *
@@ -1252,6 +1255,7 @@ lbPlugin::lbPlugin() {
 	_module = NULL;
 	_name = NULL;
 	_namespace = NULL;
+	_version = NULL;
 	ref = STARTREF;
 	
 //	implementation = NULL;
@@ -1263,6 +1267,7 @@ lbPlugin::~lbPlugin() {
 	if (implementation != NULL) 
 		_CL_VERBOSE << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
 
+	if (_version) free (_version);
 	if (_module) free(_module);
 	if (_name) free(_name);
 	if (_namespace) free(_namespace);
