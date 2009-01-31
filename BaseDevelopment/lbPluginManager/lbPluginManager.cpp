@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.58 2009/01/10 10:32:43 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.59 2009/01/31 09:58:03 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.59  2009/01/31 09:58:03  lollisoft
+ * Added code for plugin versioning.
+ *
  * Revision 1.58  2009/01/10 10:32:43  lollisoft
  * Return NULL if there is no implementation.
  *
@@ -336,7 +339,7 @@ public:
         bool LB_STDCALL beginEnumPlugins();
         bool LB_STDCALL beginEnumServerPlugins();
 
-	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace);
+	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version);
     lb_I_Plugin* LB_STDCALL nextPlugin();
 
 	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace);
@@ -960,14 +963,16 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 /*...e*/
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
-lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace) {
+lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace, char* _version) {
+	_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Searching.!" LOG_ 
 	if (beginEnumPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
 			pl = nextPlugin();
 			if (pl == NULL) break;
-			
-			if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
+
+			_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_ 
+			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {
 				PluginContainer->finishIteration();
 				PluginModules->finishIteration();
 				
@@ -976,7 +981,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 				return pl.getPtr();
 			}
 		}
-		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "'): Didn't find any plugin.!" LOG_ 
+		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_ 
 		_LOG "Plugins registered:" LOG_
 
 
@@ -990,7 +995,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 	
 				//pl->initialize();
 				
-				_CL_LOG << "Plugin name: " << pl->getName() LOG_
+				_LOG << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
 #ifdef bla				
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)
@@ -1008,7 +1013,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 
 		return NULL;
 	} else {
-		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "'): No plugins registered!" LOG_
+		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): No plugins registered!" LOG_
 		return NULL;
 	}
 }
@@ -1212,15 +1217,18 @@ public:
 
 	void LB_STDCALL setModule(char* module);
 	void LB_STDCALL setName(char* name);
+	void LB_STDCALL setVersion(char* version);
 	void LB_STDCALL setNamespace(char* __namespace);
 	char* LB_STDCALL getModule() { return _module; }
 	char* LB_STDCALL getName() { return _name; }
+	char* LB_STDCALL getVersion() { return _version; }
 	char* LB_STDCALL getNamespace() { return _namespace; }
 
 private:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 
 	char* _name;
+	char* _version;
 	char* _namespace;
 	char* _module;
 //	UAP(lb_I_PluginManager, _plM)
@@ -1344,6 +1352,17 @@ void LB_STDCALL lbPlugin::setName(char* name) {
 		_name = (char*) malloc(strlen(name)+1);
 		_name[0] = 0;
 		strcpy(_name, name);
+	}
+}
+/*...e*/
+/*...svoid LB_STDCALL lbPlugin\58\\58\setVersion\40\char\42\ version\41\:0:*/
+void LB_STDCALL lbPlugin::setVersion(char* version) { 
+	if (_version) free(_version);
+	_version = NULL;
+	if (version) {
+		_version = (char*) malloc(strlen(version)+1);
+		_version[0] = 0;
+		strcpy(_version, version);
 	}
 }
 /*...e*/

@@ -3737,7 +3737,7 @@ public:
 	 * The match string could be a functor name, an interface name or partial of them.
 	 * The order, in that this function will search is decided by the match string.
 	 */
-	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace) = 0;
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version = "1.0") = 0;
 	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace) = 0;
 
 	/** \brief Find first matching server plugin.
@@ -3835,6 +3835,7 @@ void LB_STDCALL cls::enumPlugins() { \
 	P##plugin##namespace->setModule(_module->charrep()); \
 	P##plugin##namespace->setName(#plugin); \
 	P##plugin##namespace->setNamespace(#namespace); \
+	P##plugin##namespace->setVersion("1.0"); \
 	\
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
 	UAP(lb_I_KeyBase, Key##plugin##namespace) \
@@ -3853,28 +3854,76 @@ void LB_STDCALL cls::enumPlugins() { \
 	Pl##plugin##namespace->setModule(_module->charrep()); \
 	Pl##plugin##namespace->setName(#plugin); \
 	Pl##plugin##namespace->setNamespace(#namespace); \
-	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << "' in '" << _module->charrep() << "' added." LOG_
+	Pl##plugin##namespace->setVersion("1.0"); \
+	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << ", version '" << "1.0" << "' in '" << _module->charrep() << "' added." LOG_
+
+#define ADD_PLUGIN_V(plugin, namespace, version) \
+	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
+	\
+	P##plugin##namespace->setModule(_module->charrep()); \
+	P##plugin##namespace->setName(#plugin); \
+	P##plugin##namespace->setNamespace(#namespace); \
+	P##plugin##namespace->setVersion(#version); \
+	\
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
+	UAP(lb_I_KeyBase, Key##plugin##namespace) \
+	UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
+	\
+	s##plugin##namespace->setData(#plugin); \
+	QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace) \
+	QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace) \
+	\
+	Plugins->insert(&ukPlugin##plugin##namespace, &Key##plugin##namespace); \
+	\
+	UAP(lb_I_Unknown, ukPl##plugin##namespace) \
+	UAP(lb_I_Plugin, Pl##plugin##namespace) \
+	ukPl##plugin##namespace = Plugins->getElement(&Key##plugin##namespace); \
+	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace) \
+	Pl##plugin##namespace->setModule(_module->charrep()); \
+	Pl##plugin##namespace->setName(#plugin); \
+	Pl##plugin##namespace->setNamespace(#namespace); \
+	Pl##plugin##namespace->setVersion(#version); \
+	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << ", version '" << #version << "' in '" << _module->charrep() << "' added." LOG_
 
 #define END_PLUGINS() }
 
 #define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
-		UAP(lb_I_Plugin, pl##name) \
-		UAP(lb_I_Unknown, uk##name) \
-		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
-		if (pl##name != NULL) { \
-			uk##name = pl##name->getImplementation(); \
-		} else { \
-			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	UAP(lb_I_Plugin, pl##name) \
+	UAP(lb_I_Unknown, uk##name) \
+	pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
+	if (pl##name != NULL) { \
+		uk##name = pl##name->getImplementation(); \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	} \
+	\
+	if (uk##name != NULL) { \
+		QI(uk##name, interface, name) \
+		if (name == NULL) { \
+			_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ", version " << "1.0" << ")." LOG_ \
 		} \
-		\
-		if (uk##name != NULL) { \
-			QI(uk##name, interface, name) \
-			if (name == NULL) { \
-				_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ")." LOG_ \
-			} \
-		} else { \
-			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
-		}
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+	}
+
+#define AQUIRE_PLUGIN_V(interface, ns, name, version, errmsgpart) \
+	UAP(lb_I_Plugin, pl##name) \
+	UAP(lb_I_Unknown, uk##name) \
+	pl##name = PM->getFirstMatchingPlugin(#interface, #ns, #version); \
+	if (pl##name != NULL) { \
+		uk##name = pl##name->getImplementation(); \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	} \
+	\
+	if (uk##name != NULL) { \
+		QI(uk##name, interface, name) \
+		if (name == NULL) { \
+			_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ", version " << #version << ")." LOG_ \
+		} \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+	}
 
 
 #define AQUIRE_PLUGIN_NAMESPACE_BYSTRING(interface, ns, name, errmsgpart) \
@@ -3895,6 +3944,63 @@ void LB_STDCALL cls::enumPlugins() { \
 		} else { \
 			_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
 		}
+
+#define AQUIRE_PLUGIN_NAMESPACE_BYSTRING_V(interface, ns, name, version, errmsgpart) \
+	UAP(lb_I_Plugin, pl##name) \
+	UAP(lb_I_Unknown, uk##name) \
+	pl##name = PM->getFirstMatchingPlugin(#interface, ns, version); \
+	if (pl##name != NULL) { \
+		uk##name = pl##name->getImplementation(); \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	} \
+	\
+	if (uk##name != NULL) { \
+		QI(uk##name, interface, name) \
+		if (name == NULL) { \
+			_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ", version " << version << ")." LOG_ \
+		} \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+	}
+
+#define AQUIRE_PLUGIN_NAMESPACE_AND_INTERFACE_BYSTRING(interface, ns, name, errmsgpart) \
+	UAP(lb_I_Plugin, pl##name) \
+	UAP(lb_I_Unknown, uk##name) \
+	pl##name = PM->getFirstMatchingPlugin(interface, ns); \
+	if (pl##name != NULL) { \
+		uk##name = pl##name->getImplementation(); \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	} \
+	\
+	if (uk##name != NULL) { \
+		QI(uk##name, interface, name) \
+		if (name == NULL) { \
+			_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ")." LOG_ \
+		} \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+	}
+
+#define AQUIRE_PLUGIN_NAMESPACE_AND_INTERFACE_BYSTRING_V(interface, ns, name, version, errmsgpart) \
+	UAP(lb_I_Plugin, pl##name) \
+	UAP(lb_I_Unknown, uk##name) \
+	pl##name = PM->getFirstMatchingPlugin(interface, ns, version); \
+	if (pl##name != NULL) { \
+		uk##name = pl##name->getImplementation(); \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin found." LOG_ \
+	} \
+	\
+	if (uk##name != NULL) { \
+		QI(uk##name, interface, name) \
+		if (name == NULL) { \
+			_LOG << "Error: Plugin implementation '" << #errmsgpart << " has not the given interface (" << #interface << ", version " << version << ")." LOG_ \
+		} \
+	} else { \
+		_LOG << "Warning: No " << #errmsgpart << " datamodel plugin implementation found." LOG_ \
+	}
 
 
 /*...e*/
@@ -3989,6 +4095,13 @@ public:
 	virtual void LB_STDCALL setName(char* name) = 0;
 	
 	/**
+	 * Set the version of the plugin. The version distinguishes between
+	 * different versions of the same class.
+	 */
+	virtual void LB_STDCALL setVersion(char* version) = 0;
+	
+	
+	/**
 	 * The scope identifies the area of usage. If the scope is GUI, it
 	 * would only be usable in graphical user environment. If it is UI,
 	 * it would be usable in textual user interfaces as well. If it is
@@ -4007,6 +4120,11 @@ public:
 	 *
 	 */
 	virtual char* LB_STDCALL getName() = 0;
+	
+	/** \brief Get plugin functor version.
+	 *
+	 */
+	virtual char* LB_STDCALL getVersion() = 0;
 	
 	/** \brief Get namespace.
 	 *
