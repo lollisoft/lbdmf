@@ -1236,6 +1236,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 						
 						if (pl != NULL) {
 							ukPl = pl->getImplementation();
+							ukPl++;
 							
 							QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
 								
