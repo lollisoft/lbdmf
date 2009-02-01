@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.60 2009/01/31 10:37:09 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.61 2009/02/01 09:32:10 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.61  2009/02/01 09:32:10  lollisoft
+ * Missing making copy of version string in clone function.
+ *
  * Revision 1.60  2009/01/31 10:37:09  lollisoft
  * Bugfix: New version variable was not correctly initialized and not deleted at destruction.
  *
@@ -1285,6 +1288,7 @@ lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	setName(pl->getName());
 	setModule(pl->getModule());
 	setNamespace(pl->getNamespace());
+	setVersion(pl->getVersion());
 
 	setAttached(pl->getAttached());
 	
