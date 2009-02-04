@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.60 2008/05/21 22:25:10 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.61 2009/02/04 11:34:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.61  2009/02/04 11:34:04  lollisoft
+ * Added but partly deactivated new hooks stuff.
+ *
  * Revision 1.60  2008/05/21 22:25:10  lollisoft
  * Some improvements for working with Sqlite database.
  *
@@ -582,7 +585,26 @@ public:
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
-	
+#ifdef IMPLEMENT_NEWSTUFF	
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	lbErrCodes LB_STDCALL executeHooksBefore();
+
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	lbErrCodes LB_STDCALL executeHooksAfter();
+#endif
 	UAP(lb_I_Container, dispatcher)
 	UAP(lb_I_EventManager, evManager)
 };
@@ -626,13 +648,16 @@ public:
 	DECLARE_LB_UNKNOWN()
         
 	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler);
-        virtual lbEvHandler LB_STDCALL getHandler();
-        virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
+	virtual lbEvHandler LB_STDCALL getHandler();
+	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
 
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult);
-        
-        lb_I_EventHandler* _evHandlerInstance;
-        lbEvHandler ev;
+    
+    UAP(lb_I_Container, hooksBefore)
+    UAP(lb_I_Container, hooksAfter)
+	
+	lb_I_EventHandler* _evHandlerInstance;
+	lbEvHandler ev;
 };
 /*...e*/
 
