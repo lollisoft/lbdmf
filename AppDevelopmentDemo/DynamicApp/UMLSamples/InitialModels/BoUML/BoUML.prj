@@ -1,7 +1,7 @@
-format 58
+format 61
 "BoUML"
-  revision 24
-  modified_by 2 "lotharbehrens"
+  revision 25
+  modified_by 2 "lothar"
 
 
   
@@ -37,7 +37,7 @@ format 58
   mark_for_import
   
   ncouples 4
-  key "gxmi path" value "/Users/lotharbehrens/develop/Projects/CPP/AppDevelopment/DynamicApp/ModelExchange/CRM.xmi"
+  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopment/DynamicApp/ModelExchange/CRM.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi taggedvalue" value "1"
