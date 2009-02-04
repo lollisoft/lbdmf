@@ -2385,7 +2385,7 @@ public:
 	 *
 	 * You could forward events to a separate dispatcher, if the main dispatcher
 	 * does not contain the registered handler. So a group of handlers could be
-	 * replaced by some contect of an application.
+	 * replaced by some context of an application.
 	 *
 	 * Sample: Some event handlers goes to a remote host due to some extend.
 	 * The separate dispatcher is build up and the remote handlers are also
