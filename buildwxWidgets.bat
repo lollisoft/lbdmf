@@ -2,7 +2,7 @@
 
 echo dummy > readme.txt
 
-
+call watcomenv.bat exit
 
 echo del readme.txt > doBuildWx.bat
 
