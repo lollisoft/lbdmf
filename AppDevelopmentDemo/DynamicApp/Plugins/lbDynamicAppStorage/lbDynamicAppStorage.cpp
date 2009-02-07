@@ -148,6 +148,54 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	ukParams = meta->getActiveDocument();
 	QI(ukParams, lb_I_Parameter, params)
 
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, activedocument)
+	ukDoc = meta->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, activedocument)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
+
+	if (activedocument != NULL) {
+		*param = "XSLFileSettings";
+		activedocument->getUAPFileLocation(*&param, *&XSLFileSettings);
+/*		*param = "XSLFileSystemDatabase";
+		activedocument->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
+		*param = "XSLFileApplicationDatabase";
+		activedocument->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
+ 
+		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
+		
+		*param = "UMLImportDBName";
+		activedocument->getUAPString(*&param, *&DBName);
+		*param = "UMLImportDBUser";
+		activedocument->getUAPString(*&param, *&DBUser);
+		*param = "UMLImportDBPass";
+		activedocument->getUAPString(*&param, *&DBPass);
+*/
+	}
+	
+	// Write the settings file for the application database here ...
+	
+	if (XSLFileSettings->charrep() != NULL) {
+		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+			
+			oStream->setFileName(XSLFileSettings->charrep());
+			if (oStream->open()) {
+				oStream->setBinary();
+				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
+				
+				/// \todo Write additional XMI settings here.				
+				
+				
+				*oStream << "</xsl:stylesheet>\n";
+				oStream->close();
+			}
+		}
+	}
+	
 	*param = "ApplicationData";
 	document->setCloning(false);
 	params->getUAPContainer(*&param, *&document);	
@@ -1335,6 +1383,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
+				
+/// \todo Write additional XMI settings here.				
+				
+				
 				*oStream << "</xsl:stylesheet>\n";
 				oStream->close();
 			}
