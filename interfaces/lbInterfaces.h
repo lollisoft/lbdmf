@@ -2421,6 +2421,23 @@ public:
 };
 /*...e*/
 
+class lb_I_DispatcherHooks : public lb_I_Unknown {
+public:
+	/** \brief Indicates usage of any UI interaction.
+	 *
+	 * The implementation requires exsistence of an UI to proper work.
+	 */
+	virtual bool		LB_STDCALL	requiresUserInterface() = 0;
+	
+	/** \brief Execute a before hook.
+	 *
+	 * Execute a registered and as active marked before hook. The hook may build up hook results. The hook also may generate
+	 * EvResult entries. This enables hooked overrides of functionality.
+	 *
+	 * There may be more than one hook to be performed. Each hook has an execution order number.
+	 */
+	virtual lbErrCodes	LB_STDCALL	executeBefore(lb_I_Unknown* HookResults, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
+};
 
 class lb_I_DatabaseForm;
 class lb_I_GUI;
@@ -3557,6 +3574,7 @@ public:
  */
 class lb_I_Reports : public lb_I_Unknown {
 public:
+/// \todo Probably add a report type to add support for other reporting engines.
 	virtual long		LB_STDCALL addReport(const char* name, const char* description, long _id = -1) = 0;
 
 	virtual bool		LB_STDCALL selectReport(long _id) = 0;
