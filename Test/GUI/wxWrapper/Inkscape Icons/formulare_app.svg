@@ -2,22 +2,30 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="744.09448819"
    height="1052.3622047"
    id="svg3670"
    sodipodi:version="0.32"
-   inkscape:version="0.42"
+   inkscape:version="0.46"
    sodipodi:docbase="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons"
-   sodipodi:docname="formulare_app.svg">
+   sodipodi:docname="formulare_app.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3672">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2477" />
     <linearGradient
        id="linearGradient15149">
       <stop
@@ -123,7 +131,8 @@
      inkscape:window-width="897"
      inkscape:window-height="839"
      inkscape:window-x="42"
-     inkscape:window-y="100" />
+     inkscape:window-y="100"
+     showgrid="false" />
   <metadata
      id="metadata3675">
     <rdf:RDF>
@@ -225,5 +234,40 @@
        inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/action_steps_assoc.png"
        inkscape:export-xdpi="63.468704"
        inkscape:export-ydpi="63.468704" />
+    <image
+       xlink:href="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/cache.png"
+       sodipodi:absref="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/cache.png"
+       width="32"
+       height="32"
+       id="image2479"
+       x="324.76273"
+       y="353.40616"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/action_types.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:21.29585075px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="343.69199"
+       y="385.40616"
+       id="text2483"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/action_types.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2485"
+         x="343.69199"
+         y="385.40616">T</tspan></text>
+    <image
+       xlink:href="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/goto.png"
+       sodipodi:absref="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/goto.png"
+       width="32"
+       height="32"
+       id="image2487"
+       x="339.3945"
+       y="415.30444"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/action_steps.png"
+       inkscape:export-xdpi="63.468727"
+       inkscape:export-ydpi="63.468727" />
   </g>
 </svg>
