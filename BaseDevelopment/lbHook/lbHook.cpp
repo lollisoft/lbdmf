@@ -155,7 +155,7 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
-                        char* buf = (char*) malloc(1000);
+                        char* buf = (char*) malloc(strlen(msg)+100);
                         buf[0] = 0;
                         
                         int l = level;
