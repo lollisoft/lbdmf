@@ -4964,10 +4964,13 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	
 	wxArrayString tables = dbl->GetTables();
 
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 	UAP(lb_I_KeyBase, key)
 	int _page = 0;
 	long columnsPortion = 0;
 	long columnsImported = 0;
+
+	QI(index, lb_I_KeyBase, key)
 
 	for (int i = 0; i < tables.Count(); i++) {
 		wxString table = tables[i];
@@ -4975,13 +4978,13 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 		wxString q = "select * from ";
 		q += table;
 		q += " LIMIT 0";
+
+		_CL_LOG << "SQL: " << q.c_str() LOG_
 		
 		pResult = dbl->ExecuteQuery(q);
 		pResult->Next();
 		pMetaData = pResult->GetMetaData();
 		
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
-		QI(index, lb_I_KeyBase, key)
 		
 		// 1-based
 		for(long ii=1; ii<=pMetaData->GetColumnCount(); ii++)
