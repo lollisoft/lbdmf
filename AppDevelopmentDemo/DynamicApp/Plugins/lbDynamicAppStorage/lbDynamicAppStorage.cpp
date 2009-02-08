@@ -153,11 +153,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	ukDoc = meta->getActiveDocument();
 	QI(ukDoc, lb_I_Parameter, activedocument)
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
 
 	if (activedocument != NULL) {
-		*param = "XSLFileSettings";
-		activedocument->getUAPFileLocation(*&param, *&XSLFileSettings);
+		*param = "XSLFileExportSettings";
+		activedocument->getUAPFileLocation(*&param, *&XSLFileExportSettings);
 /*		*param = "XSLFileSystemDatabase";
 		activedocument->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
 		*param = "XSLFileApplicationDatabase";
@@ -176,11 +176,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 	// Write the settings file for the application database here ...
 	
-	if (XSLFileSettings->charrep() != NULL) {
-		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
+	if (XSLFileExportSettings->charrep() != NULL) {
+		if (strcmp(XSLFileExportSettings->charrep(), "<settings>") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 			
-			oStream->setFileName(XSLFileSettings->charrep());
+			oStream->setFileName(XSLFileExportSettings->charrep());
 			if (oStream->open()) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
@@ -509,14 +509,16 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
-	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
-	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
+	//UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
 
 	UMLImportTargetDBName->accept(*&aspect);
 	UMLImportTargetDBUser->accept(*&aspect);
@@ -526,10 +528,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UsePlugin->accept(*&aspect);	
 	XSLFileSystemDatabase->accept(*&aspect);
 	XSLFileApplicationDatabase->accept(*&aspect);
-	UseOtherXSLFile->accept(*&aspect);
+	//UseOtherXSLFile->accept(*&aspect);
 	XMIFileUMLProject->accept(*&aspect);
 	GeneralDBSchemaname->accept(*&aspect);
-	XSLFileSettings->accept(*&aspect);
+	XSLFileUMLExport->accept(*&aspect);
+	XSLFileImportSettings->accept(*&aspect);
+	XSLFileExportSettings->accept(*&aspect);
 	
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_KeyBase, key)
@@ -670,17 +674,25 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "XMIFileUMLProject";
 		QI(XMIFileUMLProject, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-
+/*
 		*name = "UseOtherXSLFile";
 		QI(UseOtherXSLFile, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-		
+*/		
 		*name = "GeneralDBSchemaname";
 		QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
 		
-		*name = "XSLFileSettings";
-		QI(XSLFileSettings, lb_I_Unknown, uk)
+		*name = "XSLFileUMLExport";
+		QI(XSLFileUMLExport, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "XSLFileImportSettings";
+		QI(XSLFileImportSettings, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "XSLFileExportSettings";
+		QI(XSLFileExportSettings, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
 	}		
 	
@@ -728,13 +740,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_String, GeneralDBSchemaname)
 
 	UAP(lb_I_FileLocation, XMIFileUMLProject)
-	UAP(lb_I_FileLocation, XSLFileSettings)
+	UAP(lb_I_FileLocation, XSLFileImportSettings)
+	UAP(lb_I_FileLocation, XSLFileExportSettings)
+	UAP(lb_I_FileLocation, XSLFileUMLExport)
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP(lb_I_String, DatabaseSettingNamespace)
 
 	UAP(lb_I_Boolean, UsePlugin)
-	UAP(lb_I_Boolean, UseOtherXSLFile)
+	//UAP(lb_I_Boolean, UseOtherXSLFile)
 
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -861,11 +875,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "UsePlugin";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UsePlugin)
-	
+/*	
 	*name = "UseOtherXSLFile";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UseOtherXSLFile)
-			
+*/			
 	*name = "XMIFileUMLProject";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
@@ -874,10 +888,18 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_String, GeneralDBSchemaname)
 	
-	*name = "XSLFileSettings";
+	*name = "XSLFileUMLExport";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_FileLocation, XSLFileSettings)
-
+	QI(uk, lb_I_FileLocation, XSLFileUMLExport)
+	
+	*name = "XSLFileImportSettings";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XSLFileImportSettings)
+	
+	*name = "XSLFileExportSettings";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XSLFileExportSettings)
+	
 				
 
 	if ((forms != NULL) &&
@@ -925,10 +947,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		UsePlugin->accept(*&aspect);
 		XSLFileSystemDatabase->accept(*&aspect);
 		XSLFileApplicationDatabase->accept(*&aspect);
-		UseOtherXSLFile->accept(*&aspect);
+		//UseOtherXSLFile->accept(*&aspect);
 		XMIFileUMLProject->accept(*&aspect);
 		GeneralDBSchemaname->accept(*&aspect);
-		XSLFileSettings->accept(*&aspect);
+		XSLFileUMLExport->accept(*&aspect);
+		XSLFileImportSettings->accept(*&aspect);
+		XSLFileExportSettings->accept(*&aspect);
 		
 		_LOG << "End storing the data" LOG_
 	}
@@ -1096,14 +1120,16 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
-	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
-	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
+	//UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -1125,12 +1151,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		XMIFileUMLProject->setData("");
 
 		UsePlugin->setData(false);
-		UseOtherXSLFile->setData(true);
+		//UseOtherXSLFile->setData(true);
 
-		XSLFileSettings->setData("<settings>");
+		XSLFileImportSettings->setData("<settings>");
+		XSLFileExportSettings->setData("<settings>");
 		XSLFileSystemDatabase->setData("<system>");
 		XSLFileApplicationDatabase->setData("<application>");
 		XMIFileUMLProject->setData("<UML XMI file>");
+		XSLFileUMLExport->setData("<UML XMI file>");
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
 		*name = "UMLImportDBName";
@@ -1143,8 +1171,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		SomeBaseSettings->getUAPString(*&name, *&DatabaseSettingNamespace);
 		*name = "UsePlugin";
 		SomeBaseSettings->getUAPBoolean(*&name, *&UsePlugin);
+/*
 		*name = "UseOtherXSLFile";
 		SomeBaseSettings->getUAPBoolean(*&name, *&UseOtherXSLFile);
+*/
 		*name = "XSLFileSystemDatabase";
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileSystemDatabase);
 		*name = "XSLFileApplicationDatabase";
@@ -1153,8 +1183,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProject);
 		 *name = "GeneralDBSchemaname";
 		 SomeBaseSettings->getUAPString(*&name, *&GeneralDBSchemaname);
-		 *name = "XSLFileSettings";
-		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileSettings);
+		 *name = "XSLFileUMLExport";
+		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileUMLExport);
+		 *name = "XSLFileImportSettings";
+		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileImportSettings);
+		 *name = "XSLFileExportSettings";
+		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileExportSettings);
 	} 
 
 	*name = "UMLImportTargetDBName";
@@ -1179,8 +1213,16 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	_LOG << "Loaded Use Plugin switch from database: " << UsePlugin->charrep() LOG_
 
-	*name = "XSLFileSettings";
-	QI(XSLFileSettings, lb_I_Unknown, uk)
+	*name = "XSLFileUMLExport";
+	QI(XSLFileUMLExport, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "XSLFileImportSettings";
+	QI(XSLFileImportSettings, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "XSLFileExportSettings";
+	QI(XSLFileExportSettings, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
 	
 	*name = "XSLFileSystemDatabase";
@@ -1190,11 +1232,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	*name = "XSLFileApplicationDatabase";
 	QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
-	
+/*	
 	*name = "UseOtherXSLFile";
 	QI(UseOtherXSLFile, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
-
+*/
 	*name = "XMIFileUMLProject";
 	QI(XMIFileUMLProject, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
@@ -1305,30 +1347,30 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_Database* oDB) {
 	return err;
 }
 
-IMPLEMENT_FUNCTOR(instanceOflbDynamicAppBoUMLImport, lbDynamicAppBoUMLImport)
+IMPLEMENT_FUNCTOR(instanceOflbDynamicAppBoUMLImportExport, lbDynamicAppBoUMLImportExport)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicAppBoUMLImport)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicAppBoUMLImportExport)
 	ADD_INTERFACE(lb_I_StandaloneStreamable)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbDynamicAppBoUMLImport::lbDynamicAppBoUMLImport() {
+lbDynamicAppBoUMLImportExport::lbDynamicAppBoUMLImportExport() {
 	ref = STARTREF;
 
-	_CL_LOG << "lbDynamicAppBoUMLImport::lbDynamicAppBoUMLImport() called." LOG_
+	_CL_LOG << "lbDynamicAppBoUMLImportExport::lbDynamicAppBoUMLImportExport() called." LOG_
 }
 
-lbDynamicAppBoUMLImport::~lbDynamicAppBoUMLImport() {
-	_CL_LOG << "lbDynamicAppBoUMLImport::~lbDynamicAppBoUMLImport() called." LOG_
+lbDynamicAppBoUMLImportExport::~lbDynamicAppBoUMLImportExport() {
+	_CL_LOG << "lbDynamicAppBoUMLImportExport::~lbDynamicAppBoUMLImportExport() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::setData(lb_I_Unknown*) {
-		_CL_VERBOSE << "Error: lbDynamicAppBoUMLImport::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::setData(lb_I_Unknown*) {
+		_CL_VERBOSE << "Error: lbDynamicAppBoUMLImportExport::setData(lb_I_Unknown*) not implemented." LOG_
 		return ERR_NOT_IMPLEMENTED;
 }
 
 
-lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStream) {
 	lbErrCodes err = ERR_NONE;
 	xsltStylesheetPtr cur = NULL;
 	xmlDocPtr doc, res;
@@ -1345,7 +1387,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
-	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 
@@ -1355,12 +1397,12 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	QI(ukDoc, lb_I_Parameter, document)
 								
 	if (document != NULL) {
-		*param = "XSLFileSettings";
-		document->getUAPFileLocation(*&param, *&XSLFileSettings);
-		*param = "XSLFileSystemDatabase";
-		document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
-		*param = "XSLFileApplicationDatabase";
-		document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
+		*param = "XSLFileImportSettings";
+		document->getUAPFileLocation(*&param, *&XSLFileImportSettings);
+		//*param = "XSLFileSystemDatabase";
+		//document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
+		//*param = "XSLFileApplicationDatabase";
+		//document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
 
 		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
 
@@ -1374,11 +1416,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 
 	// Write the settings file for the application database here ...
 	
-	if (XSLFileSettings->charrep() != NULL) {
-		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
+	if (XSLFileImportSettings->charrep() != NULL) {
+		if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 			
-			oStream->setFileName(XSLFileSettings->charrep());
+			oStream->setFileName(XSLFileImportSettings->charrep());
 			if (oStream->open()) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
@@ -1445,7 +1487,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 			
-			parameter->setData("Transformation settings");
+			parameter->setData("UML import settings");
 			//--------------------------------------------
 			
 			parameterXSL->setData("XSL file for application database");
@@ -1591,11 +1633,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 
 	// Write the settings file for the application database here ...
 	
-	if (XSLFileSettings->charrep() != NULL) {
-		if (strcmp(XSLFileSettings->charrep(), "<settings>") != 0) {
+	if (XSLFileImportSettings->charrep() != NULL) {
+		if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 			
-			oStream->setFileName(XSLFileSettings->charrep());
+			oStream->setFileName(XSLFileImportSettings->charrep());
 			if (oStream->open()) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
@@ -1635,7 +1677,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 			
-			parameter->setData("Transformation settings");
+			parameter->setData("UML import settings");
 			//--------------------------------------------
 			
 			parameterXSL->setData("XSL file for system database");
@@ -1762,19 +1804,244 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::save(lb_I_OutputStream* oStream) {
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oStream) {
 	lbErrCodes err = ERR_NONE;
-	return err;
+	xsltStylesheetPtr cur = NULL;
+	xmlDocPtr doc, res;
+	xmlDocPtr stylesheetdoc;
+	
+	const char *params[16 + 1];
+	
+	_LOG << "lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oStream) called." LOG_
+	
+	params[0] = NULL;
+	
+	UAP(lb_I_Parameter, appparams)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+	appparams = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+	/* To save the output of generated content, I need to deactivate the generation into a file inside
+	 * the XSL template. Therefore the template needs to support it and the settings here should be used.
+	 */
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
+	
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+	
+	if (document != NULL) {
+		*param = "XSLFileExportSettings";
+		document->getUAPFileLocation(*&param, *&XSLFileExportSettings);
+		
+		*param = "XSLFileUMLExport";
+		document->getUAPFileLocation(*&param, *&XSLFileUMLExport);
+		
+		_LOG << "Export definition for settings file is: " << XSLFileExportSettings->charrep() LOG_
+		_LOG << "Export definition for UML XMI file is: " << XSLFileUMLExport->charrep() LOG_
+	}
+	
+	xmlSubstituteEntitiesDefault(1);
+#ifndef __WATCOMC__	
+    xmlLoadExtDtdDefaultValue = 1;
+#endif
+#ifdef __WATCOMC__
+    setxmlLoadExtDtdDefaultValue(1);
+#endif
+	
+	// Read the lbDMF XML formatted stream into a memory block to be translated.
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, exportparams)
+	UAP(lb_I_Unknown, uk)
+	QI(exportparams, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result) // Result is not filled (inconsistent). The function exportApplicationToXMLBuffer returns it in the parameter given.
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	
+	if (dispatcher->dispatch("exportApplicationToXMLBuffer", uk.getPtr(), &uk_result) == ERR_DISPATCH_FAILS) {
+		_LOG << "Error: Failed to dispatch a call to 'exportApplicationToXMLBuffer'!" LOG_
+		return err;
+	}
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	param->setData("memorybuffer");
+	exportparams->getUAPString(*&param, *&value);
+	param->setData("filename");
+	exportparams->getUAPString(*&param, *&filename);
+	
+	
+	// Write the settings file for the application database here ...
+	
+	if (XSLFileExportSettings->charrep() != NULL) {
+		if (strcmp(XSLFileExportSettings->charrep(), "<settings>") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+			
+			oStream->setFileName(XSLFileExportSettings->charrep());
+			if (oStream->open()) {
+				oStream->setBinary();
+				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"stream_output\" select=\"'yes'\"/>\n";
+				
+				/// \todo Write additional XMI settings here.				
+				
+				
+				*oStream << "</xsl:stylesheet>\n";
+				oStream->close();
+			}
+		}
+	}
+
+	if (value->charrep() == NULL) {
+		metaapp->msgBox("Error", "Step 1 of exporting application definition has been failed. (This is the plain XML format, not the XMI).");
+		return err;
+	} else {
+		_LOG << "Generated XML file to transform: '" << value->charrep() << "'" LOG_
+	}
+	
+	xmlChar* XMLURL = (xmlChar*) filename->charrep();
+	doc = xmlReadMemory((char const*) value->charrep(), strlen(value->charrep()), (char const*) XMLURL, NULL, 0);
+	if (doc == NULL) {
+		_LOG << "Error: Failed to load in-memory XML document." LOG_
+		return err; 
+	}
+	
+	UAP(lb_I_String, styledoc)
+	UAP(lb_I_InputStream, input)
+	
+	// May not initialized
+	if (XSLFileUMLExport->charrep() == NULL) {
+		XSLFileUMLExport->setData("");
+	}
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ts)
+	*ts = XSLFileUMLExport->charrep();
+	ts->trim();
+	XSLFileUMLExport->setData(ts->charrep());
+		
+	if (strcmp(XSLFileUMLExport->charrep(), "") == 0) {
+		input = metaapp->askOpenFileReadStream("xsl|*.xsl");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		XSLFileUMLExport->setData((char*) input->getFileName());
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		
+		parameter->setData("UML export settings");
+		//--------------------------------------------
+		
+		parameterXSL->setData("XSL file for application database");
+		fileXSL->setData(XSLFileUMLExport->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		params->setUAPParameter(*&parameter, *&paramXSL);
+		metaapp->showPropertyPanel(*&params, true);
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		REQUEST(getModuleInstance(), lb_I_InputStream, input)
+		input->setFileName(XSLFileUMLExport->charrep());
+	}
+		
+	if (input->open()) {
+		_LOG << "Try to get the file as a string..." LOG_
+		styledoc = input->getAsString();
+		_LOG << "Got the file as s string." LOG_
+			
+		xmlChar* URL = (xmlChar*) input->getFileName();
+		_LOG << "Read the string as an in memory XML document." LOG_
+		stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
+		if (stylesheetdoc == NULL) {
+			_LOG << "Error: Failed to load in-memory XSL stylesheet document as an XML document (" << input->getFileName() << ")" LOG_
+			return err; 
+		}
+			
+		_LOG << "Parse xml document as stylesheet." LOG_
+		cur = xsltParseStylesheetDoc(stylesheetdoc);
+			
+		if (cur == NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = _trans("Failed to parse XSL file.");
+				
+			metaapp->msgBox(_trans("Error"), msg->charrep());
+			return err;
+		}
+			
+		xmlChar* result = NULL;
+		int len = 0;
+			
+		_LOG << "Apply the stylesheet document." LOG_
+			
+		xsltTransformContextPtr ctxt;
+		
+		res = xsltApplyStylesheet(cur, doc, params);
+			
+		_LOG << "Save resulting document as a string." LOG_
+			
+		if (res == NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = _trans("Failed to translate XMI file.\n\nXMI document: ");
+			*msg += (const char*) XMLURL;
+			*msg += "\n\nStylesheet: ";
+			*msg += (const char*) URL;
+			metaapp->msgBox(_trans("Error"), msg->charrep());
+			return err;
+		}
+			
+		xsltSaveResultToString(&result, &len, res, cur);
+			
+		xsltFreeStylesheet(cur);
+		xmlFreeDoc(res);
+			
+		if (result == NULL) {
+			_LOG << "Error: Did not got the translation from XSLT file." LOG_
+			xmlFreeDoc(doc);
+			
+			xsltCleanupGlobals();
+			xmlCleanupParser();	
+			return err;
+		}
+		
+		oStream->setBinary();
+		*oStream << (char*) result;
+		oStream->close();
+		xmlFreeDoc(doc);
+			
+		xsltCleanupGlobals();
+		xmlCleanupParser();	
+		free(result);
+		return err;
+}	
+
+return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_Database* iDB) {
-	lbErrCodes err = ERR_NONE;
-	return err;
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_Database* iDB) {
+lbErrCodes err = ERR_NONE;
+return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::save(lb_I_Database* oDB) {
-	lbErrCodes err = ERR_NONE;
-	return err;
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_Database* oDB) {
+lbErrCodes err = ERR_NONE;
+return err;
 }
 
 
@@ -1782,109 +2049,109 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::save(lb_I_Database* oDB) {
 /*...slbPluginDynamicAppXMLStorage:0:*/
 class lbPluginDynamicAppXMLStorage : public lb_I_PluginImpl {
 public:
-	lbPluginDynamicAppXMLStorage();
-	
-	virtual ~lbPluginDynamicAppXMLStorage();
+lbPluginDynamicAppXMLStorage();
 
-	bool LB_STDCALL canAutorun();
-	lbErrCodes LB_STDCALL autorun();
+virtual ~lbPluginDynamicAppXMLStorage();
+
+bool LB_STDCALL canAutorun();
+lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
-	void LB_STDCALL initialize();
-	
-	bool LB_STDCALL run();
+void LB_STDCALL initialize();
 
-	lb_I_Unknown* LB_STDCALL peekImplementation();
-	lb_I_Unknown* LB_STDCALL getImplementation();
-	void LB_STDCALL releaseImplementation();
+bool LB_STDCALL run();
+
+lb_I_Unknown* LB_STDCALL peekImplementation();
+lb_I_Unknown* LB_STDCALL getImplementation();
+void LB_STDCALL releaseImplementation();
 /*...e*/
 
-	DECLARE_LB_UNKNOWN()
-	
-	UAP(lb_I_Unknown, ukActions)
+DECLARE_LB_UNKNOWN()
+
+UAP(lb_I_Unknown, ukActions)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDynamicAppXMLStorage)
-        ADD_INTERFACE(lb_I_PluginImpl)
+ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbPluginDynamicAppXMLStorage, lbPluginDynamicAppXMLStorage)
 
 /*...slbErrCodes LB_STDCALL lbPluginDynamicAppStorage\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPluginDynamicAppXMLStorage::setData(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
+_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
 
-        return ERR_NOT_IMPLEMENTED;
+return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
 lbPluginDynamicAppXMLStorage::lbPluginDynamicAppXMLStorage() {
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
-	ref = STARTREF;
+_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
+ref = STARTREF;
 }
 
 lbPluginDynamicAppXMLStorage::~lbPluginDynamicAppXMLStorage() {
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
+_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
 }
 
 bool LB_STDCALL lbPluginDynamicAppXMLStorage::canAutorun() {
-	return false;
+return false;
 }
 
 lbErrCodes LB_STDCALL lbPluginDynamicAppXMLStorage::autorun() {
-	lbErrCodes err = ERR_NONE;
-	return err;
+lbErrCodes err = ERR_NONE;
+return err;
 }
 
 void LB_STDCALL lbPluginDynamicAppXMLStorage::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDynamicAppXMLStorage::run() {
-	return true;
+return true;
 }
 
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginDynamicAppXMLStorage::peekImplementation() {
-	lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-	if (ukActions == NULL) {
-		lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
-	} else {
-		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
-	}
-	
-	return ukActions.getPtr();
+if (ukActions == NULL) {
+lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
+DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+} else {
+_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+}
+
+return ukActions.getPtr();
 }
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\getImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginDynamicAppXMLStorage::getImplementation() {
-	lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-	if (ukActions == NULL) {
+if (ukActions == NULL) {
 
-		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
-		lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
-		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
-	}
-	
-	lb_I_Unknown* r = ukActions.getPtr();
-	ukActions.resetPtr();
-	return r;
+_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+
+lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
+DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+}
+
+lb_I_Unknown* r = ukActions.getPtr();
+ukActions.resetPtr();
+return r;
 }
 /*...e*/
 void LB_STDCALL lbPluginDynamicAppXMLStorage::releaseImplementation() {
-        lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-        if (ukActions != NULL) {
-                ukActions--;
-                ukActions.resetPtr();
-        }
+if (ukActions != NULL) {
+		ukActions--;
+		ukActions.resetPtr();
+}
 }
 /*...e*/
 /*...e*/
@@ -1895,76 +2162,76 @@ void LB_STDCALL lbPluginDynamicAppXMLStorage::releaseImplementation() {
 /*...slbPluginDynamicAppInternalStorage:0:*/
 class lbPluginDynamicAppInternalStorage : public lb_I_PluginImpl {
 public:
-	lbPluginDynamicAppInternalStorage();
-	
-	virtual ~lbPluginDynamicAppInternalStorage();
+lbPluginDynamicAppInternalStorage();
 
-	bool LB_STDCALL canAutorun();
-	lbErrCodes LB_STDCALL autorun();
+virtual ~lbPluginDynamicAppInternalStorage();
+
+bool LB_STDCALL canAutorun();
+lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
-	void LB_STDCALL initialize();
-	
-	bool LB_STDCALL run();
+void LB_STDCALL initialize();
 
-	lb_I_Unknown* LB_STDCALL peekImplementation();
-	lb_I_Unknown* LB_STDCALL getImplementation();
-	void LB_STDCALL releaseImplementation();
+bool LB_STDCALL run();
+
+lb_I_Unknown* LB_STDCALL peekImplementation();
+lb_I_Unknown* LB_STDCALL getImplementation();
+void LB_STDCALL releaseImplementation();
 /*...e*/
 
-	DECLARE_LB_UNKNOWN()
-	
-	UAP(lb_I_Unknown, ukActions)
+DECLARE_LB_UNKNOWN()
+
+UAP(lb_I_Unknown, ukActions)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDynamicAppInternalStorage)
-        ADD_INTERFACE(lb_I_PluginImpl)
+ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbPluginDynamicAppInternalStorage, lbPluginDynamicAppInternalStorage)
 
 /*...slbErrCodes LB_STDCALL lbPluginDynamicAppStorage\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPluginDynamicAppInternalStorage::setData(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
+_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
 
-        return ERR_NOT_IMPLEMENTED;
+return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
 lbPluginDynamicAppInternalStorage::lbPluginDynamicAppInternalStorage() {
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
-	ref = STARTREF;
+_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
+ref = STARTREF;
 }
 
 lbPluginDynamicAppInternalStorage::~lbPluginDynamicAppInternalStorage() {
-	_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
+_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
 }
 
 bool LB_STDCALL lbPluginDynamicAppInternalStorage::canAutorun() {
-	return false;
+return false;
 }
 
 lbErrCodes LB_STDCALL lbPluginDynamicAppInternalStorage::autorun() {
-	lbErrCodes err = ERR_NONE;
-	return err;
+lbErrCodes err = ERR_NONE;
+return err;
 }
 
 void LB_STDCALL lbPluginDynamicAppInternalStorage::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDynamicAppInternalStorage::run() {
-	return true;
+return true;
 }
 
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginDynamicAppInternalStorage::peekImplementation() {
-	lbErrCodes err = ERR_NONE;
+lbErrCodes err = ERR_NONE;
 
-	if (ukActions == NULL) {
-		lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+if (ukActions == NULL) {
+lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
+DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -2074,7 +2341,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukActions == NULL) {
-		lbDynamicAppBoUMLImport* DynamicAppStorage = new lbDynamicAppBoUMLImport();
+		lbDynamicAppBoUMLImportExport* DynamicAppStorage = new lbDynamicAppBoUMLImportExport();
 		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	} else {
@@ -2092,7 +2359,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbDynamicAppBoUMLImport* DynamicAppStorage = new lbDynamicAppBoUMLImport();
+		lbDynamicAppBoUMLImportExport* DynamicAppStorage = new lbDynamicAppBoUMLImportExport();
 		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(DynamicAppStorage, lb_I_Unknown, ukActions)

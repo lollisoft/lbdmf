@@ -75,11 +75,11 @@ public:
 
 /** \brief Storage implementation for importing an application model from UML (BoUML via XMI).
  */
-class lbDynamicAppBoUMLImport :
+class lbDynamicAppBoUMLImportExport :
     public lb_I_StandaloneStreamable {
 public:
-	lbDynamicAppBoUMLImport();
-	virtual ~lbDynamicAppBoUMLImport();
+	lbDynamicAppBoUMLImportExport();
+	virtual ~lbDynamicAppBoUMLImportExport();
 
 	DECLARE_LB_UNKNOWN()
 
@@ -93,7 +93,7 @@ public:
 	UAP(lb_I_Unknown, op)
 };
 
-DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImport)
+DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImportExport)
 DECLARE_FUNCTOR(instanceOflbDynamicAppInternalStorage)
 DECLARE_FUNCTOR(instanceOflbDynamicAppXMLStorage)
 
