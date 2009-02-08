@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.61 2009/02/04 11:34:04 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.62 2009/02/08 15:01:05 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.62  2009/02/08 15:01:05  lollisoft
+ * Minor documentation.
+ *
  * Revision 1.61  2009/02/04 11:34:04  lollisoft
  * Added but partly deactivated new hooks stuff.
  *
@@ -585,7 +588,10 @@ public:
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
-#ifdef IMPLEMENT_NEWSTUFF	
+#ifdef IMPLEMENT_NEWSTUFF
+	
+	// The implementation itself should be in a plugin. That way I decouple the dispatcher from the hooks intarnals.
+	
 	/** \brief Implements execution of hook functions.
 	 *
 	 * Hooks, that are executed before could cancel the call to the dispatched function.
