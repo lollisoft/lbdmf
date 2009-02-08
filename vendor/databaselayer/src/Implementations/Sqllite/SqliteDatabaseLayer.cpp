@@ -664,7 +664,7 @@ wxArrayString SqliteDatabaseLayer::GetTables()
   try
   {
 #endif
-    wxString query = _("SELECT name FROM sqlite_master WHERE type='table';");
+    wxString query = _("SELECT name FROM sqlite_master WHERE type='table' AND name != 'lbDMF_ForeignKeys';");
     pResult = ExecuteQuery(query);
 
     while (pResult->Next())
