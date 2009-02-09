@@ -3760,6 +3760,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		if (meta->askYesNo("Error while updating data. Would you re - read the current data and retry ?")) {
 			sampleQuery->reopen();
 			lbDBRead();
+			return ERR_NONE;
 		}
 		
 		_LOG << "Update a database record failed." LOG_
