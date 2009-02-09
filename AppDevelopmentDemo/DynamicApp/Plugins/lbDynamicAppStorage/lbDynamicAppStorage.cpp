@@ -1399,10 +1399,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	if (document != NULL) {
 		*param = "XSLFileImportSettings";
 		document->getUAPFileLocation(*&param, *&XSLFileImportSettings);
-		//*param = "XSLFileSystemDatabase";
-		//document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
-		//*param = "XSLFileApplicationDatabase";
-		//document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
+		*param = "XSLFileSystemDatabase";
+		document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
+		*param = "XSLFileApplicationDatabase";
+		document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
 
 		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
 
