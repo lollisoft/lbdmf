@@ -98,6 +98,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
 	Database \
+	TestUMLImport \
 	ContainerTest \
 	Basetypes \
 	Memory \
@@ -178,6 +179,10 @@ Database/Plain-ODBC-Test-Refresh: dummy
 
 ContainerTest: dummy
 	$(MAKE) -C $@ -e MODULE=ContainerTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+TestUMLImport: dummy
+	$(MAKE) -C $@ -e MODULE=testUMLImport -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 Database: dummy
