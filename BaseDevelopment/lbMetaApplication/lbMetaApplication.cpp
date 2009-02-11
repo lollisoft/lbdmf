@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.148 $
+ * $Revision: 1.149 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.148 2008/10/27 18:59:34 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.149 2009/02/11 18:39:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.149  2009/02/11 18:39:57  lollisoft
+ * Added functions to provide property changing by code.
+ * Also added an uninitialisation function to ensure correct
+ * cleanup. Also added a simple fireEvent function.
+ *
  * Revision 1.148  2008/10/27 18:59:34  lollisoft
  * Moved uninitialize call before deletion of active document.
  *
@@ -658,6 +663,12 @@ lb_MetaApplication::~lb_MetaApplication() {
 	if (_dirloc != NULL) free(_dirloc);
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
+	if (User_Applications != NULL) User_Applications--;
+	if (Users != NULL) Users--;
+	if (Applications != NULL) Applications--;
+}
 
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
@@ -1975,6 +1986,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
+	if (User_Applications != NULL) {
+			_LOG << "lb_MetaApplication::unloadApplication() with " << User_Applications->getRefCount() << " instances." LOG_
+	}
+	
 	if (app != NULL) {
 		app->uninitialize(); // Internally saves the active document. Thus do not move this behind the following if block.
 
@@ -2865,6 +2880,28 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	return err;
 }
 /*...e*/
+
+void LB_STDCALL lb_MetaApplication::fireEvent(char* name) {
+	lbErrCodes err = ERR_NONE;
+	int eventID = -1;
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	
+	eman->resolveEvent((char*) name, eventID);
+	dispatcher->setEventManager(eman.getPtr());
+	
+	param->setData(eventID);
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch(eventID, uk.getPtr(), &uk_result);
+}
 
 void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* value) {
 	lbErrCodes err = ERR_NONE;

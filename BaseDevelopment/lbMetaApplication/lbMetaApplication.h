@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.62 2009/02/08 15:01:05 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.63 2009/02/11 18:39:58 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.63  2009/02/11 18:39:58  lollisoft
+ * Added functions to provide property changing by code.
+ * Also added an uninitialisation function to ensure correct
+ * cleanup. Also added a simple fireEvent function.
+ *
  * Revision 1.62  2009/02/08 15:01:05  lollisoft
  * Minor documentation.
  *
@@ -294,6 +299,7 @@ public:
 	 * be able to dispatch that events.
 	 */
 	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL uninitialize();
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
@@ -431,6 +437,7 @@ public:
 	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
 	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
+	void					LB_STDCALL fireEvent(char* name);
 	char*					LB_STDCALL getSystemDatabaseBackend();
 	char*					LB_STDCALL getApplicationDatabaseBackend();
 	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
