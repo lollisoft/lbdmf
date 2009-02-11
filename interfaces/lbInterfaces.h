@@ -2614,10 +2614,17 @@ public:
 	 */
 	virtual void	   LB_STDCALL setDirLocation(char* dirloc) = 0;
 	
-	/**
+	/** \brief Initialize the class.
 	 * Initialize the application module. Optionally, provide user and application name.
+	 * This function loads also some plugins if available. Thus it should be uninitialized
+	 * before exit. This is due to the singleton instance implementation.
 	 */
 	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
+	
+	/** \brief Uninitialize the class.
+	 * After uninitialisation, the class shouldn't used any more.
+	 */
+	virtual lbErrCodes LB_STDCALL uninitialize() = 0;
 	
 	/**
 	 * \brief Run the application
@@ -2865,6 +2872,18 @@ public:
 	/** \brief Use a different application database backend.
 	 */
 	virtual bool			LB_STDCALL usingApplicationDatabaseBackend() = 0;
+	
+	/** \brief Change a property value.
+	 *
+	 * This function is used to change property values from within source code.
+	 * Primary use would be property setup or testing purposes.
+	 */
+	virtual void			LB_STDCALL firePropertyChangeEvent(char* name, char* value) = 0;
+	
+	/** \brief Fire an event.
+	 *
+	 */
+	virtual void			LB_STDCALL fireEvent(char* name) = 0;
 };
 /*...e*/
 
@@ -4260,6 +4279,7 @@ public:
 	virtual void LB_STDCALL setActionID(long id) = 0;
 };
 
+/// \todo Think about the interface name.
 /**
  * \brief This interface is intended as a way to delegate action steps.
  *
