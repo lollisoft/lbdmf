@@ -774,7 +774,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			*dbpass = appParams->getParameter("DBPass", AppID->getData());
 			
 			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
-				_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+				_LOG << "Fatal: No custom database available. Cannot read database model for custom application! (" << dbname->charrep() << ", " << dbuser->charrep() << ")" LOG_
 /// \todo Implement fallback to Sqlite3.
 				metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
 			} else {
