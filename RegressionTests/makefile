@@ -121,6 +121,7 @@ ALLTARGETS = \
 	Database/Plain-ODBC-Test-Refresh \
 	Database/FKTest \
 	Database \
+	TestUMLImport \
 	ContainerTest \
 	Basetypes \
 	Memory \
