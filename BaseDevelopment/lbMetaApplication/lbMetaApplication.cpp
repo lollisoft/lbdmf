@@ -23,19 +23,22 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
-	
+
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149 $
+ * $Revision: 1.150 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.149 2009/02/11 18:39:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.150 2009/02/12 11:31:11 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.150  2009/02/12 11:31:11  lollisoft
+ * Added missing return.
+ *
  * Revision 1.149  2009/02/11 18:39:57  lollisoft
  * Added functions to provide property changing by code.
  * Also added an uninitialisation function to ensure correct
@@ -564,14 +567,14 @@
 #ifdef UNIX
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 
 //#include <conio.h>
 
 #ifdef __cplusplus
-}      
-#endif            
+}
+#endif
 
 #endif
 
@@ -613,30 +616,30 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autorefresh = false;
 	_logged_in = false;
 	_force_use_database = false;
-	
+
 	isPropertyPanelFloating = false;
 	isPropertyPanelLeft = true;
-	
+
 	_use_application_database_backend = false;
 	_use_system_database_backend = false;
 	_application_database_backend = strdup("");
 	_system_database_backend = strdup("");
 	_dirloc = strdup(".");
 	_loading_object_data = false;
-	
+
 	// Nothing checked yet.
 	_check_for_databases_failure_step = -1;
-	
+
 	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
-	
+
 	activeDocuments->setCloning(false);
-	
+
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
 	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
-	
+
 	lbErrCodes err = ERR_NONE;
 
 	/*
@@ -651,15 +654,15 @@ lb_MetaApplication::~lb_MetaApplication() {
 		app--;
 		app.resetPtr();
 	}
-	
+
 	_CL_LOG << "Unload module " << moduleName << "." LOG_
 
 	if (moduleName) lbUnloadModule(moduleName);
-	
-	_CL_LOG << "Unloaded module." LOG_	
-	
+
+	_CL_LOG << "Unloaded module." LOG_
+
 	free(moduleName);
-	
+
 	if (_dirloc != NULL) free(_dirloc);
 }
 /*...e*/
@@ -668,6 +671,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (User_Applications != NULL) User_Applications--;
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
+	return ERR_NONE;
 }
 
 /*...sregister event handlers:0:*/
@@ -679,10 +683,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbButtonTestHandler, "Button Test pressed");
-	
+
 	// Register a general login functionality
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::getLoginData, "getLoginData");
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -747,7 +751,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
 	_autoload = !_autoload;
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -763,24 +767,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-	
+
 	UAP(lb_I_Plugin, pl1)
 	UAP(lb_I_Unknown, ukPl1)
 	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
 	ukPl1 = pl1->getImplementation();
 	UAP(lb_I_FileOperation, fOp1)
 	QI(ukPl1, lb_I_FileOperation, fOp1)
-					
+
 	if (!fOp1->begin("MetaApp.mad")) {
-		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
-					
+		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+
 		return ERR_FILE_WRITE_DEFAULT;
 	}
-	
+
 	UAP(lb_I_Unknown, ukAcceptor1)
 	QI(this, lb_I_Unknown, ukAcceptor1)
 	ukAcceptor1->accept(*&fOp1);
-			
+
 	if (propertySets != NULL) {
 		_LOG << "Save property sets..." LOG_
 		propertySets->accept(*&fOp1);
@@ -790,17 +794,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	}
 
 	// Save a Users list
-	
+
 	if (Users == NULL) {
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
 			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
 			ukPl2 = pl2->getImplementation();
 			QI(ukPl2, lb_I_UserAccounts, Users)
-			
+
 			_LOG << "Save default user data ..." LOG_
 	}
-	
+
 	if (Users != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save Users list." LOG_
 		Users->accept(*&fOp1);
@@ -812,34 +816,34 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
 			ukPl3 = pl3->getImplementation();
 			QI(ukPl3, lb_I_Applications, Applications)
-			
+
 			_LOG << "Save default application data ..." LOG_
 	}
-	
+
 	if (Applications != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save Applications list." LOG_
 		Applications->accept(*&fOp1);
 	}
-				
+
 	if (User_Applications == NULL) {
 			UAP(lb_I_Plugin, pl4)
 			UAP(lb_I_Unknown, ukPl4)
 			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
 			ukPl4 = pl4->getImplementation();
 			QI(ukPl4, lb_I_User_Applications, User_Applications)
-			
+
 			_LOG << "Save default user - application data ..." LOG_
 	}
-	
+
 	if (User_Applications != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
 		User_Applications->accept(*&fOp1);
 	}
 
-/*	
+/*
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
-	
+
 	_LOG << "Save application database backend: '" << _application_database_backend << "'" LOG_
 	*backend = _application_database_backend;
 	backend->accept(*&fOp1);
@@ -855,7 +859,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	_LOG << "Save system database backend flag: '" << usebackend->charrep() << "'" LOG_
 	usebackend->accept(*&fOp1);
 */
-	fOp1->end();		
+	fOp1->end();
 
 	return ERR_NONE;
 }
@@ -864,7 +868,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\load\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	_loading_object_data = true;
 
 	// Get the plugin to read a standard stream based file
@@ -882,12 +886,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 		if (ukPl != NULL) {
 			UAP(lb_I_FileOperation, fOp)
 			QI(ukPl, lb_I_FileOperation, fOp)
-			
+
 			if (!fOp->begin("MetaApp.mad")) {
 				_LOG << "Error: fOp->begin('MetaApp.mad') failed !" LOG_
 				return ERR_FILE_READ;
 			}
-			
+
 			// Read my data
 			UAP(lb_I_Unknown, ukAcceptor)
 			QI(this, lb_I_Unknown, ukAcceptor)
@@ -921,9 +925,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			ukPl5 = pl5->getImplementation();
 */
 
-			
-			
-			
+
+
+
 
 			QI(ukPl2, lb_I_UserAccounts, Users)
 			QI(ukPl3, lb_I_Applications, Applications)
@@ -941,7 +945,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				ukPl4->accept(*&fOp);
 				// Read applications to formular assoc
 //				ukPl5->accept(*&fOp);
-				
+
 				if (Users->getUserCount() == 0) {
 					_LOG << "Warning: Users list from file does not contain any data." LOG_
 				}
@@ -949,7 +953,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();
 			}
-/*			
+/*
 			UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 			UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
 
@@ -973,9 +977,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 */
 
 			fOp->end();
-			
+
 			_loaded = true;
-			
+
 			return ERR_NONE;
 		} else {
 			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
@@ -990,7 +994,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_MetaApplication::setData() has not been implemented" LOG_
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -1027,12 +1031,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
 			_LOG << "Error: Not logged in. Function call not allowed." LOG_
 			return ERR_NONE;
 		}
-	
+
 	if ((user == NULL) || strcmp(user, "") == 0) {
-		_LOG << "Error: Setting empty user name not allowed." LOG_ 
+		_LOG << "Error: Setting empty user name not allowed." LOG_
 		return ERR_NONE;
 	}
-	
+
 	if (LogonUser == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
@@ -1060,8 +1064,8 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 /*...e*/
 /*
  * For each application should be a database setup plugin available.
- * 
- * If no 
+ *
+ * If no
  */
 bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 	lbErrCodes err = ERR_NONE;
@@ -1070,14 +1074,14 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 
 	UAP(lb_I_Query, appSchemaQuery)
 	UAP(lb_I_Database, app_database)
-	
+
 	// Currently unimplemented.
-	
+
 	// Too unsave now (Sqlite check fails on selecting sysadmin account)
 	//return true;
-	
+
 	if (_check_for_databases_failure_step == -2) return false; // Failed prior. Outer loop must break.
-	
+
 	if (database == NULL) {
 		char* dbbackend = getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -1092,9 +1096,9 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 
 		if (database == NULL) {
 			_LOG << "Error: Could not load database backend for system db, either plugin or built in version." LOG_
-			
+
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
-			
+
 			return false;
 		}
 		if (database->init() != ERR_NONE) {
@@ -1108,21 +1112,21 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
-	
+
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database." LOG_
-		
+
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_CONNECT;
-		
+
 		return false;
 	}
-	
+
 	// Check. if the system database schema is initialized.
 	sysSchemaQuery = database->getQuery("lbDMF", 0);
-	
+
 	if (sysSchemaQuery != NULL) {
 		if (sysSchemaQuery->query("select * from \"users\" where \"userid\"='user'") == ERR_NONE) {
 			if (((err = sysSchemaQuery->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
@@ -1146,7 +1150,7 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 #ifdef bla
 	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
 		// Check, if a database for this application needs to be installed.
-		
+
 		if (app_database == NULL) {
 			char* dbbackend = getApplicationDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -1158,39 +1162,39 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 				REQUEST(getModuleInstance(), lb_I_Database, app_database)
 				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for application database setup test..." LOG_
 			}
-			
+
 			if (app_database == NULL) {
 				_LOG << "Error: Could not load database backend for application db, either plugin or built in version." LOG_
-				
+
 				_check_for_databases_failure_step = META_DB_FAILURE_APP_DB_BACKEND;
-				
+
 				return false;
 			}
 			if (app_database->init() != ERR_NONE) {
 				_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to initialize application database." LOG_
-				
+
 				_check_for_databases_failure_step = META_DB_FAILURE_APP_DB_INITIALIZE;
-				
+
 				return false;
 			}
 		}
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		if ((app_database != NULL) && (app_database->connect(LogonApplication->charrep(), LogonApplication->charrep(), lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to application database (" << LogonApplication->charrep() << ")" LOG_
-			
+
 			_check_for_databases_failure_step = META_DB_FAILURE_APP_DB_CONNECT;
-			
+
 			return false;
 		}
-		
+
 		appSchemaQuery = app_database->getQuery(LogonApplication->charrep(), 0);
-		
+
 		if (appSchemaQuery != NULL) {
             // How to do this check and how to inform the responsible
             // application about to setup. Should this be done here ?
@@ -1198,7 +1202,7 @@ bool LB_STDCALL lb_MetaApplication::checkForDatabases() {
 			_check_for_databases_failure_step = META_DB_FAILURE_APP_DB_BACKEND;
 			return false;
 		}
-		
+
 	}
 #endif
 	return true;
@@ -1220,7 +1224,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	} else {
 		// Use built in
 		REQUEST(getModuleInstance(), lb_I_Database, database)
@@ -1228,42 +1232,42 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 
 		if (!lbDMFUser) lbDMFUser = "postgres";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	}
-	
+
 	if (database == NULL) {
 		_LOG << "Error: Could not load database backend for system db, either plugin or built in version." LOG_
-		
+
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
-		
+
 		return false;
 	}
 	if (database->init() != ERR_NONE) {
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to initialize database." LOG_
-		
+
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
-		
+
 		return false;
 	}
-	
-	
+
+
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database." LOG_
-		
+
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_CONNECT;
-		
+
 		return false;
 	}
-	
+
 	// Check. if the system database schema is initialized.
 	sysSchemaQuery = database->getQuery("lbDMF", 0);
-	
+
 	if (sysSchemaQuery != NULL) {
 		// Here it goes on with installation.
 		UAP(lb_I_String, SQL)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputApp)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputSys)
-		
+
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 #ifdef WINDOWS
 			inputApp->setFileName("..\\Database\\lbDMF-Sqlite-ApplicationDB.sql");
@@ -1290,14 +1294,14 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				}
 #endif
 			}
-			
+
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				return false;
 			}
-			
+
 #ifdef WINDOWS
 			inputSys->setFileName("..\\Database\\lbDMF-Sqlite-SystemDB.sql");
 #endif
@@ -1363,10 +1367,10 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			sysSchemaQuery->close();
 			database->close();
 		}
-	}		
+	}
 #ifdef LINUX
 	UAP_REQUEST(getModuleInstance(), lb_I_String, installdir)
-	char* home = 
+	char* home =
 #if defined(WINDOWS)
 	getenv("USERPROFILE");
 #endif
@@ -1376,8 +1380,8 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	*installdir = home;
 	*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
 	setDirLocation(installdir->charrep());
-#endif	
-	msgBox("Info",  
+#endif
+	msgBox("Info",
 	"This application is running the first time on this computer,\n"
     "or your prior configured database is not available anyhow.\n\n"
     "Please inform your administrator, if the database is not available.\n\n"
@@ -1385,7 +1389,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	"And you are automatically logged in as an 'administrator'.\n\n"
 	"For security considerations please change the password for\n"
 	"your user account, wich is currently the default 'user'.");
-	
+
 	if (LogonUser == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
@@ -1395,11 +1399,11 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 	}
 	LogonApplication->setData("lbDMF Manager");
-	
+
 	setAutoload(true);
 	setGUIMaximized(true); // Otherwise the toolbar is bigger than frame width. Default size should be changed.
 	save(); // Save, because otherwise the usage of DatabaseLayerGateway gets overwritten by created standard version of first try of loading the file.
-	
+
 	return true;
 }
 
@@ -1416,7 +1420,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	 * resolves the functor for this application.
 	 */
 /*...e*/
-	
+
 	if (user == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
@@ -1424,7 +1428,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 			LogonUser->setData(user);
 		}
-	
+
 	if (appName == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() appName is NULL" LOG_
 	} else
@@ -1433,7 +1437,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			LogonApplication->setData(appName);
 		}
 
-	
+
 /*...sdispatch integer values:8:*/
 	/*
 	 * This variable is needed, if this instance also implements a little dispatcher.
@@ -1446,46 +1450,46 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	int getLoginData;
 	int doAutoload;
 /*...e*/
-	
+
 /*...sget the event manager:8:*/
 	/**
 		* Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
 	 */
-	
+
 	lb_I_Module* m = *&manager;
 	REQUEST(m, lb_I_EventManager, eman)
 /*...e*/
-		
+
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
 	eman->registerEvent("doAutoload", doAutoload);
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
-	
+
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
 		eman->registerEvent("getLoginData", getLoginData);
 	}
 /*...e*/
-	
+
 /*...sget the dispatcher instance:8:*/
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
-	
+
 	registerEventHandler(dispatcher.getPtr());
-	
+
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
-	
+
 /*...ssome docs:8:*/
 	/**
 		* After initializion of all event handlers, we need to get up all
 	 * GUI accessible handlers - like menus or else.
 	 * This class, as an example, provides two handlers
 	 * getBasicApplicationInfo and getMainModuleInfo
-	 * 
+	 *
 	 * The handler depends on some capabilities:
 	 *
 	 * 	1. A basic dialog to show text
@@ -1498,8 +1502,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	 *	1. An information about menu creation
 	 *		This may be a simple string - lb_I_String
 	 */
-	
-	
+
+
 	/**
 		* Init the application (menu, toolbar, accelerators)
 	 *
@@ -1507,48 +1511,48 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	 * environment variable (TARGET_APPLICATION)
 	 */
 /*...e*/
-	
+
 	addMenuBar(_trans("&Edit"));
-	
+
 	char* temp1 = _trans("&Autoload application");
-	
+
 	char* mm1 = (char*) malloc(strlen(temp1)+1);
 	mm1[0] = 0;
 	strcpy(mm1, temp1);
-	
+
 	addMenuEntryCheckable(_trans("&Edit"), mm1, "doAutoload", "");
-	
+
 	free(mm1);
-	
+
 	if (getenv("TARGET_APPLICATION") != NULL) {
 		loadApplication("", "");
 	}
-	
+
 	addMenuBar(_trans("&Help"));
-	
+
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		char* temp = _trans("&Login\tCtrl-L");
 		char* login = (char*) malloc(strlen(temp)+1);
 		login[0] = 0;
 		strcpy(login, temp);
-		
+
 		addMenuEntry(_trans("&File"), login, "getLoginData", "");
 		free(login);
 	}
-	
+
 	char* temp = _trans("MainModule&Info\tCtrl-I");
-	
+
 	char* mm = (char*) malloc(strlen(temp)+1);
 	mm[0] = 0;
 	strcpy(mm, temp);
-	
+
 	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
 	free(mm);
-	
+
 	_CL_LOG << "Load properties from file..." LOG_
-	
+
 	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
-		
+
 
 	if (!_loaded) {
 		if (load() != ERR_NONE) {
@@ -1558,10 +1562,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			}
 		}
 	}
-	
+
 	// The check may have several rounds.
 	while (!checkForDatabases()) {
-		if (_check_for_databases_failure_step == -2) break; // 
+		if (_check_for_databases_failure_step == -2) break; //
 
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_BACKEND) {
 			msgBox("Error", "No system database backed available. Please check your installation and logfile!");
@@ -1569,7 +1573,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_INITIALIZE) {
 			msgBox("Error", "Initialize system database backend failed. Please check your installation and logfile!");
-            
+
 			break;
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_CONNECT) {
@@ -1578,9 +1582,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
             setApplicationDatabaseBackend("DatabaseLayerGateway");
             useSystemDatabaseBackend(true);
             useApplicationDatabaseBackend(true);
-			
+
 			if (!installDatabase()) {
-				msgBox("Error", "Connect to system database backend failed and fallback to local database variant failed too!");	
+				msgBox("Error", "Connect to system database backend failed and fallback to local database variant failed too!");
 				break;
 			}
 		}
@@ -1588,69 +1592,69 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			installDatabase();
 		}
 	}
-	
+
 	if (_check_for_databases_failure_step == -2) {
 				msgBox("Error", "Setup of databases, required by this application failed!");
 	}
-	
+
 	addToolBar("Main Toolbar");
 
 	addStatusBar();
 	addStatusBar_TextArea("Info");
-	
+
 	/*
-	 
+
 	   Here it would be the best to get user accounts into the new account list.
 	   Having no database and no previously retrieved data from file would lead
 	   into not loading the last application for the last user.
-	   
+
 	   Really, it then would be invalid data in the last logged in user.
-	   
+
 	   Changed user data leads to a reread from the database for these user accounts.
 	   Thus, the database has higher priority. This is because other users may have
 	   changed their passwords.
-	   
+
 	   Changing the data for the logged in user is a special case, where the changed
 	   data must be written back to the database.
 	*/
-	
+
 	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
 		if ((strcmp(LogonUser->charrep(), "") != 0) && (strcmp(LogonApplication->charrep(), "") != 0)) {
-			_CL_LOG << "Autoload is active and have " << LogonApplication->charrep() << 
+			_CL_LOG << "Autoload is active and have " << LogonApplication->charrep() <<
 			" and " << LogonUser->charrep() << ". Loading..." LOG_
-			
+
 			/* loadApplication() does not know, that the parameters are from it self.
 			Thus LogonApplication->setData(...) and LogonUser->setData(...) would
 			delete it's content.
-			
+
 			This is tricky.
-			*/ 
-			
+			*/
+
 			char* a = strdup(LogonApplication->charrep());
 			char* u = strdup(LogonUser->charrep());
-			
+
 			_logged_in = true;
 
 			setStatusText("Info", "Loading application ...");
-			
+
 			_LOG << "Using database backend name '" << getSystemDatabaseBackend() << "'." LOG_
-			
+
 			loadApplication(u, a);
-			
+
 			_LOG << "Used database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
 			setStatusText("Info", "Loading application done.");
-			
+
 			free(a);
 			free(u);
-			
+
 		} else {
 			UAP(lb_I_Parameter, params)
 			params = getParameter();
 			showPropertyPanel(*&params);
 		}
 	}
-	
+
 	if (!getAutoload()) {
 		UAP(lb_I_Parameter, params)
 		params = getParameter();
@@ -1659,14 +1663,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 	addToolBarButton("Main Toolbar", "Properties", "ShowPropertyPanel", "configure.png");
 
-	
-	if (getAutoload()) 
+
+	if (getAutoload())
 		toggleEvent("doAutoload");
-	
+
 	_loading_object_data = false;
-	
+
 	_CL_LOG << "Loaded properties from file." LOG_
-		
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -1767,7 +1771,7 @@ char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
 	*Backend = _application_database_backend;
 	Backend->trim(); // Always trim spaces.
 	setApplicationDatabaseBackend(Backend->charrep());
-	
+
 	if (_use_application_database_backend) return _application_database_backend;
 	return "";
 }
@@ -1808,40 +1812,40 @@ bool LB_STDCALL lb_MetaApplication::usingApplicationDatabaseBackend() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\propertyChanged\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_Parameter, param)
 	QI(uk, lb_I_Parameter, param)
-	
+
 	if (param != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-		
+
 		UAP(lb_I_KeyBase, key)
-		
+
 		name->setData("name");
 		param->getUAPString(*&name, *&parameterName);
-		
+
 		name->setData("value");
 		param->getUAPString(*&name, *&value);
-		
+
 		QI(parameterName, lb_I_KeyBase, key)
-		
+
 		if (strcmp(key->charrep(), "GeneralBase directory") == 0) {
 					setDirLocation(value->charrep());
 		}
-		
+
 		if (strcmp(key->charrep(), "GeneralSystem Database backend") == 0) {
 					if (_system_database_backend != NULL) free(_system_database_backend);
 					_system_database_backend = strdup(value->charrep());
 		}
-		
-		
+
+
 		if (strcmp(key->charrep(), "GeneralApplication Database backend") == 0) {
 					if (_application_database_backend != NULL) free(_application_database_backend);
 					_application_database_backend = strdup(value->charrep());
 		}
-		
+
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
 				value->toLower();
 				if (strcmp(value->charrep(), "true") == 0) {
@@ -1878,7 +1882,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 					_use_application_database_backend = false;
 				}
 		}
-		
+
 		if (strcmp(key->charrep(), "GeneralPrefer database configuration") == 0) {
 				value->toLower();
 				if (strcmp(value->charrep(), "true") == 0) {
@@ -1887,16 +1891,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 					_force_use_database = false;
 				}
 		}
-		
+
 		if (strcmp(key->charrep(), "GeneralLast application") == 0) {
 			setApplicationName(value->charrep());
 		}
-		
+
 		_LOG << "User has changed a property for meta application: " << key->charrep() << " = " << value->charrep() LOG_
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
 	}
-	
+
 	return err;
 }
 /*...e*/
@@ -1905,12 +1909,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	// Build up a preferences object and pass it to the property view
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	
+
 	// General parameters for this application
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_DirLocation, dirloc)
@@ -1922,15 +1926,15 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	parameterGeneral->setData("Base directory");
 	dirloc->setData(_dirloc);
 	paramGeneral->setUAPDirLocation(*&parameterGeneral, *&dirloc);
-	
+
 	parameterGeneral->setData("Autoselect last application");
 	b->setData(_autoselect);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
-	
+
 	parameterGeneral->setData("Autorefresh updated data");
 	b->setData(_autorefresh);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
-	
+
 	parameterGeneral->setData("Autoopen last application");
 	b->setData(_autoload);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
@@ -1957,9 +1961,9 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 
 	_LOG << "lb_MetaApplication::getParameter() returns as Application Database backend: " << _application_database_backend LOG_
 	_LOG << "lb_MetaApplication::getParameter() returns as System Database backend: " << _system_database_backend LOG_
-	
+
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
-	
+
 	param->setUAPParameter(*&parameter, *&paramGeneral);
 	//--------------------------------------------------------
 	param++;
@@ -1975,7 +1979,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::run() {
 #ifdef bla
 	lb_I_Unknown* result;
 
-	dispatcher->dispatch("AddMenu", NULL, &result);	
+	dispatcher->dispatch("AddMenu", NULL, &result);
 #endif
 	return ERR_NONE;
 }
@@ -1989,7 +1993,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 	if (User_Applications != NULL) {
 			_LOG << "lb_MetaApplication::unloadApplication() with " << User_Applications->getRefCount() << " instances." LOG_
 	}
-	
+
 	if (app != NULL) {
 		app->uninitialize(); // Internally saves the active document. Thus do not move this behind the following if block.
 
@@ -2011,16 +2015,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (user == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
 		if (LogonUser == NULL) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 		}
-	
+
 	LogonUser->setData(user);
-	
+
 	if (application == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
@@ -2029,35 +2033,35 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
         }
 
 	LogonApplication->setData(application);
-	
+
 	char* applicationName = getenv("TARGET_APPLICATION");
-	
+
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
-	
+
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	if (applicationName == NULL) {
 		/*
 		 * No predefined application without authentication.
 		 * Read the configuration from a database.
 		 */
-		
+
 		if (Applications->getApplicationCount() != 0) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
 
 			Users->selectAccount(LogonUser->charrep());
 			Applications->selectApplication(LogonApplication->charrep());
-			
+
 			long uid = Users->getUserID();
 			long aid = Applications->getApplicationID();
-			
+
 			User_Applications->finishRelationIteration();
 			while (User_Applications->hasMoreRelations()) {
 				User_Applications->setNextRelation();
-				
+
 				if ((User_Applications->getUserID() == uid) && (User_Applications->getApplicationID() == aid)) {
 					break;
 				}
@@ -2065,14 +2069,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			User_Applications->finishRelationIteration();
 			Applications->finishApplicationIteration();
 			Users->finishUserIteration();
-			
+
 					*ModuleName = Applications->getApplicationModule();
 					*Functor = Applications->getApplicationFunctor();
-					
+
 					applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 					applicationName[0] = 0;
-					strcpy(applicationName, ModuleName->charrep());		        
-					
+					strcpy(applicationName, ModuleName->charrep());
+
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -2084,31 +2088,31 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #ifdef LINUX
 #define PREFIX ""
 #endif
-					
+
 					char f[100] = "";
 					char appl[100] = "";
 					UAP(lb_I_Unknown, a)
-						
+
 						strcpy(f, PREFIX);
 					strcat(f, Functor->charrep());
 					strcpy(appl, applicationName);
-					
-					
+
+
 #ifdef WINDOWS
 					manager->preload(appl);
 					manager->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
-					strcat(appl, ".so");		
+					strcat(appl, ".so");
 					manager->preload(appl);
 					manager->makeInstance(f, appl, &a);
 #endif
-					
+
 					if (a == NULL) {
 						_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 						return ERR_NONE;
 					}
-					
+
 					if (moduleName == NULL) {
 						moduleName = (char*) malloc(strlen(appl)+1);
 						moduleName[0] = 0;
@@ -2116,23 +2120,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 					} else {
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
-					
+
 					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-					
+
 					QI(a, lb_I_Application, app)
-						
+
 						//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-						
+
 					app->setGUI(gui);
 					app->initialize(user, application);
-					
-					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+
+					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
 					LogonApplication->setData(application);
 					free(applicationName);
 
 		} else {
 			UAP(lb_I_Database, database)
-			
+
 			char* dbbackend = getSystemDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -2145,9 +2149,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			}
 
 			UAP(lb_I_Query, sampleQuery)
-			
+
 			database->init();
-			
+
 			if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 				_LOG << "Error: Connection to database failed." LOG_
 				UAP(lb_I_Parameter, params)
@@ -2157,45 +2161,45 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 				//msgBox("Error", _trans("Could not login to system database."));
 				return ERR_NONE;
 			} else {
-				
+
 				sampleQuery = database->getQuery("lbDMF", 0);
-				
+
 				char* buffer = (char*) malloc(1000);
 				buffer[0] = 0;
-				
+
 				sprintf(buffer,
 						"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
 						"Anwendungen.id = User_Anwendungen.anwendungenid "
 						"inner join Users on User_Anwendungen.userid = Users.id where "
 						"Users.userid = '%s' and Anwendungen.name = '%s'"
 						, LogonUser->charrep(), LogonApplication->charrep());
-				
+
 				printf("%s\n", buffer);
-				
+
 				/*
 				 * Decide upon the interface, if this code is capable to handle this application.
 				 * First, only handle lb_I_MetaApplication types.
 				 */
-				
+
 				sampleQuery->skipFKCollecting();
 				sampleQuery->query(buffer);
 				sampleQuery->enableFKCollecting();
-				
-				
+
+
 				// Fill up the available applications for that user.
 				UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
-					
+
 					lbErrCodes DBerr = sampleQuery->first();
-				
+
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 					ModuleName = sampleQuery->getAsString(1);
 					Functor = sampleQuery->getAsString(2);
-					
+
 					applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 					applicationName[0] = 0;
-					strcpy(applicationName, ModuleName->charrep());		        
-					
+					strcpy(applicationName, ModuleName->charrep());
+
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -2207,31 +2211,31 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #ifdef LINUX
 #define PREFIX ""
 #endif
-					
+
 					char f[100] = "";
 					char appl[100] = "";
 					UAP(lb_I_Unknown, a)
-						
+
 						strcpy(f, PREFIX);
 					strcat(f, Functor->charrep());
 					strcpy(appl, applicationName);
-					
-					
+
+
 #ifdef WINDOWS
 					manager->preload(appl);
 					manager->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
-					strcat(appl, ".so");		
+					strcat(appl, ".so");
 					manager->preload(appl);
 					manager->makeInstance(f, appl, &a);
 #endif
-					
+
 					if (a == NULL) {
 						_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 						return ERR_NONE;
 					}
-					
+
 					if (moduleName == NULL) {
 						moduleName = (char*) malloc(strlen(appl)+1);
 						moduleName[0] = 0;
@@ -2239,17 +2243,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 					} else {
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
-					
+
 					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-					
+
 					QI(a, lb_I_Application, app)
-						
+
 						//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-						
+
 						app->setGUI(gui);
 					app->initialize(user, application);
-					
-					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+
+					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
 					LogonApplication->setData(application);
 					free(applicationName);
 				} else {
@@ -2260,9 +2264,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		}
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
-		
+
 		UAP(lb_I_Unknown, a)
-		
+
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -2274,9 +2278,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #ifdef LINUX
 #define PREFIX ""
 #endif
-		
-		
-#ifdef WINDOWS	
+
+
+#ifdef WINDOWS
 		manager->preload(applicationName);
 		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
 #endif
@@ -2286,26 +2290,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		strcat(name, ".so");
 		manager->preload(name);
 		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
-#endif	
+#endif
 		if (a == NULL) {
 			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			return ERR_NONE;
 		}
-		
+
 		QI(a, lb_I_Application, app)
-			
+
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-			
+
 		app->setGUI(gui);
 		app->initialize();
-		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
 		LogonApplication->setData(application);
-		
+
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-			
+
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
-		
+
         return ERR_NONE;
 }
 /*...e*/
@@ -2325,11 +2329,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("removeToolBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2349,11 +2353,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("addToolBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2397,14 +2401,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 		value->setData(afterentry);
 		param->setUAPString(*&parameter, *&value);
 	}
-	
+
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("addTool_To_ToolBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2428,11 +2432,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName,
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("removeTool_From_ToolBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2456,11 +2460,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName,
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("toggleTool_From_ToolBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2489,11 +2493,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2507,7 +2511,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 /*...slb_MetaApplication\58\\58\addTextField\40\char\42\ name\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
@@ -2548,7 +2552,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\askYesNo\40\char\42\ msg\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
@@ -2561,24 +2565,24 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	if (dispatcher == NULL) {
 		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 		dispatcher->setEventManager(eman.getPtr());
 	}
-	
+
 	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
 
 	// Got a name of the file. Create an input stream.
-	
+
 	parameter->setData("result");
 	param->getUAPString(*&parameter, *&value);
-	
+
 	if (strcmp(value->charrep(), "yes") == 0) return true;
 	return false;
 }
@@ -2587,22 +2591,22 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\addStatusBar\40\\41\:0:*/
 void LB_STDCALL lb_MetaApplication::addStatusBar() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("addStatusBar", uk.getPtr(), &uk_result);
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\addStatusBar_TextArea\40\char\42\ name\41\:0:*/
 void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
@@ -2613,18 +2617,18 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("addStatusBar_TextArea", uk.getPtr(), &uk_result);
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
 void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
@@ -2638,11 +2642,11 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value)
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("setStatusText", uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -2650,7 +2654,7 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value)
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\msgBox\40\char\42\ title\44\ char\42\ msg\41\:0:*/
 void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
@@ -2665,11 +2669,11 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -2677,7 +2681,7 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 /*...slb_I_InputStream\42\ LB_STDCALL lb_MetaApplication\58\\58\askOpenFileReadStream\40\char\42\ extentions\41\:0:*/
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
@@ -2690,20 +2694,20 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("askOpenFileReadStream", uk.getPtr(), &uk_result);
 
 	// Got a name of the file. Create an input stream.
-	
+
 	parameter->setData("result");
 	param->getUAPString(*&parameter, *&value);
 
 	if (strcmp(value->charrep(), "") == 0) return NULL;
-	
+
 	_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
 	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
@@ -2747,11 +2751,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2766,16 +2770,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
-	
-	
+
+
 	parameter->setData("buttontext");
 	value->setData(buttonText);
 	param->setUAPString(*&parameter, *&value);
-	
+
 	parameter->setData("handlername");
 	value->setData(evHandler);
 	param->setUAPString(*&parameter, *&value);
-	
+
 	parameter->setData("x");
 	i->setData(x);
 	param->setUAPInteger(*&parameter, *&i);
@@ -2794,11 +2798,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("AddButton", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2812,19 +2816,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	
-	
+
+
 	parameter->setData("handlername");
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("enableEvent", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2837,19 +2841,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	
-	
+
+
 	parameter->setData("handlername");
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("disableEvent", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2862,19 +2866,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	
-	
+
+
 	parameter->setData("handlername");
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("toggleEvent", uk.getPtr(), &uk_result);
 
 	return err;
@@ -2887,19 +2891,19 @@ void LB_STDCALL lb_MetaApplication::fireEvent(char* name) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
-	
+
 	eman->resolveEvent((char*) name, eventID);
 	dispatcher->setEventManager(eman.getPtr());
-	
+
 	param->setData(eventID);
-	
+
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch(eventID, uk.getPtr(), &uk_result);
 }
 
@@ -2909,15 +2913,15 @@ void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* va
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
-	
+
 	int PropertyEvent;
-	
+
 	if (eman == NULL) {
 		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	}
-	
+
 	eman->resolveEvent((char*) name, PropertyEvent);
-	
+
 	Name->setData("eventId");
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&Name, *&evId);
@@ -2925,23 +2929,23 @@ void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* va
 	Name->setData("value");
 	Value->setData((char*) value);
 	param->setUAPString(*&Name, *&Value);
-	
+
 	Name->setData("name");
 	Value->setData((char*) name);
 	param->setUAPString(*&Name, *&Value);
-	
+
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-		
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	if (dispatcher == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 		dispatcher->setEventManager(eman.getPtr());
-	}				
-	
+	}
+
 	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 }
 
@@ -2952,27 +2956,27 @@ void LB_STDCALL lb_MetaApplication::updatePropertyGroup(lb_I_Container* properti
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-	
-	
+
+
 	for (int i = 1; i <= properties->Count(); i++) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_KeyBase, key)
-		
+
 		uk = properties->getElementAt(i);
 		key = properties->getKeyAt(i);
-		
+
 		bool found = false;
-		
-		if (prefix && prefix[0] != 0) 
+
+		if (prefix && prefix[0] != 0)
 			*name = prefix;
 		else
 			*name = "";
-		
-		
+
+
 		*name += key->charrep();
-		
+
 		if (strcmp(uk->getClassName(), "lbString") == 0) {
 			s->setData(*&uk);
 			firePropertyChangeEvent(name->charrep(), s->charrep());
@@ -2997,14 +3001,14 @@ void LB_STDCALL lb_MetaApplication::updatePropertyGroup(lb_I_Container* properti
 			UAP(lb_I_Container, props)
 			UAP(lb_I_Parameter, param)
 			QI(uk, lb_I_Parameter, param)
-			
+
 			props = param->getParameterList();
-			
+
 			updatePropertyGroup(*&props, key->charrep());
 		}
-		
+
 		if (found == false) {
-			_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_ 
+			_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_
 		}
 	}
 }
@@ -3026,7 +3030,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 		// Walk to the properties and fire the change event
 		UAP(lb_I_Container, props)
 		props = params->getParameterList();
-		
+
 		if (props != NULL) updatePropertyGroup(*&props, "");
 	}
 
@@ -3037,26 +3041,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\registerPropertyChangeEventGroup\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_Container, properties)
-	
+
 	properties = params->getParameterList();
-	
+
 	int temp;
-	
+
 	for (int i = 1; i <= properties->Count(); i++) {
 		UAP(lb_I_KeyBase, key)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, eventName)
-		
+
 		key = properties->getKeyAt(i);
-		
+
 		*eventName = name;
 		*eventName += key->charrep();
-		
+
 		eman->registerEvent(eventName->charrep(), temp);
 		dispatcher->addEventHandlerFn(target, handler, eventName->charrep());
 	}
-	
+
 	return err;
 }
 /*...e*/
@@ -3065,16 +3069,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char*
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	
-	
+
+
 	parameter->setData("menubar");
 	value->setData(in_menu);
 	param->setUAPString(*&parameter, *&value);
-	
+
 	parameter->setData("menuname");
 	value->setData(entry);
 	param->setUAPString(*&parameter, *&value);
@@ -3082,7 +3086,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	parameter->setData("handlername");
 	value->setData(evHandler);
 	param->setUAPString(*&parameter, *&value);
-	
+
 	if (afterentry && (strcmp(afterentry, "") != 0)) {
 		parameter->setData("after");
 		value->setData(afterentry);
@@ -3097,7 +3101,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	QI(result, lb_I_Unknown, uk_result)
 
 	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
-	
+
 
 	return ERR_NONE;
 }
@@ -3105,16 +3109,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuEntryCheckable\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	
-	
+
+
 	parameter->setData("menubar");
 	value->setData(in_menu);
 	param->setUAPString(*&parameter, *&value);
-	
+
 	parameter->setData("menuname");
 	value->setData(entry);
 	param->setUAPString(*&parameter, *&value);
@@ -3126,7 +3130,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 	parameter->setData("checkable");
 	value->setData("yes");
 	param->setUAPString(*&parameter, *&value);
-	
+
 	if (afterentry && (strcmp(afterentry, "") != 0)) {
 		parameter->setData("after");
 		value->setData(afterentry);
@@ -3141,7 +3145,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 	QI(result, lb_I_Unknown, uk_result)
 
 	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -3150,7 +3154,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 long LB_STDCALL lb_MetaApplication::getApplicationID() {
 	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
 		Applications->selectApplication(LogonApplication->charrep());
-		
+
 		return Applications->getApplicationID();
 	} else {
 		if (!_logged_in) {
@@ -3170,7 +3174,7 @@ void			LB_STDCALL lb_MetaApplication::setActiveApplication(const char* name) {
 lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
-	
+
 	QI(LogonApplication, lb_I_KeyBase, key)
 
 	lb_I_Unknown* ukDoc = activeDocuments->getElement(&key);
@@ -3182,9 +3186,9 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukDoc)
-	
+
 	ukDoc = doc;
-	
+
 	QI(LogonApplication, lb_I_KeyBase, key)
 
 	if (activeDocuments->exists(&key)) {
@@ -3194,24 +3198,24 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 	_LOG << "Insert active document for application '" << LogonApplication->charrep() << "'" LOG_
 
 	activeDocuments->insert(&ukDoc, &key);
-	
+
 	_CL_LOG << "Inserted document has " << ukDoc->getRefCount() << " references." LOG_
 }
 
 /*...slb_I_Container\42\ LB_STDCALL lb_MetaApplication\58\\58\getApplications\40\\41\:0:*/
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
-	
+
 	if (Applications->getApplicationCount() == 0) {
 		// Maybe no data collected in the file yet
 		// Fallback to manually read out the applications
-	
+
 		_LOG << "Info: Have no applications in '" << Applications->getClassName() << "'. Create the list from database." LOG_
-	
+
 		UAP(lb_I_Database, database)
-		
+
 		char* dbbackend = getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -3222,13 +3226,13 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			REQUEST(getModuleInstance(), lb_I_Database, database)
 			_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
 		}
-		
+
 		UAP(lb_I_Query, sampleQuery)
 		database->init();
 
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
@@ -3239,56 +3243,56 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			apps++;
 			return apps.getPtr();
 		}
-		
+
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-			
+
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
-			
+
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-		
+
 		bool hasDBLoaded = false;
-		
+
 		if (pl != NULL) {
 			ukPl = pl->getImplementation();
-			
+
 			if (ukPl != NULL) {
 				UAP(lb_I_DatabaseOperation, fOp)
 				QI(ukPl, lb_I_DatabaseOperation, fOp)
-				
+
 				if (!fOp->begin("lbDMF", database.getPtr())) {
 					_LOG << "FATAL: Failed to start reading application list from database!" LOG_
 					apps++;
 					return apps.getPtr();
 				}
-				
+
 				Applications->accept(*&fOp);
-				
+
 				Users->accept(*&fOp);
 
 				User_Applications->accept(*&fOp);
-							
+
 				fOp->end();
-				
+
 				/// \todo Save on demand or at application end.
 				// => Save menu entry, or on property changes.
 				//save(); // Late save
-				
+
 				while (Applications->hasMoreApplications()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, ukName)
-					
+
 					Applications->setNextApplication();
-					
+
 					*name = Applications->getApplicationName();
-					
+
 					QI(name, lb_I_KeyBase, key)
 					QI(name, lb_I_Unknown, ukName)
-					
+
 					apps->insert(&ukName, &key);
 				}
-				
+
 				Applications->finishApplicationIteration();
 				hasDBLoaded = true;
 			} else {
@@ -3297,7 +3301,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		} else {
 			_LOG << "Error: No database stream operation found.!" LOG_
 		}
-		
+
 		// A first preload of the applications is ignored yet.
 
 /*...sLoad by direct SQL queries\44\ if all above fails:16:*/
@@ -3308,7 +3312,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-			sprintf(buffer, 
+			sprintf(buffer,
 				"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
 				"Anwendungen.id = User_Anwendungen.anwendungenid "
 				"inner join Users on User_Anwendungen.userid = Users.id where "
@@ -3319,39 +3323,39 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			sampleQuery->skipFKCollecting();
 			sampleQuery->query(buffer);
 			sampleQuery->enableFKCollecting();
-			
+
 			free(buffer);
-	
+
 			lbErrCodes err = sampleQuery->first();
 
 /*...sLoop through:40:*/
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 
-				UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+				UAP_REQUEST(manager.getPtr(), lb_I_String, S1)
 				UAP(lb_I_KeyBase, key)
 				UAP(lb_I_Unknown, uk_S1)
-			
+
 				S1 = sampleQuery->getAsString(1);
 				QI(S1, lb_I_KeyBase, key)
 				QI(S1, lb_I_Unknown, uk_S1)
-			
+
 				apps->insert(&uk_S1, &key);
-	
+
 				while (err == ERR_NONE) {
 					lbErrCodes err = sampleQuery->next();
-					
+
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 						S1 = sampleQuery->getAsString(1);
 						QI(S1, lb_I_KeyBase, key)
 						QI(S1, lb_I_Unknown, uk_S1)
-				
+
 						apps->insert(&uk_S1, &key);
-					
+
 						if (err == WARN_DB_NODATA) {
 							break;
 						}
 					}
-				
+
 					if (err == ERR_DB_NODATA) {
 					        //box->SetSelection(0);
 					        break;
@@ -3365,7 +3369,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	} else {
 		if (Users->selectAccount(LogonUser->charrep())) {
 			long UID = Users->getUserID();
-			
+
 			User_Applications->finishRelationIteration();
 
 			while (User_Applications->hasMoreRelations()) {
@@ -3375,17 +3379,17 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 				_LOG <<	"Check if user '" << Users->getUserName() <<
 							"' has rights on application '" << Applications->getApplicationName() << "'. (" << User_Applications->getApplicationID() << ") " <<
 							UID << " = " << User_Applications->getUserID() LOG_
-				
+
 				if (User_Applications->getUserID() == UID) {
-					UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+					UAP_REQUEST(manager.getPtr(), lb_I_String, S1)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk_S1)
-					
+
 					*S1 = Applications->getApplicationName();
 
 					QI(S1, lb_I_KeyBase, key)
 					QI(S1, lb_I_Unknown, uk_S1)
-					
+
 					apps->insert(&uk_S1, &key);
 				}
 			}
@@ -3393,7 +3397,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			_LOG << "Error: Logged in user account is not in data model!" LOG_
 		}
 	}
-	
+
 	apps++;
 	return apps.getPtr();
 }
@@ -3403,9 +3407,9 @@ lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
 	if (Applications == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Applications, Applications)
 	}
-	
+
 	Applications++;
-	
+
 	return Applications.getPtr();
 }
 
@@ -3432,11 +3436,11 @@ lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, boo
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, set)
 		*set = setname;
-		
+
 		if (copy == false) {
 			p->setCloning(false);
 		}
-		
+
 		if (propertySets != NULL) {
 			propertySets->getUAPParameter(*&set, *&p);
 			p++;
@@ -3448,7 +3452,7 @@ lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, boo
 
 bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
@@ -3456,20 +3460,20 @@ bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	dispatcher->dispatch("askForDirectory", uk.getPtr(), &uk_result);
 
 	// Got a name of the file. Create an input stream.
-	
+
 	parameter->setData("result");
 	param->getUAPString(*&parameter, *&value);
 
 	if (strcmp(value->charrep(), "") == 0) return false;
-	
+
 	_LOG << "Got a directory name: " << value->charrep() << "." LOG_
 
 	loc->setData(value->charrep());
@@ -3480,12 +3484,12 @@ bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (Users->getUserCount() == 0) {
 		// Fallback to database use. This should be moved to a 'service', that would
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
-		
+
 		UAP(lb_I_Database, database)
 
 		char* dbbackend = getSystemDatabaseBackend();
@@ -3498,42 +3502,42 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			REQUEST(getModuleInstance(), lb_I_Database, database)
 			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
 		}
-		
+
 		database->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+
 		if (err != ERR_NONE) {
 			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
 			return FALSE;
 		}
-		
+
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-			
+
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
-			
+
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-		
+
 		if (pl != NULL) {
 			ukPl = pl->getImplementation();
-			
+
 			if (ukPl != NULL) {
 				UAP(lb_I_DatabaseOperation, fOp)
 				QI(ukPl, lb_I_DatabaseOperation, fOp)
-				
+
 				if (!fOp->begin("lbDMF", database.getPtr())) {
 					return false;
 				}
-				
+
 				Users->accept(*&fOp);
-					
+
 				fOp->end();
 			} else {
 				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
@@ -3541,36 +3545,36 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		} else {
 			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
 		}
-		
+
 		// A first preload of the user accounts is ignored yet.
 		_CL_LOG << "Try selective database login check." LOG_
-		
-		
+
+
 		UAP(lb_I_Query, sampleQuery)
-			
+
 		sampleQuery = database->getQuery("lbDMF", 0);
-		
+
 		char* buffer = (char*) malloc(1000);
 		buffer[0] = 0;
-		
+
 		sampleQuery->skipFKCollecting();
 		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
                	user, pass);
-		
+
 		_CL_VERBOSE << "Query for user " << user LOG_
-			
+
 		if (sampleQuery->query(buffer) != ERR_NONE) {
 			sampleQuery->enableFKCollecting();
 			free(buffer);
 			return FALSE;
 		}
-		
+
 		free(buffer);
-		
+
 		sampleQuery->enableFKCollecting();
-		
+
 		err = sampleQuery->first();
-		
+
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 			_logged_in = true;
 			return true;
@@ -3579,20 +3583,20 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		}
 	} else {
 		// We have got users from file
-		
+
 		Users->finishUserIteration();
 		while (Users->hasMoreUsers()) {
 			Users->setNextUser();
-			
+
 			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
 				_logged_in = true;
 				Users->finishUserIteration();
 				return true;
 			}
 		}
-		
+
 		// There may be more users in the database, so try to fetch them and make one retry
-		
+
 		return false;
 	}
 }
@@ -3617,7 +3621,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lb_EventMapper::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_EventMapper::setData() has not been implemented" LOG_
-	
+
 	return ERR_NONE;
 }
 
@@ -3654,10 +3658,10 @@ lb_EventManager::lb_EventManager() {
 lb_EventManager::~lb_EventManager() {
 	_CL_LOG << "lb_EventManager::~lb_EventManager() called." LOG_
 }
-	
+
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_EventManager::setData() has not been implemented" LOG_
-	
+
 	return ERR_NONE;
 }
 
@@ -3671,22 +3675,22 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		// Create the instance, that holds the events mapping
 		REQUEST(manager.getPtr(), lb_I_Container, events)
 
-		// For housekeeping	
+		// For housekeeping
 		REQUEST(manager.getPtr(), lb_I_Container, freeIds)
-		
+
 		// The reverse
 		REQUEST(manager.getPtr(), lb_I_Container, reverse_events)
 	}
 /*...e*/
-	
+
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringData)
 	stringData->setData(EvName);
-	
+
 	UAP(lb_I_KeyBase, sk)
 	QI(stringData, lb_I_Unknown, sk)
 /*...e*/
-	
+
 /*...sError handling:8:*/
 	if (events == NULL) _CL_LOG << "Nullpointer detected (events)!" LOG_
 	if (*&sk == NULL) _CL_LOG << "Nullpointer detected (sk)!" LOG_
@@ -3704,9 +3708,9 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 
 		key = freeIds->getKeyAt(freeIds->Count());
 		uk = freeIds->getElementAt(freeIds->Count());
-		
+
 		freeIds->remove(&key);
-			
+
 		UAP(lb_I_Integer, i)
 		QI(uk, lb_I_Integer, i)
 
@@ -3716,20 +3720,20 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...sinsert new event:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerData)
 	integerData->setData(maxEvId);
-	
+
 	UAP(lb_I_Unknown, idata)
 	QI(integerData, lb_I_Unknown, idata)
 
 	events->insert(&idata, &sk);
-	
+
 	UAP(lb_I_KeyBase, ik)
 	QI(integerData, lb_I_Unknown, ik)
 
 	UAP(lb_I_Unknown, sdata)
 	QI(stringData, lb_I_Unknown, sdata)
-	
+
 	reverse_events->insert(&sdata, &ik);
-	
+
 	EvNr = maxEvId;
 /*...e*/
 
@@ -3737,19 +3741,19 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_
 		return ERR_EVENT_NOTREGISTERED;
 	}
-	
+
 	return ERR_NONE;
 }
 /*...e*/
 
 lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	lbErrCodes err = ERR_NONE;
-	
+
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	stringKey->setData(EvName);
-	
+
 	UAP(lb_I_KeyBase, kk)
 	QI(stringKey, lb_I_Unknown, kk)
 /*...e*/
@@ -3758,7 +3762,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	if (events->exists(&kk) == 1) {
 		UAP(lb_I_Unknown, object)
 		UAP(lb_I_Integer, i)
-		
+
 		object = events->getElement(&kk);
 		QI(object, lb_I_Integer, i)
 		evNr = i->getData();
@@ -3773,23 +3777,23 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 
 char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, ID)
 	//ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	ID->setData(evNr);
-	
+
 	UAP(lb_I_KeyBase, kk)
 	QI(ID, lb_I_Unknown, kk)
-	
+
 	if (reverse_events->exists(&kk) == 1) {
 		UAP(lb_I_Unknown, object)
 		UAP(lb_I_String, str)
-		
+
 		object = reverse_events->getElement(&kk);
 		QI(object, lb_I_String, str)
 		static char result[100] = "";
 		strcpy(result, str->getData());
-		
+
 		return result;
 	} else {
 		_CL_LOG << "Error: Event id not registered: " << evNr LOG_
@@ -3808,7 +3812,7 @@ lb_Dispatcher::lb_Dispatcher() {
 
 lb_Dispatcher::~lb_Dispatcher() {
 	_CL_LOG << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
-	
+
 	if (evManager != NULL) _CL_LOG << "Event manager in dispatcher has " << evManager->getRefCount() << " references." LOG_
 	if (dispatcher != NULL) _CL_LOG << "Dispatcher list has " << dispatcher->getRefCount() << " references." LOG_
 }
@@ -3816,16 +3820,16 @@ lb_Dispatcher::~lb_Dispatcher() {
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_Dispatcher::setData() has not been implemented" LOG_
-	
+
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setEventManager\40\lb_I_EventManager\42\ EvManager\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManager) {
-	
+
 	evManager = EvManager;
 	evManager++;
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -3834,10 +3838,10 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	/*
 	 * Create an instance of a function pointer object
 	 */
-	
+
 	int id = 0;
 	evManager->resolveEvent(EvName, id);
-	addEventHandlerFn(evHandlerInstance, evHandler, id);	
+	addEventHandlerFn(evHandlerInstance, evHandler, id);
 	return ERR_NONE;
 }
 /*...e*/
@@ -3846,17 +3850,17 @@ lbErrCodes LB_STDCALL lb_Dispatcher::delEventHandlerFn(lb_I_EventHandler* evHand
 	/*
 	 * Create an instance of a function pointer object
 	 */
-	
+
 	int id = 0;
 	evManager->resolveEvent(EvName, id);
-	//addEventHandlerFn(evHandlerInstance, evHandler, id);	
+	//addEventHandlerFn(evHandlerInstance, evHandler, id);
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ int EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (dispatcher == NULL) {
 		// Create the instance, that holds the events mapping
 		REQUEST(manager.getPtr(), lb_I_Container, dispatcher)
@@ -3883,7 +3887,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	UAP(lb_I_Unknown, uk)
 
 	uk = dispatcher->getElement(&k);
-	
+
 	if (uk == NULL) _CL_LOG << "Error: Adding event handler failed (not stored)" LOG_
 
 	return ERR_NONE;
@@ -3911,28 +3915,28 @@ lb_I_DispatchResponse* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\int EvNr\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 	i->setData(EvNr);
-	
+
 	UAP(lb_I_KeyBase, ik)
 	QI(i, lb_I_KeyBase, ik)
-	
-	
+
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_EvHandler, ev)
-	
+
 	if (dispatcher == NULL) {
 		_CL_LOG << "Error: Have no dispatcher" LOG_
 	} else {
-	
+
 		uk = dispatcher->getElement(&ik);
-	
+
 		if (uk == NULL) {
 			_CL_LOG << "Error: Could not get the handler from the id" LOG_
 			return ERR_DISPATCH_FAILS;
 		}
-	
+
 		QI(uk, lb_I_EvHandler, ev)
 
 		ev->call(EvData, EvResult);
@@ -3945,7 +3949,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
-	
+
 	evManager->resolveEvent(EvName, id);
 
 	return dispatch(id, EvData, EvResult);
@@ -3972,12 +3976,12 @@ lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {
 
 lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_EvHandler, eh)
 	QI(uk, lb_I_EvHandler, eh)
-	
+
 	setHandler(eh->getHandlerInstance(), eh->getHandler());
-	
+
 	return ERR_NONE;
 }
 
@@ -3994,7 +3998,7 @@ lbErrCodes LB_STDCALL lb_EvHandler::setHandler(lb_I_EventHandler* evHandlerInsta
 
 lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** evResult) {
 	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -4007,11 +4011,11 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
-                	
+
                 	if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                 	TRMemSetModuleName(__FILE__);
-                	
+
                 	if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -4022,7 +4026,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                        	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation) _CL_VERBOSE << "DLL released by system." LOG_
                         else           _CL_VERBOSE << "DLL released by program.\n" LOG_
@@ -4032,7 +4036,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
