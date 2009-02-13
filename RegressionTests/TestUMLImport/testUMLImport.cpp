@@ -131,9 +131,18 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 
 	COUT << msg->charrep();
 
-	char res = getchar();
+	char c = ' ';
 
-    switch (res) {
+    setvbuf(stdin, &c, _IONBF, 1);
+    while ( c != 'y' &&
+            c != 'Y' &&
+            c != 'n' &&
+            c != 'N') {
+        fread(&c, 1, 1, stdin);
+    }
+
+
+    switch (c) {
         case 'y':
         case 'Y':
             parameter->setData("result");
@@ -145,6 +154,8 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
             result->setData("no");
             param->setUAPString(*&parameter, *&result);
     }
+
+    cout << endl;
 
 	return err;
 }
@@ -260,7 +271,41 @@ lbErrCodes LB_STDCALL UIWrapper::run() {
 	return ERR_NONE;
 }
 
+#ifdef TEST_CONSOLE_KEYINPUT
+int main(int argc, char *argv[]) {
 
+    char c;
+
+    setvbuf(stdin, &c, _IONBF, 1);
+    while ( c != 'y' &&
+            c != 'Y' &&
+            c != 'n' &&
+            c != 'N') {
+        cout << 0x10;
+        cout << "Druecke eine Taste: ";
+        fread(&c, 1, 1, stdin);
+    }
+    cout << endl << "Taste: '" << c << "'" << endl;
+
+    setvbuf(stdin, &c, _IONBF, 1);
+
+    c = ' ';
+
+    while ( c != 'y' &&
+            c != 'Y' &&
+            c != 'n' &&
+            c != 'N') {
+        cout << 0x10;
+        cout << "Druecke eine Taste: ";
+        fread(&c, 1, 1, stdin);
+    }
+
+    cout << endl << "Taste: '" << c << "'" << endl;
+
+    return 0;
+}
+#endif
+#ifndef TEST_CONSOLE_KEYINPUT
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
@@ -341,3 +386,5 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+
+#endif
