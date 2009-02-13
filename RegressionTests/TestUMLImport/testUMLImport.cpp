@@ -129,7 +129,7 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
 
-	cout << msg->charrep();
+	COUT << msg->charrep();
 
 	char res = getchar();
 
