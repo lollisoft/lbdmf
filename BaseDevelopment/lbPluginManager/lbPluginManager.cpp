@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.61 2009/02/01 09:32:10 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.62 2009/02/13 20:42:22 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.62  2009/02/13 20:42:22  lollisoft
+ * Removed or verbosized some log messages.
+ *
  * Revision 1.61  2009/02/01 09:32:10  lollisoft
  * Missing making copy of version string in clone function.
  *
@@ -970,14 +973,13 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
 lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace, char* _version) {
-	_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Searching.!" LOG_ 
 	if (beginEnumPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
 			pl = nextPlugin();
 			if (pl == NULL) break;
 
-			_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_ 
+			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_ 
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {
 				PluginContainer->finishIteration();
 				PluginModules->finishIteration();
@@ -988,7 +990,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 			}
 		}
 		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_ 
-		_LOG "Plugins registered:" LOG_
+		_CL_VERBOSE "Plugins registered:" LOG_
 
 
 		if (beginEnumPlugins()) {
@@ -1001,7 +1003,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 	
 				//pl->initialize();
 				
-				_LOG << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
+				_CL_VERBOSE << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
 #ifdef bla				
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)
