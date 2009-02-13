@@ -745,18 +745,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
 			
-			metaapp->setStatusText("Info", "Target database is application database ...");
 
 			/************/
 			char* dbbackend = metaapp->getApplicationDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
-				_LOG << "Using plugin database backend for UML import operation..." LOG_
+				_LOG << "Using plugin database backend for loading database application schema..." LOG_
 			} else {
 				// Use built in
 				REQUEST(getModuleInstance(), lb_I_Database, customDB)
-				_LOG << "Using built in database backend for UML import operation..." LOG_
+				_LOG << "Using built in database backend for loading database application schema..." LOG_
 			}
 			
 			if (customDB == NULL) {
@@ -773,6 +772,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			*dbuser = appParams->getParameter("DBUser", AppID->getData());
 			*dbpass = appParams->getParameter("DBPass", AppID->getData());
 			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = "Target database is application database (";
+			*msg += dbname->charrep();
+			*msg += ") ...";
+			metaapp->setStatusText("Info", msg->charrep());
+
 			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 				_LOG << "Fatal: No custom database available. Cannot read database model for custom application! (" << dbname->charrep() << ", " << dbuser->charrep() << ")" LOG_
 /// \todo Implement fallback to Sqlite3.
@@ -795,11 +801,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, custom_formularfieldsDB, "'database plugin'")
-						_LOG << "Using plugin database backend for UML import operation..." LOG_
+						_LOG << "Using plugin database backend for loading database system schema..." LOG_
 					} else {
 						// Use built in
 						REQUEST(getModuleInstance(), lb_I_Database, custom_formularfieldsDB)
-						_LOG << "Using built in database backend for UML import operation..." LOG_
+						_LOG << "Using built in database backend for loading database system schema..." LOG_
 					}
 					
 					if (custom_formularfieldsDB == NULL) {
@@ -2602,6 +2608,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		} else {
 			if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
 			if (metaapp->isPropertyPaneLayoutFloating()) metaapp->showPropertyPanel();
+			
+			if (eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused) == ERR_EVENT_NOTREGISTERED) {
+				eman->registerEvent("exportApplicationConfigurationToUMLXMIDoc", unused);
+				
+				dispatcher->addEventHandlerFn(this, 
+											  (lbEvHandler) &lbDynamicApplication::exportApplicationConfigurationToUMLXMIDoc, "exportApplicationConfigurationToUMLXMIDoc");
+				
+				metaapp->addMenuEntry(_trans("&File"), "export Application to UML (as XMI file)", "exportApplicationConfigurationToUMLXMIDoc", "");
+			}
+			
 		}				
 /*...e*/
 	} else {
