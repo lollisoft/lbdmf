@@ -762,6 +762,8 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Application*) {
 		*param = "StorageDelegateNamespace";
 		document->getUAPString(*&param, *&StorageNamespace);
 		
+		_LOG << "Find a lb_I_StandaloneStreamable plugin with '" << StorageNamespace->charrep() << "' as namespace." LOG_
+		
 		// Get the plugin that is responsible to save the data.		
 		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());
 		

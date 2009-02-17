@@ -204,7 +204,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	// Get the application ID, that would be stored inside the XML document
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 	*param = "SaveApplicationID";
-	params->getUAPInteger(*&param, *&AppID);	
+	params->getUAPInteger(*&param, *&AppID);
+	
+	_LOG << "Application ID, that would be stored inside the XML document: " << AppID->charrep() LOG_
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 

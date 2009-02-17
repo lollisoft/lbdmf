@@ -158,7 +158,7 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
             param->setUAPString(*&parameter, *&result);
     }
 
-    cout << endl;
+    COUT << ENDL;
 
 	return err;
 }

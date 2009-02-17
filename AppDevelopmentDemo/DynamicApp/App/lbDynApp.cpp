@@ -1148,25 +1148,29 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_Parameter, document)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 	ukDoc = metaapp->getActiveDocument();
 	QI(ukDoc, lb_I_Parameter, document)
 
-	document->setCloning(false);
-
-	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 	*name = "SaveApplicationID";
 	document->getUAPInteger(*&name, *&AppID);
-
     _LOG << "Export application " << AppID->charrep() << " to XML buffer." LOG_
 
-    if (dirty) {
-     dirty = false;
-     bool b = metaapp->usingApplicationDatabaseBackend();
-     metaapp->useApplicationDatabaseBackend(true);
-     load();
-     metaapp->useApplicationDatabaseBackend(b);
-    }
+	if (dirty) {
+		dirty = false;
+		bool b = metaapp->usingApplicationDatabaseBackend();
+		metaapp->useApplicationDatabaseBackend(true);
+		load();
+		metaapp->useApplicationDatabaseBackend(b);
 
+    	ukDoc = metaapp->getActiveDocument();
+		QI(ukDoc, lb_I_Parameter, document)
+		
+		// Restore important parameters. Passing parameters this way is not that good.
+		document->setUAPInteger(*&name, *&AppID);
+	}
+
+	document->setCloning(false);
 
 	if ((haveLoadedDBModel == false) || (strcmp(lastExportedApp->charrep(), AppID->charrep()) != 0)) {
 		metaapp->setStatusText("Info", "Loading target database schema ...");
@@ -1246,6 +1250,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 
 				buffer = exportfile->getAsString();
 
+				_LOG << "Have got XML memory file: " << buffer->charrep() LOG_
+				
 				*name = "memorybuffer";
 				param->setUAPString(*&name, *&buffer);
 
