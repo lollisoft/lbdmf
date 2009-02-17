@@ -53,13 +53,13 @@
  * My latest version of binary build tools. <a href="http://sourceforge.net/project/showfiles.php?group_id=70545&package_id=69806">Binary Build Tools</a>
  *
  * Open Watcom compiler, at least version 1.3, but 1.6 is also tested. <a href="http://www.openwatcom.org">Open Watcom</a>
- * 
+ *
  * The wxWidgets source code. Tested versions are 2.4.2, 2.6.1 and 2.8.4 <a href="http://www.wxwidgets.org">wxWidgets</a>
  *
  * I have included <a href="http://www.daily.de/RepWrt/">wxReportWriter</a>. This project allows me to create database
  * reports on the fly. But this feature doesn't work under Linux yet. Currently these files have minimal changes compared
- * to the orginal version. 
- * 
+ * to the orginal version.
+ *
  * One of the following databases: <a href="http://www.mysql.com">MySQL</a>, <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sybase.com">Sybase</a>.
  * Other databases may be possible, but there is not yet a SQL script to setup the database.
  *
@@ -122,13 +122,13 @@
  *
  *	Install the wxWidgets distribution into [C/D]:\\lbDMF\\Develop\\wxwin\\wx.
  *
- *	After installation: Check, if inside exists a src directory and all else of the distribution.  
+ *	After installation: Check, if inside exists a src directory and all else of the distribution.
  *
  * \section PSetup5 Setup Open Watcom
  *
  *	Install the Open Watcom distribution into [C/D]:\\lbDMF\\Develop\\tools\\watcom.
  *
- *	After installation: Check, if inside exists a src directory and all else of the distribution.  
+ *	After installation: Check, if inside exists a src directory and all else of the distribution.
  *
  * \section PSetup6 Make wxWidgets (2.4.x) source tree
  *
@@ -245,7 +245,7 @@
  *
  *	To be able to run the sample applications, you need to create at least one database.
  *	Do this with the tools, provided from the database vendors.
- *	
+ *
  *	The first database, needed should be named lbdmf and a correct ODBC configuration should
  *	be set up. See below.
  *
@@ -276,7 +276,7 @@
  *
  *	\code
  *	Windows Registry Editor Version 5.00
- *	
+ *
  *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources]
  *	"lbDMF"="PostgreSQL"
  *
@@ -390,14 +390,14 @@
  * After database installation (see \ref PSetup8 "Database setup") you need to run the script for that database.
  *
  * Source package:
- * 
- * \li PostgreSQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-PostgreSQL.sql 
+ *
+ * \li PostgreSQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-PostgreSQL.sql
  * \li MySQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-MySQL.sql
  * \li Sybase: /lbDMF/develop/Projects/CPP/Database/lbDMF-Sybase.sql
  *
  * Binary sample package:
  *
- * \li PostgreSQL: /lbDMF/Database/lbDMF-PostgreSQL.sql 
+ * \li PostgreSQL: /lbDMF/Database/lbDMF-PostgreSQL.sql
  * \li MySQL: /lbDMF/Database/lbDMF-MySQL.sql
  * \li Sybase: /lbDMF/Database/lbDMF-Sybase.sql
  *
@@ -415,14 +415,14 @@
  * \code
  	-- Force to use this user. Rename it accordingly.
  	SET SESSION AUTHORIZATION 'dba';
- 	
+
  	CREATE TABLE interpret (
  		id SERIAL,
  		name CHAR(50),
  		country CHAR(3),
  		PRIMARY KEY (id)
  	);
- 	
+
  	CREATE TABLE album (
  		id SERIAL,
  		interpretid INT,
@@ -432,7 +432,7 @@
  		CONSTRAINT cst_album_interpret_interpretid FOREIGN KEY (interpretid)
  			REFERENCES interpret (id) ON UPDATE NO ACTION ON DELETE NO ACTION
  	);
- 	
+
  	CREATE TABLE title (
  		id SERIAL,
  		albumid INT,
@@ -442,7 +442,7 @@
  		PRIMARY KEY (id),
  		CONSTRAINT cst_title_album_albumid FOREIGN KEY (albumid)
  			REFERENCES album (id) ON UPDATE NO ACTION ON DELETE NO ACTION
- 		
+
  	);
  * \endcode
  *
@@ -454,7 +454,7 @@
  *
  * \note You get a tabbed view per default. If you like to view more than one form in parallel, select 'File->switch panel usage'.
  *
- * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users. 
+ * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users.
  * There, add a new entry with 'Add' and then set up the users data correctly.
  *
  * \note If you add the first entry in the form, you should again press the add button and then delete one of the two created entries with delete. Say, this is still a little bad 'feature' and behaves in all forms.
@@ -489,7 +489,7 @@
  * or again press 'Add' and delete the secondly added entry again.
  *
  * \section SetFormular1 Setup database formulars
- * 
+ *
  * For each table in the sample, you need to create a database formular configuration. To do this, you go to tab 'Anwendungen' and press
  * the button 'Formulare'. You will open a detail form, that will only show forms for your currently selected application in tab 'Anwendungen'
  *
@@ -547,7 +547,7 @@
  * For all Interfaces are factories needed. How should I design these
  * factories ?
  */
- 
+
 /*...e*/
 
 /*...sbasics:0:*/
@@ -689,7 +689,7 @@ class lb_I_ProtocolTarget;
  * The base interface, that currently implements only release.
  * A query interface should be added. But is M$'s solution usable ?
  */
- 
+
 class lb_I_gcManager;
 class lb_I_Unknown;
 class lb_I_Module;
@@ -765,7 +765,7 @@ typedef lbErrCodes (LB_STDCALL lb_I_CallbackTarget::*lbMemberCallback)( const ch
 
 
 
-typedef lbErrCodes (LB_STDCALL lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
+typedef lbErrCodes (LB_STDCALL lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer);
 
 
 #ifndef TVISION
@@ -813,25 +813,25 @@ public:
 	miniLong() {
 		l = 0;
 	}
-	
+
 	miniLong(long _l) {
 		l = _l;
 	}
-	
+
 	miniLong(const miniLong& _l) {
 		l = _l.l;
 	}
-	
+
 	~miniLong() {
 	}
-	
+
 	operator long() { return l; }
-	
+
 	miniLong& LB_STDCALL operator = (const long _l) {
 		l = _l;
 		return *this;
 	}
-	
+
 	long get() { return l; }
 	void set(long _l) { l = _l; }
 	long l;
@@ -857,7 +857,7 @@ public:
 	void set(char* p) {
 		if (p) {
 			if (ptr) free(ptr);
-			
+
 			ptr = (char*) malloc(strlen(p)+1);
 			ptr[0] = 0;
 			strcpy(ptr, p);
@@ -891,12 +891,12 @@ private:
 	 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
 	 */
 //	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
-	
+
 	/**
 	 * Hide this operator to prevent usage. Effect ??
 	 */
 	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
-	
+
 public:
 	/**
 	 * Call this, when you no longer use an instance of any classes, that have
@@ -913,23 +913,23 @@ public:
 	 * would be set with setModuleManager.
 	 */
 	virtual char* LB_STDCALL getCreationLoc() const = 0;
-	
+
 	/**
 	 * Indicator, to determine, if the instance has no more references.
 	 * The instance would be deleted at next release.
 	 */
 	virtual int LB_STDCALL deleteState() = 0;
-	
+
 	/**
 	 * Activate or deactivate debug informations.
 	 */
 	virtual void LB_STDCALL setDebug(int i) = 0;
-	
+
 	/**
 	 * Returns the number of references to this instance.
 	 */
 	virtual int LB_STDCALL getRefCount() = 0;
-	
+
 	/**
 	 * Returns the classname of this instance. It should be a hint to determine
 	 * the real type of this instance. This is not a way to determine the interface
@@ -944,13 +944,13 @@ public:
 	 * instances of any kint of interface.
 	 */
 	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line) = 0;
-	
+
 	/**
 	 * This returns the module manager, if you like to use it. It may not be set up
 	 * in this instance. Better use the global function getModuleInstance().
 	 */
 	virtual lb_I_Module*   LB_STDCALL getModuleManager() = 0;
-		
+
 	/**
 	 * Query this instance for any interfaces it may support. A real implementation, derived
 	 * from this, has a supported interface.
@@ -972,7 +972,7 @@ public:
 	 * With the help of UAP, it may be possible, because it can hold such an ID for each reference.
 	 */
 	virtual char* LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line) = 0;
-        
+
         /**
          * This was used yet for put an object in a container. After inserting the object
          * into the container, there are two instances (not two references).
@@ -982,7 +982,7 @@ public:
          *		It is the *FIRST* lb_I_Unknown* reference to it.
          *		Putting an object in a container, you have your instance
          *		with the same reference count as before.
-         *		
+         *
          *		The clone() method does not and is not able to make deep clones.
          *		It does not know how !
          *
@@ -994,16 +994,16 @@ public:
          *		return uk;
          */
         virtual lb_I_Unknown* LB_STDCALL clone(char* file, int line) const = 0;
-        
+
         /**
          * This member must be implemented by the programmer of each class. setData is called
          * from the clone member to get a correct copy of the cloned instance.
          */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
-	virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); } 
+	virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
 
-//friend class lb_I_gcManager;	
+//friend class lb_I_gcManager;
 };
 /*...e*/
 
@@ -1319,8 +1319,8 @@ public:
  *  This has to be used for each class definition, when deriving from lb_I_Unknown.
  */
 
- 
- 
+
+
 #define DECLARE_LB_UNKNOWN() \
 protected: \
 	UAP(lb_I_Module, manager) \
@@ -1756,7 +1756,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 /*...e*/
-	
+
 /** \def ADD_INTERFACE Adds support for a specific interface.
  *  This could be used multiple times for having more than one interface.
  */
@@ -1797,7 +1797,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
  * Base of all instances - the functor
  */
 
-extern "C" { 
+extern "C" {
 typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
 }
 
@@ -1855,7 +1855,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
-} 
+}
 
 /** \def IMPLEMENT_SINGLETON_FUNCTOR Implements the singleton functor in a cpp file.
  * Use this once per class.
@@ -1975,7 +1975,7 @@ class lb_I_gcManager {
 protected:
 	lb_I_gcManager() {}
 	virtual ~lb_I_gcManager() {}
-	
+
 public:
 	virtual lbErrCodes toTrash(lb_I_Unknown * inst) = 0;
 };
@@ -2028,10 +2028,10 @@ public:
 
 	/// Store the function handler.
 	virtual lbErrCodes LB_STDCALL setFunction(const char* service, lb_I_CallbackTarget* handlerInstance, lbMemberCallback fn) = 0;
-	
+
 	/// Get the protocol callback function.
 	virtual lbMemberCallback LB_STDCALL getFunction() = 0;
-	
+
 	/// Get the protocol handler instance.
 	virtual lb_I_CallbackTarget* LB_STDCALL getHandlerInstance() = 0;
 };
@@ -2042,12 +2042,12 @@ public:
 class lb_I_CallbackManager {
 public:
 /*...sdocu:0:*/
-	
+
 	/**
 	 * Implement this in your class implementing callback handling
 	 */
-	
-	 
+
+
 /*...e*/
 	virtual lbErrCodes LB_STDCALL addCallbackHandler(const char* handlername, lbMemberCallback cbFn) = 0;
 	virtual lbErrCodes LB_STDCALL delCallbackHandler(const char* handlername) = 0;
@@ -2072,9 +2072,9 @@ public:
 	 * Implement this in the derived class for your functions
 	 * to be called back.
 	 */
-	  
+
 /*...e*/
-	virtual lbErrCodes LB_STDCALL registerCallbacks() = 0; 
+	virtual lbErrCodes LB_STDCALL registerCallbacks() = 0;
 };
 /*...e*/
 
@@ -2086,10 +2086,10 @@ public:
 
 	/// Store the protocol handler.
 	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);
-	
+
 	/// Get the protocol callback function.
 	virtual lbProtocolCallback LB_STDCALL getProto() = 0;
-	
+
 	/// Get the protocol handler instance.
 	virtual lb_I_ProtocolTarget* LB_STDCALL getProtocolHandlerInstance() = 0;
 };
@@ -2108,12 +2108,12 @@ public:
 class lb_I_ProtocolManager {
 public:
 /*...sdocu:0:*/
-	
+
 	/**
 	 * Implement this in your class implementing callback handling
 	 */
-	
-	 
+
+
 /*...e*/
 	virtual lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback cbFn) = 0;
 	virtual lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername) = 0;
@@ -2143,7 +2143,7 @@ public:
 	 * Implement this in the derived class for your functions
 	 * to be called back.
 	 */
-	  
+
 /*...e*/
 	/** \brief The service for these protocols.
 	 * Each protocol target class could define the service name, under which
@@ -2152,7 +2152,7 @@ public:
 	 * The service name could be overwritten to use another service.
 	 */
 	virtual char* LB_STDCALL getServiceName() = 0;
-	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr) = 0; 
+	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr) = 0;
 };
 /*...e*/
 
@@ -2160,13 +2160,13 @@ class lb_I_ApplicationServer :
 	public lb_I_ProtocolManager,
 	public lb_I_ProtocolDispatcher,
 	public lb_I_ProtocolTarget {
-public:	
+public:
 	virtual bool LB_STDCALL isConnected(lb_I_Transfer_Data* request) = 0;
 	virtual lbErrCodes LB_STDCALL waitForRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* request) = 0;
 	virtual lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result) = 0;
 
 	virtual void LB_STDCALL autostartServerPlugins(bool start) = 0;
-	virtual lbErrCodes LB_STDCALL activateServerPlugin(char* name) = 0;	
+	virtual lbErrCodes LB_STDCALL activateServerPlugin(char* name) = 0;
 	virtual void LB_STDCALL run() = 0;
 };
 
@@ -2175,8 +2175,8 @@ class lb_I_ApplicationClient :
 	//public lb_I_Requestable,
 	public lb_I_CallbackManager,
 	public lb_I_CallbackDispatcher {
-	
-	
+
+
 };
 /*...sclass lb_I_EventConnector:0:*/
 /** \brief ???
@@ -2204,11 +2204,11 @@ public:
 	/**
 	 * The events are compareable, that is, the connector says the same events
 	 * than the sink. If that is so, then the registration will succeed.
-	 * 
+	 *
 	 * But what is about the event source. When and where are these created ?
 	 */
 	virtual lbErrCodes LB_STDCALL registerEvents(lb_I_EventConnector* object) = 0;
-	
+
 	/**
 	 * This function will be called in the scope of application initializion.
 	 * That is in an instance of lb_I_EventConnector. This instance says wich
@@ -2216,8 +2216,8 @@ public:
 	 * the event source can be made.
 	 */
 	virtual lbErrCodes LB_STDCALL createEventsource(lb_I_EventConnector* object) = 0;
-	virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) = 0;	
-	
+	virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) = 0;
+
 };
 /*...e*/
 
@@ -2239,18 +2239,18 @@ public:
 protected:
 	virtual char* LB_STDCALL getName() = 0;
 	virtual void LB_STDCALL setID(int id) = 0;
-	
+
 	friend class lb_I_EventManager;
 };
 /*...e*/
 
 //	virtual lbErrCodes LB_STDCALL setDiapatcher(lb_I_Dispatcher* disp) = 0;
 //	virtual lb_I_Dispatcher* LB_STDCALL getDispatcher() = 0;
-	
+
 /*...sclass lb_I_EventManager:0:*/
 /**
  * \brief An event ID manager. It reserves ID's for symbolic event names.
- * 
+ *
  * This is used to create event ID numbers, that - for sample - are used in my
  * GUI sample application. wxWidgets usually defines those ID's per define. Here,
  * I am capable to manage those ID's dynamically.
@@ -2273,7 +2273,7 @@ public:
 	 * \param EvNr The ID, generated inside of this implementation.
 	 */
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr) = 0;
-	
+
 	/**
 	 * Get the ID of a registered symbolic event name. Parameters as above described.
 	 */
@@ -2297,8 +2297,8 @@ public:
 	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) = 0;
 	virtual lbEvHandler LB_STDCALL getHandler() = 0;
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance() = 0;
-		
-	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0; 
+
+	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0;
 };
 /*...e*/
 /*...sclass lb_I_EventHandler:0:*/
@@ -2357,7 +2357,7 @@ public:
 	 * \param EvManager The event manager.
 	 */
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager) = 0;
-	
+
 /*...sevent handler management:8:*/
 
 	/**
@@ -2365,19 +2365,19 @@ public:
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
-	
+
 	/**
 	 * \brief Remove an event handler.
 	 */
 	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
-	
+
 	/**
 	 * Register an event handler function under it's id. If the id is not registered, the
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) = 0;
 /*...e*/
-	
+
 /*...scascade management:8:*/
 	/**
 	 * Add a dispatcher, if it is not my self (singleton). This enables cascaded
@@ -2392,7 +2392,7 @@ public:
 	 * build up before replacing a local decentand.
 	 */
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp) = 0;
-	
+
 	/**
 	 * Delete a decentand dispatcher.
 	 *
@@ -2412,11 +2412,11 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
-	
+
 	/**
 	 * lb_I_DispatchRequest variant. Parameter contains all needed data for the dispatch request.
 	 */
-	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0; 
+	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0;
 /*...e*/
 };
 /*...e*/
@@ -2428,7 +2428,7 @@ public:
 	 * The implementation requires exsistence of an UI to proper work.
 	 */
 	virtual bool		LB_STDCALL	requiresUserInterface() = 0;
-	
+
 	/** \brief Execute a before hook.
 	 *
 	 * Execute a registered and as active marked before hook. The hook may build up hook results. The hook also may generate
@@ -2474,23 +2474,31 @@ public:
 	/** \brief Set the user for the current application.
 	 */
 	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
-	
+
 	/** \brief Set the application name for the current application.
 	 */
 	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
-	
+
+    /** \brief Enable directly callable save.
+     */
+	virtual lbErrCodes LB_STDCALL save() = 0;
+
+    /** \brief Enable directly callable load.
+     */
+	virtual lbErrCodes LB_STDCALL load() = 0;
+
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */
 	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
-	
+
 	/** \brief Cleanup.
 	 *
 	 * This function must be called before uncontrolled destructor calls are done.
 	 * It ensures a clean application exit proccess.
 	 */
 	virtual lbErrCodes LB_STDCALL uninitialize() = 0;
-	
+
 	/**
 	 * \brief Run the application
 	 *
@@ -2501,18 +2509,18 @@ public:
 
 	/**
 	 * \brief Get the GUI instance.
-	 */	
+	 */
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
 
 	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user) = 0;
 	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app) = 0;
-	
+
 	/**
 	 * Get access to the main event manager, so all parts can initialize event handlers
 	 * and then initialize Actors for still initialized event handlers.
 	 */
 	virtual lb_I_EventManager* LB_STDCALL getEVManager() = 0;
-	
+
 };
 /*...e*/
 
@@ -2531,7 +2539,7 @@ class lb_I_Applications;
  */
 class lb_I_MetaApplication : public lb_I_Unknown {
 public:
-	
+
 	/** \brief Save the object.
 	 *
 	 * This is not a replacement for private save(lb_I_XXXStream*).
@@ -2544,7 +2552,7 @@ public:
 	virtual lbErrCodes LB_STDCALL save() = 0;
 
 	/** \brief Load the object.
-	 * 
+	 *
 	 * See save for detailed description.
 	 */
 	virtual lbErrCodes LB_STDCALL load() = 0;
@@ -2558,7 +2566,7 @@ public:
 	 * Set the user name. The user name is the login name in the database if lbDMF is used.
 	 */
 	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
-	
+
 	/** \brief Set application name.
 	 * The application name must be configured in the database and must point to a module
 	 * (DLL/so) containing an interface with this name: lb_I_Application.
@@ -2569,36 +2577,36 @@ public:
 	/** \brief Set automatic loading of SQL data after update.
 	 */
 	virtual void	   LB_STDCALL setAutorefreshData(bool b) = 0;
-	
+
 	/** \brief Store information about maximized GUI.
 	 *
 	 */
 	virtual void	   LB_STDCALL setGUIMaximized(bool b) = 0;
-	
+
 	/** \brief Get information about maximized GUI.
 	 *
 	 */
 	virtual bool	   LB_STDCALL getGUIMaximized() = 0;
-	
+
 	/** \brief Set automatic loading of application.
 	 * The easiest login procedure.
 	 */
 	virtual void	   LB_STDCALL setAutoload(bool b) = 0;
-	
+
 	/** \brief Set automatic selection of application.
 	 * This would be used to help the login procedure to be easier.
 	 */
 	virtual void	   LB_STDCALL setAutoselect(bool b) = 0;
-	
+
 	/** \brief Set automatic loading of SQL data after update.
 	 */
 	virtual bool	   LB_STDCALL getAutorefreshData() = 0;
-	
+
 	/** \brief Get automatic loading of application.
 	 * The easiest login procedure.
 	 */
 	virtual bool	   LB_STDCALL getAutoload() = 0;
-	
+
 	/** \brief Get automatic selection of application.
 	 * This would be used to help the login procedure to be easier.
 	 */
@@ -2608,24 +2616,24 @@ public:
 	 * This parameter is for setup the base directory for files needed by meta application.
 	 */
 	virtual char*	   LB_STDCALL getDirLocation() = 0;
-	
+
 	/** \brief Base directory for files.
 	 * This parameter is for setup the base directory for files needed by meta application.
 	 */
 	virtual void	   LB_STDCALL setDirLocation(char* dirloc) = 0;
-	
+
 	/** \brief Initialize the class.
 	 * Initialize the application module. Optionally, provide user and application name.
 	 * This function loads also some plugins if available. Thus it should be uninitialized
 	 * before exit. This is due to the singleton instance implementation.
 	 */
 	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
-	
+
 	/** \brief Uninitialize the class.
 	 * After uninitialisation, the class shouldn't used any more.
 	 */
 	virtual lbErrCodes LB_STDCALL uninitialize() = 0;
-	
+
 	/**
 	 * \brief Run the application
 	 *
@@ -2636,19 +2644,19 @@ public:
 
 	/**
 	 * \brief Get the GUI instance.
-	 */	
+	 */
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
 
 	/** \brief Get the current user name.
 	 *
 	 */
 	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user) = 0;
-	
+
 	/** \brief Get the current application name.
 	 *
 	 */
 	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app) = 0;
-	
+
 	/**
 	 * Get access to the main event manager, so all parts can initialize event handlers
 	 * and then initialize Actors for still initialized event handlers.
@@ -2675,15 +2683,15 @@ public:
 	virtual lbErrCodes LB_STDCALL removeToolBar(char* toolbarName) = 0;
 
 	/// \brief Add or insert a tool to the toolbar.
-	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL) = 0; 
+	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL) = 0;
 
 	/// \brief Remove a tool from the toolbar.
-	virtual lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry) = 0; 
+	virtual lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry) = 0;
 
 	/// \brief Activate or deactivate a tool.
-	virtual lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry) = 0; 
+	virtual lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry) = 0;
 
-	/** Add a menubar name after. 
+	/** Add a menubar name after.
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after) = 0;
 
@@ -2726,7 +2734,7 @@ public:
 	/** Add a text field.
 	 */
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
-	
+
 	/** \brief Ask the user for a file by given extention.
 	 */
 	virtual lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions) = 0;
@@ -2734,17 +2742,17 @@ public:
 	/** \brief Ask the user for YES or NO.
 	 */
 	virtual bool LB_STDCALL askYesNo(char* msg) = 0;
-	
+
 	/** \brief Show a simple message box.
 	 */
 	virtual void LB_STDCALL msgBox(char* title, char* msg) = 0;
-	
+
 	virtual void LB_STDCALL addStatusBar() = 0;
-	
+
 	virtual void LB_STDCALL addStatusBar_TextArea(char* name) = 0;
-	
+
 	virtual void LB_STDCALL setStatusText(char* name, const char* value) = 0;
-	
+
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
@@ -2757,30 +2765,30 @@ public:
 	 * figure out which value has been changed.
 	 */
 	virtual lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) = 0;
-	
+
 	/** \brief Access to the object's parameters.
 	 *
 	 */
 	virtual lb_I_Parameter* LB_STDCALL getParameter() = 0;
-	
+
 
 	/** \brief Login to the application.
 	 *
 	 * See description of addUserAccount.
 	 */
 	virtual bool LB_STDCALL login(const char* user, const char* pass) = 0;
-	
+
 	/** \brief get a list of applications.
 	 *
 	 * This function builds a list of application based on the user rights.
 	 */
 	virtual lb_I_Container* LB_STDCALL getApplications() = 0;
-	
+
 	/** \brief Get the ID of an application.
 	 *
 	 */
 	virtual long LB_STDCALL getApplicationID() = 0;
-	
+
 	/** \brief Set the active application.
 	 */
 	virtual void			LB_STDCALL setActiveApplication(const char* name) = 0;
@@ -2789,12 +2797,12 @@ public:
 	 * Active document per loaded application.
 	 */
 	virtual lb_I_Unknown*		LB_STDCALL getActiveDocument() = 0;
-	
+
 	/** \brief Set the active document.
 	 * Active document per loaded application.
 	 */
 	virtual void			LB_STDCALL setActiveDocument(lb_I_Unknown* doc) = 0;
-	
+
 	/** \brief Set PropertyPane layout to floating.
 	 *
 	 */
@@ -2802,16 +2810,16 @@ public:
 	virtual void			LB_STDCALL setPropertyPaneLayoutLeft() = 0;
 	virtual bool			LB_STDCALL isPropertyPaneLayoutFloating() = 0;
 	virtual bool			LB_STDCALL isPropertyPaneLayoutLeft() = 0;
-	
+
 	virtual void			LB_STDCALL showPropertyPanel() = 0;
-	
+
 	virtual lb_I_Applications* LB_STDCALL getApplicationModel() = 0;
 
 	/** \brief Set loading of application from database.
 	 */
 	virtual void	   LB_STDCALL setLoadFromDatabase(bool b) = 0;
 	virtual bool	   LB_STDCALL getLoadFromDatabase() = 0;
-	
+
 	/** \brief Add a set of properties to be stored in file.
 	 *
 	 * This could be used for temporary storage of variable data.
@@ -2825,7 +2833,7 @@ public:
 	virtual void			LB_STDCALL delPropertySet(char* setname) = 0;
 
 	virtual lb_I_Parameter*	LB_STDCALL getPropertySet(char* setname, bool copy = false) = 0;
-	
+
 	/** \brief Gets a directory from user.
 	 *
 	 * The user gets a directory chooser dialog and should provide with that information.
@@ -2872,14 +2880,14 @@ public:
 	/** \brief Use a different application database backend.
 	 */
 	virtual bool			LB_STDCALL usingApplicationDatabaseBackend() = 0;
-	
+
 	/** \brief Change a property value.
 	 *
 	 * This function is used to change property values from within source code.
 	 * Primary use would be property setup or testing purposes.
 	 */
 	virtual void			LB_STDCALL firePropertyChangeEvent(char* name, char* value) = 0;
-	
+
 	/** \brief Fire an event.
 	 *
 	 */
@@ -2922,23 +2930,23 @@ public:
 	 * Returns -2, if user exists.
 	 */
 	virtual long		LB_STDCALL addAccount(const char* _user, const char* _pass, long _id = -1) = 0;
-	
+
 	/** \brief Select current user.
 	 *
 	 * Direct access by the given login name.
 	 */
 	virtual bool		LB_STDCALL selectAccount(const char* _user) = 0;
-	
+
 	/** \brief Select current user.
 	 *
 	 * Direct access by the given user number.
 	 */
 	virtual bool		LB_STDCALL selectAccount(long user_id) = 0;
-	
+
 	/** \brief Get the number of users.
 	 */
 	virtual long		LB_STDCALL getUserCount() = 0;
-	
+
 	/** \brief Begin or indicate end of iteration.
 	 */
 	virtual bool		LB_STDCALL hasMoreUsers() = 0;
@@ -2950,7 +2958,7 @@ public:
 	/** \brief Stop iteration.
 	 */
 	virtual void		LB_STDCALL finishUserIteration() = 0;
-	
+
 	/** \brief Get current user name (iteration).
 	 */
 	virtual char*		LB_STDCALL getUserName() = 0;
@@ -2962,11 +2970,11 @@ public:
 	/** \brief Get current user password.
 	 */
 	virtual char*		LB_STDCALL getUserPassword() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
-	
+
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
@@ -2985,23 +2993,23 @@ public:
 	 * database stream handler.
 	 */
 	virtual long LB_STDCALL addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id = -1) = 0;
-	
+
 	/** \brief Select current application.
 	 *
 	 * Direct access by application name.
 	 */
 	virtual bool LB_STDCALL selectApplication(const char* application) = 0;
-	
+
 	/** \brief Select current application.
 	 *
 	 * Direct access by application id.
 	 */
 	virtual bool LB_STDCALL selectApplication(long _id) = 0;
-	
+
 	/** \brief Get the number of applications.
 	 */
 	virtual int LB_STDCALL getApplicationCount() = 0;
-	
+
 	/** \brief Begin or indicate end of iteration.
 	 */
 	virtual bool		LB_STDCALL hasMoreApplications() = 0;
@@ -3013,7 +3021,7 @@ public:
 	/** \brief Stop iteration.
 	 */
 	virtual void		LB_STDCALL finishApplicationIteration() = 0;
-	
+
 	/** \brief Get current application name (iteration).
 	 */
 	virtual char*		LB_STDCALL getApplicationName() = 0;
@@ -3039,11 +3047,11 @@ public:
 	 * Each application entry has an associated id.
 	 */
 	virtual long		LB_STDCALL getApplicationID() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
-	
+
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
@@ -3052,7 +3060,7 @@ public:
 class lb_I_Applications_Formulars : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addRelation(long app_id, long form_id, long _id = -1) = 0;
-	
+
 	/** \brief Select relation by id.
 	 */
 	virtual bool		LB_STDCALL selectRelation(long _id) = 0;
@@ -3086,27 +3094,27 @@ public:
 	 * database stream handler.
 	 */
 	virtual long LB_STDCALL addRelation(long app_id, long user_id, long _id = -1) = 0;
-	
+
 	/** \brief Select relation by id.
 	 */
 	virtual bool LB_STDCALL selectRelation(long _id) = 0;
-	
+
 	/** \brief Hide entities, not related to filter.
-	 *	
+	 *
 	 * Multiple filters are logically or'ed, but different filter names are and'ed.
 	 */
 	virtual bool LB_STDCALL addFilter(const char* filter, const char* value) = 0;
-	
+
 	/** \brief Remove filter.
 	 *
-	 * Removes all or specified filter(s). 
+	 * Removes all or specified filter(s).
 	 */
 	virtual bool LB_STDCALL resetFilter(const char* filter = "") = 0;
-	
+
 	/** \brief Get the number of applications.
 	 */
 	virtual int LB_STDCALL getRelationCount() = 0;
-	
+
 	/** \brief Begin or indicate end of iteration.
 	 */
 	virtual bool		LB_STDCALL hasMoreRelations() = 0;
@@ -3118,7 +3126,7 @@ public:
 	/** \brief Stop iteration.
 	 */
 	virtual void		LB_STDCALL finishRelationIteration() = 0;
-	
+
 	/** \brief Get current applications id.
 	 *
 	 * Each application entry has an associated id.
@@ -3129,7 +3137,7 @@ public:
 	 *
 	 */
 	virtual long		LB_STDCALL getUserID() = 0;
-	
+
 	virtual long		LB_STDCALL getID() = 0;
 
 	virtual bool		LB_STDCALL ismarked() = 0;
@@ -3156,7 +3164,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreFormulars() = 0;
 	virtual void		LB_STDCALL setNextFormular() = 0;
 	virtual void		LB_STDCALL finishFormularIteration() = 0;
-	
+
 	virtual char*		LB_STDCALL getName() = 0;
 	virtual char*		LB_STDCALL getMenuName() = 0;
 	virtual char*		LB_STDCALL getToolbarImage() = 0;
@@ -3184,7 +3192,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreFields() = 0;
 	virtual void		LB_STDCALL setNextField() = 0;
 	virtual void		LB_STDCALL finishFieldsIteration() = 0;
-	
+
 	virtual char*		LB_STDCALL getName() = 0;
 	virtual char*		LB_STDCALL getTableName() = 0;
 	virtual char*		LB_STDCALL getDBType() = 0;
@@ -3213,7 +3221,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreTypes() = 0;
 	virtual void		LB_STDCALL setNextType() = 0;
 	virtual void		LB_STDCALL finishTypeIteration() = 0;
-	
+
 	virtual char*		LB_STDCALL getTableName() = 0;
 	virtual char*		LB_STDCALL getName() = 0;
 	virtual char*		LB_STDCALL getSpecialColumn() = 0;
@@ -3280,7 +3288,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreMappings() = 0;
 	virtual void		LB_STDCALL setNextMapping() = 0;
 	virtual void		LB_STDCALL finishMappingIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getMappingID() = 0;
 	virtual char*		LB_STDCALL getPKTable() = 0;
 	virtual char*		LB_STDCALL getPKName() = 0;
@@ -3305,14 +3313,14 @@ public:
 	virtual bool		LB_STDCALL hasMoreActions() = 0;
 	virtual void		LB_STDCALL setNextAction() = 0;
 	virtual void		LB_STDCALL finishActionIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionID() = 0;
 	virtual long		LB_STDCALL getActionTyp() = 0;
 	virtual long		LB_STDCALL getActionTarget() = 0;
 
 	virtual char*		LB_STDCALL getActionSource() = 0;
 	virtual char*		LB_STDCALL getActionName() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
@@ -3331,7 +3339,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
 	virtual void		LB_STDCALL setNextActionStep() = 0;
 	virtual void		LB_STDCALL finishActionStepIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionStepID() = 0;
 	virtual long		LB_STDCALL getActionStepActionID() = 0;
 	virtual long		LB_STDCALL getActionStepOrderNo() = 0;
@@ -3339,7 +3347,7 @@ public:
 
 	virtual char*		LB_STDCALL getActionStepBezeichnung() = 0;
 	virtual char*		LB_STDCALL getActionStepWhat() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
@@ -3358,14 +3366,14 @@ public:
 	virtual bool		LB_STDCALL hasMoreActionStepTransitions() = 0;
 	virtual void		LB_STDCALL setNextActionStepTransition() = 0;
 	virtual void		LB_STDCALL finishActionStepTransitionIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionStepTransitionID() = 0;
 	virtual long		LB_STDCALL getActionStepTransitionSrcActionID() = 0;
 	virtual long		LB_STDCALL getActionStepTransitionDstActionID() = 0;
 
 	virtual char*		LB_STDCALL getActionStepTransitionDecision() = 0;
 	virtual char*		LB_STDCALL getActionStepTransitionDescription() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
@@ -3384,13 +3392,13 @@ public:
 	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
 	virtual void		LB_STDCALL setNextActionType() = 0;
 	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionTypeID() = 0;
 
 	virtual char*		LB_STDCALL getActionTypeBezeichnung() = 0;
 	virtual char*		LB_STDCALL getActionTypeHandler() = 0;
 	virtual char*		LB_STDCALL getActionTypeModule() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
@@ -3409,13 +3417,13 @@ public:
 	virtual bool		LB_STDCALL hasMoreFormularActions() = 0;
 	virtual void		LB_STDCALL setNextFormularAction() = 0;
 	virtual void		LB_STDCALL finishFormularActionIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getFormularActionID() = 0;
 	virtual long		LB_STDCALL getFormularActionFormularID() = 0;
 	virtual long		LB_STDCALL getFormularActionActionID() = 0;
 
 	virtual char*		LB_STDCALL getFormularActionEvent() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
@@ -3435,7 +3443,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreTranslations() = 0;
 	virtual void		LB_STDCALL setNextTranslation() = 0;
 	virtual void		LB_STDCALL finishTranslationIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getTranslationID() = 0;
 	virtual char*		LB_STDCALL getTranslationText() = 0;
 	virtual char*		LB_STDCALL getTranslationTranslated() = 0;
@@ -3452,7 +3460,7 @@ public:
 /** \brief A class to store database table information.
  *
  * This is the internal storage for database table information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_DBTables : public lb_I_Unknown {
 public:
@@ -3462,7 +3470,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreTables() = 0;
 	virtual void		LB_STDCALL setNextTable() = 0;
 	virtual void		LB_STDCALL finishTableIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getTableID() = 0;
 	virtual char*		LB_STDCALL getTableCatalog() = 0;
 	virtual char*		LB_STDCALL getTableSchema() = 0;
@@ -3481,7 +3489,7 @@ public:
 /** \brief A class to store database column information.
  *
  * This is the internal storage for database column information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_DBColumns : public lb_I_Unknown {
 public:
@@ -3492,7 +3500,7 @@ public:
 	virtual bool		LB_STDCALL hasMoreColumns() = 0;
 	virtual void		LB_STDCALL setNextColumn() = 0;
 	virtual void		LB_STDCALL finishColumnIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getColumnID() = 0;
 	virtual char*		LB_STDCALL getColumnTableName() = 0;
 	virtual char*		LB_STDCALL getColumnName() = 0;
@@ -3513,22 +3521,22 @@ public:
 /** \brief A class to store database foreign key information.
  *
  * This is the internal storage for database foreign key information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_DBForeignKeys : public lb_I_Unknown {
 public:
 	/** \brief Add a foreign key information.
 	 * This function is based on ODBC 1.0 and therefore didn't support the last three columns returned by the SQLForeignKeys function.
 	 */
-	virtual long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
-													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name, 
+	virtual long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
+													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name,
 													long key_seq, long update_rule, long delete_rule, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectForeignKey(long _id) = 0;
 	virtual int			LB_STDCALL getForeignKeyCount() = 0;
 	virtual bool		LB_STDCALL hasMoreForeignKeys() = 0;
 	virtual void		LB_STDCALL setNextForeignKey() = 0;
 	virtual void		LB_STDCALL finishForeignKeyIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getForeignKeyID() = 0;
 	virtual char*		LB_STDCALL getForeignKeyPKTableCatalog() = 0;
 	virtual char*		LB_STDCALL getForeignKeyPKTableSchema() = 0;
@@ -3556,18 +3564,18 @@ public:
 /** \brief A class to store database primary key information.
  *
  * This is the internal storage for database primary key information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_DBPrimaryKeys : public lb_I_Unknown {
 public:
-	virtual long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+	virtual long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
 													long key_seq, const char* column_name, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectPrimaryKey(long _id) = 0;
 	virtual int			LB_STDCALL getPrimaryKeyCount() = 0;
 	virtual bool		LB_STDCALL hasMorePrimaryKeys() = 0;
 	virtual void		LB_STDCALL setNextPrimaryKey() = 0;
 	virtual void		LB_STDCALL finishPrimaryKeyIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getPrimaryKeyID() = 0;
 	virtual char*		LB_STDCALL getPrimaryKeyTableCatalog() = 0;
 	virtual char*		LB_STDCALL getPrimaryKeyTableSchema() = 0;
@@ -3589,7 +3597,7 @@ public:
 /** \brief A class to store report information.
  *
  * This is the internal storage for report information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_Reports : public lb_I_Unknown {
 public:
@@ -3610,7 +3618,7 @@ public:
 /** \brief A class to store report parameter information.
  *
  * This is the internal storage for report parameter information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_ReportParameters : public lb_I_Unknown {
 public:
@@ -3631,7 +3639,7 @@ public:
 /** \brief A class to store report elements information.
  *
  * This is the internal storage for report elements information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_ReportElements : public lb_I_Unknown {
 public:
@@ -3657,7 +3665,7 @@ public:
 /** \brief A class to store report element types information.
  *
  * This is the internal storage for report element types information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_ReportElementTypes : public lb_I_Unknown {
 public:
@@ -3677,7 +3685,7 @@ public:
 /** \brief A class to store report texts information.
  *
  * This is the internal storage for report texts information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML. 
+ * the data between database meta information and internal file format or XML.
  */
 class lb_I_ReportTexts : public lb_I_Unknown {
 public:
@@ -3737,7 +3745,7 @@ public:
 	 * enumerating its objects.
 	 */
 	virtual bool LB_STDCALL beginEnumPlugins() = 0;
-	
+
 	/** \brief Get the next plugin.
 	 *
 	 * Gets the next plugin handle instance. This does not
@@ -3756,7 +3764,7 @@ public:
 	 * enumerating its objects.
 	 */
 	virtual bool LB_STDCALL beginEnumServerPlugins() = 0;
-	
+
 	/** \brief Get the next server plugin.
 	 *
 	 * Gets the next plugin handle instance. This does not
@@ -3785,8 +3793,8 @@ public:
 	 * The order, in that this function will search is decided by the match string.
 	 */
 	//virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace) = 0;
-	
-	
+
+
 	/** \brief Put in a plugin (via DnD as an example).
 	 *
 	 * Attach the plugin implementation to the plugin handle.
@@ -3794,8 +3802,8 @@ public:
 	 * the plugin via the initialize() function.
 	 */
 	virtual bool LB_STDCALL attach(lb_I_PluginModule* toAttach) = 0;
-	
-	/** 
+
+	/**
 	 * Detach it. If it returns true, it could be destroyed or
 	 * stored permanently for replacing with other implementation.
 	 */
@@ -3814,14 +3822,14 @@ public:
 	/**
 	 * Set the name of the module. Typically the path and name to the shared library.
 	 */
-	 
-	virtual void LB_STDCALL setModule(char* module) = 0; 
+
+	virtual void LB_STDCALL setModule(char* module) = 0;
 
 	/**
 	 * Get the list of plugins for the current plugin module.
 	 */
 	virtual lb_I_Container* LB_STDCALL getPlugins() = 0;
-	
+
 	/**
 	 * This function must be called once per instance of this
 	 * module. It internally generates the list of plugins
@@ -4044,7 +4052,7 @@ void LB_STDCALL cls::enumPlugins() { \
 
 /*...sclass lb_I_Plugin:0:*/
 /**
- * \brief Interface for single plugin (forwarder). 
+ * \brief Interface for single plugin (forwarder).
  *
  * This should be a wrapper to the plugin implementation.
  */
@@ -4067,7 +4075,7 @@ public:
 	 * simply initialized. It should be registered to the application.
 	 */
 	virtual bool LB_STDCALL canAutorun() = 0;
-	
+
 	/** \brief Autorun this plugin.
 	 * Implement this function for autorun capabilities.
 	 */
@@ -4086,13 +4094,13 @@ public:
 	 * the instance will stay alive. If not, it will be released.
 	 */
 	virtual bool LB_STDCALL hasInterface(char* name) = 0;
-	
+
 	/** \brief Returns the underlying implementation as unknown instance.
 	 *
 	 * This function returns the instance of the implementation and left the
 	 * owning by the caller. It does not clean up the instance by it self.
 	 */
-	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0; 
+	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0;
 
 /*...slb_I_Plugin management API:0:*/
 	/**
@@ -4100,7 +4108,7 @@ public:
 	 * release calls.
 	 * This function is called prior to setAttached.
 	 */
-	virtual void LB_STDCALL setPluginManager(lb_I_PluginManager* plM) = 0; 
+	virtual void LB_STDCALL setPluginManager(lb_I_PluginManager* plM) = 0;
 
 	/**
 	 * Called by attach/detach function from plugin manager.
@@ -4124,20 +4132,20 @@ public:
 	 * Set the name of the module where the plugin is in.
 	 */
 	virtual void LB_STDCALL setModule(char* module) = 0;
-	
+
 	/**
 	 * Set the name of the plugin. This would be the functor name for
 	 * an instance of the plugin.
 	 */
 	virtual void LB_STDCALL setName(char* name) = 0;
-	
+
 	/**
 	 * Set the version of the plugin. The version distinguishes between
 	 * different versions of the same class.
 	 */
 	virtual void LB_STDCALL setVersion(char* version) = 0;
-	
-	
+
+
 	/**
 	 * The scope identifies the area of usage. If the scope is GUI, it
 	 * would only be usable in graphical user environment. If it is UI,
@@ -4147,29 +4155,29 @@ public:
 	 * This means, propably a server, where no user interaction is available.
 	 */
 	virtual void LB_STDCALL setNamespace(char* __namespace) = 0;
-	
+
 	/** \brief Get shared library name.
 	 *
 	 */
 	virtual char* LB_STDCALL getModule() = 0;
-	
+
 	/** \brief Get plugin functor name.
 	 *
 	 */
 	virtual char* LB_STDCALL getName() = 0;
-	
+
 	/** \brief Get plugin functor version.
 	 *
 	 */
 	virtual char* LB_STDCALL getVersion() = 0;
-	
+
 	/** \brief Get namespace.
 	 *
 	 */
 	virtual char* LB_STDCALL getNamespace() = 0;
 
 /*...e*/
-	
+
 };
 /*...e*/
 
@@ -4184,7 +4192,7 @@ public:
 	 * Let the plugin initialize it self.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
-	
+
 	/** \brief Autorun this plugin.
 	 * Implement this function for autorun capabilities.
 	 */
@@ -4196,7 +4204,7 @@ public:
 	 * simply initialized. It should be registered to the application.
 	 */
 	virtual bool LB_STDCALL canAutorun() = 0;
-	
+
 	/**
 	 * Run the plugin.
 	 */
@@ -4222,13 +4230,13 @@ public:
 	 * of a wxWindow based class.
 	 */
 	virtual void LB_STDCALL releaseImplementation() = 0;
-	
+
 	/** \brief Get the internal implementation.
 	 *
 	 * Returns the implementation class as an unknown interface. Internally it releases the
 	 * instance to be able to create new instances.
 	 */
-	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0; 
+	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0;
 };
 /*...e*/
 
@@ -4243,7 +4251,7 @@ public:
 class lb_I_ApplicationServerModul : public lb_I_PluginModule {
 public:
 	virtual char* LB_STDCALL getServiceName() = 0;
-	
+
 	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
 	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
 };
@@ -4262,7 +4270,7 @@ class lb_I_Parameter;
 /*...slbDMF Formular action interfaces:0:*/
 /**
  * \brief This interface is intended as a way to delegate actions.
- * 
+ *
  * Actions may be issued with buttons, validations or any other source like
  * timer events. The goal of this attempt is to abstract the action so it can
  * be simply used in a form without knowing the type of the action target.
@@ -4273,7 +4281,7 @@ public:
 	/** \brief Execute the action with the given parameter list.
 	 */
 	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
-	
+
 	/** \brief What is my action (from the database).
 	 */
 	virtual void LB_STDCALL setActionID(long id) = 0;
@@ -4298,7 +4306,7 @@ public:
 
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
-#include <lbInterfaces-sub-classes.h>	
+#include <lbInterfaces-sub-classes.h>
 #include <lbInterfaces-sub-ui.h>
 #include <lbInterfaces-sub-db.h>
 #include <lbInterfaces-sub-wxWrapper.h>

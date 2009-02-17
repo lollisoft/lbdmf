@@ -68,6 +68,9 @@ public:
 
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
 
+    lbErrCodes LB_STDCALL save();
+    lbErrCodes LB_STDCALL load();
+
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
@@ -191,6 +194,16 @@ lb_I_EventManager* LB_STDCALL UIWrapper::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL UIWrapper::save() {
+    return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::load() {
+    return ERR_NONE;
+}
+
+
 lbErrCodes LB_STDCALL UIWrapper::uninitialize() {
 	return ERR_NONE;
 }

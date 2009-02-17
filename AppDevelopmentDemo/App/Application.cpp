@@ -10,14 +10,14 @@
 #ifdef UNIX
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 
 #include <conio.h>
 
 #ifdef __cplusplus
-}      
-#endif            
+}
+#endif
 
 #endif
 
@@ -31,7 +31,7 @@ extern "C" {
 #include <Application.h>
 /*...e*/
 /*...sclass lb_Application:0:*/
-class lbApplication : 
+class lbApplication :
 public lb_I_Application,
 public lb_I_EventHandler
 {
@@ -42,7 +42,10 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	
+
+    lbErrCodes LB_STDCALL save();
+    lbErrCodes LB_STDCALL load();
+
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
@@ -56,13 +59,13 @@ public:
 	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
 	virtual lbErrCodes LB_STDCALL setUserName(char* user);
 	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
-	
+
 	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
 
-	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
-	
+
 	lbErrCodes LB_STDCALL getKundenDetails(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL getKundenListe(lb_I_Unknown* uk);
 
@@ -116,27 +119,27 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		/*
 			To get the data from the database, we do transmit only a few data by uk to this
 			function.
-			
+
 			It would be only the form id it self. Additionally, we need to check the typ of the
 			formular to be really a DynamicDBForm.
-			
+
 			If this is ok, we need to load the additional query from a foreign table for that
 			typ of form.
-			
+
 			At best, this functionality is placed in a separate class.
 		*/
-		
+
 
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 
 	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>",
 	        "trainres", lbDMFUser, lbDMFPasswd);
-	        
+
 	        dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
@@ -150,7 +153,7 @@ lbErrCodes LB_STDCALL lbApplication::getLoginData(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
 	        UAP(lb_I_Form, loginForm)
-		
+
 		loginForm = gui->createLoginForm();
 	} else {
 		COUT << "Login form on console not supported" << ENDL;
@@ -165,10 +168,10 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm)
-		
+
 		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
 		"trainres", "dba", "trainres");
-		
+
 		dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
@@ -183,10 +186,10 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm)
-		
+
 		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
 		"trainres", "dba", "trainres");
-		
+
 		dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
@@ -201,10 +204,10 @@ lbErrCodes LB_STDCALL lbApplication::getCustomFormsConfig(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm)
-		
+
 		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms",
 		"trainres", "dba", "trainres");
-		
+
 		dbForm->show();
 	}
 
@@ -223,7 +226,7 @@ IMPLEMENT_FUNCTOR(instanceOfApplication, lbApplication)
 /*...slbErrCodes LB_STDCALL lbApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbApplication::setData(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::setData() has not been implemented" LOG_
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -244,6 +247,16 @@ lb_I_EventManager* LB_STDCALL lbApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lbApplication::save() {
+    return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbApplication::load() {
+    return ERR_NONE;
+}
+
+
 lbErrCodes LB_STDCALL lbApplication::uninitialize() {
 	return ERR_NONE;
 }
@@ -271,7 +284,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	        LogonUser->setData(user);
 	}
-	
+
 	if (app == NULL) {
 	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
@@ -281,7 +294,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 	}
 
 	// Register my handler identifers
-	
+
 	eman->registerEvent("getKundenDetails", getKundenDetails);
 	eman->registerEvent("getKundenListe", getKundenListe);
 	eman->registerEvent("getLoginData", getLoginData);
@@ -305,7 +318,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 	 * GUI accessible handlers - like menus or else.
 	 * This class, as an example, provides two handlers
 	 * getBasicApplicationInfo and getMainModuleInfo
-	 * 
+	 *
 	 * The handler depends on some capabilities:
 	 *
 	 * 	1. A basic dialog to show text
@@ -327,19 +340,19 @@ lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 	 * environment variable (TARGET_APPLICATION)
 	 */
 /*...e*/
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
-	
+
 	metaapp->addMenuBar("Kunden", "Edit");
 	metaapp->addMenuBar("Reservierungen", "Kunden");
 	metaapp->addMenuBar("Bahnhoefe", "Reservierungen");
-	
-	
+
+
 	//addMenuEntry("File", "Anmelden", "getLoginData", "");
 	metaapp->addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
 	metaapp->addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
 
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -378,7 +391,7 @@ lbErrCodes LB_STDCALL lbApplication::run() {
 #ifdef bla
 	lb_I_Unknown* result;
 
-	dispatcher->dispatch("AddMenu", NULL, &result);	
+	dispatcher->dispatch("AddMenu", NULL, &result);
 #endif
 	return ERR_NONE;
 }
@@ -398,7 +411,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemSetModuleName(__FILE__);
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -409,7 +422,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -425,7 +438,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
