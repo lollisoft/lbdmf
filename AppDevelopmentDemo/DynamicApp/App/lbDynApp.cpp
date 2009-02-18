@@ -352,6 +352,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		 boolXSL->setData(UseOtherXSLFile->getData());
 		 paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
 		 */
+		parameterXSL->setData("XMI UML input file");
+		fileXSL->setData(XMIFileUMLProject->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+
 		parameterXSL->setData("XSL file for import settings");
 		fileXSL->setData(XSLFileImportSettings->getData());
 		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
@@ -376,6 +380,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		 boolXSL->setData(UseOtherXSLFile->getData());
 		 paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
 		 */
+		parameterXSL->setData("XMI UML export file");
+		fileXSL->setData(XMIFileUMLProjectExport->getData());
+		paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+
 		parameterXSL->setData("XSL file for export settings");
 		fileXSL->setData(XSLFileExportSettings->getData());
 		paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
@@ -408,10 +416,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		parameter->setData("lbDMF Manager Import Definitions");
 		//--------------------------------------------------------
 
-		parameterProject->setData("XMI UML input file");
-		fileXSL->setData(XMIFileUMLProject->getData());
-		paramProject->setUAPFileLocation(*&parameterProject, *&fileXSL);
-
 		parameterProject->setData("DB Name");
 		valueProject->setData(UMLImportTargetDBName->charrep());
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
@@ -437,6 +441,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
 		metaapp->showPropertyPanel(*&param);
 	} else {
+		// XSL import definitions
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramUMLExport)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+
 		// Build up a preferences object and pass it to the property view
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 
@@ -472,6 +481,30 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
 		param->setUAPParameter(*&parameter, *&paramProject);
 
+		parameter->setData("UML export settings");
+		//--------------------------------------------
+		/*
+		 parameterXSL->setData("Ask for other XSL files");
+		 boolXSL->setData(UseOtherXSLFile->getData());
+		 paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
+		 */
+		parameterProject->setData("XMI UML export file");
+		fileXSL->setData(XMIFileUMLProjectExport->getData());
+		paramProject->setUAPFileLocation(*&parameterProject, *&fileXSL);
+		
+		parameterXSL->setData("XSL file for export settings");
+		fileXSL->setData(XSLFileExportSettings->getData());
+		paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		parameterXSL->setData("XSL file for UML export");
+		fileXSL->setData(XSLFileUMLExport->getData());
+		paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramUMLExport,
+												  this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
+		
+		param->setUAPParameter(*&parameter, *&paramUMLExport);
+		
 		metaapp->showPropertyPanel(*&param);
 	}
 
@@ -517,9 +550,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Password") == 0) {
 					*UMLImportTargetDBPass = value->charrep();
 		}
-
-		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsXMI UML input file") == 0) {
-					XMIFileUMLProject->setData(value->charrep());
+		
+		if (strcmp(key->charrep(), "UML import settingsXMI UML input file") == 0) {
+			XMIFileUMLProject->setData(value->charrep());
+		}
+		
+		if (strcmp(key->charrep(), "UML export settingsXMI UML export file") == 0) {
+			XMIFileUMLProjectExport->setData(value->charrep());
+		}
+		
+		if (strcmp(key->charrep(), "UML export settingsXSL file for UML export") == 0) {
+			XSLFileUMLExport->setData(value->charrep());
 		}
 
 		// This is propably not usefull in the configuration ---------------------------------
@@ -566,10 +607,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 			XSLFileExportSettings->setData(value->charrep());
 		}
 
-		if (strcmp(key->charrep(), "UML export settingsXSL file for UML export") == 0) {
-			XSLFileUMLExport->setData(value->charrep());
-		}
-
 		_LOG << "User has changed a property for dynamic application: " << key->charrep() << " = " << value->charrep() LOG_
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
@@ -595,6 +632,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		document->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
 		*paramname = "XMIFileUMLProject";
 		document->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
+		*paramname = "XMIFileUMLProjectExport";
+		document->setUAPFileLocation(*&paramname, *&XMIFileUMLProjectExport);
 		*paramname = "UMLImportDBName";
 		document->setUAPString(*&paramname, *&UMLImportTargetDBName);
 		*paramname = "UMLImportDBUser";
@@ -635,6 +674,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	temp_params->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
 	*paramname = "XMIFileUMLProject";
 	temp_params->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
+	*paramname = "XMIFileUMLProjectExport";
+	temp_params->setUAPFileLocation(*&paramname, *&XMIFileUMLProjectExport);
+
 	*paramname = "XSLFileUMLExport";
 	temp_params->setUAPFileLocation(*&paramname, *&XSLFileUMLExport);
 
@@ -952,10 +994,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 
-		parameter->setData("lbDMF Manager Import Definitions");
+		parameter->setData("UML export settings");
 		//--------------------------------------------
 
-		parameterXSL->setData("XMI UML input file");
+		parameterXSL->setData("XMI UML export file");
 		fileXSL->setData(XMIFileUMLProject->getData());
 		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
@@ -963,7 +1005,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
 		metaapp->showPropertyPanel(*&params);
 	} else {
 		REQUEST(getModuleInstance(), lb_I_OutputStream, exportfile)
-		exportfile->setFileName(XMIFileUMLProject->getData());
+		exportfile->setFileName(XMIFileUMLProjectExport->getData());
 	}
 
 	// Get the active document and set temporary a different storage handler (xmi import)
@@ -1922,7 +1964,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
 			QI(XMIFileUMLProject, lb_I_Unknown, uk)
 			ApplicationData->insert(&uk, &key);
-
+			
+			*name = "XMIFileUMLProjectExport";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
 			//*name = "UseOtherXSLFile";
 			//if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
 			//QI(UseOtherXSLFile, lb_I_Unknown, uk)
@@ -2773,7 +2820,12 @@ void LB_STDCALL lbDynamicApplication::saveDataToActiveDocument() {
 	QI(XMIFileUMLProject, lb_I_Unknown, uk)
 	if (document->exists(&key) == 1) document->remove(&key);
     document->insert(&uk, &key);
-
+	
+    *name = "XMIFileUMLProjectExport";
+	QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
+	if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+	
     *name = "GeneralDBSchemaname";
 	QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 	if (document->exists(&key) == 1) document->remove(&key);
@@ -2872,7 +2924,11 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     *name = "XMIFileUMLProject";
     uk = document->getElement(&key);
 	XMIFileUMLProject->setData(*&uk);
-
+	
+    *name = "XMIFileUMLProjectExport";
+    uk = document->getElement(&key);
+	XMIFileUMLProjectExport->setData(*&uk);
+	
     *name = "GeneralDBSchemaname";
     uk = document->getElement(&key);
 	if (uk != NULL) GeneralDBSchemaname->setData(*&uk);
@@ -2892,6 +2948,8 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	param->setUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
 	*name = "XMIFileUMLProject";
 	param->setUAPFileLocation(*&name, *&XMIFileUMLProject);
+	*name = "XMIFileUMLProjectExport";
+	param->setUAPFileLocation(*&name, *&XMIFileUMLProjectExport);
 	*name = "UMLImportDBName";
 	param->setUAPString(*&name, *&UMLImportTargetDBName);
 	*name = "UMLImportDBUser";
@@ -2928,6 +2986,8 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 	temp_params->setUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
 	*name = "XMIFileUMLProject";
 	temp_params->setUAPFileLocation(*&name, *&XMIFileUMLProject);
+	*name = "XMIFileUMLProjectExport";
+	temp_params->setUAPFileLocation(*&name, *&XMIFileUMLProjectExport);
 
 	*name = "GeneralDBSchemaname";
 	temp_params->setUAPString(*&name, *&GeneralDBSchemaname);

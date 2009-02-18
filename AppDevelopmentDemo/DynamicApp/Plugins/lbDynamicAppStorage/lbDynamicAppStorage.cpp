@@ -512,6 +512,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProjectExport)
+
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
@@ -533,6 +535,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	XSLFileApplicationDatabase->accept(*&aspect);
 	//UseOtherXSLFile->accept(*&aspect);
 	XMIFileUMLProject->accept(*&aspect);
+	XMIFileUMLProjectExport->accept(*&aspect);
+
 	GeneralDBSchemaname->accept(*&aspect);
 	XSLFileUMLExport->accept(*&aspect);
 	XSLFileImportSettings->accept(*&aspect);
@@ -673,11 +677,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "XSLFileApplicationDatabase";
 		QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-
+		
 		*name = "XMIFileUMLProject";
 		QI(XMIFileUMLProject, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-/*
+		
+		*name = "XMIFileUMLProjectExport";
+		QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		/*
 		*name = "UseOtherXSLFile";
 		QI(UseOtherXSLFile, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
@@ -743,6 +751,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_String, GeneralDBSchemaname)
 
 	UAP(lb_I_FileLocation, XMIFileUMLProject)
+	UAP(lb_I_FileLocation, XMIFileUMLProjectExport)
 	UAP(lb_I_FileLocation, XSLFileImportSettings)
 	UAP(lb_I_FileLocation, XSLFileExportSettings)
 	UAP(lb_I_FileLocation, XSLFileUMLExport)
@@ -887,6 +896,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
 	
+	*name = "XMIFileUMLProjectExport";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XMIFileUMLProjectExport)
+	
 	*name = "GeneralDBSchemaname";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_String, GeneralDBSchemaname)
@@ -952,6 +965,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		XSLFileApplicationDatabase->accept(*&aspect);
 		//UseOtherXSLFile->accept(*&aspect);
 		XMIFileUMLProject->accept(*&aspect);
+		XMIFileUMLProjectExport->accept(*&aspect);
 		GeneralDBSchemaname->accept(*&aspect);
 		XSLFileUMLExport->accept(*&aspect);
 		XSLFileImportSettings->accept(*&aspect);
@@ -1123,6 +1137,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProjectExport)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
@@ -1182,8 +1197,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileSystemDatabase);
 		*name = "XSLFileApplicationDatabase";
 		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
-		*name = "XMIFileUMLProject";
-		SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProject);
+		 *name = "XMIFileUMLProject";
+		 SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProject);
+		 *name = "XMIFileUMLProjectExport";
+		 SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProjectExport);
 		 *name = "GeneralDBSchemaname";
 		 SomeBaseSettings->getUAPString(*&name, *&GeneralDBSchemaname);
 		 *name = "XSLFileUMLExport";
@@ -1243,7 +1260,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	*name = "XMIFileUMLProject";
 	QI(XMIFileUMLProject, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
-
+	
+	*name = "XMIFileUMLProjectExport";
+	QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
 	*name = "GeneralDBSchemaname";
 	QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
