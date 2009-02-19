@@ -1905,6 +1905,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 	
 	
 	// Write the settings file for the application database here ...
+
+	metaapp->setStatusText("Info", "Writing XMISettings ...");
 	
 	if (XSLFileExportSettings->charrep() != NULL) {
 		if (strcmp(XSLFileExportSettings->charrep(), "<settings>") != 0) {
@@ -1937,6 +1939,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 	doc = xmlReadMemory((char const*) value->charrep(), strlen(value->charrep()), (char const*) XMLURL, NULL, 0);
 	if (doc == NULL) {
 		_LOG << "Error: Failed to load in-memory XML document." LOG_
+		metaapp->setStatusText("Info", "Failed to translate application definition to XMI.");
 		return err; 
 	}
 	
@@ -1982,7 +1985,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		REQUEST(getModuleInstance(), lb_I_InputStream, input)
 		input->setFileName(XSLFileUMLExport->charrep());
 	}
-		
+
+	metaapp->setStatusText("Info", "Start translating application definition to XMI ...");
+	
 	if (input->open()) {
 		_LOG << "Try to get the file as a string..." LOG_
 		styledoc = input->getAsString();
@@ -1993,6 +1998,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
 		if (stylesheetdoc == NULL) {
 			_LOG << "Error: Failed to load in-memory XSL stylesheet document as an XML document (" << input->getFileName() << ")" LOG_
+			metaapp->setStatusText("Info", "Failed to translate application definition to XMI.");
 			return err; 
 		}
 			
@@ -2005,6 +2011,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 			*msg = _trans("Failed to parse XSL file.");
 				
 			metaapp->msgBox(_trans("Error"), msg->charrep());
+			metaapp->setStatusText("Info", "Failed to translate application definition to XMI.");
 			return err;
 		}
 			
@@ -2027,6 +2034,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 			*msg += "\n\nStylesheet: ";
 			*msg += (const char*) URL;
 			metaapp->msgBox(_trans("Error"), msg->charrep());
+			metaapp->setStatusText("Info", "Failed to translate application definition to XMI.");
 			return err;
 		}
 			
@@ -2041,6 +2049,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 			
 			xsltCleanupGlobals();
 			xmlCleanupParser();	
+			metaapp->setStatusText("Info", "Failed to translate application definition to XMI.");
 			return err;
 		}
 		
@@ -2052,6 +2061,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		xsltCleanupGlobals();
 		xmlCleanupParser();	
 		free(result);
+		metaapp->setStatusText("Info", "");
 		return err;
 }	
 
