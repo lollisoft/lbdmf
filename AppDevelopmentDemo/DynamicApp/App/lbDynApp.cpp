@@ -479,7 +479,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramGeneral,
 													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
 
-		param->setUAPParameter(*&parameter, *&paramProject);
+		param->setUAPParameter(*&parameter, *&paramGeneral);
 
 		parameter->setData("UML export settings");
 		//--------------------------------------------
@@ -488,9 +488,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		 boolXSL->setData(UseOtherXSLFile->getData());
 		 paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
 		 */
-		parameterProject->setData("XMI UML export file");
+		parameterXSL->setData("XMI UML export file");
 		fileXSL->setData(XMIFileUMLProjectExport->getData());
-		paramProject->setUAPFileLocation(*&parameterProject, *&fileXSL);
+		paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 		
 		parameterXSL->setData("XSL file for export settings");
 		fileXSL->setData(XSLFileExportSettings->getData());
@@ -2651,6 +2651,34 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
 			if (metaapp->isPropertyPaneLayoutFloating()) metaapp->showPropertyPanel();
 
+			plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
+			if (plDynamicAppStorageUMLXMIImport != NULL) {
+				ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
+				
+				//exportApplicationToXMLBuffer
+				
+				UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
+				UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
+				
+				plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
+				
+				// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
+				if (plDynamicAppStorageXMLFormat != NULL) {
+					ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
+					
+					if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
+						eman->registerEvent("exportApplicationToXMLBuffer", unused);
+						
+						dispatcher->addEventHandlerFn(this,
+													  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
+						
+						//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
+					}
+				} else {
+					_LOG << "Warning: No XsltTransformer as a lb_I_DelegatedAction available." LOG_
+				}
+			}
+			
 			if (eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused) == ERR_EVENT_NOTREGISTERED) {
 				eman->registerEvent("exportApplicationConfigurationToUMLXMIDoc", unused);
 
@@ -2659,7 +2687,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
 				metaapp->addMenuEntry(_trans("&File"), "export Application to UML (as XMI file)", "exportApplicationConfigurationToUMLXMIDoc", "");
 			}
-
+			editProperties(NULL);
 		}
 /*...e*/
 	} else {
