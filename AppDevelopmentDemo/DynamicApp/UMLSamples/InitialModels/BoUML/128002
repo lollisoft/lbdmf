@@ -1,6 +1,6 @@
 format 63
 "CRM" // CRM
-  revision 42
+  revision 43
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -997,5 +997,4 @@ ${inlines}
       end
     end
   end
-
 end
