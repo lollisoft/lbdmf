@@ -90,9 +90,9 @@
 #define ENDL std::endl
 #define OFSTREAM std::ofstream
 
- #include <iostream>
- #include <fstream>
-
+#include <iostream>
+#include <fstream>
+#include <string.h>
 #endif
 
 #ifdef OSX
