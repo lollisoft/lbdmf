@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.121 $
+# * $Revision: 1.122 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.121 2009/02/17 10:30:19 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.122 2009/03/04 17:36:43 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.122  2009/03/04 17:36:43  lollisoft
+# * Added compatibility include directory. To be fixed later.
+# *
 # * Revision 1.121  2009/02/17 10:30:19  lollisoft
 # * Changes to get rid of unnessesary reload, but I lose some data while the action is running.
 # *
@@ -1053,6 +1056,7 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/include \
 	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
+	-I /usr/include/c++/3.3.3/backward \
 	-I $(HOME)/mpatrol/src \
 	-I . 
 
