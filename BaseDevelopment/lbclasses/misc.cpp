@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: misc.cpp,v 1.47 2007/04/22 13:36:42 lollisoft Exp $
+ * $Id: misc.cpp,v 1.48 2009/03/04 17:40:07 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.48  2009/03/04 17:40:07  lollisoft
+ * Added missing includes for openSuSE 11.1 version (GCC).
+ *
  * Revision 1.47  2007/04/22 13:36:42  lollisoft
  * Removed lb_sleep.
  *
@@ -244,7 +247,7 @@ extern "C" {
 #endif            
 #include <stdlib.h>
 //#include <conio.h>
-
+#include <limits.h>
 #ifdef __cplusplus
 }      
 #endif            

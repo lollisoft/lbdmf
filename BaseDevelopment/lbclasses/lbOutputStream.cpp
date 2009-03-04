@@ -61,7 +61,7 @@ extern "C" {
 #include <stdlib.h>
 //#include <memory.h>
 //#include <conio.h>
-
+#include <limits.h>
 #ifdef __cplusplus
 }      
 #endif            

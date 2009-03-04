@@ -83,6 +83,8 @@
 #endif
 #ifndef WINDOWS
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 #endif
 
 #include <sqlext.h>
