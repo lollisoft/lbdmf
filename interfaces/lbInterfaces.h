@@ -1056,12 +1056,13 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+			char const* empty = ""; \
 			attachedClassName = NULL; \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
 				attachedClassName = strdup(_ref->getClassName()); \
 			else \
-				attachedClassName = strdup(""); \
+				attachedClassName = strdup(empty); \
 			if (_file != NULL) free(_file); \
 			_file = NULL; \
 			if (_ref._file != NULL) { \
@@ -1072,6 +1073,7 @@ public:
 			_autoPtr = NULL; \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
+			char const* empty = ""; \
 			if (_file != NULL) { \
 				free(_file); \
 				if (_ref._file) { \
@@ -1086,7 +1088,7 @@ public:
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
 			        attachedClassName = strdup(_ref->getClassName()); \
 		        else \
-		                attachedClassName = strdup(""); \
+		                attachedClassName = strdup(empty); \
 			_line = _ref._line; \
 			_autoPtr = _ref._autoPtr; \
 		} \
