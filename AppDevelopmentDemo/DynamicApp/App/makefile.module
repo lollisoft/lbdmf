@@ -62,7 +62,7 @@ ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 C_SOOPS= $(C_OPS)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
+VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)

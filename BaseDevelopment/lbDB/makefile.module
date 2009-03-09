@@ -64,7 +64,7 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
+VENDORLIBS=-L$(prefix)/lib -llbHook `odbc_config  --prefix`/lib/libodbc.so
 endif    
 
 

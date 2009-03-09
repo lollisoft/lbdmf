@@ -3056,7 +3056,8 @@ lb_I_String* LB_STDCALL lbQuery::getTableName(char* columnName) {
 
 /// \todo Check related code for this changes.		
 #ifndef OSX		
-		SQLPOINTER	NumericAttributePtr;
+		//SQLPOINTER	NumericAttributePtr;
+		SQLINTEGER*	NumericAttributePtr;
 #endif
 #ifdef OSX
 	#if (OSNAME == Leopard)
