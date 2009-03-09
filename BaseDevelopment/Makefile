@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.192 $
+# * $Revision: 1.193 $
 # * $Name:  $
-# * $Id: Makefile,v 1.192 2009/03/09 20:29:22 lollisoft Exp $
+# * $Id: Makefile,v 1.193 2009/03/09 23:14:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.193  2009/03/09 23:14:56  lollisoft
+# * Changes to fix RPM build issue with databaselayer_sqlite and sqlite library.
+# *
 # * Revision 1.192  2009/03/09 20:29:22  lollisoft
 # * Corrected PDF filename problem in RPM built.
 # *
@@ -1389,7 +1392,7 @@ ifneq ($(OSTYPE), Windows_NT)
 	@echo Build Lexer make
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	@echo Build Main makefile
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif
@@ -1434,7 +1437,7 @@ endif
 
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
-	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=liblbsqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif

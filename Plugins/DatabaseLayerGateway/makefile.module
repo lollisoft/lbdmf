@@ -116,7 +116,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/databaselayer -I $(DEVROOT)$
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook -lc $(prefix)/lib/databaselayer_sqllite.so -lc $(prefix)/lib/sqlite3.so
+VENDORLIBS=-L$(prefix)/lib -llbHook -llbdatabaselayer_sqllite -llbsqlite3
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
