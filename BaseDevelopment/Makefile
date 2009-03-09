@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.188 $
+# * $Revision: 1.189 $
 # * $Name:  $
-# * $Id: Makefile,v 1.188 2009/01/14 15:01:02 lollisoft Exp $
+# * $Id: Makefile,v 1.189 2009/03/09 17:10:13 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.189  2009/03/09 17:10:13  lollisoft
+# * Removed target in RPM build.
+# *
 # * Revision 1.188  2009/01/14 15:01:02  lollisoft
 # * Fixed build system for solaris. Now basically the application works with sqlite.
 # *
@@ -1053,7 +1056,6 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/databaselayer/test \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
