@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.190 $
+# * $Revision: 1.191 $
 # * $Name:  $
-# * $Id: Makefile,v 1.190 2009/03/09 18:43:08 lollisoft Exp $
+# * $Id: Makefile,v 1.191 2009/03/09 19:08:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.191  2009/03/09 19:08:53  lollisoft
+# * Try fix for files with spaces.
+# *
 # * Revision 1.190  2009/03/09 18:43:08  lollisoft
 # * Try fix for files with spaces.
 # *
@@ -1307,7 +1310,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
-	cp '$(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf' $(prefix)/share/lbdmf/Doc
+	cp "$(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf" $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
