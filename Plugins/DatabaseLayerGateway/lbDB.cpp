@@ -3068,7 +3068,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	
 	if (!currentdbLayer->IsOpen()) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-		*connName = dbName;
+		*connName = "";
+		
+#ifdef OSX
+		/// \todo Implement a more save check if this application is really running and is a bundle.
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		lb_I_GUI* g = NULL;
+		meta->getGUI(&g);
+		if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+		*connName += dbName;
 		*connName += ".db3";
 		currentdbLayer->Open(connName->charrep());
 		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Opened database." LOG_
@@ -4789,8 +4798,17 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	
 	QI(connName, lb_I_KeyBase, key)
 
-	*connName = connectionname;
+	*connName = "";
 
+#ifdef OSX
+/// \todo Implement a more save check if this application is really running and is a bundle.
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+	
+	*connName += connectionname;
 	*connName += ".db3";
 	
 	if (connPooling == NULL) {
@@ -4898,7 +4916,17 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-	*connName = connectionname;
+	*connName = "";
+	
+#ifdef OSX
+	/// \todo Implement a more save check if this application is really running and is a bundle.
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+
+	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
 	
@@ -4953,7 +4981,16 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-	*connName = connectionname;
+	*connName = "";
+	
+#ifdef OSX
+	/// \todo Implement a more save check if this application is really running and is a bundle.
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+
+	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
 	
@@ -5177,7 +5214,17 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-	*connName = connectionname;
+	*connName = "";
+	
+#ifdef OSX
+	/// \todo Implement a more save check if this application is really running and is a bundle.
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+
+	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
 	
@@ -5256,7 +5303,17 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
-	*connName = connectionname;
+	*connName = "";
+	
+#ifdef OSX
+	/// \todo Implement a more save check if this application is really running and is a bundle.
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+#endif
+
+	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
 	
