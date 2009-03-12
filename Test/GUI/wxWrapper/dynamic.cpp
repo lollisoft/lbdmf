@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.155 2008/08/08 11:30:30 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.156 2009/03/12 19:03:16 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.155 $
+ * $Revision: 1.156 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.155 2008/08/08 11:30:30 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.156 2009/03/12 19:03:16 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.156  2009/03/12 19:03:16  lollisoft
+ * Added optional check for splash screen inside of bundle.
+ *
  * Revision 1.155  2008/08/08 11:30:30  lollisoft
  * Tries on Linux
  *
@@ -2307,10 +2310,19 @@ bool MyApp::OnInit(void)
 									wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
 #endif
 #ifdef OSX
-									wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+		wxSIMPLE_BORDER|wxSTAY_ON_TOP);
 #endif
 		wxGUI->splashCreated();
+	}
+#ifdef OSX
+	else if (wxFile::Exists("./wxWrapper.app/Contents/Resources/splash.png") && bitmap.LoadFile("./wxWrapper.app/Contents/Resources/splash.png", wxBITMAP_TYPE_PNG)) {
+		splash = new lbSplashScreen(wxGUI, bitmap,
+								wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+								6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+								wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+		wxGUI->splashCreated();
 	}	
+#endif
 	wxYield();
 
     if (metaApp != NULL) {
