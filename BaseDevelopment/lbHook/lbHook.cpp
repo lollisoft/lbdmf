@@ -221,6 +221,10 @@ DLLEXPORT char* getLogDirectory() {
 }
 /*...e*/
 
+DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
+	mkdir(name, S_IRWXU);
+}
+
 /*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
 DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
 	instances += inst;

@@ -373,6 +373,8 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level = 0);
  */
 DLLEXPORT char* getLogDirectory();
 
+DLLEXPORT void LB_STDCALL createDirectory(const char* name);
+
 DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
 DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
 
