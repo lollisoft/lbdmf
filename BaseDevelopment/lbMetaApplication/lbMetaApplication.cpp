@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.150 $
+ * $Revision: 1.151 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.150 2009/02/12 11:31:11 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.151 2009/03/12 19:08:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.151  2009/03/12 19:08:41  lollisoft
+ * Changed database bootstrapping code (location of SQL files) according to better fit into OS type.
+ *
  * Revision 1.150  2009/02/12 11:31:11  lollisoft
  * Added missing return.
  *
@@ -775,11 +778,31 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	UAP(lb_I_FileOperation, fOp1)
 	QI(ukPl1, lb_I_FileOperation, fOp1)
 
+#ifdef OSX
+	lb_I_GUI* g = NULL;
+	getGUI(&g);
+	if (g) {
+		if (!fOp1->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
+			// Fallback
+			if (!fOp1->begin("MetaApp.mad")) {
+				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+				
+				return ERR_FILE_WRITE_DEFAULT;
+			}
+		}
+	} else if (!fOp1->begin("MetaApp.mad")) {
+		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+		
+		return ERR_FILE_WRITE_DEFAULT;
+	}
+#endif
+#ifndef OSX
 	if (!fOp1->begin("MetaApp.mad")) {
 		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 		return ERR_FILE_WRITE_DEFAULT;
 	}
+#endif
 
 	UAP(lb_I_Unknown, ukAcceptor1)
 	QI(this, lb_I_Unknown, ukAcceptor1)
@@ -887,11 +910,32 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			UAP(lb_I_FileOperation, fOp)
 			QI(ukPl, lb_I_FileOperation, fOp)
 
-			if (!fOp->begin("MetaApp.mad")) {
-				_LOG << "Error: fOp->begin('MetaApp.mad') failed !" LOG_
+#ifdef OSX
+			lb_I_GUI* g = NULL;
+			getGUI(&g);
+			if (g) {
+				if (!fOp->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
+					// Fallback
+					if (!fOp->begin("MetaApp.mad")) {
+						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+						
+						return ERR_FILE_READ;
+					}
+				}
+			} else if (!fOp->begin("MetaApp.mad")) {
+				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+				
 				return ERR_FILE_READ;
 			}
-
+#endif
+#ifndef OSX
+			if (!fOp->begin("MetaApp.mad")) {
+				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+				
+				return ERR_FILE_READ;
+			}
+#endif
+			
 			// Read my data
 			UAP(lb_I_Unknown, ukAcceptor)
 			QI(this, lb_I_Unknown, ukAcceptor)
@@ -1213,9 +1257,91 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	UAP(lb_I_Query, sysSchemaQuery)
 	UAP(lb_I_Database, database)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, initialDatabaseLocation)	
+	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
+	char* home = getenv("HOME");
 
+	bool  localInitialisation = false;
+
+#ifdef WINDOWS
+	*testSQLFile = home;
+	*testSQLFile += "\\Database\\lbDMF-Sqlite-SystemDB.sql";
+	localInitialisation = FileExists(testSQLFile->charrep());
+	if (localInitialisation) {
+		*initialDatabaseLocation = "..\\Database\\";
+	} else {
+		_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+		return false;
+	}
+#endif
+#ifdef OSX
+	*testSQLFile = home;
+	*testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
+	localInitialisation = FileExists(testSQLFile->charrep());
+	if (localInitialisation) {
+		*initialDatabaseLocation = home;
+		*initialDatabaseLocation += "/.lbDMF/";
+	} else {
+		/// \todo Check if bundle is always as expected.
+		// The application could be renamed.
+		
+		*testSQLFile = "./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-SystemDB.sql";
+		if (FileExists(testSQLFile->charrep())) {
+			*initialDatabaseLocation = "./wxWrapper.app/Contents/Resources/";
+		} else {
+			_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+			return false;
+		}
+	}
+#endif
+#ifdef SOLARIS
+	*testSQLFile = home;
+	*testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
+	localInitialisation = FileExists(testSQLFile->charrep());
+	if (localInitialisation) {
+		*initialDatabaseLocation = home;
+		*initialDatabaseLocation += "/.lbDMF/";
+	} else {
+		/// \todo Implement lookup of bundle.
+		// Try resource directory in bundle.
+		_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+		return false;
+	}
+#endif
+#ifdef LINUX
+#ifndef OSX
+	*testSQLFile = home;
+	*testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
+	localInitialisation = FileExists(testSQLFile->charrep());
+	if (localInitialisation) {
+		*initialDatabaseLocation = home;
+		*initialDatabaseLocation += "/.lbDMF/";
+	} else {
+		/// \todo Implement lookup correctly for other cases.
+		
+		if (FileExists("/usr/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
+			*initialDatabaseLocation = "/usr/share/lbdmf/database/";
+		}
+		
+		if (FileExists("/usr/local/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
+			*initialDatabaseLocation = "/usr/local/share/lbdmf/database/";
+		}
+		
+		_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+		return false;
+	}
+#endif
+#endif
+	
+	_LOG << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
+	
 	char* dbbackend = getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -1268,22 +1394,35 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputApp)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, inputSys)
 
+		UAP_REQUEST(getModuleInstance(), lb_I_String, systemDatabaseName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, applicationDatabaseName)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, dataDir)
+		*dataDir = initialDatabaseLocation->charrep();
+
+		*applicationDatabaseName = dataDir->charrep();
+		
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 #ifdef WINDOWS
-			inputApp->setFileName("..\\Database\\lbDMF-Sqlite-ApplicationDB.sql");
+			*applicationDatabaseName = "..\\Database\\lbDMF-Sqlite-ApplicationDB.sql";
 #endif
 #ifdef OSX
-			inputApp->setFileName("../../../Database/lbDMF-Sqlite-ApplicationDB.sql");
+			// Create data directory, if not available
+			*applicationDatabaseName += "lbDMF-Sqlite-ApplicationDB.sql";
 #endif
 #ifdef SOLARIS
-			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
+			// Create data directory, if not available
+			*applicationDatabaseName += "lbDMF-Sqlite-ApplicationDB.sql";
 #endif
 #ifdef LINUX
 #ifndef OSX
-			inputApp->setFileName("../Database/lbDMF-Sqlite-ApplicationDB.sql");
+			// Create data directory, if not available
+			*applicationDatabaseName += "lbDMF-Sqlite-ApplicationDB.sql";
 #endif
 #endif
 
+			inputApp->setFileName(applicationDatabaseName->charrep());
+			
 			if (!inputApp->open()) {
 #ifdef WINDOWS
 				// Try the path for a typical Windows installation
@@ -1302,20 +1441,25 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				return false;
 			}
 
+			*systemDatabaseName = dataDir->charrep();
+
 #ifdef WINDOWS
-			inputSys->setFileName("..\\Database\\lbDMF-Sqlite-SystemDB.sql");
+			*systemDatabaseName = "..\\Database\\lbDMF-Sqlite-SystemDB.sql";
 #endif
 #ifdef OSX
-			inputSys->setFileName("../../../Database/lbDMF-Sqlite-SystemDB.sql");
+			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
 #endif
 #ifdef SOLARIS
-			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
 #endif
 #ifdef LINUX
 #ifndef OSX
-			inputSys->setFileName("../Database/lbDMF-Sqlite-SystemDB.sql");
+			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
 #endif
 #endif
+
+			inputSys->setFileName(systemDatabaseName->charrep());
+
 			if (!inputSys->open()) {
 #ifdef WINDOWS
 				// Try the path for a typical Windows installation
@@ -1334,20 +1478,30 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 				return false;
 			}
 		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, systemDatabaseName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, applicationDatabaseName)
+			
+			char* home = getenv("HOME");
+			UAP_REQUEST(getModuleInstance(), lb_I_String, dataDir)
+			*dataDir = initialDatabaseLocation->charrep();
+
+			*applicationDatabaseName = dataDir->charrep();
+			
 #ifdef WINDOWS
 			inputApp->setFileName("..\\Database\\lbDMF-PostgreSQL.sql");
 #endif
 #ifdef OSX
-			inputApp->setFileName("../../../Database/lbDMF-PostgreSQL.sql");
+			*applicationDatabaseName = "lbDMF-PostgreSQL.sql";
 #endif
 #ifdef SOLARIS
-			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
+			*applicationDatabaseName = "lbDMF-PostgreSQL.sql";
 #endif
 #ifdef LINUX
 #ifndef OSX
-			inputApp->setFileName("../Database/lbDMF-PostgreSQL.sql");
+			*applicationDatabaseName = "lbDMF-PostgreSQL.sql";
 #endif
 #endif
+			inputApp->setFileName(applicationDatabaseName->charrep());
 			if (!inputApp->open()) {
 #ifdef WINDOWS
 				inputApp->setFileName("Database\\lbDMF-PostgreSQL.sql");
@@ -1370,7 +1524,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	}
 #ifdef LINUX
 	UAP_REQUEST(getModuleInstance(), lb_I_String, installdir)
-	char* home =
+	home =
 #if defined(WINDOWS)
 	getenv("USERPROFILE");
 #endif
