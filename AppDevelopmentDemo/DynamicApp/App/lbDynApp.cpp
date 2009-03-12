@@ -1870,8 +1870,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	UAP(lb_I_Unknown, ukPl)
 
 	// Need to derive filename from given application name
-	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-	*filename = LogonApplication->charrep();
+	UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+	*filename = "";
+	
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) {
+		*filename += "./wxWrapper.app/Contents/Resources/";
+	}
+	
+	*filename += LogonApplication->charrep();
 	*filename += ".daf"; // Dynamic application forms
 
 
@@ -2066,7 +2076,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
 	// Need to derive filename from given application name
 	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-	*filename = LogonApplication->charrep();
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+	*filename = "";
+	
+	lb_I_GUI* g = NULL;
+	meta->getGUI(&g);
+	if (g) {
+		*filename += "./wxWrapper.app/Contents/Resources/";
+	}
+	
+	*filename += LogonApplication->charrep();
 	*filename += ".daf"; // Dynamic application forms
 
 	bool isFileAvailable = false;
