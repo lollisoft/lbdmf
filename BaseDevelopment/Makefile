@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.193 $
+# * $Revision: 1.194 $
 # * $Name:  $
-# * $Id: Makefile,v 1.193 2009/03/09 23:14:56 lollisoft Exp $
+# * $Id: Makefile,v 1.194 2009/03/12 19:14:00 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.194  2009/03/12 19:14:00  lollisoft
+# * Added code to copy SQL files into correct place on Linux.
+# *
 # * Revision 1.193  2009/03/09 23:14:56  lollisoft
 # * Changes to fix RPM build issue with databaselayer_sqlite and sqlite library.
 # *
@@ -1308,6 +1311,8 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/BoUML
 	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
+	mkdir -p $(prefix)/share/lbdmf/database
+	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
