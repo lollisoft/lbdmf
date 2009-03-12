@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.100 $
+ * $Revision: 1.101 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.100 2009/01/14 15:01:02 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.101 2009/03/12 18:54:08 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.101  2009/03/12 18:54:08  lollisoft
+ * Added a failsave postlink step to enable copying of some files into the Mac type application bundle.
+ *
  * Revision 1.100  2009/01/14 15:01:02  lollisoft
  * Fixed build system for solaris. Now basically the application works with sqlite.
  *
@@ -927,6 +930,7 @@ void writeBundleTarget(char* modulename) {
   printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
   printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
   printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
+  printf("\t\t-./postlink-mac.sh\n");
 //  printf("\t\t\n", modulename);
 #endif
 
@@ -1764,7 +1768,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.100 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.101 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
