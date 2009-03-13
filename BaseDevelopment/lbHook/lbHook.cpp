@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -43,14 +43,14 @@
   #include <dlfcn.h>
   #include <signal.h>
   #ifdef __cplusplus
-    extern "C" {      
-  #endif            
+    extern "C" {
+  #endif
 
 //  #include <conio.h>
 
   #ifdef __cplusplus
     }
-  #endif            
+  #endif
 
 #endif
 /*...e*/
@@ -107,7 +107,7 @@ LB_DLLIMPORT int lb_isInitializing;
 #endif
 #endif
 #ifdef LINUX
-extern lb_I_Log *lb_log;     
+extern lb_I_Log *lb_log;
 extern int lb_isInitializing;
 #endif
 HINSTANCE ModuleHandle = NULL;
@@ -157,20 +157,20 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
                 if( fp != NULL ) {
                         char* buf = (char*) malloc(strlen(msg)+100);
                         buf[0] = 0;
-                        
+
                         int l = level;
-                        
+
                         while (l > 0) {
                                 sprintf(buf, "%s%s", buf, "    ");
                                 l--;
                         }
 
-#ifdef WINDOWS                        
+#ifdef WINDOWS
                         fprintf( fp, "Pid %d\t:%s%s", ::GetCurrentProcessId(), buf, msg);
 #endif
 #if defined (OSX) || defined (LINUX) || defined(UNIX)
                         fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
-#endif						
+#endif
 			fclose( fp );
 			free(buf);
                 }
@@ -182,7 +182,7 @@ void logMessage(const char *msg) {
 		char* logpath = getLogDirectory();
 		lbLogFile = (char*) malloc(strlen(logpath)+100);
 		lbLogFile[0] = 0;
-	
+
 		strcat(lbLogFile, logpath);
 		strcat(lbLogFile, SLASH);
 		strcat(lbLogFile, LOGFILE);
@@ -194,20 +194,20 @@ void logMessage(const char *msg) {
 /*...sDLLEXPORT char\42\ getLogDirectory\40\\41\:0:*/
 DLLEXPORT char* getLogDirectory() {
 	if (lbLogDirectory == NULL) {
-		char* home = 
+		char* home =
 		#if defined(WINDOWS)
 		getenv("USERPROFILE");
 		#endif
 		#if defined(UNIX) || defined(LINUX) || defined(OSX)
 		getenv("HOME");
 		#endif
-		
+
 		lbLogDirectory = (char*) malloc(strlen(home)+10);
 		lbLogDirectory[0] = 0;
 		strcat(lbLogDirectory, home);
 		strcat(lbLogDirectory, SLASH);
 		strcat(lbLogDirectory, "log");
-		
+
 		// Don't ask for failure.
 		#ifdef __WATCOMC__
 		mkdir(lbLogDirectory);
@@ -222,7 +222,12 @@ DLLEXPORT char* getLogDirectory() {
 /*...e*/
 
 DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
-	mkdir(name, S_IRWXU);
+		#ifdef __WATCOMC__
+		mkdir(name);
+		#endif
+		#if defined(OSX) || defined(LINUX) || defined(UNIX)
+        mkdir(name, S_IRWXU);
+		#endif
 }
 
 /*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
@@ -267,16 +272,16 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l) {
 char* trackObject = NULL;
 
 DLLEXPORT char* LB_STDCALL itoa(int ptr) {
-        static char buf[20] = "";           
-        sprintf(buf, "%d", ptr);            
-        return buf;                         
-}                                           
+        static char buf[20] = "";
+        sprintf(buf, "%d", ptr);
+        return buf;
+}
 
 DLLEXPORT char* LB_STDCALL ltoa(const long ptr) {
-        static char buf[20] = "";           
-        sprintf(buf, "%ld", ptr);            
-        return buf;                         
-}                                           
+        static char buf[20] = "";
+        sprintf(buf, "%ld", ptr);
+        return buf;
+}
 
 DLLEXPORT char* LB_STDCALL ptoa(void* ptr) {
         static char buf[20] = "";
@@ -327,7 +332,7 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 #ifdef WINDOWS
 #error LB_STDCALL is not defined !
 #endif
-#endif 
+#endif
 
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
@@ -347,10 +352,10 @@ _Modules *createModule(const char* name) {
 		temp->name = (char*) malloc(strlen(name)+1);
 		temp->name[0] = 0;
 		strcpy(temp->name, name);
-		
+
 		temp->next = loadedModules;
 		loadedModules = temp;
-		
+
 		return temp;
 	}
 }
@@ -360,8 +365,8 @@ _Modules *findModule(const char* name) {
 	_Modules *temp = loadedModules;
 	_Modules *found = NULL;
 	int count = 0;
-	
-	
+
+
 	while (temp != NULL) {
 		count++;
 		if (strcmp(temp->name, name) == 0) {
@@ -369,13 +374,13 @@ _Modules *findModule(const char* name) {
 		}
 		temp = temp->next;
 	}
-	
+
 	if (count != countModules) {
 		_CL_LOG << "ERROR: Count of loaded modules disagree with count value." LOG_
 	}
-	
+
 	return found;
-} 
+}
 /*...e*/
 
 void destroyModuleStructure(_Modules* m) {
@@ -459,32 +464,32 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 	if (isVerbose()) {
 		_LOG << "Try to load a module " << name LOG_
 	}
-	
+
 #ifdef WINDOWS
-	
+
 	_Modules *m = findModule(name);
-	
+
 	if (m) {
 		hinst = m->lib;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
 	}
-	
+
 	if ((hinst = LoadLibrary(name)) == NULL)
 	{
 		char *buffer = (char*) malloc(100+strlen(name));
 		buffer[0] = 0;
-		sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name); 
-		
+		sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name);
+
 		logMessage(buffer);
 		free(buffer);
-		
+
 		LPVOID lpMsgBuf;
 		if (isVerbose()) {
-			if (!FormatMessage( 
-								FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-								FORMAT_MESSAGE_FROM_SYSTEM | 
+			if (!FormatMessage(
+								FORMAT_MESSAGE_ALLOCATE_BUFFER |
+								FORMAT_MESSAGE_FROM_SYSTEM |
 								FORMAT_MESSAGE_IGNORE_INSERTS,
 								NULL,
 								GetLastError(),
@@ -496,38 +501,38 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 				// Handle the error.
 				return ERR_MODULE_NOT_FOUND;
 			}
-			
+
 			MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
-			
+
 			// Free the buffer.
 			LocalFree( lpMsgBuf );
 		}
-				
+
 		return ERR_MODULE_NOT_FOUND;
 	}
-	
+
 	m->lib = hinst;
 	m->skip = skipAutoUnload;
 #endif
 #ifdef LINUX
-	
+
 	_Modules *m = findModule(name);
-	
+
 	if (m != NULL) {
 		hinst = m->lib;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
 	}
-	
+
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
 		char* home = NULL;//(char*) malloc(100);
 		char* newname = NULL;
-		
+
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
 		home = ".";//getcwd(home, 100);
-			
+
 			if (home != NULL) {
 				newname = (char*) malloc(strlen(home)+strlen(name)+6);
 				newname[0] = 0;
@@ -536,71 +541,71 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 				strcat(newname, "lib");
 				strcat(newname, SLASH);
 				strcat(newname, name);
-				
+
 				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 					m->lib = hinst;
 					m->skip = skipAutoUnload;
 					free(newname);
-						
+
 					return ERR_NONE;
 				} else {
 					char* errmsg = dlerror();
-					
+
 					if (errmsg != NULL) {
 						printf("DLERROR: %s\n", errmsg);
 					}
 				}
-				
+
 				free(newname);
 			}
 #endif
-			
-			home =   
+
+			home =
 #if defined(WINDOWS)
 			getenv("USERPROFILE");
 #endif
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
 			getenv("HOME");
 #endif
-			
+
 			newname = (char*) malloc(strlen(home)+strlen(name)+6);
-			
+
 			newname[0] = 0;
 			strcat(newname, home);
 			strcat(newname, SLASH);
 			strcat(newname, "lib");
 			strcat(newname, SLASH);
 			strcat(newname, name);
-			
+
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 				m->lib = hinst;
 				m->skip = skipAutoUnload;
 				free(newname);
-				
+
 				return ERR_NONE;
 			} else {
 					char* errmsg = dlerror();
-					
+
 					if (errmsg != NULL) {
 						printf("DLERROR: %s\n", errmsg);
 					}
 			}
-			
+
 			free(newname);
-			
+
 			char *buffer = (char*) malloc(strlen(name)+100);
 			buffer[0] = 0;
-			
+
 			sprintf(buffer, "Kann SO module '%s' nicht laden.\n", name);
-			
+
 			logMessage(buffer);
 			free(buffer);
 			return ERR_MODULE_NOT_FOUND;
 	}
-	
+
 	m->lib = hinst;
 	m->skip = skipAutoUnload;
-	
+
 #endif
 	return ERR_NONE;
 }
@@ -623,7 +628,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
             _CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
-            return ERR_FUNCTION_NOT_FOUND;	    
+            return ERR_FUNCTION_NOT_FOUND;
 	}
 #endif
         return ERR_NONE;
@@ -644,7 +649,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		TRMemSetModuleName(__FILE__);
 		#endif
 	}
-	
+
 	char* libname = getenv("MODULELIB");
 	char* functor = getenv("LBMODULEFUNCTOR");
 
@@ -665,7 +670,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 			functor = "getlb_ModuleInstance";
 		#endif
 	}
-	
+
 #ifdef WINDOWS
 #ifndef _MSC_VER
 	char* temp = (char*) malloc(strlen(functor)+2);
@@ -691,28 +696,28 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		logMessage("Error: Could not load shared library %s\n", libname);
 		return NULL;
 	}
-	
-	if (lbGetFunctionPtr(functor, 
-			     LB_Module_Handle, 
+
+	if (lbGetFunctionPtr(functor,
+			     LB_Module_Handle,
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
 		logMessage("Fatal: Could not get functor for the module manager!\n");
 		return NULL;
 	}
-	
+
 #ifdef WINDOWS
 #ifndef _MSC_VER
 	if (temp) free((void*)temp);
 	functor = NULL;
 #endif
 #endif
-	
+
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		logMessage("Instance is locked. Must set module manager first\n");
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
-	} 
+	}
 	UAP(lb_I_Module, inst)
 	QI(module, lb_I_Module, inst)
-	
+
 	return inst.getPtr();
 }
 /*...e*/
@@ -720,13 +725,13 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 	typedef lbErrCodes (LB_STDCALL *T_p_releaseInstance) (lb_I_Unknown*);
 	T_p_releaseInstance DLL_RELEASEINSTANCE;
-	
+
 	if (lbGetFunctionPtr("_lb_releaseInstance", LB_Module_Handle, (void**) &DLL_RELEASEINSTANCE) != ERR_NONE) {
 		exit(1);
 	}
-	
+
 	DLL_RELEASEINSTANCE(inst);
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -735,17 +740,17 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 #ifdef MEMTRACK
 	char breakPoint[100] = "";
 	int count = 0;
-	
+
 	if (!_isSetTRMemTrackBreak) {
 		COUT << "Please enter any memory address to be break at: ";
 		CIN >> breakPoint ;
-	
+
 		COUT << "Please enter count at wich the break should happen: ";
 		CIN >> count;
-		
+
 		setTRMemTrackBreak(breakPoint, count);
 	}
-#endif	
+#endif
 	return _isSetTRMemTrackBreak;
 }
 /*...e*/
@@ -755,9 +760,9 @@ DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
 	if ((brk != NULL) && (strlen(brk) != 0)) {
 		_isSetTRMemTrackBreak = true;
 		strncpy(TRMemTrackBreakAddr, brk, 20);
-		
+
 		// Call TRMemSetAdrBreakPoint for lbHook it self.
-		
+
 		TRMemSetAdrBreakPoint(TRMemTrackBreakAddr, count);
 		TRMemSetModuleName(__FILE__);
 	} else {
@@ -791,62 +796,62 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
-		
+
 		// Need to derive filename from given application name
 		UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
 		*filename = "translations.dat";
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
-		
+
 		database->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			return text;
 		}
-		
+
 		bool isFileAvailable = false;
-		
+
 		UAP(lb_I_DatabaseOperation, fDBOp)
-			
+
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-		
+
 		if (pl != NULL)	{
 			ukPl = pl->getImplementation();
 			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fDBOp)
-			isFileAvailable = fDBOp->begin("lbDMF", *&database); 
+			isFileAvailable = fDBOp->begin("lbDMF", *&database);
 
 			if (isFileAvailable) {
 				UAP(lb_I_Plugin, plTranslations)
 				UAP(lb_I_Unknown, ukPlTranslations)
-				
+
 				plTranslations = PM->getFirstMatchingPlugin("lb_I_Translations", "Model");
 				if (plTranslations != NULL) {
 					ukPlTranslations = plTranslations->getImplementation();
 				} else {
 					_LOG << "Warning: No translations datamodel plugin found." LOG_
 				}
-				
+
 				ukPlTranslations->accept(*&fDBOp);
-				
+
 				locale->setTranslationData(*&ukPlTranslations);
-				
+
 				_CL_LOG << "Loaded translation data into translation model and provided it to locale." LOG_
-				
+
 				fDBOp->end();
 			}
 		}
 	}
-	
+
 	locale->translate(&translated, text);
 	return translated;
 }
@@ -857,18 +862,18 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 #ifdef WINDOWS
 		_Modules* temp = loadedModules;
 		_Modules* lastMod = NULL;
-		
+
 		while (temp) {
 			if (temp->name == NULL) {
 				lastMod = temp;
 				temp = temp->next;
 				continue;
 			}
-			
+
 			if (temp->name != NULL) {
 				if (strcmp(temp->name, name) == 0) {
 					_Modules* delMod = temp;
-				
+
 					if (loadedModules == temp) {
 						lastMod = temp;
 						temp = temp->next;
@@ -877,7 +882,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 						lastMod = temp;
 						temp = temp->next;
 					}
-					
+
 					if (FreeLibrary(delMod->lib) == 0) {
 						printf("ERROR: Library could not be unloaded!\n");
 					}
@@ -895,7 +900,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 #ifdef LINUX
 		_Modules* temp = loadedModules;
 		_Modules* lastMod = NULL;
-		
+
 		if (name == NULL) _CL_LOG << "ERROR: Could not unload unknown module.\n" LOG_
 
 		while (temp) {
@@ -909,15 +914,15 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 				if (strcmp(temp->name, name) == 0) {
 					_Modules* delMod = temp;
 					temp = temp->next;
-				
+
 					if (lastMod != NULL) {
 						lastMod->next = delMod->next;
 					}
-				
+
 					if (loadedModules == delMod) {
 						loadedModules = delMod->next;
 					}
-					
+
 					if (dlclose(delMod->lib) == 0) {
 						printf("ERROR: Library could not be unloaded!\n");
 					}
@@ -949,7 +954,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 		locale--;
 		locale.resetPtr();
 	}
-	
+
 #ifndef WINDOWS
 		_Modules* temp = loadedModules;
 		while (temp) {
@@ -969,7 +974,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 			}
 			if (temp->name != NULL) {
 				_Modules* delMod = temp;
-				
+
 				if (strcmp(temp->name, "lbModule.so") == 0) {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
@@ -979,7 +984,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 				}
 
 				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
-				
+
 				if (dlclose(temp->lib) != 0) {
 					char* msg = dlerror();
 					if (msg) printf("%s\n", msg);
@@ -998,7 +1003,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 		while (temp) {
 			if (temp->name != NULL) {
 				_Modules* delMod = temp;
-				
+
 				if (strcmp(temp->name, "lbModule.so") == 0) {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
@@ -1007,9 +1012,9 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 					if (temp) temp = loadedModules;
 					continue;
 				}
-				
+
 				if (temp->skip) {
-					if (skipped == NULL) 
+					if (skipped == NULL)
 					{
 						skipped = temp;
 						temp = temp->next;
@@ -1020,12 +1025,12 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 						temp_skipped->next = skipped;
 						skipped = temp_skipped;
 					}
-					
+
 					continue;
 				}
 
 				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
-				
+
 				if (FreeLibrary(temp->lib) == 0) {
 					printf("ERROR: Library could not be unloaded!\n");
 					temp = temp->next;
@@ -1037,9 +1042,9 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 				}
 			}
 		}
-		
+
 		// Restore list of skipped modules -> loadedModules
-		
+
 		loadedModules = skipped;
 #endif
 
@@ -1068,7 +1073,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	DECLARE_LB_KEYBASE()
-	
+
 private:
 
 	char keyType[10];
@@ -1140,7 +1145,7 @@ char* LB_STDCALL lbKey::charrep() const {
 #endif
 #ifdef LINUX
     sprintf(buf, "%d", key);
-#endif    
+#endif
     _CL_VERBOSE << "lbKey::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
@@ -1211,7 +1216,7 @@ char* LB_STDCALL lbKey_::charrep() const {
 #endif
 #ifdef LINUX
     sprintf(buf, "%d", key);
-#endif    
+#endif
     _CL_VERBOSE << "lbKey_::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
@@ -1245,18 +1250,18 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
-	
+
 	lb_I_KeyBase* string = NULL;
-	
+
 	if (uk->queryInterface("lb_I_KeyBase", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_VERBOSE << "Error: Could not get interface lb_I_KeyBase" LOG_
 	}
-	
+
 	if (string != NULL) {
 		if (key != NULL) free(key);
 		key = strdup(((lbStringKey*) string)->key);
 	}
-	
+
 	return ERR_NONE;
 }
 
@@ -1283,9 +1288,9 @@ char* LB_STDCALL lbStringKey::charrep() const {
 
 
 /*...sThread and Process based functions:0:*/
-DWORD 
+DWORD
 #ifdef LINUX
-DLLEXPORT 
+DLLEXPORT
 #endif
 #ifdef WINDOWS
 LB_DLLEXPORT
@@ -1300,7 +1305,7 @@ LB_STDCALL lbGetCurrentThreadId() {
 
 DWORD
 #ifdef LINUX
-DLLEXPORT 
+DLLEXPORT
 #endif
 #ifdef WINDOWS
 LB_DLLEXPORT
@@ -1349,9 +1354,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemOpen();
 
 			if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak(), 0);
-			
+
                 	TRMemSetModuleName(__FILE__);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -1369,7 +1374,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 			if (lbLogFile) free(lbLogFile);
 
 			if (loadedModules) destroyModuleStructure(loadedModules);
-                	
+
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -1385,7 +1390,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
