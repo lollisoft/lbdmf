@@ -1874,13 +1874,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	*filename = "";
-	
+#ifdef OSX
 	lb_I_GUI* g = NULL;
 	meta->getGUI(&g);
 	if (g) {
 		*filename += "./wxWrapper.app/Contents/Resources/";
 	}
-	
+#endif
 	*filename += LogonApplication->charrep();
 	*filename += ".daf"; // Dynamic application forms
 
@@ -2079,13 +2079,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	*filename = "";
-	
+#ifdef OSX
 	lb_I_GUI* g = NULL;
 	meta->getGUI(&g);
 	if (g) {
 		*filename += "./wxWrapper.app/Contents/Resources/";
 	}
-	
+#endif
 	*filename += LogonApplication->charrep();
 	*filename += ".daf"; // Dynamic application forms
 
