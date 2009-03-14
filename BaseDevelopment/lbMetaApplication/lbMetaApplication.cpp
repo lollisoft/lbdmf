@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.153 $
+ * $Revision: 1.154 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.153 2009/03/14 11:11:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.154 2009/03/14 22:12:12 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.154  2009/03/14 22:12:12  lollisoft
+ * Corrected linux part of initial SQL file lookup.
+ *
  * Revision 1.153  2009/03/14 11:11:57  lollisoft
  * Fixed lookup of SQL files under Solaris.
  *
@@ -1355,15 +1358,14 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 
 		if (FileExists("/usr/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
 			*initialDatabaseLocation = "/usr/share/lbdmf/database/";
-		}
-
+		} else
 		if (FileExists("/usr/local/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
 			*initialDatabaseLocation = "/usr/local/share/lbdmf/database/";
+		} else {
+			_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+			return false;
 		}
-
-		_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
-		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
-		return false;
 	}
 #endif
 #endif
