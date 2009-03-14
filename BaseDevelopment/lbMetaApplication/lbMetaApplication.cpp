@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.152 $
+ * $Revision: 1.153 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.152 2009/03/13 20:53:15 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.153 2009/03/14 11:11:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.153  2009/03/14 11:11:57  lollisoft
+ * Fixed lookup of SQL files under Solaris.
+ *
  * Revision 1.152  2009/03/13 20:53:15  lollisoft
  * Corrected lookup problem of SQL scripts under Windows.
  *
@@ -1315,15 +1318,32 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		*initialDatabaseLocation = home;
 		*initialDatabaseLocation += "/.lbDMF/";
 	} else {
-		/// \todo Implement lookup of bundle.
-		// Try resource directory in bundle.
-		_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
-		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
-		return false;
+///\todo Implement correct installation path.
+		*testSQLFile = "../Database/lbDMF-Sqlite-SystemDB.sql";
+		localInitialisation = FileExists(testSQLFile->charrep());
+		if (localInitialisation) {
+			*initialDatabaseLocation = "../Database/";
+		} else {
+			// There is no execution path set on the solaris desktop symbol. Therefore use the development environment at my machine
+			*testSQLFile = home;
+			*testSQLFile += "/develop/Projects/CPP/Database/lbDMF-Sqlite-SystemDB.sql";
+			localInitialisation = FileExists(testSQLFile->charrep());
+			if (localInitialisation) {
+				*initialDatabaseLocation = home;
+				*initialDatabaseLocation += "/develop/Projects/CPP/Database/";
+			} else {
+				/// \todo Implement lookup of bundle.
+				// Try resource directory in bundle.
+				_LOG << "Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+				_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
+				return false;
+			}
+		}
 	}
 #endif
 #ifdef LINUX
 #ifndef OSX
+#ifndef SOLARIS
 	*testSQLFile = home;
 	*testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
 	localInitialisation = FileExists(testSQLFile->charrep());
@@ -1345,6 +1365,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 		return false;
 	}
+#endif
 #endif
 #endif
 
@@ -1424,8 +1445,10 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 #endif
 #ifdef LINUX
 #ifndef OSX
+#ifndef SOLARIS
 			// Create data directory, if not available
 			*applicationDatabaseName += "lbDMF-Sqlite-ApplicationDB.sql";
+#endif
 #endif
 #endif
 
@@ -1462,7 +1485,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 #endif
 #ifdef LINUX
 #ifndef OSX
+#ifndef SOLARIS
 			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
+#endif
 #endif
 #endif
 
@@ -1506,7 +1531,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 #endif
 #ifdef LINUX
 #ifndef OSX
+#ifndef SOLARIS
 			*applicationDatabaseName = "lbDMF-PostgreSQL.sql";
+#endif
 #endif
 #endif
 			inputApp->setFileName(applicationDatabaseName->charrep());
