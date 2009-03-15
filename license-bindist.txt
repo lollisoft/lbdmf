@@ -1,4 +1,5 @@
-This package contains the following sub projects and their licenses.
+This package contains the following sub projects in binary or source form and their licenses.
+For a full source version, please refer to my source packages at http:///www.sourceforge.net/projects/lbdmf.
 The list may be incomplete. If so, please notify me, I will correct it.
 They are as follows:
 
