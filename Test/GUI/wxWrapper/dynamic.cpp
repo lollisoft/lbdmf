@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.156 2009/03/12 19:03:16 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.157 2009/03/19 17:11:00 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.156 $
+ * $Revision: 1.157 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.156 2009/03/12 19:03:16 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.157 2009/03/19 17:11:00 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.157  2009/03/19 17:11:00  lollisoft
+ * Added a flag to avoid multiple calls to load the XRC resource.
+ *
  * Revision 1.156  2009/03/12 19:03:16  lollisoft
  * Added optional check for splash screen inside of bundle.
  *
@@ -2082,6 +2085,7 @@ protected:
 		int _askForDirectory;
 	int AskOpenFileReadStream;
 		
+	bool _XRCFileSet;
         
         
 /*...sevent manager:8:*/
@@ -2184,6 +2188,7 @@ bool MyApp::OnInit(void)
 
     UAP(lb_I_Module, mm)
     mm = getModuleInstance();
+	_XRCFileSet = false;
 
     if (mm == NULL) {
 	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
@@ -2491,6 +2496,10 @@ lbErrCodes LB_STDCALL MyApp::askForDirectory(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL MyApp::setXRCFile(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
+	if (_XRCFileSet) return ERR_NONE;
+
+	_XRCFileSet = true;
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
