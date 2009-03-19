@@ -1621,6 +1621,7 @@ void LB_STDCALL lb_wxGUI::showPendingMessages() {
 lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
   wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
 {
+	OnQuitAccepted = false;
 	menu_bar = NULL;
 	guiCleanedUp = 0;
 	stb_areas = 1;
@@ -1712,6 +1713,10 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 	PM->initialize();
 	PM->unload();
 */	
+
+	// Signalize that I am quitting.
+	OnQuitAccepted = true;
+	
 	if (guiCleanedUp == 0) {
         	if (gui) gui->cleanup();
         	guiCleanedUp = 1;
@@ -2595,6 +2600,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 	UAP(lb_I_Parameter, params)
 	
 	QI(uk, lb_I_Parameter, params)
+
+	if (OnQuitAccepted) return ERR_NONE; // Skip the action from now on.
+	
 	
 	if (params != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)

@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.34 2008/10/03 14:20:24 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.35 2009/03/19 17:13:18 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.35  2009/03/19 17:13:18  lollisoft
+ * Avoid setting status text when application performs a quit.
+ *
  * Revision 1.34  2008/10/03 14:20:24  lollisoft
  * Added a functionality to refresh the database forms.
  * This may be usefull when a database lock occures.
@@ -388,6 +391,9 @@ public:
 	
 	bool _isSplitted;            
 	bool panelUsage;
+
+	/// \brief Flag to signalize the deactivation of some critical functions at cleanup.
+	bool OnQuitAccepted;
 
 #ifdef SOLARIS
 	bool skipfirstResizeEvent;
