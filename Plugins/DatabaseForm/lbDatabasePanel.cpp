@@ -3426,6 +3426,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
 void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
+/// \todo Need a dynamic handler to provide setting filter by action.
 	if (filter != NULL) SQLWhere->setData(filter);
 }
 /*...e*/
