@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.35 2009/03/19 17:13:18 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.36 2009/04/10 09:57:00 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.36  2009/04/10 09:57:00  lollisoft
+ * Added code for reposting events in actions.
+ *
  * Revision 1.35  2009/03/19 17:13:18  lollisoft
  * Avoid setting status text when application performs a quit.
  *
@@ -211,6 +214,7 @@
 #define CLOSE_CURRENT_PAGE		1008
 #define SHOW_PENDING_MESSAGES	1009
 #define REFRESHALL_FORMS		1010
+#define POST_PENDING_EVENT		1011
 
 class lb_wxGUI;
 
@@ -377,6 +381,22 @@ public:
 	/// \brief Toggle a tool from the toolbar.
 	lbErrCodes LB_STDCALL toggleTool_From_ToolBar(lb_I_Unknown* uk);
 	
+	/* \brief Enabling posting events programmatically.
+	 * Allows to send an event after this event has been processed.
+	 * As of wxWidgets, wxEvtHandler::AddPendingEvent(wxEvent& event) is used.
+	 *
+	 * This may be used to post trigger another action from actions. Thus
+	 * a chain of actions could be built up.
+	 * The uk instance must contain another instance of an uk instance that will be used to
+	 * be posted.
+	 * 
+	 * Say an event to set a filter in a form should pe posted, the following data is needed:
+	 *
+	 * The event name for the particular form, eg. 0x45af45afSetFilter and what the event should
+	 * carry to that event. For the filter it is a string containing the where clause.
+	 *
+	 */
+	lbErrCodes LB_STDCALL postEvent(lb_I_Unknown* uk);
 	
 	wxMenuBar* menu_bar;
 	int *stb_withs;

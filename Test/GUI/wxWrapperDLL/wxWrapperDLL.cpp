@@ -1868,7 +1868,80 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 /*...e*/
 /*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
+	lbErrCodes err = ERR_NONE;
         switch (event.GetId()) {
+		case POST_PENDING_EVENT:
+			{
+					// Unpack the event and dispatch accordingly
+				if (event.GetClientData() != NULL) {
+                	lbErrCodes err = ERR_NONE;
+					
+					if (eman == NULL) {
+						REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+					}
+					
+					if (dispatcher == NULL) {
+						REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+						dispatcher->setEventManager(eman.getPtr());
+					}				
+					
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
+
+					UAP(lb_I_Container, eventToPost)
+					UAP(lb_I_Unknown, uk)
+					
+					uk = (lb_I_Unknown*) event.GetClientData();
+					QI(uk, lb_I_Container, eventToPost)
+					
+					UAP(lb_I_Unknown, ukName)
+					UAP(lb_I_String, evName)
+					UAP_REQUEST(getModuleManager(), lb_I_String, evKeyName)
+					UAP(lb_I_KeyBase, evKey)
+					
+					UAP(lb_I_Unknown, ukEventObject)
+					
+					*evKeyName = "EventName";
+					QI(evKeyName, lb_I_KeyBase, evKey)
+					
+					ukName = eventToPost->getElement(&evKey);
+					
+					if (ukName != NULL) {
+						QI(ukName, lb_I_String, evName)
+					} else {
+						_LOG << "Error: Required parameter is not in the container." LOG_
+						return;
+					}
+					
+					*evKeyName = "EventObject";
+					QI(evKeyName, lb_I_KeyBase, evKey)
+					
+					ukEventObject = eventToPost->getElement(&evKey);
+					
+					if (ukEventObject != NULL) {
+						int evID = 0;
+						eman->resolveEvent(evName->charrep(), evID);
+						
+						UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+						UAP(lb_I_Unknown, uk_result)
+						QI(result, lb_I_Unknown, uk_result)
+						
+						/* What do I when I have to forward the eventID as in the default?
+						 * In the default portion, always an integer object is passed. It would
+						 * be used for sample in the OnActionButton event handler for actions.
+						 *
+						 * So when posting an event that should trigger another OnActionButton event,
+						 * it will fail due to the lack of integer parameter.
+						 *
+						 * So my question: Is there a need to post issue an OnActionButton event?
+						 */
+						dispatcher->dispatch(event.GetId(), ukEventObject.getPtr(), &uk_result);
+					} else {
+						_LOG << "Error: Required event object is not in the container." LOG_
+						return;
+					}
+				}
+			}
+                break;
         case DYNAMIC_QUIT:
                 OnQuit(event);
                 break;
@@ -2635,6 +2708,63 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 	return err;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
+/// \todo Implement this.
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Container, eventToPost)
+	
+	QI(uk, lb_I_Container, eventToPost)
+	
+	if (eventToPost != NULL) {
+		// Get the event name to be used when the event has been triggered.
+		UAP(lb_I_Unknown, ukName)
+		UAP(lb_I_String, evName)
+		UAP_REQUEST(getModuleManager(), lb_I_String, evKeyName)
+		UAP(lb_I_KeyBase, evKey)
+
+		UAP(lb_I_Unknown, ukEventObject)
+		
+		*evKeyName = "EventName";
+		QI(evKeyName, lb_I_KeyBase, evKey)
+		
+		ukName = eventToPost->getElement(&evKey);
+		
+		if (ukName != NULL) {
+			QI(ukName, lb_I_String, evName)
+		} else {
+			_LOG << "Error: Required parameter is not in the container." LOG_
+			return ERR_DISPATCH_PARAMETER_WRONG;	
+		}
+
+		*evKeyName = "EventObject";
+		QI(evKeyName, lb_I_KeyBase, evKey)
+		
+		ukEventObject = eventToPost->getElement(&evKey);
+		
+		if (ukEventObject != NULL) {
+			// Have the name and the object. Pack it into the wxWidgets event instance and Post the event. This may be unsave.
+
+			// Avoid too early destroy, because wxWidgets does not support my reference counting.
+			uk++;
+			
+			wxCommandEvent wxEv = wxCommandEvent(0, POST_PENDING_EVENT);
+			
+			wxEv.SetClientData((void*) *&uk);
+			
+			AddPendingEvent(wxEv);
+		} else {
+			_LOG << "Error: Required event object is not in the container." LOG_
+			return ERR_DISPATCH_PARAMETER_WRONG;	
+		}
+	} else {
+		_LOG << "Error: Given parameter is not of type lb_I_Containerr." LOG_
+		return ERR_DISPATCH_PARAMETER_WRONG;
+	}
+	
+	return ERR_NONE;
+}
 
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
