@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.123 $
+# * $Revision: 1.124 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.123 2009/03/15 10:13:56 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.124 2009/04/21 10:43:32 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.124  2009/04/21 10:43:32  lollisoft
+# * Obviously still not all compileable under openSuSE 11.1
+# *
 # * Revision 1.123  2009/03/15 10:13:56  lollisoft
 # * No debug now.
 # *
@@ -1060,6 +1063,7 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I /usr/include/c++/3.3.3/backward \
+	-I /usr/include/c++/4.3 \
 	-I $(HOME)/mpatrol/src \
 	-I . 
 

@@ -73,7 +73,7 @@ extern "C" {
 
 #include <lbthread.h>
 #include <lb_misc.h>
-#include <fstream.h>
+#include <fstream>
 /*...e*/
 
 #ifndef  ISTREAM_DEFINED
@@ -132,7 +132,7 @@ public:
 	int	max_readBufferSize;
 	int	readBufferSize;
 	int	offset;
-	ifstream* _istream;
+	std::ifstream* _istream;
 
 /*...e*/
 
@@ -248,7 +248,7 @@ bool LB_STDCALL lbInputStream::open() {
 		if (!FileExists(f)) {
 			return false;
 		}
-		_istream = new ifstream(f);
+		_istream = new std::ifstream(f);
 	}
 
 	isOpen = true;

@@ -85,11 +85,20 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+//#include <stdio.h>
 #endif
 
 #include <sqlext.h>
 #include <stdio.h>
+#ifdef WINDOWS
 #include <iostream.h>
+#endif
+#ifdef LINUX 
+#include <iostream>
+#endif
+
+#include <lbConfigHook.h>
+
 
 #define _SQL_ROW_DELETED 1000
 
@@ -184,13 +193,13 @@ void update(HSTMT hstmt) {
         if (RowStat[0] == SQL_ROW_NOROW) { \
                 printf("ERROR: This row is norow.\n"); \
                 if (retcode == SQL_NO_DATA) { \
-                        cout << "ERROR: There would also be SQL_NO_DATA." << endl; \
+                        COUT << "ERROR: There would also be SQL_NO_DATA." << ENDL; \
                 } \
         } \
         if (RowStat[0] == SQL_ROW_ERROR) { \
                 printf("ERROR: This row is error.\n"); \
                 if (retcode == SQL_NO_DATA) { \
-                        cout << "ERROR: There would also be SQL_NO_DATA." << endl; \
+                        COUT << "ERROR: There would also be SQL_NO_DATA." << ENDL; \
                 } \
         }
 
@@ -399,8 +408,8 @@ void _dbError_DBC(char* lp, HDBC hdbc) {
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_DBC, hdbc, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
 		
-		cout << "Error in lbQuery: (" << lp << ") " <<
-			SqlState << ": " << (int) NativeError << " - " << Msg << endl;
+		COUT << "Error in lbQuery: (" << lp << ") " <<
+			SqlState << ": " << (int) NativeError << " - " << Msg << ENDL;
 		i++;
 	}
 }
@@ -416,8 +425,8 @@ void _dbError_ENV(char* lp, HENV henv) {
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_ENV, henv, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
 		
-		cout << "Error in lbQuery: (" << lp << ") " <<
-			SqlState << ": " << (int) NativeError << " - " << Msg << endl;
+		COUT << "Error in lbQuery: (" << lp << ") " <<
+			SqlState << ": " << (int) NativeError << " - " << Msg << ENDL;
 		i++;
 	}
 }
@@ -435,8 +444,8 @@ void dbError(char* lp, HSTMT hstmt)
 	
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
-		cout << "Error in lbQuery: (" << lp << ") " <<
-			SqlState << ": " << (int) NativeError << " - " << Msg << endl;
+		COUT << "Error in lbQuery: (" << lp << ") " <<
+			SqlState << ": " << (int) NativeError << " - " << Msg << ENDL;
 		i++;
 	}
 }
@@ -479,13 +488,13 @@ int main(void)
 	
 	char *buf1;
 	
-	cout << "Select 1 for Sybase\nSelect 2 for PostgreSQL\nSelect 3 for MS SQL: ";
+	COUT << "Select 1 for Sybase\nSelect 2 for PostgreSQL\nSelect 3 for MS SQL: ";
 	
 	int select;
 	
-	cin >> select;
+	CIN >> select;
 	
-	cout << "You have selected " << select << endl;
+	COUT << "You have selected " << select << ENDL;
 	
 	switch (select) {
 	case 1:

@@ -36,10 +36,10 @@
 #define __MISC
 
 /*...sIncludes:0:*/
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <time.h>
-#include <fstream.h>
+#include <fstream>
 
 #ifdef __WATCOMC__
 #include <string.hpp>
@@ -136,7 +136,7 @@ public:
 	bool	isOpen;
 	int	offset;
 
-	ofstream* _ostream;
+	std::ofstream* _ostream;
 	bool _binary;
 
 	bool _writeToBuffer;
@@ -231,7 +231,7 @@ bool LB_STDCALL lbOutputStream::close() {
 }
 bool LB_STDCALL lbOutputStream::open() {
 	if (!isOpen) {
-		_ostream = new ofstream(f);
+		_ostream = new std::ofstream(f);
 	}
 	isOpen = true;
 	return true;
@@ -258,7 +258,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 	if (_binary)
 		*_ostream << i;
 	else
-		*_ostream << i << endl;
+		*_ostream << i << ENDL;
 	
 	return *this;
 }
@@ -281,7 +281,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const long i) {
 	if (_binary)
 		*_ostream << i;
 	else
-		*_ostream << i << endl;
+		*_ostream << i << ENDL;
 	
 	return *this;
 }
@@ -310,7 +310,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 	if (_binary)
 		*_ostream << _b;
 	else
-		*_ostream << _b << endl;	
+		*_ostream << _b << ENDL;	
 	
 	return *this;
 }
@@ -332,7 +332,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 	if (_binary)
 		*_ostream << c;
 	else
-		*_ostream << c << endl;
+		*_ostream << c << ENDL;
 	return *this;
 }
 
@@ -359,20 +359,20 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 	}
 
 	if (strlen(string) == 0) {
-		if (!_binary) *_ostream << 1 << endl;
+		if (!_binary) *_ostream << 1 << ENDL;
 		if (_binary)
 			*_ostream << " ";
 		else
-			*_ostream << " " << endl;
+			*_ostream << " " << ENDL;
 		
 		return *this;
 	}
 
-	if (!_binary) *_ostream << strlen(string) << endl;
+	if (!_binary) *_ostream << strlen(string) << ENDL;
 	if (_binary)
 		*_ostream << s;
 	else
-		*_ostream << s << endl;
+		*_ostream << s << ENDL;
 		
 	return *this;
 }
