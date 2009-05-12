@@ -28,7 +28,6 @@ cp ~/develop/Projects/CPP/Plugins/DatabaseReport/repwrt.h CPP/Plugins/DatabaseRe
 # Remove some vendor packages, I do not use yet.
 
 rm -R CPP/vendor/c-goldparser
-
 if [ "$ARCH" == "ppc" ]; then
 	cp CPP/configure ..
 	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -build \
