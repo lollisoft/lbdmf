@@ -1743,6 +1743,10 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::close() {
 	return ERR_NONE;
 }
 
+/** \todo This function should not reread the definition of visible columns.
+ *
+ * If they are not given at initial form creation, then they probably won't be there after another try to collect the data.
+ */
 lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
@@ -1922,9 +1926,10 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			if (definitionFound == false) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
+				
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query	
-				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+				fkpkPanel->init(sampleQuery.getPtr(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
 				fkpkPanel->show();
 				fkpkPanel->destroy();
 				
@@ -1947,14 +1952,34 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				document->insert(&uk, &key);
 				
 				
-				database->open(DBName->charrep());
+				database->open(_DBName->charrep());
 				sampleQuery--;
-				sampleQuery = database->getQuery(DBName->charrep(), 0);
+				sampleQuery = database->getQuery(_DBName->charrep(), 0);
                 
                 char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
 				_LOG << "Got a new query for reopen: " << newSql LOG_
 				sampleQuery->query(newSql, false);
 				free(newSql);
+
+				// Rebind the query and fetch the first entry as it was before finding out foreign keys.
+				if (sampleQuery->bind() != ERR_NONE) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
+					
+					*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
+					
+					*msglog = _trans("Failed to bind columns for query:\n\n");
+					*msglog += SQLString->charrep();
+					*msglog += _trans("\n\nDatabase: ");
+					*msglog += _DBName->charrep();
+					*msglog += _trans("\nUser: ");
+					*msglog += _DBUser->charrep();
+					
+					_LOG << msglog->charrep() LOG_
+					
+					meta->msgBox(_trans("Error"), msg->charrep());
+					return ERR_DB_NODATA;
+				}
 				
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
