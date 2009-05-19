@@ -1886,9 +1886,14 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 	
 	// Caller get's an owner
 	string++;
+	*string = "";
 	
-	boundColumns->getString(column, *&string);
-	
+	if (boundColumns != NULL) {
+		boundColumns->getString(column, *&string);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+
 	return string.getPtr();
 }
 
@@ -1897,9 +1902,14 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(const char* column) {
 	
 	// Caller get's an owner
 	string++;
+	*string = "";
 	
-	boundColumns->getString(column, *&string);
-	
+	if (boundColumns != NULL) {
+		boundColumns->getString(column, *&string);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+
 	return string.getPtr();
 }
 
@@ -1907,7 +1917,12 @@ lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
 	// Caller get's an owner
 	value++;
-	boundColumns->getLong(column, *&value);
+	if (boundColumns != NULL) {
+		boundColumns->getLong(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
 	return value.getPtr();
 }
 
