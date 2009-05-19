@@ -45,26 +45,42 @@ MemPool mempool;
 // The buffer to write the rewritten schema to
 char* rewrittenSchemaDDL = NULL;
 int buffersize = 0;
+int stringsize = 0;
+int allocationsize = 0;
 
 char* strrealloccat(char* toAppend) {
 	char* temp = rewrittenSchemaDDL;
-
-	if (rewrittenSchemaDDL == NULL) {
+	
+	if (temp == NULL) {
 		buffersize = strlen(toAppend)+1;
 		rewrittenSchemaDDL = (char*) malloc(buffersize);
 		rewrittenSchemaDDL[0] = 0;
+		stringsize = buffersize;
 	} else {
-		long s = strlen(rewrittenSchemaDDL)+strlen(toAppend)*2;
+		long s = stringsize+strlen(toAppend)+1;
 		if (buffersize >= s) {
+            stringsize = s;
 		} else {
+            if (buffersize > 1000) allocationsize = 200;
+            if (buffersize > 10000) allocationsize = 2000;
+            if (buffersize > 100000) allocationsize = 20000;
+			
 			buffersize = s;
-			rewrittenSchemaDDL = (char*) malloc(s);
+			
+			if (allocationsize > 1) {
+                rewrittenSchemaDDL = (char*) malloc(s+allocationsize);
+                buffersize += allocationsize;
+			} else {
+                rewrittenSchemaDDL = (char*) malloc(s);
+			}
+			
+            stringsize = s;
 			rewrittenSchemaDDL[0] = 0;
 			strcat(rewrittenSchemaDDL, temp);
 			free(temp);
 		}
 	}
-
+	
 	if (toAppend != NULL) strcat(rewrittenSchemaDDL, toAppend);
 	return rewrittenSchemaDDL;
 }
