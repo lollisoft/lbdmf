@@ -142,7 +142,7 @@ endif
 ifeq ($(DEBUG), no)
 L_OPS = -L. -F$(prefix)/lib `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -o
 endif
-VENDORLIBS=$(HOME)/lib/databaselayer_sqllite.so $(HOME)/lib/sqlite3.so
+VENDORLIBS=-L$(HOME)/lib -llbsqlite3 -L$(prefix)/lib -llbdatabaselayer_sqllite
 endif
 
 endif
