@@ -150,10 +150,10 @@
     <xsl:param name="ApplicationName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
--- Generate application table <xsl:value-of select="@name"/> for <xsl:value-of select="$ApplicationName"/>
 
 <xsl:choose>
 	<xsl:when test="$TargetDatabaseType='PostgreSQL'">
+-- Generate PostgreSQL application relations for table <xsl:value-of select="@name"/> for <xsl:value-of select="$ApplicationName"/>
 		<xsl:call-template name="createPostgreSQLTableRelation">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/>
@@ -162,6 +162,7 @@
 		</xsl:call-template>
 	</xsl:when>
 	<xsl:when test="$TargetDatabaseType='MSSQL'">
+-- Generate MSSQL application relations for table <xsl:value-of select="@name"/> for <xsl:value-of select="$ApplicationName"/>
 		<xsl:call-template name="createMSSQLTableRelation">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/>
@@ -170,6 +171,7 @@
 		</xsl:call-template>
 	</xsl:when>
 	<xsl:when test="$TargetDatabaseType='Sqlite'">
+-- Generate Sqlite application relations for table <xsl:value-of select="@name"/> for <xsl:value-of select="$ApplicationName"/>
 		<xsl:call-template name="createSqliteTableRelation">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/>
@@ -290,19 +292,15 @@ select dropTable('<xsl:value-of select="$TableName"/>');
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
 -- CREATE Sqlite TABLE <xsl:value-of select="$TableName"/>
-CREATE TABLE "<xsl:value-of select="$TableName"/>" (
-	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:if test="position()!=1">,</xsl:if>
-<xsl:variable name="Aggregation" select="@aggregation"/>
-<xsl:choose>
-	<xsl:when test="$Aggregation='none'">
---</xsl:when>
+CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:choose>
+	<xsl:when test="$Aggregation='none'"></xsl:when>
 	<xsl:otherwise>
 		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
 		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
 		<xsl:choose>
 			<xsl:when test="$datatype='bigstring'"></xsl:when>
 			<xsl:when test="$datatype='image'"></xsl:when>
-<xsl:otherwise>
+<xsl:otherwise><xsl:if test="position()!=1">,</xsl:if>
 	"<xsl:value-of select="@name"/>" <xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -487,16 +485,19 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 </xsl:for-each>
 </xsl:template>
 
+<!-- New version of generating foreign key rules based on attribute tagged values -->
 <xsl:template name="createSqliteTableRelation">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:if test="$Aggregation='none'">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/><!--<xsl:if test="position()=1">,</xsl:if>-->
-	<xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:if>
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
+ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+</xsl:if>
 </xsl:for-each>
+
 </xsl:template>
 
 <xsl:template name="createMSSQLTableRelation">
@@ -622,7 +623,7 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">SERIAL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">CHAR(255)</xsl:when>
@@ -636,7 +637,7 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );
 			</xsl:otherwise>
@@ -646,7 +647,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">SERIAL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">CHAR(255)</xsl:when>
@@ -660,7 +661,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );
 			</xsl:otherwise>
@@ -671,7 +672,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			<xsl:when test="$backendType='bool'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">INTEGER</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
@@ -685,7 +686,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 <xsl:if test="@name=''">
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>_<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" FOREIGN KEY ( "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "ID" );
 </xsl:if>
@@ -711,28 +712,34 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="DatatypeID" select="./type/@xmi:idref"/>
 <xsl:variable name="backendType" select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
 -->
-<xsl:variable name="DatatypeID">
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-</xsl:if>
-<xsl:if test="./type/@xmi:type=''">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:if>
-</xsl:variable>
+<!--
 <xsl:if test="./type/@xmi:type=''"><xsl:variable name="backendType" select="//packagedElement[@xmi:id=$DatatypeID]/@name"/></xsl:if>
+-->
+<xsl:variable name="DatatypeID">
+	<xsl:value-of select="./type/@xmi:idref"/>
+</xsl:variable>
+
 <xsl:variable name="backendType">
+<xsl:if test="./type/@xmi:idref!=''">
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
+<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
+</xsl:if>
+</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 	<xsl:choose>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">string</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int</xsl:when>
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
 		</xsl:otherwise>
 	</xsl:choose>
+</xsl:if>
 </xsl:variable>
 <xsl:choose>
 	<xsl:when test="$TargetDatabaseType='PostgreSQL'">
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">SERIAL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">CHAR(255)</xsl:when>
@@ -747,7 +754,13 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+
+<xsl:variable name="primaryKey"><xsl:if test="//packagedElement[@xmi:id=$primaryTableID]/@xmi:type='uml:DataType'"><!-- A foreign key over a type other than int, I think. -->
+<xsl:value-of select="./@name"/>
+</xsl:if><xsl:if test="//packagedElement[@xmi:id=$primaryTableID]/@xmi:type='uml:Class'"><!-- A real foreign key -->
+<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
+</xsl:if></xsl:variable>
+
 
 --ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );</xsl:if>
@@ -759,7 +772,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BIT</xsl:when>
 			<xsl:when test="$backendType='float'">float</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">INTEGER IDENTITY (1, 1) NOT NULL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose></xsl:when>
 			<xsl:when test="$backendType='string'">char(255)</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
@@ -772,7 +785,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 <!--
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 -->
@@ -782,12 +795,12 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		</xsl:choose>
 	</xsl:when>
 	<xsl:when test="$TargetDatabaseType='Sqlite'">
--- Create Sqlite database type for backendType = '<xsl:value-of select="$backendType"/>' as of DatatypeID = '<xsl:value-of select="$DatatypeID"/>'
-		<xsl:choose>
+<!-- Create Sqlite database type for backendType = '<xsl:value-of select="$backendType"/>' as of DatatypeID = '<xsl:value-of select="$DatatypeID"/>'
+-->		<xsl:choose>
 			<xsl:when test="$backendType='bool'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">INTEGER PRIMARY KEY</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
@@ -802,11 +815,45 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<!--<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>-->
+
+<!--
+Due to the case that a foreign key also could point to a field with an unique constraint, I have to enable this here. 
+The sqlite translation to triggers seems also not be a showstopper.
+So use the properties name that is also visually the correct information.
+ -->
+<xsl:variable name="thisAssocID" select="./@xmi:id"/>
+<xsl:variable name="thisAssoc" select="./@association"/>
+<!-- <xsl:variable name="otherSide" select="//packagedElement[@xmi:id=$thisAssoc]/memberEnd[@xmi:idref!=$thisAssocID]/@xmi:id"/>-->
+<xsl:variable name="otherSide" select="//packagedElement[@xmi:id=$thisAssoc]/memberEnd[@xmi:idref!=$thisAssocID]/@xmi:idref"/>
+-- otherSide = '<xsl:value-of select="$otherSide"/>'
+<xsl:variable name="primaryKey"><xsl:value-of select="//ownedAttribute[@xmi:id=$otherSide]/@name"/></xsl:variable>
+<!--
+<xsl:variable name="primaryKey"><xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/></xsl:variable>
+-->
 <!--
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 -->
-ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );</xsl:if>
+<xsl:if test="@name=''">
+</xsl:if>
+<xsl:if test="@name!=''">
+<xsl:if test="$primaryKey!=''">
+-- Org Primary key set
+ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$primaryKey"/>" );
+</xsl:if>
+<xsl:if test="$primaryKey=''">
+<xsl:variable name="foreignkeyname" select="./@name"/>
+<xsl:variable name="RealPrimaryKey">
+<xsl:for-each select="//packagedElement[@xmi:id=$foreignTableID]/ownedAttribute">
+<!-- contains(<xsl:value-of select="@name"/>, <xsl:value-of select="$foreignkeyname"/>) = <xsl:value-of select="contains(@name, $foreignkeyname)"/>-->
+<xsl:if test="contains(@name, $foreignkeyname)"><xsl:if test="@name!=$foreignkeyname"><xsl:value-of select="@name"/></xsl:if></xsl:if>
+<xsl:if test="@name=$foreignkeyname"><xsl:value-of select="@name"/></xsl:if>
+</xsl:for-each>
+</xsl:variable>
+-- Org Primary key not set
+ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ( "<xsl:value-of select="$RealPrimaryKey"/>" );</xsl:if>
+</xsl:if>
+</xsl:if>
 			</xsl:if>
 			</xsl:otherwise>
 <!--			<xsl:if test="./@association!=''"><xsl:if test="./@aggregation='none'">INTEGER</xsl:if></xsl:if>
@@ -827,7 +874,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">SERIAL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">CHAR(255)</xsl:when>
@@ -842,7 +889,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>";</xsl:if>
 			</xsl:if>
@@ -853,7 +900,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		<xsl:choose>
 			<xsl:when test="$backendType='boolean'">BIT</xsl:when>
 			<xsl:when test="$backendType='float'">float</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">INTEGER NOT NULL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose></xsl:when>
 			<xsl:when test="$backendType='string'">char(255)</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
@@ -866,7 +913,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 <!--
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 -->
@@ -880,7 +927,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			<xsl:when test="$backendType='bool'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='boolean'">BOOLEAN</xsl:when>
 			<xsl:when test="$backendType='float'">NUMERIC</xsl:when>
-			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/><xsl:choose>
+			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose>
 <xsl:when test="$primaryKey!=''">INTEGER PRIMARY KEY</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose>
 			</xsl:when>
 			<xsl:when test="$backendType='string'">BPCHAR</xsl:when>
@@ -895,7 +942,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 <!--
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 -->
@@ -924,7 +971,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 	<xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 	<xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
-	<xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='key']/../../@name"/>
+	<xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 		<xsl:if test="$primaryKey!=''">
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 		</xsl:if>
@@ -946,7 +993,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@n
 			<xsl:if test="$lowerValue='1'"><xsl:if test="$upperValue='1'">
 <xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='key']/../../@name"/>
+<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
 				</xsl:if>
 			</xsl:if>

@@ -51,8 +51,7 @@
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
-		-- Class <xsl:value-of select="@name"/> of type ENTITY found.
-				<!--
+				<!-- Class <xsl:value-of select="@name"/> of type ENTITY found.
 					<xsl:call-template name="importApplicationTable">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>

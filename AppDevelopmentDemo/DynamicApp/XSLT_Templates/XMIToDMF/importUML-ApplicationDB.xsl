@@ -148,6 +148,8 @@ END
 GO
 </xsl:if>
 
+<!-- Generate SQL statements to drop tables before creating them -->
+<xsl:if test="$execute_droprules = 'yes'">
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']"><xsl:if test="position()!=1"><!--;--></xsl:if>
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
@@ -176,9 +178,6 @@ GO
 			</xsl:choose>
 		</xsl:for-each>
 
-
-
-
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']"><xsl:if test="position()!=1"><!--;--></xsl:if>
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
@@ -206,7 +205,7 @@ GO
 </xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
-
+</xsl:if>
 
 
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
