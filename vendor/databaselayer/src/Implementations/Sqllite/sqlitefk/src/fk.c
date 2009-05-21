@@ -100,6 +100,7 @@ int WriteFirstColumnRule(Table* table, Column* column, int cols) {
 		
 		sprintf(buffer, templ, column->col, column->type);
 		strrealloccat(buffer);
+		free(buffer);
 		
 		return cols;
 	}
@@ -113,6 +114,7 @@ int WriteColumnRule(Table* table, Column* column, int cols) {
 		cols++;
 		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
+		free(buffer);
 		return cols;
 	}
 	return cols;
@@ -136,7 +138,8 @@ int WriteFirstPrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 		
 		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
-		
+		free(buffer);
+
 		return cols;
 	}
 	return cols;
@@ -149,6 +152,7 @@ int WritePrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 		cols++;
 		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
+		free(buffer);
 		return cols;
 	}
 	return cols;
@@ -217,6 +221,7 @@ void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 							strlen(fk->col)+1);
 		sprintf(buffer, _templ, fk->ftab, fk->fcol, fk->tab, fk->col);
 		strrealloccat(buffer);
+		free(buffer);
 	}
 }
 
@@ -236,8 +241,13 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
-			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->col, fk->ftab, fk->fcol);
+			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+
+										  strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			if (buffer == NULL) {
+				printf("Fatal: Memory allocation failed!\n");
+				exit(1);
+			}
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab,fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
@@ -247,8 +257,13 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->col, fk->ftab, fk->fcol);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->fcol)+
+									strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			if (buffer == NULL) {
+				printf("Fatal: Memory allocation failed!\n");
+				exit(1);
+			}
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
@@ -258,9 +273,15 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
+									strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+100);
+			if (buffer == NULL) {
+				printf("Fatal: Memory allocation failed!\n");
+				exit(1);
+			}
 			sprintf(buffer, _templ, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
 			strrealloccat(buffer);
+			free(buffer);
 		}
 		
 		/*
@@ -274,7 +295,13 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
-			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
+			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+										  strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+
+										  strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			if (buffer == NULL) {
+				printf("Fatal: Memory allocation failed!\n");
+				exit(1);
+			}
 			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
@@ -285,8 +312,11 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+1);
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+									strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+
+									strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, 
+					fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 			
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
@@ -296,9 +326,12 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+1);
+			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+
+									strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
+									strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+100);
 			sprintf(buffer, _templ, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
 			strrealloccat(buffer);
+			free(buffer);
 		}
 	}
 }
