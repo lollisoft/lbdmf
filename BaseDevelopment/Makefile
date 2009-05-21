@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.194 $
+# * $Revision: 1.195 $
 # * $Name:  $
-# * $Id: Makefile,v 1.194 2009/03/12 19:14:00 lollisoft Exp $
+# * $Id: Makefile,v 1.195 2009/05/21 14:57:10 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.195  2009/05/21 14:57:10  lollisoft
+# * Added packaging of DMFToXMI files.
+# *
 # * Revision 1.194  2009/03/12 19:14:00  lollisoft
 # * Added code to copy SQL files into correct place on Linux.
 # *
@@ -1311,6 +1314,7 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/BoUML
 	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
+	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
@@ -1320,6 +1324,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
