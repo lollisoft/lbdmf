@@ -3237,7 +3237,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
-				if (*pt == *&st) {
+				if ((*pt == *&st) && (*colName == *&SourceFieldName)) {
 					if (subClause == 0) {
 						subClause++;
 					} else {
@@ -3301,7 +3301,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
-				if (*pt == *&st) {
+				if ((*pt == *&st) && (*colName == *&SourceFieldName)) {
 					if (subClause == 0) {
 						subClause++;
 					} else {
@@ -4586,10 +4586,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 					UAP(lb_I_Unknown, uk_mapping)
 					uk_mapping = cbMapper->getElement(&key_pos);
 					if (uk_mapping == NULL)  { 
-						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
+						_LOG << "ERROR: cbMapper didn't found an entry for above search argument: " << pos LOG_
 					} else {
-						UAP(lb_I_Integer, FK_id)
-						QI(uk_mapping, lb_I_Integer, FK_id)
+						UAP(lb_I_Long, FK_id)
+						QI(uk_mapping, lb_I_Long, FK_id)
 						int p = FK_id->getData();
 						char pp[20] = "";
 						sprintf(pp, "%d", p);
