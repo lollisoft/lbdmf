@@ -167,6 +167,13 @@ public:
 	 */
 	lbErrCodes LB_STDCALL setupSystemDatabase(lb_I_Unknown* uk);
 
+	/** \brief This function should be used to execute a SQL query.
+	 * The SQL query is executed against the currently active database of the running application.
+	 * Thus, when DatabaseLayerGateway is activated, the Sqlite database backend is used for that
+	 * SQL query. 
+	 */
+	lbErrCodes LB_STDCALL executeQueryFromFile(lb_I_Unknown* uk);
+
 protected:
 
 	/** \brief Load the database forms.
@@ -307,6 +314,57 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_InputStream, is)
+
+	is = metaapp->askOpenFileReadStream("sql|txt");	
+
+	if (is == NULL) return err;
+
+	UAP(lb_I_Query, sampleQuery)
+	UAP(lb_I_Database, sqldb)
+	if (database == NULL) {
+		char* dbbackend = metaapp->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, sqldb, "'database plugin'")
+			_LOG << "lbDynamicApplication::initialize(): Using plugin database backend ..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, sqldb)
+			_LOG << "lbDynamicApplication::initialize(): Using built in database backend ..." LOG_
+		}
+
+		if (database == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		database->init();
+	}
+
+	char* DBName = strdup(appParams->getParameter("DBName", metaapp->getApplicationID())); 
+	char* DBPass = strdup(appParams->getParameter("DBPass", metaapp->getApplicationID())); 
+	char* DBUser = strdup(appParams->getParameter("DBUser", metaapp->getApplicationID()));
+	
+	if (sqldb->connect(DBName, DBName, DBUser, DBPass) == ERR_NONE) {
+		UAP(lb_I_String, sql)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sqlmod)
+		sampleQuery = sqldb->getQuery(DBName, 0);
+		is->open();
+		sql = is->getAsString();
+		*sqlmod = "--Skip rewrite\n";
+		*sqlmod += sql->charrep();
+		if (sampleQuery->query(sqlmod->charrep()) != ERR_NONE) {
+			metaapp->msgBox("Error", "SQL query failed.");
+			return err;
+		}
+	}
+
+	return err;
+}
 
 lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -2779,6 +2837,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomDBFormsToDynamic, "resetCustomDBFormsToDynamic");
 	metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomDBFormsToDynamic", "");
 
+	eman->registerEvent("executeQueryFromFile", unused);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::executeQueryFromFile, "executeQueryFromFile");
+	*editMenu = _trans("&Edit");
+	*menuEntry = _trans("Execute SQL query");
+	metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "executeQueryFromFile", "");
 
 	return ERR_NONE;
 }
