@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.196 $
+# * $Revision: 1.197 $
 # * $Name:  $
-# * $Id: Makefile,v 1.196 2009/05/25 08:16:04 lollisoft Exp $
+# * $Id: Makefile,v 1.197 2009/05/25 17:03:01 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.197  2009/05/25 17:03:01  lollisoft
+# * Corrected file extensions.
+# *
 # * Revision 1.196  2009/05/25 08:16:04  lollisoft
 # * Added include directory.
 # *
@@ -1325,7 +1328,8 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
-	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/CodegenerationTemplates/include/*.xmi $(prefix)/share/lbdmf/include
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/CodegenerationTemplates/include/*.xml $(prefix)/share/lbdmf/include
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/CodegenerationTemplates/include/*.xsl $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
