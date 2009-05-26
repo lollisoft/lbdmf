@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.197 $
+# * $Revision: 1.198 $
 # * $Name:  $
-# * $Id: Makefile,v 1.197 2009/05/25 17:03:01 lollisoft Exp $
+# * $Id: Makefile,v 1.198 2009/05/26 09:15:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.198  2009/05/26 09:15:02  lollisoft
+# * Added creating include directory.
+# *
 # * Revision 1.197  2009/05/25 17:03:01  lollisoft
 # * Corrected file extensions.
 # *
@@ -1319,6 +1322,7 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
 	mkdir -p $(prefix)/share/lbdmf/BoUML
 	mkdir -p $(prefix)/share/lbdmf/Doc
+	mkdir -p $(prefix)/share/lbdmf/include
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
