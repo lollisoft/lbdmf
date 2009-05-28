@@ -139,11 +139,11 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "Using plugin database backend for UML import operation..." LOG_
+			_LOG << "Using plugin database backend for translation..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
-			_LOG << "Using built in database backend for UML import operation..." LOG_
+			_LOG << "Using built in database backend for translation..." LOG_
 		}
 		
 		_LOG << "Translate text with SQL statements..." LOG_
