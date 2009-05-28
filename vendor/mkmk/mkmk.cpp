@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.101 $
+ * $Revision: 1.102 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.101 2009/03/12 18:54:08 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.102 2009/05/28 16:12:27 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.102  2009/05/28 16:12:27  lollisoft
+ * Added option to enable libraries located in bundle.
+ *
  * Revision 1.101  2009/03/12 18:54:08  lollisoft
  * Added a failsave postlink step to enable copying of some files into the Mac type application bundle.
  *
@@ -1359,7 +1362,7 @@ void write_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
@@ -1443,7 +1446,7 @@ void write_wx_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
@@ -1484,7 +1487,7 @@ void write_wx_shared_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
@@ -1768,7 +1771,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.101 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.102 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
