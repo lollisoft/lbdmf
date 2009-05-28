@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.62 2009/02/13 20:42:22 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.63 2009/05/28 16:20:35 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.63  2009/05/28 16:20:35  lollisoft
+ * Some more log messages and added search for libraries in bundle. This has to be reworked and the other changes for searching in bundles too to remove hardcoded executable name.
+ *
  * Revision 1.62  2009/02/13 20:42:22  lollisoft
  * Removed or verbosized some log messages.
  *
@@ -761,9 +764,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 	struct dirent *dir_info;
 	
 /*...sfor direntry:8:*/
+	_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 	if ((dir = opendir(pluginDir)) == NULL) {
 
-	    	free(pluginDir);
+    	free(pluginDir);
 		
 		char* pwd = getenv("PWD");
 		if (pwd == NULL) pwd = ".";
@@ -773,6 +777,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		strcat(pluginDir, pwd);
 		strcat(pluginDir, "/plugins");
 		
+		_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 		if ((dir = opendir(pluginDir)) == NULL) {
 
 			/// \todo Change to a better plugin directory.
@@ -783,15 +788,31 @@ void LB_STDCALL lbPluginManager::initialize() {
 			strcat(pluginDir, pl);
 			strcat(pluginDir, "/plugins");
 
+			_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 			if ((dir = opendir(pluginDir)) == NULL) {
-			    _LOG << "Plugin directory not found." LOG_
-			    
+
 			    free(pluginDir);
-			    
-			    return;
+
+				char* pwd = getenv("PWD");
+				if (pwd == NULL) pwd = ".";
+///\todo Rework this.				
+				pluginDir = (char*) malloc(strlen(pwd)+strlen("/wxWrapper.app/Contents/Resources")+strlen("/plugins")+1);
+				pluginDir[0] = 0;
+				strcat(pluginDir, pwd);
+				strcat(pluginDir, "/wxWrapper.app/Contents/Resources/plugins");
+				
+				_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
+				if ((dir = opendir(pluginDir)) == NULL) {
+					_LOG << "Plugin directory not found." LOG_
+					
+					free(pluginDir);
+					
+					return;
+				}
 			}
 		}
 	}
+	_LOG << "Plugin directory is at '" << pluginDir << "'." LOG_
 /*...e*/
 
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
@@ -990,7 +1011,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 			}
 		}
 		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_ 
-		_CL_VERBOSE "Plugins registered:" LOG_
+		_CL_LOG "Plugins registered:" LOG_
 
 
 		if (beginEnumPlugins()) {
@@ -1003,7 +1024,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 	
 				//pl->initialize();
 				
-				_CL_VERBOSE << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
+				_CL_LOG << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
 #ifdef bla				
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)
