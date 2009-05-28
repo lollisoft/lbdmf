@@ -539,6 +539,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 lb_wxFrame::lb_wxFrame() //:
 //	wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
 {
+	OnQuitAccepted = false;
 	menu_bar = NULL; 
 	gui = NULL;
 	guiCleanedUp = 0;
