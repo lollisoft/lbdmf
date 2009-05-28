@@ -331,7 +331,12 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					char* pwd = "/usr";
 					makePluginName(pwd, module->charrep(), pluginModule);
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+						free(pluginModule);
+						char* pwd = "./wxWrapper.app/Contents/Resources";
+						makePluginName(pwd, module->charrep(), pluginModule);
+						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+							_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
+						}
 					}
 				}
 			}
@@ -431,7 +436,12 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 										makePluginName(pwd, module->charrep(), pluginModule);
 										
 										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-											_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+											free(pluginModule);
+											char* pwd = "./wxWrapper.app/Contents/Resources";
+											makePluginName(pwd, module->charrep(), pluginModule);
+											if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+												_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
+											}
 										}
 									}
 							}
@@ -524,7 +534,12 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 										makePluginName(pwd, module->charrep(), pluginModule);
 										
 										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-											_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+											free(pluginModule);
+											char* pwd = "./wxWrapper.app/Contents/Resources";
+											makePluginName(pwd, module->charrep(), pluginModule);
+											if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+												_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
+											}
 										}
 									}
 								
