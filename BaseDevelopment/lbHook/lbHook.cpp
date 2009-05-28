@@ -478,9 +478,9 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 
 	if ((hinst = LoadLibrary(name)) == NULL)
 	{
-		char *buffer = (char*) malloc(100+strlen(name));
+		char *buffer = (char*) malloc(100+strlen(name)+strlen(__FILE__));
 		buffer[0] = 0;
-		sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name);
+		sprintf(buffer, "%s:%d Kann DLL '%s' nicht laden.\n", __FILE__, __LINE__, name);
 
 		logMessage(buffer);
 		free(buffer);
@@ -530,6 +530,13 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		char* home = NULL;//(char*) malloc(100);
 		char* newname = NULL;
 
+		char* errmsg = dlerror();
+		
+		if (errmsg != NULL) {
+			printf("DLERROR: %s\n", errmsg);
+		}
+		
+		
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
 		home = ".";//getcwd(home, 100);
 
@@ -584,19 +591,84 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 
 				return ERR_NONE;
 			} else {
-					char* errmsg = dlerror();
-
-					if (errmsg != NULL) {
-						printf("DLERROR: %s\n", errmsg);
-					}
+				free(newname);
+				
+				newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
+				//newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("Resources")+strlen("lib")+strlen(name)+6);
+				newname[0] = 0;
+				
+				strcat(newname, ".");
+				strcat(newname, SLASH);
+				strcat(newname, "wxWrapper.app");
+				strcat(newname, SLASH);
+				strcat(newname, "Contents");
+				//strcat(newname, SLASH);
+				//strcat(newname, "Resources");
+				strcat(newname, SLASH);
+				strcat(newname, "lib");
+				strcat(newname, SLASH);
+				strcat(newname, name);
+				
+				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+					m->lib = hinst;
+					m->skip = skipAutoUnload;
+					free(newname);
+					
+					return ERR_NONE;
+				}					
+				char* errmsg = dlerror();
+				
+				if (errmsg != NULL) {
+					printf("DLERROR: %s\n", errmsg);
+				}
 			}
 
 			free(newname);
+		
+			newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
+			strcat(newname, "..");
+			strcat(newname, SLASH);
+			strcat(newname, "plugins");
+			strcat(newname, SLASH);
+			strcat(newname, name);
+			
+#ifndef __WATCOMC__
+		// Quick hack
+#define MAX_PATH 512
+#endif
 
-			char *buffer = (char*) malloc(strlen(name)+100);
+		// Try a trick
+			char oldcwd[MAX_PATH+1] = "";
+			char newcwd[MAX_PATH+1] = "";
+			getcwd(oldcwd, sizeof(oldcwd));
+			strcat(newcwd, ".");
+			strcat(newcwd, SLASH);
+			strcat(newcwd, "wxWrapper.app");
+			strcat(newcwd, SLASH);
+			strcat(newcwd, "Contents");
+			strcat(newcwd, SLASH);
+			strcat(newcwd, "lib");
+		
+			chdir(newcwd);
+			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				m->lib = hinst;
+				m->skip = skipAutoUnload;
+				free(newname);
+				
+				chdir(oldcwd);
+				return ERR_NONE;
+			}
+			chdir(oldcwd);
+			errmsg = dlerror();
+		
+			if (errmsg != NULL) {
+				printf("DLERROR: %s\n", errmsg);
+			}
+		
+			char *buffer = (char*) malloc(strlen(name)+strlen(__FILE__)+100);
 			buffer[0] = 0;
 
-			sprintf(buffer, "Kann SO module '%s' nicht laden.\n", name);
+			sprintf(buffer, "%s:%d Kann SO module '%s' nicht laden.\n", __FILE__, __LINE__, name);
 
 			logMessage(buffer);
 			free(buffer);
