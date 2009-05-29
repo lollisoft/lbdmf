@@ -33,16 +33,15 @@
 		&lt;packagedElement xmi:type="uml:Class" name="<xsl:value-of select="$FormularName"/>" xmi:id="<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>" visibility="package" isAbstract="false"&gt;
 						&lt;xmi:Extension extender="Bouml"&gt;
 							&lt;stereotype name="form"/&gt;
-							&lt;taggedValue tag="toolbarimage" value="<xsl:value-of select="./@toolbarimage"/>"/&gt;
+							&lt;taggedValue tag="lbDMF:toolbarimagefile" value="<xsl:value-of select="./@toolbarimage"/>"/&gt;
 						&lt;/xmi:Extension&gt;
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
-<xsl:variable name="TableName" select="@tablename"/>
+<xsl:variable name="TableName" select="$FormName"/>
 
 <xsl:variable name="IsSpecialType" select="//columntypes/columntype[@tablename=$TableName][@name=$FieldName]/@specialcolumn"/>
 <xsl:variable name="SpecialType" select="//columntypes/columntype[@tablename=$TableName][@name=$FieldName]/@controltype"/>
-
 <xsl:choose>
 	<xsl:when test="@isfk='1'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
@@ -75,7 +74,14 @@
 					&lt;stereotype name="lbDMF:toolbarimagefile"/&gt;
 				&lt;/xmi:Extension&gt;
 			&lt;/ownedAttribute&gt;
-
+			</xsl:when>
+			<xsl:when test="$IsSpecialType='true' and $SpecialType='toolbarimagefile'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_String"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;stereotype name="lbDMF:toolbarimagefile"/&gt;
+				&lt;/xmi:Extension&gt;
+			&lt;/ownedAttribute&gt;
 			</xsl:when>
 	<xsl:otherwise>
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
@@ -111,7 +117,7 @@
 					</xsl:when>
 					<xsl:when test="$handler='instanceOflbDetailFormAction'">
 					<!-- A open detail form action -->
-<xsl:variable name="tempFormularName" select="//formulare/formular[@ID = $FormularID]/@name"/>
+<xsl:variable name="tempFormularName1" select="//formulare/formular[@ID = $FormularID]/@name"/>
 <xsl:variable name="TFormularName">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
@@ -119,7 +125,7 @@
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularName1"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -161,20 +167,69 @@
 
 <xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
 
-<!--
-			<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x32e780" visibility="package" association="ASSOC_BOUML_0x32e780" aggregation="none">
-				<type xmi:idref="BOUML_0x32d010"/>
-				<xmi:Extension extender="Bouml">
-					<stereotype name="masterdetail_action"/>
-				</xmi:Extension>
-			</ownedAttribute>
--->
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$TTargetFormularName"/>" xmi:id="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" visibility="protected" association="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" aggregation="none"&gt;
 				&lt;type xmi:idref="<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;stereotype name="lbDMF:masterdetail_action"/&gt;
+			<!--	&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="$ActionSource"/>"/&gt;	-->
+				&lt;/xmi:Extension&gt;
 			&lt;/ownedAttribute&gt;
 					</xsl:when>
 					<xsl:when test="$handler='instanceOflbMasterFormAction'">
-					<!-- A open master form action -->
+					<!-- A open detail form action -->
+<xsl:variable name="tempFormularName1" select="//formulare/formular[@ID = $FormularID]/@name"/>
+<xsl:variable name="TFormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName1"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="targetForm" select="@what"/>
+
+<xsl:variable name="tempTargetFormularName" select="@what"/>
+<xsl:variable name="TTargetFormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempTargetFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
+
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$TTargetFormularName"/>" xmi:id="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" visibility="protected" association="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" aggregation="none"&gt;
+				&lt;type xmi:idref="<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
+			&lt;/ownedAttribute&gt;
 					</xsl:when>
 					<xsl:when test="$handler='instanceOflbDMFXslt'">
 					<!-- Perform a code generation -->
@@ -219,6 +274,7 @@
 		
 <xsl:for-each select="//formularactions/action[@formularid=$FormularID]">
 	<xsl:variable name="ActionID" select="@actionid"/>
+	<xsl:variable name="ActionSource" select="//actions/action[@ID=$ActionID]/@source"/>
 	<xsl:choose>
 		<xsl:when test="//actions/action[@ID=$ActionID]/@typ='1'">
 		<!-- A Button press action -->
@@ -237,7 +293,7 @@
 					</xsl:when>
 					<xsl:when test="$handler='instanceOflbDetailFormAction'">
 					<!-- A open detail form action -->
-<xsl:variable name="tempFormularName" select="//formulare/formular[@ID = $FormularID]/@name"/>
+<xsl:variable name="tempFormularName2" select="//formulare/formular[@ID = $FormularID]/@name"/>
 <xsl:variable name="TFormularName">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
@@ -245,7 +301,7 @@
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularName2"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -286,21 +342,84 @@
 </xsl:variable>
 
 <xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
-<!--
-			&lt;packagedElement xmi:type="uml:Dependency" xmi:id="Action_<xsl:value-of select="@ID"/>" client="<xsl:value-of select="$TFormularName"/>_<xsl:value-of select="$FormularID"/>" supplier="<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"&gt;
-			&lt;/packagedElement&gt;
--->
 			&lt;packagedElement xmi:type="uml:Association" xmi:id="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" name="<xsl:value-of select="$TTargetFormularName"/>" visibility="package"&gt;
 				&lt;memberEnd xmi:idref="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
 				&lt;ownedEnd xmi:type="uml:Property" xmi:id="Reverse_<xsl:value-of select="@ID"/>" 
 						association="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" 
 						visibility="private" type="<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>" aggregation="none" isNavigable="false"/&gt;
 				&lt;memberEnd  xmi:idref="Reverse_<xsl:value-of select="@ID"/>"/&gt;
+<!--
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;stereotype name="lbDMF:masterdetail_action"/&gt;
+					&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="$ActionSource"/>"/&gt;
+				&lt;/xmi:Extension&gt;
+-->
 			&lt;/packagedElement&gt;
-					
 					</xsl:when>
 					<xsl:when test="$handler='instanceOflbMasterFormAction'">
 					<!-- A open master form action -->
+<xsl:variable name="tempFormularName2" select="//formulare/formular[@ID = $FormularID]/@name"/>
+<xsl:variable name="TFormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName2"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="targetForm" select="@what"/>
+
+<xsl:variable name="tempTargetFormularName" select="@what"/>
+<xsl:variable name="TTargetFormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempTargetFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
+			&lt;packagedElement xmi:type="uml:Association" xmi:id="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" name="<xsl:value-of select="$TTargetFormularName"/>" visibility="package"&gt;
+				&lt;memberEnd xmi:idref="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
+				&lt;ownedEnd xmi:type="uml:Property" xmi:id="Reverse_<xsl:value-of select="@ID"/>" 
+						association="Assoc_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" 
+						visibility="private" type="<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>" aggregation="none" isNavigable="false"/&gt;
+				&lt;memberEnd  xmi:idref="Reverse_<xsl:value-of select="@ID"/>"/&gt;
+<!--
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;stereotype name="lbDMF:detailmaster_action"/&gt;
+					&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="$ActionSource"/>"/&gt;
+				&lt;/xmi:Extension&gt;
+-->
+			&lt;/packagedElement&gt;
 					</xsl:when>
 				</xsl:choose>
 			</xsl:for-each>
@@ -318,6 +437,7 @@
 <!-- Generate the unidirectional association properties for this class -->
 <xsl:for-each select="//formularactions/action[@formularid=$FormularID]">
 	<xsl:variable name="ActionID" select="@actionid"/>
+	<xsl:variable name="ActionSource" select="//actions/action[@ID=$ActionID]/@source"/>
 	<xsl:choose>
 		<xsl:when test="//actions/action[@ID=$ActionID]/@typ='1'">
 		<!-- A Button press action -->
@@ -384,8 +504,38 @@
 	</xsl:call-template>
 </xsl:variable>
 
-<xsl:variable name="tempFormularName" select="$FormName"/>
+<xsl:variable name="tempFormularName3" select="$FormName"/>
 <xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName3"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
+			&lt;lbDMF:masterdetail_action xmi:id="STELT_Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" 
+			sourcecolumn="<xsl:value-of select="$ActionSource"/>"
+			base_Element="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
+					</xsl:when>
+					<xsl:when test="$handler='instanceOflbMasterFormAction'">
+					<!-- A open master form action -->
+<xsl:variable name="tempFormularName" select="//formulare/formular[@ID = $FormularID]/@name"/>
+<xsl:variable name="TFormularName">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
@@ -407,11 +557,58 @@
 	</xsl:call-template>
 </xsl:variable>
 
+<xsl:variable name="targetForm" select="@what"/>
+
+<xsl:variable name="tempTargetFormularName" select="@what"/>
+<xsl:variable name="TTargetFormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempTargetFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+<xsl:variable name="tempFormularName3" select="$FormName"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName3"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
 <xsl:variable name="targetFormID" select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@name=$targetForm]/@ID"/>
-			&lt;lbDMF:masterdetail_action xmi:id="STELT_Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" base_Element="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
-					</xsl:when>
-					<xsl:when test="$handler='instanceOflbMasterFormAction'">
-					<!-- A open master form action -->
+			&lt;lbDMF:detailmaster_action xmi:id="STELT_Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>" 
+			sourcecolumn="<xsl:value-of select="$ActionSource"/>"
+			base_Element="Prop_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="$TTargetFormularName"/>_<xsl:value-of select="$targetFormID"/>"/&gt;
 					</xsl:when>
 				</xsl:choose>
 			</xsl:for-each>
@@ -434,7 +631,9 @@
 -->
 </xsl:for-each>
 <xsl:for-each select="//foreignkeys/foreignkey[@fktable=$EntityName][@fkcolumn=$FieldName]">
-			&lt;lbDMF:relationship xmi:id="STELT_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" base_Element="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>"/&gt;
+			&lt;lbDMF:relationship xmi:id="STELT_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" 
+			sourcecolumn="<xsl:value-of select="@pkcolumn"/>" table="<xsl:value-of select="@pktable"/>" order="<xsl:value-of select="@keysequence"/>"
+			base_Element="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>"/&gt;
 </xsl:for-each>
 </xsl:for-each>
 </xsl:template>
@@ -545,38 +744,25 @@
 <xsl:for-each select="//dbcolumns/column[@tablename=$TName]">
 <xsl:variable name="FieldName" select="@name"/>
 <xsl:variable name="TableName" select="@tablename"/>
-<xsl:for-each select="//foreignkeys/foreignkey[@pktable=$TName][@pkcolumn=$FieldName]">
-			&lt;ownedAttribute xmi:type="uml:Property" 
-<!--			name="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@ID"/>"-->
-			name="<xsl:value-of select="@fkcolumn"/>"
-			xmi:id="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" 
-			visibility="protected" 
-			association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
-				&lt;type xmi:idref="ID_<xsl:value-of select="@fktable"/>"/&gt;
-				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
-				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
-			&lt;/ownedAttribute&gt;
-</xsl:for-each>
-<xsl:for-each select="//foreignkeys/foreignkey[@fktable=$TName][@fkcolumn=$FieldName]">
-			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@ID"/>" 
-			xmi:id="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" 
-			visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" 
-			aggregation="none"&gt;
-				&lt;type xmi:idref="ID_<xsl:value-of select="@pktable"/>"/&gt;
-				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
-				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
-			&lt;/ownedAttribute&gt;
-</xsl:for-each>
-<xsl:choose>
-	<xsl:when test="@isfk='1'">
-<!--
+
+<xsl:variable name="isForeignKey">
+<xsl:for-each select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]"><xsl:if test="position()=0"><xsl:value-of select="$FieldName"/></xsl:if></xsl:for-each>
+</xsl:variable>
+
+
+<xsl:for-each select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]"><xsl:if test="position()=0">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_ForeignKey"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="@pkcolumn"/>"/&gt;
+					&lt;taggedValue tag="lbDMF:table" value="<xsl:value-of select="@pktable"/>"/&gt;
+					&lt;taggedValue tag="lbDMF:order" value="<xsl:value-of select="@keysequence"/>"/&gt;
+				&lt;/xmi:Extension&gt;
 			&lt;/ownedAttribute&gt;
--->
-	</xsl:when>
-	<xsl:otherwise>
-		<xsl:choose>
+</xsl:if>
+</xsl:for-each>
+<xsl:if test="$isForeignKey!=$FieldName">
+	<xsl:choose>
 			<xsl:when test="@typ='Bit'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
@@ -587,20 +773,58 @@
 				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
+			<xsl:when test="@typ='datetime'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Datetime"/&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='decimal'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Float"/&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
 			<xsl:when test="@typ='Float'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Float"/&gt;
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
-			<xsl:when test="@typ='int4'">
+			<xsl:when test="@typ='int'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Integer"/&gt;
 				<xsl:if test="//primarykeys/primarykey[@pktable=$TName][@pkcolumn=$FieldName]">
 					&lt;xmi:Extension extender="Bouml"&gt;
-						&lt;stereotype name="key"/&gt;
+						&lt;stereotype name="lbDMF:pk"/&gt;
+					&lt;/xmi:Extension&gt;
+				</xsl:if>
+				<xsl:if test="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]">
+					&lt;xmi:Extension extender="Bouml"&gt;
+						&lt;stereotype name="lbDMF:fk"/&gt;
+						&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@pkcolumn"/>"/&gt;
+						&lt;taggedValue tag="lbDMF:table" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@pktable"/>"/&gt;
+						&lt;taggedValue tag="lbDMF:order" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@keysequence"/>"/&gt;
 					&lt;/xmi:Extension&gt;
 				</xsl:if>
 			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='int4'">
+
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Integer"/&gt;
+				<xsl:if test="//primarykeys/primarykey[@pktable=$TName][@pkcolumn=$FieldName]">
+					&lt;xmi:Extension extender="Bouml"&gt;
+						&lt;stereotype name="lbDMF:pk"/&gt;
+					&lt;/xmi:Extension&gt;
+				</xsl:if>
+				<xsl:if test="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]">
+					&lt;xmi:Extension extender="Bouml"&gt;
+						&lt;stereotype name="lbDMF:fk"/&gt;
+						&lt;taggedValue tag="lbDMF:sourcecolumn" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@pkcolumn"/>"/&gt;
+						&lt;taggedValue tag="lbDMF:table" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@pktable"/>"/&gt;
+						&lt;taggedValue tag="lbDMF:order" value="<xsl:value-of select="//foreignkeys/foreignkey[@fkcolumn=$FieldName][@fktable=$TableName]/@keysequence"/>"/&gt;
+					&lt;/xmi:Extension&gt;
+				</xsl:if>
+			&lt;/ownedAttribute&gt;
+
 			</xsl:when>
 			<xsl:when test="@typ='bpchar'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
@@ -622,11 +846,42 @@
 </xsl:if>
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
+			<xsl:when test="@typ='varchar'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Text"/&gt;
+<xsl:if test="//formularfields/formular[@fktable=$TName][@fkname=$FieldName]/@isfk=1">
+				&lt;xmi:Extension extender="Bouml"&gt;
+					&lt;stereotype name="visible"/&gt;
+				&lt;/xmi:Extension&gt;
+</xsl:if>
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
 		</xsl:choose>
-	</xsl:otherwise>
-</xsl:choose>
-</xsl:for-each>
+</xsl:if>
 
+<xsl:for-each select="//foreignkeys/foreignkey[@pktable=$TName][@pkcolumn=$FieldName]">
+			&lt;ownedAttribute xmi:type="uml:Property" 
+<!--			name="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@ID"/>"-->
+			name="<xsl:value-of select="@fkcolumn"/>"
+			xmi:id="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" 
+			visibility="protected" 
+			association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
+				&lt;type xmi:idref="ID_<xsl:value-of select="@fktable"/>"/&gt;
+				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
+				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
+			&lt;/ownedAttribute&gt;
+</xsl:for-each>
+<xsl:for-each select="//foreignkeys/foreignkey[@fktable=$TName][@fkcolumn=$FieldName]">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<!--<xsl:value-of select="@pkcolumn"/>-->" 
+			xmi:id="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" 
+			visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" 
+			aggregation="none"&gt;
+				&lt;type xmi:idref="ID_<xsl:value-of select="@pktable"/>"/&gt;
+				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
+				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
+			&lt;/ownedAttribute&gt;
+</xsl:for-each>
+</xsl:for-each>
 		&lt;/packagedElement&gt;
 
 
