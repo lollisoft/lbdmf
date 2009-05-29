@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.102 $
+ * $Revision: 1.103 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.102 2009/05/28 16:12:27 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.103 2009/05/29 13:42:52 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.103  2009/05/29 13:42:52  lollisoft
+ * Deactivated calling Rez.
+ *
  * Revision 1.102  2009/05/28 16:12:27  lollisoft
  * Added option to enable libraries located in bundle.
  *
@@ -904,7 +907,7 @@ void writeBundleTarget(char* modulename) {
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
 
   // Write Mac OS X Bundle
-  printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
+  printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
   printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
   printf("\t\t-$(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
   printf("\t\trm -Rf %s.app\n", modulename);
@@ -1771,7 +1774,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.102 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.103 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
