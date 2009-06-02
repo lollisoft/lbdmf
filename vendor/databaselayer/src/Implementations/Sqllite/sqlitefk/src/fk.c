@@ -309,9 +309,10 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
-			char* buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+
-										  strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+
-										  strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			char* buffer = (char*) malloc(strlen(_templ)+
+										  strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+										  strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+
+										  strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
@@ -326,9 +327,11 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(table->name)+
-									strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+
-									strlen(fk->col)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			buffer = (char*) malloc(strlen(_templ)+
+									strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+									strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+
+									strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+			
 			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, 
 					fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
