@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.154 $
+ * $Revision: 1.155 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.154 2009/03/14 22:12:12 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.155 2009/06/02 18:11:31 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.155  2009/06/02 18:11:31  lollisoft
+ * Added search path for ../Database in case if initial SQL scripts are only located in development directory.
+ *
  * Revision 1.154  2009/03/14 22:12:12  lollisoft
  * Corrected linux part of initial SQL file lookup.
  *
@@ -1356,6 +1359,9 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 	} else {
 		/// \todo Implement lookup correctly for other cases.
 
+		if (FileExists("../Database/lbDMF-Sqlite-SystemDB.sql")) {
+			*initialDatabaseLocation = "../Database/";
+		} else
 		if (FileExists("/usr/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
 			*initialDatabaseLocation = "/usr/share/lbdmf/database/";
 		} else
