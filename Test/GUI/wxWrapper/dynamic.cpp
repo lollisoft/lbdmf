@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.157 2009/03/19 17:11:00 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.158 2009/06/02 19:33:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.157 $
+ * $Revision: 1.158 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.157 2009/03/19 17:11:00 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.158 2009/06/02 19:33:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.158  2009/06/02 19:33:10  lollisoft
+ * Added some debug messages to determine a crash in installation.
+ *
  * Revision 1.157  2009/03/19 17:11:00  lollisoft
  * Added a flag to avoid multiple calls to load the XRC resource.
  *
@@ -2338,6 +2341,8 @@ bool MyApp::OnInit(void)
 		if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
+    _LOG << "Start enumerating plugins to call their autorun function." LOG_
+
     if (PM->beginEnumPlugins()) {
 		
     while (TRUE) {
@@ -2351,7 +2356,11 @@ bool MyApp::OnInit(void)
     frame->Show(TRUE);
     
 #ifdef LINUX
-    if (splash != NULL) splash->Raise();
+    if (splash != NULL) {
+    	_LOG << "Raise splash." LOG_
+	splash->Raise();
+    	_LOG << "Raised splash." LOG_
+    }    
 #endif
 
     if (metaApp != NULL) metaApp->run();
