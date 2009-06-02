@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.158 2009/06/02 19:33:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.159 2009/06/02 20:37:31 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.158 $
+ * $Revision: 1.159 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.158 2009/06/02 19:33:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.159 2009/06/02 20:37:31 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.159  2009/06/02 20:37:31  lollisoft
+ * Using always wxSTAY_ON_TOP from now on and deactivated calling Raise.
+ *
  * Revision 1.158  2009/06/02 19:33:10  lollisoft
  * Added some debug messages to determine a crash in installation.
  *
@@ -2304,7 +2307,7 @@ bool MyApp::OnInit(void)
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 		6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
-		wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+		wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
 #ifdef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP);
@@ -2315,7 +2318,7 @@ bool MyApp::OnInit(void)
 									wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
-									wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+									wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
 #ifdef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP);
@@ -2355,7 +2358,7 @@ bool MyApp::OnInit(void)
 
     frame->Show(TRUE);
     
-#ifdef LINUX
+#ifdef bla //LINUX
     if (splash != NULL) {
     	_LOG << "Raise splash." LOG_
 	splash->Raise();
