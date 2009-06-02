@@ -238,62 +238,62 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL) AND NOT new.%s IS NULL\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_ins violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			char* buffer = (char*) malloc(	strlen(_templ)+
-							strlen(fk->ftab)+strlen(fk->col)+strlen(fk->ftab)+
-							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(fk->fcol)+
-							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+							strlen(fk->tab)+strlen(fk->col)+strlen(fk->tab)+
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+
+							strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
-			sprintf(buffer, _templ, fk->ftab, fk->col, fk->ftab,
-						fk->fcol, fk->ftab, fk->fcol, fk->fcol, fk->fcol,
-						fk->fcol, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, fk->tab, fk->col, fk->tab,
+						fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col,
+						fk->tab, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL) AND NOT new.%s IS NULL\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_upd violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
 			
 			buffer = (char*) malloc(	strlen(_templ)+
-							strlen(fk->ftab)+strlen(fk->col)+strlen(fk->ftab)+
-							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(fk->fcol)+
-							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+							strlen(fk->tab)+strlen(fk->col)+strlen(fk->tab)+
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+
+							strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
-			sprintf(buffer, _templ, fk->ftab, fk->col, fk->ftab,
-						fk->fcol, fk->ftab, fk->fcol, fk->fcol, fk->fcol,
-						fk->fcol, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, fk->tab, fk->col, fk->tab,
+						fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col,
+						fk->tab, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_del violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
 			buffer = (char*) malloc(strlen(_templ)+
-						strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+
-						strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
-						strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+100);
+						strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+
+						strlen(fk->col)+strlen(fk->tab)+strlen(fk->col)+strlen(fk->fcol)+
+						strlen(fk->tab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
 			sprintf(buffer, _templ, 
-						table->name, fk->col, fk->ftab, 
-						fk->col, table->name, fk->col, fk->fcol, 
-						fk->fcol, table->name, fk->col);
+						fk->tab, fk->col, fk->ftab, 
+						fk->col, fk->tab, fk->col, fk->fcol, 
+						fk->tab, fk->col, table->name, fk->col);
 			strrealloccat(buffer);
 			free(buffer);
 		}
@@ -306,47 +306,56 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_ins violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			char* buffer = (char*) malloc(strlen(_templ)+
-										  strlen(table->name)+strlen(fk->col)+strlen(table->name)+
-										  strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+
-										  strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+					  strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+					  strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+
+					  strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, 
+					table->name, fk->col, table->name, 
+					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, 
+					fk->tab, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_upd violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
 			buffer = (char*) malloc(strlen(_templ)+
-									strlen(table->name)+strlen(fk->col)+strlen(table->name)+
-									strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+
-									strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
+					strlen(table->name)+strlen(fk->col)+strlen(table->name)+
+					strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+
+					strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			
-			sprintf(buffer, _templ, table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, 
-					fk->fcol, fk->col, fk->col, fk->ftab, fk->fcol);
+			sprintf(buffer, _templ, 
+					table->name, fk->col, table->name, 
+					fk->col, fk->fcol, fk->ftab, fk->fcol,
+					fk->tab, fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 			
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
-				   "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+				   "                 THEN RAISE(ABORT, 'fk_%s_%s_del violates foreign key %s(%s)')\n"
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			buffer = (char*) malloc(strlen(_templ)+strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+
-									strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
-									strlen(fk->fcol)+strlen(table->name)+strlen(fk->col)+100);
-			sprintf(buffer, _templ, table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol, fk->fcol, table->name, fk->col);
+			buffer = (char*) malloc(strlen(_templ)+
+						strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+
+						strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
+						strlen(fk->tab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+100);
+			sprintf(buffer, _templ, 
+					table->name, fk->col, fk->ftab, 
+					fk->col, table->name, fk->col, fk->fcol, 
+					fk->tab, fk->col, table->name, fk->col);
 			strrealloccat(buffer);
 			free(buffer);
 		}
