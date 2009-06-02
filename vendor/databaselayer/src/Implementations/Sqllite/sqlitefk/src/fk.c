@@ -227,7 +227,6 @@ void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 
 void WriteTriggerRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
-	PrimaryKey* pk;
 	
 	if (at->type == ALTER_FK) {
 		fk = at->fk;
@@ -244,15 +243,15 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "END;\n";
 			char* buffer = (char*) malloc(	strlen(_templ)+
 							strlen(fk->ftab)+strlen(fk->col)+strlen(fk->ftab)+
-							strlen(pk->col)+strlen(pk->tab)+strlen(pk->col)+strlen(pk->col)+strlen(pk->col)+
-							strlen(fk->fcol)+strlen(pk->tab)+strlen(pk->col)+100);
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(fk->fcol)+
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
 			sprintf(buffer, _templ, fk->ftab, fk->col, fk->ftab,
-						pk->col, pk->tab, pk->col, pk->col, pk->col,
-						fk->fcol, pk->tab, pk->col);
+						fk->fcol, fk->ftab, fk->fcol, fk->fcol, fk->fcol,
+						fk->fcol, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
@@ -265,15 +264,15 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 			
 			buffer = (char*) malloc(	strlen(_templ)+
 							strlen(fk->ftab)+strlen(fk->col)+strlen(fk->ftab)+
-							strlen(pk->col)+strlen(pk->tab)+strlen(pk->col)+strlen(pk->col)+strlen(pk->col)+
-							strlen(fk->fcol)+strlen(pk->tab)+strlen(pk->col)+100);
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->fcol)+strlen(fk->fcol)+
+							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+100);
 			if (buffer == NULL) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
 			sprintf(buffer, _templ, fk->ftab, fk->col, fk->ftab,
-						pk->col, pk->tab, pk->col, pk->col, pk->col,
-						fk->fcol, pk->tab, pk->col);
+						fk->fcol, fk->ftab, fk->fcol, fk->fcol, fk->fcol,
+						fk->fcol, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
 			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
