@@ -276,7 +276,9 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		printf(strErrorMessage);
+	printf("\n");
+	printf(strErrorMessage);
+	printf("\nSQL: \n%s", rewrittenQuery.c_str());
         sqlite3_free(szErrorMessage);
         return NULL;
       }
