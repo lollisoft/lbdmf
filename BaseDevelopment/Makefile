@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.199 $
+# * $Revision: 1.200 $
 # * $Name:  $
-# * $Id: Makefile,v 1.199 2009/06/02 10:27:15 lollisoft Exp $
+# * $Id: Makefile,v 1.200 2009/06/03 09:33:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.200  2009/06/03 09:33:53  lollisoft
+# * Added support for creating debug rpm packages.
+# *
 # * Revision 1.199  2009/06/02 10:27:15  lollisoft
 # * Changed source path for copying XSLT templates.
 # *
@@ -1290,6 +1293,7 @@ endif
 
 all_targets: $(ALLTARGETS)
 
+ifndef RPMBUILD
 
 install:
 	for sub_target in $(ALLDIRS); do \
@@ -1297,7 +1301,6 @@ install:
 	done
 	$(MAKE) -C ../AppDevelopment install
 
-ifndef RPMBUILD
 
 install-strip:
 	for sub_target in $(ALLDIRS); do \
@@ -1313,6 +1316,36 @@ install-strip:
 endif
 
 ifdef RPMBUILD
+
+install:
+	for sub_target in $(ALLDIRS); do \
+		$(MAKE) -C $$sub_target install; \
+	done
+	echo mkdir -p $(prefix)/lib
+	mkdir -p $(prefix)/share
+	mkdir -p $(prefix)/share/lbdmf
+	mkdir -p $(prefix)/share/applications
+	mkdir -p $(prefix)/share/lbdmf/toolbarimages
+	mkdir -p $(prefix)/share/lbdmf/BoUML
+	mkdir -p $(prefix)/share/lbdmf/Doc
+	mkdir -p $(prefix)/share/lbdmf/include
+	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
+	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
+	mkdir -p $(prefix)/share/lbdmf/database
+	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xml $(prefix)/share/lbdmf/include
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
+	./copy-wxGTK-libs.sh $(prefix)
 
 install-strip:
 	for sub_target in $(ALLDIRS); do \
