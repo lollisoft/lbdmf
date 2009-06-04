@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.63 2009/05/28 16:20:35 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.64 2009/06/04 12:27:50 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.64  2009/06/04 12:27:50  lollisoft
+ * Added new functions into plugin manager and plugin module to support query of registered modules.
+ *
  * Revision 1.63  2009/05/28 16:20:35  lollisoft
  * Some more log messages and added search for libraries in bundle. This has to be reworked and the other changes for searching in bundles too to remove hardcoded executable name.
  *
@@ -359,6 +362,10 @@ public:
 
         bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
         bool LB_STDCALL detach(lb_I_PluginModule* toAttach);
+
+	lb_I_String* LB_STDCALL getPluginDirectory();
+
+	bool LB_STDCALL isRegistered(const char* name);
         
 private:
 
@@ -379,6 +386,8 @@ private:
 
 	UAP(lb_I_Container, PluginServerModules)
 	UAP(lb_I_Container, PluginServerContainer)
+
+	UAP(lb_I_String, MyPluginDir)
 	
 	bool firstPlugin;
 	bool lastPlugin;
@@ -401,11 +410,42 @@ lbPluginManager::lbPluginManager() {
 	firstPlugin = true;
 	lastPlugin = false;
 	isInitialized = false;
+	REQUEST(getModuleInstance(), lb_I_String, MyPluginDir)
 	_CL_LOG << "lbPluginManager::lbPluginManager() called." LOG_
 }
 
 lbPluginManager::~lbPluginManager() {
 	_CL_LOG << "lbPluginManager::~lbPluginManager() called." LOG_
+}
+
+lb_I_String* LB_STDCALL lbPluginManager::getPluginDirectory() {
+	MyPluginDir++;
+	return MyPluginDir.getPtr();
+}
+
+bool LB_STDCALL lbPluginManager::isRegistered(const char* name) {
+	lbErrCodes err = ERR_NONE;
+	PluginModules->finishIteration();
+	while (PluginModules->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_PluginModule, plM)
+			
+		uk = PluginModules->nextElement();
+
+		QI(uk, lb_I_PluginModule, plM)
+
+		if (plM != NULL) {
+			UAP(lb_I_String, compare)
+			compare = plM->getModule();
+
+			if (*compare == name) {
+				PluginModules->finishIteration();
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 /*...svoid LB_STDCALL lbPluginManager\58\\58\unload\40\\41\:0:*/
@@ -813,6 +853,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		}
 	}
 	_LOG << "Plugin directory is at '" << pluginDir << "'." LOG_
+	*MyPluginDir = pluginDir;
 /*...e*/
 
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);

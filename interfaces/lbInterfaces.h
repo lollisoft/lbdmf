@@ -3810,6 +3810,16 @@ public:
 	 * stored permanently for replacing with other implementation.
 	 */
 	virtual bool LB_STDCALL detach(lb_I_PluginModule* toAttach) = 0;
+
+	/** \brief Return the found plugin directory.
+	 * There are some possible locations of plugins. The first location that is found will be used and returned here.
+	 */
+	virtual lb_I_String* LB_STDCALL getPluginDirectory() = 0;
+
+	/** \brief Check if a plugin module is registered.
+	 * Checks, if there is a plugin module registered with the given name.
+	 */
+	virtual bool LB_STDCALL isRegistered(const char* name) = 0;
 };
 /*...e*/
 
@@ -3821,11 +3831,16 @@ public:
  */
 class lb_I_PluginModule : public lb_I_Unknown {
 public:
-	/**
+	/** \brief Store the name of the module.
 	 * Set the name of the module. Typically the path and name to the shared library.
 	 */
 
 	virtual void LB_STDCALL setModule(char* module) = 0;
+
+	/** \brief Get the name of the module.
+	 * Returns the name of the module.
+	 */
+	virtual lb_I_String* LB_STDCALL getModule() = 0;
 
 	/**
 	 * Get the list of plugins for the current plugin module.
@@ -3849,6 +3864,7 @@ protected:
 
 #define DECLARE_PLUGINS() \
 	virtual void LB_STDCALL setModule(char* module); \
+	virtual lb_I_String* LB_STDCALL getModule(); \
 	virtual lb_I_Container* LB_STDCALL getPlugins(); \
 	virtual void LB_STDCALL enumPlugins(); \
 	UAP(lb_I_Container, Plugins) \
@@ -3862,6 +3878,10 @@ void LB_STDCALL cls::setModule(char* module) { \
 	} \
 	*_module = module; \
 } \
+lb_I_String* LB_STDCALL cls::getModule() { \
+	_module++; \
+	return _module.getPtr(); \
+}\
 lb_I_Container* cls::getPlugins() { \
 	if (Plugins != NULL) { \
 		Plugins++; \
