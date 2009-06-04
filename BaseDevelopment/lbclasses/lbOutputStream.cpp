@@ -232,9 +232,9 @@ bool LB_STDCALL lbOutputStream::close() {
 bool LB_STDCALL lbOutputStream::open() {
 	if (!isOpen) {
 		_ostream = new std::ofstream(f);
+		isOpen = _ostream->is_open();
 	}
-	isOpen = true;
-	return true;
+	return isOpen;
 }
  
 void LB_STDCALL lbOutputStream::_realloc(int add_size) {
