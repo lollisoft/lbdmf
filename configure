@@ -22,3 +22,7 @@ echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefil
 echo \ >> makefile
 echo install-strip: >> makefile
 echo \	\$\(MAKE\) -s -C Projects/CPP/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip >> makefile
+
+echo \ >> makefile
+echo install: >> makefile
+echo \	\$\(MAKE\) -s -C Projects/CPP/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install >> makefile
