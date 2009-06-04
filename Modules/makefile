@@ -39,6 +39,9 @@ all_targets: $(ALLTARGETS)
 install-strip:
 
 
+install:
+
+
 clean:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d clean || exit $? ; \
