@@ -136,20 +136,18 @@ void makePluginName(char* path, char* module, char*& result) {
 		char* pluginDir = NULL;
 
 		#ifndef WINDOWS
-		pluginDir = (char*) malloc(strlen(path)+strlen("/plugins")+1);
+		pluginDir = (char*) malloc(strlen(path)+1);
 		pluginDir[0] = 0;
 		strcat(pluginDir, path);
-		strcat(pluginDir, "/plugins");
 		#endif
 
 		#ifdef WINDOWS
 		// Overwrites hardcoded path
 		pluginDir = getenv("PLUGIN_DIR");
 		if (pluginDir == NULL) {
-			pluginDir = (char*) malloc(strlen(path)+strlen("\\plugins")+1);
+			pluginDir = (char*) malloc(strlen(path)+1);
 			pluginDir[0] = 0;
 			strcat(pluginDir, path);
-			strcat(pluginDir, "\\plugins");
 		} else {
 			pluginDir = strdup(pluginDir);
 		}
@@ -250,7 +248,7 @@ void LB_STDCALL lbAction::loadDataModel() {
 void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)	
 	loadDataModel();
 
 	/*
@@ -306,40 +304,21 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		if (actions->exists(&keybase) == 0) {
 			/*...sInstanciate one and insert into actions:32:*/
 			UAP(lb_I_Unknown, result)
+			UAP(lb_I_String, pluginPath)
 			char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 			ah[0] = 0;
 			strcat(ah, PREFIX);
 			strcat(ah, action_handler->charrep());
-			char* home = NULL;
-#ifdef LINUX
-			home = getenv("HOME");
-#endif
-#ifdef WINDOWS
-			home = getenv("USERPROFILE");
-#endif
-			makePluginName(home, module->charrep(), pluginModule);
+			
+			pluginPath = PM->getPluginDirectory();
+
+			makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 			_LOG << "Try to load a plugin at: " << pluginModule LOG_
 			if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-				free(pluginModule);
-				char* pwd = getenv("PWD");
-				if (pwd == NULL) pwd = ".";
-				makePluginName(pwd, module->charrep(), pluginModule);
-						
-				_LOG << "Try to load a plugin at: " << pluginModule LOG_
-				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-					free(pluginModule);
-					char* pwd = "/usr";
-					makePluginName(pwd, module->charrep(), pluginModule);
-					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						free(pluginModule);
-						char* pwd = "./wxWrapper.app/Contents/Resources";
-						makePluginName(pwd, module->charrep(), pluginModule);
-						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-							_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
-						}
-					}
-				}
+				_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 			}
+			free(pluginModule);
+			pluginModule = NULL;
 			if (result == NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
 				*errmsg = "Failed to load module for configured action!\n\n";
@@ -401,50 +380,22 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						/*...sInstanciate one and insert into actions:32:*/
 						
 						UAP(lb_I_Unknown, result)
-						
+						UAP(lb_I_String, pluginPath)	
+		
 						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 						ah[0] = 0;
 						
 						strcat(ah, PREFIX);
 						strcat(ah, action_handler->charrep());
-						
-						char* home = NULL;
-						
-#ifdef LINUX
-						home = getenv("HOME");
-#endif
-#ifdef WINDOWS
-						home = getenv("USERPROFILE");
-#endif
-						
-						
-						makePluginName(home, module->charrep(), pluginModule);
+					
+						pluginPath = PM->getPluginDirectory();
+	
+						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 						
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
-							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-								
-								free(pluginModule);
-								char* pwd = getenv("PWD");
-								if (pwd == NULL) pwd = ".";
-								makePluginName(pwd, module->charrep(), pluginModule);
-								
-								_LOG << "Try to load a plugin at: " << pluginModule LOG_
-									if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-										
-										free(pluginModule);
-										char* pwd = "/usr";
-										makePluginName(pwd, module->charrep(), pluginModule);
-										
-										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-											free(pluginModule);
-											char* pwd = "./wxWrapper.app/Contents/Resources";
-											makePluginName(pwd, module->charrep(), pluginModule);
-											if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-												_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
-											}
-										}
-									}
-							}
+						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
+						}
 						
 						if (result == NULL) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
@@ -502,6 +453,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					if (actions->exists(&ukey) == 0) {
 						
 						UAP(lb_I_Unknown, result)
+						UAP(lb_I_String, pluginPath)	
 						
 						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 						ah[0] = 0;
@@ -509,41 +461,13 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						strcat(ah, PREFIX);
 						strcat(ah, action_handler->charrep());
 						
-						char* home = NULL;
+						pluginPath = PM->getPluginDirectory();
 						
-#ifdef LINUX
-						home = getenv("HOME");
-#endif
-#ifdef WINDOWS
-						home = getenv("USERPROFILE");
-#endif
-						
-						makePluginName(home, module->charrep(), pluginModule);
+						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
-							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-								
-								free(pluginModule);
-								char* pwd = getenv("PWD");
-								if (pwd == NULL) pwd = ".";
-								makePluginName(pwd, module->charrep(), pluginModule);
-								_LOG << "Try to load a plugin at: " << pluginModule LOG_
-									if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-										
-										free(pluginModule);
-										char* pwd = "/usr";
-										makePluginName(pwd, module->charrep(), pluginModule);
-										
-										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-											free(pluginModule);
-											char* pwd = "./wxWrapper.app/Contents/Resources";
-											makePluginName(pwd, module->charrep(), pluginModule);
-											if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-												_LOG << "Error: No plugin found with the name '" << pluginModule << "'" LOG_
-											}
-										}
-									}
-								
-							}
+						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
+						}
 						
 						if (result == NULL) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
