@@ -1924,6 +1924,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 				
 				*oStream << "</xsl:stylesheet>\n";
 				oStream->close();
+			} else {
+				metaapp->msgBox("Error", "Failed to write to XMISettings file. Please check file permissions.");
+				return err;
 			}
 		}
 	}
