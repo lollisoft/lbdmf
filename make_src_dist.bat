@@ -63,6 +63,9 @@ del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.tiff
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.rtf
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.odt
 
+@REM Make any available XMISettings.xsl configuration files writeable, or simply all.
+sattrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
+
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\docdist.iss

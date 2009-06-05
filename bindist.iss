@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Samples
-AppVerName=lbDMF Binary Samples 1.0rc3
-OutputBaseFilename=lbDMF-BinSamples-1.0rc3
+AppVerName=lbDMF Binary Samples 1.0rc4
+OutputBaseFilename=lbDMF-BinSamples-1.0rc4
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -32,7 +32,7 @@ Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyM
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.xpm"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.png"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\develop\Projects\CPP\BaseDevelopment\MetaApp-Bindist.mad"; DestDir: "{app}"; DestName: "MetaApp.mad"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XMIToDMF\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\BoUML\*.*"; DestDir: "{app}\BoUML"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\DynamicApp.pdf"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file

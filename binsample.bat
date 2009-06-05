@@ -20,10 +20,10 @@ set BASE_MAKE=develop
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
 
-set DEVROOT=./%BASE%
+set DEVROOT=.\%BASE%
 set DEVROOT_MAKE=./%BASE_MAKE%
 
-set PLUGIN_DIR=%DEVROOT%/Projects/plugins
+set PLUGIN_DIR=%DEVROOT%\Projects\plugins
 
 
 set MSVCDir=%DEVROOT%/Tools/MSC/VC98
