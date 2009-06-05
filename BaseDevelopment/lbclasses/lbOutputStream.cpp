@@ -230,6 +230,10 @@ bool LB_STDCALL lbOutputStream::close() {
 	return true;
 }
 bool LB_STDCALL lbOutputStream::open() {
+	if (_writeToBuffer) {
+		isOpen = true;
+		return true;
+	}
 	if (!isOpen) {
 		_ostream = new std::ofstream(f);
 		isOpen = _ostream->is_open();
@@ -253,6 +257,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 			*buffer += toBuffer->charrep();
 			*buffer += "\n";		
 		}
+		return *this;
 	}
 
 	if (_binary)
@@ -276,6 +281,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const long i) {
 			*buffer += toBuffer->charrep();
 			*buffer += "\n";		
 		}
+		return *this;
 	}
 
 	if (_binary)
@@ -305,6 +311,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 			*buffer += toBuffer->charrep();
 			*buffer += "\n";		
 		}
+		return *this;
 	}
 		
 	if (_binary)
@@ -327,6 +334,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 			*buffer += temp;
 			*buffer += "\n";		
 		}
+		return *this;
 	}
 
 	if (_binary)
@@ -356,6 +364,7 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 			*buffer += toBuffer->charrep();
 			*buffer += "\n";		
 		}
+		return *this;
 	}
 
 	if (strlen(string) == 0) {
