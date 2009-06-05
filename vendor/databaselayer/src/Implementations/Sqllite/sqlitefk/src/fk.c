@@ -303,7 +303,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 		 */
 		else
 		{
-			char* _templ = "CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
+			char* _templ = "CREATE TRIGGER \"fk_nullable_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
 				   "                 THEN RAISE(ABORT, 'fk_%s_%s_ins violates foreign key %s(%s)')\n"
@@ -323,7 +323,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 					fk->tab, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
-			_templ = "CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_nullable_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
 				   "                 THEN RAISE(ABORT, 'fk_%s_%s_upd violates foreign key %s(%s)')\n"
@@ -337,11 +337,11 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 			
 			sprintf(buffer, _templ, 
 					table->name, fk->col, table->name, 
-					fk->col, fk->fcol, fk->ftab, fk->fcol,
-					fk->tab, fk->col, fk->col, fk->ftab, fk->fcol);
+					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, 
+					fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 			
-			_templ = "CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
+			_templ = "CREATE TRIGGER \"fk_nullable_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
 				   "                 THEN RAISE(ABORT, 'fk_%s_%s_del violates foreign key %s(%s)')\n"
