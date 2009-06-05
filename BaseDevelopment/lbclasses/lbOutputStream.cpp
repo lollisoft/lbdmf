@@ -222,6 +222,7 @@ const char* LB_STDCALL lbOutputStream::getFileName() {
 }
 
 bool LB_STDCALL lbOutputStream::close() {
+	if (_writeToBuffer) return true;
 	if (isOpen) {
 		_ostream->close();
 		delete _ostream;
