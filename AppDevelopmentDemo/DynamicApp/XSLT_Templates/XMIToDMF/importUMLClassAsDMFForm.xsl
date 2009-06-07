@@ -142,6 +142,8 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 		<xsl:with-param name="FormularID" select="@xmi:id"/>
 	</xsl:call-template></xsl:variable>
 
+<xsl:if test="$tablename!=''">
+
 <xsl:variable name="classname" select="@name"/>
 <xsl:variable name="classID" select="@xmi:id"/>
 --select "DropFormular"('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>');
@@ -260,6 +262,9 @@ INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((sele
 </xsl:choose>
 </xsl:for-each>
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = '<xsl:value-of select="@name"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>');
+
+</xsl:if>
+
 </xsl:template>
 
 <xsl:template name="importDMFFormMSSQL">
