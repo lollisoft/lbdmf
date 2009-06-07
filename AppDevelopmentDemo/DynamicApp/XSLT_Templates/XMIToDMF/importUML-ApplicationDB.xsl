@@ -41,6 +41,9 @@
 <xsl:value-of select="$activity"/></xsl:template>
 
 	<xsl:template match="/">
+--
+-- SQL script created for <xsl:value-of select="$TargetDBType"/>
+--
 	
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 SET SESSION AUTHORIZATION 'postgres';
