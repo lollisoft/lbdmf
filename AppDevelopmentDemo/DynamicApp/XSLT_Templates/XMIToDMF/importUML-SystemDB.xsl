@@ -30,8 +30,13 @@
 
 
 	<xsl:template match="/">
+
+--
+-- SQL script created for <xsl:value-of select="$TargetDBType"/>
+--
+
 		<!-- Generate System database definition -->
-		<xsl:variable name="AppName" select="//packagedElement[@xmi:type='uml:Package']/@name"/>
+		<xsl:variable name="AppName" select="//packagedElement[@xmi:type='uml:Class']/xmi:Extension/stereotype[@name='form']/../../../@name"/>
 		<xsl:call-template name="createDefaultStoredProcs">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="ApplicationName" select="$AppName"/>
