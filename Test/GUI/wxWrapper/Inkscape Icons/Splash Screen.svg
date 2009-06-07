@@ -1146,6 +1146,15 @@
        x2="706.01508"
        y2="965.77545"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2281"
+       id="linearGradient3378"
+       gradientUnits="userSpaceOnUse"
+       x1="-167.46451"
+       y1="23.787580"
+       x2="706.01508"
+       y2="965.77545" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1180,17 +1189,17 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g2830">
+       id="g3384">
       <rect
          inkscape:export-ydpi="34.710899"
          inkscape:export-xdpi="34.710899"
          inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-         y="9.5150290"
-         x="9.5150290"
+         y="9.515029"
+         x="9.515029"
          height="1037.1382"
          width="726.94818"
          id="rect1550"
-         style="fill:url(#linearGradient2287);fill-opacity:1.0;fill-rule:nonzero;stroke:none;stroke-width:1.6211483;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000" />
+         style="fill:url(#linearGradient3378);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.62114835;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <g
          inkscape:export-ydpi="34.710899"
          inkscape:export-xdpi="34.710899"
@@ -1705,7 +1714,7 @@
            y="136.47371"
            x="594.73163"
            id="tspan1569"
-           sodipodi:role="line">rc 3</tspan></text>
+           sodipodi:role="line">rc 4</tspan></text>
       <text
          inkscape:export-ydpi="34.710899"
          inkscape:export-xdpi="34.710899"
@@ -2057,6 +2066,16 @@
            y1="271.33148"
            x1="555.90057" />
       </g>
+      <text
+         id="text3380"
+         y="155.9055"
+         x="913.60626"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="155.9055"
+           x="913.60626"
+           id="tspan3382"
+           sodipodi:role="line" /></text>
     </g>
   </g>
 </svg>
