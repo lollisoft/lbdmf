@@ -2894,6 +2894,17 @@ public:
 	 *
 	 */
 	virtual void			LB_STDCALL fireEvent(char* name) = 0;
+	
+	/** \brief Set the name of the process.
+	 * The user of this library should pass the process name.
+	 */
+	virtual void			LB_STDCALL setProcessName(const char* name) = 0;
+	
+	/** \brief Get the name of the process.
+	 * The user of this library could expect a valid name while initialize is called.
+	 * Thus the application should set it properly before initialisation.
+	 */
+	virtual lb_I_String*	LB_STDCALL getProcessName() = 0;
 };
 /*...e*/
 
