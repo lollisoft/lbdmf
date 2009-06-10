@@ -2349,6 +2349,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		*images = "\\toolbarimages\\";
 #endif
 		*toolbarfile += images->charrep();
+
+#ifdef OSX
+		if (opendir(toolbarfile->charrep()) == NULL) {
+			UAP(lb_I_String, pName)
+			pName = app->getProcessName();
+			*toolbarfile = "./";
+			*toolbarfile += pName->charrep();
+			*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+		}
+#endif		
+		
 		*toolbarfile += "exit.png";
 				
 
@@ -2503,8 +2514,18 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #ifdef WINDOWS
 			*images = "\\toolbarimages\\";
 #endif
-
 			*toolbarfile += images->charrep();
+
+#ifdef OSX
+			if (opendir(toolbarfile->charrep()) == NULL) {
+				UAP(lb_I_String, pName)
+				pName = app->getProcessName();
+				*toolbarfile = "./";
+				*toolbarfile += pName->charrep();
+				*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+			}
+#endif		
+
 			*toolbarfile += toolbarimage->charrep();
 
 			if (!wxFile::Exists(toolbarfile->charrep())) {
