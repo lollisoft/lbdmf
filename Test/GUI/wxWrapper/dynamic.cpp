@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.159 2009/06/02 20:37:31 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.160 2009/06/10 11:46:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.159 $
+ * $Revision: 1.160 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.159 2009/06/02 20:37:31 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.160 2009/06/10 11:46:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.160  2009/06/10 11:46:55  lollisoft
+ * Added code to pass the application name and removed hardcoded application name.
+ *
  * Revision 1.159  2009/06/02 20:37:31  lollisoft
  * Using always wxSTAY_ON_TOP from now on and deactivated calling Raise.
  *
@@ -2203,6 +2206,10 @@ bool MyApp::OnInit(void)
 	return FALSE;
     } 
 
+	wxString appname = GetAppName();
+	_LOG << "Application " << appname.c_str() << " starts up." LOG_
+	
+	
     mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
     setModuleManager(mm.getPtr(), __FILE__, __LINE__);
     
@@ -2326,7 +2333,7 @@ bool MyApp::OnInit(void)
 		wxGUI->splashCreated();
 	}
 #ifdef OSX
-	else if (wxFile::Exists("./wxWrapper.app/Contents/Resources/splash.png") && bitmap.LoadFile("./wxWrapper.app/Contents/Resources/splash.png", wxBITMAP_TYPE_PNG)) {
+	else if (wxFile::Exists("./" + appname + ".app/Contents/Resources/splash.png") && bitmap.LoadFile("./" + appname + ".app/Contents/Resources/splash.png", wxBITMAP_TYPE_PNG)) {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 								wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 								6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
@@ -2337,6 +2344,7 @@ bool MyApp::OnInit(void)
 	wxYield();
 
     if (metaApp != NULL) {
+		metaApp->setProcessName(appname.c_str());
         metaApp->initialize();
 
 		//if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
