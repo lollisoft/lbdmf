@@ -341,16 +341,25 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 					*file = app->getDirLocation();
 					
 #ifdef OSX
-							*images = "/toolbarimages/";
+					*images = "/toolbarimages/";
 #endif
 #ifdef LINUX
-							*images = "/toolbarimages/";
+					*images = "/toolbarimages/";
 #endif
 #ifdef WINDOWS
-							*images = "\\toolbarimages\\";
+					*images = "\\toolbarimages\\";
 #endif
 
 					*file += images->charrep();
+#ifdef OSX
+					if (opendir(file->charrep()) == NULL) {
+						UAP(lb_I_String, pName)
+						pName = app->getProcessName();
+						*file = "./";
+						*file += pName->charrep();
+						*file += ".app/Contents/Resources/toolbarimages/";
+					}
+#endif
 					*file += "new.xpm";
 
 					if (!wxFile::Exists(file->charrep())) {
@@ -436,6 +445,16 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 #endif
 
 					*file += images->charrep();
+#ifdef OSX
+					if (opendir(file->charrep()) == NULL) {
+						UAP(lb_I_String, pName)
+						pName = app->getProcessName();
+						*file = "./";
+						*file += pName->charrep();
+						*file += ".app/Contents/Resources/toolbarimages/";
+					}
+#endif
+					
 					*file += "new.xpm";
 
 					if (!wxFile::Exists(file->charrep())) {
