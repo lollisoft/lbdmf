@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.200 $
+# * $Revision: 1.201 $
 # * $Name:  $
-# * $Id: Makefile,v 1.200 2009/06/03 09:33:53 lollisoft Exp $
+# * $Id: Makefile,v 1.201 2009/06/10 11:40:17 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.201  2009/06/10 11:40:17  lollisoft
+# * Changed order of targets to enable application bundle packaging including wxWidgets library.
+# *
 # * Revision 1.200  2009/06/03 09:33:53  lollisoft
 # * Added support for creating debug rpm packages.
 # *
@@ -882,14 +885,14 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxPlugins/lbLoginWizard \
-	../Test/GUI/wxWrapper \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
 	../vendor/dbwrapcontrols \
 	../Test/Console/XML \
-	$(BASEDIRECTORIES)
+	$(BASEDIRECTORIES) \
+	../Test/GUI/wxWrapper
 
 #	../vendor/wxARG/src \
 #	../vendor/wxShapeFramework/src \
@@ -1519,8 +1522,8 @@ endif
 	$(MAKE) -s -C $@
 
 ../vendor/tvision/examples/lbDMF: dummy
-	$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/tvision/examples/listvi: dummy
 	$(MAKE) -s -C $@ -e MODULE=tvlistvi -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
@@ -1779,10 +1782,10 @@ endif
 	$(MAKE) -s -C $@
 
 ../ServerPlugins: dummy
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@
 
 ../ClientPlugins: dummy
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@
 
 ../AppDevelopmentDemo/DynamicApp/Plugins: dummy
 	$(MAKE) -s -C $@
