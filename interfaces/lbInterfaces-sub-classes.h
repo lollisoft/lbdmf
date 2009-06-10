@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.81 2008/10/03 14:32:27 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.82 2009/06/10 11:43:02 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.82  2009/06/10 11:43:02  lollisoft
+ * Added functions to enable position in the container to enable 'jumps'.
+ *
  * Revision 1.81  2008/10/03 14:32:27  lollisoft
  * Added a functionality to refresh the database forms.
  * This may be usefull when a database lock occures.
@@ -1110,6 +1113,16 @@ public:
 	 */
     virtual void LB_STDCALL finishIteration() = 0;
 	
+	/** \brief Prosition the iterator by key.
+	 * Searches an element by key and sets the iterator at found position.
+	 */
+	virtual int LB_STDCALL position(lb_I_KeyBase** const key) = 0;
+
+	/** \brief Prosition the iterator by index.
+	 * Positions the iterator at the given index. Starts at 0.
+	 */
+	virtual int LB_STDCALL position(int i) = 0;
+	
 	/** \brief Get element at given position. Starts at 0.
 	 */
     virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
@@ -1196,7 +1209,9 @@ protected: \
         virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key); \
         virtual lb_I_Unknown* LB_STDCALL nextElement(); \
 	virtual void LB_STDCALL finishIteration(); \
-        \
+	virtual int LB_STDCALL position(lb_I_KeyBase** const key); \
+	virtual int LB_STDCALL position(int i); \
+       \
 	virtual lb_I_Unknown* LB_STDCALL getElementAt(int i); \
 	virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i); \
         \
