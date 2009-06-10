@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.121 $
+ * $Revision: 1.122 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.121 2008/07/25 16:43:50 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.122 2009/06/10 11:55:06 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.122  2009/06/10 11:55:06  lollisoft
+ * Added functions to enable position in the container to enable 'jumps'.
+ *
  * Revision 1.121  2008/07/25 16:43:50  lollisoft
  * Fixed application crash at exit.
  *
@@ -525,7 +528,7 @@ public:
 public:
 
 
-	lb_I_Unknown* search(lb_I_KeyBase*);
+	lb_I_Unknown* search(lb_I_KeyBase* searchKey, bool setIterator = false);
 	void insert(Elem);
       
       
@@ -758,6 +761,37 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 	}
 } 
 /*...e*/
+int LB_STDCALL SkipList::position(lb_I_KeyBase** const key) {
+    UAP(lb_I_Unknown, s)
+    
+    s = search(*key, true);
+    
+    if (s == NULL) return 0;	
+	
+    return 1; 
+}
+
+int LB_STDCALL SkipList::position(int i) {
+	int ii = 1;
+	
+	Elem e;
+	
+	if (can_dump() == 1) {
+		e = dump_next();
+		
+		while ((e != NULL) && (ii < i)) {
+			ii++;
+			e = dump_next();
+		}
+		
+		finishIteration();
+		
+		if (ii == i) return 1;
+	}
+	
+	return 0;
+}
+
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
 
@@ -800,7 +834,7 @@ int randomLevel(void) { // Pick a level on exponential distribution
 }
 /*...e*/
 /*...sSkipList\58\\58\search\40\lb_I_KeyBase\42\ searchKey\41\:0:*/
-lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
+lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
   
   if (x == NULL) _CL_VERBOSE << "Error: NULL pointer while searching in skiplist" LOG_
@@ -812,6 +846,7 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   }
   x = x->forward[0];  // Move to actual record, if it exists
   if ((x != NULL) && (*(x->value) == searchKey)) {
+	  if (setIterator) skipiterator = x;
   	return x->value->getObject();
   } else return NULL;
 }
@@ -3380,6 +3415,15 @@ lbModuleContainer::lbModuleContainer() {
 lbModuleContainer::~lbModuleContainer() {
 }
 
+int LB_STDCALL lbModuleContainer::position(lb_I_KeyBase** const key) {
+	_LOG << "lbModuleContainer::position(lb_I_KeyBase** const key) is not implemented." LOG_
+    return 0; 
+}
+
+int LB_STDCALL lbModuleContainer::position(int i) {
+	_LOG << "lbModuleContainer::position(int i) is not implemented." LOG_
+    return 0; 
+}
 
 void LB_STDCALL lbModuleContainer::setCloning(bool doClone) {
 	cloning = doClone;

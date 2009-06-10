@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.14 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lbcontainer.h,v 1.15 2009/06/10 11:53:59 lollisoft Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.15  2009/06/10 11:53:59  lollisoft
+ * Added functions to enable position in the container to enable 'jumps'.
+ *
  * Revision 1.14  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *

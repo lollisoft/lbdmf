@@ -82,7 +82,7 @@ public:
 public:
 
 
-	lb_I_Unknown* search(lb_I_KeyBase*);
+	lb_I_Unknown* search(lb_I_KeyBase* searchKey, bool setIterator = false);
 	void insert(Elem);
       
       

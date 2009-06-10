@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.30 2008/07/24 20:53:36 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.31 2009/06/10 11:53:59 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.31  2009/06/10 11:53:59  lollisoft
+ * Added functions to enable position in the container to enable 'jumps'.
+ *
  * Revision 1.30  2008/07/24 20:53:36  lollisoft
  * These changes let the application run on Mac OS X 10.5 (Leopard). But crashes at exit, propably due to changed cleanup logic or changed default variable values (not correctly initialized).
  *
@@ -208,6 +211,16 @@ lbContainer::lbContainer() {
 lbContainer::~lbContainer() {
 	printf("lbContainer::~lbContainer() called\n");
 	deleteAll();
+}
+
+int LB_STDCALL lbContainer::position(lb_I_KeyBase** const key) {
+	_LOG << "lbContainer::position(lb_I_KeyBase** const key) is not implemented." LOG_
+    return 0; 
+}
+
+int LB_STDCALL lbContainer::position(int i) {
+	_LOG << "lbContainer::position(int i) is not implemented." LOG_
+    return 0; 
 }
 
 lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {

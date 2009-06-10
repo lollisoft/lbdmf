@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.56 2008/11/06 18:45:34 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.57 2009/06/10 11:53:59 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.57  2009/06/10 11:53:59  lollisoft
+ * Added functions to enable position in the container to enable 'jumps'.
+ *
  * Revision 1.56  2008/11/06 18:45:34  lollisoft
  * Some bugfixes.
  *
@@ -598,6 +601,36 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 } 
 /*...e*/
 
+int LB_STDCALL SkipList::position(lb_I_KeyBase** const key) {
+    UAP(lb_I_Unknown, s)
+    
+    s = search(*key, true);
+    
+    if (s == NULL) return 0;	
+	
+    return 1; 
+}
+
+int LB_STDCALL SkipList::position(int i) {
+	int ii = 1;
+	
+	Elem e;
+	
+	if (can_dump() == 1) {
+		e = dump_next();
+		
+		while ((e != NULL) && (ii < i)) {
+			ii++;
+			e = dump_next();
+		}
+		
+		if (ii == i) return 1;
+	}
+	
+	return 0;
+}
+
+
 lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
 	lb_I_KeyBase* temp;
 	_currentKey->queryInterface("lb_I_KeyBase", (void**) &temp, __FILE__, __LINE__);
@@ -681,7 +714,7 @@ int randomLevel(void) { // Pick a level on exponential distribution
 }
 /*...e*/
 /*...sSkipList\58\\58\search\40\lb_I_KeyBase\42\ searchKey\41\:0:*/
-lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
+lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
 
   if (head == NULL) return NULL;
@@ -696,6 +729,7 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   x = x->forward[0];  // Move to actual record, if it exists
 
   if ((x != NULL) && (*(x->value->getKey()) == searchKey)) {
+	  if (setIterator) skipiterator = x;
   	return x->value->getObject();
   } else {
   	return NULL;
