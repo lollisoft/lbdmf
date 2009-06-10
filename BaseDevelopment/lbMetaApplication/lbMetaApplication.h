@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.63 2009/02/11 18:39:58 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.64 2009/06/10 11:56:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.64  2009/06/10 11:56:51  lollisoft
+ * Added functions to help passing application process name.
+ *
  * Revision 1.63  2009/02/11 18:39:58  lollisoft
  * Added functions to provide property changing by code.
  * Also added an uninitialisation function to ensure correct
@@ -447,6 +450,10 @@ public:
 	bool					LB_STDCALL usingSystemDatabaseBackend();
 	bool					LB_STDCALL usingApplicationDatabaseBackend();
 
+	
+	void					LB_STDCALL setProcessName(const char* name);
+	lb_I_String*			LB_STDCALL getProcessName();
+	
 	/** \brief Checks for availability of a database.
 	 * This function does the work to check, if any known database is available.
 	 * The check includes testing for an ODBC database named 'lbDMF' and for the
@@ -469,6 +476,7 @@ protected:
 	UAP(lb_I_EventManager, eman)
 	UAP(lb_I_Dispatcher, dispatcher)
 	UAP(lb_I_Application, app)
+	UAP(lb_I_String, ProcessName)
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_String, LogonApplication)
 	

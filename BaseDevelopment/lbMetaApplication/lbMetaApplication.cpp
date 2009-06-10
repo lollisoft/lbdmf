@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.155 $
+ * $Revision: 1.156 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.155 2009/06/02 18:11:31 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.156 2009/06/10 11:56:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.156  2009/06/10 11:56:51  lollisoft
+ * Added functions to help passing application process name.
+ *
  * Revision 1.155  2009/06/02 18:11:31  lollisoft
  * Added search path for ../Database in case if initial SQL scripts are only located in development directory.
  *
@@ -649,6 +652,8 @@ lb_MetaApplication::lb_MetaApplication() {
 
 	activeDocuments->setCloning(false);
 
+	REQUEST(getModuleInstance(), lb_I_String, ProcessName)
+	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
@@ -681,6 +686,16 @@ lb_MetaApplication::~lb_MetaApplication() {
 	if (_dirloc != NULL) free(_dirloc);
 }
 /*...e*/
+
+
+void			LB_STDCALL lb_MetaApplication::setProcessName(const char* name) {
+	*ProcessName = name;
+}
+
+lb_I_String*	LB_STDCALL lb_MetaApplication::getProcessName() {
+	ProcessName++;
+	return ProcessName.getPtr();
+}
 
 lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (User_Applications != NULL) User_Applications--;
