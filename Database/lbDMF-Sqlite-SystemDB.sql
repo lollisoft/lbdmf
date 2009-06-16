@@ -475,52 +475,52 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Report
 
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'Reportparameter' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
 
-		-- Class action_steps of type ENTITY found.
-				
-		-- Class action_types of type ENTITY found.
-				
-		-- Class actions of type ENTITY found.
-				
-		-- Class anwendungen of type ENTITY found.
-				
-		-- Class anwendungen_formulare of type ENTITY found.
-				
-		-- Class anwendungs_parameter of type ENTITY found.
-				
-		-- Class anwendungsberechtigungen of type ENTITY found.
-				
-		-- Class applevel_plugin_registry of type ENTITY found.
-				
-		-- Class codegentarget of type ENTITY found.
-				
-		-- Class column_types of type ENTITY found.
-				
-		-- Class foreignkey_visibledata_mapping of type ENTITY found.
-				
-		-- Class formular_actions of type ENTITY found.
-				
-		-- Class formular_parameters of type ENTITY found.
-				
-		-- Class formulare of type ENTITY found.
-				
-		-- Class formulartypen of type ENTITY found.
-				
-		-- Class regressiontest of type ENTITY found.
-				
-		-- Class report_element_types of type ENTITY found.
-				
-		-- Class report_elements of type ENTITY found.
-				
-		-- Class report_parameters of type ENTITY found.
-				
-		-- Class report_texts of type ENTITY found.
-				
-		-- Class reports of type ENTITY found.
-				
-		-- Class translations of type ENTITY found.
-				
-		-- Class user_anwendungen of type ENTITY found.
-				
-		-- Class users of type ENTITY found.
-				
+
+INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('NotEmpty_BOUML_0x1f417_39', 'instanceOflbAction', 'lbDatabaseForm');
+
+INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('NotEmpty_BOUML_0x1f417_39', (select "id" from "action_types" where "bezeichnung" = 'NotEmpty_BOUML_0x1f417_39'), '', '');
+
+
+-- Create activity nodes for Sqlite
+
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f417_63', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+		
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f497_66', '2', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f417_56', '3', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+
+INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Fehler', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_56'));
+
+INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The Value in {Name} should not be empty.', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_56'));
+
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f517_65', '4', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+		
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f497_46', '5', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), 'Value {Value} in Name is ok.');
+		
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('Purpose', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'));
+		
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('return', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'));
+		
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('Name', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'));
+		
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'NotEmpty_BOUML_0x1f417_39'), 'BOUML_0x1f882_66', '9', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+-- Create activity transitions
+
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_63'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f497_66'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('Name == ""', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f497_66'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_56'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f497_66'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f882_66'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_56'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f517_65'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f497_46'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f517_65'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('Purpose == ""', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f882_66'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f417_56'));
+		
+INSERT OR IGNORE INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', 'NotEmpty_BOUML_0x1f417_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f882_66'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x1f497_46'));
+		
 -- Script ready.
+
+

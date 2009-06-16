@@ -32,6 +32,43 @@
 
 -- Generate application table action_steps for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
+CREATE TABLE "Templates" (
+	"ID" INTEGER PRIMARY KEY,
+	"Name" CHAR(255),
+	"Purpose" CHAR(255),
+	"Description" TEXT,
+	"Aproved" BOOL,
+	"Cartridge" INTEGER
+);
+
+
+CREATE TABLE "action_step_parameter" (
+	"id"	INTEGER PRIMARY KEY,
+	"action_step_id"	INTEGER,
+	"name"	BPCHAR,
+	"value"	BPCHAR,
+	"interface"	BPCHAR,
+	"description"	BPCHAR
+);
+
+CREATE TABLE "action_step_transitions" (
+	"id"	INTEGER PRIMARY KEY,
+	"expression"	BPCHAR,
+	"src_actionid"	INTEGER,
+	"dst_actionid"	INTEGER,
+	"description"	BPCHAR
+);
+
+CREATE TABLE "action_parameters" (
+	"id"	INTEGER PRIMARY KEY,
+	"actionid"	INTEGER,
+	"name"	BPCHAR,
+	"value"	BPCHAR,
+	"interface"	BPCHAR,
+	"description"	BPCHAR
+);
+
+
 
 -- CREATE Sqlite TABLE action_steps
 CREATE TABLE "action_steps" (
@@ -636,6 +673,16 @@ CREATE TABLE "users" (
 -- Class users of type ENTITY found.
 
 -- Generate application tables users for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+
+
+ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_step_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
+
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_src_actionid_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_dst_actionid_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
+ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_id_action_parameters_actionid" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
