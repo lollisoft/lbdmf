@@ -453,7 +453,7 @@ void		LB_STDCALL lbActionStepTransitionsModel::deleteMarked() {
 }
 
 
-long  LB_STDCALL lbActionStepTransitionsModel::addTransition(const char* decision, long src_actionid, long dst_actionid, const char* description, long _id) {
+long  LB_STDCALL lbActionStepTransitionsModel::addTransition(const char* expression, long src_actionid, long dst_actionid, const char* description, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	
@@ -470,7 +470,8 @@ long  LB_STDCALL lbActionStepTransitionsModel::addTransition(const char* decisio
 	*Description = description;
 	SrcActionId->setData(src_actionid);
 	DstActionId->setData(dst_actionid);
-	*Decision = decision;
+/// \todo Rename remaining occurences.
+	*Decision = expression;
 	ID->setData(_id);
 	
 	*paramname = "Description";

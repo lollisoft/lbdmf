@@ -180,6 +180,8 @@ public:
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 	/** \brief Start save operation.
 	 *
@@ -288,6 +290,48 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Boolean* b) {
 
 void LB_STDCALL lbOutputStream::visit(lb_I_String* s) {
 	*oStream << s->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	int count;
+	
+	count = actionstepparameters->getActionStepParametersCount();
+	*oStream << count;
+
+	actionstepparameters->finishActionStepParameterIteration();
+	
+	while (actionstepparameters->hasMoreActionStepParameters()) {
+		actionstepparameters->setNextActionStepParameter();
+		
+		*oStream << actionstepparameters->getActionStepParameterID();
+		*oStream << actionstepparameters->getActionStepParameterActionID();
+		
+		*oStream << actionstepparameters->getActionStepParameterDescription();
+		*oStream << actionstepparameters->getActionStepParameterName();
+		*oStream << actionstepparameters->getActionStepParameterValue();
+		*oStream << actionstepparameters->getActionStepParameterInterface();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	int count;
+	
+	count = actionparameters->getActionParametersCount();
+	*oStream << count;
+	
+	actionparameters->finishActionParameterIteration();
+	
+	while (actionparameters->hasMoreActionParameters()) {
+		actionparameters->setNextActionParameter();
+		
+		*oStream << actionparameters->getActionParameterID();
+		*oStream << actionparameters->getActionParameterActionID();
+		
+		*oStream << actionparameters->getActionParameterDescription();
+		*oStream << actionparameters->getActionParameterName();
+		*oStream << actionparameters->getActionParameterValue();
+		*oStream << actionparameters->getActionParameterInterface();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {

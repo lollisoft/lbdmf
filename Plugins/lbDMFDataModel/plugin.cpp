@@ -111,6 +111,8 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
 	ADD_PLUGIN(lbPluginApplicationFormularsRelationModel, Model)
 	ADD_PLUGIN(lbPluginActionStepTransitionsModel, Model)
+	ADD_PLUGIN(lbPluginActionParameters, Model)
+	ADD_PLUGIN(lbPluginActionStepParameters, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {

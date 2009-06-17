@@ -38,9 +38,12 @@ public:
 	virtual ~lbDBReportAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
+	
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 	
 	DECLARE_LB_UNKNOWN()
 	
@@ -59,6 +62,7 @@ protected:
 	UAP(lb_I_String, DBPass)
 
 	UAP(lb_I_DatabaseReport, report)
+	UAP(lb_I_Action_Step_Transitions, transitions)
 };
 /*...e*/
 

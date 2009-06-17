@@ -1,4 +1,9 @@
 
+--
+-- SQL script created for Sqlite
+--
+	
+
 -- Class Benutzer of type FORM found.
 				
 -- Class Formulare of type FORM found.
@@ -27,58 +32,83 @@
 				
 -- Class Reportparameter of type FORM found.
 				
+-- Class Templates of type FORM found.
+				
+-- Class Templates of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table Templates for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE Templates
+CREATE TABLE "Templates" (
+	"ID" INTEGER PRIMARY KEY,
+	"Name" BPCHAR,
+	"Purpose" BPCHAR,
+	"Description" TEXT,
+	"Aproved" BOOLEAN,
+	"Cartridge" INTEGER
+);
+
+-- Class action_parameters of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table action_parameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE action_parameters
+CREATE TABLE "action_parameters" (
+	"id" INTEGER PRIMARY KEY,
+	"actionid" INTEGER,
+	"name" BPCHAR,
+	"value" BPCHAR,
+	"interface" BPCHAR,
+	"description" BPCHAR
+);
+
+-- Class action_step_parameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table action_step_parameter for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE action_step_parameter
+CREATE TABLE "action_step_parameter" (
+	"id" INTEGER PRIMARY KEY,
+	"action_step_id" INTEGER,
+	"name" BPCHAR,
+	"value" BPCHAR,
+	"interface" BPCHAR,
+	"description" BPCHAR
+);
+
+-- Class action_step_transitions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table action_step_transitions for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE action_step_transitions
+CREATE TABLE "action_step_transitions" (
+	"id" INTEGER PRIMARY KEY,
+	"expression" BPCHAR,
+	"src_actionid" INTEGER,
+	"dst_actionid" INTEGER,
+	"description" BPCHAR
+);
+
 -- Class action_steps of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
 -- Generate application table action_steps for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
-CREATE TABLE "Templates" (
-	"ID" INTEGER PRIMARY KEY,
-	"Name" CHAR(255),
-	"Purpose" CHAR(255),
-	"Description" TEXT,
-	"Aproved" BOOL,
-	"Cartridge" INTEGER
-);
-
-
-CREATE TABLE "action_step_parameter" (
-	"id"	INTEGER PRIMARY KEY,
-	"action_step_id"	INTEGER,
-	"name"	BPCHAR,
-	"value"	BPCHAR,
-	"interface"	BPCHAR,
-	"description"	BPCHAR
-);
-
-CREATE TABLE "action_step_transitions" (
-	"id"	INTEGER PRIMARY KEY,
-	"expression"	BPCHAR,
-	"src_actionid"	INTEGER,
-	"dst_actionid"	INTEGER,
-	"description"	BPCHAR
-);
-
-CREATE TABLE "action_parameters" (
-	"id"	INTEGER PRIMARY KEY,
-	"actionid"	INTEGER,
-	"name"	BPCHAR,
-	"value"	BPCHAR,
-	"interface"	BPCHAR,
-	"description"	BPCHAR
-);
-
-
 
 -- CREATE Sqlite TABLE action_steps
 CREATE TABLE "action_steps" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"actionid" INTEGER,
 	"bezeichnung" BPCHAR,
 	"a_order_nr" INTEGER,
---,
 	"type" INTEGER,
 	"what" BPCHAR
 );
@@ -91,9 +121,6 @@ CREATE TABLE "action_steps" (
 
 -- CREATE Sqlite TABLE action_types
 CREATE TABLE "action_types" (
-	
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"bezeichnung" BPCHAR,
 	"action_handler" BPCHAR,
@@ -108,12 +135,8 @@ CREATE TABLE "action_types" (
 
 -- CREATE Sqlite TABLE actions
 CREATE TABLE "actions" (
-	
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
---,
 	"typ" INTEGER,
 	"source" BPCHAR,
 	"target" INTEGER
@@ -127,12 +150,6 @@ CREATE TABLE "actions" (
 
 -- CREATE Sqlite TABLE anwendungen
 CREATE TABLE "anwendungen" (
-	
---,
---,
---,
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"titel" BPCHAR,
@@ -149,11 +166,8 @@ CREATE TABLE "anwendungen" (
 
 -- CREATE Sqlite TABLE anwendungen_formulare
 CREATE TABLE "anwendungen_formulare" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"anwendungid" INTEGER,
---,
 	"formularid" INTEGER
 );
 
@@ -165,11 +179,9 @@ CREATE TABLE "anwendungen_formulare" (
 
 -- CREATE Sqlite TABLE anwendungs_parameter
 CREATE TABLE "anwendungs_parameter" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
 	"parametervalue" BPCHAR,
---,
 	"anwendungid" INTEGER
 );
 
@@ -181,11 +193,8 @@ CREATE TABLE "anwendungs_parameter" (
 
 -- CREATE Sqlite TABLE anwendungsberechtigungen
 CREATE TABLE "anwendungsberechtigungen" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"iduser" INTEGER,
---,
 	"idformular" INTEGER
 );
 
@@ -197,7 +206,6 @@ CREATE TABLE "anwendungsberechtigungen" (
 
 -- CREATE Sqlite TABLE applevel_plugin_registry
 CREATE TABLE "applevel_plugin_registry" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"anwendungid" INTEGER
 );
@@ -210,7 +218,6 @@ CREATE TABLE "applevel_plugin_registry" (
 
 -- CREATE Sqlite TABLE codegentarget
 CREATE TABLE "codegentarget" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"titel" BPCHAR,
@@ -227,7 +234,6 @@ CREATE TABLE "codegentarget" (
 
 -- CREATE Sqlite TABLE column_types
 CREATE TABLE "column_types" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"tablename" BPCHAR,
@@ -244,7 +250,6 @@ CREATE TABLE "column_types" (
 
 -- CREATE Sqlite TABLE foreignkey_visibledata_mapping
 CREATE TABLE "foreignkey_visibledata_mapping" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"fkname" BPCHAR,
 	"fktable" BPCHAR,
@@ -260,11 +265,8 @@ CREATE TABLE "foreignkey_visibledata_mapping" (
 
 -- CREATE Sqlite TABLE formular_actions
 CREATE TABLE "formular_actions" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"formular" INTEGER,
---,
 	"action" INTEGER,
 	"event" BPCHAR
 );
@@ -277,11 +279,9 @@ CREATE TABLE "formular_actions" (
 
 -- CREATE Sqlite TABLE formular_parameters
 CREATE TABLE "formular_parameters" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
-	"parametervalue" char(1000),
---,
+	"parametervalue" BPCHAR,
 	"formularid" INTEGER
 );
 
@@ -293,11 +293,6 @@ CREATE TABLE "formular_parameters" (
 
 -- CREATE Sqlite TABLE formulare
 CREATE TABLE "formulare" (
-	
---,
---,
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"menuname" BPCHAR,
@@ -305,9 +300,7 @@ CREATE TABLE "formulare" (
 	"eventname" BPCHAR,
 	"menuhilfe" BPCHAR,
 	"toolbarimage" BPCHAR,
---,
 	"anwendungid" INTEGER,
---,
 	"typ" INTEGER
 );
 
@@ -319,8 +312,6 @@ CREATE TABLE "formulare" (
 
 -- CREATE Sqlite TABLE formulartypen
 CREATE TABLE "formulartypen" (
-	
---,
 	"id" INTEGER PRIMARY KEY,
 	"handlermodule" BPCHAR,
 	"handlerfunctor" BPCHAR,
@@ -337,7 +328,6 @@ CREATE TABLE "formulartypen" (
 
 -- CREATE Sqlite TABLE regressiontest
 CREATE TABLE "regressiontest" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"test" BPCHAR,
 	"btest" BOOLEAN,
@@ -352,8 +342,6 @@ CREATE TABLE "regressiontest" (
 
 -- CREATE Sqlite TABLE report_element_types
 CREATE TABLE "report_element_types" (
-	
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"description" BPCHAR
@@ -367,12 +355,8 @@ CREATE TABLE "report_element_types" (
 
 -- CREATE Sqlite TABLE report_elements
 CREATE TABLE "report_elements" (
-	
---,
 	"id" INTEGER PRIMARY KEY,
---,
 	"reportid" INTEGER,
---,
 	"typ" INTEGER,
 	"name" BPCHAR,
 	"x" INTEGER,
@@ -390,9 +374,7 @@ CREATE TABLE "report_elements" (
 
 -- CREATE Sqlite TABLE report_parameters
 CREATE TABLE "report_parameters" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"reportid" INTEGER,
 	"name" BPCHAR,
 	"value" INTEGER
@@ -406,9 +388,7 @@ CREATE TABLE "report_parameters" (
 
 -- CREATE Sqlite TABLE report_texts
 CREATE TABLE "report_texts" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"elementid" INTEGER,
 	"line" INTEGER,
 	"text" BPCHAR
@@ -422,9 +402,6 @@ CREATE TABLE "report_texts" (
 
 -- CREATE Sqlite TABLE reports
 CREATE TABLE "reports" (
-	
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"description" BPCHAR
@@ -438,7 +415,6 @@ CREATE TABLE "reports" (
 
 -- CREATE Sqlite TABLE translations
 CREATE TABLE "translations" (
-	
 	"id" INTEGER PRIMARY KEY,
 	"text" BPCHAR,
 	"translated" BPCHAR,
@@ -453,11 +429,8 @@ CREATE TABLE "translations" (
 
 -- CREATE Sqlite TABLE user_anwendungen
 CREATE TABLE "user_anwendungen" (
-	
 	"id" INTEGER PRIMARY KEY,
---,
 	"userid" INTEGER,
---,
 	"anwendungenid" INTEGER
 );
 
@@ -469,15 +442,11 @@ CREATE TABLE "user_anwendungen" (
 
 -- CREATE Sqlite TABLE users
 CREATE TABLE "users" (
-	
---,
---,
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
 	"vorname" BPCHAR,
 	"userid" BPCHAR,
 	"passwort" BPCHAR,
---,
 	"lastapp" INTEGER
 );
 
@@ -509,6 +478,36 @@ CREATE TABLE "users" (
 				
 -- Class Reportparameter of type FORM found.
 				
+-- Class Templates of type FORM found.
+				
+-- Class Templates of type ENTITY found.
+
+-- Generate application tables Templates for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class action_parameters of type ENTITY found.
+
+-- Generate application tables action_parameters for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class action_step_parameter of type ENTITY found.
+
+-- Generate application tables action_step_parameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class action_step_transitions of type ENTITY found.
+
+-- Generate application tables action_step_transitions for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class action_steps of type ENTITY found.
 
 -- Generate application tables action_steps for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
@@ -675,59 +674,80 @@ CREATE TABLE "users" (
 -- Generate application tables users for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
-
-
-ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_step_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
-
-ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_src_actionid_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
-ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_dst_actionid_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
-ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_id_action_parameters_actionid" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
-
-
-
 -- Skipped, due to creation in template 'importApplicationTable'
 
--- Generate application table action_steps for lbDMFManager_Entities
--- Generate application table action_types for lbDMFManager_Entities
-ALTER TABLE "actions" ADD CONSTRAINT "cst_action_types_id_actions_typ_12" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type_20" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
--- Generate application table actions for lbDMFManager_Entities
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_actions_id_action_steps_actionid_13" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
-ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_actions_id_formular_actions_action_17" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
--- Generate application table anwendungen for lbDMFManager_Entities
-ALTER TABLE "users" ADD CONSTRAINT "cst_anwendungen_id_users_lastapp_1" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungen_id_anwendungs_parameter_anwendungid_10" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_id_anwendungen_formulare_anwendungid_11" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_14" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_16" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
--- Generate application table anwendungen_formulare for lbDMFManager_Entities
--- Generate application table anwendungs_parameter for lbDMFManager_Entities
--- Generate application table anwendungsberechtigungen for lbDMFManager_Entities
--- Generate application table applevel_plugin_registry for lbDMFManager_Entities
--- Generate application table codegentarget for lbDMFManager_Entities
--- Generate application table column_types for lbDMFManager_Entities
--- Generate application table foreignkey_visibledata_mapping for lbDMFManager_Entities
--- Generate application table formular_actions for lbDMFManager_Entities
--- Generate application table formular_parameters for lbDMFManager_Entities
--- Generate application table formulare for lbDMFManager_Entities
-ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formulare_id_formular_parameters_formularid_7" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
-ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formulare_id_formular_actions_formular_8" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
-ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_formulare_id_anwendungsberechtigungen_idformular_9" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
-ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_19" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
--- Generate application table formulartypen for lbDMFManager_Entities
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulartypen_id_formulare_typ_6" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
--- Generate application table regressiontest for lbDMFManager_Entities
--- Generate application table report_element_types for lbDMFManager_Entities
-ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_element_types_id_report_elements_typ_15" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
--- Generate application table report_elements for lbDMFManager_Entities
-ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_elements_id_report_texts_elementid_3" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
--- Generate application table report_parameters for lbDMFManager_Entities
--- Generate application table report_texts for lbDMFManager_Entities
--- Generate application table reports for lbDMFManager_Entities
-ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_reports_id_report_parameters_reportid_4" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
-ALTER TABLE "report_elements" ADD CONSTRAINT "cst_reports_id_report_elements_reportid_5" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
--- Generate application table translations for lbDMFManager_Entities
--- Generate application table user_anwendungen for lbDMFManager_Entities
--- Generate application table users for lbDMFManager_Entities
-ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_users_id_user_anwendungen_userid_2" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
-ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_18" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
+-- Generate Sqlite application relations for table Templates for lbDMFManager_Entities
+-- Generate Sqlite application relations for table action_parameters for lbDMFManager_Entities
+ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+
+-- Generate Sqlite application relations for table action_step_parameter for lbDMFManager_Entities
+ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_steps_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
+
+-- Generate Sqlite application relations for table action_step_transitions for lbDMFManager_Entities
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
+
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
+
+-- Generate Sqlite application relations for table action_steps for lbDMFManager_Entities
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_action_types_id" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+
+-- Generate Sqlite application relations for table action_types for lbDMFManager_Entities
+-- Generate Sqlite application relations for table actions for lbDMFManager_Entities
+ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_action_types_id" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
+
+-- Generate Sqlite application relations for table anwendungen for lbDMFManager_Entities
+-- Generate Sqlite application relations for table anwendungen_formulare for lbDMFManager_Entities
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
+-- Generate Sqlite application relations for table anwendungs_parameter for lbDMFManager_Entities
+ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungs_parameter_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+
+-- Generate Sqlite application relations for table anwendungsberechtigungen for lbDMFManager_Entities
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_users_id" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
+
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_formulare_id" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
+
+-- Generate Sqlite application relations for table applevel_plugin_registry for lbDMFManager_Entities
+-- Generate Sqlite application relations for table codegentarget for lbDMFManager_Entities
+-- Generate Sqlite application relations for table column_types for lbDMFManager_Entities
+-- Generate Sqlite application relations for table foreignkey_visibledata_mapping for lbDMFManager_Entities
+-- Generate Sqlite application relations for table formular_actions for lbDMFManager_Entities
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_formulare_id" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
+
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_actions_id" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
+
+-- Generate Sqlite application relations for table formular_parameters for lbDMFManager_Entities
+ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formular_parameters_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
+-- Generate Sqlite application relations for table formulare for lbDMFManager_Entities
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formulartypen_id" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
+
+-- Generate Sqlite application relations for table formulartypen for lbDMFManager_Entities
+-- Generate Sqlite application relations for table regressiontest for lbDMFManager_Entities
+-- Generate Sqlite application relations for table report_element_types for lbDMFManager_Entities
+-- Generate Sqlite application relations for table report_elements for lbDMFManager_Entities
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_report_element_types_id" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
+
+-- Generate Sqlite application relations for table report_parameters for lbDMFManager_Entities
+ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_report_parameters_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+
+-- Generate Sqlite application relations for table report_texts for lbDMFManager_Entities
+ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_texts_report_elements_id" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
+
+-- Generate Sqlite application relations for table reports for lbDMFManager_Entities
+-- Generate Sqlite application relations for table translations for lbDMFManager_Entities
+-- Generate Sqlite application relations for table user_anwendungen for lbDMFManager_Entities
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_users_id" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
+
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+
+-- Generate Sqlite application relations for table users for lbDMFManager_Entities
+ALTER TABLE "users" ADD CONSTRAINT "cst_users_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );

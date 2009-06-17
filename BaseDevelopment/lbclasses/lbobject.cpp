@@ -855,8 +855,86 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 	return *this;
 }
 
+int LB_STDCALL lbString::strpos(const char* with) {
+	char* st = stristr(charrep(), with);
+	if (st != NULL) {
+		return stringdata - st;
+	}
+	return -1;
+}
+
+lb_I_String* LB_STDCALL lbString::left(int until) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, part)
+	char* temp = strdup(stringdata);
+	temp[until] = 0;
+	*part = temp;
+	part++;
+	return part.getPtr();
+}
+
+lb_I_String* LB_STDCALL lbString::right(int from) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, part)
+	char* temp = stringdata+from;
+	*part = temp;
+	part++;
+	return part.getPtr();	
+}
+
+//http://groups.google.com/group/comp.lang.c/browse_thread/thread/2fd047f2da2d1e5e/735c8fb0edbc8cd5?lnk=gst&q=string+replace#735c8fb0edbc8cd5
+char *str_replace(char *str, const char *sub_str1, const char *sub_str2) 
+{ 
+	char *new_str; 
+	const char *p; 
+	const char *q; 
+	const char *r; 
+	char *t; 
+	signed long len; 
+	signed long diff; 
+	unsigned long count = 0; 
+	if ( (p=strstr(str, sub_str1)) == NULL ) 
+		return str; 
+	++count; 
+	len = strlen(sub_str1); 
+	/* count the number of occurances of sub_str1 */ 
+	for ( p+=len; (p=strstr(p, sub_str1)) != NULL; p+=len ) 
+		++count; 
+	diff = strlen(sub_str2) - len; 
+	/* allocate new memory */ 
+	if ( (new_str=(char *)malloc((strlen(str) + count*diff)*sizeof(char))) 
+		== NULL ) 
+		return NULL; 
+	q = str; 
+	t = new_str; 
+	for (p=strstr(str, sub_str1); p!=NULL; p=strstr(p, sub_str1)) 
+	{ 
+		/* copy until next occurance of sub_str1 */ 
+		for ( ; q < p; *t++ = *q++) 
+			; 
+		q += len; 
+		p = q; 
+		for ( r = sub_str2; *t++ = *r++; ) 
+			; 
+		--t; 
+	} 
+	/* copy the tail of str */ 
+	while ( *t++ = *q++ ) 
+		; 
+	return new_str; 
+} 
+
 lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+
+	*rep = str_replace(stringdata, toReplace, with);
+	if (rep->charrep() != NULL) {
+		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
+			setData(rep->charrep());
+	} else {
+		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
+	}
+	
+#ifdef bla	
+	if ((stringdata != NULL) && (strcmp(stringdata, "") == 0)) return *this; 
 	
 	bool trailing = false;
 
@@ -888,8 +966,13 @@ lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* wit
 	
 	if (trailing) *rep += with;
 	
-	setData(rep->charrep());
-	
+	if (rep->charrep() != NULL) {
+		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
+		setData(rep->charrep());
+	} else {
+		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
+	}
+#endif	
 	return *this;
 }
 

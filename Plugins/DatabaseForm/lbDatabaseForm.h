@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.54 2009/01/10 10:38:06 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.55 2009/06/17 20:37:17 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.55  2009/06/17 20:37:17  lollisoft
+ * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
+ *
  * Revision 1.54  2009/01/10 10:38:06  lollisoft
  * Added some class variables to access them.
  *
@@ -360,7 +363,23 @@ public:
 	
 protected:
 	void LB_STDCALL loadDataModel();
-	void LB_STDCALL delegate(lb_I_Parameter* params);
+	long LB_STDCALL delegate(lb_I_Parameter* params);
+	
+	/** \brief Create a list of transitions for the current action step.
+	 * In a linear action there are no transitions and this function therefore will return a NULL pointer.
+	 * If there is a linear step with a transition, then one transition could be in the object only.
+	 * If there is a decision step then transitions must be configured and minimally two should be there.
+	 * Only one transition could have an empty expression. This is the else alternative flow.
+	 * Currently I do not know how the order in a UML decision is implemented. I expect a order in the same
+	 * as the designer has added the transitions.
+	 *
+	 * If allTransitions is not NULL, then the data has been loaded prior and no direct database query is needed.
+	 */
+	lb_I_Action_Step_Transitions* LB_STDCALL loadTransitionsForActionStep(lb_I_Long* step, lb_I_Action_Step_Transitions* allTransitions = NULL);
+
+	lb_I_ActionStep_Parameters* LB_STDCALL loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters = NULL);
+
+	long LB_STDCALL getNextStepId(lb_I_Action_Step_Transitions* trans, lb_I_Parameter* params, long id);
 	
 	bool initialized;
 	long myActionID;
@@ -376,6 +395,7 @@ protected:
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
 
 };
 /*...e*/
@@ -388,15 +408,18 @@ public:
 	virtual ~lbDetailFormAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
+
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 	DECLARE_LB_UNKNOWN()
 	
 protected:
 
-	void LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
+	bool LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
 
 	long myActionID;
 	UAP(lb_I_Database, db)
@@ -419,15 +442,18 @@ public:
 	virtual ~lbMasterFormAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
 	
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
+
 	DECLARE_LB_UNKNOWN()
 	
 protected:
 
-	void LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
+	bool LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
 
 	long myActionID;
 	UAP(lb_I_Database, db)
@@ -450,9 +476,12 @@ public:
 	virtual ~lbSQLQueryAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
+
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 	
 	DECLARE_LB_UNKNOWN()
 	
@@ -469,10 +498,13 @@ public:
 	virtual ~lbExecuteAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
 	
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
+
 	DECLARE_LB_UNKNOWN()
 	
 protected:
@@ -480,24 +512,94 @@ protected:
 	UAP(lb_I_Database, db)
 };
 /*...e*/
+/*...sclass lbExecuteAction:0:*/
+/** \brief Used to dynamically call a dispatcher function. 
+ * Send signal normally means an asyncron message. This implementation currently is based on the sample activity diagram to
+ * call a dispatchable function. The dispatcher function to be used in the sample is the msgBox function to show an error message.
+ *
+ * To enable proper functionality, the action step parameters must be configured properly. The message is not passed into the action
+ * and thus you don't need an action parameter for it. But the action step needs a list of parameters. The list of parameters is stored
+ * in the table action_step_parameter who is related to the current action step.
+ *
+ * The dispatchable function 'msgBox' needs two parameters to properly function. This function also is implemented in lb_I_MetaApplication,
+ * but here it demonstrates the purpose of dynamic invocation like function call.
+ *
+ * @title	lb_I_String	The message box title you will see.
+ * @msg		lb_I_String	The message to display.
+ */
+class lbSendSignalAction : public lb_I_DelegatedAction
+	{
+	public:
+		lbSendSignalAction();
+		virtual ~lbSendSignalAction();
+		
+		void LB_STDCALL setActionID(long id);	
+		long LB_STDCALL execute(lb_I_Parameter* params);
+		
+		void LB_STDCALL setDatabase(lb_I_Database* _db);
+		
+		void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+		void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
+	
+		DECLARE_LB_UNKNOWN()
+		
+	protected:
+
+		/** \brief Replaces a placeholder with the data from params.
+		 * This function replaces a placeholder ({<Placeholder>}) with it's corresponding value from params.
+		 */
+		lb_I_String* LB_STDCALL substitutePlaceholder(lb_I_String* value, lb_I_Parameter* params);
+		
+		long myActionID;
+		UAP(lb_I_Database, db)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_ActionStep_Parameters, SignalParams)
+	};
+/*...e*/
 /*...sclass lbDesicionAction:0:*/
-class lbDesicionAction : public lb_I_DelegatedAction
+class lbDecisionAction : public lb_I_DelegatedAction
 {
 public:
-	lbDesicionAction();
-	virtual ~lbDesicionAction();
+	lbDecisionAction();
+	virtual ~lbDecisionAction();
 
 	void LB_STDCALL setActionID(long id);	
-	void LB_STDCALL execute(lb_I_Parameter* params);
+	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
-	
+
+	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
+
 	DECLARE_LB_UNKNOWN()
 	
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
+	UAP(lb_I_Action_Step_Transitions, transitions)
 };
+/*...e*/
+/*...sclass lbDesicionAction:0:*/
+class lbOpAqueOperation : public lb_I_DelegatedAction
+	{
+	public:
+		lbOpAqueOperation();
+		virtual ~lbOpAqueOperation();
+		
+		void LB_STDCALL setActionID(long id);	
+		long LB_STDCALL execute(lb_I_Parameter* params);
+		
+		void LB_STDCALL setDatabase(lb_I_Database* _db);
+		
+		void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
+		void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
+
+		DECLARE_LB_UNKNOWN()
+		
+	protected:
+		long myActionID;
+		UAP(lb_I_Database, db)
+	};
 /*...e*/
 
 /*...sclass FormularActions:0:*/
@@ -862,6 +964,8 @@ public:
 	 */
 	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
 
+	lbErrCodes DoValidation(lb_I_Unknown* uk);
+		
 	void OnDispatch(wxCommandEvent& event);
 	void OnImageButtonClick(wxCommandEvent& event);
 	void OnMouseMove(wxMouseEvent& evt);
@@ -937,6 +1041,7 @@ public:
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_ApplicationParameter, appParams)
 	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 

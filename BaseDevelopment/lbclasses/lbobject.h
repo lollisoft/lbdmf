@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbobject.h,v 1.44 2008/11/23 09:13:54 lollisoft Exp $
+ * $Id: lbobject.h,v 1.45 2009/06/17 20:37:17 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.45  2009/06/17 20:37:17  lollisoft
+ * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
+ *
  * Revision 1.44  2008/11/23 09:13:54  lollisoft
  * If there would be created a big string in small steps, this is an attempt to
  * reduce the overhead of calling strlen and malloc each time by using a
@@ -408,6 +411,10 @@ public:
 	
 	lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with);
  
+	lb_I_String* LB_STDCALL left(int until);
+	lb_I_String* LB_STDCALL right(int from);
+	int LB_STDCALL strpos(const char* with);
+	
 	DECLARE_LB_KEYBASE()
 
 private:

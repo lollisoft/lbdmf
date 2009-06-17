@@ -136,7 +136,21 @@ int main(int argc, char *argv[]) {
 	    _CL_LOG << "Long values are not equal." LOG_	
 	}
 
-
+	
+	UAP_REQUEST(mm, lb_I_String, replaceTest)
+	
+	*replaceTest = "\"Hallo\"";
+	replaceTest->replace("Hallo", "Duda");
+	replaceTest->replace("\"", "'");
+	replaceTest->replace("a'", "aaa'");
+	printf("Replaced string: %s\n", replaceTest->charrep());
+	
+	*replaceTest = "Hallo == \"\"";
+	replaceTest->replace("Hallo", "Duda");
+	replaceTest->replace("\"", "&quot;");
+	printf("Replaced string: %s\n", replaceTest->charrep());
+	
+	
 	UAP_REQUEST(mm, lb_I_String, string1)
 	char buf1[100] = "";
 	UAP_REQUEST(mm, lb_I_String, string2)

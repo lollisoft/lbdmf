@@ -126,7 +126,14 @@ void LB_STDCALL lbExecuteAction::setActionID(long id) {
 	myActionID = id;
 }
 
-void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
+void LB_STDCALL lbExecuteAction::setTransitions(lb_I_Action_Step_Transitions* myTransitions) {
+}
+
+void LB_STDCALL lbExecuteAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
+	
+}
+
+long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbExecuteAction::execute()" LOG_
 	
@@ -210,7 +217,7 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			
 			wxExecute(What->charrep());
 
-			return;
+			return -1;
 		}
 	}
 	
@@ -230,7 +237,7 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 
 	if (database == NULL) {
 		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return;
+		return 0;
 	}
 	UAP(lb_I_Query, query)
 
@@ -268,12 +275,12 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 
 	if (db == NULL) {
 		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return;
+		return 0;
 	}
 	db->init();
 	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
-		return;
+		return 0;
 	}
 	
 	if (query->query(q) == ERR_NONE) {
@@ -306,7 +313,7 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 				*msg += s.c_str();
 				*msg += ")";
 				meta->msgBox("Error", msg->charrep());
-				return;
+				return 0;
 			}
 			q->enableFKCollecting();
 
@@ -340,7 +347,7 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 				*msg += s.c_str();
 				*msg += ")";
 				meta->msgBox("Error", msg->charrep());
-				return;
+				return 0;
 			}
 			q->enableFKCollecting();
 /*...e*/
@@ -369,4 +376,5 @@ void LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 		
 		if (f != NULL) f->reopen();
 	}
+	return -1;
 }

@@ -1120,6 +1120,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Actions, appActions)
 		
+		*name = "appActionParameters";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Parameters, appActionParameters)
+		
+		
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
@@ -3565,7 +3570,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
-	//if (noDataAvailable) return ERR_NONE;
+	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	if (!database->isConnected()) {
@@ -3577,7 +3582,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	}
 	
 	SetName(formName);
-
+	
 	int columns = sampleQuery->getColumns();
 	
 	for (int i = 1; i <= columns; i++) {
@@ -3599,7 +3604,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				int pos = cbox->GetSelection();
 				
 				if (pos != -1) {
-					lbErrCodes err = ERR_NONE;
+					err = ERR_NONE;
 
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
@@ -4055,7 +4060,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-
+	if ((err = DoValidation(NULL)) != ERR_NONE) return err;
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
 	lbDBClear();
@@ -4087,11 +4092,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	if ((err = DoValidation(NULL)) != ERR_NONE) return err;
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
-  lbDBClear();
+	lbDBClear();
 
-	lbErrCodes err = sampleQuery->next();
+	err = sampleQuery->next();
 
 	// Skip all deleted rows
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
@@ -4129,11 +4136,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	if ((err = DoValidation(NULL)) != ERR_NONE) return err;
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
 	lbDBClear();
 
-	lbErrCodes err = sampleQuery->previous();
+	err = sampleQuery->previous();
 
 	// Skip all deleted rows
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
@@ -4170,10 +4179,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	if ((err = DoValidation(NULL)) != ERR_NONE) return err;
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 	lbDBClear();
 
-	lbErrCodes err = sampleQuery->last();
+	err = sampleQuery->last();
 	
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
 
@@ -4546,6 +4557,117 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
+	// Call all validation actions connected to this form
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
+	meta->setStatusText("Info", "Executing validation actions ...");
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	
+	wxString value;
+	wxString errmsg;
+	
+	long formularID = -1;
+	
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		if ((forms->getApplicationID() == meta->getApplicationID()) && (strcmp(forms->getName(), untranslated_formName) == 0)) {
+			formularID = forms->getFormularID();
+		}
+	}
+	
+	formActions->finishFormularActionIteration();
+	while (formActions->hasMoreFormularActions()) {
+		formActions->setNextFormularAction();
+		
+		if (formActions->getFormularActionFormularID() == formularID) {
+			appActions->selectAction(formActions->getFormularActionActionID());
+			appActionTypes->selectActionType(appActions->getActionTyp());
+			
+			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "FormValidator") == 0) {
+				long actionID = formActions->getFormularActionActionID();
+				bool doAddValue = false;
+				wxString value;
+				wxString errmsg;
+				
+				appActions->selectAction(actionID);
+				appActionTypes->selectActionType(appActions->getActionTyp());
+				
+				UAP(lb_I_Action, action)
+				action = fa->getAction(fa->getActionID(formActions->getFormularActionEvent()));
+				
+				/*...sBuild up parameter list:16:*/
+				UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, v)
+				
+				parameter->setData("DBName");
+				v->setData(_DBName->charrep());
+				param->setUAPString(*&parameter, *&v);
+				
+				parameter->setData("DBUser");
+				v->setData(_DBUser->charrep());
+				param->setUAPString(*&parameter, *&v);
+				
+				parameter->setData("DBPass");
+				v->setData(_DBPass->charrep());
+				param->setUAPString(*&parameter, *&v);
+				
+				parameter->setData("source Form");
+				v->setData(base_formName);
+				param->setUAPString(*&parameter, *&v);
+				
+				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+				parameter->setData("application");
+				
+				_LOG << "Put parameters for configured action parameter list into container." LOG_
+				appActionParameters->finishActionParameterIteration();
+				while (appActionParameters->hasMoreActionParameters()) {
+					appActionParameters->setNextActionParameter();
+					if (appActionParameters->getActionParameterActionID() == actionID) {
+						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)
+						*pCompare = appActionParameters->getActionParameterName();
+						*pCompareValue = getControlValue(pCompare->charrep());
+						
+						_LOG << "Parameter '" << pCompare->charrep() << "' = '" << pCompareValue->charrep() << "'" LOG_
+						param->setUAPString(*&pCompare, *&pCompareValue);
+					}
+				}
+				
+				
+				meta->getApplicationName(&v);
+				
+				param->setUAPString(*&parameter, *&v);
+				
+				action->execute(*&param);
+				
+				UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+				*result = "";
+				parameter->setData("result");
+				param->getUAPString(*&parameter, *&result);
+				
+				if (result->charrep() == NULL) 
+					_LOG << "Error: Validators expect a result variable." LOG_
+				else
+					_LOG << "Result of validation is '" << result->charrep() << "'" LOG_
+				
+				if (*result == "0") return ERR_FORM_VALIDATION;
+				if (*result == "") {
+					meta->msgBox("Error", "Validation failed due to wrong result value or no result value. Please check your activity model only returning 'result' = 0 / 1.");
+					return ERR_FORM_VALIDATION;
+				}
+			}
+		}
+	}
+	
+	return ERR_NONE;
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -4564,28 +4686,49 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 		meta->setStatusText("Info", "Reversing event name to ID ...");
 		char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
-		reversedEvent = strdup(strtok(eventName, "("));
-		free(reversedEvent);
-		reversedEvent = strdup(strtok(NULL, ")"));
+		if (strchr(eventName, '(') != NULL) {
+			reversedEvent = strdup(strtok(eventName, "("));
+			free(reversedEvent);
+			char* temp = strtok(NULL, ")");
+			if (temp == NULL) {
+				meta->msgBox("Error", "Event name was not configured for this action buuton. Please check the configuration!");
+				return err;
+			}
+			reversedEvent = strdup(temp);
+		} else {
+			meta->msgBox("Error", "Event name was not configured for this action buuton. Please check the configuration!");
+			return err;
+		}
 		meta->setStatusText("Info", "Lookup action source field ...");
 		*s = fa->getActionSourceDataField(reversedEvent);
-		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
+		
+		s->trim();
+		
+		long actionID = fa->getActionID(reversedEvent);
+		bool doAddValue = false;
 		wxString value;
 		wxString errmsg;
 		
-		if (w == NULL) 	{
-			UAP_REQUEST(getModuleInstance(), lb_I_String, err)
-			*err = "Didn't found a control with given name. Check, if your action settings use an existing field from the form. (";
-			*err += s->charrep();
-			*err += ")\n\nThis may also an UML design error.";
-			meta->msgBox("Error", err->charrep());
-			return ERR_NONE;
-		} else {
-			errmsg = wxString("Found a control with given name: ") + wxString(s->charrep());
-			meta->setStatusText("Info", errmsg.c_str());
-		}
+		appActions->selectAction(actionID);
+		appActionTypes->selectActionType(appActions->getActionTyp());
 		
-		if (sampleQuery->hasFKColumn(s->charrep()) == 1) {
+		// Lookup only when action type is a buttonpress
+		if ((strcmp(appActionTypes->getActionTypeBezeichnung(), "Buttonpress") == 0)) {
+			wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
+			doAddValue = true;
+			if (w == NULL) 	{
+				UAP_REQUEST(getModuleInstance(), lb_I_String, err)
+				*err = "Didn't found a control with given name. Check, if your action settings use an existing field from the form. (";
+				*err += s->charrep();
+				*err += ")\n\nThis may also an UML design error.";
+				meta->msgBox("Error", err->charrep());
+				return ERR_NONE;
+			} else {
+				errmsg = wxString("Found a control with given name: ") + wxString(s->charrep());
+				meta->setStatusText("Info", errmsg.c_str());
+			}
+			
+			if (sampleQuery->hasFKColumn(s->charrep()) == 1) {
 				wxChoice* cbox = (wxChoice*) w;		
 				int pos = cbox->GetSelection();
 				if (pos != -1) {
@@ -4615,54 +4758,55 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 						value = pp;
 					}
 				}
-/*...e*/
-		} else {
-/*...sGet the content from text control:40:*/
+				/*...e*/
+			} else {
+				/*...sGet the content from text control:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s->charrep());
-
+				
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
-						{
-							wxCheckBox *check = (wxCheckBox*) w;
-							if (check->GetValue() == TRUE) {
-								value = "true";
-							} else {
-								value = "false";
-							}
+					{
+						wxCheckBox *check = (wxCheckBox*) w;
+						if (check->GetValue() == TRUE) {
+							value = "true";
+						} else {
+							value = "false";
 						}
+					}
 						break;
-					
+						
 					case lb_I_Query::lbDBColumnChar:
-						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
-							value = tx->GetValue();
-						}
+					{
+						wxTextCtrl* tx = (wxTextCtrl*) w;
+						
+						value = tx->GetValue();
+					}
 						break;
-					
+						
 					case lb_I_Query::lbDBColumnInteger:
-						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
-							value = tx->GetValue();
-						}
+					{
+						wxTextCtrl* tx = (wxTextCtrl*) w;
+						
+						value = tx->GetValue();
+					}
 						break;
-					
-					
+						
+						
 					case lb_I_Query::lbDBColumnUnknown:
-					
+						
 						break;
 				}
-/*...e*/
+				/*...e*/
+			}
+			_LOG << "Have these event: " << reversedEvent << "." LOG_		
+			_LOG << "Have got source field: " << s->charrep() << "." LOG_
+			_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+			
+			errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
+			meta->setStatusText("Info", errmsg.c_str());			
 		}
 /*...e*/
 		
-		_LOG << "Have these event: " << reversedEvent << "." LOG_		
-		_LOG << "Have got source field: " << s->charrep() << "." LOG_
-		_LOG << "The value for the field is " << value.c_str() << "." LOG_		
-
-		errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
-		meta->setStatusText("Info", errmsg.c_str());
 
 		UAP(lb_I_Action, action)
 		action = fa->getAction(fa->getActionID(reversedEvent));
@@ -4688,23 +4832,46 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		v->setData(base_formName);
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("source field");
-		v->setData(s->charrep());
-		param->setUAPString(*&parameter, *&v);
-
-		parameter->setData("source value");
-		v->setData(value.c_str());
-		param->setUAPString(*&parameter, *&v);
-
+		if (doAddValue) {
+			parameter->setData("source field");
+			v->setData(s->charrep());
+			param->setUAPString(*&parameter, *&v);
+			
+			parameter->setData("source value");
+			v->setData(value.c_str());
+			param->setUAPString(*&parameter, *&v);
+		}
+		
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		parameter->setData("application");
 
+		
+		//getControlValue
+		
+		
+		
+		_LOG << "Put parameters for configured action parameter list into container." LOG_
+		appActionParameters->finishActionParameterIteration();
+		while (appActionParameters->hasMoreActionParameters()) {
+			appActionParameters->setNextActionParameter();
+			if (appActionParameters->getActionParameterActionID() == actionID) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)
+				*pCompare = appActionParameters->getActionParameterName();
+				*pCompareValue = getControlValue(pCompare->charrep());
+				
+				_LOG << "Parameter '" << pCompare->charrep() << "' = '" << pCompareValue->charrep() << "'" LOG_
+				param->setUAPString(*&pCompare, *&pCompareValue);
+			}
+		}
+		
+		
 		meta->getApplicationName(&v);
 
 		param->setUAPString(*&parameter, *&v);
 /*...e*/
 
-		meta->setStatusText("Info", errmsg.c_str());
+		if (doAddValue) meta->setStatusText("Info", errmsg.c_str());
 
 		action->execute(*&param);
 

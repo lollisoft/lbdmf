@@ -126,6 +126,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
+	UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBColumns, dbColumns)
@@ -291,10 +293,18 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	*name = "AppActionTypes";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Types, appActionTypes)
-			
+	
 	*name = "appActionStepTransitions";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Step_Transitions, appActionStepTransitions)
+	
+	*name = "appActionParameters";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Action_Parameters, appActionParameters)
+	
+	*name = "appActionStepParameters";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ActionStep_Parameters, appActionStepParameters)
 	
 	
 
@@ -325,6 +335,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActions != NULL) &&
 		(appActionTypes != NULL) &&
 		(appActionStepTransitions != NULL) &&
+		(appActionParameters != NULL) &&
+		(appActionStepParameters != NULL) &&
 		(appActionSteps != NULL)) {
 
 	
@@ -394,6 +406,10 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		appActionSteps->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (appActionStepTransitions) ...");
 		appActionStepTransitions->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appActionParameters) ...");
+		appActionParameters->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appActionStepParameters) ...");
+		appActionStepParameters->accept(*&aspect);
 
 		*oStream << "</lbDMF>\n";
 	}
@@ -459,6 +475,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
+	UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBColumns, dbColumns)
@@ -482,7 +500,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
 	AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
 	AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
-	AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'application formular assoc'")
+	AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
+	AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
+	AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 	AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
 	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
@@ -505,6 +525,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	appActionTypes->accept(*&aspect);
 	appActionSteps->accept(*&aspect);
 	appActionStepTransitions->accept(*&aspect);
+	appActionParameters->accept(*&aspect);
+	appActionStepParameters->accept(*&aspect);
 
 	// Read out application settings
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
@@ -565,6 +587,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		(appActions != NULL) && 
 		(appActionSteps != NULL) && 
 		(appActionStepTransitions != NULL) && 
+		(appActionParameters != NULL) && 
+		(appActionStepParameters != NULL) && 
 		(appActionTypes != NULL) && 
 		(appParams != NULL)) {
 		
@@ -646,7 +670,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "appActionStepTransitions";
 		QI(appActionStepTransitions, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-
+		
+		*name = "appActionParameters";
+		QI(appActionParameters, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "appActionStepParameters";
+		QI(appActionStepParameters, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
 
 
 		
@@ -736,6 +768,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
+	UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
 	UAP(lb_I_Action_Types, appActionTypes)
 
 	UAP(lb_I_Reports, reports)
@@ -852,11 +886,19 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "AppActionTypes";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Types, appActionTypes)
-			
+	
 	*name = "appActionStepTransitions";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Step_Transitions, appActionStepTransitions)
-
+	
+	*name = "appActionParameters";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Action_Parameters, appActionParameters)
+	
+	*name = "appActionStepParameters";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ActionStep_Parameters, appActionStepParameters)
+	
 
 
 	// Store the settings from dynamic application
@@ -933,6 +975,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		(appActions != NULL) &&
 		(appActionTypes != NULL) &&
 		(appActionStepTransitions != NULL) &&
+		(appActionParameters != NULL) &&
+		(appActionStepParameters != NULL) &&
 		(appActionSteps != NULL)) {
 
 		_LOG << "Start storing the data" LOG_
@@ -954,6 +998,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		appActionTypes->accept(*&aspect);
 		appActionSteps->accept(*&aspect);
 		appActionStepTransitions->accept(*&aspect);
+		appActionParameters->accept(*&aspect);
+		appActionStepParameters->accept(*&aspect);
 
 		UMLImportTargetDBName->accept(*&aspect);
 		UMLImportTargetDBUser->accept(*&aspect);
@@ -1007,6 +1053,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
+	UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
 
 	UAP(lb_I_Reports, reports)
 	UAP(lb_I_ReportParameters, reportparams)
@@ -1029,8 +1077,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 	AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'application formular assoc'")
-	AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'application formular assoc'")
-
+	AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
+	AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
+	AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
+	
 	if (reports == NULL)  {
 		_LOG << "lb_I_Reports instance is NULL." LOG_
 	}
@@ -1079,6 +1129,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	if (appActionStepTransitions == NULL)  {
 		_LOG << "lb_I_Action_Step_Transitions instance is NULL." LOG_
 	}
+	if (appActionParameters == NULL)  {
+		_LOG << "lb_I_Action_Parameters instance is NULL." LOG_
+	}
+	if (appActionStepParameters == NULL)  {
+		_LOG << "lb_I_ActionStep_Parameters instance is NULL." LOG_
+	}
 	
 	meta->setStatusText("Info", "Load database configuration (reports) ...");
 	reports->accept(*&aspect);
@@ -1113,6 +1169,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	appActionSteps->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (appActionStepTransitions) ...");
 	appActionStepTransitions->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appActionParameters) ...");
+	appActionParameters->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appActionStepParameters) ...");
+	appActionStepParameters->accept(*&aspect);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Unknown, ukDoc)
@@ -1273,6 +1333,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	QI(appActionStepTransitions, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
 	
+	*name = "appActionParameters";
+	QI(appActionParameters, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "appActionStepParameters";
+	QI(appActionStepParameters, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
 	if ((forms != NULL) && 
 		(ApplicationFormulars != NULL) && 
 		(reports != NULL) && 
@@ -1285,6 +1353,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		(appActions != NULL) && 
 		(appActionSteps != NULL) && 
 		(appActionStepTransitions != NULL) && 
+		(appActionParameters != NULL) && 
+		(appActionStepParameters != NULL) && 
 		(appActionTypes != NULL) && 
 		(appParams != NULL)) {
 
@@ -1352,6 +1422,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		
 		*name = "appActionStepTransitions";
 		QI(appActionStepTransitions, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "appActionParameters";
+		QI(appActionParameters, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "appActionStepParameters";
+		QI(appActionStepParameters, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
 	}		
 	

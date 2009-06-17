@@ -218,6 +218,11 @@ protected:
 	UAP(lb_I_DBColumns, dbColumns)
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
+	
+	UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+	UAP(lb_I_Action_Parameters, appActionParameters)
+	UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
+	
 
 	UAP(lb_I_Reports, reports)
 	UAP(lb_I_ReportParameters, reportparams)
@@ -2264,6 +2269,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 					UAP(lb_I_Actions, appActions)
 					UAP(lb_I_Action_Steps, appActionSteps)
 					UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
+					UAP(lb_I_Action_Parameters, appActionParameters)
+					UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
 					UAP(lb_I_Action_Types, appActionTypes)
 					UAP(lb_I_DBTables, dbTables)
 					UAP(lb_I_DBColumns, dbColumns)
@@ -2292,6 +2299,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 						AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 						AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
 						AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
+						AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
+						AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 
 
 						metaapp->setStatusText("Info", "Preload application data from file ...");
@@ -2317,6 +2326,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 						appActionTypes->accept(*&fOp);
 						appActionSteps->accept(*&fOp);
 						appActionStepTransitions->accept(*&fOp);
+						appActionParameters->accept(*&fOp);
+						appActionStepParameters->accept(*&fOp);
 						fOp->end();
 					} else {
 						// FATAL: No system database and no file.
@@ -2374,6 +2385,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 		AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
 		AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
+		AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
+		AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 #endif
 /*...e*/
 
@@ -2426,6 +2439,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			(appActions != NULL) &&
 			(appActionSteps != NULL) &&
 			(appActionStepTransitions != NULL) &&
+			(appActionParameters != NULL) &&
+			(appActionStepParameters != NULL) &&
 			(appActionTypes != NULL) &&
 			(appParams != NULL)) {
 			_LOG << "Load application data from file ..." LOG_
@@ -2455,6 +2470,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			appActionTypes->accept(*&fOp);
 			appActionSteps->accept(*&fOp);
 			appActionStepTransitions->accept(*&fOp);
+			appActionParameters->accept(*&fOp);
+			appActionStepParameters->accept(*&fOp);
 		}
 #endif
 #ifndef USE_OLD_INITIALIZE
@@ -2488,6 +2505,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			(appActions != NULL) &&
 			(appActionSteps != NULL) &&
 			(appActionStepTransitions != NULL) &&
+			(appActionParameters != NULL) &&
+			(appActionStepParameters != NULL) &&
 			(appActionTypes != NULL) &&
 			(appParams != NULL)) {
 			_LOG << "Load application data from database ..." LOG_
@@ -2517,6 +2536,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			appActionTypes->accept(*&fOpDB);
 			appActionSteps->accept(*&fOpDB);
 			appActionStepTransitions->accept(*&fOpDB);
+			appActionParameters->accept(*&fOpDB);
+			appActionStepParameters->accept(*&fOpDB);
 		}
 #endif // USE_OLD_INITIALIZE
 		if (!DBOperation) fOp->end();
@@ -2535,6 +2556,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			(appActions != NULL) &&
 			(appActionSteps != NULL) &&
 			(appActionStepTransitions != NULL) &&
+			(appActionParameters != NULL) &&
+			(appActionStepParameters != NULL) &&
 			(appActionTypes != NULL) &&
 			(appParams != NULL)) {
 
@@ -2602,11 +2625,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 			*name = "AppActionTypes";
 			QI(appActionTypes, lb_I_Unknown, uk)
 				document->insert(&uk, &key);
-
+			
 			*name = "appActionStepTransitions";
 			QI(appActionStepTransitions, lb_I_Unknown, uk)
-				document->insert(&uk, &key);
-
+			document->insert(&uk, &key);
+			
+			*name = "appActionParameters";
+			QI(appActionParameters, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "appActionStepParameters";
+			QI(appActionStepParameters, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
 		}
 
 		*name = "ApplicationData";

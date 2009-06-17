@@ -181,6 +181,8 @@ public:
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 	bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db);
@@ -277,6 +279,90 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 	}
 }
 
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery("lbDMF", 0);
+	
+	*query = "select id, actionid, name, value, interface, description from action_step_parameter";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, actionid)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, value)
+		UAP(lb_I_String, interface)
+		UAP(lb_I_String, description)
+		err = q->first();
+		
+		while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			
+			ID = q->getAsLong(1);
+			actionid = q->getAsLong(2);
+			name = q->getAsString(3);
+			value = q->getAsString(4);
+			interface = q->getAsString(5);
+			description = q->getAsString(6);
+			
+			actionstepparameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), interface->charrep(), actionid->getData(), ID->getData());
+			
+			err = q->next();
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Action_Parameters* actionparameters) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery("lbDMF", 0);
+	
+	*query = "select id, actionid, name, value, interface, description from action_parameters";
+	
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, actionid)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, value)
+		UAP(lb_I_String, interface)
+		UAP(lb_I_String, description)
+		err = q->first();
+		
+		while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			
+			ID = q->getAsLong(1);
+			actionid = q->getAsLong(2);
+			name = q->getAsString(3);
+			value = q->getAsString(4);
+			interface = q->getAsString(5);
+			description = q->getAsString(6);
+			
+			actionparameters->addActionParameter(description->charrep(), name->charrep(), value->charrep(), interface->charrep(), actionid->getData(), ID->getData());
+			
+			err = q->next();
+		}
+	}
+}
+
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Step_Transitions* transitions) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabaseInputStream::visit(lb_I_Action_Step_Transitions* transitions) called" LOG_
@@ -290,7 +376,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Step_Transitions* trans
 	
 	q = db->getQuery("lbDMF", 0);
 
-	*query = "select id, src_actionid, dst_actionid, decision, description from action_step_transitions";
+	*query = "select id, src_actionid, dst_actionid, expression, description from action_step_transitions";
 
 	err = q->query(query->charrep());
 	

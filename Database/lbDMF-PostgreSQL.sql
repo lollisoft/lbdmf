@@ -60,68 +60,22 @@ end;
 				
 -- Class Reportparameter of type FORM found.
 				
--- Class action_steps of type ENTITY found.
+-- Class action_step_transitions of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
--- Generate application table action_steps for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
+-- Generate application table action_step_transitions for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
 
 
+select dropTable('action_step_transitions');
+select dropTable('action_step_parameter');
 select dropTable('action_steps');
-
--- Class action_types of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table action_types for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('action_types');
-
--- Class actions of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table actions for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
+select dropTable('action_parameters');
 select dropTable('actions');
-
--- Class anwendungen of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table anwendungen for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('anwendungen');
-
--- Class anwendungen_formulare of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table anwendungen_formulare for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('anwendungen_formulare');
-
--- Class anwendungs_parameter of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table anwendungs_parameter for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('anwendungs_parameter');
-
--- Class anwendungsberechtigungen of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table anwendungsberechtigungen for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('anwendungsberechtigungen');
-
--- Class applevel_plugin_registry of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table applevel_plugin_registry for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
-
-
 select dropTable('applevel_plugin_registry');
 
 -- Class codegentarget of type ENTITY found.
@@ -289,6 +243,31 @@ SET SESSION AUTHORIZATION 'dba';
 -- Class Reportdefinitionen of type FORM found.
 				
 -- Class Reportparameter of type FORM found.
+
+-- Class action_step_transitions of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table action_step_transitions for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
+
+
+
+CREATE TABLE "action_step_parameter" (
+	"id" SERIAL,
+	"action_step_id" INTEGER,
+	"name" CHAR(255),
+	"value" CHAR(255),
+	"interface" CHAR(255),
+	"description" CHAR(255)
+) WITH OIDS;
+
+CREATE TABLE "action_step_transitions" (
+	"id" SERIAL,
+	"expression" CHAR(255),
+	"src_actionid" INTEGER,
+	"dst_actionid" INTEGER,
+	"description" CHAR(255)
+) WITH OIDS;
+
 				
 -- Class action_steps of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -328,14 +307,16 @@ CREATE TABLE "action_types" (
 	"module" CHAR(255)
 ) WITH OIDS;
 
--- Class actions of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
 
--- Generate application table actions for lbDMFManager_Entities. Tagtet database: 'PostgreSQL'
+CREATE TABLE "action_parameters" (
+	"id" SERIAL,
+	"actionid" INTEGER,
+	"name" CHAR(255),
+	"value" CHAR(255),
+	"interface" CHAR(255),
+	"description" CHAR(255)
+) WITH OIDS;
 
-
-
--- CREATE TABLE actions
 CREATE TABLE "actions" (
 	
 --,,
@@ -779,6 +760,9 @@ CREATE TABLE "users" (
 
 -- Generate application tables action_steps for lbDMFManager_Entities primary keys. Tagtet database: 'PostgreSQL'
 
+ALTER TABLE "action_step_parameter" ADD CONSTRAINT "action_step_parameter_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "action_step_transitions_pkey" PRIMARY KEY ("id");
 
 ALTER TABLE "action_steps" ADD CONSTRAINT "action_steps_pkey" PRIMARY KEY ("id");
 		
@@ -787,6 +771,7 @@ ALTER TABLE "action_steps" ADD CONSTRAINT "action_steps_pkey" PRIMARY KEY ("id")
 -- Generate application tables action_types for lbDMFManager_Entities primary keys. Tagtet database: 'PostgreSQL'
 
 
+ALTER TABLE "action_parameters" ADD CONSTRAINT "action_parameters_pkey" PRIMARY KEY ("id");
 ALTER TABLE "action_types" ADD CONSTRAINT "action_types_pkey" PRIMARY KEY ("id");
 		
 -- Class actions of type ENTITY found.
@@ -951,89 +936,34 @@ ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 -- Generate application table action_steps for lbDMFManager_Entities
 -- Generate application table action_types for lbDMFManager_Entities
 
---ALTER TABLE "action_types" ADD CONSTRAINT "action_types_pkey" PRIMARY KEY ("id");
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type_1" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_step_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
 
---ALTER TABLE "action_types" ADD CONSTRAINT "action_types_pkey" PRIMARY KEY ("id");
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_src_actionid_id_1" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_dst_actionid_id_1" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
+
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_types_id_action_steps_type" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+
+ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_id_action_parameters_actionid" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+
 ALTER TABLE "actions" ADD CONSTRAINT "cst_action_types_id_actions_typ_3" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
--- Generate application table actions for lbDMFManager_Entities
-
---ALTER TABLE "actions" ADD CONSTRAINT "actions_pkey" PRIMARY KEY ("id");
 ALTER TABLE "action_steps" ADD CONSTRAINT "cst_actions_id_action_steps_actionid_2" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
-
---ALTER TABLE "actions" ADD CONSTRAINT "actions_pkey" PRIMARY KEY ("id");
 ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_actions_id_formular_actions_action_9" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
--- Generate application table anwendungen for lbDMFManager_Entities
-
---ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_id_anwendungen_formulare_anwendungid_4" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-
---ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungen_id_anwendungs_parameter_anwendungid_6" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-
---ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "formulare" ADD CONSTRAINT "cst_anwendungen_id_formulare_anwendungid_12" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
-
---ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_anwendungen_id_user_anwendungen_anwendungenid_18" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
-
---ALTER TABLE "anwendungen" ADD CONSTRAINT "anwendungen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "users" ADD CONSTRAINT "cst_anwendungen_id_users_lastapp_20" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
--- Generate application table anwendungen_formulare for lbDMFManager_Entities
--- Generate application table anwendungs_parameter for lbDMFManager_Entities
--- Generate application table anwendungsberechtigungen for lbDMFManager_Entities
--- Generate application table applevel_plugin_registry for lbDMFManager_Entities
--- Generate application table codegentarget for lbDMFManager_Entities
--- Generate application table column_types for lbDMFManager_Entities
--- Generate application table foreignkey_visibledata_mapping for lbDMFManager_Entities
--- Generate application table formular_actions for lbDMFManager_Entities
--- Generate application table formular_parameters for lbDMFManager_Entities
--- Generate application table formulare for lbDMFManager_Entities
-
---ALTER TABLE "formulare" ADD CONSTRAINT "formulare_pkey" PRIMARY KEY ("id");
 ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_formulare_id_anwendungen_formulare_formularid_5" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
-
---ALTER TABLE "formulare" ADD CONSTRAINT "formulare_pkey" PRIMARY KEY ("id");
 ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_formulare_id_anwendungsberechtigungen_idformular_7" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
-
---ALTER TABLE "formulare" ADD CONSTRAINT "formulare_pkey" PRIMARY KEY ("id");
 ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formulare_id_formular_actions_formular_10" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
-
---ALTER TABLE "formulare" ADD CONSTRAINT "formulare_pkey" PRIMARY KEY ("id");
 ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formulare_id_formular_parameters_formularid_11" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
--- Generate application table formulartypen for lbDMFManager_Entities
-
---ALTER TABLE "formulartypen" ADD CONSTRAINT "formulartypen_pkey" PRIMARY KEY ("id");
 ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulartypen_id_formulare_typ_13" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
--- Generate application table lbDMF_ForeignKeys for lbDMFManager_Entities
--- Generate application table regressiontest for lbDMFManager_Entities
--- Generate application table report_element_types for lbDMFManager_Entities
-
---ALTER TABLE "report_element_types" ADD CONSTRAINT "report_element_types_pkey" PRIMARY KEY ("id");
 ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_element_types_id_report_elements_typ_14" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
--- Generate application table report_elements for lbDMFManager_Entities
-
---ALTER TABLE "report_elements" ADD CONSTRAINT "report_elements_pkey" PRIMARY KEY ("id");
 ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_elements_id_report_texts_elementid_17" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
--- Generate application table report_parameters for lbDMFManager_Entities
--- Generate application table report_texts for lbDMFManager_Entities
--- Generate application table reports for lbDMFManager_Entities
-
---ALTER TABLE "reports" ADD CONSTRAINT "reports_pkey" PRIMARY KEY ("id");
 ALTER TABLE "report_elements" ADD CONSTRAINT "cst_reports_id_report_elements_reportid_15" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
-
---ALTER TABLE "reports" ADD CONSTRAINT "reports_pkey" PRIMARY KEY ("id");
 ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_reports_id_report_parameters_reportid_16" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
--- Generate application table translations for lbDMFManager_Entities
--- Generate application table user_anwendungen for lbDMFManager_Entities
--- Generate application table users for lbDMFManager_Entities
-
---ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_users_id_anwendungsberechtigungen_iduser_8" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
-
---ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_users_id_user_anwendungen_userid_19" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
--- Create default stored procedures for PostgreSQL. Version ignored.
 
 SET SESSION AUTHORIZATION 'postgres';
 

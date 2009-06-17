@@ -605,9 +605,16 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 	}
 }
 /*...e*/
+void LB_STDCALL lbDBReportAction::setTransitions(lb_I_Action_Step_Transitions* myTransitions) {
+	
+}
+
+void LB_STDCALL lbDBReportAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
+	
+}
 
 /*...svoid LB_STDCALL lbDBReportAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
-void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
+long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 /*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, masterForm)
@@ -682,6 +689,40 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 /*...e*/
 		}
 	}
+	long first_dst_actionid = -1;
+	transitions->finishActionStepTransitionIteration();
+	while (transitions->hasMoreActionStepTransitions()) {
+		transitions->setNextActionStepTransition();
+		// First use a simple expression without any Lex & Yacc parser
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
+		long dst_actionid;
+		wxString expression;
+		expression = transitions->getActionStepTransitionDecision();
+		dst_actionid = transitions->getActionStepTransitionDstActionID();
+		
+		if (expression.find("==") != -1) {
+			// equal operator
+			_LOG << "Error: Boolean expression not allowed!" LOG_
+		}
+		if (expression.find("!=") != -1) {
+			// equal operator
+			_LOG << "Error: Boolean expression not allowed!" LOG_
+		}
+		if (expression.find("=") != -1) {
+			// assignment (typically adding a parameter to params
+			wxString left = expression.substr(0, expression.find("=")-1);
+			wxString right = expression.substr(expression.find("=")+1);
+			right.Trim();
+			left.Trim();
+			
+			*paramValue = right.c_str();
+			params->setUAPString(*&paramName, *&paramValue);
+			first_dst_actionid = dst_actionid;
+		}
+	}
+	
+	return first_dst_actionid;	
 }
 /*...e*/
 /*...e*/

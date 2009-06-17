@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.36 2008/05/12 08:06:46 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.37 2009/06/17 20:37:18 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.37  2009/06/17 20:37:18  lollisoft
+ * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
+ *
  * Revision 1.36  2008/05/12 08:06:46  lollisoft
  * Added code to load database instance from backend (plugin).
  *
@@ -304,7 +307,10 @@ enum lbErrCodes {
 	ERR_MEMORY_ALLOC,
 	
 	ERR_UML_IMPORT_LOADDATABASE_MODUL,
-	ERR_DYNAMIC_APP_LOAD_DBSCHEMA
+	ERR_DYNAMIC_APP_LOAD_DBSCHEMA,
+	
+/* Errorcodes for form validation */	
+	ERR_FORM_VALIDATION
 };
 /*...e*/
 

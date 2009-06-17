@@ -180,6 +180,8 @@ public:
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 	
 	/** \brief Start save operation.
 	 *
@@ -307,6 +309,43 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBReportProperties*) {
 
 }
 
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	*oStream << "<actionstepparameters>" << "\n";
+	
+	actionstepparameters->finishActionStepParameterIteration();
+	
+	while (actionstepparameters->hasMoreActionStepParameters()) {
+		actionstepparameters->setNextActionStepParameter();
+		*oStream << "<actionstepparameter ID=\"" << actionstepparameters->getActionStepParameterID() << 
+		"\" description=\"" << actionstepparameters->getActionStepParameterDescription() << 
+		"\" name=\"" << actionstepparameters->getActionStepParameterName() << 
+		"\" value=\"" << actionstepparameters->getActionStepParameterValue() << 
+		"\" intarface=\"" << actionstepparameters->getActionStepParameterInterface() << 
+		"\" actionid=\"" << actionstepparameters->getActionStepParameterActionID() << "\"/>" << "\n";
+	}
+	
+	*oStream << "</actionstepparameters>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	*oStream << "<actionparameters>" << "\n";
+	
+	actionparameters->finishActionParameterIteration();
+	
+	while (actionparameters->hasMoreActionParameters()) {
+		actionparameters->setNextActionParameter();
+		*oStream << "<actionparameter ID=\"" << actionparameters->getActionParameterID() << 
+		"\" description=\"" << actionparameters->getActionParameterDescription() << 
+		"\" name=\"" << actionparameters->getActionParameterName() << 
+		"\" value=\"" << actionparameters->getActionParameterValue() << 
+		"\" intarface=\"" << actionparameters->getActionParameterInterface() << 
+		"\" actionid=\"" << actionparameters->getActionParameterActionID() << "\"/>" << "\n";
+	}
+	
+	*oStream << "</actionparameters>" << "\n";
+}
+
+
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
 	*oStream << "<applicationformulars>" << "\n";
 	
@@ -359,11 +398,17 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Step_Transitions* transitio
 	
 	while (transitions->hasMoreActionStepTransitions()) {
 		transitions->setNextActionStepTransition();
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, expression)
+		
+		*expression = transitions->getActionStepTransitionDecision();
+		expression->replace("\"", "&quot;");
+		
 		*oStream << 
-		"<translation ID=\"" << transitions->getActionStepTransitionID() << 
+		"<actionsteptransition ID=\"" << transitions->getActionStepTransitionID() << 
 		"\" src_actionid=\"" << transitions->getActionStepTransitionSrcActionID() << 
 		"\" dst_actionid=\"" << transitions->getActionStepTransitionDstActionID() << 
-		"\" decision=\"" << transitions->getActionStepTransitionDecision() << 
+		"\" expression=\"" << expression->charrep() << 
 		"\" description=\"" << transitions->getActionStepTransitionDescription() << "\"/>" << "\n";
 	}
 	
@@ -539,7 +584,6 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Steps* action_steps) {
 		action_steps->setNextActionStep();
 
 		*What = action_steps->getActionStepWhat();
-
 		*What = What->replace("\"", "&quot;");
 
 		*oStream << 

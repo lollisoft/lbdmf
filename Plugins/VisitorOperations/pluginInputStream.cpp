@@ -181,6 +181,8 @@ public:
 	void LB_STDCALL visit(lb_I_ReportTexts*);
 	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 
 	bool LB_STDCALL begin(char* file);
@@ -278,6 +280,52 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Boolean* b) {
 	bool _b = NULL;
 	*iStream >> _b;
 	b->setData(_b);
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionstepparameters->addActionStepParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Parameters* actionparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionparameters->addActionParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {

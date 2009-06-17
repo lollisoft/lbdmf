@@ -75,7 +75,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	long		LB_STDCALL addTransition(const char* decision, long src_actionid, long dst_actionid, const char* description, long _id = -1);
+	long		LB_STDCALL addTransition(const char* expression, long src_actionid, long dst_actionid, const char* description, long _id = -1);
 	bool		LB_STDCALL selectTransition(long _id);
 	int			LB_STDCALL getActionStepTransitionsCount();
 	bool		LB_STDCALL hasMoreActionStepTransitions();
