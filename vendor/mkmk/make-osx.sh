@@ -28,6 +28,10 @@ if [ $OSVERSION = 9.0.0 ]; then
 OSNAME=Leopard
 fi
 
+if [ $OSVERSION = 9.1.0 ]; then
+OSNAME=Leopard
+fi
+
 fi
 
 echo $OSNAME

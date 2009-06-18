@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.201 $
+# * $Revision: 1.202 $
 # * $Name:  $
-# * $Id: Makefile,v 1.201 2009/06/10 11:40:17 lollisoft Exp $
+# * $Id: Makefile,v 1.202 2009/06/18 17:38:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.202  2009/06/18 17:38:33  lollisoft
+# * Changes to compile on OSX 10.5.4
+# *
 # * Revision 1.201  2009/06/10 11:40:17  lollisoft
 # * Changed order of targets to enable application bundle packaging including wxWidgets library.
 # *
@@ -702,7 +705,11 @@ OSPLATFORM_=$(OSPLATFORM)
 ifeq ($(OSVERSION_), 9.0.0)
 OSNAME=Leopard
 else
-OSNAME=Panther
+ifeq ($(OSVERSION_), 9.1.0)
+OSNAME=Leopard
+else
+OSNAME=Leopard
+endif
 endif
 
 endif
