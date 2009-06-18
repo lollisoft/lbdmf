@@ -3928,6 +3928,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							*images = "\\toolbarimages\\";
 #endif
 							*toolbarfile += images->charrep();
+
+#ifdef OSX
+							if (opendir(toolbarfile->charrep()) == NULL) {
+								UAP(lb_I_String, pName)
+								pName = app->getProcessName();
+								*toolbarfile = "./";
+								*toolbarfile += pName->charrep();
+								*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+							}
+#endif
+
 							*toolbarfile += s->charrep();
 
 							if (!wxFile::Exists(toolbarfile->charrep())) {
