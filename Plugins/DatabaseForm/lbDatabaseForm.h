@@ -23,18 +23,21 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.55 2009/06/17 20:37:17 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.56 2009/06/18 16:54:34 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.56  2009/06/18 16:54:34  lollisoft
+ * Corrected watcom related stuff.
+ *
  * Revision 1.55  2009/06/17 20:37:17  lollisoft
  * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
  *
@@ -283,7 +286,7 @@ public:
 	void LB_STDCALL destroy() {
 		Destroy();
 	};
-	
+
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 
 	/**
@@ -312,14 +315,14 @@ public:
 
 	void OnFKComboBoxSelected( wxCommandEvent &event );
 	void OnPKComboBoxSelected( wxCommandEvent &event );
-	    
+
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
-	
+
 	/**
 	 * \brief Maps positions to id's for each displayed combo box.
 	 *
-	 * Store a container for each combo box with key(pos) and data(id). 
+	 * Store a container for each combo box with key(pos) and data(id).
 	 */
 	UAP(lb_I_Container, ComboboxMapperList)
 	UAP(lb_I_Query, sourceQuery)
@@ -329,7 +332,7 @@ public:
 	// l and buf are therefore as a bugfix.
 	long l;
 	char buf[100];
-	
+
 	wxWindow* firstButton;
 
 	wxChoice* cBoxFKNames;
@@ -337,7 +340,7 @@ public:
 
 	wxStaticText *label;
 	wxStaticText *labelF;
-	
+
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
@@ -356,15 +359,15 @@ public:
 	lbAction();
 	virtual ~lbAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	void LB_STDCALL execute(lb_I_Parameter* params);
-	
+
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 	void LB_STDCALL loadDataModel();
 	long LB_STDCALL delegate(lb_I_Parameter* params);
-	
+
 	/** \brief Create a list of transitions for the current action step.
 	 * In a linear action there are no transitions and this function therefore will return a NULL pointer.
 	 * If there is a linear step with a transition, then one transition could be in the object only.
@@ -380,11 +383,11 @@ protected:
 	lb_I_ActionStep_Parameters* LB_STDCALL loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters = NULL);
 
 	long LB_STDCALL getNextStepId(lb_I_Action_Step_Transitions* trans, lb_I_Parameter* params, long id);
-	
+
 	bool initialized;
 	long myActionID;
 	UAP(lb_I_Database, db)
-	
+
 	UAP(lb_I_Container, actions)
 
 	UAP(lb_I_Formulars, forms)
@@ -407,7 +410,7 @@ public:
 	lbDetailFormAction();
 	virtual ~lbDetailFormAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -416,7 +419,7 @@ public:
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 
 	bool LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
@@ -441,16 +444,16 @@ public:
 	lbMasterFormAction();
 	virtual ~lbMasterFormAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
-	
+
 	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 
 	bool LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
@@ -475,16 +478,16 @@ public:
 	lbSQLQueryAction();
 	virtual ~lbSQLQueryAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
 
 	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
-	
+
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
@@ -497,23 +500,23 @@ public:
 	lbExecuteAction();
 	virtual ~lbExecuteAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
-	
+
 	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
 };
 /*...e*/
 /*...sclass lbExecuteAction:0:*/
-/** \brief Used to dynamically call a dispatcher function. 
+/** \brief Used to dynamically call a dispatcher function.
  * Send signal normally means an asyncron message. This implementation currently is based on the sample activity diagram to
  * call a dispatchable function. The dispatcher function to be used in the sample is the msgBox function to show an error message.
  *
@@ -532,24 +535,24 @@ class lbSendSignalAction : public lb_I_DelegatedAction
 	public:
 		lbSendSignalAction();
 		virtual ~lbSendSignalAction();
-		
-		void LB_STDCALL setActionID(long id);	
+
+		void LB_STDCALL setActionID(long id);
 		long LB_STDCALL execute(lb_I_Parameter* params);
-		
+
 		void LB_STDCALL setDatabase(lb_I_Database* _db);
-		
+
 		void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 		void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
-	
+
 		DECLARE_LB_UNKNOWN()
-		
+
 	protected:
 
 		/** \brief Replaces a placeholder with the data from params.
 		 * This function replaces a placeholder ({<Placeholder>}) with it's corresponding value from params.
 		 */
 		lb_I_String* LB_STDCALL substitutePlaceholder(lb_I_String* value, lb_I_Parameter* params);
-		
+
 		long myActionID;
 		UAP(lb_I_Database, db)
 		UAP(lb_I_Action_Steps, appActionSteps)
@@ -563,7 +566,7 @@ public:
 	lbDecisionAction();
 	virtual ~lbDecisionAction();
 
-	void LB_STDCALL setActionID(long id);	
+	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -572,7 +575,7 @@ public:
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 	DECLARE_LB_UNKNOWN()
-	
+
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
@@ -585,17 +588,17 @@ class lbOpAqueOperation : public lb_I_DelegatedAction
 	public:
 		lbOpAqueOperation();
 		virtual ~lbOpAqueOperation();
-		
-		void LB_STDCALL setActionID(long id);	
+
+		void LB_STDCALL setActionID(long id);
 		long LB_STDCALL execute(lb_I_Parameter* params);
-		
+
 		void LB_STDCALL setDatabase(lb_I_Database* _db);
-		
+
 		void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 		void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
 
 		DECLARE_LB_UNKNOWN()
-		
+
 	protected:
 		long myActionID;
 		UAP(lb_I_Database, db)
@@ -624,58 +627,58 @@ public:
 	FormularActions() {
 		//actions = NULL;
 	}
-	
+
 	virtual ~FormularActions() {
 		_CL_LOG << "FormularActions::~FormularActions() called." LOG_
 
-		if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_		
+		if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_
 	}
-	
-	
+
+
 	/** \brief Add a mapping from event name to it's action ID.
 	 */
 	void addRegisteredAction(long ActionID, char* eventName);
-	
+
 	/** \brief ID of action target.
 	 *
 	 * Get the ID of the action target based on the 'what' data field.
-	 * This is needed, when 
+	 * This is needed, when
 	 */
 	char* getActionTargetID(char* reversed_event);
 
 	/** \brief ID of action target as long.
 	 *
 	 * Get the ID of the action target based on the 'what' data field.
-	 * This is needed, when 
+	 * This is needed, when
 	 */
 	long getActionTargetIDLong(char* reversed_event);
-	
+
 	/** \brief Source field of the action. */
 	char* getActionSourceDataField(char* reversed_event);
 
 	/** \brief ID for the action. */
 	long getActionID(char* reversed_event);
 
-	/** \brief Get the action instance. 
+	/** \brief Get the action instance.
 	 *
 	 * This function creates the requested action instance, stores it for caching and
 	 * then returns a reference to it.
 	 */
 	lb_I_Action* getAction(long id);
-	
+
 	/** \brief Validate the form.
 	 *
 	 * Use this function to check, if the data has a correct state.
 	 */
 	bool validate() { return true; }
-	
+
 	/** \brief Update master/detail views and related views.
 	 *
 	 * Use this function to update related views. This may master/detail views and
 	 * possibly views, containing data fields related to any open views.
 	 */
 	bool update() { return true; }
-	
+
 protected:
 	UAP(lb_I_Container, eventmapping)
 	UAP(lb_I_Container, actions)
@@ -698,7 +701,7 @@ public:
 		_CL_LOG << "ROFields has " << ROFields->getRefCount() << " references." LOG_
 		_CL_LOG << "SCFields has " << SCFields->getRefCount() << " references." LOG_
 	}
-	
+
 	/** \brief Get readonly status.
 	 *
 	 * Returns true, if the specifed field is readonly.
@@ -713,18 +716,18 @@ public:
 	bool isSpecialColumn(char* field);
 
 	char* getControlType(char* name);
-	
+
 protected:
 
 	lb_I_Query* _query;
 
-	UAP(lb_I_Container, ROFields)	
+	UAP(lb_I_Container, ROFields)
 	UAP(lb_I_Container, SCFields)
 };
 /*...e*/
 
 /*...sclass lbMasterDetailFormDefinition:0:*/
-class lbMasterDetailFormDefinition : 
+class lbMasterDetailFormDefinition :
 	public lb_I_MasterDetailFormDefinition {
 
 public:
@@ -732,24 +735,24 @@ public:
 	virtual ~lbMasterDetailFormDefinition();
 
         void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master);
-        
+
         void LB_STDCALL addMasterColumn(char* column);
-         
+
         int LB_STDCALL getMasterColumns();
- 
+
         lb_I_String* LB_STDCALL getMasterColumn(int pos);
- 
+
         lb_I_DatabaseForm* LB_STDCALL getMasterForm();
-         
+
         void LB_STDCALL setCharacterColumn(int pos, bool is = true);
-         
+
         bool LB_STDCALL isCharacterColumn(int pos);
-        
-	DECLARE_LB_UNKNOWN()        	
-	
+
+	DECLARE_LB_UNKNOWN()
+
 private:
 	lb_I_DatabaseForm* masterForm;
-	
+
 	UAP(lb_I_Container, masterColumns)
 };
 /*...e*/
@@ -758,22 +761,22 @@ private:
 class lbOwnerDrawControl :
         public lb_I_Control,
 public wxControl {
-	
+
 public:
 	lbOwnerDrawControl();
-	
+
 	virtual ~lbOwnerDrawControl();
-	
+
 	void LB_STDCALL create(int parentId) { }
 	int  LB_STDCALL getId() { return GetId(); }
-	
+
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 	void LB_STDCALL init(lb_I_Window* parent);
-	
+
 	void OnPaint(wxPaintEvent &event);
-	
+
 	DECLARE_LB_UNKNOWN()
-	
+
 	DECLARE_EVENT_TABLE()
 };
 
@@ -815,43 +818,43 @@ public:
 		if (_created) Destroy();
 		_created = false;
 	};
-	
+
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);
-	
+
 	const char* LB_STDCALL getControlValue(char* name);
-	
+
 /*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 
 	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
-	
+
 	void LB_STDCALL updateFromMaster();
-	
+
 	void LB_STDCALL updateFromDetail();
 
 	int LB_STDCALL getPrimaryColumns();
-	
+
 	const char* LB_STDCALL getControlValue(int pos);
 	int LB_STDCALL getControls();
-	
+
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
-	   
+
 	int LB_STDCALL getForeignColumns(char* primaryTable);
-	
+
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
-	   
+
 	bool LB_STDCALL isCharacterColumn(char* name);
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
 	lb_I_String* LB_STDCALL getTableName(char* columnName);
-	
+
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	void  LB_STDCALL reopen();
@@ -861,52 +864,52 @@ public:
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL close();
-	
+
 	/** \brief Open database query.
 	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL open();
-		
+
 /*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the first row.
 	 */
 	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the next row.
 	 */
 	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the previous row.
 	 */
 	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the last row.
 	 */
 	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
-	
+
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * This adds a new row, while it copies the values of the actual form into the row.
 	 */
 	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Deletes the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
@@ -918,7 +921,7 @@ public:
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to update the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBUpdate();
@@ -933,7 +936,7 @@ public:
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to read data from the cursor to the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBRead();
@@ -954,7 +957,7 @@ public:
 
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 
-		
+
 	void LB_STDCALL activateActionButtons();
 	void LB_STDCALL deactivateActionButtons();
 
@@ -964,8 +967,8 @@ public:
 	 */
 	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
 
-	lbErrCodes DoValidation(lb_I_Unknown* uk);
-		
+	lbErrCodes LB_STDCALL DoValidation(lb_I_Unknown* uk);
+
 	void OnDispatch(wxCommandEvent& event);
 	void OnImageButtonClick(wxCommandEvent& event);
 	void OnMouseMove(wxMouseEvent& evt);
@@ -1005,19 +1008,19 @@ public:
 	UAP(lb_I_String, _DBName)
 	UAP(lb_I_String, _DBUser)
 	UAP(lb_I_String, _DBPass)
-	
+
 	/*
 	 * Maps positions to id's for each displayed combo box.
 	 *
-	 * Store a container for each combo box with key(pos) and data(id). 
+	 * Store a container for each combo box with key(pos) and data(id).
 	 */
 	UAP(lb_I_Container, ComboboxMapperList)
-	
+
 	/*
 	 * An image button will be loaded from a file name. This filename must be stored here.
 	 */
 	UAP(lb_I_Container, ImageButtonMapperList)
-	
+
 	/* Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions)
 
@@ -1045,7 +1048,7 @@ public:
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 
-	// List of button names to help activating / deactivating them on data availability. 
+	// List of button names to help activating / deactivating them on data availability.
 	UAP(lb_I_Container, actionButtons)
 
     UAP(lb_I_EventManager, eman)
@@ -1055,7 +1058,7 @@ public:
 	// l and buf are therefore as a bugfix.
 	long l;
 	char buf[100];
-	
+
 	wxWindow* refreshButton;
 	wxWindow* firstButton;
 	wxWindow* prevButton;
@@ -1063,11 +1066,11 @@ public:
 	wxWindow* lastButton;
 	wxWindow* deleteButton;
 
-	bool allNaviDisabled;	
+	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;
 	bool _created;
-	
+
 	char* base_formName;
 	char* formName;
 	char* untranslated_formName;
@@ -1109,43 +1112,43 @@ public:
 		if (_created) Destroy();
 		_created = false;
 	};
-	
+
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);
-	
+
 	const char* LB_STDCALL getControlValue(char* name);
-	
+
 /*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 
 	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
-	
+
 	void LB_STDCALL updateFromMaster();
-	
+
 	void LB_STDCALL updateFromDetail();
 
 	int LB_STDCALL getPrimaryColumns();
-	
+
 	const char* LB_STDCALL getControlValue(int pos);
 	int LB_STDCALL getControls();
-	
+
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
-	   
+
 	int LB_STDCALL getForeignColumns(char* primaryTable);
-	
+
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
-	   
+
 	bool LB_STDCALL isCharacterColumn(char* name);
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
 	lb_I_String* LB_STDCALL getTableName(char* columnName);
-	
+
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	void  LB_STDCALL reopen();
@@ -1155,52 +1158,52 @@ public:
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL close();
-	
+
 	/** \brief Open database query.
 	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL open();
-		
+
 /*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the first row.
 	 */
 	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the next row.
 	 */
 	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the previous row.
 	 */
 	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the last row.
 	 */
 	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
-	
+
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * This adds a new row, while it copies the values of the actual form into the row.
 	 */
 	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Deletes the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
@@ -1212,7 +1215,7 @@ public:
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to update the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBUpdate();
@@ -1227,7 +1230,7 @@ public:
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to read data from the cursor to the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBRead();
@@ -1248,7 +1251,7 @@ public:
 
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 
-		
+
 	void LB_STDCALL activateActionButtons();
 	void LB_STDCALL deactivateActionButtons();
 
@@ -1314,7 +1317,7 @@ public:
     // wxGrid based functions
     void LB_STDCALL setColumnReadonly(int column);
     void LB_STDCALL setColumnLabel(int column, char* name);
-    
+
     void LB_STDCALL setCellCombo(int row, int col, lb_I_Container* s, lb_I_Long* current);
     void LB_STDCALL setCellText(int row, int col, lb_I_String* s);
     void LB_STDCALL setCellInteger(int row, int col, lb_I_Integer* s);
@@ -1336,19 +1339,19 @@ public:
 	UAP(lb_I_String, _DBName)
 	UAP(lb_I_String, _DBUser)
 	UAP(lb_I_String, _DBPass)
-	
+
 	/*
 	 * Maps positions to id's for each displayed combo box.
 	 *
-	 * Store a container for each combo box with key(pos) and data(id). 
+	 * Store a container for each combo box with key(pos) and data(id).
 	 */
 	UAP(lb_I_Container, ComboboxMapperList)
-	
+
 	/*
 	 * An image button will be loaded from a file name. This filename must be stored here.
 	 */
 	UAP(lb_I_Container, ImageButtonMapperList)
-	
+
 	/* Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions)
 
@@ -1375,7 +1378,7 @@ public:
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 
-	// List of button names to help activating / deactivating them on data availability. 
+	// List of button names to help activating / deactivating them on data availability.
 	UAP(lb_I_Container, actionButtons)
 
     UAP(lb_I_EventManager, eman)
@@ -1385,7 +1388,7 @@ public:
 	// l and buf are therefore as a bugfix.
 	long l;
 	char buf[100];
-	
+
 	wxWindow* refreshButton;
 	wxWindow* firstButton;
 	wxWindow* prevButton;
@@ -1393,11 +1396,11 @@ public:
 	wxWindow* lastButton;
 	wxWindow* deleteButton;
 
-	bool allNaviDisabled;	
+	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;
 	bool _created;
-	
+
 	char* base_formName;
 	char* formName;
 	char* untranslated_formName;
@@ -1408,18 +1411,18 @@ public:
 	lb_I_DatabaseForm* _master;
 	lb_I_DatabaseForm* _detail;
 	lb_I_Parameter* _params;
-	
+
 	/// \brief The table with the data.
 	wxGrid* TableView;
-	
+
 	/// \brief The sizer that contains the buttons.
 	wxBoxSizer* buttonSizer;
-	
+
 	UAP(lb_I_Parameter, currentRow)
     /// Current page of numRows
 	long page;
 	int numRows;
-	
+
 /*...e*/
 };
 
@@ -1453,43 +1456,43 @@ public:
 
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
-	
+
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);
-	
+
 	const char* LB_STDCALL getControlValue(char* name);
-	
+
 /*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 
 	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
-	
+
 	void LB_STDCALL updateFromMaster();
-	
+
 	void LB_STDCALL updateFromDetail();
 
 	int LB_STDCALL getPrimaryColumns();
-	
+
 	const char* LB_STDCALL getControlValue(int pos);
 	int LB_STDCALL getControls();
-	
+
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
-	   
+
 	int LB_STDCALL getForeignColumns(char* primaryTable);
-	
+
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
-	   
+
 	bool LB_STDCALL isCharacterColumn(char* name);
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
 	lb_I_String* LB_STDCALL getTableName(char* columnName);
-	
+
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	void  LB_STDCALL reopen();
@@ -1499,59 +1502,59 @@ public:
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL close();
-	
+
 	/** \brief Open database query.
 	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
 	 * This avoids invalid errors I think would happen.
 	 */
 	lbErrCodes LB_STDCALL open();
-		
+
 	/*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the first row.
 	 */
 	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the next row.
 	 */
 	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the previous row.
 	 */
 	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
 
 	/**
 	 * Database navigation
-	 * 
+	 *
 	 * Moves to the last row.
 	 */
 	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
-	
+
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * This adds a new row, while it copies the values of the actual form into the row.
 	 */
 	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Deletes the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to update the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBUpdate();
@@ -1566,7 +1569,7 @@ public:
 
 	/**
 	 * Database manipulation
-	 * 
+	 *
 	 * Internally used to read data from the cursor to the current row.
 	 */
 	lbErrCodes LB_STDCALL lbDBRead();

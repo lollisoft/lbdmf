@@ -36,7 +36,7 @@ public:
 	bool		LB_STDCALL selectParameter(long _id);
 
 	char*		LB_STDCALL getParameter(const char* name, long formular_id);
-	
+
 	int			LB_STDCALL getParameterCount();
 	bool		LB_STDCALL hasMoreParameters();
 	void		LB_STDCALL setNextParameter();
@@ -57,9 +57,9 @@ public:
 	void		LB_STDCALL deleteMarked();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Container, Parameters)
-	
+
 	UAP(lb_I_String, currentParameterName)
 	UAP(lb_I_String, currentParameterValue)
 	UAP(lb_I_Long, currentID)
@@ -79,7 +79,7 @@ public:
 	bool		LB_STDCALL hasMoreTypes();
 	void		LB_STDCALL setNextType();
 	void		LB_STDCALL finishTypeIteration();
-	
+
 	char*		LB_STDCALL getTableName();
 	char*		LB_STDCALL getName();
 	char*		LB_STDCALL getSpecialColumn();
@@ -94,9 +94,9 @@ public:
 	void		LB_STDCALL deleteMarked();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Container, ColumnTypes)
-	
+
 	UAP(lb_I_String, currentTableName)
 	UAP(lb_I_String, currentName)
 	UAP(lb_I_String, currentSpecialColumn)
@@ -110,11 +110,11 @@ class lbApplicationParameters : public lb_I_ApplicationParameter {
 public:
 	lbApplicationParameters();
 	virtual ~lbApplicationParameters();
-	
+
 	bool		LB_STDCALL selectParameter(long _id);
 
 	char*		LB_STDCALL getParameter(const char* name, long application_id);
-	
+
 	int			LB_STDCALL getParameterCount();
 	bool		LB_STDCALL hasMoreParameters();
 	void		LB_STDCALL setNextParameter();
@@ -135,12 +135,12 @@ public:
 	void		LB_STDCALL deleteMarked();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Container, Parameters)
-	
+
 	UAP(lb_I_String, currentParameterName)
 	UAP(lb_I_String, currentParameterValue)
-	
+
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentApplicationID)
 
@@ -152,40 +152,40 @@ public:
 	lbActionParameters();
 	virtual ~lbActionParameters();
 
-	long		LB_STDCALL addActionParameter(const char* description, const char* name, const char* value, const char* interface, long actionid, long _id = -1);
+	long		LB_STDCALL addActionParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1);
 	bool		LB_STDCALL selectActionParameter(long _id);
 	int			LB_STDCALL getActionParametersCount();
 	bool		LB_STDCALL hasMoreActionParameters();
 	void		LB_STDCALL setNextActionParameter();
 	void		LB_STDCALL finishActionParameterIteration();
-	
+
 	long		LB_STDCALL getActionParameterID();
 	long		LB_STDCALL getActionParameterActionID();
-	
+
 	char*		LB_STDCALL getActionParameterDescription();
 	char*		LB_STDCALL getActionParameterName();
 	char*		LB_STDCALL getActionParameterValue();
 	char*		LB_STDCALL getActionParameterInterface();
-	
+
 	bool		LB_STDCALL ismarked();
 	void		LB_STDCALL mark();
 	void		LB_STDCALL unmark();
-	
+
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Container, Parameters)
-	
+
 	UAP(lb_I_String, currentParameterDescription)
 	UAP(lb_I_String, currentParameterName)
 	UAP(lb_I_String, currentParameterInterface)
 	UAP(lb_I_String, currentParameterValue)
-	
+
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentActionID)
-	
+
 	UAP(lb_I_Long, marked)
 };
 /*...e*/
@@ -196,40 +196,40 @@ public:
 	lbActionStepParameters();
 	virtual ~lbActionStepParameters();
 
-	long		LB_STDCALL addActionStepParameter(const char* description, const char* name, const char* value, const char* interface, long actionid, long _id = -1);
+	long		LB_STDCALL addActionStepParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1);
 	bool		LB_STDCALL selectActionStepParameter(long _id);
 	int			LB_STDCALL getActionStepParametersCount();
 	bool		LB_STDCALL hasMoreActionStepParameters();
 	void		LB_STDCALL setNextActionStepParameter();
 	void		LB_STDCALL finishActionStepParameterIteration();
-	
+
 	long		LB_STDCALL getActionStepParameterID();
 	long		LB_STDCALL getActionStepParameterActionID();
-	
+
 	char*		LB_STDCALL getActionStepParameterDescription();
 	char*		LB_STDCALL getActionStepParameterName();
 	char*		LB_STDCALL getActionStepParameterValue();
 	char*		LB_STDCALL getActionStepParameterInterface();
-	
+
 	bool		LB_STDCALL ismarked();
 	void		LB_STDCALL mark();
 	void		LB_STDCALL unmark();
-	
+
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Container, Parameters)
-	
+
 	UAP(lb_I_String, currentParameterDescription)
 	UAP(lb_I_String, currentParameterName)
 	UAP(lb_I_String, currentParameterInterface)
 	UAP(lb_I_String, currentParameterValue)
-	
+
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentActionID)
-	
+
 	UAP(lb_I_Long, marked)
 };
 

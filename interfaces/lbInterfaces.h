@@ -2896,12 +2896,12 @@ public:
 	 *
 	 */
 	virtual void			LB_STDCALL fireEvent(char* name) = 0;
-	
+
 	/** \brief Set the name of the process.
 	 * The user of this library should pass the process name.
 	 */
 	virtual void			LB_STDCALL setProcessName(const char* name) = 0;
-	
+
 	/** \brief Get the name of the process.
 	 * The user of this library could expect a valid name while initialize is called.
 	 * Thus the application should set it properly before initialisation.
@@ -3407,17 +3407,17 @@ public:
 	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
 	virtual void		LB_STDCALL setNextActionType() = 0;
 	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionTypeID() = 0;
-	
+
 	virtual char*		LB_STDCALL getActionTypeBezeichnung() = 0;
 	virtual char*		LB_STDCALL getActionTypeHandler() = 0;
 	virtual char*		LB_STDCALL getActionTypeModule() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
-	
+
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
@@ -3426,25 +3426,25 @@ public:
 /*...sclass lb_I_Action_Types:0:*/
 class lb_I_Action_Parameters : public lb_I_Unknown {
 public:
-	virtual long		LB_STDCALL addActionParameter(const char* description, const char* name, const char* value, const char* interface, long actionid, long _id = -1) = 0;
+	virtual long		LB_STDCALL addActionParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionParameter(long _id) = 0;
 	virtual int			LB_STDCALL getActionParametersCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionParameters() = 0;
 	virtual void		LB_STDCALL setNextActionParameter() = 0;
 	virtual void		LB_STDCALL finishActionParameterIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionParameterID() = 0;
 	virtual long		LB_STDCALL getActionParameterActionID() = 0;
-	
+
 	virtual char*		LB_STDCALL getActionParameterDescription() = 0;
 	virtual char*		LB_STDCALL getActionParameterName() = 0;
 	virtual char*		LB_STDCALL getActionParameterValue() = 0;
 	virtual char*		LB_STDCALL getActionParameterInterface() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
-	
+
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
@@ -3453,25 +3453,25 @@ public:
 /*...sclass lb_I_Action_Types:0:*/
 class lb_I_ActionStep_Parameters : public lb_I_Unknown {
 public:
-	virtual long		LB_STDCALL addActionStepParameter(const char* description, const char* name, const char* value, const char* interface, long actionid, long _id = -1) = 0;
+	virtual long		LB_STDCALL addActionStepParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionStepParameter(long _id) = 0;
 	virtual int			LB_STDCALL getActionStepParametersCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionStepParameters() = 0;
 	virtual void		LB_STDCALL setNextActionStepParameter() = 0;
 	virtual void		LB_STDCALL finishActionStepParameterIteration() = 0;
-	
+
 	virtual long		LB_STDCALL getActionStepParameterID() = 0;
 	virtual long		LB_STDCALL getActionStepParameterActionID() = 0;
-	
+
 	virtual char*		LB_STDCALL getActionStepParameterDescription() = 0;
 	virtual char*		LB_STDCALL getActionStepParameterName() = 0;
 	virtual char*		LB_STDCALL getActionStepParameterValue() = 0;
 	virtual char*		LB_STDCALL getActionStepParameterInterface() = 0;
-	
+
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
-	
+
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
@@ -4390,7 +4390,7 @@ public:
 	 * Initially this function did not give back a long value. Now the long value returned means the next
 	 * action step (ID) to be executed. When -1 is returned a linear action is used and no 'jumps' are used
 	 * for this action.
-	 * 
+	 *
 	 * If an ID other than -1 and 0 is returned the next step is the action step with the returned ID.
 	 * If 0 is returned, the processing of the action will be stopped.
 	 * A value other than -1 and 0 could be returned if there is given a transition object that describes the
@@ -4404,12 +4404,12 @@ public:
 	 *
 	 * Nonlinear actionsteps are those you could create with an UML Activity diagram and translate it to the underlying
 	 * datastructure representing the activity as an action with actionsteps.
-	 * 
+	 *
 	 * If an actionstep has transitions with expressions the used expression identifers must be passed in the params container to execute
 	 * the expression (mostly this should be a boolean expression).
 	 */
 	virtual void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions) = 0;
-	
+
 	/** \brief Each action step probably has some parameters.
 	 * Some of the execution parameters are system parameters that do not have anything todo with bussiness logic.
 	 * The current implementation of the passed parameter source field and source form are too weak. These parameters

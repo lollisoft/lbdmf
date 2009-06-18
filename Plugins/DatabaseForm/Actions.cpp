@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -117,7 +117,7 @@ lbAction::lbAction() {
 }
 
 lbAction::~lbAction() {
-	
+
 	_CL_LOG << "lbAction::~lbAction() called." LOG_
 	if (actions != NULL) {
 		_CL_LOG << "Have " << actions->Count() << " elements in action list." LOG_
@@ -151,7 +151,7 @@ void makePluginName(char* path, char* module, char*& result) {
 		} else {
 			pluginDir = strdup(pluginDir);
 		}
-		#endif 
+		#endif
 
 		/*...sBuild up pluginModule:64:*/
 		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
@@ -179,7 +179,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Action_Step_Transitions, stepTransitions)
 	AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, stepTransitions, "'action step transitions'")
-	
+
 	bool found = false;
 	if (allTransitions == NULL) {
 		UAP(lb_I_String, expression)
@@ -200,37 +200,37 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				REQUEST(getModuleInstance(), lb_I_Database, db)
 				_LOG << "Using built in database backend for UML import operation..." LOG_
 			}
-			
+
 			if (db == NULL) {
 				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 				return NULL;
 			}
 			UAP(lb_I_Query, query)
-			
+
 			_LOG << "Read actionsteps sequentially from the database." LOG_
-			
+
 			db->init();
-			
+
 			char* lbDMFPasswd = getenv("lbDMFPasswd");
 			char* lbDMFUser   = getenv("lbDMFUser");
-			
+
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-			
+
 			db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		}
-		
+
 		query = db->getQuery("lbDMF", 0);
-		
+
 		char buf[] = "select expression, description, src_actionid, dst_actionid from action_step_transitions where src_actionid = %d or dst_actionid = %d";
-		
+
 		char* q = (char*) malloc(strlen(buf)+strlen(step->charrep())*2+1);
 		q[0] = 0;
 		sprintf(q, buf, (long) step->getData(), (long) step->getData());
-		
+
 		if (query->query(q) == ERR_NONE) {
 			err = query->first();
-			
+
 			while (err == ERR_NONE) {
 				description = query->getAsString(1);
 				expression = query->getAsString(2);
@@ -240,7 +240,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				found = true;
 				err = query->next();
 			}
-			
+
 			if (err == WARN_DB_NODATA) {
 				description = query->getAsString(1);
 				expression = query->getAsString(2);
@@ -255,11 +255,11 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 		UAP_REQUEST(getModuleInstance(), lb_I_String, description)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, src_actionid)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, dst_actionid)
-		
+
 		allTransitions->finishActionStepTransitionIteration();
 		while (allTransitions->hasMoreActionStepTransitions()) {
 			allTransitions->setNextActionStepTransition();
-			
+
 			if (step->getData() == allTransitions->getActionStepTransitionSrcActionID() || step->getData() == allTransitions->getActionStepTransitionDstActionID()) {
 				*description = allTransitions->getActionStepTransitionDescription();
 				*expression = allTransitions->getActionStepTransitionDecision();
@@ -268,20 +268,20 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				stepTransitions->addTransition(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 			}
-		}		
+		}
 	}
-	
+
 	if (stepTransitions->getActionStepTransitionsCount() == 0) {
 		_LOG << "Warning: Do not have any transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 	}
-	
-	
+
+
 	if (found == true) {
 		_LOG << "Info: Have " << stepTransitions->getActionStepTransitionsCount() << " transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 		stepTransitions++;
 		return stepTransitions.getPtr();
 	}
-	
+
 	return NULL;
 }
 
@@ -294,10 +294,10 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 	if (allActionStepParameters == NULL) {
 		UAP(lb_I_String, name)
 		UAP(lb_I_String, value)
-		UAP(lb_I_String, interface)
+		UAP(lb_I_String, _interface)
 		UAP(lb_I_String, description)
 		UAP(lb_I_Query, query)
-		
+
 		if (db == NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 			char* dbbackend = meta->getSystemDatabaseBackend();
@@ -310,84 +310,84 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				REQUEST(getModuleInstance(), lb_I_Database, db)
 				_LOG << "Using built in database backend for UML import operation..." LOG_
 			}
-			
+
 			if (db == NULL) {
 				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 				return NULL;
 			}
 			UAP(lb_I_Query, query)
-			
+
 			_LOG << "Read actionsteps sequentially from the database." LOG_
-			
+
 			db->init();
-			
+
 			char* lbDMFPasswd = getenv("lbDMFPasswd");
 			char* lbDMFUser   = getenv("lbDMFUser");
-			
+
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-			
+
 			db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		}
 
 		query = db->getQuery("lbDMF", 0);
-		
+
 		char buf[] = "select name, value, interface, description from action_step_parameter where action_step_id = %d ";
-		
+
 		char* q = (char*) malloc(strlen(buf)+strlen(step->charrep())+1);
 		q[0] = 0;
 		sprintf(q, buf, (long) step->getData());
-		
+
 		_LOG << "Execute Query: " << q LOG_
-		
+
 		if (query->query(q) == ERR_NONE) {
 			err = query->first();
-			
+
 			while (err == ERR_NONE) {
 				name = query->getAsString(1);
 				value = query->getAsString(2);
-				interface = query->getAsString(3);
+				_interface = query->getAsString(3);
 				description = query->getAsString(4);
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), interface->charrep(), step->getData());
+				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 				err = query->next();
 			}
-			
+
 			if (err == WARN_DB_NODATA) {
 				name = query->getAsString(1);
 				value = query->getAsString(2);
-				interface = query->getAsString(3);
+				_interface = query->getAsString(3);
 				description = query->getAsString(4);
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), interface->charrep(), step->getData());
+				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, interface)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, _interface)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, description)
-		
+
 		allActionStepParameters->finishActionStepParameterIteration();
 		while (allActionStepParameters->hasMoreActionStepParameters()) {
 			allActionStepParameters->setNextActionStepParameter();
-			
+
 			if (step->getData() == allActionStepParameters->getActionStepParameterActionID()) {
 				*name = allActionStepParameters->getActionStepParameterName();
 				*value = allActionStepParameters->getActionStepParameterValue();
-				*interface = allActionStepParameters->getActionStepParameterInterface();
+				*_interface = allActionStepParameters->getActionStepParameterInterface();
 				*description = allActionStepParameters->getActionStepParameterDescription();
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), interface->charrep(), step->getData());
+				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
-		}		
+		}
 	}
-	
+
 	if (found == true) {
 		stepParameters++;
 		return stepParameters.getPtr();
 	}
-	
+
 	return NULL;
 }
 
@@ -397,7 +397,7 @@ void LB_STDCALL lbAction::loadDataModel() {
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
 
@@ -411,7 +411,7 @@ void LB_STDCALL lbAction::loadDataModel() {
 
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
@@ -427,7 +427,7 @@ void LB_STDCALL lbAction::loadDataModel() {
 		*name = "FormActions";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Formular_Actions, formActions)
-		
+
 		*name = "FormParams";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_FormularParameter, formParams)
@@ -439,24 +439,24 @@ void LB_STDCALL lbAction::loadDataModel() {
 		*name = "AppActions";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Actions, appActions)
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
+
 		*name = "AppActionTypes";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Types, appActionTypes)
-		
+
 		*name = "appActionStepTransitions";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Step_Transitions, appActionStepTransitions)
-		
 
-		if ((forms == NULL) || 
-		(formParams == NULL) || 
-		(appActions == NULL) || 
-		(appActionSteps == NULL) || 
+
+		if ((forms == NULL) ||
+		(formParams == NULL) ||
+		(appActions == NULL) ||
+		(appActionSteps == NULL) ||
 		(appActionTypes == NULL) ||
 		(appActionStepTransitions == NULL) ||
 		(appParams == NULL)) {
@@ -471,22 +471,22 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 	long first_dst_actionid = -1;
 	long first_dst_actionid_unmatched = -1;
 	int transitions_matched = 0;
-	
+
 	_LOG << "lbAction::getNextStepId() called with id = " << id LOG_
-	
+
 	if (trans == NULL) {
 		_LOG << "Error: Need a transition object to calculate next action step!" LOG_
 		return 0;
 	}
-	
+
 	if (trans->getActionStepTransitionsCount() == 0) {
 		_LOG << "Warning: Do not have any transitions in trans object!" LOG_
 	}
-	
+
 	trans->finishActionStepTransitionIteration();
 	while (trans->hasMoreActionStepTransitions()) {
 		trans->setNextActionStepTransition();
-		
+
 		if (trans->getActionStepTransitionSrcActionID() == id) {
 			// First use a simple expression without any Lex & Yacc parser
 			long dst_actionid;
@@ -495,12 +495,12 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 			expression = trans->getActionStepTransitionDecision();
 			dst_actionid = trans->getActionStepTransitionDstActionID();
 			src_actionid = trans->getActionStepTransitionSrcActionID();
-			
+
 			first_dst_actionid_unmatched = dst_actionid;
-			
+
 			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getActionStepTransitionID() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
-			
+
 			if (expression.find("==") != -1) {
 				// equal operator
 				_LOG << "Error: Boolean expression not allowed!" LOG_
@@ -516,28 +516,28 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 
 						*left = expression.substr(0, expression.find("=")-1).c_str();
 						*right = expression.substr(expression.find("=")+1).c_str();
-						
+
 						right->trim();
 						right->replace(" ", "");
 						left->trim();
-						
+
 						_LOG << "Have build left = '" << left->charrep() << "' and right = '" << right->charrep() << "' from expression = '" << expression.c_str() << "'" LOG_
-						
+
 						params->setUAPString(*&left, *&right);
 						first_dst_actionid = dst_actionid;
 						transitions_matched++;
 					}
 		}
 	}
-	
+
 	if (transitions_matched > 1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		meta->msgBox("Error", "Expected one transition, but have more. This is not correct.");
 		return 0;
 	}
-	
+
 	if (transitions_matched == 0) return first_dst_actionid_unmatched;
-	
+
 	return first_dst_actionid;
 }
 
@@ -545,9 +545,9 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	long nextStep = -1; // A linear action per default
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	loadDataModel();
 
 	/*
@@ -567,23 +567,23 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 #define PREFIX ""
 #endif
 	/*...e*/
-	
+
 	char* pluginModule = NULL;
-	
-	
+
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
-		
+
 	if (actions == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, actions)
 	}
-	
+
 	parameter->setData("id");
 	params->getUAPLong(*&parameter, *&id);
 
 	UAP(lb_I_Action_Step_Transitions, trans)
 	trans = loadTransitionsForActionStep(*&id, *&appActionStepTransitions);
-	
+
 	if ((appActionTypes != NULL) && (appActionSteps != NULL)) {
 		_LOG << "Execute actions based on lbDMFDataModel classes." LOG_
 		UAP_REQUEST(getModuleInstance(), lb_I_String, action_handler)
@@ -591,24 +591,24 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, key)
 		UAP(lb_I_KeyBase, keybase)
 		QI(key, lb_I_KeyBase, keybase)
-		
+
 		appActionSteps->selectActionStep(id->getData());
 		appActionTypes->selectActionType(appActionSteps->getActionStepType());
 
 		*action_handler = appActionTypes->getActionTypeHandler();
 		*module = appActionTypes->getActionTypeModule();
-			
+
 		module->trim();
 		action_handler->trim();
-		
+
 		*key = *&module;
 		*key += *&action_handler;
-		
+
 		if (*key == "") {
 			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
 				_LOG << appActionTypes->getActionTypeBezeichnung() << " for action '" << appActionSteps->getActionStepBezeichnung() << "' ignored yet." LOG_
 				// If the delegated action doesn't support transitions, do it here.
-				
+
 				return getNextStepId(*&trans, *&params, id->getData());
 			}
 			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "FinalNode") == 0) {
@@ -616,9 +616,9 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				return 0; // Stop processing
 			}
 		}
-		
-		_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() << 
-		"' for action ID = " << id->charrep() << ", type = " << appActionTypes->getActionTypeBezeichnung() << 
+
+		_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() <<
+		"' for action ID = " << id->charrep() << ", type = " << appActionTypes->getActionTypeBezeichnung() <<
 		" and name = " << appActionSteps->getActionStepBezeichnung() LOG_
 
 		if (actions->exists(&keybase) == 0) {
@@ -629,7 +629,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			ah[0] = 0;
 			strcat(ah, PREFIX);
 			strcat(ah, action_handler->charrep());
-			
+
 			pluginPath = PM->getPluginDirectory();
 
 			makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
@@ -657,106 +657,106 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		UAP(lb_I_Unknown, uk)
 		uk = actions->getElement(&keybase);
 		QI(uk, lb_I_DelegatedAction, action)
-		action->setActionID(id->getData());	
+		action->setActionID(id->getData());
 		wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 		meta->setStatusText("Info", msg.c_str());
 		_LOG << "Execute delegated action by document model..." LOG_
 
-		
-		
+
+
 		action->setTransitions(*&trans);
 		action->setParameter(loadParametersForActionStep(*&id, NULL));
 
 		nextStep = action->execute(*&params);
-		
+
 		// If the delegated action doesn't support transitions, do it here.
 		if (nextStep == -1) nextStep = getNextStepId(*&trans, *&params, id->getData());
 		_LOG << "Next actionstep is " << nextStep << "." LOG_
 	} else {
 		UAP(lb_I_Query, query)
-		
+
 		query = db->getQuery("lbDMF", 0);
-		
+
 		char buf[] = "select action_handler, module from action_types inner join "
 			"action_steps on action_types.id = action_steps.type where action_steps.id = %s";
-		
+
 		char* q = (char*) malloc(strlen(buf)+strlen(id->charrep())+1);
 		q[0] = 0;
 		sprintf(q, buf, id->charrep());
-		
+
 		if (query->query(q) == ERR_NONE) {
 			lbErrCodes err = ERR_NONE;
 			UAP_REQUEST(manager.getPtr(), lb_I_String, key)
 			UAP(lb_I_KeyBase, ukey)
-				
+
 			err = query->first();
-			
+
 			while (err == ERR_NONE) {
 				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
 				UAP(lb_I_DelegatedAction, action)
-				
-				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in while block." LOG_ 
-				
+
+				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in while block." LOG_
+
 				action_handler = query->getAsString(1);
 				module = query->getAsString(2);
 				action_handler->trim();
 				module->trim();
-				
+
 				key->setData(module->charrep());
 				*key += *&action_handler;
-				
+
 				QI(key, lb_I_KeyBase, ukey)
-					
+
 				if (actions->exists(&ukey) == 0) {
 						/*...sInstanciate one and insert into actions:32:*/
-						
+
 						UAP(lb_I_Unknown, result)
-						UAP(lb_I_String, pluginPath)	
-		
+						UAP(lb_I_String, pluginPath)
+
 						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 						ah[0] = 0;
-						
+
 						strcat(ah, PREFIX);
 						strcat(ah, action_handler->charrep());
-					
+
 						pluginPath = PM->getPluginDirectory();
-	
+
 						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
-						
+
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
 						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 						}
-						
+
 						if (result == NULL) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
-							
+
 							*errmsg = "Failed to load module for configured action!\n\n";
 							*errmsg += "Module: ";
 							*errmsg += module->charrep();
 							*errmsg += "\nAction handler: ";
 							*errmsg += action_handler->charrep();
-							
-							
+
+
 							meta->msgBox("Error", errmsg->charrep());
 							return 0;
 						}
-						
-						
+
+
 						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 						actions->insert(&result, &ukey);
 						/*...e*/
 					}
-				
+
 				UAP(lb_I_Unknown, uk)
-					
+
 				uk = actions->getElement(&ukey);
-				
+
 				QI(uk, lb_I_DelegatedAction, action)
-					
-				action->setActionID(id->getData());	
-				
+
+				action->setActionID(id->getData());
+
 				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 				meta->setStatusText("Info", msg.c_str());
 				UAP(lb_I_Action_Step_Transitions, trans)
@@ -764,79 +764,79 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				action->setTransitions(*&trans);
 				action->setParameter(loadParametersForActionStep(*&id, NULL));
 				nextStep = action->execute(*&params);
-				
+
 				// If the delegated action doesn't support transitions, do it here.
 				if (nextStep == -1) nextStep = getNextStepId(*&trans, *&params, id->getData());
-				
+
 				_LOG << "Next actionstep is " << nextStep << "." LOG_
-				
+
 				_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
-					
+
 				err = query->next();
 			}
-			
+
 			if (err == WARN_DB_NODATA) {
 				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
 				UAP(lb_I_DelegatedAction, action)
-				
-				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in if block." LOG_ 
-				
+
+				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in if block." LOG_
+
 				action_handler = query->getAsString(1);
 				module = query->getAsString(2);
 				action_handler->trim();
 				module->trim();
-				
+
 				key->setData(module->charrep());
 				*key += *&action_handler;
-				
+
 				QI(key, lb_I_KeyBase, ukey)
-					
+
 				if (actions->exists(&ukey) == 0) {
-						
+
 						UAP(lb_I_Unknown, result)
-						UAP(lb_I_String, pluginPath)	
-						
+						UAP(lb_I_String, pluginPath)
+
 						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 						ah[0] = 0;
-						
+
 						strcat(ah, PREFIX);
 						strcat(ah, action_handler->charrep());
-						
+
 						pluginPath = PM->getPluginDirectory();
-						
+
 						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
 						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 						}
-						
+
 						if (result == NULL) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
-							
+
 							*errmsg = "Failed to load module for configured action!\n\n";
 							*errmsg += "Module: ";
 							*errmsg += module->charrep();
 							*errmsg += "\nAction handler: ";
 							*errmsg += action_handler->charrep();
-							
-							
+
+
 							meta->msgBox("Error", errmsg->charrep());
 							return 0;
 						}
-						
+
 						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 						actions->insert(&result, &ukey);
 						/*...e*/
 					}
-				
+
 				UAP(lb_I_Unknown, uk)
-					
+
 				uk = actions->getElement(&ukey);
-				
+
 				QI(uk, lb_I_DelegatedAction, action)
 				action->setActionID(id->getData());
-				
+
 				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 				meta->setStatusText("Info", msg.c_str());
 				UAP(lb_I_Action_Step_Transitions, trans)
@@ -844,7 +844,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				action->setTransitions(*&trans);
 				action->setParameter(loadParametersForActionStep(*&id, NULL));
 				nextStep = action->execute(*&params);
-				
+
 				// If the delegated action doesn't support transitions, do it here.
 				if (nextStep == -1) nextStep = getNextStepId(*&trans, *&params, id->getData());
 				_LOG << "Next actionstep is " << nextStep << "." LOG_
@@ -861,46 +861,46 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 /*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	bool isNonLinearActivity = false;
 	UAP(lb_I_KeyBase, initialNode)
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	
+
 	loadDataModel();
-	
+
 	if (appActionSteps != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, sortedActionSteps)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, order)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, stepid)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		_LOG << "Execute action steps based on actionsteps model." LOG_
-		
+
 		QI(order, lb_I_KeyBase, key)
 		QI(stepid, lb_I_Unknown, uk)
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, actionid)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, actionidcmp)
-		
+
 		actionidcmp->setData(myActionID);
-		
+
 		appActionSteps->finishActionStepIteration();
 		while (appActionSteps->hasMoreActionSteps()) {
 			appActionSteps->setNextActionStep();
 			_LOG << "Sort entry ..." LOG_
 			actionid->setData(appActionSteps->getActionStepActionID());
-			
+
 			if (actionidcmp->equals(*&actionid)) {
 			    _LOG << "Sort action steps by ordering column: " << appActionSteps->getActionStepOrderNo() << "." LOG_
 				order->setData(appActionSteps->getActionStepOrderNo());
 				stepid->setData(appActionSteps->getActionStepID());
 				sortedActionSteps->insert(&uk, &key);
-				
+
 				appActionTypes->selectActionType(appActionSteps->getActionStepType());
-				
+
 				if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
 					isNonLinearActivity = true;
 					initialNode = key++.getPtr();
@@ -908,23 +908,23 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			}
 		}
 		appActionSteps->finishActionStepIteration();
-		
+
 		sortedActionSteps->finishIteration();
-		
+
 		if (isNonLinearActivity) sortedActionSteps->position(&key);
-		
+
 		while (sortedActionSteps->hasMoreElements() == 1) {
 			uk = sortedActionSteps->nextElement();
-			
+
 			stepid->setData(*&uk);
-		
+
 			parameter->setData("id");
 			params->setUAPLong(*&parameter, *&stepid);
-				
+
 			_LOG << "Delegate action (" << stepid->charrep() << ") ..." LOG_
 			long nextStep = delegate(*&params);
 			if (nextStep > 0) {
-				// The sortedActionSteps key is based on order number (not on step number) 
+				// The sortedActionSteps key is based on order number (not on step number)
 				appActionSteps->selectActionStep(nextStep);
 				order->setData(appActionSteps->getActionStepOrderNo());
 				sortedActionSteps->position(&key); // Set the iterator position to the next step to be executed.
@@ -958,41 +958,41 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		_LOG << "Read actionsteps sequentially from the database." LOG_
 
 		db->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
-		query = db->getQuery("lbDMF", 0);	
-		
+
+		query = db->getQuery("lbDMF", 0);
+
 		char buf[] = "select id, a_order_no from action_steps where actionid = %d order by a_order_no";
 		char* q = (char*) malloc(strlen(buf)+10);
 		q[0] = 0;
 		sprintf(q, buf, myActionID);
-		
+
 		_LOG << "Get action steps from id = " << myActionID << ". Query is " << q LOG_
-			
+
 			if (query->query(q) == ERR_NONE) {
 				lbErrCodes err = query->first();
-				
+
 				while(err == ERR_NONE) {
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
-					
+
 					id = query->getAsLong(1);
-					
+
 					parameter->setData("id");
 					params->setUAPLong(*&parameter, *&id);
-					
+
 					long nextStep = delegate(*&params);
 
 					if (nextStep > 0) {
 						if (query->first() == ERR_NONE) {
 							id = query->getAsLong(2); // The next possible order number to jump to
-							
+
 							while ((err != ERR_DB_NODATA) && (id->getData() != nextStep)) {
 								err = query->next();
 								id = query->getAsLong(2); // The next possible order number to jump to
@@ -1007,21 +1007,21 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 						err = query->next();
 					}
 				}
-				
+
 				if (err == WARN_DB_NODATA) {
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
-					
+
 					id = query->getAsLong(1);
-					
+
 					parameter->setData("id");
 					params->setUAPLong(*&parameter, *&id);
-					
+
 					long nextStep = delegate(*&params);
-					
+
 					if (nextStep > 0) {
 						if (query->first() == ERR_NONE) {
 							id = query->getAsLong(2); // The next possible order number to jump to
-							
+
 							while ((err != ERR_DB_NODATA) && (id->getData() != nextStep)) {
 								err = query->next();
 								id = query->getAsLong(2); // The next possible order number to jump to
@@ -1111,35 +1111,35 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		_LOG << "Detailform '" << formularname->charrep() << "' nicht gefunden. Setze variable zurück." LOG_
 		detailForm = NULL;
 	}
-	
+
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
-	
+
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
-		
+
 		detailForm->setName(formularname->charrep(), parameter->charrep());
 
 		_LOG << "Search the masterform '" << masterForm->charrep() << "'." LOG_
-		
+
 		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
 		if (f == NULL) {
 			_LOG << "Error: Bail out, no master form found." LOG_
-			return false; 
+			return false;
 		}
 
 		detailForm->setMasterForm(f, *&params);
-		
+
 		detailForm->updateFromMaster();
-		gui->showForm(formularname->charrep());	
+		gui->showForm(formularname->charrep());
 	} else {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, docparams)
-			
+
 		uk = meta->getActiveDocument();
 		QI(uk, lb_I_Parameter, docparams)
-			
+
 		if (docparams != NULL) {
 			// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -1150,14 +1150,14 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_Formulars, forms)
 			UAP(lb_I_FormularParameter, formParams)
-			
+
 			docparams->setCloning(false);
 			document->setCloning(false);
-			
+
 			QI(name, lb_I_KeyBase, key)
 			*name = "ApplicationData";
 			docparams->getUAPContainer(*&name, *&document);
-			
+
 			*name = "Formulars";
 			uk = document->getElement(&key);
 			QI(uk, lb_I_Formulars, forms)
@@ -1165,15 +1165,15 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 			*name = "FormParams";
 			uk = document->getElement(&key);
 			QI(uk, lb_I_FormularParameter, formParams)
-			
-			
+
+
 			if ((formParams != NULL) && (forms != NULL)) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 				long AppID = meta->getApplicationID();
-				
+
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
-					
+
 					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
@@ -1183,12 +1183,12 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						forms->finishFormularIteration();
 						form = gui->createDBForm(formularname->charrep(),
 									SQL->charrep(),
-									DBName->charrep(), 
-									DBUser->charrep(), 
+									DBName->charrep(),
+									DBUser->charrep(),
 									DBPass->charrep());
 						if (form == NULL) {
 							_CL_LOG << "Error: Bail out, detail form could not be created." LOG_
-							return false; 
+							return false;
 						}
 						detailForm = form.getPtr();
 						*parameter = " - ";
@@ -1198,15 +1198,15 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						f = gui->findDBForm(masterForm->charrep());
 						if (f == NULL) {
 							_LOG << "Error: Bail out, no master form found." LOG_
-							
+
 							if (detailForm != NULL) {
 								// Cleanup
 								detailForm->destroy();
 							}
-							
-							return false; 
+
+							return false;
 						}
-						QI(f, lb_I_DatabaseForm, master)						
+						QI(f, lb_I_DatabaseForm, master)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
 						// The connection may be closed.
@@ -1234,7 +1234,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 /*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
-		meta->getUserName(&user);		
+		meta->getUserName(&user);
 
 		char* b =
 		        "select Formulare.id from Formulare "
@@ -1248,11 +1248,11 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						strlen(user->charrep())+
 						strlen(app->charrep())+
 						strlen(formularname->charrep())+1);
-		
+
 		buffer[0] = 0;
-		
+
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
-		
+
 		UAP(lb_I_Database, database)
 		char* dbbackend = meta->getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -1271,29 +1271,29 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		}
 
 		UAP(lb_I_Query, query)
-		
+
 		database->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+
 		query = database->getQuery("lbDMF", 0);
 /*...e*/
 
 		if (query->query(buffer) == ERR_NONE) {
 			lbErrCodes err = query->first();
-			
+
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
-				
+
 /*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
-				
+
 				char* b = "select parametervalue from Formular_Parameters where formularid = %s";
 
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
@@ -1306,7 +1306,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 				err = query->query(buffer);
 /*...e*/
-				
+
 				if (err == ERR_NONE) {
 /*...sTake result as the SQL query parameter for the detail form:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
@@ -1314,11 +1314,11 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
 					err = query->first();
-					
+
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the detail form and make basic setup:88:*/
 						UAP(lb_I_Unknown, uk)
-						
+
 						sql = query->getAsString(1);
 
 						UAP(lb_I_DatabaseForm, form)
@@ -1326,36 +1326,36 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 						UAP(lb_I_GUI, gui)
 						meta->getGUI(&gui);
-						
+
 						form = gui->createDBForm(formularname->charrep(),
 									sql->charrep(),
-									DBName->charrep(), 
-									DBUser->charrep(), 
+									DBName->charrep(),
+									DBUser->charrep(),
 									DBPass->charrep());
-									
+
 						if (form == NULL) {
 							_CL_LOG << "Error: Bail out, detail form could not be created." LOG_
-							return false; 
+							return false;
 						}
-									
+
 						detailForm = form.getPtr();
 
 						*parameter = " - ";
 						*parameter += SourceFieldValue->charrep();
-						
+
 						form->setName(formularname->charrep(), parameter->charrep());
 
 /*...sDocs:136:*/
 						/* Set the other information of master / detail form here
-						
+
 						   There is a problem for forms, if the foreign key is not
 						   shown in it. In that case the relation could not full filled
 						   by the add action.
-						   
+
 						   The only way may be any kind of temporal default value.
 						*/
 /*...e*/
-						
+
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
 
@@ -1363,33 +1363,33 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 						if (f == NULL) {
 							_CL_LOG << "Error: Bail out, no master form found." LOG_
-							
+
 							if (detailForm != NULL) {
 								// Cleanup
 								detailForm->destroy();
 							}
-							
-							return false; 
+
+							return false;
 						}
 
-						QI(f, lb_I_DatabaseForm, master)						
-						
+						QI(f, lb_I_DatabaseForm, master)
+
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
-						
+
 						master->getPrimaryColumns();
 
 						*column = master->getColumnName(1);
 						*table = master->getTableName(column->charrep());
-						
+
 						form->ignoreForeignKeys(table->charrep());
-						
+
 						//form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-						
+
 						form->setMasterForm(*&master, *&params);
-						
+
 /*...e*/
-						
+
 /*...sSome docs:88:*/
 /*
  * What should I do to 'interconnect' the forms over the
@@ -1406,15 +1406,16 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
  *
  * setFilter could set the following value:
  *
- * " where customerid = 
+ * " where customerid =
  *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
  */
 /*...e*/
-						
+
 						// Get the related table for the source field
-						
+
 						gui->showForm(formularname->charrep());
 						form++;
+						return true;
 					}
 /*...e*/
 				} else {
@@ -1427,15 +1428,16 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 			}
 		}
 	}
+	return false;
 }
 /*...e*/
 
 void LB_STDCALL lbDetailFormAction::setTransitions(lb_I_Action_Step_Transitions* myTransitions) {
-	
+
 }
 
 void LB_STDCALL lbDetailFormAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
-	
+
 }
 
 
@@ -1468,14 +1470,14 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
-	
+
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-		
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-		
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -1483,30 +1485,30 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Steps, appActionSteps)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
 			appActionSteps->selectActionStep(myActionID);
 			*What = appActionSteps->getActionStepWhat();
-			
+
 			*msg = "Open detail form (";
 			*msg += What->charrep();
 			*msg += ")";
-			
+
 			meta->setStatusText("Info", msg->charrep());
 			openDetailForm(*&What, *&params);
 			return -1;
@@ -1514,7 +1516,7 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	}
 
 	// - Old database variant -
-	
+
 	UAP(lb_I_Database, database)
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -1543,51 +1545,51 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 
 	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery("lbDMF", 0);	
-	
+	query = database->getQuery("lbDMF", 0);
+
 	char buf[] = "select what from action_steps where id = %d";
 	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
 	if (query->query(q) == ERR_NONE) {
-	
+
 		lbErrCodes err = query->first();
-	
+
 		while(err == ERR_NONE) {
 /*...sFor each row open the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
-			
+
 			what = query->getAsString(1);
 			what->trim();
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-			
+
 			*msg = "Open detail form (";
 			*msg += what->charrep();
 			*msg += ")";
-			
+
 			meta->setStatusText("Info", msg->charrep());
-			
+
 			openDetailForm(*&what, *&params);
-			
+
 			err = query->next();
 /*...e*/
 		}
-		
+
 		if (err == WARN_DB_NODATA) {
 /*...sOpen the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
-			
+
 			what = query->getAsString(1);
 			what->trim();
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-			
+
 			*msg = "Open detail form (";
 			*msg += what->charrep();
 			*msg += ")";
-			
+
 			meta->setStatusText("Info", msg->charrep());
 
 			openDetailForm(*&what, *&params);
@@ -1596,9 +1598,9 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-		
+
 		ID->setData(myActionID);
-		
+
 		*msg = "lbDetailFormAction::execute(";
 		*msg += ID->charrep();
 		*msg += ") failed.";
@@ -1648,7 +1650,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		
+
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);
 	parameter->setData("DBUser");
@@ -1664,27 +1666,27 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	params->setUAPLong(*&parameter, *&actionID);
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
-	
+
 	UAP(lb_I_GUI, gui)
 	meta->getGUI(&gui);
-	
+
 	UAP(lb_I_DatabaseForm, df)
 	df = gui->findDBForm(formularname->charrep());
-	
+
 	if (df == NULL) {
 		_LOG << "Masterform '" << formularname->charrep() << "' nicht gefunden. Setze variable zurück." LOG_
 		masterForm = NULL;
 	}
-	
+
 	/// \todo This is a possible bug if there are more than one such form.
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
-		
+
 		masterForm->setName(formularname->charrep(), parameter->charrep());
-				
+
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
 
 		if (f == NULL) {
@@ -1693,16 +1695,16 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		}
 
 		masterForm->setDetailForm(f, *&params);
-		
+
 		masterForm->updateFromDetail();
 		gui->showForm(formularname->charrep());
 	} else {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, docparams)
-			
+
 		uk = meta->getActiveDocument();
 		QI(uk, lb_I_Parameter, docparams)
-			
+
 		if (docparams != NULL) {
 			// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -1710,17 +1712,17 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 			UAP(lb_I_Action_Steps, appActionSteps)
 			UAP(lb_I_KeyBase, key)
 			UAP(lb_I_Unknown, uk)
-			
+
 			UAP(lb_I_Formulars, forms)
 			UAP(lb_I_FormularParameter, formParams)
-			
+
 			docparams->setCloning(false);
 			document->setCloning(false);
-			
+
 			QI(name, lb_I_KeyBase, key)
 			*name = "ApplicationData";
 			docparams->getUAPContainer(*&name, *&document);
-			
+
 			*name = "Formulars";
 			uk = document->getElement(&key);
 			QI(uk, lb_I_Formulars, forms)
@@ -1728,15 +1730,15 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 			*name = "FormParams";
 			uk = document->getElement(&key);
 			QI(uk, lb_I_FormularParameter, formParams)
-			
-			
+
+
 			if ((formParams != NULL) && (forms != NULL)) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 				long AppID = meta->getApplicationID();
-				
+
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
-					
+
 					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, column)
@@ -1774,7 +1776,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 		// - old database variant -
 
-		
+
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
 
 		if (f == NULL) {
@@ -1784,7 +1786,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 /*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
-		meta->getUserName(&user);		
+		meta->getUserName(&user);
 
 		char* b =
 		        "select Formulare.id from Formulare inner join Anwendungen_Formulare on "
@@ -1799,11 +1801,11 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						strlen(user->charrep())+
 						strlen(app->charrep())+
 						strlen(formularname->charrep())+1);
-		
+
 		buffer[0] = 0;
-		
+
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
-		
+
 		UAP(lb_I_Database, database)
 		char* dbbackend = meta->getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -1821,29 +1823,29 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 			return 0;
 		}
 		UAP(lb_I_Query, query)
-		
+
 		database->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+
 		query = database->getQuery("lbDMF", 0);
 /*...e*/
 
 		if (query->query(buffer) == ERR_NONE) {
 			lbErrCodes err = query->first();
-			
+
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
-				
+
 /*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
-				
+
 				char* b = "select parametervalue from formular_parameters where formularid = %s";
 
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
@@ -1856,7 +1858,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 				err = query->query(buffer);
 /*...e*/
-				
+
 				if (err == ERR_NONE) {
 /*...sTake result as the SQL query parameter for the detail form:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
@@ -1864,13 +1866,13 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
 					err = query->first();
-					
+
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the detail form and make basic setup:88:*/
 						UAP(lb_I_Unknown, uk)
-						
+
 						sql = query->getAsString(1);
-						
+
 						UAP(lb_I_DatabaseForm, form)
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 						UAP(lb_I_GUI, gui)
@@ -1887,41 +1889,41 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 						*parameter = " - ";
 						*parameter += SourceFieldValue->charrep();
-						
+
 						form->setName(formularname->charrep(), parameter->charrep());
 
 						/* Set the other information of master / detail form here
-						
+
 						   There is a problem for forms, if the foreign key is not
 						   shown in it. In that case the relation could not full filled
 						   by the add action.
-						   
+
 						   The only way may be any kind of temporal default value.
 						*/
-						
+
 						UAP(lb_I_DatabaseForm, f)
 
 						UAP(lb_I_DatabaseForm, detail)
 
 						f = gui->findDBForm(detailForm->charrep());
 
-						QI(f, lb_I_DatabaseForm, detail)						
-						
+						QI(f, lb_I_DatabaseForm, detail)
+
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
-						
+
 						detail->getPrimaryColumns();
-						
+
 						*column = detail->getColumnName(1);
 						*table = detail->getTableName(column->charrep());
-						
+
 						form->ignoreForeignKeys(table->charrep());
-						
+
 						//form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-						
+
 						form->setDetailForm(*&detail, *&params);
 /*...e*/
-						
+
 /*...sSome docs:88:*/
 /*
  * What should I do to 'interconnect' the forms over the
@@ -1938,13 +1940,13 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
  *
  * setFilter could set the following value:
  *
- * " where customerid = 
+ * " where customerid =
  *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
  */
 /*...e*/
-						
+
 						// Get the related table for the source field
-						
+
 						gui->showForm(formularname->charrep());
 						form++;
 					}
@@ -1960,11 +1962,11 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 /*...e*/
 
 void LB_STDCALL lbMasterFormAction::setTransitions(lb_I_Action_Step_Transitions* myTransitions) {
-	
+
 }
 
 void LB_STDCALL lbMasterFormAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
-	
+
 }
 
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
@@ -1996,13 +1998,13 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-		
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-		
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -2010,38 +2012,38 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Steps, appActionSteps)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
 			appActionSteps->selectActionStep(myActionID);
 			*What = appActionSteps->getActionStepWhat();
-			
+
 			*msg = "Open master form (";
 			*msg += What->charrep();
 			*msg += ")";
-			
+
 			meta->setStatusText("Info", msg->charrep());
 			openMasterForm(*&What, *&params);
 			return -1;
 		}
 	}
-	
+
 	// - Old database variant -
-	
+
 	UAP(lb_I_Database, database)
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -2070,34 +2072,34 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 
 	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery("lbDMF", 0);	
-	
+	query = database->getQuery("lbDMF", 0);
+
 	char buf[] = "select what from action_steps where id = %d";
 	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
 	if (query->query(q) == ERR_NONE) {
-	
+
 		lbErrCodes err = query->first();
-	
+
 		while(err == ERR_NONE) {
 /*...sFor each row open the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
-			
+
 			what = query->getAsString(1);
 			what->trim();
 
 			openMasterForm(*&what, *&params);
-			
+
 			err = query->next();
 /*...e*/
 		}
-		
+
 		if (err == WARN_DB_NODATA) {
 /*...sOpen the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
-			
+
 			what = query->getAsString(1);
 			what->trim();
 
@@ -2107,9 +2109,9 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-		
+
 		ID->setData(myActionID);
-		
+
 		*msg = "lbMasterFormAction::execute(";
 		*msg += ID->charrep();
 		*msg += ") failed.";
@@ -2156,13 +2158,13 @@ void LB_STDCALL lbSQLQueryAction::setTransitions(lb_I_Action_Step_Transitions* m
 }
 
 void LB_STDCALL lbSQLQueryAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
-	
+
 }
 
 long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
@@ -2172,7 +2174,7 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
@@ -2187,13 +2189,13 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	params->getUAPString(*&parameter, *&SourceFieldName);
 	parameter->setData("source Form");
 	params->getUAPString(*&parameter, *&SourceFormName);
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-		
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-		
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -2201,30 +2203,30 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Steps, appActionSteps)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
 			appActionSteps->selectActionStep(myActionID);
 			*What = appActionSteps->getActionStepWhat();
-			
+
 			*msg = "Execute query (";
 			*msg += What->charrep();
 			*msg += ")";
-			
+
 			meta->setStatusText("Info", msg->charrep());
 
 			UAP(lb_I_Database, db)
@@ -2254,17 +2256,17 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 
 			*rep = "{";
 			*rep +=  SourceFieldName->charrep();
-			*rep += "}"; 
-		
+			*rep += "}";
+
 			wxString s = wxString(What->charrep());
-		
+
 			s.Replace(rep->charrep(), SourceFieldValue->charrep());
 
 			UAP(lb_I_Query, q)
 			q = db->getQuery(DBName->charrep(), 0);
 			q->skipFKCollecting();
 			*What = s.c_str();
-			
+
 			if ((err = q->query(What->charrep(), false)) != ERR_NONE && err != ERR_DB_NODATA) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				q->enableFKCollecting();
@@ -2279,9 +2281,9 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			return -1;
 		}
 	}
-	
+
 	// - Old database variant -
-		
+
 	UAP(lb_I_Database, database)
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -2312,8 +2314,8 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 
 	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery("lbDMF", 0);	
-	
+	query = database->getQuery("lbDMF", 0);
+
 	char buf[] = "select what from action_steps where id = %d order by a_order_nr";
 	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
@@ -2341,24 +2343,24 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
 		return 0;
 	}
-	
+
 	if (query->query(q) == ERR_NONE) {
-	
+
 		lbErrCodes err = query->first();
-	
+
 		while(err == ERR_NONE) {
 /*...sFor each row open the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 			what = query->getAsString(1);
 			what->trim();
-		
+
 			*rep = "{";
 			*rep +=  SourceFieldName->charrep();
-			*rep += "}"; 
-		
+			*rep += "}";
+
 			wxString s = wxString(what->charrep());
-		
+
 			s.Replace(rep->charrep(), SourceFieldValue->charrep());
 
 			UAP(lb_I_Query, q)
@@ -2379,20 +2381,20 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			err = query->next();
 /*...e*/
 		}
-		
+
 		if (err == WARN_DB_NODATA) {
 /*...sOpen the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 			what = query->getAsString(1);
 			what->trim();
-		
+
 			*rep = "{";
 			*rep +=  SourceFieldName->charrep();
-			*rep += "}"; 
-		
+			*rep += "}";
+
 			wxString s = wxString(what->charrep());
-		
+
 			s.Replace(rep->charrep(), SourceFieldValue->charrep());
 
 			UAP(lb_I_Query, q)
@@ -2414,25 +2416,25 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-		
+
 		ID->setData(myActionID);
-		
+
 		*msg = "lbSQLQueryAction::execute(";
 		*msg += ID->charrep();
 		*msg += ") failed.";
 
 		meta->setStatusText("Info", msg->charrep());
 	}
-	
+
 	lb_I_GUI* gui;
 
 	meta->getGUI(&gui);
-	
+
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, f)
-		
+
 		f = gui->findDBForm(SourceFormName->charrep());
-		
+
 		if (f != NULL) f->reopen();
 	}
 	return -1;
@@ -2484,12 +2486,12 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	long first_dst_actionid = -1;
 	long defaultfirst_dst_actionid = -1;
 	_CL_LOG << "lbDecisionAction::execute()" LOG_
-	
+
 	if (transitions == NULL) {
 		_LOG << "Error: lbDecisionAction::execute() Can't execute without transitions instance!" LOG_
 		return 0;
 	}
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
@@ -2499,7 +2501,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
@@ -2514,13 +2516,13 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 	params->getUAPString(*&parameter, *&SourceFieldName);
 	parameter->setData("source Form");
 	params->getUAPString(*&parameter, *&SourceFormName);
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-		
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-		
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -2529,26 +2531,26 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
 			appActionSteps->selectActionStep(myActionID);
 			*What = appActionSteps->getActionStepWhat();
-			
+
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.
 
@@ -2562,7 +2564,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 				wxString expression;
 				expression = transitions->getActionStepTransitionDecision();
 				dst_actionid = transitions->getActionStepTransitionDstActionID();
-				
+
 				if (transitions->getActionStepTransitionSrcActionID() == myActionID) {
 					_LOG << "Evaluate expression '" << expression.c_str() << "'" LOG_
 					if (expression.find("==") != -1) {
@@ -2571,22 +2573,22 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						wxString right = expression.substr(expression.find("==")+2);
 						right.Trim();
 						left.Trim();
-						
+
 						*paramName = left.c_str();
 						params->getUAPString(*&paramName, *&paramValue); /// \todo Evaluate not containing parameter.
-						
+
 						right.Replace("\"", " ", true);
 						right.Trim();
 						right.Trim(false);
-						
+
 						if (paramValue->charrep() == NULL) {
 							meta->msgBox("Error", "Parameter to compare is not passed.");
 							return 0;
 						}
 						paramValue->trim();
-						
+
 						_LOG << "Evaluate == expression ('" << paramValue->charrep() << "' == '" << right.c_str() << "')" LOG_
-						
+
 						if (*paramValue == right.c_str()) {
 							if (expressionTrue == true) {
 								_LOG << "Error: Multible expressions are true. This is wrong for a decision!" LOG_
@@ -2601,19 +2603,19 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						wxString right = expression.substr(expression.find("!=")+2);
 						right.Trim();
 						left.Trim();
-						
+
 						*paramName = left.c_str();
 						params->getUAPString(*&paramName, *&paramValue); /// \todo Evaluate not containing parameter.
-						
+
 						right.Replace("\"", " ", true);
 						right.Trim();
 						right.Trim(false);
-						
+
 						if (paramValue->charrep() == NULL) {
 							meta->msgBox("Error", "Parameter to compare is not passed.");
 							return 0;
 						}
-						
+
 						if (!(*paramValue == right.c_str())) {
 							if (expressionTrue == true) {
 								_LOG << "Error: Multible expressions are true. This is wrong for a decision!" LOG_
@@ -2628,7 +2630,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						wxString right = expression.substr(expression.find("=")+2);
 						right.Trim();
 						left.Trim();
-						
+
 						*paramValue = right.c_str();
 						*paramName = left.c_str();
 						params->setUAPString(*&paramName, *&paramValue);
@@ -2638,18 +2640,20 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						} else {
 							defaultexpressionTrue = true;
 							defaultfirst_dst_actionid = dst_actionid; // Only the first expression is used
-						}					
+						}
 					}
 				}
 			}
-			
+
 			if ((!expressionTrue) && (defaultexpressionTrue)) first_dst_actionid = defaultfirst_dst_actionid;
 			return first_dst_actionid;
+		} else {
+            _LOG << "Error: appActionSteps is NULL, but required." LOG_
 		}
 	} else {
 		_LOG << "Error: lbDecisionAction::execute() can't work directly at database. The object model must be loaded prior!" LOG_
-		return 0;
 	}
+	return 0;
 }
 
 /****************
@@ -2690,7 +2694,7 @@ void LB_STDCALL lbOpAqueOperation::setTransitions(lb_I_Action_Step_Transitions* 
 }
 
 void LB_STDCALL lbOpAqueOperation::setParameter(lb_I_ActionStep_Parameters* myParams) {
-	
+
 }
 
 long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
@@ -2698,7 +2702,7 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	bool expressionTrue = false;
 	long first_dst_actionid = 0;
 	_CL_LOG << "lbDecisionAction::execute()" LOG_
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
@@ -2706,11 +2710,11 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	
+
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);
 	parameter->setData("DBUser");
@@ -2723,13 +2727,13 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	params->getUAPString(*&parameter, *&SourceFieldName);
 	parameter->setData("source Form");
 	params->getUAPString(*&parameter, *&SourceFormName);
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-	
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-	
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -2738,33 +2742,33 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
-			
+
 			appActionSteps->selectActionStep(myActionID);
 			*What = appActionSteps->getActionStepWhat();
-			
+
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.
-			
+
 			return -1;
 		}
 	} else {
 		_LOG << "Error: lbDecisionAction::execute() can't work directly at database. The object model must be loaded prior!" LOG_
-		return 0;
 	}
+	return 0;
 }
