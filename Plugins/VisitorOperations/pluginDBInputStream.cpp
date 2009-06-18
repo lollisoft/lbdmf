@@ -292,7 +292,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actions
 	
 	q = db->getQuery("lbDMF", 0);
 	
-	*query = "select id, actionid, name, value, interface, description from action_step_parameter";
+	*query = "select id, action_step_id, name, value, interface, description from action_step_parameter";
 
 	err = q->query(query->charrep());
 	
