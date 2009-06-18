@@ -1071,8 +1071,26 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	lbErrCodes err = ERR_NONE;
 
 	// Locate the form instance in the container
-	
+
 	_LOG << "Create database formular for '" << formName << "', '" << queryString << "', '" << DBName << "', '" << DBUser << "', '" << DBPass << "'" LOG_
+
+	if (strcmp(queryString, "") == 0) {
+		char* msg = (char*) malloc(200);
+		msg[0] = 0;
+		strcpy(msg, _trans("SQL string is empty."));
+		msgBox(_trans("Error"), msg);
+		free(msg);
+		return NULL;
+	}
+
+	if (strcmp(DBName, "") == 0) {
+		char* msg = (char*) malloc(200);
+		msg[0] = 0;
+		strcpy(msg, _trans("Database name is empty"));
+		msgBox(_trans("Error"), msg);
+		free(msg);
+		return NULL;
+	}
 
 	if (frame->isPanelUsage()) {
 		if (!notebook) {
