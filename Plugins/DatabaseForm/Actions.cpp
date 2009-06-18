@@ -2577,6 +2577,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						
 						right.Replace("\"", " ", true);
 						right.Trim();
+						right.Trim(false);
 						
 						if (paramValue->charrep() == NULL) {
 							meta->msgBox("Error", "Parameter to compare is not passed.");
@@ -2606,6 +2607,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						
 						right.Replace("\"", " ", true);
 						right.Trim();
+						right.Trim(false);
 						
 						if (paramValue->charrep() == NULL) {
 							meta->msgBox("Error", "Parameter to compare is not passed.");
