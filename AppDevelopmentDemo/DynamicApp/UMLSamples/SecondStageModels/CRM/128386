@@ -1,0 +1,1041 @@
+format 63
+"CRM" // DMFToUML::CRM
+  revision 3
+  modified_by 2 "lothar"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  classview 128002 "Class View"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 128002 "Adresse"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 128002 "Plz"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128130 "Stadt"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128258 "Hausnummer"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128386 "Strasse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 128002 "ValidateAdresse"
+	stereotype "validator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 129026 // <dependency>
+	relation 129026 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129026 // <dependency>
+	  b parent class_ref 129538 // Adresse
+      end
+
+      classrelation 134914 // Konkurrenten (Konkurrenten)
+	relation 132738 ---> name "Konkurrenten"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Konkurrenten" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134914 // Konkurrenten (Konkurrenten)
+	  b parent class_ref 129410 // Konkurrenten
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Stadt"
+      end
+
+      classrelation 135042 // Kunde (Kunde)
+	relation 132866 ---> name "Kunde"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Kunde" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135042 // Kunde (Kunde)
+	  b parent class_ref 128130 // Kunde
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Stadt"
+      end
+
+      classrelation 135170 // Lieferant (Lieferant)
+	relation 132994 ---> name "Lieferant"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Lieferant" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135170 // Lieferant (Lieferant)
+	  b parent class_ref 129154 // Lieferant
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Stadt"
+      end
+    end
+
+    class 128130 "Kunde"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 128514 "Kontakte"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128642 "Adresse"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128770 "Firmenname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128898 "Kundennummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129154 // <dependency>
+	relation 129154 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129154 // <dependency>
+	  b parent class_ref 130562 // Kunde
+      end
+
+      classrelation 136194 // Angebot (Angebot)
+	relation 134018 ---> name "Angebot"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Angebot" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136194 // Angebot (Angebot)
+	  b parent class_ref 128642 // Angebot
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Kundennummer"
+      end
+
+      classrelation 136322 // Auftrag (Auftrag)
+	relation 134146 ---> name "Auftrag"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Auftrag" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136322 // Auftrag (Auftrag)
+	  b parent class_ref 128258 // Auftrag
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Kundennummer"
+      end
+
+      classrelation 136450 // Rechnung (Rechnung)
+	relation 134274 ---> name "Rechnung"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Rechnung" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136450 // Rechnung (Rechnung)
+	  b parent class_ref 128898 // Rechnung
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Kundennummer"
+      end
+    end
+
+    class 128258 "Auftrag"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 129026 "Kunde"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129154 "Auftragsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129282 // <dependency>
+	relation 129282 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129282 // <dependency>
+	  b parent class_ref 130050 // Auftrag
+      end
+
+      classrelation 135810 // Auftragspositionen (Auftragspositionen)
+	relation 133634 ---> name "Auftragspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Auftragspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135810 // Auftragspositionen (Auftragspositionen)
+	  b parent class_ref 128386 // Auftragspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Auftragsnummer"
+      end
+    end
+
+    class 128386 "Auftragspositionen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 129282 "Artikel"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129410 "Auftrag"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129538 "Menge"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129410 // <dependency>
+	relation 129410 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129410 // <dependency>
+	  b parent class_ref 130178 // Auftragspositionen
+      end
+    end
+
+    class 128514 "Artikel"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 129666 "Lieferant"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129794 "Beschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129922 "Einheit"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130050 "Name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129538 // <dependency>
+	relation 129538 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129538 // <dependency>
+	  b parent class_ref 129922 // Artikel
+      end
+
+      classrelation 135426 // Angebotspositionen (Angebotspositionen)
+	relation 133250 ---> name "Angebotspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Angebotspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135426 // Angebotspositionen (Angebotspositionen)
+	  b parent class_ref 128770 // Angebotspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
+      end
+
+      classrelation 135554 // Auftragspositionen (Auftragspositionen)
+	relation 133378 ---> name "Auftragspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Auftragspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135554 // Auftragspositionen (Auftragspositionen)
+	  b parent class_ref 128386 // Auftragspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
+      end
+
+      classrelation 135682 // Rechnungspositionen (Rechnungspositionen)
+	relation 133506 ---> name "Rechnungspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Rechnungspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135682 // Rechnungspositionen (Rechnungspositionen)
+	  b parent class_ref 129026 // Rechnungspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
+      end
+    end
+
+    class 128642 "Angebot"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 130178 "Kunde"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130306 "Angebotsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129666 // <dependency>
+	relation 129666 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129666 // <dependency>
+	  b parent class_ref 129666 // Angebot
+      end
+
+      classrelation 135298 // Angebotspositionen (Angebotspositionen)
+	relation 133122 ---> name "Angebotspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Angebotspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135298 // Angebotspositionen (Angebotspositionen)
+	  b parent class_ref 128770 // Angebotspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Angebotsnummer"
+      end
+    end
+
+    class 128770 "Angebotspositionen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 130434 "Angebot"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130562 "Artikel"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129794 // <dependency>
+	relation 129794 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129794 // <dependency>
+	  b parent class_ref 129794 // Angebotspositionen
+      end
+    end
+
+    class 128898 "Rechnung"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 130690 "Kunde"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130818 "Rechnungsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129922 // <dependency>
+	relation 129922 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 129922 // <dependency>
+	  b parent class_ref 130818 // Rechnung
+      end
+
+      classrelation 136706 // Rechnungspositionen (Rechnungspositionen)
+	relation 134530 ---> name "Rechnungspositionen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Rechnungspositionen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136706 // Rechnungspositionen (Rechnungspositionen)
+	  b parent class_ref 129026 // Rechnungspositionen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Rechnungsnummer"
+      end
+    end
+
+    class 129026 "Rechnungspositionen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 130946 "Rechnung"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131074 "Artikel"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131202 "menge"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 130050 // <dependency>
+	relation 130050 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 130050 // <dependency>
+	  b parent class_ref 130946 // Rechnungspositionen
+      end
+    end
+
+    class 129154 "Lieferant"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 131330 "Adresse"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131458 "Name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131586 "Lieferantennummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 130178 // <dependency>
+	relation 130178 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 130178 // <dependency>
+	  b parent class_ref 130690 // Lieferant
+      end
+
+      classrelation 136578 // Artikel (Artikel)
+	relation 134402 ---> name "Artikel"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Artikel" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136578 // Artikel (Artikel)
+	  b parent class_ref 128514 // Artikel
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Lieferantennummer"
+      end
+    end
+
+    class 129282 "Kontakte"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 131714 "eMail"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131842 "Fax"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131970 "Telefon"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132098 "Vorname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132226 "Name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 130306 // <dependency>
+	relation 130306 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 130306 // <dependency>
+	  b parent class_ref 130434 // Kontakte
+      end
+
+      classrelation 135938 // Konkurrenten (Konkurrenten)
+	relation 133762 ---> name "Konkurrenten"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Konkurrenten" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 135938 // Konkurrenten (Konkurrenten)
+	  b parent class_ref 129410 // Konkurrenten
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
+      end
+
+      classrelation 136066 // Kunde (Kunde)
+	relation 133890 ---> name "Kunde"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Kunde" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136066 // Kunde (Kunde)
+	  b parent class_ref 128130 // Kunde
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
+      end
+    end
+
+    class 129410 "Konkurrenten"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "kuser.png"
+      attribute 132354 "Kontakte"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132482 "Adresse"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132610 "Kurzbeschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132738 "Webadresse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 132866 "Firmenname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 130434 // <dependency>
+	relation 130434 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 130434 // <dependency>
+	  b parent class_ref 130306 // Konkurrenten
+      end
+    end
+
+    activity 128002 "ValidateAdresse"
+      stereotype "validator"
+      activityaction 128002 "PLZ ist leer"
+	send_signal_action
+	ncouples 3
+	key "title" value "Fehler"
+	key "signal" value "showMsgBox"
+	key "msg" value "Die Postleitzahl muss angegeben werden."
+	flow 128002 "<flow>"
+	  on activityaction_ref 128130 // activity action Sammelpunkt Fehler
+	end
+      end
+
+      activitynode 128002 initial ""
+	flow 128130 "Start"
+	  on activitynode_ref 128130 // decision
+	end
+      end
+
+      activitynode 128130 decision ""
+	flow 128258 "Plz ist leer"
+	  on activityaction_ref 128002 // activity action PLZ ist leer
+	    uml_guard "Plz == \"\""
+	end
+
+	flow 128386 "<flow>"
+	  on activitynode_ref 128386 // decision
+	end
+      end
+
+      activitynode 128258 activity_final ""
+      end
+
+      activityaction 128130 "Sammelpunkt Fehler"
+	opaque_action
+	flow 128514 "Result Failure"
+	  on activitynode_ref 128258 // activity_final
+	      uml_transformation "result = 0"
+	end
+      end
+
+      activityaction 128258 "Stadt ist leer"
+	send_signal_action
+	ncouples 3
+	key "title" value "Fehler"
+	key "signal" value "showMsgBox"
+	key "msg" value "Stadt ist leer"
+	flow 128642 "<flow>"
+	  on activityaction_ref 128130 // activity action Sammelpunkt Fehler
+	end
+      end
+
+      activitynode 128386 decision ""
+	flow 128770 "Stadt ist leer"
+	  on activityaction_ref 128258 // activity action Stadt ist leer
+	    uml_guard "Stadt == \"\""
+	end
+
+	flow 128898 "<flow>"
+	  on activitynode_ref 128514 // decision
+	end
+      end
+
+      activitynode 128514 decision ""
+	flow 129026 "<flow>"
+	  on activitynode_ref 128642 // decision
+	end
+
+	flow 129154 "Hausnummer ist leer"
+	  on activityaction_ref 128386 // activity action Hausnummer ist leer
+	    uml_guard "Hausnummer == \"\""
+	end
+      end
+
+      activitynode 128642 decision ""
+	flow 129282 "Strasse ist leer"
+	  on activityaction_ref 128514 // activity action Strasse ist leer
+	    uml_guard "Strasse == \"\""
+	end
+
+	flow 129410 "Result is ok"
+	  on activitynode_ref 128258 // activity_final
+	      uml_transformation "result = 1"
+	end
+      end
+
+      activityaction 128386 "Hausnummer ist leer"
+	send_signal_action
+	ncouples 3
+	key "title" value "Fehler"
+	key "signal" value "showMsgBox"
+	key "msg" value "Hausnummer ist leer"
+	flow 129538 "<flow>"
+	  on activityaction_ref 128130 // activity action Sammelpunkt Fehler
+	end
+      end
+
+      activityaction 128514 "Strasse ist leer"
+	send_signal_action
+	ncouples 3
+	key "title" value "Fehler"
+	key "signal" value "showMsgBox"
+	key "msg" value "Strasse ist leer"
+	flow 129666 "<flow>"
+	  on activityaction_ref 128130 // activity action Sammelpunkt Fehler
+	end
+      end
+
+      activitydiagram 129282 "ValidateAdresse"
+	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+	show_infonote default drawing_language default show_stereotype_properties default
+	size A4
+      end
+
+      parameter 128002 "Plz" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 128130 "Stadt" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 128258 "Hausnummer" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 128386 "Strasse" explicit_type ""
+	unordered 
+	in
+      end
+    end
+  end
+end

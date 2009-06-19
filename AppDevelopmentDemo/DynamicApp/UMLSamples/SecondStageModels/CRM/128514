@@ -1,0 +1,1291 @@
+format 63
+"CRM_Entities" // DMFToUML::CRM_Entities
+  revision 2
+  modified_by 2 "lothar"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  classview 128130 "Class View"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 129154 "CRM"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    class 129538 "Adresse"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 132994 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133122 "Strasse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133250 "Hausnummer"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133378 "Stadt"
+	protected explicit_type "string"
+	stereotype "visible"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133506 "Plz"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 130562 // Adresse (<association>)
+	relation 130562 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "Adresse" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130562 // Adresse (<association>)
+	  b role_name "anonymous_role_1" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130690 // anonymous_role_1 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 130818 // anonymous_role_2 (<association>)
+	relation 130690 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_2" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130818 // anonymous_role_2 (<association>)
+	  b role_name "anonymous_role_3" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130946 // anonymous_role_3 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 131074 // anonymous_role_4 (<association>)
+	relation 130818 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_4" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131074 // anonymous_role_4 (<association>)
+	  b role_name "anonymous_role_5" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131202 // anonymous_role_5 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 129666 "Angebot"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 133634 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133762 "Angebotsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 133890 "Kunde"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Kunde"
+      end
+
+      classrelation 131330 // Angebot (<association>)
+	relation 130946 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "Angebot" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131330 // Angebot (<association>)
+	  b role_name "anonymous_role_6" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131458 // anonymous_role_6 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 131586 // anonymous_role_7 (<association>)
+	relation 131074 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_7" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131586 // anonymous_role_7 (<association>)
+	  b role_name "anonymous_role_8" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131714 // anonymous_role_8 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 133634 // anonymous_role_20 (<association>)
+	relation 132098 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_20" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133634 // anonymous_role_20 (<association>)
+	  b role_name "Kunde" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133762 // Kunde (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Kunde"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 129794 "Angebotspositionen"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 134018 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 134146 "Artikel"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Artikel"
+      end
+
+      attribute 134274 "Angebot"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Angebot"
+      end
+
+      classrelation 131458 // anonymous_role_6 (<association>)
+	relation_ref 130946 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Angebot"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 131842 // anonymous_role_9 (<association>)
+	relation 131202 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_9" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131842 // anonymous_role_9 (<association>)
+	  b role_name "Artikel" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131970 // Artikel (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Artikel"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 129922 "Artikel"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 134402 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 134530 "Name"
+	protected explicit_type "string"
+	stereotype "visible"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 134658 "Einheit"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 134786 "Beschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 134914 "Lieferant"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Lieferant"
+      end
+
+      classrelation 131970 // Artikel (<association>)
+	relation_ref 131202 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 132098 // anonymous_role_10 (<association>)
+	relation 131330 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_10" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132098 // anonymous_role_10 (<association>)
+	  b role_name "anonymous_role_11" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132226 // anonymous_role_11 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 132354 // anonymous_role_12 (<association>)
+	relation 131458 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_12" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132354 // anonymous_role_12 (<association>)
+	  b role_name "anonymous_role_13" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132482 // anonymous_role_13 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 134402 // anonymous_role_25 (<association>)
+	relation 132482 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_25" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134402 // anonymous_role_25 (<association>)
+	  b role_name "Lieferant" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134530 // Lieferant (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Lieferant"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 130050 "Auftrag"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 135042 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135170 "Auftragsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135298 "Kunde"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Kunde"
+      end
+
+      attribute 135426 "Angebot"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Angebot"
+      end
+
+      classrelation 131714 // anonymous_role_8 (<association>)
+	relation_ref 131074 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Angebot"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 132610 // Auftrag (<association>)
+	relation 131586 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "Auftrag" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132610 // Auftrag (<association>)
+	  b role_name "anonymous_role_14" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132738 // anonymous_role_14 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 132866 // anonymous_role_15 (<association>)
+	relation 131714 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_15" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132866 // anonymous_role_15 (<association>)
+	  b role_name "anonymous_role_16" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 132994 // anonymous_role_16 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 133890 // anonymous_role_21 (<association>)
+	relation 132226 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_21" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133890 // anonymous_role_21 (<association>)
+	  b role_name "anonymous_role_22" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134018 // anonymous_role_22 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Kunde"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 130178 "Auftragspositionen"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 135554 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135682 "Menge"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135810 "Auftrag"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Auftrag"
+      end
+
+      attribute 135938 "Artikel"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Artikel"
+      end
+
+      classrelation 132226 // anonymous_role_11 (<association>)
+	relation_ref 131330 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Artikel"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 132738 // anonymous_role_14 (<association>)
+	relation_ref 131586 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Auftrag"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 130306 "Konkurrenten"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 136066 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136194 "Firmenname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136322 "Webadresse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136450 "Kurzbeschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136578 "Langbeschreibung"
+	protected explicit_type "text"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136706 "Adresse"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Adresse"
+      end
+
+      attribute 136834 "Kontakte"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Kontakte"
+      end
+
+      classrelation 130690 // anonymous_role_1 (<association>)
+	relation_ref 130562 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Adresse"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 133122 // anonymous_role_17 (<association>)
+	relation 131842 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_17" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133122 // anonymous_role_17 (<association>)
+	  b role_name "Kontakte" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133250 // Kontakte (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Kontakte"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+
+    class 130434 "Kontakte"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 136962 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137090 "Name"
+	protected explicit_type "string"
+	stereotype "visible"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137218 "Vorname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137346 "Telefon"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137474 "Fax"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137602 "eMail"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137730 "Notiz"
+	protected explicit_type "text"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 133250 // Kontakte (<association>)
+	relation_ref 131842 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 133378 // anonymous_role_18 (<association>)
+	relation 131970 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_18" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133378 // anonymous_role_18 (<association>)
+	  b role_name "anonymous_role_19" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133506 // anonymous_role_19 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 130562 "Kunde"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 137858 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137986 "Kundennummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138114 "Firmenname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138242 "Notiz"
+	protected explicit_type "text"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138370 "Adresse"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Adresse"
+      end
+
+      attribute 138498 "Kontakte"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Kontakte"
+      end
+
+      classrelation 130946 // anonymous_role_3 (<association>)
+	relation_ref 130690 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Adresse"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 133506 // anonymous_role_19 (<association>)
+	relation_ref 131970 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Kontakte"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 133762 // Kunde (<association>)
+	relation_ref 132098 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 134018 // anonymous_role_22 (<association>)
+	relation_ref 132226 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 134146 // anonymous_role_23 (<association>)
+	relation 132354 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anonymous_role_23" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134146 // anonymous_role_23 (<association>)
+	  b role_name "anonymous_role_24" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134274 // anonymous_role_24 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 130690 "Lieferant"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 138626 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138754 "Lieferantennummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138882 "Name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139010 "Adresse"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Adresse"
+      end
+
+      classrelation 131202 // anonymous_role_5 (<association>)
+	relation_ref 130818 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Adresse"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 134530 // Lieferant (<association>)
+	relation_ref 132482 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 130818 "Rechnung"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 139138 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139266 "Rechnungsnummer"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139394 "Kunde"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Kunde"
+      end
+
+      attribute 139522 "Auftrag"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Auftrag"
+      end
+
+      classrelation 132994 // anonymous_role_16 (<association>)
+	relation_ref 131714 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Auftrag"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 134274 // anonymous_role_24 (<association>)
+	relation_ref 132354 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Kunde"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 134658 // Rechnung (<association>)
+	relation 132610 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "Rechnung" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134658 // Rechnung (<association>)
+	  b role_name "anonymous_role_26" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 134786 // anonymous_role_26 (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 130946 "Rechnungspositionen"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 139650 "ID"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139778 "menge"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139906 "Artikel"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Artikel"
+      end
+
+      attribute 140034 "Rechnung"
+	protected explicit_type "int"
+	stereotype "lbDMF:fk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 3
+	key "lbDMF:order" value "-1"
+	key "lbDMF:sourcecolumn" value "ID"
+	key "lbDMF:table" value "Rechnung"
+      end
+
+      classrelation 132482 // anonymous_role_13 (<association>)
+	relation_ref 131458 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Artikel"
+	key "lbDMF:relationship:order" value "-1"
+      end
+
+      classrelation 134786 // anonymous_role_26 (<association>)
+	relation_ref 132610 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "ID"
+	key "lbDMF:relationship:table" value "Rechnung"
+	key "lbDMF:relationship:order" value "-1"
+      end
+    end
+  end
+end

@@ -1,0 +1,133 @@
+format 63
+
+activitynodecanvas 128002 activitynode_ref 128002 // initial
+  xyz 55 16 2000
+end
+activitynodecanvas 128130 activitynode_ref 128130 // decision
+  xyz 52 118 2004
+end
+activitynodecanvas 128386 activitynode_ref 128386 // decision
+  xyz 52 217 2004
+end
+activitynodecanvas 128642 activitynode_ref 128514 // decision
+  xyz 52 314 2004
+end
+activitynodecanvas 128898 activitynode_ref 128642 // decision
+  xyz 52 400 2004
+end
+activityactioncanvas 129154 activityaction_ref 128130 // activity action Sammelpunkt Fehler
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 612 248 2000 100 60
+end
+activityactioncanvas 129282 activityaction_ref 128258 // activity action Stadt ist leer
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 332 206 2004 165 58
+end
+activityactioncanvas 129666 activityaction_ref 128386 // activity action Hausnummer ist leer
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 332 303 2009 165 58
+end
+activityactioncanvas 130050 activityaction_ref 128514 // activity action Strasse ist leer
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 332 389 2004 165 58
+end
+activityactioncanvas 130434 activityaction_ref 128002 // activity action PLZ ist leer
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 332 107 2004 165 58
+end
+activitynodecanvas 130818 activitynode_ref 128258 // activity_final
+  xyz 647 508 2004
+end
+flowcanvas 128258 flow_ref 128130 // Start
+  
+  from ref 128002 z 1999 label "Start" xyz 51 68 3000 to ref 128130
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 128514 flow_ref 128386 // <flow>
+  
+  from ref 128130 z 1999 to ref 128386
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 128770 flow_ref 128898 // <flow>
+  
+  from ref 128386 z 1999 to ref 128642
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129026 flow_ref 129026 // <flow>
+  
+  from ref 128642 z 1999 to ref 128898
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129410 flow_ref 128642 // <flow>
+  
+  from ref 129282 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129538 flow_ref 128770 // Stadt ist leer
+  
+  from ref 128386 z 1999 label "Stadt ist leer
+[Stadt == \"\"]" xyz 169 222 3000 to ref 129282
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129794 flow_ref 129538 // <flow>
+  
+  from ref 129666 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129922 flow_ref 129154 // Hausnummer ist leer
+  
+  from ref 128642 z 1999 label "Hausnummer ist leer
+[Hausnummer == \"\"]" xyz 146 319 3000 to ref 129666
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130178 flow_ref 129666 // <flow>
+  
+  from ref 130050 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130306 flow_ref 129282 // Strasse ist leer
+  
+  from ref 128898 z 1999 label "Strasse ist leer
+[Strasse == \"\"]" xyz 162 405 3000 to ref 130050
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130562 flow_ref 128002 // <flow>
+  
+  from ref 130434 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130690 flow_ref 128258 // Plz ist leer
+  
+  from ref 128130 z 1999 label "Plz ist leer
+[Plz == \"\"]" xyz 175 123 3000 to ref 130434
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130946 flow_ref 129410 // Result is ok
+  
+  from ref 128898 z 1999 label "Result is ok" xyz 466 523 3000 to point 314 517
+  line 132226 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 131074 "<<transformation>>
+result = 1"
+    xyzwh 68 502 1999 126 48
+end
+flowcanvas 131330 flow_ref 128514 // Result Failure
+  
+  from ref 129154 z 1999 label "Result Failure" xyz 621 399 3000 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 131458 "<<transformation>>
+result = 0"
+    xyzwh 665 321 1999 126 48
+end
+line 131202 -_-_
+  from ref 130946 z 1998 to ref 131074
+line 131586 -_-_
+  from ref 131330 z 1998 to ref 131458
+end
