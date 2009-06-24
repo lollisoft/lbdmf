@@ -230,7 +230,6 @@ int main(int argc, char *argv[]) {
 		n = 0;
 		*in >> buf >> n;
 		_CL_LOG << "'" << buf << "', " << n LOG_;
-		free(buf);
 	}
 	
 	_CL_LOG << "Test string appending..." LOG_
