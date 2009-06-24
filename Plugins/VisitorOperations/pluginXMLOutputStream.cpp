@@ -539,7 +539,9 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTables* dbtable) {
 		dbtable->setNextTable();
 		*oStream << 
 		"<table ID=\"" << dbtable->getTableID() << 
-		"\" name=\"" << dbtable->getTableName() << "\"/>" << "\n";
+		"\" name=\"" << dbtable->getTableName() << 
+		"\" remarks=\"" << dbtable->getTableRemarks() << 
+		"\"/>" << "\n";
 	}
 
 	*oStream << "</dbtables>" << "\n";
