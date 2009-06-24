@@ -4768,6 +4768,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 						sprintf(pp, "%d", p);
 						value = pp;
 					}
+				} else {
+					_LOG << "Error: Require a selected value in the combobox as an action source field." LOG_
+					UAP_REQUEST(getModuleInstance(), lb_I_String, err)
+					*err = "The combobox '";
+					*err += s->charrep();
+					*err += "' has no value selected, but it may show it selected.\n\nPlease correct it.";
+					meta->msgBox("Error", err->charrep());
+					return ERR_NONE;
 				}
 				/*...e*/
 			} else {
@@ -4814,7 +4822,15 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 			_LOG << "The value for the field is " << value.c_str() << "." LOG_		
 			
 			errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
-			meta->setStatusText("Info", errmsg.c_str());			
+			meta->setStatusText("Info", errmsg.c_str());
+			if (value == "") {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, err)
+				*err = "The datafield '";
+				*err += s->charrep();
+				*err += "' has no value, but the action requires one.\n\nPlease correct it.";
+				meta->msgBox("Error", err->charrep());
+				return ERR_NONE;
+			}
 		}
 /*...e*/
 		
