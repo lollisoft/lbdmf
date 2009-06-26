@@ -150,6 +150,10 @@ int main(int argc, char *argv[]) {
 	replaceTest->replace("\"", "&quot;");
 	printf("Replaced string: %s\n", replaceTest->charrep());
 	
+	*replaceTest = "select \"lala\" from \"bla\" where \"lili\" = 'lolo'";
+	replaceTest->replace("\"", "&quot;");
+	printf("Replaced string: %s\n", replaceTest->charrep());
+	
 	
 	UAP_REQUEST(mm, lb_I_String, string1)
 	char buf1[100] = "";
