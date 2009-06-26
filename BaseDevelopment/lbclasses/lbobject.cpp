@@ -899,8 +899,8 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2)
 	for ( p+=len; (p=strstr(p, sub_str1)) != NULL; p+=len ) 
 		++count; 
 	diff = strlen(sub_str2) - len; 
-	/* allocate new memory */ 
-	if ( (new_str=(char *)malloc((strlen(str) + count*diff)*sizeof(char))) 
+	/* allocate new memory (added null terminating) */ 
+	if ( (new_str=(char *)malloc((strlen(str) + count*diff + 1)*sizeof(char))) 
 		== NULL ) 
 		return NULL; 
 	q = str; 
@@ -928,7 +928,7 @@ lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* wit
 	*rep = str_replace(stringdata, toReplace, with);
 	if (rep->charrep() != NULL) {
 		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
-			setData(rep->charrep());
+		setData(rep->charrep());
 	} else {
 		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
 	}
