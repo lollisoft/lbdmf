@@ -155,25 +155,30 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	ukDoc = meta->getActiveDocument();
 	QI(ukDoc, lb_I_Parameter, activedocument)
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
+	
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
 
 	if (activedocument != NULL) {
 		*param = "XSLFileExportSettings";
 		activedocument->getUAPFileLocation(*&param, *&XSLFileExportSettings);
-/*		*param = "XSLFileSystemDatabase";
+/*
+		*param = "XSLFileSystemDatabase";
 		activedocument->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
 		*param = "XSLFileApplicationDatabase";
 		activedocument->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
  
 		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
-		
+ */
 		*param = "UMLImportDBName";
 		activedocument->getUAPString(*&param, *&DBName);
 		*param = "UMLImportDBUser";
 		activedocument->getUAPString(*&param, *&DBUser);
 		*param = "UMLImportDBPass";
 		activedocument->getUAPString(*&param, *&DBPass);
-*/
 	}
 	
 	// Write the settings file for the application database here ...
@@ -189,6 +194,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
 				*oStream << "<xsl:variable name=\"stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
+				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
 				
 				/// \todo Write additional XMI settings here.				
 				
