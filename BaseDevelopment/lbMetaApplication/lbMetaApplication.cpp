@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.156 $
+ * $Revision: 1.157 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.156 2009/06/10 11:56:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.157 2009/06/29 10:31:00 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.157  2009/06/29 10:31:00  lollisoft
+ * Renamed a dispatch parameter.
+ *
  * Revision 1.156  2009/06/10 11:56:51  lollisoft
  * Added functions to help passing application process name.
  *
@@ -2890,8 +2893,8 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 }
 /*...e*/
 
-/*...slb_I_InputStream\42\ LB_STDCALL lb_MetaApplication\58\\58\askOpenFileReadStream\40\char\42\ extentions\41\:0:*/
-lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
+/*...slb_I_InputStream\42\ LB_STDCALL lb_MetaApplication\58\\58\askOpenFileReadStream\40\char\42\ extensions\41\:0:*/
+lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extensions) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
@@ -2899,9 +2902,8 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 
-
-	parameter->setData("extention");
-	value->setData(extentions);
+	parameter->setData("extension");
+	value->setData(extensions);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
