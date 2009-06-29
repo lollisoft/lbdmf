@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.57 2009/06/10 11:53:59 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.58 2009/06/29 15:01:01 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.58  2009/06/29 15:01:01  lollisoft
+ * Function position must set iteration flag correctly.
+ *
  * Revision 1.57  2009/06/10 11:53:59  lollisoft
  * Added functions to enable position in the container to enable 'jumps'.
  *
@@ -603,11 +606,11 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 
 int LB_STDCALL SkipList::position(lb_I_KeyBase** const key) {
     UAP(lb_I_Unknown, s)
-    
+
     s = search(*key, true);
     
-    if (s == NULL) return 0;	
-	
+    if (s == NULL) return 0;
+	iteration = 1; // else can_dump resets the iteration position!
     return 1; 
 }
 
@@ -624,7 +627,9 @@ int LB_STDCALL SkipList::position(int i) {
 			e = dump_next();
 		}
 		
-		if (ii == i) return 1;
+		if (ii == i) {
+			return 1;
+		}
 	}
 	
 	return 0;
@@ -859,8 +864,8 @@ void SkipList::finishIteration() {
 int SkipList::can_dump() {
 	if (count == 0) return 0;
 	if (iteration == 0) { 
-        	iteration = 1; 
-	        skipiterator = head; 
+       	iteration = 1; 
+        skipiterator = head; 
 		flag = 1;
 	} 
 
