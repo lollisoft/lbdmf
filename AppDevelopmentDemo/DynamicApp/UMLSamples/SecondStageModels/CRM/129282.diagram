@@ -18,34 +18,34 @@ end
 activityactioncanvas 129154 activityaction_ref 128130 // activity action Sammelpunkt Fehler
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 612 248 2000 100 60
+  xyzwh 611 247 2000 101 61
 end
 activityactioncanvas 129282 activityaction_ref 128258 // activity action Stadt ist leer
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 332 206 2004 165 58
+  xyzwh 332 205 2004 165 59
 end
 activityactioncanvas 129666 activityaction_ref 128386 // activity action Hausnummer ist leer
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 332 303 2009 165 58
+  xyzwh 332 302 2009 165 59
 end
 activityactioncanvas 130050 activityaction_ref 128514 // activity action Strasse ist leer
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 332 389 2004 165 58
+  xyzwh 332 388 2004 165 59
 end
 activityactioncanvas 130434 activityaction_ref 128002 // activity action PLZ ist leer
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 332 107 2004 165 58
+  xyzwh 332 106 2004 165 59
 end
 activitynodecanvas 130818 activitynode_ref 128258 // activity_final
   xyz 647 508 2004
 end
 flowcanvas 128258 flow_ref 128130 // Start
   
-  from ref 128002 z 1999 label "Start" xyz 51 68 3000 to ref 128130
+  from ref 128002 z 1999 label "Start" xyz 51 68 1999 to ref 128130
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 128514 flow_ref 128386 // <flow>
@@ -71,7 +71,7 @@ end
 flowcanvas 129538 flow_ref 128770 // Stadt ist leer
   
   from ref 128386 z 1999 label "Stadt ist leer
-[Stadt == \"\"]" xyz 169 222 3000 to ref 129282
+[Stadt == \"\"]" xyz 169 222 1999 to ref 129282
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 129794 flow_ref 129538 // <flow>
@@ -82,7 +82,7 @@ end
 flowcanvas 129922 flow_ref 129154 // Hausnummer ist leer
   
   from ref 128642 z 1999 label "Hausnummer ist leer
-[Hausnummer == \"\"]" xyz 146 319 3000 to ref 129666
+[Hausnummer == \"\"]" xyz 146 319 1999 to ref 129666
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 130178 flow_ref 129666 // <flow>
@@ -93,7 +93,7 @@ end
 flowcanvas 130306 flow_ref 129282 // Strasse ist leer
   
   from ref 128898 z 1999 label "Strasse ist leer
-[Strasse == \"\"]" xyz 162 405 3000 to ref 130050
+[Strasse == \"\"]" xyz 162 405 1999 to ref 130050
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 130562 flow_ref 128002 // <flow>
@@ -104,27 +104,27 @@ end
 flowcanvas 130690 flow_ref 128258 // Plz ist leer
   
   from ref 128130 z 1999 label "Plz ist leer
-[Plz == \"\"]" xyz 175 123 3000 to ref 130434
+[Plz == \"\"]" xyz 174 122 1999 to ref 130434
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 130946 flow_ref 129410 // Result is ok
   
-  from ref 128898 z 1999 label "Result is ok" xyz 466 523 3000 to point 314 517
+  from ref 128898 z 1999 label "Result is ok" xyz 466 523 1999 to point 314 517
   line 132226 z 1999 to ref 130818
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
   transformation 
   information 131074 "<<transformation>>
 result = 1"
-    xyzwh 68 502 1999 126 48
+    xyzwh 68 502 1999 156 50
 end
 flowcanvas 131330 flow_ref 128514 // Result Failure
   
-  from ref 129154 z 1999 label "Result Failure" xyz 621 399 3000 to ref 130818
+  from ref 129154 z 1999 label "Result Failure" xyz 621 399 1999 to ref 130818
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
   transformation 
   information 131458 "<<transformation>>
 result = 0"
-    xyzwh 665 321 1999 126 48
+    xyzwh 621 323 1999 161 51
 end
 line 131202 -_-_
   from ref 130946 z 1998 to ref 131074

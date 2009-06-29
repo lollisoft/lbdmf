@@ -1,6 +1,6 @@
 format 63
 "CRM"
-  revision 3
+  revision 7
   modified_by 2 "lothar"
 
 
@@ -37,7 +37,7 @@ format 63
   mark_for_import
   
   ncouples 11
-  key "gxmi path" value "/Users/lothar/Desktop/CRM.xmi"
+  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopment/DynamicApp/ModelExchange/CRM.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "UTF-8"
   key "gxmi uml2.0" value "no"
