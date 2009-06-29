@@ -57,12 +57,14 @@ begin
 
 	applicationid = getorcreateapplication(applicationname);
 	insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
 	if applicationname = ''lbDMF Manager'' then
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
 	else
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''<xsl:value-of select="$ApplicationName"/>'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''<xsl:value-of select="$database_name"/>'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''<xsl:value-of select="$database_user"/>'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''<xsl:value-of select="$database_pass"/>'', applicationid);
 	end if;
   end if;
 return applicationid;
@@ -199,6 +201,10 @@ insert into tempactions (taction) select action from formular_actions where form
 
 delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 
+delete from action_step_transitions where src_actionid in (select id from action_steps where actionid in (select taction from tempactions)) or dst_actionid in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_step_parameter where action_step_id in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_parameters where actionid in (select taction from tempactions);
+
 delete from action_steps where actionid in (select taction from tempactions);
 delete from actions where id in (select taction from tempactions);
 delete from tempactions;
@@ -209,10 +215,16 @@ delete from formulare where anwendungid in (select id from anwendungen where nam
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT id, lastapp FROM "users" WHERE "userid" = 'user';
+<xsl:if test="$ApplicationName = 'lbDMF Manager'">
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', 'dba', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
-INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'dbpass', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'trainres', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBName', 'lbDMF', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
-
+</xsl:if>
+<xsl:if test="$ApplicationName != 'lbDMF Manager'">
+INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', '<xsl:value-of select="$database_user"/>', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', '<xsl:value-of select="$database_pass"/>', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBName', '<xsl:value-of select="$database_name"/>', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+</xsl:if>
 drop table tempactions;
 
 		</xsl:when>
@@ -297,15 +309,17 @@ BEGIN
 
 	--set @applicationid = getorcreateapplication(@applicationname);
 	insert into user_anwendungen (userid, anwendungenid) values (1, @applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', 'dba', @applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', 'trainres', @applicationid);
 	if @applicationname = 'lbDMF Manager' 
     begin
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', 'lbDMF', @applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', 'dba', @applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', 'trainres', @applicationid);
 	end
 	if @applicationname != 'lbDMF Manager' 
     begin
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', 'name', @applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', '<xsl:value-of select="$database_name"/>', @applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', '<xsl:value-of select="$database_user"/>', @applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', '<xsl:value-of select="$database_pass"/>', @applicationid);
 	end
   end
 end
