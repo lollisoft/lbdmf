@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.160 2009/06/10 11:46:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.161 2009/06/29 10:24:09 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.160 $
+ * $Revision: 1.161 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.160 2009/06/10 11:46:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.161 2009/06/29 10:24:09 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.161  2009/06/29 10:24:09  lollisoft
+ * Renamed a dispatch parameter.
+ *
  * Revision 1.160  2009/06/10 11:46:55  lollisoft
  * Added code to pass the application name and removed hardcoded application name.
  *
@@ -2461,7 +2464,7 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	
 	QI(uk, lb_I_Parameter, param)
 	
-	parameter->setData("extention");
+	parameter->setData("extension");
 	param->getUAPString(*&parameter, *&name);
 
 	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
