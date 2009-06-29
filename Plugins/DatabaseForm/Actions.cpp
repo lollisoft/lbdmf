@@ -863,7 +863,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 
 	bool isNonLinearActivity = false;
-	UAP(lb_I_KeyBase, initialNode)
+	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, initialNodeKey)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, initialNode)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -899,11 +900,15 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				stepid->setData(appActionSteps->getActionStepID());
 				sortedActionSteps->insert(&uk, &key);
 
+				appActionTypes->finishActionTypeIteration();
 				appActionTypes->selectActionType(appActionSteps->getActionStepType());
 
+				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->getActionTypeBezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->getActionStepType() LOG_ 
+				
 				if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
+					_LOG << "Found initial node. " << appActionSteps->getActionStepID() << " with order number " << key->charrep() LOG_
 					isNonLinearActivity = true;
-					initialNode = key++.getPtr();
+					initialNode->setData(order->getData());
 				}
 			}
 		}
@@ -911,8 +916,13 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 		sortedActionSteps->finishIteration();
 
-		if (isNonLinearActivity) sortedActionSteps->position(&key);
-
+		if (isNonLinearActivity) {
+			QI(initialNode, lb_I_KeyBase, initialNodeKey)
+			if (sortedActionSteps->position(&initialNodeKey) != 1) {
+				_LOG << "Error: Could not set initial node. Not found." LOG_
+			}
+		}
+		
 		while (sortedActionSteps->hasMoreElements() == 1) {
 			uk = sortedActionSteps->nextElement();
 
@@ -2566,7 +2576,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 				dst_actionid = transitions->getActionStepTransitionDstActionID();
 
 				if (transitions->getActionStepTransitionSrcActionID() == myActionID) {
-					_LOG << "Evaluate expression '" << expression.c_str() << "'" LOG_
+					_LOG << "Evaluate expression '" << expression.c_str() << "' of actionid = " << myActionID LOG_
 					if (expression.find("==") != -1) {
 						// equal operator
 						wxString left = expression.substr(0, expression.find("==")-1);

@@ -1458,18 +1458,24 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 							appActions->selectAction(ActionID);
 							char* actionName = appActions->getActionName();
 							
+							appActionTypes->selectActionType(appActions->getActionTyp());
+							
+							///\todo This should copied to DoValidation.
 							// Helps to faster lookup the action ID from event name
 							fa->addRegisteredAction(ActionID, eventName);
-							
 							int actionID = 0;
 							char *evName = (char*) malloc(strlen(eventName) + 20);
 							sprintf(evName, "%p(%s)", this, eventName);
 							eman->registerEvent(evName, actionID);
-							wxButton *actionButton = new wxButton(this, actionID, _trans(actionName));
-							dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, evName);
-							this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-											(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
-							sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+							
+							// Only real 'Buttonpress' actions should be get a button.
+							if (strcmp(appActionTypes->getActionTypeBezeichnung(), "Buttonpress") == 0) {
+								wxButton *actionButton = new wxButton(this, actionID, _trans(actionName));
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, evName);
+								this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+											  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
+								sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+							}
 						}
 					}
 				}
