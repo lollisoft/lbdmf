@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.125 $
+# * $Revision: 1.126 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.125 2009/06/18 17:36:21 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.126 2009/06/30 09:05:41 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.126  2009/06/30 09:05:41  lollisoft
+# * Added support for OSX 10.5.6.
+# *
 # * Revision 1.125  2009/06/18 17:36:21  lollisoft
 # * Changed to non debug on mac and added support for OSX 1.5.4
 # *
@@ -1230,7 +1233,11 @@ else
 ifeq ($(OSVERSION_), 9.1.0)
 OSNAME=Leopard
 else
+ifeq ($(OSVERSION_), 9.6.0)
+OSNAME=Leopard
+else
 OSNAME=Panther
+endif
 endif
 endif
 
