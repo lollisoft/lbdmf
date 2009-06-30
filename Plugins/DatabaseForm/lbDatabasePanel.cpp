@@ -181,6 +181,7 @@ lbDatabasePanel::lbDatabasePanel()
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
+	skipValidation = false;
 	fa = NULL;
 	FFI = NULL;
 	if (SQLWhere == NULL) {
@@ -4239,8 +4240,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	if (sampleQuery->isAdding() == 0) {
-		if (sampleQuery->dataFetched()) errUpdate = lbDBUpdate();
-
+		if (sampleQuery->dataFetched()) {
+				lbErrCodes err = ERR_NONE;
+				if ((err = DoValidation(NULL)) != ERR_NONE) return err;
+				errUpdate = lbDBUpdate();
+		}
+		
 		if (sampleQuery->add() != ERR_NONE) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 
@@ -4259,6 +4264,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		}
 	} else {
 		_CL_LOG << "Query is in add mode." LOG_
+		lbErrCodes err = ERR_NONE;
+		if ((err = DoValidation(NULL)) != ERR_NONE) return err;
+		lbDBUpdate();
+		return err;
 	}
 	
 	char* foreignkey = NULL;
@@ -4417,11 +4426,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 	// Instead of deleting fields on no data do the add operation in one step.
 	if (!sampleQuery->dataFetched()) {
+		skipValidation = true;
 		lbDBUpdate();
 		sampleQuery->reopen();
 		sampleQuery->first();
 		lbDBRead();
 		DISABLE_FOR_ONE_DATA()
+		skipValidation = false;
 		return ERR_NONE;
 	}
 	
@@ -4442,8 +4453,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
 		
 		if (allNaviDisabled == true) {
+			skipValidation = true;
 			lbDBFirst(NULL);
 			lbDBClear();
+			skipValidation = false;
 		} else {
 			if (sampleQuery->dataFetched()) {
 				if (foreignkey != NULL) {
@@ -4462,7 +4475,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				}
 				if (lbDBLast(NULL) != ERR_NONE) {
 					_CL_LOG << "Move to last after updating failed." LOG_
+					skipValidation = true;
 					lbDBFirst(NULL);
+					skipValidation = false;
+
 				} else {
 					lbDBClear();
 				}
@@ -4577,6 +4593,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 	// Call all validation actions connected to this form
 	lbErrCodes err = ERR_NONE;
+	
+	if (skipValidation) return err;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	

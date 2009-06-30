@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.56 2009/06/18 16:54:34 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.57 2009/06/30 09:04:33 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.57  2009/06/30 09:04:33  lollisoft
+ * Added flag to avoid validation while adding. But it seems to fail.
+ *
  * Revision 1.56  2009/06/18 16:54:34  lollisoft
  * Corrected watcom related stuff.
  *
@@ -1069,6 +1072,7 @@ public:
 	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;
+	bool skipValidation;
 	bool _created;
 
 	char* base_formName;
