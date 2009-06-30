@@ -1536,6 +1536,14 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
+				
+				DBName->replace(">", "&gt;");
+				DBName->replace("<", "&lt;");
+				DBUser->replace(">", "&gt;");
+				DBUser->replace("<", "&lt;");
+				DBPass->replace(">", "&gt;");
+				DBPass->replace("<", "&lt;");
+				
 				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
@@ -1755,6 +1763,14 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/>\n";
+
+				DBName->replace(">", "&gt;");
+				DBName->replace("<", "&lt;");
+				DBUser->replace(">", "&gt;");
+				DBUser->replace("<", "&lt;");
+				DBPass->replace(">", "&gt;");
+				DBPass->replace("<", "&lt;");
+
 				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
