@@ -496,6 +496,11 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
 ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
 </xsl:if>
+<!--
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
+ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+</xsl:if>
+-->
 </xsl:for-each>
 
 </xsl:template>
@@ -727,6 +732,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 	<xsl:choose>
+		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">boolean</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">string</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int</xsl:when>
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
