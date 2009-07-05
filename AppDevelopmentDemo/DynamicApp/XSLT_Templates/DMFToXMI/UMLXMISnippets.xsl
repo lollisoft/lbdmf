@@ -457,6 +457,7 @@
 	</xsl:call-template>
 </xsl:variable>
 		&lt;packagedElement xmi:type="uml:Class" name="<xsl:value-of select="$FormularName"/>" xmi:id="Bootstrap_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>" visibility="package" isAbstract="false"&gt;
+&lt;ownedComment xmi:type="uml:Comment_Bootstrap_<xsl:value-of select="$FormularName"/>_<xsl:value-of select="$FormularID"/>" xmi:id="COMMENT_" body="<xsl:value-of select="@remarks"/>"/&gt;
 						&lt;xmi:Extension extender="Bouml"&gt;
 							&lt;stereotype name="form"/&gt;
 							&lt;taggedValue tag="lbDMF:toolbarimagefile" value=""/&gt;
