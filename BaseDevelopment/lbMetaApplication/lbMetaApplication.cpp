@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.157 $
+ * $Revision: 1.158 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.157 2009/06/29 10:31:00 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.158 2009/07/05 00:46:50 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.158  2009/07/05 00:46:50  lollisoft
+ * Return prior registered event ID for the name.
+ *
  * Revision 1.157  2009/06/29 10:31:00  lollisoft
  * Renamed a dispatch parameter.
  *
@@ -3910,6 +3913,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	if (*&sk == NULL) _CL_LOG << "Nullpointer detected (sk)!" LOG_
 	if (events->exists(&sk) == 1) {
 		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert" LOG_
+		resolveEvent(EvName, EvNr);
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/
