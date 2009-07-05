@@ -19,6 +19,7 @@ call make_dist_base.bat AppDevelopmentDemo\App
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp\App
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Doc
+call make_dist_base.bat AppDevelopmentDemo\DynamicApp\UMLSamples
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
 call make_dist_base.bat BaseDevelopment\lbcs
@@ -64,7 +65,7 @@ del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.rtf
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.odt
 
 @REM Make any available XMISettings.xsl configuration files writeable, or simply all.
-sattrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
+attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss

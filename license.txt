@@ -1,25 +1,34 @@
-This package contains the following sub projects and their licenses.
+This package uses the following projects and their licenses.
 The list may be incomplete. If so, please notify me, I will correct it.
 They are as follows:
 
 lbDMF - Distributed Multiplatform Framework
-	Copyright (c) 2000-2009 Lothar Behrens (http:///www.sourceforge.net/projects/lbdmf)
+	Copyright (c) 2000-2009 Lothar Behrens 
+	http:///lbdmf.sourceforge.net
 
 Sqlite
-	The Sqlite license
+	A standalone database API to enable out of the box database applications
+	http://www.sqlite.org
 
 wxLua
-	To be filled. Also honor Haggi Dogusan's work.
+	A wxWidgets based scripting language
+	http://wxlua.sourceforge.net
+
+wxLua bookworm
+	A wxLua based database application by Hakki Dogusan
+	http://www.dogusan.net/dogusanh/pgbookworm.html
 
 libxml2
 	Copyright (C) 1998-2003 Daniel Veillard.  All Rights Reserved.
+	http://www.xmlsoft.org
 
 libxslt
 	Copyright (C) 2001-2002 Daniel Veillard.  All Rights Reserved.
+	http://xmlsoft.org/XSLT
 
 libexslt
-	Copyright (C) 2001-2002 Thomas Broyer, Charlie Bozeman and Daniel Veillard.
-	All Rights Reserved.
+	Copyright (C) 2001-2002 Thomas Broyer, Charlie Bozeman and Daniel Veillard. All Rights Reserved.
+	http://xmlsoft.org/XSLT/EXSLT/index.html
 
 MKMK
 	by Luis Crespo.
@@ -48,7 +57,7 @@ lbDMF - Distributed Multiplatform Framework
 
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

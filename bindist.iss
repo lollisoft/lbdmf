@@ -33,8 +33,9 @@ Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.xpm"; DestDi
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.png"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\develop\Projects\CPP\BaseDevelopment\MetaApp-Bindist.mad"; DestDir: "{app}"; DestName: "MetaApp.mad"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\BoUML\*.*"; DestDir: "{app}\BoUML"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\DynamicApp.pdf"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\BoUML\*.*"; DestDir: "{app}\BoUML CRM Initial Model\BoUML"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; DestDir: "{app}\BoUML Samples Second Stage"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
 
 Source: "Q:\Develop\Projects\dll\lbClasses.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -78,6 +79,7 @@ Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; WorkingDir: "{app}"
+Name: "{group}\Applicationprototyping Dokumentation"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\Doc\ApplicationprototypingDokumentation.pdf"; WorkingDir: "{app}"
 Name: "{userdesktop}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}"
 ;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
