@@ -1288,7 +1288,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
 		//deleteButton->Disable();
 	}
     TableView->EndBatch();
-    TableView->AutoSize();
+    //TableView->AutoSize();
+	//TableView->AutoSizeColumns(false);
 }
 
 void lbDatabaseTableViewPanel::OnSelectCell( wxGridEvent& ev ) {

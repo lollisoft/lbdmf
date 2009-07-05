@@ -225,13 +225,15 @@ void LB_STDCALL lbDatabaseTableViewDialog::init(char* _SQLString, char* DBName, 
 	sprintf(prefix, "%p", this);
 
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizerPanel  = new wxBoxSizer(wxHORIZONTAL);
 
 	panel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
 	panel->create(this->GetId());
 
-	sizerMain->Add(panel, 1, wxEXPAND | wxALL, 5);
-
+	sizerPanel->Add(panel, 1, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerPanel, 1, wxEXPAND | wxALL, 5);
+	
 	panel->init(_SQLString, DBName, DBUser, DBPass);
 
 	SetName(panel->getFormName());
@@ -251,6 +253,7 @@ void LB_STDCALL lbDatabaseTableViewDialog::init(char* _SQLString, char* DBName, 
 lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::setName(char const * name, char const * appention) {
 	wxString Name = wxString(name)+wxString(appention);
 	SetName(Name);
+	SetLabel(Name);
 	return panel->setName(name, appention);
 }
 /*...e*/

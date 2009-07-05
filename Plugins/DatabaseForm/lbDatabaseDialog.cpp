@@ -251,6 +251,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
 	wxString Name = wxString(name)+wxString(appention);
 	SetName(Name);
+	SetLabel(Name);
 	return panel->setName(name, appention);
 }
 /*...e*/
