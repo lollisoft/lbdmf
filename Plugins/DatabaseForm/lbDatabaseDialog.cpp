@@ -190,6 +190,7 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 
 void LB_STDCALL lbDatabaseDialog::create(int parentId) {
 	// Don't need a parent
+	_created = true;
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
@@ -248,7 +249,8 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
-
+	wxString Name = wxString(name)+wxString(appention);
+	SetName(Name);
 	return panel->setName(name, appention);
 }
 /*...e*/

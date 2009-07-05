@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.57 2009/06/30 09:04:33 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.58 2009/07/05 00:57:31 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.58  2009/07/05 00:57:31  lollisoft
+ * Added new tableview dialog class and enabled switching
+ * between table view and form view. This does not interfer
+ * with panel and dialog view - as these are different flags.
+ *
  * Revision 1.57  2009/06/30 09:04:33  lollisoft
  * Added flag to avoid validation while adding. But it seems to fail.
  *
@@ -1619,6 +1624,194 @@ public:
 	bool _created;
 };
 /*...e*/
+
+class lbDatabaseTableViewDialog :
+public lb_I_DatabaseForm,
+public wxDialog {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
+	 */
+	lbDatabaseTableViewDialog();
+	
+	/**
+	 * Destructor
+	 */
+	virtual ~lbDatabaseTableViewDialog();
+	
+	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	
+	char*      LB_STDCALL getFormName();
+	
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	
+	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	
+	void LB_STDCALL create(int parentId);
+	int  LB_STDCALL getId() { return GetId(); }
+	
+	void LB_STDCALL show() { Show (TRUE); };
+	void LB_STDCALL destroy() { if (_created) Destroy(); };
+	
+	/*...sfrom DatabaseForm interface:8:*/
+	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	
+	char* LB_STDCALL getQuery();
+	
+	void LB_STDCALL setFilter(char* filter);
+	
+	const char* LB_STDCALL getControlValue(char* name);
+	
+	/*...e*/
+	
+	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+	
+	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+	
+	void LB_STDCALL updateFromMaster();
+	
+	void LB_STDCALL updateFromDetail();
+	
+	int LB_STDCALL getPrimaryColumns();
+	
+	const char* LB_STDCALL getControlValue(int pos);
+	int LB_STDCALL getControls();
+	
+	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
+	
+	int LB_STDCALL getForeignColumns(char* primaryTable);
+	
+	lb_I_String* LB_STDCALL getForeignColumn(int pos);
+	
+	bool LB_STDCALL isCharacterColumn(char* name);
+	
+	void LB_STDCALL ignoreForeignKeys(char* toTable);
+	
+	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	
+	lb_I_String* LB_STDCALL getColumnName(int pos);
+	
+	void  LB_STDCALL reopen();
+	
+	/** \brief Close database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL close();
+	
+	/** \brief Open database query.
+	 * Used when multiple forms should be reopened. Then all should be closed first before one get's reopened.
+	 * This avoids invalid errors I think would happen.
+	 */
+	lbErrCodes LB_STDCALL open();
+	
+	/*...sData navigation and other handlers:8:*/
+	/**
+	 * Database navigation
+	 *
+	 * Moves to the first row.
+	 */
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+	
+	/**
+	 * Database navigation
+	 *
+	 * Moves to the next row.
+	 */
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+	
+	/**
+	 * Database navigation
+	 *
+	 * Moves to the previous row.
+	 */
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+	
+	/**
+	 * Database navigation
+	 *
+	 * Moves to the last row.
+	 */
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 *
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 */
+	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 *
+	 * Deletes the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 *
+	 * Internally used to update the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBUpdate();
+	
+	/**
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 */
+	
+	lbErrCodes LB_STDCALL lbDBClear();
+	
+	/**
+	 * Database manipulation
+	 *
+	 * Internally used to read data from the cursor to the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBRead();
+	/*...e*/
+	
+	/*...sfrom EventHandler interface:8:*/
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+	/*...e*/
+	
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+	
+	/** \brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 */
+	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
+	
+	void OnDispatch(wxCommandEvent& event);
+	
+	/** \brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 */
+	void OnPaint(wxCommandEvent& event);
+	
+	DECLARE_LB_UNKNOWN()
+	
+	lbDatabaseTableViewPanel* panel;
+	bool _created;
+};
 
 
 #ifdef __cplusplus

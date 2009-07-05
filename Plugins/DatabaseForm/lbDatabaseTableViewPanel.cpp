@@ -181,11 +181,6 @@ void LB_STDCALL lbDatabaseTableViewPanel::create(int parentId) {
 	else deactivateActionButtons(); \
 	refreshButton->Enable(); \
 	if (allNaviDisabled == false) { \
-		nextButton->Disable(); \
-		lastButton->Disable(); \
-		firstButton->Enable(); \
-		prevButton->Enable(); \
-		deleteButton->Enable(); \
 	} \
 	allNaviDisabled = false;
 
@@ -195,28 +190,17 @@ void LB_STDCALL lbDatabaseTableViewPanel::create(int parentId) {
 	else deactivateActionButtons(); \
 	refreshButton->Enable(); \
 	if (allNaviDisabled == false) { \
-		prevButton->Disable(); \
-		firstButton->Disable(); \
-		lastButton->Enable(); \
-		nextButton->Enable(); \
-		deleteButton->Enable(); \
 	} \
 	allNaviDisabled = false;
 
 
 #define DISABLE_FOR_ONE_DATA() \
-	refreshButton->Enable(); \
-	deleteButton->Enable(); \
-	prevButton->Enable(); \
-	firstButton->Enable(); \
-	lastButton->Disable(); \
-	nextButton->Disable();
+	refreshButton->Enable();
 
 
 #define DISABLE_FOR_NO_DATA() \
 	deactivateActionButtons(); \
 	DISABLE_FOR_ONE_DATA() \
-	deleteButton->Disable(); \
 	refreshButton->Disable(); \
 	allNaviDisabled = true;
 
@@ -1299,9 +1283,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
         }
 	} else {
 		deactivateActionButtons();
-		nextButton->Disable();
-		lastButton->Disable();
-		deleteButton->Disable();
+		//nextButton->Disable();
+		//lastButton->Disable();
+		//deleteButton->Disable();
 	}
     TableView->EndBatch();
     TableView->AutoSize();
@@ -3172,11 +3156,11 @@ SkipHandleSimpleFilter:
 			_CL_LOG << "Error: Failed to get data for detail form." LOG_
 			noDataAvailable = true;
 			lbDBClear();
-			firstButton->Disable();
-			prevButton->Disable();
-			lastButton->Disable();
-			nextButton->Disable();
-			deleteButton->Disable();
+			//firstButton->Disable();
+			//prevButton->Disable();
+			//lastButton->Disable();
+			//nextButton->Disable();
+			//deleteButton->Disable();
 			deactivateActionButtons();
 			noDataAvailable = false;	
 	} else {
@@ -3186,19 +3170,19 @@ SkipHandleSimpleFilter:
 			_CL_LOG << "Error: Failed to get data for detail form (after moving to first)." LOG_
 			noDataAvailable = true;
 			lbDBClear();
-			firstButton->Disable();
-			prevButton->Disable();
-			lastButton->Disable();
-			nextButton->Disable();
-			deleteButton->Disable();
+			//firstButton->Disable();
+			//prevButton->Disable();
+			//lastButton->Disable();
+			//nextButton->Disable();
+			//deleteButton->Disable();
 			deactivateActionButtons();
 			noDataAvailable = false;	
 		} else {
 			lbDBRead();
-			lastButton->Enable();
-			nextButton->Enable();
+			//lastButton->Enable();
+			//nextButton->Enable();
 			activateActionButtons();
-			deleteButton->Enable();
+			//deleteButton->Enable();
 		}
 	}
 	
@@ -3663,11 +3647,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			_CL_LOG << "Error: Failed to get data for master form." LOG_
 			noDataAvailable = true;
 			lbDBClear();
-			firstButton->Disable();
-			prevButton->Disable();
-			lastButton->Disable();
-			nextButton->Disable();
-			deleteButton->Disable();
+			//firstButton->Disable();
+			//prevButton->Disable();
+			//lastButton->Disable();
+			//nextButton->Disable();
+			//deleteButton->Disable();
 			deactivateActionButtons();
 			noDataAvailable = false;	
 	} else {
@@ -3677,19 +3661,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			_CL_LOG << "Error: Failed to get data for master form (after moving to first)." LOG_
 			noDataAvailable = true;
 			lbDBClear();
-			firstButton->Disable();
-			prevButton->Disable();
-			lastButton->Disable();
-			nextButton->Disable();
-			deleteButton->Disable();
+			//firstButton->Disable();
+			//prevButton->Disable();
+			//lastButton->Disable();
+			//nextButton->Disable();
+			//deleteButton->Disable();
 			deactivateActionButtons();
 			noDataAvailable = false;	
 		} else {
 			lbDBRead();
-			lastButton->Enable();
-			nextButton->Enable();
+			//lastButton->Enable();
+			//nextButton->Enable();
 			activateActionButtons();
-			deleteButton->Enable();
+			//deleteButton->Enable();
 		}
 	}
 	
@@ -4186,17 +4170,17 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBNext(lb_I_Unknown* uk) {
 		err = sampleQuery->last();
 		
 		if (err == ERR_DB_NODATA) {
-			prevButton->Disable();
-			firstButton->Disable();
+			//prevButton->Disable();
+			//firstButton->Disable();
 			return ERR_DB_NODATA;
 		} else {
 			DISABLE_EOF()
 		}
 		
 	} else {
-		prevButton->Enable();
-		firstButton->Enable();
-		deleteButton->Enable();
+		//prevButton->Enable();
+		//firstButton->Enable();
+		//deleteButton->Enable();
 	
 		lbDBClear();
 	}
@@ -4218,8 +4202,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBPrev(lb_I_Unknown* uk) {
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
 
 	if (err == WARN_DB_NODATA) {
-		prevButton->Disable();
-		firstButton->Disable();
+		//prevButton->Disable();
+		//firstButton->Disable();
 	}
 
 	if (err == ERR_DB_NODATA) {
@@ -4235,9 +4219,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBPrev(lb_I_Unknown* uk) {
 			DISABLE_BOF()
 		}
 	} else {
-		nextButton->Enable();
-		lastButton->Enable();
-		deleteButton->Enable();
+		//nextButton->Enable();
+		//lastButton->Enable();
+		//deleteButton->Enable();
 
 		lbDBClear();
 	}
@@ -4613,10 +4597,10 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 			
 			DISABLE_BOF()
 		} else {
-			nextButton->Enable();
-			lastButton->Enable();
-			prevButton->Enable();
-			firstButton->Enable();
+			//nextButton->Enable();
+			//lastButton->Enable();
+			//prevButton->Enable();
+			//firstButton->Enable();
 		}
 	}
 	

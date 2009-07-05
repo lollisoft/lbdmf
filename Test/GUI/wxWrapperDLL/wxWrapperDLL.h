@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.36 2009/04/10 09:57:00 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.37 2009/07/05 00:57:31 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.37  2009/07/05 00:57:31  lollisoft
+ * Added new tableview dialog class and enabled switching
+ * between table view and form view. This does not interfer
+ * with panel and dialog view - as these are different flags.
+ *
  * Revision 1.36  2009/04/10 09:57:00  lollisoft
  * Added code for reposting events in actions.
  *
@@ -326,6 +331,8 @@ public:
 	
 	bool LB_STDCALL isPanelUsage() { return panelUsage; }
 	
+	bool LB_STDCALL isTableUsage() { return tableUsage; }
+	
 #ifdef USE_WXAUI
 	wxAuiManager& getAUIManager() { return m_mgr; }
 #endif		
@@ -348,6 +355,7 @@ public:
 	
 	lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL switchTableUse(lb_I_Unknown* uk);
 	
 	lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL showMsgBox(lb_I_Unknown* uk);
@@ -411,6 +419,7 @@ public:
 	
 	bool _isSplitted;            
 	bool panelUsage;
+	bool tableUsage;
 
 	/// \brief Flag to signalize the deactivation of some critical functions at cleanup.
 	bool OnQuitAccepted;
@@ -423,7 +432,11 @@ public:
 	int guiCleanedUp;
 	
 	// Registered event handler IS's
+	
+	/// \brief Using a panel or dialog
 	int on_panel_usage;
+	/// \brief Using a table or a field based layout
+	int on_table_usage;
 	int _showLeftPropertyBar;
 
 

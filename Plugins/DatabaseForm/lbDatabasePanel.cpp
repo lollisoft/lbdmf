@@ -155,17 +155,21 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabasePanel, lbDatabasePanel)
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::setData(lb_I_Unknown* uk) {
-		lbErrCodes err = ERR_NONE;
-		
-        _CL_VERBOSE << "lbDatabasePanel::setData(...) not implemented yet" LOG_
-
-		UAP(lb_I_DatabaseForm, dbForm)
-		QI(uk, lb_I_DatabaseForm, dbForm)
-		
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_VERBOSE << "lbDatabasePanel::setData(...) not implemented yet" LOG_
+	
+	UAP(lb_I_DatabaseForm, dbForm)
+	QI(uk, lb_I_DatabaseForm, dbForm)
+	
+	if (dbForm == NULL) {
+		_LOG << "Error: Have no dbForm instance. Unknown classname is " << uk->getClassName() LOG_
+	} else {
 		fa = ((lbDatabasePanel*) dbForm.getPtr())->fa;
 		((lbDatabasePanel*) dbForm.getPtr())->fa = NULL;
-		
-        return ERR_NOT_IMPLEMENTED;
+	}
+	
+	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
@@ -5200,7 +5204,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::peekImplementation() {
 
 	if (dbForm == NULL) {
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
-		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		dbPanel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	} else {
@@ -5219,7 +5223,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
-		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		dbPanel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	}

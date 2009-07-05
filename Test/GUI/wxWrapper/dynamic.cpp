@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.161 2009/06/29 10:24:09 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.162 2009/07/05 00:57:31 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.161 $
+ * $Revision: 1.162 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.161 2009/06/29 10:24:09 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.162 2009/07/05 00:57:31 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.162  2009/07/05 00:57:31  lollisoft
+ * Added new tableview dialog class and enabled switching
+ * between table view and form view. This does not interfer
+ * with panel and dialog view - as these are different flags.
+ *
  * Revision 1.161  2009/06/29 10:24:09  lollisoft
  * Renamed a dispatch parameter.
  *
@@ -608,7 +613,7 @@
 #define DYNAMIC_ABOUT		1002
 #define DYNAMIC_BUILDMENU	1003
 #define DYNAMIC_TEST1		1004
-#define DYNAMIC_TEST2           1005
+#define DYNAMIC_TEST2       1005
 #define DYNAMIC_VERBOSE		1006
 
 #ifdef USE_WXWRAPPER_DLL
@@ -640,7 +645,7 @@ public:
 	 * Initialize a default application layout.
 	 */
         lb_wxFrame():
-        	wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
+        	wxFrame(NULL, -1, _trans("wxWrapper"), wxPoint(50, 50), wxSize(450, 340))
         {
         	menu_bar = NULL; 
         	gui = NULL;

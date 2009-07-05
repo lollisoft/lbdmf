@@ -1121,6 +1121,11 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		_LOG << "Detailform '" << formularname->charrep() << "' nicht gefunden. Setze variable zurück." LOG_
 		detailForm = NULL;
 	}
+	
+	if (df != detailForm) {
+		// The form may physically another instance.
+		detailForm = df.getPtr();
+	}
 
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_

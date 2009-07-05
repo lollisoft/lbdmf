@@ -487,7 +487,7 @@ void wxLogonPage::init(wxWindow* parent) {
 /*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
 char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 	
-	wxWindow* w = FindWindowByName(wxString(_name));
+	wxWindow* w = FindWindow(wxString(_name));
 
 	if (w != NULL) {
         	wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -558,6 +558,7 @@ lb_wxFrame::lb_wxFrame() //:
 
 	// Use lbDatabasePanel
 	panelUsage = true;
+	tableUsage = false;
 }
 
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
@@ -573,6 +574,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 #endif
 
 	eman->registerEvent("switchPanelUse", on_panel_usage);
+	eman->registerEvent("switchTableUse", on_table_usage);
 	eman->registerEvent("ShowPropertyPanel", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
 	eman->registerEvent("showMsgBox", temp);
@@ -590,6 +592,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchTableUse, "switchTableUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showMsgBox, "showMsgBox");
 
@@ -608,8 +611,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 			 &lb_wxFrame::OnDispatch );
 	
 	Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
-			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-			 &lb_wxFrame::OnDispatch );
+			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			&lb_wxFrame::OnDispatch );
+	
+	Connect( on_table_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
+			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			&lb_wxFrame::OnDispatch );
 	
 	Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -650,7 +657,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	file_menu->Append(CLOSE_CURRENT_PAGE, _trans("&Close current page\tCtrl-c"));
 	file_menu->Append(REFRESHALL_FORMS, _trans("Refresh all forms"));
 
-	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
+	file_menu->Append(on_panel_usage, _trans("&switch Panel usage"));
+	file_menu->Append(on_table_usage , _trans("&switch Table usage"));
 	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-R"));
 
 	menu_bar = new wxMenuBar;
@@ -671,6 +679,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::switchPanelUse(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
 	panelUsage = !panelUsage;
+	
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::switchTableUse(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	tableUsage = !tableUsage;
 	
 	return err;
 }
@@ -1131,17 +1147,42 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	}
 
 /*...sCheck for recreation of the form:8:*/
-	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
-	
+//	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
+	if (_dialog.getPtr() != NULL) {
+		UAP_REQUEST(getModuleManager(), lb_I_String, ClassName)
 		// SQL query from database has been changed. Recreate the dialog from scratch. 
 	
 		// Don't delete any forms inside the container
 		forms->detachAll();
-	
 		forms->remove(&key);
+		// Else uk gets a dangling pointer
+		uk.resetPtr();
 		
-		_dialog->destroy();
-	
+		*ClassName = _dialog->getClassName();
+		
+		if (*ClassName == "lbDatabasePanel") {
+			int num = notebook->GetPageCount();
+			for (int i = 0; i < num; i++) {
+				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
+					notebook->DeletePage(i);
+				}
+			}
+		}
+		if (*ClassName == "lbDatabaseTableViewPanel") {
+			int num = notebook->GetPageCount();
+			for (int i = 0; i < num; i++) {
+				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
+					notebook->DeletePage(i);
+				}
+			}
+		}
+		if (*ClassName == "lbDatabaseDialog") {
+			_dialog->destroy();
+		}
+		if (*ClassName == "lbDatabaseTableViewDialog") {
+			_dialog->destroy();
+		}
+
 		_dialog.resetPtr();
 	}
 /*...e*/
@@ -1163,12 +1204,20 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 		TRMemStartLocalCount();
 
-		if (frame->isPanelUsage()) {
-			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
+		if (frame->isTableUsage()) {
+			if (frame->isPanelUsage()) {
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUITableViewPanel");
+			} else {
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUITableViewDialog");
+			}
 		} else {
-			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
+			if (frame->isPanelUsage()) {
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
+			} else {
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
+			}
 		}
-
+		
 		if (pl == NULL) {
 			char* msg = (char*) malloc(200);
 			msg[0] = 0;
@@ -1203,13 +1252,13 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		        QI(uk, lb_I_DatabaseForm, _dialog)
 		}
 
-		_LOG << "Set formname to " << formName LOG_
-		_dialog->setName(formName);
-
 		if (frame->isPanelUsage()) {
 			_dialog->create(notebook->GetId());
 		}
-		
+
+		_LOG << "Set formname to " << formName LOG_
+		_dialog->setName(formName);
+
 		_LOG << "Formname before init is " << formName LOG_
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		_LOG << "Formname after init is " << formName LOG_
@@ -1352,6 +1401,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
 lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
+	wxWindow* W = ::wxFindWindowByName(wxString(name));
+	if (W == NULL) {
+		return NULL;
+	}
+	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
@@ -1379,6 +1433,11 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\findDBForm\40\char\42\ name\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
+	
+	wxWindow* W = ::wxFindWindowByName(wxString(name));
+	if (W == NULL) {
+		return NULL;
+	}
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	UAP(lb_I_KeyBase, key)
@@ -1508,7 +1567,7 @@ void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 			UAP(lb_I_Window, window)
 			QI(form, lb_I_Window, window)
 			
-			if (window != NULL) window->windowIsClosing(*&windowToClose);
+			if ((window != NULL) && !(windowToClose == NULL)) window->windowIsClosing(*&windowToClose);
 		}			
 		
 		windowToClose.resetPtr();
