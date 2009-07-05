@@ -389,10 +389,8 @@ INSERT INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid
     <xsl:param name="Property"/>
     <xsl:param name="FromFormularID"/>
     <xsl:param name="ToFormularID"/>
-<xsl:variable name="visibleField" select="//ownedAttribute[@xmi:id=$Property]/xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>
 -- From formular '<xsl:value-of select="$FromFormularID"/>'
 -- To   formular '<xsl:value-of select="$ToFormularID"/>'
--- Visible field '<xsl:value-of select="$visibleField"/>'
 
 <xsl:variable name="ActionType" select="./xmi:Extension/stereotype/@name"/>
 <xsl:variable name="ActionName" select="//packagedElement[@xmi:type='uml:Association']/memberEnd[@xmi:idref=$Property]/../@name"/>
@@ -405,6 +403,7 @@ INSERT INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid
 
 <xsl:choose>
 	<xsl:when test="$ActionType='lbDMF:masterdetail_action'">
+<xsl:variable name="visibleField" select="//ownedAttribute[@xmi:id=$Property]/xmi:Extension/taggedValue[@tag='lbDMF:masterdetail_action:sourcecolumn']/@value"/>
 -- Build up a master detail action
 INSERT OR IGNORE INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>', 1, '<xsl:value-of select="$visibleField"/>');	
 INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for <xsl:value-of select="$ActionName"/>', 1, '<xsl:value-of select="$ActionName"/>', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'));
@@ -412,6 +411,7 @@ INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT
 UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<xsl:value-of select="$Property"/>';
 	</xsl:when>
 	<xsl:when test="$ActionType='lbDMF:detailmaster_action'">
+<xsl:variable name="visibleField" select="//ownedAttribute[@xmi:id=$Property]/xmi:Extension/taggedValue[@tag='lbDMF:detailmaster_action:sourcecolumn']/@value"/>
 -- Build up a detail master action
 INSERT OR IGNORE INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>', 1, '<xsl:value-of select="$visibleField"/>');	
 INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Detail master action for <xsl:value-of select="$ActionName"/>', 1, '<xsl:value-of select="$ActionName"/>', (select id from action_types where bezeichnung = 'Open master form'), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'));
