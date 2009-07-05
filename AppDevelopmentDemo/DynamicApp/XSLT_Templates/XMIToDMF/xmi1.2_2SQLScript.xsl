@@ -412,11 +412,11 @@ ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:v
 
 <xsl:if test="$assocname!=''">
 <xsl:if test="$TargetDBType = 'Sqlite'">
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" )
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$assocname"/>" INT;
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" )
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
 ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$assocname"/>" INT;
