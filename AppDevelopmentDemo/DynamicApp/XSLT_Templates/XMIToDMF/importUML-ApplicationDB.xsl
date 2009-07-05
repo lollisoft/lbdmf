@@ -169,6 +169,20 @@ GO
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
 			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
+-- Class <xsl:value-of select="@name"/> of type FORM found.
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
+-- Class <xsl:value-of select="@name"/> of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+<xsl:if test="position()=1">;--1</xsl:if>
+		<xsl:call-template name="importApplicationDropTableRelation">
+			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+			<xsl:with-param name="ApplicationName" select="../@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>
+			</xsl:when>
 			<xsl:otherwise>
 -- Unknown stereotype '<xsl:value-of select="./xmi:Extension/stereotype/@name"/>' for class <xsl:value-of select="@name"/>.
 		<xsl:call-template name="importApplicationDropTableRelation">
@@ -187,6 +201,20 @@ GO
 -- Class <xsl:value-of select="@name"/> of type FORM found.
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
+-- Class <xsl:value-of select="@name"/> of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+<xsl:if test="position()=1">;--1</xsl:if>
+		<xsl:call-template name="dropApplicationTable">
+			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+			<xsl:with-param name="ApplicationName" select="../@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>
+			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
+-- Class <xsl:value-of select="@name"/> of type FORM found.
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
 -- Class <xsl:value-of select="@name"/> of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 <xsl:if test="position()=1">;--1</xsl:if>
@@ -231,6 +259,20 @@ SET SESSION AUTHORIZATION 'dba';
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
 			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
+-- Class <xsl:value-of select="@name"/> of type FORM found.
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
+-- Class <xsl:value-of select="@name"/> of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+<xsl:if test="position()=1">;--1</xsl:if>
+		<xsl:call-template name="importApplicationTable">
+			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+			<xsl:with-param name="ApplicationName" select="../@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>
+			</xsl:when>
 			<xsl:otherwise>
 -- Unknown stereotype '<xsl:value-of select="./xmi:Extension/stereotype/@name"/>' for class <xsl:value-of select="@name"/>.
 		<xsl:call-template name="importApplicationTableAutoID">
@@ -259,6 +301,20 @@ SET SESSION AUTHORIZATION 'dba';
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
 			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
+-- Class <xsl:value-of select="@name"/> of type FORM found.
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
+-- Class <xsl:value-of select="@name"/> of type ENTITY found.
+<xsl:if test="position()=1">;--1</xsl:if>
+<!-- For templates above, that can generate primary keys in table definition, this here is obsolete. (As for Sqlite)-->
+		<xsl:call-template name="importApplicationTablePrimaryKeys">
+			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+			<xsl:with-param name="ApplicationName" select="../@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>
+			</xsl:when>
 			<xsl:otherwise>
 </xsl:otherwise>
 			</xsl:choose>
@@ -269,6 +325,18 @@ SET SESSION AUTHORIZATION 'dba';
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
+<xsl:if test="position()=1">;--2</xsl:if>
+		<xsl:call-template name="importApplicationTableRelation">
+			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+			<xsl:with-param name="ApplicationName" select="../@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>
+		
+			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
 <xsl:if test="position()=1">;--2</xsl:if>
 		<xsl:call-template name="importApplicationTableRelation">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
