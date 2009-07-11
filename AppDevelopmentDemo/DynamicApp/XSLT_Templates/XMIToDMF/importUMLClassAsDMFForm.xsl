@@ -502,8 +502,13 @@ insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "
 <xsl:variable name="classID" select="@xmi:id"/>
 select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>');
 
+<xsl:variable name="ToolbarImageName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value"/></xsl:if>
+</xsl:variable>
+
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), 1);
+	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), 1);
 
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
