@@ -460,9 +460,10 @@ insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "
 	<xsl:when test="$IsMasterDetail!=''">
 -- Build up a master detail action
 <xsl:variable name="visibleField"><xsl:call-template name="lookupVisibleField"><xsl:with-param name="ApplicationID" select="$ApplicationID"/><xsl:with-param name="ApplicationName" select="$ApplicationName"/><xsl:with-param name="FromFormularID" select="$FromFormularID"/></xsl:call-template></xsl:variable>
-insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="$visibleField"/>');	
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = '<xsl:value-of select="@name"/>' and source = '<xsl:value-of select="$visibleField"/>'));
-insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = '<xsl:value-of select="//packagedElement[@xmi:type='uml:Class'][@xmi:id=$FromFormularID]/@name"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>')), (select id from actions where name = '<xsl:value-of select="@name"/>' and source = '<xsl:value-of select="$visibleField"/>'), 'action_master_detail_<xsl:value-of select="$Property"/>');
+insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="./@xmi:id"/>');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = '<xsl:value-of select="@name"/>' and source = '<xsl:value-of select="./@xmi:id"/>'));insert into formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = '<xsl:value-of select="//packagedElement[@xmi:type='uml:Class'][@xmi:id=$FromFormularID]/@name"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>')), (select id from actions where name = '<xsl:value-of select="@name"/>' and source = '<xsl:value-of select="./@xmi:id"/>'), 'action_master_detail_<xsl:value-of select="$Property"/>');
+
+update actions set source = '<xsl:value-of select="$visibleField"/>' where source = '<xsl:value-of select="./@xmi:id"/>';
 
 	</xsl:when>
 	<xsl:when test="$IsDetailMaster!=''">
