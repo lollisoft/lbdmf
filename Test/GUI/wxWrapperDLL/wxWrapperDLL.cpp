@@ -1394,6 +1394,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
 		*pendingMessages += windowTitle;
 		*pendingMessages += "\n";
 		*pendingMessages += msg;
+		*pendingMessages += "\n";
 	}
 	return ERR_NONE;
 }
