@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.158 $
+ * $Revision: 1.159 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.158 2009/07/05 00:46:50 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.159 2009/07/11 19:47:20 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.159  2009/07/11 19:47:20  lollisoft
+ * Corrected behaviour when ODBC database is available, but installation fails.
+ * Added a question in case to switch to local Sqlite database.
+ *
  * Revision 1.158  2009/07/05 00:46:50  lollisoft
  * Return prior registered event ID for the name.
  *
@@ -659,7 +663,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	activeDocuments->setCloning(false);
 
 	REQUEST(getModuleInstance(), lb_I_String, ProcessName)
-	
+
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
@@ -1406,16 +1410,22 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
 
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+        lbDMFPasswd = getenv("lbDMFPasswd");
+        lbDMFUser   = getenv("lbDMFUser");
+
+        if (!lbDMFUser) lbDMFUser = "dba";
+        if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 	} else {
 		// Use built in
 		REQUEST(getModuleInstance(), lb_I_Database, database)
 		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
 
-		if (!lbDMFUser) lbDMFUser = "postgres";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+        lbDMFPasswd = getenv("lbDMFPasswd");
+        lbDMFUser   = getenv("lbDMFUser");
+
+        if (!lbDMFUser) lbDMFUser = "dba";
+        if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 	}
 
@@ -1436,7 +1446,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 
 
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database." LOG_
+		_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Failed to connect to system database. Please set internal default user 'dba' and password 'trainres' or set the environment variables to those used by the database (lbDMFUser, lbDMFPasswd)." LOG_
 
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_CONNECT;
 
@@ -1550,7 +1560,7 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			*applicationDatabaseName = dataDir->charrep();
 
 #ifdef WINDOWS
-			inputApp->setFileName("..\\Database\\lbDMF-PostgreSQL.sql");
+			*applicationDatabaseName = "..\\Database\\lbDMF-PostgreSQL.sql";
 #endif
 #ifdef OSX
 			*applicationDatabaseName = "lbDMF-PostgreSQL.sql";
@@ -1579,7 +1589,13 @@ bool LB_STDCALL lb_MetaApplication::installDatabase() {
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
+			    UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				*msg = "Installation of system database failed. Check the permissions of the user '";
+				*msg += lbDMFUser;
+				*msg += "'.";
+				msgBox("Info", msg->charrep());
 				return false;
 			}
 			sysSchemaQuery->close();
@@ -1807,7 +1823,25 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			}
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_SCHEMA) {
-			installDatabase();
+			if (!installDatabase()) {
+                if (askYesNo(
+                "The ODBC system database is reachable and a login was successfull,\n"
+                "but is not properly setup. A try to install the database failed.\n\n"
+                "Do you like to use a local Sqlite database instead?"))
+                {
+                    setSystemDatabaseBackend("DatabaseLayerGateway");
+                    setApplicationDatabaseBackend("DatabaseLayerGateway");
+                    useSystemDatabaseBackend(true);
+                    useApplicationDatabaseBackend(true);
+
+                    if (!installDatabase()) {
+                        msgBox("Error", "Fallback to local database variant failed too!");
+                        _check_for_databases_failure_step = -2;
+                    }
+                } else {
+                    _check_for_databases_failure_step = -2;
+                }
+			}
 		}
 	}
 
