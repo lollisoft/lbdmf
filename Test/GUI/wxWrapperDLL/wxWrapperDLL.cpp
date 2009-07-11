@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -98,7 +98,7 @@
 #endif
 
 #ifdef OSX
- #ifdef USE_WXAUI 
+ #ifdef USE_WXAUI
   #ifdef OSVERSION_Panther
    #define wxAuiPaneInfo wxPaneInfo
    #define wxAuiManager wxFrameManager
@@ -123,7 +123,7 @@
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
-public lb_I_AppSelectPage, 
+public lb_I_AppSelectPage,
 public wxWizardPageSimple
 {
 public:
@@ -131,14 +131,14 @@ public:
 	wxAppSelectPage() {
 		app = wxString(wxT(""));
 	}
-	
+
 	virtual ~wxAppSelectPage() {
 	    _CL_VERBOSE << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
 	}
 
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	wxAppSelectPage(wxWizard *parent);
 
 	wxString LB_STDCALL getSelectedApp() { return app; }
@@ -159,9 +159,9 @@ private:
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 
-	DECLARE_EVENT_TABLE()	
-	
-	
+	DECLARE_EVENT_TABLE()
+
+
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
 	long l;
@@ -186,17 +186,17 @@ wxAppSelectPage::wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 
 	wxStaticText* text = new wxStaticText(this, -1, (wxChar*) _trans("Application:"));
 	box = new wxChoice(this, -1);
-	        
+
 	sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
-	        
+
 	SetSizer(sizerMain);
-	        
+
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
-	        
+
 	box->SetFocusFromKbd();
-			
+
 	Centre();
 }
 /*...e*/
@@ -218,12 +218,12 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
 
 			if (!app.IsEmpty()) {
 				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
+
 				char* _app = strdup(app.c_str());
-			
+
 				_CL_LOG << "Load application '" << _app << "'" LOG_
 				meta->loadApplication(userid, _app);
-			
+
 				free(_app);
 			}
 		}
@@ -232,28 +232,28 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
 /*...svoid wxAppSelectPage\58\\58\setLoggedOnUser\40\char\42\ user\41\:0:*/
 void wxAppSelectPage::setLoggedOnUser(char* user) {
 		lbErrCodes err = ERR_NONE;
-		
+
 		if (userid != NULL) free(userid);
 		userid = strdup(user);
 
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_Container, apps)
-		
+
 		_CL_LOG << "Set Logged on user to '" << userid << "'" LOG_
-		
+
 		meta->setUserName(userid);
 
 		apps = meta->getApplications();
 
 		box->Clear();
-		
+
 		while (apps->hasMoreElements()) {
 			UAP(lb_I_String, name)
 			UAP(lb_I_Unknown, uk)
-			
+
 			uk = apps->nextElement();
 			QI(uk, lb_I_String, name)
-			
+
 			box->Append(wxString(name->charrep()));
 		}
 
@@ -262,7 +262,7 @@ void wxAppSelectPage::setLoggedOnUser(char* user) {
 		sizerMain->Fit(this);
 		//Fit();
 
-		return;		 
+		return;
 }
 /*...e*/
 /*...e*/
@@ -295,7 +295,7 @@ DECLARE_LB_UNKNOWN()
 	virtual bool TransferDataFromWindow();
 	void init(wxWindow* parent);
 
-    
+
 //	UAP(lb_I_Database, database)
 //	UAP(lb_I_Query, sampleQuery)
 
@@ -307,7 +307,7 @@ DECLARE_LB_UNKNOWN()
 
 	wxWindow* OkButton;
 	wxWindow* CancelButton;
-	
+
 	wxString textValue;
 
 	wxBoxSizer* sizerMain;
@@ -326,7 +326,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 wxLogonPage::wxLogonPage() {
 
 }
-	
+
 wxLogonPage::~wxLogonPage() {
 }
 
@@ -412,7 +412,7 @@ lbErrCodes LB_STDCALL wxLogonPage::createTextCtrl(char* _name) {
 /*...svirtual bool wxLogonPage\58\\58\TransferDataFromWindow\40\\41\:0:*/
 bool wxLogonPage::TransferDataFromWindow() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	char* pass = strdup(getTextValue("Passwort:"));
 	char* user = strdup(getTextValue("Benutzer:"));
 
@@ -433,7 +433,7 @@ bool wxLogonPage::TransferDataFromWindow() {
 
 		free(buf);
 		free(buf1);
-		
+
 		return FALSE;
 	}
 }
@@ -448,45 +448,45 @@ void wxLogonPage::init(wxWindow* parent) {
 	sizerMain  = new wxBoxSizer(wxVERTICAL);
 	sizerHor   = new wxBoxSizer(wxHORIZONTAL);
 	sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
-	sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	sizerLeft  = new wxBoxSizer(wxVERTICAL);
 	sizerRight = new wxBoxSizer(wxVERTICAL);
 
 	int LoginOk;
 	int LoginCancel;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
 
 	char eventName[100] = "";
-		
+
 	dispatcher->setEventManager(eman.getPtr());
 
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
-	
+
 	createTextCtrl("Benutzer:");
 	createPasswdCtrl("Passwort:");
 
 	//#define CONNECTOR ((wxFrame*) frame)
 	#define CONNECTOR this
-	
+
 	SetAutoLayout(TRUE);
-		
+
 	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
-		
+
 	SetSizer(sizerMain);
-	
+
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
-		
+
 	//Centre();
 }
 /*...e*/
 
 /*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
 char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
-	
+
 	wxWindow* w = FindWindow(wxString(_name));
 
 	if (w != NULL) {
@@ -515,15 +515,15 @@ ToolCount::~ToolCount() {
 wxString& ToolCount::getName() {
 	return name;
 }
-		
+
 void ToolCount::incCount() {
 	count++;
 }
-		
+
 void ToolCount::decCount() {
 	count--;
 }
-		
+
 int ToolCount::getCount() {
 	return count;
 }
@@ -540,7 +540,7 @@ lb_wxFrame::lb_wxFrame() //:
 //	wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
 {
 	OnQuitAccepted = false;
-	menu_bar = NULL; 
+	menu_bar = NULL;
 	gui = NULL;
 	guiCleanedUp = 0;
 
@@ -553,7 +553,7 @@ lb_wxFrame::lb_wxFrame() //:
 #ifdef SOLARIS
 	skipfirstResizeEvent = true;
 #endif
-	
+
 	_isSplitted = false;
 
 	// Use lbDatabasePanel
@@ -587,9 +587,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("addTool_To_ToolBar", temp);
 	eman->registerEvent("removeTool_From_ToolBar", temp);
 	eman->registerEvent("toggleTool_From_ToolBar", temp);
-	
+
 	eman->registerEvent("removeToolBar", temp);
-	
+
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchTableUse, "switchTableUse");
@@ -605,52 +605,52 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addTool_To_ToolBar, "addTool_To_ToolBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
-	
+
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnDispatch );
-	
+
 	Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&lb_wxFrame::OnDispatch );
-	
+
 	Connect( on_table_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&lb_wxFrame::OnDispatch );
-	
+
 	Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnDispatch );
-	
+
 	Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnDispatch );
-	
+
 	Connect( DYNAMIC_BUILDMENU, -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnDispatch );
-	
+
 	Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnVerbose );
-	
+
 	Connect( CLOSE_CURRENT_PAGE, -1, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&lb_wxFrame::OnCloseCurrentPage );
-	
+
 	Connect( REFRESHALL_FORMS, -1, wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&lb_wxFrame::OnRefreshAll );
-	
+
 	Connect( SHOW_PENDING_MESSAGES, -1, wxEVT_NULL,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnDispatch );
-	
-	
+
+
 
 	// Make a menubar
 	wxMenu *file_menu = new wxMenu;
-  
+
 	file_menu->Append(DYNAMIC_ABOUT	 , _trans("&About\tCtrl-A"));
 	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
@@ -677,17 +677,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
 /*...e*/
 lbErrCodes LB_STDCALL lb_wxFrame::switchPanelUse(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	panelUsage = !panelUsage;
-	
+
 	return err;
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::switchTableUse(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	tableUsage = !tableUsage;
-	
+
 	return err;
 }
 /*...e*/
@@ -702,7 +702,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\setDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
        _LOG << "lb_wxGUI::setDispatcher() not implemented yet" LOG_
-        
+
         return ERR_NONE;
 }
 /*...e*/
@@ -793,68 +793,68 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
-         
+
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	_LOG << "lb_wxGUI::cleanup() called." LOG_
-	
+
 	/* Destroy all still created forms that are hidden.
 	* If this would not be taken, the application will hang,
 	* because these windows are still there.
 	*
 	* But the container must be deleted and there seems to be
-	* a double delete. So I need a removeAll function for the container. 
+	* a double delete. So I need a removeAll function for the container.
 	*/
-	
+
 	if (forms == NULL) {
 		_LOG << "lb_wxGUI::cleanup() has nothing to clean up. Forms list is not initialized." LOG_
 		return ERR_NONE;
-	} 
-	
+	}
+
 	if (forms->Count() == 0) {
 		_LOG << "Info: No forms to be destroyed." LOG_
 	}
-	
+
 	if (frame->isPanelUsage()) {
 		while (notebook && notebook->GetPageCount() > 0) {
 			notebook->RemovePage(0);
 		}
 	}
-	
+
 	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
-		
+
 		lb_I_Unknown* form = forms->nextElement();
-		
+
 		if (!form) continue;
-		
+
 		_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
-			
-		UAP(lb_I_DatabaseForm, d)		
+
+		UAP(lb_I_DatabaseForm, d)
 		QI(form, lb_I_DatabaseForm, d)
-		UAP(lb_I_FixedDatabaseForm, fd)		
+		UAP(lb_I_FixedDatabaseForm, fd)
 		QI(form, lb_I_FixedDatabaseForm, fd)
-		
+
 		/* Really needed here !
 		* The wxWidgets system doesn't have a or at least has it's own reference counting system.
 		*
 		* So here I must ensure, that the object it self doesn't get deleted in the container.
 		* wxWidgets should call the destructor of the form.
 		*/
-		
+
 		if (d != NULL) {
 			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
-			
+
 			d->reopen(); // Avoid invalid database object while closing.
 			d->destroy();
 			d.resetPtr();
 			_LOG << "Destroyed the dynamic form." LOG_
 		}
-		
+
 		if (fd != NULL) {
 			_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
 			fd->destroy();
@@ -862,11 +862,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 			_LOG << "Destroyed the custom form." LOG_
 		}
 	}
-	
+
 	_LOG << "Detach all database forms from forms list." LOG_
-		
+
 	forms->detachAll();
-	
+
 	_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 
 	return ERR_NONE;
@@ -883,7 +883,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	wxSize size = text->GetBestSize();
 
 	wxLogonPage *page2 = new wxLogonPage(wizard);
-	
+
 	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 
 	page2->init(frame);
@@ -898,7 +898,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	page2->SetPrev(page1);
 	page2->SetNext(page3);
 	page3->SetPrev(page2);
-	
+
 
 	wizard->SetPageSize(size);
 
@@ -919,23 +919,23 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	lbErrCodes err = ERR_NONE;
 
 	// Locate the form instance in the container
-	
+
 	lbLoginDialog* _dialog = NULL;
-	
+
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
-	}	
+	}
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData("LoginForm");
-	
+
 	QI(fName, lb_I_KeyBase, key)
-	
-	uk = forms->getElement(&key);	
-	
+
+	uk = forms->getElement(&key);
+
 	if (uk != NULL) {
 		_dialog = (lbLoginDialog*) *&uk;
 	}
@@ -945,20 +945,20 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	} else {
 		_dialog = new lbLoginDialog();
 		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
-		
+
 		QI(_dialog, lb_I_Unknown, uk)
-		
+
 		forms->insert(&uk, &key);
-		
+
 		delete _dialog;
 		_dialog = NULL;
-		
+
 		uk = forms->getElement(&key);
-		
+
 		if (uk != NULL) {
 		        _dialog = (lbLoginDialog*) *&uk;
 		}
-		
+
 		_dialog->init(frame);
 		_dialog->Show();
 	}
@@ -970,43 +970,43 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
 lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) {
 	lbErrCodes err = ERR_NONE;
-    
+
 	_LOG << "lb_wxGUI::addCustomDBForm() called with '" << formName << "'." LOG_
-	
+
 	if (frame->isPanelUsage()) {
 		if (!notebook) {
 			notebook = new wxNotebook(frame, -1);
 			sizerMain = new wxBoxSizer(wxVERTICAL);
-			
+
 			frame->SetAutoLayout(TRUE);
 			notebook->SetAutoLayout(TRUE);
-	
+
 			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
-	
+
 			frame->SetSizer(sizerMain);
-#ifdef USE_WXAUI			
+#ifdef USE_WXAUI
 			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
 			frame->getAUIManager().Update();
 #endif
 		}
 	}
-	
+
 	UAP(lb_I_FixedDatabaseForm, _dialog)
-	
+
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
-	}	
+	}
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData(form->getFormName());
-	
+
 	QI(fName, lb_I_KeyBase, key)
-	
-	uk = forms->getElement(&key);	
-	
+
+	uk = forms->getElement(&key);
+
 	if (uk != NULL) {
 		QI(uk, lb_I_FixedDatabaseForm, _dialog)
 	}
@@ -1014,17 +1014,17 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
 	if (_dialog.getPtr() == NULL) {
 		QI(form, lb_I_Unknown, uk)
 		forms->insert(&uk, &key);
-		
+
 		form->destroy();
 		form = NULL;
-		
+
 		//-------------------------------------------------------
-		
+
 		TRMemStopLocalCount();
 		TRMemResetLocalCount();
-		
+
 		uk = forms->getElement(&key);
-		
+
 		if (uk != NULL) {
 		        QI(uk, lb_I_FixedDatabaseForm, _dialog)
 		}
@@ -1034,33 +1034,33 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
 		if (frame->isPanelUsage()) {
 			_dialog->create(notebook->GetId());
 		}
-		
+
 		_LOG << "Initialize custom form..." LOG_
 		_dialog->init();
-		
+
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			w->Fit();
-			
+
 			notebook->AddPage(w, _dialog->getFormName(), true);
-			
+
 			if (!frame->IsMaximized()) {
 				notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
 				notebook->Fit();
 			}
-			
+
 			if (frame->isSplitted()) {
 				if (!frame->IsMaximized()) frame->Fit();
 			} else {
 				if (!frame->IsMaximized()) {
-		
+
 					frame->SetSizeHints(notebook->GetSize());
 					frame->Fit();
 					frame->Centre();
 				}
-			}	
+			}
 		}
-		
+
 	} else {
 		if (frame->isPanelUsage()) {
 			int num = notebook->GetPageCount();
@@ -1077,7 +1077,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
 
 	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
 	app->enableEvent("ShowPropertyPanel");
-	
+
 	return _dialog.getPtr();
 }
 
@@ -1112,36 +1112,36 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		if (!notebook) {
 			notebook = new wxNotebook(frame, -1);
 			sizerMain = new wxBoxSizer(wxVERTICAL);
-			
+
 			frame->SetAutoLayout(TRUE);
 			notebook->SetAutoLayout(TRUE);
-	
+
 			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
-	
+
 			frame->SetSizer(sizerMain);
-#ifdef USE_WXAUI			
+#ifdef USE_WXAUI
 			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
 			frame->getAUIManager().Update();
 #endif
 		}
 	}
-	
+
 	UAP(lb_I_DatabaseForm, _dialog)
-	
+
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
-	}	
+	}
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData(formName);
-	
+
 	QI(fName, lb_I_KeyBase, key)
-	
-	uk = forms->getElement(&key);	
-	
+
+	uk = forms->getElement(&key);
+
 	if (uk != NULL) {
 		QI(uk, lb_I_DatabaseForm, _dialog)
 	}
@@ -1150,16 +1150,16 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 //	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
 	if (_dialog.getPtr() != NULL) {
 		UAP_REQUEST(getModuleManager(), lb_I_String, ClassName)
-		// SQL query from database has been changed. Recreate the dialog from scratch. 
-	
+		// SQL query from database has been changed. Recreate the dialog from scratch.
+
 		// Don't delete any forms inside the container
 		forms->detachAll();
 		forms->remove(&key);
 		// Else uk gets a dangling pointer
 		uk.resetPtr();
-		
+
 		*ClassName = _dialog->getClassName();
-		
+
 		if (*ClassName == "lbDatabasePanel") {
 			int num = notebook->GetPageCount();
 			for (int i = 0; i < num; i++) {
@@ -1217,7 +1217,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
 			}
 		}
-		
+
 		if (pl == NULL) {
 			char* msg = (char*) malloc(200);
 			msg[0] = 0;
@@ -1228,26 +1228,26 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 
 		uk = pl->getImplementation();
-		
+
 		forms->insert(&uk, &key);
-		
+
 		//-------------------------------------------------------
 		// The form has been cloned. Destroy the unused instance.
 		// This avoids application hang at exit.
-		
+
 		UAP(lb_I_DatabaseForm, form)
 		QI(uk, lb_I_DatabaseForm, form)
-		
+
 		form->destroy();
 		form = NULL;
-		
+
 		//-------------------------------------------------------
-		
+
 		TRMemStopLocalCount();
 		TRMemResetLocalCount();
-		
+
 		uk = forms->getElement(&key);
-		
+
 		if (uk != NULL) {
 		        QI(uk, lb_I_DatabaseForm, _dialog)
 		}
@@ -1262,31 +1262,31 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		_LOG << "Formname before init is " << formName LOG_
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		_LOG << "Formname after init is " << formName LOG_
-		
+
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			w->Fit();
-			
+
 			_LOG << "Add notebook pane with name " << formName LOG_
 			notebook->AddPage(w, formName, true);
-			
+
 			if (!frame->IsMaximized()) {
 				notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
 				notebook->Fit();
 			}
-			
+
 			if (frame->isSplitted()) {
 				if (!frame->IsMaximized()) frame->Fit();
 			} else {
 				if (!frame->IsMaximized()) {
-		
+
 					frame->SetSizeHints(notebook->GetSize());
 					frame->Fit();
 					frame->Centre();
 				}
-			}	
+			}
 		}
-		
+
 	} else {
 		if (frame->isPanelUsage()) {
 			int num = notebook->GetPageCount();
@@ -1312,7 +1312,7 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
         frame = new lb_wxFrame();
 
 	frame->Create(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340));
-        
+
         frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
         frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
 
@@ -1321,19 +1321,19 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
 	#ifdef VERBOSE
 	char ptr[20] = "";
 	sprintf(ptr, "%p", frame);
-	
+
 	_LOG << "Created a lb_wxFrame object at " << ptr LOG_
         #endif
-        
+
         return frame;
 }
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\getFrame\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lb_wxGUI::getFrame() {
         lb_I_Unknown* f = NULL;
-        
+
         _main_frame->queryInterface("lb_I_Unknown", (void**) &f, __FILE__, __LINE__);
-        
+
         return f;
 }
 /*...e*/
@@ -1341,7 +1341,7 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::getFrame() {
 lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_Frame, frame)
-        
+
         QI(_main_frame, lb_I_Frame, frame)
 
 
@@ -1351,11 +1351,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
 
 
         UAP_REQUEST(manager.getPtr(), lb_I_DispatchRequest, d_req)
-        
+
         /**
          * We get a dispatch responce
          */
-         
+
         UAP(lb_I_DispatchResponse, d_res)
 
         if (d_req.getPtr()) {
@@ -1368,7 +1368,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
                 if ((d_res.getPtr()) && (d_res->isOk())) {
                 } else {
                 }
-        } 
+        }
 
 /*        id (frame->hasMenuEntry(entry)) {
                 if (currentMenuEntry) free(currentMenuEntry);
@@ -1389,7 +1389,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
 			REQUEST(getModuleInstance(), lb_I_String, pendingMessages)
 			*pendingMessages = "";
 		}
-		
+
 		*pendingMessages += "\n";
 		*pendingMessages += windowTitle;
 		*pendingMessages += "\n";
@@ -1400,27 +1400,27 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
 /*...e*/
 lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	wxWindow* W = ::wxFindWindowByName(wxString(name));
 	if (W == NULL) {
 		return NULL;
 	}
-	
+
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	fName->setData(name);
-	
+
 	QI(fName, lb_I_KeyBase, key)
-	
+
 	uk = forms->getElement(&key);
-	
+
 	if (uk == NULL) {
 		_CL_LOG << "Error: No form with name '" << name << "' found." LOG_
 		return NULL;
 	}
-	
+
 	UAP(lb_I_FixedDatabaseForm, w)
 	QI(uk, lb_I_FixedDatabaseForm, w)
 	// Not really needed, because my dialogs are forced to not be smart.
@@ -1433,31 +1433,31 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\findDBForm\40\char\42\ name\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	wxWindow* W = ::wxFindWindowByName(wxString(name));
 	if (W == NULL) {
 		return NULL;
 	}
-	
+
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	fName->setData(name);
-	
+
 	QI(fName, lb_I_KeyBase, key)
-	
+
 	uk = forms->getElement(&key);
-	
+
 	if (uk == NULL) {
 		_CL_LOG << "Error: No form with name '" << name << "' found." LOG_
 		return NULL;
 	}
-	
+
 	UAP(lb_I_DatabaseForm, w)
 	QI(uk, lb_I_DatabaseForm, w)
 	// Not really needed, because my dialogs are forced to not be smart.
-	
+
 	if (w != NULL) {
 		w++;
 		return w.getPtr();
@@ -1468,13 +1468,13 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 void LB_STDCALL lb_wxGUI::showForm(char* name) {
 	if (frame->isPanelUsage()) {
 		int num = notebook->GetPageCount();
-		
+
 		lb_I_DatabaseForm* f = findDBForm(name);
-		
+
 		if (f != NULL) {
 			for (int i = 0; i < num; i++) {
 				wxString pageText = notebook->GetPageText(i);
-				
+
 				wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
 				wxString token;
 				while ( tkz.HasMoreTokens() )
@@ -1485,7 +1485,7 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 						notebook->SetPageText(i, f->getFormName());
 						notebook->SetSelection(i);
 					}
-					
+
 					token += " - "; // If the base formname contains this in it's name, then there would be more than two tokens. Append and recompare.
 				}
 			}
@@ -1494,18 +1494,18 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 			if (f != NULL) {
 				for (int i = 0; i < num; i++) {
 					wxString pageText = notebook->GetPageText(i);
-					
+
 					wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
 					wxString token;
 					while ( tkz.HasMoreTokens() )
 					{
 						token += tkz.GetNextToken();
-						
+
 						if (token == name) {
 							notebook->SetPageText(i, f->getFormName());
 							notebook->SetSelection(i);
 						}
-						
+
 						token += " - "; // If the base formname contains this in it's name, then there would be more than two tokens. Append and recompare.
 					}
 				}
@@ -1513,12 +1513,12 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 		}
 	} else {
 		lb_I_DatabaseForm* f = findDBForm(name);
-		
-		if (f != NULL) { 
+
+		if (f != NULL) {
 			f->show();
 		} else {
 			lb_I_FixedDatabaseForm* f = findCustomDBForm(name);
-			if (f != NULL) { 
+			if (f != NULL) {
 				f->show();
 			}
 		}
@@ -1527,11 +1527,11 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 
 void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 	if (!notebook) return;
-	
+
 	int sel = notebook->GetSelection();
-	
+
 	UAP(lb_I_Window, windowToClose)
-	
+
 	if (sel != wxNOT_FOUND)
 	{
 		wxWindow* w = notebook->GetCurrentPage();
@@ -1539,76 +1539,76 @@ void LB_STDCALL lb_wxGUI::closeCurrentPage() {
 		forms->finishIteration();
 		while (forms->hasMoreElements()) {
 			lbErrCodes err = ERR_NONE;
-			
+
 			lb_I_Unknown* form = forms->nextElement();
-			
+
 			if (!form) continue;
-			
+
 			_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
-				
+
 			UAP(lb_I_Window, window)
 			QI(form, lb_I_Window, window)
-			
+
 			if ((window != NULL) && (window->getId() == w->GetId())) {
 				QI(form, lb_I_Window, windowToClose)
 				key = forms->currentKey();
 			}
-			
+
 		}
-		
+
 		forms->finishIteration();
 		while (forms->hasMoreElements()) {
 			lbErrCodes err = ERR_NONE;
-			
+
 			lb_I_Unknown* form = forms->nextElement();
-			
+
 			if (!form) continue;
-			
+
 			UAP(lb_I_Window, window)
 			QI(form, lb_I_Window, window)
-			
+
 			if ((window != NULL) && !(windowToClose == NULL)) window->windowIsClosing(*&windowToClose);
-		}			
-		
+		}
+
 		windowToClose.resetPtr();
-		
+
 		if (key != NULL) {
 			forms->remove(&key);
 		}
 		notebook->DeletePage(sel);
 	}
-	
+
 }
 
 void LB_STDCALL lb_wxGUI::refreshAll() {
 	if (forms == NULL) {
 		_LOG << "lb_wxGUI::cleanup() has nothing to clean up. Forms list is not initialized." LOG_
 		return;
-	} 
-	
+	}
+
 	if (forms->Count() == 0) {
 		_LOG << "Info: No forms to be destroyed." LOG_
 		return;
 	}
-	
+
 	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
-		
+
 		lb_I_Unknown* form = forms->nextElement();
-		
+
 		if (!form) continue;
-		
+
 		_LOG << "Refresh a dynamic form '" << form->getClassName() << "'." LOG_
-		
-		UAP(lb_I_DatabaseForm, d)		
+
+		UAP(lb_I_DatabaseForm, d)
 		QI(form, lb_I_DatabaseForm, d)
-		UAP(lb_I_FixedDatabaseForm, fd)		
+		UAP(lb_I_FixedDatabaseForm, fd)
 		QI(form, lb_I_FixedDatabaseForm, fd)
-		
+
 		if (d != NULL) {
 			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
-			
+
 			d->close(); // Avoid invalid database object while closing.
 			_LOG << "Destroyed the dynamic form." LOG_
 		}
@@ -1626,25 +1626,25 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
 	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
-		
+
 		lb_I_Unknown* form = forms->nextElement();
-		
+
 		if (!form) continue;
-		
+
 		_LOG << "Refresh a dynamic form '" << form->getClassName() << "'." LOG_
-		
-		UAP(lb_I_DatabaseForm, d)		
+
+		UAP(lb_I_DatabaseForm, d)
 		QI(form, lb_I_DatabaseForm, d)
-		UAP(lb_I_FixedDatabaseForm, fd)		
+		UAP(lb_I_FixedDatabaseForm, fd)
 		QI(form, lb_I_FixedDatabaseForm, fd)
-		
+
 		if (d != NULL) {
 			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
-			
+
 			d->open(); // Avoid invalid database object while closing.
 			_LOG << "Destroyed the dynamic form." LOG_
 		}
-		
+
 		/*
 		 if (fd != NULL) {
 		 _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
@@ -1671,7 +1671,7 @@ void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form
 
 void LB_STDCALL lb_wxGUI::splashDestroyed() {
 	splashOpened = false;
-	
+
 	if (frame) {
 		_LOG << "Add a pending event..." LOG_
 		wxCommandEvent event( wxEVT_NULL, SHOW_PENDING_MESSAGES );
@@ -1707,33 +1707,33 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 	m_left = m_right = NULL;
 	m_splitter = NULL;
 	m_replacewindow = NULL;
-	
+
 #ifdef SOLARIS
 	skipfirstResizeEvent = true;
 #endif
-	
+
 	_isSplitted = false;
 }
 
 lb_wxFrame::~lb_wxFrame() {
 	_LOG << "lb_wxFrame::~lb_wxFrame() called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
-	
+
 	metaApp->setGUIMaximized(IsMaximized());
 	metaApp->save();
 
 #ifdef USE_WXAUI
 	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
-	
+
 	if (oldpg) {
 		m_mgr.DetachPane(oldpg);
 		oldpg->Close();
 	}
-	
+
 	// deinitialize the frame manager
 	m_mgr.UnInit();
 #endif
-	
+
 	if (guiCleanedUp == 0) {
 		_LOG << "lb_wxFrame::~lb_wxFrame() Info: GUI cleanup has not yet been done. Do it now." LOG_
 		if (gui) gui->cleanup();
@@ -1753,9 +1753,9 @@ void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
 
     wxLogonPage *page2 = new wxLogonPage(wizard);
     wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
-    
+
     wxWizardPageSimple::Chain(page2, page3);
-    
+
     wizard->SetPageSize(size);
 
     if ( wizard->RunWizard(page1) )
@@ -1787,21 +1787,21 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 */
 /*
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-	
+
 	PM->initialize();
 	PM->unload();
-*/	
+*/
 
 	// Signalize that I am quitting.
 	OnQuitAccepted = true;
-	
+
 	if (guiCleanedUp == 0) {
         	if (gui) gui->cleanup();
         	guiCleanedUp = 1;
 	}
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
+
 	meta->unloadApplication();
 
 //	unHookAll();
@@ -1861,7 +1861,7 @@ void lb_wxFrame::OnSize(wxSizeEvent& event)
 	m_mgr.Update();
 	event.Skip();
 #endif
-	
+
 }
 
 #endif
@@ -1869,7 +1869,7 @@ void lb_wxFrame::OnSize(wxSizeEvent& event)
 void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
 	char ptr[200] = "";
 	sprintf(ptr, "%p for instance %p", menu_bar, this);
-	
+
 	_LOG << "Have this instance now: " << ptr LOG_
 }
 /*...e*/
@@ -1877,14 +1877,14 @@ void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
 void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 	wxMenu *menu = new wxMenu;
 	wxMenuBar* mbar = NULL;
-	
+
 	menu->Append(DYNAMIC_ABOUT, "&About");
 	menu->Append(DYNAMIC_QUIT, "E&xit");
 
 	char ptr[200] = "";
 	sprintf(ptr, "%p for instance %p", menu_bar, this);
 	_LOG << "Request for a menu pointer: " << ptr LOG_
-	
+
 	mbar = getMenuBar();
 	if (menu_bar) menu_bar->Append(menu, "T&est");
 
@@ -1896,25 +1896,25 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	lbErrCodes err = ERR_NONE;
 
 	wxPGProperty* pProperty = event.GetPropertyPtr();
-	
+
 	// Get name of changed property
 	const wxString& PropertyName = event.GetPropertyName();
-	
+
 	wxString PropValue = pProperty->GetValueAsString();
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
-	
+
 	int PropertyEvent;
-	
+
 	if (eman == NULL) {
 		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	}
-	
+
 	eman->resolveEvent((char*) PropertyName.c_str(), PropertyEvent);
-	
+
 	name->setData("eventId");
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&name, *&evId);
@@ -1924,23 +1924,23 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	name->setData("value");
 	value->setData((char*) PropValue.c_str());
 	param->setUAPString(*&name, *&value);
-	
+
 	name->setData("name");
 	value->setData((char*) PropertyName.c_str());
 	param->setUAPString(*&name, *&value);
-	
+
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
-		
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-	
+
 	if (dispatcher == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 		dispatcher->setEventManager(eman.getPtr());
-	}				
-	
+	}
+
 	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -1953,56 +1953,56 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 					// Unpack the event and dispatch accordingly
 				if (event.GetClientData() != NULL) {
                 	lbErrCodes err = ERR_NONE;
-					
+
 					if (eman == NULL) {
 						REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 					}
-					
+
 					if (dispatcher == NULL) {
 						REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 						dispatcher->setEventManager(eman.getPtr());
-					}				
-					
+					}
+
 					UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
 
 					UAP(lb_I_Container, eventToPost)
 					UAP(lb_I_Unknown, uk)
-					
+
 					uk = (lb_I_Unknown*) event.GetClientData();
 					QI(uk, lb_I_Container, eventToPost)
-					
+
 					UAP(lb_I_Unknown, ukName)
 					UAP(lb_I_String, evName)
 					UAP_REQUEST(getModuleManager(), lb_I_String, evKeyName)
 					UAP(lb_I_KeyBase, evKey)
-					
+
 					UAP(lb_I_Unknown, ukEventObject)
-					
+
 					*evKeyName = "EventName";
 					QI(evKeyName, lb_I_KeyBase, evKey)
-					
+
 					ukName = eventToPost->getElement(&evKey);
-					
+
 					if (ukName != NULL) {
 						QI(ukName, lb_I_String, evName)
 					} else {
 						_LOG << "Error: Required parameter is not in the container." LOG_
 						return;
 					}
-					
+
 					*evKeyName = "EventObject";
 					QI(evKeyName, lb_I_KeyBase, evKey)
-					
+
 					ukEventObject = eventToPost->getElement(&evKey);
-					
+
 					if (ukEventObject != NULL) {
 						int evID = 0;
 						eman->resolveEvent(evName->charrep(), evID);
-						
+
 						UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 						UAP(lb_I_Unknown, uk_result)
 						QI(result, lb_I_Unknown, uk_result)
-						
+
 						/* What do I when I have to forward the eventID as in the default?
 						 * In the default portion, always an integer object is passed. It would
 						 * be used for sample in the OnActionButton event handler for actions.
@@ -2044,27 +2044,27 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
                 {
                 	lbErrCodes err = ERR_NONE;
 			lb_I_Module* m = getModuleInstance();
-			
+
 			if (eman == NULL) {
 				REQUEST(m, lb_I_EventManager, eman)
 			}
-		
+
 			if (dispatcher == NULL) {
 				REQUEST(m, lb_I_Dispatcher, dispatcher)
 				dispatcher->setEventManager(eman.getPtr());
-			}				
+			}
 
 			UAP_REQUEST(m, lb_I_Integer, param)
-			
+
 			param->setData(event.GetId());
-			
+
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
-		
+
 			UAP_REQUEST(m, lb_I_String, result)
 			UAP(lb_I_Unknown, uk_result)
 			QI(result, lb_I_Unknown, uk_result)
-		
+
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }
                 break;
@@ -2074,41 +2074,41 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setPreferredPropertyPanelByNamespace\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, _namespace)
 	QI(uk, lb_I_Parameter, param)
-		
+
 	parameter->setData("namespace");
 	param->getUAPString(*&parameter, *&_namespace);
 
 	if (PanelNamespace == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, PanelNamespace)
 	}
-	
+
 	*PanelNamespace = _namespace->charrep();
-	
+
 	return err;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\showMsgBox\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, title)
 	QI(uk, lb_I_Parameter, param)
-		
+
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
 	parameter->setData("title");
 	param->getUAPString(*&parameter, *&title);
 
 	gui->msgBox(title->charrep(), msg->charrep());
-	
+
 	return err;
 }
 /*...e*/
@@ -2117,7 +2117,7 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	wxPropertyGrid* pg = new wxPropertyGrid(
 		parent,
 		PGID,
-		wxPoint(0, 0), 
+		wxPoint(0, 0),
 		wxSize(160, 250),
 		wxPG_AUTO_SORT |
 		wxPG_DEFAULT_STYLE );
@@ -2126,7 +2126,7 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
 		pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
 		pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
-			
+
 		pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
 		   wxPG_LABEL,
 		   wxT("This is much longer string than the ")
@@ -2136,7 +2136,7 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		parameter = currentProperties->getParameterList();
 		populateProperties(pg, *&parameter);
 	}
-	 
+
 	return pg;
 }
 /*...e*/
@@ -2146,12 +2146,12 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 	UAP(lb_I_FileLocation, s)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_FileLocation, s)
-	
+
 	if (category) *category_name = category;
 	*category_name += name->charrep();
-	
+
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
-	
+
 	if (pgid.IsOk()) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
@@ -2165,12 +2165,12 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
 	UAP(lb_I_DirLocation, s)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_DirLocation, s)
-	
+
 	if (category) *category_name = category;
 	*category_name += name->charrep();
-	
+
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
-	
+
 	if (pgid.IsOk()) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
@@ -2184,12 +2184,12 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 	UAP(lb_I_String, s)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_String, s)
-	
+
 	if (category) *category_name = category;
 	*category_name += name->charrep();
-	
+
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
-	
+
 	if (pgid.IsOk()) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
@@ -2203,12 +2203,12 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	UAP(lb_I_Boolean, s)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Boolean, s)
-	
+
 	if (category) *category_name = category;
 	*category_name += name->charrep();
-	
+
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
-	
+
 	if (pgid.IsOk()) {
 		pg->SetPropertyValueBool(pgid, s->getData());
 	} else {
@@ -2222,14 +2222,14 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	UAP(lb_I_Integer, i)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Integer, i)
-	
+
 	_LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
 
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
-	
+
 	if (pgid.IsOk()) {
 		pg->SetPropertyValueLong(pgid, i->getData());
 	} else {
@@ -2244,16 +2244,16 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 		_LOG << "Error: No properties given!" LOG_
 		return;
 	}
-	
+
 		for (int i = 1; i <= properties->Count(); i++) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_KeyBase, key)
-			
+
 			uk = properties->getElementAt(i);
 			key = properties->getKeyAt(i);
-			
+
 			bool found = false;
-			
+
 			if (strcmp(uk->getClassName(), "lbString") == 0) {
 				populateString(pg, *&uk, *&key, category);
 				found = true;
@@ -2283,15 +2283,15 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 
 				pg->AppendCategory( key->charrep() );
 				props = param->getParameterList();
-				
+
 				populateProperties(pg, *&props, key->charrep());
-				found = true;				
+				found = true;
 			}
-			
+
 			if (found == false) {
-				_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_ 
+				_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_
 			}
-			
+
 		}
 }
 /*...e*/
@@ -2300,7 +2300,7 @@ wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {
     wxTreeCtrl* tree = new wxTreeCtrl(parent, -1,
                                       wxPoint(0,0), wxSize(160,250),
                                       wxTR_DEFAULT_STYLE | wxNO_BORDER);
-    
+
     wxTreeItemId root = tree->AddRoot(wxT("wxAUI Project"));
     wxArrayTreeItemIds items;
 
@@ -2316,7 +2316,7 @@ wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {
     items.Add(tree->AppendItem(root, wxT("Item 4"), 0));
     items.Add(tree->AppendItem(root, wxT("Item 5"), 0));
 
-    
+
     int i, count;
     for (i = 0, count = items.Count(); i < count; ++i)
     {
@@ -2349,7 +2349,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		
+
 	UAP(lb_I_Parameter, params)
 	QI(uk, lb_I_Parameter, params)
 
@@ -2377,7 +2377,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		
+
 	UAP(lb_I_Parameter, params)
 	QI(uk, lb_I_Parameter, params)
 
@@ -2395,7 +2395,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #endif
 	if (maintb == NULL) {
 		maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
-				
+
 #ifdef USE_WXAUI
 		m_mgr.AddPane(maintb, wxAuiPaneInfo().
 			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
@@ -2407,15 +2407,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
-				
+
 		maintb->SetToolBitmapSize(wxSize(32, 32));
-				
+
 		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
 		UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
-					
+
 		*toolbarfile += app->getDirLocation();
-				
+
 #ifdef OSX
 		*images = "/toolbarimages/";
 #endif
@@ -2435,44 +2435,44 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 			*toolbarfile += pName->charrep();
 			*toolbarfile += ".app/Contents/Resources/toolbarimages/";
 		}
-#endif		
-		
+#endif
+
 		*toolbarfile += "exit.png";
-				
+
 
 		if (!wxFile::Exists(toolbarfile->charrep())) {
 		    // Fallback
 #ifdef OSX
 #endif
 #ifdef LINUX
-		    *toolbarfile = "/usr/share/lbdmf";			
+		    *toolbarfile = "/usr/share/lbdmf";
 		    *toolbarfile += images->charrep();
 	    	    *toolbarfile += "exit.png";
 #endif
 #ifdef WINDOWS
-#endif			    
+#endif
 		}
 
 		wxImage* im;
-		
+
 		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
-				
+
 		wxBitmap bm = wxBitmap(*im);
-				
+
 		maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
-				
+
 		maintb->Realize();
 
 		wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
-		
+
 		maintb->SetSize(s);
 		maintb->SetMinSize(s);
 		maintb->Fit();
-				
+
 #ifndef USE_WXAUI
 		SetToolBar(maintb);
 #endif
-				
+
 #ifdef USE_WXAUI
 		m_mgr.DetachPane(maintb);
 
@@ -2492,7 +2492,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #ifdef USE_WXAUI
 	tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
-    
+
 	if ((tb == NULL) && (params != NULL)) {
 		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 
@@ -2505,14 +2505,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
 		*parameter = "toolbarName";
 		params->getUAPString(*&parameter, *&name);
-			
+
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
 
 #ifndef USE_WXAUI
 		SetToolBar(tb);
 #endif
-				
+
 #ifdef USE_WXAUI
 		m_mgr.AddPane(tb, wxAuiPaneInfo().
 					  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
@@ -2521,10 +2521,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 					  LeftDockable(false).RightDockable(false));
 		m_mgr.Update();
 #endif
-    
+
 		return ERR_NONE;
 	}
-	
+
 	return err;
 }
 /*...e*/
@@ -2533,9 +2533,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	UAP(lb_I_Parameter, params)
-	
+
 	QI(uk, lb_I_Parameter, params)
-	
+
 	if (params != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
@@ -2543,7 +2543,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, entry)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, evHandler)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarimage)
-	
+
 		*parameter = "toolbarName";
 		params->getUAPString(*&parameter, *&name);
 		*parameter = "tooltype";
@@ -2555,23 +2555,30 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 		*parameter = "toolbarimage";
 		params->getUAPString(*&parameter, *&toolbarimage);
 
+        toolbarimage->trim();
+
+        if (*toolbarimage == "") {
+            _LOG << "Error: Could not add a tool with no image file name. It is an empty string!" LOG_
+            return ERR_NONE;
+        }
+
 		wxToolBar* tb;
-		
+
 #ifndef USE_WXAUI
 		tb = GetToolBar();
 #endif
 #ifdef USE_WXAUI
 		tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
-		
+
 		if (tb != NULL) {
 			UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 
 			int EvNr = 0;
-	
+
 			if (ev_manager->resolveEvent(evHandler->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
 				_CL_LOG << "ERROR: Could not resolve a toolbar entry (" << entry->charrep() << ")" LOG_
-		
+
 				return ERR_EVENT_NOTREGISTERED;
 			}
 
@@ -2579,7 +2586,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 
 			UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-	
+
 			*toolbarfile = app->getDirLocation();
 
 #ifdef OSX
@@ -2601,7 +2608,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 				*toolbarfile += pName->charrep();
 				*toolbarfile += ".app/Contents/Resources/toolbarimages/";
 			}
-#endif		
+#endif
 
 			*toolbarfile += toolbarimage->charrep();
 
@@ -2610,21 +2617,21 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #ifdef OSX
 #endif
 #ifdef LINUX
-			    *toolbarfile = "/usr/share/lbdmf";			
+			    *toolbarfile = "/usr/share/lbdmf";
     			    *toolbarfile += images->charrep();
 			    *toolbarfile += toolbarimage->charrep();
 #endif
 #ifdef WINDOWS
-#endif			    
+#endif
 			}
 
 
 			_LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
 
 			wxString f = wxString(toolbarimage->charrep());
-							
+
 			wxImage* im;
-							
+
 			if (f.Upper().Contains(".XPM") == 1) {
 				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
 			}
@@ -2634,7 +2641,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			}
 
 			wxBitmap bm = wxBitmap(*im);
-			
+
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();
 
@@ -2644,10 +2651,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			tb->SetSize(s);
 			tb->Fit();
 			//tb->SetMinSize(s);
-			
-#ifdef USE_WXAUI			
+
+#ifdef USE_WXAUI
 			m_mgr.DetachPane(tb);
-			
+
 			m_mgr.AddPane(tb, wxAuiPaneInfo().
 				  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
         		          ToolbarPane().Top().
@@ -2657,7 +2664,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 
 			wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane(wxT("Main Toolbar")).window;
 			m_mgr.DetachPane(maintb);
-			
+
 			m_mgr.AddPane(maintb, wxAuiPaneInfo().
 				  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
         		          ToolbarPane().Top().
@@ -2669,7 +2676,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #endif
 
 		}
-		
+
 		err = ERR_NONE;
 	}
 	return err;
@@ -2693,7 +2700,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 		stb_withs = new int[stb_areas];
 		stb_withs[0] = -1;
 		stb_areas = 1;
-		
+
 		statusBar->SetStatusWidths(stb_areas, stb_withs);
 		statusBar->SetStatusText(wxT("Ready"), 0);
 
@@ -2702,24 +2709,24 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 		if (stb_withs == NULL) {
 				gui->msgBox("Error", "Statusbar withs fields array is not implemented!");
 		} else {
-		
+
 			_LOG << "Set status bar field count to " << stb_areas LOG_
 			sb->SetFieldsCount(stb_areas, NULL);
 			sb->SetStatusText(wxT("Ready"), 0);
 		}
 	}
-	
+
 	return ERR_NONE;
 }
 /*...e*/
-	
+
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	stb_areas++;
 	int* new_stb_withs = new int [stb_areas];
 	int* old_stb_withs;
-		
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
@@ -2731,56 +2738,56 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
 	if (statusbar_name_mappings == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, statusbar_name_mappings)
 	}
-	
+
 	QI(uk, lb_I_Parameter, param)
 	QI(index, lb_I_Unknown, value)
-	
+
 	*parameter = "Name";
 	param->getUAPString(*&parameter, *&name);
 	QI(name, lb_I_KeyBase, key)
-	
+
 	if (key != NULL) {
 		for (int i = 1; i < stb_areas; i++) {
 			new_stb_withs[i-1] = stb_withs[i-1];
 		}
 		new_stb_withs[stb_areas-1] = -1;
 		old_stb_withs = stb_withs;
-		
+
 		stb_withs = new_stb_withs;
 		addStatusBar(uk);
 
 		delete[] old_stb_withs;
-	
+
 		index->setData(stb_areas);
-				
+
 		statusbar_name_mappings->insert(&value, &key);
-		
+
 		err = ERR_NONE;
 	}
 
 	return err;
 }
 /*...e*/
-	
+
 lbErrCodes LB_STDCALL lb_wxFrame::removeStatusBarTextArea(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
-	
+
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setText_To_StatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	UAP(lb_I_Parameter, params)
-	
+
 	QI(uk, lb_I_Parameter, params)
 
 	if (OnQuitAccepted) return ERR_NONE; // Skip the action from now on.
-	
-	
+
+
 	if (params != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	
+
 		*parameter = "Name";
 		params->getUAPString(*&parameter, *&name);
 		*parameter = "Value";
@@ -2788,19 +2795,19 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 
 		UAP(lb_I_KeyBase, key)
 		QI(name, lb_I_KeyBase, key)
-		
+
 		UAP(lb_I_Integer, index)
 		UAP(lb_I_Unknown, uk_index)
-		uk_index = statusbar_name_mappings->getElement(&key); 
+		uk_index = statusbar_name_mappings->getElement(&key);
 		QI(uk_index, lb_I_Integer, index)
-		
+
 		wxStatusBar* sb = GetStatusBar();
 		if (sb != NULL) {
 		    sb->SetStatusText(value->charrep(), index->getData() - 1);
 		    sb->Update();
 			wxYield();
 		}
-	
+
 		err = ERR_NONE;
 	}
 
@@ -2811,11 +2818,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
 /// \todo Implement this.
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP(lb_I_Container, eventToPost)
-	
+
 	QI(uk, lb_I_Container, eventToPost)
-	
+
 	if (eventToPost != NULL) {
 		// Get the event name to be used when the event has been triggered.
 		UAP(lb_I_Unknown, ukName)
@@ -2824,44 +2831,44 @@ lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
 		UAP(lb_I_KeyBase, evKey)
 
 		UAP(lb_I_Unknown, ukEventObject)
-		
+
 		*evKeyName = "EventName";
 		QI(evKeyName, lb_I_KeyBase, evKey)
-		
+
 		ukName = eventToPost->getElement(&evKey);
-		
+
 		if (ukName != NULL) {
 			QI(ukName, lb_I_String, evName)
 		} else {
 			_LOG << "Error: Required parameter is not in the container." LOG_
-			return ERR_DISPATCH_PARAMETER_WRONG;	
+			return ERR_DISPATCH_PARAMETER_WRONG;
 		}
 
 		*evKeyName = "EventObject";
 		QI(evKeyName, lb_I_KeyBase, evKey)
-		
+
 		ukEventObject = eventToPost->getElement(&evKey);
-		
+
 		if (ukEventObject != NULL) {
 			// Have the name and the object. Pack it into the wxWidgets event instance and Post the event. This may be unsave.
 
 			// Avoid too early destroy, because wxWidgets does not support my reference counting.
 			uk++;
-			
+
 			wxCommandEvent wxEv = wxCommandEvent(0, POST_PENDING_EVENT);
-			
+
 			wxEv.SetClientData((void*) *&uk);
-			
+
 			AddPendingEvent(wxEv);
 		} else {
 			_LOG << "Error: Required event object is not in the container." LOG_
-			return ERR_DISPATCH_PARAMETER_WRONG;	
+			return ERR_DISPATCH_PARAMETER_WRONG;
 		}
 	} else {
 		_LOG << "Error: Given parameter is not of type lb_I_Containerr." LOG_
 		return ERR_DISPATCH_PARAMETER_WRONG;
 	}
-	
+
 	return ERR_NONE;
 }
 
@@ -2876,7 +2883,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, params)
 	QI(uk, lb_I_Parameter, params)
 	if (params != NULL) {
-		
+
 		if (params->Count() > 0) {
 			currentProperties--;
 			currentProperties.resetPtr();
@@ -2888,11 +2895,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, group)
 			UAP(lb_I_Parameter, param)
-			
+
 			param = meta->getParameter();
-			
+
 			group->setData("General");
-			
+
 			currentProperties->setUAPParameter(*&group, *&param);
 		}
 /*
@@ -2912,38 +2919,38 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		UAP(lb_I_Container, parameter)
 		parameter = currentProperties->getParameterList();
 		populateProperties(oldpg, *&parameter);
-		
+
 		m_mgr.GetPane("Properties").Show();
-		
+
 		m_mgr.Update();
-		
+
 		return ERR_NONE;
 	}
 #endif
 
 /*...sNo wxAUI:0:*/
-#ifndef USE_WXAUI	
+#ifndef USE_WXAUI
 	if (m_splitter == NULL) {
 		m_splitter = new wxSplitterWindow(this, wxID_ANY,
 			  wxDefaultPosition, wxDefaultSize,
 			  wxSP_3D | wxSP_LIVE_UPDATE /*| wxCLIP_CHILDREN*/ /* | wxSP_NO_XP_THEME */ );
-        
+
 		wxList children = GetChildren();
 		wxNode* node = children.GetFirst();
-		
+
 		if (children.IsEmpty()) {
 			_CL_LOG << "Warning: No child window found." LOG_
-			
+
 			wxPanel* leftPanel = new wxPanel(m_splitter);
-			
+
 			m_splitter->Initialize(leftPanel);
 		} else {
 			wxWindow *current = (wxWindow*) node->GetData();
-			
+
 			// Select a proper implementation based on default or plugin availability
 			wxWindow* leftPanel = NULL;
-			
-			//			if (PanelNamespace == NULL) 
+
+			//			if (PanelNamespace == NULL)
 			//				leftPanel = new wxScrolledWindow(m_splitter);
 			//				else {
 #ifdef IN_PANEL
@@ -2957,13 +2964,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 #endif
 #ifndef USE_PROPGRID
 			leftPanel = new wxScrolledWindow(m_splitter);
-#endif			
+#endif
 			//				}
-			
+
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
 			wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 			wxBoxSizer* sizerLeft = new wxBoxSizer(wxVERTICAL);
-			
+
 			current->Reparent(m_splitter);
 
 			sizerMain->Add(m_splitter, 1, wxEXPAND, 0);
@@ -2972,10 +2979,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
 			current->SetSizer(sizerRight);
 			current->SetAutoLayout(TRUE);
-		
+
 			m_splitter->SetSizer(sizerMain);
 			m_splitter->SetAutoLayout(TRUE);
-			
+
 			leftPanel->SetSizer(sizerLeft);
 			leftPanel->SetAutoLayout(TRUE);
 
@@ -2985,12 +2992,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
 			//m_splitter->Initialize(leftPanel);
 			m_splitter->SplitVertically(leftPanel, current, 200);
-	
+
 			Layout();
 			Fit();
 
 			_isSplitted = true;
-			
+
 			_CL_LOG << "Done activating splitter ..." LOG_
 		}
 	}
@@ -3000,13 +3007,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 #ifdef USE_WXAUI
 		wxList children = GetChildren();
 		wxNode* node = children.GetFirst();
-		
+
 		wxWindow* leftPanel = NULL;
 #ifdef IN_PANEL
 		wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
 #endif
 
-			
+
 #ifdef IN_PANEL
 		wxPropertyGrid* pg = CreatePropertyGrid(panel);
 		leftPanel = panel;
@@ -3025,10 +3032,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			_CL_LOG << "Got the sizer object..." LOG_
 			s->Add(leftPanel, 1, wxEXPAND | wxALL, 0);
 		}
-			
+
 		pg->SetSizeHints(leftPanel->GetSize());
 */
-		
+
 
 		m_mgr.AddPane(pg, wxAuiPaneInfo().
 			Name(wxT("Properties")).Caption(wxT("Properties")).
@@ -3037,7 +3044,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			FloatingSize(wxSize(300,200)));
 
 		m_mgr.Update();
-#endif	
+#endif
 	return ERR_NONE;
 }
 /*...e*/
@@ -3070,7 +3077,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemSetModuleName(__FILE__);
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -3081,7 +3088,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                 	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -3097,7 +3104,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
