@@ -5780,8 +5780,12 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 
 			*msg = "Get table ";
 			*msg += (const char*) szTableName;
+			*msg += ", remarks: ";
+			*msg += (const char*) szTableRemarks;
 			*msg += " ...";
 
+			_LOG << msg->charrep() LOG_
+			
 			meta->setStatusText("Info", msg->charrep());
 
 			tables->insert(&uk, &key);
