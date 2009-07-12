@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.163 2009/07/11 19:44:15 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.164 2009/07/12 10:46:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.163 $
+ * $Revision: 1.164 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.163 2009/07/11 19:44:15 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.164 2009/07/12 10:46:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.164  2009/07/12 10:46:54  lollisoft
+ * Added frame to fix hang at exit if splash is still shown.
+ *
  * Revision 1.163  2009/07/11 19:44:15  lollisoft
  * Added NO_SPLASH option in environment.
  *
@@ -2333,7 +2336,7 @@ bool MyApp::OnInit(void)
     {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-		6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+		6000, frame, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
@@ -2344,7 +2347,7 @@ bool MyApp::OnInit(void)
     } else if (wxFile::Exists("/usr/share/lbdmf/splash.png") && bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG)) {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 									wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+									6000, frame, -1, wxDefaultPosition, wxDefaultSize,
 #ifndef OSX
 									wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
@@ -2357,7 +2360,7 @@ bool MyApp::OnInit(void)
 	else if (wxFile::Exists("./" + appname + ".app/Contents/Resources/splash.png") && bitmap.LoadFile("./" + appname + ".app/Contents/Resources/splash.png", wxBITMAP_TYPE_PNG)) {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 								wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-								6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+								6000, frame, -1, wxDefaultPosition, wxDefaultSize,
 								wxSIMPLE_BORDER|wxSTAY_ON_TOP);
 		wxGUI->splashCreated();
 	}
