@@ -1,4 +1,4 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="lbDMF">
 <xsl:output method="text"/>
 
 <xsl:template name="importApplicationTablePrimaryKeys">
@@ -260,7 +260,7 @@
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
 -- DROP TABLE <xsl:value-of select="$TableName"/>
-DROP TABLE "<xsl:value-of select="$TableName"/>" (
+DROP TABLE "<xsl:value-of select="$TableName"/>";
 </xsl:template>
 
 <xsl:template name="dropMSSQLTable">
@@ -278,7 +278,7 @@ exec lbDMF_dropTable '<xsl:value-of select="$TableName"/>';
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
-select dropTable('<xsl:value-of select="$TableName"/>');
+select "dropTable"('<xsl:value-of select="$TableName"/>');
 </xsl:template>
 
 
@@ -344,19 +344,15 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
     <xsl:param name="TargetDatabaseVersion"/>
 
 -- CREATE TABLE <xsl:value-of select="$TableName"/>
-CREATE TABLE "<xsl:value-of select="$TableName"/>" (
-	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:if test="position()!=1">,</xsl:if>
-<xsl:variable name="Aggregation" select="@aggregation"/>
-<xsl:choose>
-	<xsl:when test="$Aggregation='none'">
---,</xsl:when>
+CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:choose>
+	<xsl:when test="$Aggregation='none'"></xsl:when>
 	<xsl:otherwise>
 		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
 		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
 		<xsl:choose>
 			<xsl:when test="$datatype='bigstring'"></xsl:when>
 			<xsl:when test="$datatype='image'"></xsl:when>
-<xsl:otherwise>
+<xsl:otherwise><xsl:if test="position()!=1">,</xsl:if>
 	"<xsl:value-of select="@name"/>" <xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -479,9 +475,10 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:if test="$Aggregation='none'">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/><!--<xsl:if test="position()=1">,</xsl:if>-->
-	<xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:if>
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
+ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+</xsl:if>
 </xsl:for-each>
 </xsl:template>
 
@@ -525,9 +522,13 @@ ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-o
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:if test="$Aggregation='none'">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/><!--<xsl:if test="position()=1">,</xsl:if>-->
-	<xsl:call-template name="dropDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:if>
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
+<!--
+ALTER TABLE "<xsl:value-of select="../@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>";
+-->
+select "dropConstraint"('<xsl:value-of select="../@name"/>', 'cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>');
+</xsl:if>
 </xsl:for-each>
 </xsl:template>
 
@@ -892,12 +893,35 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 				<xsl:variable name="upperValue" select="./upperValue/@value"/>
 				<xsl:if test="$lowerValue='*'"><xsl:if test="$upperValue='*'"><!--<xsl:if test="position()!=1">,</xsl:if>-->
 <!--"<xsl:value-of select="@name"/>" INT4,-->
-<xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
+
+<!-- New variables to help getting values from new profile based settings -->
+
+<xsl:variable name="propertyID" select="@xmi:id"/>
+<xsl:variable name="associationID" select="@association"/>
+
+<xsl:variable name="assocCounterpart" select="//packagedElement[@xmi:type='uml:Association'][@xmi:id=$associationID]/memberEnd[@xmi:idref!=$propertyID]/@xmi:idref"/>
+
+<xsl:variable name="primaryTableName" select="//ownedAttribute[@xmi:id=$assocCounterpart]/xmi:Extension/taggedValue[@tag='lbDMF:relationship:table']/@value"/>	
+
+<!-- From old template version -->
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
+<xsl:variable name="primaryTableID" select="./type/@xmi:idref"/>	
 
-<xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
 
-ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>";</xsl:if>
+
+
+
+<xsl:variable name="foreignTableName" select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>
+
+<xsl:variable name="primaryKey_old" select="./xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>
+<xsl:variable name="primaryKey" select="//ownedAttribute[@xmi:id=$assocCounterpart]/../ownedAttribute/xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>
+<xsl:variable name="foreignKey" select="//ownedAttribute[@xmi:id=$assocCounterpart]/../ownedAttribute/xmi:Extension/taggedValue[@tag='lbDMF:table'][@value=$primaryTableName]/../../@name"/>
+
+-- ...
+-- ALTER TABLE DROP this ID <xsl:value-of select="@xmi:id"/> counterpart <xsl:value-of select="$assocCounterpart"/> <xsl:value-of select="$primaryKey"/>: <xsl:value-of select="$primaryTableName"/>
+-- cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>
+
+ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="$foreignTableName"/>_<xsl:value-of select="$primaryKey"/>";</xsl:if>
 			</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>

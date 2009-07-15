@@ -63,16 +63,34 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 --
 -- This function drops a table, if it exists.
 
-CREATE OR REPLACE FUNCTION droptable("varchar")
+CREATE OR REPLACE FUNCTION "dropTable"("varchar")
   RETURNS void AS
 '
 declare
 tres text;
-declare tt alias for $1;
 begin
   select tablename into tres from pg_tables where tablename = $1;
   if not tres is null then
     execute ''DROP TABLE "'' || $1 || ''" CASCADE'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+-- dropConstraint("varchar", "varchar")
+--
+-- This function drops a constraint for a table, if the table exists.
+
+CREATE OR REPLACE FUNCTION "dropConstraint"("varchar", "varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+begin
+  select tablename into tres from pg_tables where tablename = $1;
+  if not tres is null then
+    execute ''ALTER TABLE "'' || $1 || ''" DROP CONSTRAINT "'' || $2 || ''"'';
   end if;
   return;
 end;
