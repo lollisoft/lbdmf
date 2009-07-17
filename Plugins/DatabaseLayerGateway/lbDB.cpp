@@ -2298,6 +2298,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_Binar
 	UAP(lb_I_String, name)
 	name = getColumnName(column);
 	
+	setNull(column, false);
+	
 	UAP(lb_I_Unknown, ukValue)
 	UAP(lb_I_KeyBase, key)
 	
@@ -2334,6 +2336,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 	UAP(lb_I_Unknown, ukValue)
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	
+	setNull(column, false);
 	
 	*name = column;
 	
@@ -3544,6 +3548,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, l
 		return ERR_DB_READONLY;
 	}
 	
+	setNull(columnName->charrep(), false);
+	
 	if (getColumnType(columnName->charrep()) == lbDBColumnBit) {
         if (*value == "true") {
             if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
@@ -3632,7 +3638,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
-		_CL_VERBOSE << "Warning: Noting to update." LOG_
+		_LOG << "Warning: Noting to update." LOG_
 		return ERR_NONE;
 	}
 
@@ -3827,7 +3833,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			}
 	} else {
 		if (tables.Count() > 1) {
-			_CL_VERBOSE << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
 		
@@ -3928,14 +3934,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			}
 		}
 		
-		_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
+		_LOG << "Update Sqlite database with statement: '" << strSQL.c_str() << "'" LOG_
 
 		try {
 			pStatement->RunQuery();
 			
 #ifdef USE_IMMEDIALY_CLOSE
 			currentdbLayer->CloseStatement(pStatement);
-			_CL_VERBOSE << "Updated a row." LOG_
+			_LOG << "Updated a row." LOG_
 			pStatement = NULL;
 			theResult = NULL; // It will go invalid.
 			currentdbLayer->Close();
@@ -3944,9 +3950,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 #endif
 		}
 		catch (DatabaseLayerException ex) {
-			_CL_VERBOSE << "Error: Update statement failed." LOG_
+			_LOG << "Error: Update statement failed." LOG_
 			if (!currentdbLayer->IsOpen()) {
-				_CL_VERBOSE << "Error: Database is not open, retry update after opening the database." LOG_
+				_LOG << "Error: Database is not open, retry update after opening the database." LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
 				pStatement = NULL;
@@ -3967,7 +3973,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					_LOG << "Error: Update statement after reoprning failed too." LOG_
 				}
 			} else {
-				_CL_VERBOSE << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
+				_LOG << "Error: Update statement failed. (" << ex.GetErrorMessage().c_str() << ")" LOG_
 #ifdef USE_IMMEDIALY_CLOSE
 				currentdbLayer->CloseStatement(pStatement);
 				pStatement = NULL;
@@ -4007,7 +4013,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					}
 				}
 				
-				_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
+				_LOG << "Update Sqlite database again with statement: '" << strSQL.c_str() << "'" LOG_
 				
 				try {
 					pStatement->RunQuery();
