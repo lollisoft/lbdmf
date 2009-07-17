@@ -254,6 +254,10 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
+
+		/* Don't rewrite from now on as of the 'rewrite is better done by the user of this library. I do it effectively in the XSLT template.
+		 * This is due to no support for SQL DROP and DELETE statements in the parser of the fk source code.
+		 */
 		wxString rewrittenQuery;
 		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
 			wxString createSystemTables;
@@ -265,11 +269,11 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			wxString("	\"FKTable\" BPCHAR,") +
 			wxString("	\"FKColumn\" BPCHAR") +
 			wxString(");\n");
-			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+			rewrittenQuery = createSystemTables + strQuery;
 		} else {
-			rewrittenQuery = wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+			rewrittenQuery = strQuery;
 		}
-      wxString strErrorMessage = _("");
+	  wxString strErrorMessage = _("");
       char* szErrorMessage = NULL;
 	  int nReturn = sqlite3_exec(m_pDatabase, rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
       if (szErrorMessage != NULL)

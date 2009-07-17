@@ -491,7 +491,32 @@ ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-o
     <xsl:param name="TargetDatabaseVersion"/>
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
-ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins" BEFORE INSERT ON <xsl:value-of select="../@name"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/> FROM <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/> WHERE <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/> = new.<xsl:value-of select="@name"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>(<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd" BEFORE UPDATE ON <xsl:value-of select="../@name"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/> FROM <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/> WHERE <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/> = new.<xsl:value-of select="@name"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>(<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del" BEFORE DELETE ON <xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT <xsl:value-of select="@name"/> FROM <xsl:value-of select="../@name"/> WHERE <xsl:value-of select="@name"/> = old.<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key <xsl:value-of select="../@name"/>(<xsl:value-of select="@name"/>)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>', '<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>', '<xsl:value-of select="../@name"/>', '<xsl:value-of select="@name"/>');
+ 
+
 </xsl:if>
 <!--
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
@@ -538,9 +563,23 @@ select "dropConstraint"('<xsl:value-of select="../@name"/>', 'cst_<xsl:value-of 
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:if test="$Aggregation='none'">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/><!--<xsl:if test="position()=1">,</xsl:if>-->
-	<xsl:call-template name="dropDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:if>
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
+--ALTER TABLE "<xsl:value-of select="../@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+
+DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
+DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
+DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
+
+<!--
+DROP TRIGGER 'fk_nullable_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
+DROP TRIGGER 'fk_nullable_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
+DROP TRIGGER 'fk_nullable_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
+-->
+
+DELETE FROM "lbDMF_ForeignKeys" where FKTable = '<xsl:value-of select="../@name"/>' AND FKColumn = '<xsl:value-of select="@name"/>';
+
+</xsl:if>
 </xsl:for-each>
 </xsl:template>
 
@@ -973,10 +1012,8 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:variable name="foreignTableID" select="../@xmi:id"/>
 
 <xsl:variable name="primaryKey" select="//packagedElement[@xmi:id=$primaryTableID]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
-<!--
-ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>" ADD CONSTRAINT "<xsl:value-of select="//packagedElement[@xmi:id=$foreignTableID]/@name"/>_pkey" PRIMARY KEY ("<xsl:value-of select="$primaryKey"/>");
--->
-ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>";</xsl:if>
+-- Quick and dirty ignore it. This is an unsave method due to internally populated tables wouldn't cleaned up well.
+--ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="@xmi:id"/>";</xsl:if>
 			</xsl:if>
 			</xsl:otherwise>
 <!--			<xsl:if test="./@association!=''"><xsl:if test="./@aggregation='none'">INTEGER</xsl:if></xsl:if>
