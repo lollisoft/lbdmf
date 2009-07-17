@@ -58,6 +58,10 @@ insert into tempactions (taction) select action from formular_actions where form
 
 delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = 'lbDMF Manager'));
 
+delete from action_step_transitions where src_actionid in (select id from action_steps where actionid in (select taction from tempactions)) or dst_actionid in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_step_parameter where action_step_id in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_parameters where actionid in (select taction from tempactions);
+
 delete from action_steps where actionid in (select taction from tempactions);
 delete from actions where id in (select taction from tempactions);
 delete from tempactions;
@@ -68,8 +72,9 @@ delete from formulare where anwendungid in (select id from anwendungen where nam
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT id, lastapp FROM "users" WHERE "userid" = 'user';
+
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', 'dba', id FROM "anwendungen" WHERE "name" = 'lbDMF Manager';
-INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'dbpass', id FROM "anwendungen" WHERE "name" = 'lbDMF Manager';
+INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'trainres', id FROM "anwendungen" WHERE "name" = 'lbDMF Manager';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBName', 'lbDMF', id FROM "anwendungen" WHERE "name" = 'lbDMF Manager';
 
 drop table tempactions;
@@ -103,7 +108,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Benutz
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21882_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21882_0'.
 
 
 
@@ -149,7 +154,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltyp
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21902_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21902_0'.
 
 
 
@@ -167,7 +172,7 @@ UPDATE actions set name = 'Formular_Parameter' where name = 'BOUML_0x21902_0';
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21982_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21982_0'.
 
 
 
@@ -289,7 +294,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Anwend
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21782_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21782_0'.
 
 
 
@@ -307,7 +312,7 @@ UPDATE actions set name = 'Anwendungsparameter' where name = 'BOUML_0x21782_0';
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21802_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21802_0'.
 
 
 
@@ -361,7 +366,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Aktion
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21702_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21702_0'.
 
 
 
@@ -509,7 +514,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Report
 
 
 -- Create sqlite based action
--- Select action type ActionType: lbDMF:masterdetail_action, Property: BOUML_0x21a02_0.
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x21a02_0'.
 
 
 
