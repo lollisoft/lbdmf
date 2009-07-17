@@ -1111,6 +1111,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
 		AppID->setData(metaapp->getApplicationID());
 		*param = "SaveApplicationID";
 		document->setUAPInteger(*&param, *&AppID);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+		*overwrite = (_overwriteDatabase) ? "yes" : "no";
+		*param = "overwriteDatabase";
+		document->setUAPString(*&param, *&overwrite);
 	}
 
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
@@ -1221,7 +1226,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 		*overwrite = (_overwriteDatabase) ? "yes" : "no";
 		*param = "overwriteDatabase";
 		document->setUAPString(*&param, *&overwrite);
-		
 	}
 
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
