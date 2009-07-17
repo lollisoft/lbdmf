@@ -131,6 +131,15 @@
     <xsl:param name="ID"/>
     <xsl:param name="Name"/>
     <xsl:param name="FormName"/>
+<xsl:choose>
+	<xsl:when test="$TargetDBType='PostgreSQL'">
+INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');
+
+INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), '', '');
+
+INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_Validator');
+	</xsl:when>
+	<xsl:when test="$TargetDBType='Sqlite'">
 -- Generate statemachine for <xsl:value-of select="$ID"/>
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
 
@@ -148,27 +157,42 @@ INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module")
 INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), '', '');
 
 INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_Validator');
+	</xsl:when>
+	<xsl:when test="$TargetDBType='MSSQL'">
+	</xsl:when>
+</xsl:choose>
 
 <xsl:choose>
 	<xsl:when test="$TargetDBType='PostgreSQL'">
--- Create activity nodes for PostgreSQL
+-- Create activity nodes for Sqlite
 <xsl:for-each select="//packagedElement[@xmi:id=$ID]/node">
+	<xsl:variable name="step" select="position()"/>
 	<xsl:variable name="nodetype" select="@xmi:type"/>
 		<xsl:variable name="stereotype" select="./xmi:Extension/stereotype/@name"/>
 	<xsl:choose>
 		<xsl:when test="$nodetype='uml:InitialNode'">
--- Node <xsl:value-of select="$nodetype"/>.
-select "CreateInitialNode"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>', '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="./@name"/>', '<xsl:value-of select="$stereotype"/>');
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+		</xsl:when>
+		<xsl:when test="$nodetype='uml:SendSignalAction'">
+		<xsl:variable name="comment" select="./ownedComment/@body"/>
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '<xsl:value-of select="$comment"/>');
+<xsl:for-each select="./xmi:Extension/taggedValue">
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('<xsl:value-of select="./@tag"/>', '<xsl:value-of select="./@value"/>', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = '<xsl:value-of select="../../@xmi:id"/>'));
+</xsl:for-each>
+
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:DecisionNode'">
--- Node <xsl:value-of select="$nodetype"/>.
-select "CreateDecisionNode"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>', '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="./@name"/>', '<xsl:value-of select="$stereotype"/>');
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:OpaqueAction'">
--- Node <xsl:value-of select="$nodetype"/>.
-select "CreateOpaqueAction"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>', '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="./@name"/>', '<xsl:value-of select="$stereotype"/>', '<xsl:value-of select="./body"/>'); 
+		<xsl:variable name="comment" select="./ownedComment/@body"/>
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '<xsl:value-of select="$comment"/>');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:FinalNode'">
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+		</xsl:when>
+		<xsl:when test="$nodetype='uml:ActivityParameterNode'">
+INSERT INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('<xsl:value-of select="./@name"/>', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = '<xsl:value-of select="../@name"/>_<xsl:value-of select="../@xmi:id"/>'));
 		</xsl:when>
 		<xsl:otherwise>
 -- Nodetype <xsl:value-of select="$nodetype"/> not known.
@@ -182,28 +206,41 @@ select "CreateOpaqueAction"('<xsl:value-of select="$ID"/>', '<xsl:value-of selec
 	<xsl:choose>
 		<xsl:when test="$edgetype='uml:ControlFlow'">
 			<xsl:variable name="expression" select="./guard[@xmi:type='uml:OpaqueExpression']/body"/>
-select "CreateControlFlow"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>', '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="./@name"/>', '<xsl:value-of select="$stereotype"/>', '<xsl:value-of select="./@source"/>', '<xsl:value-of select="./@target"/>', '<xsl:value-of select="$expression"/>');
+			<xsl:variable name="transid" select="./@transformation"/>
+			<xsl:variable name="transformation" select="//ownedBehavior[@xmi:type='uml:OpaqueBehavior'][@xmi:id=$transid]/body"/>
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('<xsl:value-of select="$expression"/>', '<xsl:value-of select="@name"/>_<xsl:value-of select="$ID"/>', (select id from "action_steps" where "bezeichnung" = '<xsl:value-of select="./@source"/>'), (select id from "action_steps" where "bezeichnung" = '<xsl:value-of select="./@target"/>'));
+<xsl:if test="$transformation!=''">
+UPDATE "action_step_transitions" set "expression" = '<xsl:value-of select="$transformation"/>' where "src_actionid" = (select id from "action_steps" where "bezeichnung" = '<xsl:value-of select="./@source"/>') and dst_actionid = (select id from "action_steps" where "bezeichnung" = '<xsl:value-of select="./@target"/>');
+</xsl:if>
 		</xsl:when>
 		<xsl:otherwise>
 -- Nodetype <xsl:value-of select="$edgetype"/> not known.
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:for-each>
--- Create activity desicions
+-- Rename activity nodes for Sqlite
 <xsl:for-each select="//packagedElement[@xmi:id=$ID]/node">
+	<xsl:variable name="step" select="position()"/>
 	<xsl:variable name="nodetype" select="@xmi:type"/>
 		<xsl:variable name="stereotype" select="./xmi:Extension/stereotype/@name"/>
 	<xsl:choose>
+		<xsl:when test="$nodetype='uml:InitialNode'">
+UPDATE "action_steps" set "bezeichnung" = '<xsl:value-of select="./@name"/>' where "bezeichnung" = '<xsl:value-of select="./@xmi:id"/>';
+		</xsl:when>
+		<xsl:when test="$nodetype='uml:SendSignalAction'">
+		<xsl:variable name="comment" select="./ownedComment/@body"/>
+		<xsl:variable name="signalname" select="./xmi:Extension/taggedValue[@tag='signal']/@value"/>
+UPDATE "action_steps" set "bezeichnung" = '<xsl:value-of select="$signalname"/>' where "bezeichnung" = '<xsl:value-of select="./@xmi:id"/>';
+		</xsl:when>
 		<xsl:when test="$nodetype='uml:DecisionNode'">
-			<xsl:variable name="decision" select="./@xmi:id"/>
-			<xsl:variable name="incoming" select="./incoming/@xmi:idref"/>
-			<xsl:for-each select="./outgoing">
-select "CreateDecisionPath"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>', '<xsl:value-of select="$decision"/>', '<xsl:value-of select="./@name"/>', '<xsl:value-of select="$stereotype"/>', '<xsl:value-of select="$incoming"/>', '<xsl:value-of select="./@xmi:idref"/>');
-			</xsl:for-each>
+UPDATE "action_steps" set "bezeichnung" = '<xsl:value-of select="./@name"/>' where "bezeichnung" = '<xsl:value-of select="./@xmi:id"/>';
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:OpaqueAction'">
+		<xsl:variable name="comment" select="./ownedComment/@body"/>
+UPDATE "action_steps" set "bezeichnung" = '<xsl:value-of select="./@name"/>' where "bezeichnung" = '<xsl:value-of select="./@xmi:id"/>';
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:FinalNode'">
+UPDATE "action_steps" set "bezeichnung" = 'FinalNode' where "bezeichnung" = '<xsl:value-of select="./@xmi:id"/>';
 		</xsl:when>
 		<xsl:otherwise>
 -- Nodetype <xsl:value-of select="$nodetype"/> not known.

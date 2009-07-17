@@ -52,11 +52,18 @@ begin
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open Database Report'', ''instanceOflbDBReportAction'', ''lbDatabaseReport'');
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Perform XSLT transformation'', ''instanceOflbDMFXslt'', ''lbDMFXslt'');
 
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''FormValidator'', '''', '''');
+
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''InitialNode'', '''', '''');
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''SendSignalAction'', ''instanceOflbSendSignalAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''DecisionNode'', ''instanceOflbDecisionAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''OpaqueAction'', ''instanceOflbOpAqueOperation'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES (''FinalNode'', '''', '''');
 	end if;
 
 
 	applicationid = getorcreateapplication(applicationname);
-	insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
+	insert into user_anwendungen (userid, anwendungenid) values (uid, applicationid);
 	if applicationname = ''lbDMF Manager'' then
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
@@ -148,6 +155,38 @@ begin
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
+  
+  
+  
+-- Delete application definitions if they exist. The deletion must be done in reverse order.
+
+-- help table to not loose unused actions.
+CREATE TABLE "tempactions" (
+	"id"		SERIAL NOT NULL,
+	"taction"	INTEGER
+);
+
+-- Works
+delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+-- From here untested
+insert into tempactions (taction) select action from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+
+delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+
+delete from action_step_transitions where src_actionid in (select id from action_steps where actionid in (select taction from tempactions)) or dst_actionid in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_step_parameter where action_step_id in (select id from action_steps where actionid in (select taction from tempactions));
+delete from action_parameters where actionid in (select taction from tempactions);
+
+delete from action_steps where actionid in (select taction from tempactions);
+delete from actions where id in (select taction from tempactions);
+delete from tempactions;
+delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+delete from anwendungen_formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'); 
+delete from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+
+delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+
+drop table tempactions;  
 		</xsl:when>
 		<xsl:when test="$TargetDatabaseType='Sqlite'">
 -- Skip rewrite

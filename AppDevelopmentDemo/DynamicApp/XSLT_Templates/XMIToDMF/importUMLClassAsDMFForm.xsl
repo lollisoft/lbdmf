@@ -448,7 +448,7 @@ UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<
 -- <xsl:value-of select="$STELTProperty"/>
 <xsl:variable name="visibleField" select="//lbDMF:masterdetail_action[@xmi:id=$STELTProperty]/@sourcecolumn"/>
 -- Build up a master detail action
-INSERT INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>', 1, '<xsl:value-of select="$visibleField"/>');	
+INSERT INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>',  (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="$visibleField"/>');	
 INSERT INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for <xsl:value-of select="$ActionName"/>', 1, '<xsl:value-of select="$ActionName"/>', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'));
 INSERT INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = '<xsl:value-of select="$FromFormName"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>')), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'), 'action_master_detail_<xsl:value-of select="$Property"/>');
 UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<xsl:value-of select="$Property"/>';
@@ -459,7 +459,7 @@ UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<
 -- <xsl:value-of select="$STELTProperty"/>
 <xsl:variable name="visibleField" select="//lbDMF:detailmaster_action[@xmi:id=$STELTProperty]/@sourcecolumn"/>
 -- Build up a detail master action
-INSERT INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>', 1, '<xsl:value-of select="$visibleField"/>');	
+INSERT INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="$visibleField"/>');	
 INSERT INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Detail master action for <xsl:value-of select="$ActionName"/>', 1, '<xsl:value-of select="$ActionName"/>', (select id from action_types where bezeichnung = 'Open master form'), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'));
 INSERT INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = '<xsl:value-of select="$FromFormName"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>')), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'), 'action_master_detail_<xsl:value-of select="$Property"/>');
 UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<xsl:value-of select="$Property"/>';
@@ -542,7 +542,7 @@ select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of 
 </xsl:variable>
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), 1);
+	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
 
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
@@ -615,8 +615,8 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 	<xsl:value-of select="@name"/>
 	</xsl:for-each>
 </xsl:variable>
-insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
+insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), '<xsl:value-of select="$parameters"/>');	
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), (select id from action_types where bezeichnung = 'Activity'));
 	</xsl:when>
 	<xsl:otherwise>
 	</xsl:otherwise>
