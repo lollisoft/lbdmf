@@ -30,7 +30,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 <!-- === UML XMI file ====================================================================== -->
 
 <exsl:document href="{$basedir}/ModelExchange/{$ApplicationName}.xmi" method="text">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http://www.lollisoft.de/spec/lbDMF/1.0"&gt;
+&lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
 		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
@@ -255,7 +255,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 &lt;/xmi:XMI&gt;</exsl:document>
 </xsl:if>
 <xsl:if test="$stream_output='yes'">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http://www.lollisoft.de/spec/lbDMF/1.0"&gt;
+&lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
 		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
