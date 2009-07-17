@@ -174,6 +174,7 @@ public:
 	 */
 	lbErrCodes LB_STDCALL executeQueryFromFile(lb_I_Unknown* uk);
 
+	lbErrCodes LB_STDCALL overwriteDatabase(lb_I_Unknown* uk);
 protected:
 
 	/** \brief Load the database forms.
@@ -185,6 +186,8 @@ protected:
 
 	bool haveLoadedDBModel;
 	UAP(lb_I_String, lastExportedApp)
+
+	bool _overwriteDatabase;
 
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman)
@@ -268,6 +271,8 @@ lbDynamicApplication::lbDynamicApplication() {
 	ref = STARTREF;
 	gui = NULL;
 
+	_overwriteDatabase = false;
+	
 	dirty = false;
 
 	haveLoadedDBModel = false;
@@ -319,6 +324,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_overwriteDatabase = !_overwriteDatabase;
+
+	//if (_overwriteDatabase) metaapp->toggleEvent("overwriteDatabase");
+	
+	return err;
+}
 
 lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -1201,6 +1216,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 
 		*tempStorageNamespace = "lbDynAppUMLImport";
 		document->setUAPString(*&param, *&tempStorageNamespace);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+		*overwrite = (_overwriteDatabase) ? "yes" : "no";
+		*param = "overwriteDatabase";
+		document->setUAPString(*&param, *&overwrite);
+		
 	}
 
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
@@ -2830,17 +2851,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 
 	*editMenu = _trans("&Edit");
 	*menuEntry = _trans("Set all forms back to dynamic");
-
 	eman->registerEvent("resetCustomDBFormsToDynamic", unused);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomDBFormsToDynamic, "resetCustomDBFormsToDynamic");
 	metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomDBFormsToDynamic", "");
 
-	eman->registerEvent("executeQueryFromFile", unused);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::executeQueryFromFile, "executeQueryFromFile");
 	*editMenu = _trans("&Edit");
 	*menuEntry = _trans("Execute SQL query");
+	eman->registerEvent("executeQueryFromFile", unused);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::executeQueryFromFile, "executeQueryFromFile");
 	metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "executeQueryFromFile", "");
-
+	
+	*editMenu = _trans("&Edit");
+	*menuEntry = _trans("overwrite database while import");
+	eman->registerEvent("overwriteDatabase", unused);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::overwriteDatabase, "overwriteDatabase");
+	metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "overwriteDatabase", "");
+	
 	return ERR_NONE;
 }
 

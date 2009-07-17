@@ -158,7 +158,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
-	
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
 
@@ -179,6 +181,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		activedocument->getUAPString(*&param, *&DBUser);
 		*param = "UMLImportDBPass";
 		activedocument->getUAPString(*&param, *&DBPass);
+
+		*param = "overwriteDatabase";
+		activedocument->getUAPString(*&param, *&overwrite);
 	}
 	
 	// Write the settings file for the application database here ...
@@ -192,7 +197,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
+				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
 				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
 				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
@@ -1497,6 +1502,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
@@ -1522,7 +1529,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 		document->getUAPString(*&param, *&DBUser);
 		*param = "UMLImportDBPass";
 		document->getUAPString(*&param, *&DBPass);
-	}
+
+		*param = "overwriteDatabase";
+		document->getUAPString(*&param, *&overwrite);
+    }
 
 	// Write the settings file for the application database here ...
 	
@@ -1535,7 +1545,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
 				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'no'\"/>\n";
+				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
 				
 				DBName->replace(">", "&gt;");
 				DBName->replace("<", "&lt;");
