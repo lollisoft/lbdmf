@@ -107,6 +107,14 @@ int main(int argc, char *argv[]) {
 
 		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\"");
 		
+		if (query->hasFKColumn("userid") == 0) {
+			_CL_LOG << "Error: Expect foreignkey userid in user_anwendungen." LOG_
+		}
+		
+		if (query->hasFKColumn("anwendungenid") == 0) {
+			_CL_LOG << "Error: Expect foreignkey anwendungenid in user_anwendungen." LOG_
+		}
+		
 		query->PrintData();
 		
 		query->first();
