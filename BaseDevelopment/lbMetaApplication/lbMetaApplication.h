@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.64 2009/06/10 11:56:51 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.65 2009/07/19 22:40:20 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.65  2009/07/19 22:40:20  lollisoft
+ * Moved the installation step of an initial database to the new plugin install method.
+ *
  * Revision 1.64  2009/06/10 11:56:51  lollisoft
  * Added functions to help passing application process name.
  *
@@ -454,19 +457,6 @@ public:
 	void					LB_STDCALL setProcessName(const char* name);
 	lb_I_String*			LB_STDCALL getProcessName();
 	
-	/** \brief Checks for availability of a database.
-	 * This function does the work to check, if any known database is available.
-	 * The check includes testing for an ODBC database named 'lbDMF' and for the
-	 * Sqlite version with this name.
-	 *
-	 * It returns false if no one is available.
-	 */
-	bool					LB_STDCALL checkForDatabases();
-	
-	/** \brief Installs a database.
-	 * This function installs the database.
-	 */
-	bool					LB_STDCALL installDatabase();
 
 protected:
 	lb_I_GUI* gui;
@@ -518,20 +508,6 @@ protected:
 	bool _logged_in;
 	bool _loading_object_data;
 	
-	int _check_for_databases_failure_step;
-	
-	enum {
-		META_DB_FAILURE_SYS_DB_BACKEND = 1,
-		META_DB_FAILURE_SYS_DB_INITIALIZE,
-		META_DB_FAILURE_SYS_DB_CONNECT,
-		META_DB_FAILURE_SYS_DB_SCHEMA, // The schema is not initialized
-		META_DB_FAILURE_SYS_DB_SCHEMAINSTALL, // Installation of the schema failed
-		META_DB_FAILURE_APP_DB_BACKEND,
-		META_DB_FAILURE_APP_DB_INITIALIZE,
-		META_DB_FAILURE_APP_DB_CONNECT,
-		META_DB_FAILURE_APP_DB_SCHEMA, // The schema is not initialized
-		META_DB_FAILURE_APP_DB_SCHEMAINSTALL // Installation of the schema failed
-	};
 	
 	bool _loaded;
 	
