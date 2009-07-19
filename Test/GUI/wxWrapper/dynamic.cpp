@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.164 2009/07/12 10:46:54 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.165 2009/07/19 22:42:12 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.164 $
+ * $Revision: 1.165 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.164 2009/07/12 10:46:54 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.165 2009/07/19 22:42:12 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.165  2009/07/19 22:42:12  lollisoft
+ * Using the new plugin install method per plugin module.
+ *
  * Revision 1.164  2009/07/12 10:46:54  lollisoft
  * Added frame to fix hang at exit if splash is still shown.
  *
@@ -2279,21 +2282,6 @@ bool MyApp::OnInit(void)
 	// Preload to enable flag modifications in plugins. Such as loading from database instead file
 	metaApp->load();
 
-	if (metaApp->usingSystemDatabaseBackend()) {
-		_LOG << "Have system database backend switch: true" LOG_
-	} else {
-		_LOG << "Have system database backend switch: false" LOG_
-	}
-
-	if (metaApp->usingApplicationDatabaseBackend()) {
-		_LOG << "Have application database backend switch: true" LOG_
-	} else {
-		_LOG << "Have application database backend switch: false" LOG_
-	}
-
-	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
-	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
-
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();
     uk++;
@@ -2317,7 +2305,28 @@ bool MyApp::OnInit(void)
     SetTopWindow(frame);
 
     PM->initialize();
+	
+	/* If a plugin module needs to install something, it happens here.
+	 * Do not move this after the splash screen as it may block when any
+	 * installer asks the user something.
+	 */
+	PM->runInstallers();
 
+	if (metaApp->usingSystemDatabaseBackend()) {
+		_LOG << "Have system database backend switch: true" LOG_
+	} else {
+		_LOG << "Have system database backend switch: false" LOG_
+	}
+	
+	if (metaApp->usingApplicationDatabaseBackend()) {
+		_LOG << "Have application database backend switch: true" LOG_
+	} else {
+		_LOG << "Have application database backend switch: false" LOG_
+	}
+	
+	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
+	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
+	
     wxImage::AddHandler(new wxPNGHandler);
 
     bool no_splash = false;
