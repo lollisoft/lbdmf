@@ -569,6 +569,14 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 				
 				if (formularfields->getFormularID() == FormID) {
 					if (strcmp(formularfields->getName(), name) == 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
+						
+						*fkt = formularfields->getFKTable();
+						*fkn = formularfields->getFKName();
+						
+						if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
+						
 						definitionFound = true;
 						formularfields->finishFieldsIteration();
 						break;
@@ -605,6 +613,14 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 					
 					if (formularfields->getFormularID() == FormID) {
 						if (strcmp(formularfields->getName(), name) == 0) {
+							UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
+							
+							*fkt = formularfields->getFKTable();
+							*fkn = formularfields->getFKName();
+
+							if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
+							
 							definitionFound = true;
 							formularfields->finishFieldsIteration();
 							break;
