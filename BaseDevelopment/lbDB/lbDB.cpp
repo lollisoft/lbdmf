@@ -5356,6 +5356,15 @@ public:
 	lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
 	lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
 
+	lb_I_String*	LB_STDCALL getDriverName();
+	lb_I_String*	LB_STDCALL getDriverVersion();
+	lb_I_String*	LB_STDCALL getDatabaseName();
+	lb_I_String*	LB_STDCALL getDBMSName();
+	lb_I_String*	LB_STDCALL getDBMSVersion();
+	
+	
+	
+	
 private:
 	RETCODE  retcode;
 	HENV     henv;
@@ -5376,6 +5385,80 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDatabase, lbDatabase)
 
+	
+lb_I_String*	LB_STDCALL lbDatabase::getDriverName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DRIVER_NAME,     Info,      bufferSize, &bufferSize);
+
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+
+lb_I_String*	LB_STDCALL lbDatabase::getDriverVersion() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DRIVER_VER,     Info,      bufferSize, &bufferSize);
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+	
+lb_I_String*	LB_STDCALL lbDatabase::getDatabaseName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DATABASE_NAME,     Info,      bufferSize, &bufferSize);
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+	
+lb_I_String*	LB_STDCALL lbDatabase::getDBMSName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DBMS_NAME,     Info,      bufferSize, &bufferSize);
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+	
+lb_I_String*	LB_STDCALL lbDatabase::getDBMSVersion() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DBMS_VER,     Info,      bufferSize, &bufferSize);
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+	
+	
+	
+	
 lbDatabase::lbDatabase() {
 	ref = STARTREF;
 	henv = 0;
@@ -6449,6 +6532,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 		*paramname = "TableName";
 		param->getUAPString(*&paramname, *&tablename);
 
+		_CL_LOG << "Getting foreign keys for table '" << tablename->charrep() << "'" LOG_
+		
 		if (SomeBaseSettings != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
@@ -6458,7 +6543,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 
 			retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), (SQLCHAR*) tablename->charrep(), SQL_NTS);
 		} else {
-			retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);
+			retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
 		}
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)

@@ -992,6 +992,27 @@ public:
 
 	virtual lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname) = 0;
 	virtual lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname) = 0;
+	
+	/** \brief Get the driver name.
+	 * This is usually the module name (DLL/SO).
+	 */
+	virtual lb_I_String*	LB_STDCALL getDriverName() = 0;
+	/** \brief Get the driver name.
+	 * This is usually the module version (DLL/SO).
+	 */
+	virtual lb_I_String*	LB_STDCALL getDriverVersion() = 0;
+	/** \brief Get the database instance name.
+	 */
+	virtual lb_I_String*	LB_STDCALL getDatabaseName() = 0;
+	/** \brief Get the database vendor name.
+	 */
+	virtual lb_I_String*	LB_STDCALL getDBMSName() = 0;
+	/** \brief Get the database vendor version.
+	 * This is usually the internal database version
+	 */
+	virtual lb_I_String*	LB_STDCALL getDBMSVersion() = 0;
+	
+	
 };
 /*...e*/
 /*...sclass lb_I_DatabaseForm:0:*/

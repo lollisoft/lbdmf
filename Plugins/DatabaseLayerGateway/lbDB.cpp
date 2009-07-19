@@ -4749,6 +4749,65 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbDatabaseLayerDatabase, lbDatabaseLayerDatabase)
 
+lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "DatabaseLayerGateway";
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+
+lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverVersion() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "1.0";
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+
+lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDatabaseName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	
+	*s = (const char*) db;
+	
+	return s.getPtr();
+}
+
+lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSName() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "Sqlite";
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+
+lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSVersion() {
+	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	s++;
+	
+	SQLSMALLINT bufferSize = 255;
+	UCHAR   Info[255] = "tbd.";
+	
+	*s = (const char*) Info;
+	
+	return s.getPtr();
+}
+
 lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() {
 	ref = STARTREF;
 	henv = 0;
@@ -4763,6 +4822,7 @@ lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() {
 
 lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() {
 	_CL_LOG << "lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() called." LOG_
+	if (db) free(db);
 	close();
 }
 
@@ -4816,6 +4876,9 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	
 	*connName += connectionname;
 	*connName += ".db3";
+	
+	if (db) free(db);
+	db = strdup(connName->charrep());
 	
 	if (connPooling == NULL) {
 		_LOG << "lbDatabaseLayerDatabase::open() Initialize connection pooling." LOG_

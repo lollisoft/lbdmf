@@ -76,6 +76,12 @@ public:
 	lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
 	lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
 	
+	lb_I_String*	LB_STDCALL getDriverName();
+	lb_I_String*	LB_STDCALL getDriverVersion();
+	lb_I_String*	LB_STDCALL getDatabaseName();
+	lb_I_String*	LB_STDCALL getDBMSName();
+	lb_I_String*	LB_STDCALL getDBMSVersion();
+	
 	DatabaseLayer* LB_STDCALL getBackend(char* connectionname);
 private:
 	RETCODE  retcode;
