@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.64 2009/06/04 12:27:50 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.65 2009/07/19 22:37:14 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.65  2009/07/19 22:37:14  lollisoft
+ * Implemented new 'install' functionality for each plugin module. The lb_I_PluginModule became a default implementation to do nothing.
+ *
  * Revision 1.64  2009/06/04 12:27:50  lollisoft
  * Added new functions into plugin manager and plugin module to support query of registered modules.
  *
@@ -350,9 +353,10 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL initialize();
+	void LB_STDCALL runInstallers();
 	void LB_STDCALL unload();
-        bool LB_STDCALL beginEnumPlugins();
-        bool LB_STDCALL beginEnumServerPlugins();
+	bool LB_STDCALL beginEnumPlugins();
+	bool LB_STDCALL beginEnumServerPlugins();
 
 	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version);
     lb_I_Plugin* LB_STDCALL nextPlugin();
@@ -360,8 +364,8 @@ public:
 	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace);
     lb_I_Plugin* LB_STDCALL nextServerPlugin();
 
-        bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
-        bool LB_STDCALL detach(lb_I_PluginModule* toAttach);
+	bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
+	bool LB_STDCALL detach(lb_I_PluginModule* toAttach);
 
 	lb_I_String* LB_STDCALL getPluginDirectory();
 
@@ -717,6 +721,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 /*...e*/
 /*...svoid LB_STDCALL lbPluginManager\58\\58\initialize\40\\41\:0:*/
 void LB_STDCALL lbPluginManager::initialize() {
+	lbErrCodes err = ERR_NONE;
 	isInitialized = true;
 	isServerInitialized = true;
 	
@@ -930,7 +935,61 @@ void LB_STDCALL lbPluginManager::initialize() {
 }
 
 /*...e*/
+	
+/** \todo Need to think about the copy iterator problem.
+ * The need for a copy iterator or saving the current iteration if a new one
+ * should start, should be thought about, since without that an endless loop
+ * may occur.
+ */
+void LB_STDCALL lbPluginManager::runInstallers() {
+	lbErrCodes err = ERR_NONE;
+	if (!isInitialized) initialize();
 
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, copy)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pos)
+	UAP(lb_I_KeyBase, key)
+	QI(pos, lb_I_KeyBase, key)
+	
+	int i = 0;
+	
+	copy->setCloning(false);
+	
+	// Copy the list to avoid an endless loop if any plugin wants to load another plugin
+	PluginModules->finishIteration();
+	while (PluginModules->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_PluginModule, plM)
+		
+		uk = PluginModules->nextElement();
+		
+		if (uk == NULL) {
+			_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+			continue;
+		}
+
+		// Copy the element as a reference
+		i++;
+		pos->setData(i);
+		copy->insert(&uk, &key);
+	}
+	PluginModules->finishIteration();
+	
+	copy->finishIteration();
+	while (copy->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_PluginModule, plM)
+		
+		uk = copy->nextElement();
+		
+		if (uk == NULL) {
+			_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+			continue;
+		}
+		QI(uk, lb_I_PluginModule, plM)
+		plM->install();
+	}
+	copy->finishIteration();
+}
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (!isInitialized) initialize();

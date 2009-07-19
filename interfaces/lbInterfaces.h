@@ -3799,7 +3799,14 @@ public:
 	 * succeed. If not, the module will be ignored.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
-
+	
+	/** \brief Runs the install method per plugin module.
+	 * The install method per plugin module may do install tasks. This routine is used to invoke all
+	 * install tasks. Each install task must be runnable isolated and should not depend on another install
+	 * task.
+	 */
+	virtual void LB_STDCALL runInstallers() = 0;
+	
 	/** \brief Unload plugins.
 	 *
 	 * Use this function to clean up all loaded plugin modules.
@@ -3914,13 +3921,19 @@ public:
 	 */
 	virtual lb_I_Container* LB_STDCALL getPlugins() = 0;
 
-	/**
+	/** \brief Prepare the list of plugins this module contains.
 	 * This function must be called once per instance of this
 	 * module. It internally generates the list of plugins
 	 * implemented in this module.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
 
+	/** \brief Run any install task this mudule may do.
+	 * Each plugin module may do some installation task. This routine is responsible for this task.
+	 * Please do not call any install method before the plugin manager has initialized all plugins.
+	 */
+	virtual void LB_STDCALL install() {}
+	
 protected:
 	/**
 	 * Used internally in the macros to build the plugin list.
