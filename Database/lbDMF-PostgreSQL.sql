@@ -96,7 +96,8 @@ CREATE TABLE "action_parameters" (
 	"name" CHAR(255),
 	"value" CHAR(255),
 	"interface" CHAR(255),
-	"description" CHAR(255)
+	"description" CHAR(255),
+	"actionid" INTEGER
 ) WITH OIDS;
 
 -- Class action_step_parameter of type ENTITY found.
@@ -112,7 +113,8 @@ CREATE TABLE "action_step_parameter" (
 	"name" CHAR(255),
 	"value" CHAR(255),
 	"interface" CHAR(255),
-	"description" CHAR(255)
+	"description" CHAR(255),
+	"action_step_id" INTEGER
 ) WITH OIDS;
 
 -- Class action_step_transitions of type ENTITY found.
@@ -126,7 +128,9 @@ CREATE TABLE "action_step_parameter" (
 CREATE TABLE "action_step_transitions" (
 	"id" SERIAL,
 	"expression" CHAR(255),
-	"description" CHAR(255)
+	"description" CHAR(255),
+	"dst_actionid" INTEGER,
+	"src_actionid" INTEGER
 ) WITH OIDS;
 
 -- Class action_steps of type ENTITY found.
@@ -142,9 +146,8 @@ CREATE TABLE "action_steps" (
 	"bezeichnung" CHAR(255),
 	"a_order_nr" INTEGER,
 	"what" CHAR(255),
-	"action_step_id" INTEGER,
-	"dst_actionid" INTEGER,
-	"src_actionid" INTEGER
+	"type" INTEGER,
+	"actionid" INTEGER
 ) WITH OIDS;
 
 -- Class action_types of type ENTITY found.
@@ -159,9 +162,7 @@ CREATE TABLE "action_types" (
 	"id" SERIAL,
 	"bezeichnung" CHAR(255),
 	"action_handler" CHAR(255),
-	"module" CHAR(255),
-	"type" INTEGER,
-	"typ" INTEGER
+	"module" CHAR(255)
 ) WITH OIDS;
 
 -- Class actions of type ENTITY found.
@@ -177,9 +178,7 @@ CREATE TABLE "actions" (
 	"name" CHAR(255),
 	"source" CHAR(255),
 	"target" CHAR(255),
-	"actionid" INTEGER,
-	"actionid" INTEGER,
-	"action" INTEGER
+	"typ" INTEGER
 ) WITH OIDS;
 
 -- Class anwendungen of type ENTITY found.
@@ -196,12 +195,7 @@ CREATE TABLE "anwendungen" (
 	"titel" CHAR(255),
 	"modulename" CHAR(255),
 	"functor" CHAR(255),
-	"interface" CHAR(255),
-	"anwendungid" INTEGER,
-	"anwendungid" INTEGER,
-	"anwendungid" INTEGER,
-	"anwendungenid" INTEGER,
-	"lastapp" INTEGER
+	"interface" CHAR(255)
 ) WITH OIDS;
 
 -- Class anwendungen_formulare of type ENTITY found.
@@ -213,7 +207,9 @@ CREATE TABLE "anwendungen" (
 
 -- CREATE TABLE anwendungen_formulare
 CREATE TABLE "anwendungen_formulare" (
-	"id" SERIAL
+	"id" SERIAL,
+	"anwendungid" INTEGER,
+	"formularid" INTEGER
 ) WITH OIDS;
 
 -- Class anwendungs_parameter of type ENTITY found.
@@ -227,7 +223,8 @@ CREATE TABLE "anwendungen_formulare" (
 CREATE TABLE "anwendungs_parameter" (
 	"id" SERIAL,
 	"parametername" CHAR(255),
-	"parametervalue" CHAR(255)
+	"parametervalue" CHAR(255),
+	"anwendungid" INTEGER
 ) WITH OIDS;
 
 -- Class anwendungsberechtigungen of type ENTITY found.
@@ -239,7 +236,9 @@ CREATE TABLE "anwendungs_parameter" (
 
 -- CREATE TABLE anwendungsberechtigungen
 CREATE TABLE "anwendungsberechtigungen" (
-	"id" SERIAL
+	"id" SERIAL,
+	"idformular" INTEGER,
+	"iduser" INTEGER
 ) WITH OIDS;
 
 -- Class applevel_plugin_registry of type ENTITY found.
@@ -315,7 +314,9 @@ CREATE TABLE "foreignkey_visibledata_mapping" (
 -- CREATE TABLE formular_actions
 CREATE TABLE "formular_actions" (
 	"id" SERIAL,
-	"event" CHAR(255)
+	"event" CHAR(255),
+	"action" INTEGER,
+	"formular" INTEGER
 ) WITH OIDS;
 
 -- Class formular_parameters of type ENTITY found.
@@ -329,7 +330,8 @@ CREATE TABLE "formular_actions" (
 CREATE TABLE "formular_parameters" (
 	"id" SERIAL,
 	"parametername" CHAR(255),
-	"parametervalue" CHAR(255)
+	"parametervalue" CHAR(255),
+	"formularid" INTEGER
 ) WITH OIDS;
 
 -- Class formulare of type ENTITY found.
@@ -348,10 +350,8 @@ CREATE TABLE "formulare" (
 	"eventname" CHAR(255),
 	"menuhilfe" CHAR(255),
 	"toolbarimage" CHAR(255),
-	"formularid" INTEGER,
-	"idformular" INTEGER,
-	"formular" INTEGER,
-	"formularid" INTEGER
+	"anwendungid" INTEGER,
+	"typ" INTEGER
 ) WITH OIDS;
 
 -- Class formulartypen of type ENTITY found.
@@ -368,8 +368,7 @@ CREATE TABLE "formulartypen" (
 	"handlerfunctor" CHAR(255),
 	"handlerinterface" CHAR(255),
 	"namespace" CHAR(255),
-	"beschreibung" CHAR(255),
-	"typ" INTEGER
+	"beschreibung" CHAR(255)
 ) WITH OIDS;
 
 -- Class regressiontest of type ENTITY found.
@@ -398,8 +397,7 @@ CREATE TABLE "regressiontest" (
 CREATE TABLE "report_element_types" (
 	"id" SERIAL,
 	"name" CHAR(255),
-	"description" CHAR(255),
-	"typ" INTEGER
+	"description" CHAR(255)
 ) WITH OIDS;
 
 -- Class report_elements of type ENTITY found.
@@ -418,7 +416,8 @@ CREATE TABLE "report_elements" (
 	"w" INTEGER,
 	"h" INTEGER,
 	"description" CHAR(255),
-	"elementid" INTEGER
+	"typ" INTEGER,
+	"reportid" INTEGER
 ) WITH OIDS;
 
 -- Class report_parameters of type ENTITY found.
@@ -432,7 +431,8 @@ CREATE TABLE "report_elements" (
 CREATE TABLE "report_parameters" (
 	"id" SERIAL,
 	"name" CHAR(255),
-	"value" INTEGER
+	"value" INTEGER,
+	"reportid" INTEGER
 ) WITH OIDS;
 
 -- Class report_texts of type ENTITY found.
@@ -446,7 +446,8 @@ CREATE TABLE "report_parameters" (
 CREATE TABLE "report_texts" (
 	"id" SERIAL,
 	"line" INTEGER,
-	"text" CHAR(255)
+	"text" CHAR(255),
+	"elementid" INTEGER
 ) WITH OIDS;
 
 -- Class reports of type ENTITY found.
@@ -460,9 +461,7 @@ CREATE TABLE "report_texts" (
 CREATE TABLE "reports" (
 	"id" SERIAL,
 	"name" CHAR(255),
-	"description" CHAR(255),
-	"reportid" INTEGER,
-	"reportid" INTEGER
+	"description" CHAR(255)
 ) WITH OIDS;
 
 -- Class translations of type ENTITY found.
@@ -489,7 +488,9 @@ CREATE TABLE "translations" (
 
 -- CREATE TABLE user_anwendungen
 CREATE TABLE "user_anwendungen" (
-	"id" SERIAL
+	"id" SERIAL,
+	"anwendungenid" INTEGER,
+	"userid" INTEGER
 ) WITH OIDS;
 
 -- Class users of type ENTITY found.
@@ -506,8 +507,7 @@ CREATE TABLE "users" (
 	"vorname" CHAR(255),
 	"userid" CHAR(255),
 	"passwort" CHAR(255),
-	"iduser" INTEGER,
-	"userid" INTEGER
+	"lastapp" INTEGER
 ) WITH OIDS;
 
 -- Class Benutzer of type FORM found.
@@ -725,104 +725,104 @@ ALTER TABLE "user_anwendungen" ADD CONSTRAINT "user_anwendungen_pkey" PRIMARY KE
 
 ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 		
--- Generate PostgreSQL application relations for table action_parameters for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table action_step_parameter for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table action_step_transitions for lbDMFManager_Entities
+-- Generate PostgreSQL application relations for table action_parameters for lbDMFManager_Entities	
+
+ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_actionid_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+
+-- Generate PostgreSQL application relations for table action_step_parameter for lbDMFManager_Entities	
+
+ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_step_id_action_steps_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
+
+-- Generate PostgreSQL application relations for table action_step_transitions for lbDMFManager_Entities	
+
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_dst_actionid_action_steps_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
+	
+
+ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_src_actionid_action_steps_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
+
 -- Generate PostgreSQL application relations for table action_steps for lbDMFManager_Entities	
 
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_action_step_id_action_step_parameter_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_step_parameter" ( "id" );
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_type_action_types_id" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
 	
 
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_dst_actionid_action_step_transitions_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_step_transitions" ( "id" );
-	
+ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_actionid_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
 
-ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_src_actionid_action_step_transitions_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_step_transitions" ( "id" );
-
--- Generate PostgreSQL application relations for table action_types for lbDMFManager_Entities	
-
-ALTER TABLE "action_types" ADD CONSTRAINT "cst_action_types_type_action_steps_id" FOREIGN KEY ( "type" ) REFERENCES "action_steps" ( "id" );
-	
-
-ALTER TABLE "action_types" ADD CONSTRAINT "cst_action_types_typ_actions_id" FOREIGN KEY ( "typ" ) REFERENCES "actions" ( "id" );
-
+-- Generate PostgreSQL application relations for table action_types for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table actions for lbDMFManager_Entities	
 
-ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_actionid_action_parameters_id" FOREIGN KEY ( "actionid" ) REFERENCES "action_parameters" ( "id" );
+ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_typ_action_types_id" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
+
+-- Generate PostgreSQL application relations for table anwendungen for lbDMFManager_Entities
+-- Generate PostgreSQL application relations for table anwendungen_formulare for lbDMFManager_Entities	
+
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_anwendungid_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 	
 
-ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_actionid_action_steps_id" FOREIGN KEY ( "actionid" ) REFERENCES "action_steps" ( "id" );
+ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_formularid_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
+-- Generate PostgreSQL application relations for table anwendungs_parameter for lbDMFManager_Entities	
+
+ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungs_parameter_anwendungid_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+
+-- Generate PostgreSQL application relations for table anwendungsberechtigungen for lbDMFManager_Entities	
+
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_idformular_formulare_id" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
 	
 
-ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_action_formular_actions_id" FOREIGN KEY ( "action" ) REFERENCES "formular_actions" ( "id" );
+ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_iduser_users_id" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
 
--- Generate PostgreSQL application relations for table anwendungen for lbDMFManager_Entities	
-
-ALTER TABLE "anwendungen" ADD CONSTRAINT "cst_anwendungen_anwendungid_anwendungen_formulare_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen_formulare" ( "id" );
-	
-
-ALTER TABLE "anwendungen" ADD CONSTRAINT "cst_anwendungen_anwendungid_anwendungs_parameter_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungs_parameter" ( "id" );
-	
-
-ALTER TABLE "anwendungen" ADD CONSTRAINT "cst_anwendungen_anwendungid_formulare_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "formulare" ( "id" );
-	
-
-ALTER TABLE "anwendungen" ADD CONSTRAINT "cst_anwendungen_anwendungenid_user_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "user_anwendungen" ( "id" );
-	
-
-ALTER TABLE "anwendungen" ADD CONSTRAINT "cst_anwendungen_lastapp_users_id" FOREIGN KEY ( "lastapp" ) REFERENCES "users" ( "id" );
-
--- Generate PostgreSQL application relations for table anwendungen_formulare for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table anwendungs_parameter for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table anwendungsberechtigungen for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table applevel_plugin_registry for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table codegentarget for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table column_types for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table foreignkey_visibledata_mapping for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table formular_actions for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table formular_parameters for lbDMFManager_Entities
+-- Generate PostgreSQL application relations for table formular_actions for lbDMFManager_Entities	
+
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_action_actions_id" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
+	
+
+ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_formular_formulare_id" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
+
+-- Generate PostgreSQL application relations for table formular_parameters for lbDMFManager_Entities	
+
+ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formular_parameters_formularid_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
 -- Generate PostgreSQL application relations for table formulare for lbDMFManager_Entities	
 
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formularid_anwendungen_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "anwendungen_formulare" ( "id" );
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_anwendungid_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 	
 
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_idformular_anwendungsberechtigungen_id" FOREIGN KEY ( "idformular" ) REFERENCES "anwendungsberechtigungen" ( "id" );
-	
+ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_typ_formulartypen_id" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
 
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formular_formular_actions_id" FOREIGN KEY ( "formular" ) REFERENCES "formular_actions" ( "id" );
-	
-
-ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formularid_formular_parameters_id" FOREIGN KEY ( "formularid" ) REFERENCES "formular_parameters" ( "id" );
-
--- Generate PostgreSQL application relations for table formulartypen for lbDMFManager_Entities	
-
-ALTER TABLE "formulartypen" ADD CONSTRAINT "cst_formulartypen_typ_formulare_id" FOREIGN KEY ( "typ" ) REFERENCES "formulare" ( "id" );
-
+-- Generate PostgreSQL application relations for table formulartypen for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table regressiontest for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table report_element_types for lbDMFManager_Entities	
-
-ALTER TABLE "report_element_types" ADD CONSTRAINT "cst_report_element_types_typ_report_elements_id" FOREIGN KEY ( "typ" ) REFERENCES "report_elements" ( "id" );
-
+-- Generate PostgreSQL application relations for table report_element_types for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table report_elements for lbDMFManager_Entities	
 
-ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_elementid_report_texts_id" FOREIGN KEY ( "elementid" ) REFERENCES "report_texts" ( "id" );
-
--- Generate PostgreSQL application relations for table report_parameters for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table report_texts for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table reports for lbDMFManager_Entities	
-
-ALTER TABLE "reports" ADD CONSTRAINT "cst_reports_reportid_report_elements_id" FOREIGN KEY ( "reportid" ) REFERENCES "report_elements" ( "id" );
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_typ_report_element_types_id" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
 	
 
-ALTER TABLE "reports" ADD CONSTRAINT "cst_reports_reportid_report_parameters_id" FOREIGN KEY ( "reportid" ) REFERENCES "report_parameters" ( "id" );
+ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_reportid_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
 
+-- Generate PostgreSQL application relations for table report_parameters for lbDMFManager_Entities	
+
+ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_report_parameters_reportid_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+
+-- Generate PostgreSQL application relations for table report_texts for lbDMFManager_Entities	
+
+ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_texts_elementid_report_elements_id" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
+
+-- Generate PostgreSQL application relations for table reports for lbDMFManager_Entities
 -- Generate PostgreSQL application relations for table translations for lbDMFManager_Entities
--- Generate PostgreSQL application relations for table user_anwendungen for lbDMFManager_Entities
+-- Generate PostgreSQL application relations for table user_anwendungen for lbDMFManager_Entities	
+
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_anwendungenid_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+	
+
+ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_userid_users_id" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
+
 -- Generate PostgreSQL application relations for table users for lbDMFManager_Entities	
 
-ALTER TABLE "users" ADD CONSTRAINT "cst_users_iduser_anwendungsberechtigungen_id" FOREIGN KEY ( "iduser" ) REFERENCES "anwendungsberechtigungen" ( "id" );
-	
-
-ALTER TABLE "users" ADD CONSTRAINT "cst_users_userid_user_anwendungen_id" FOREIGN KEY ( "userid" ) REFERENCES "user_anwendungen" ( "id" );
+ALTER TABLE "users" ADD CONSTRAINT "cst_users_lastapp_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 
 
 --
@@ -1063,7 +1063,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "menuhilfe", "eventname", "menuname", "name", "toolbarimage" from "formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "menuname", "menuhilfe", "eventname", "toolbarimage", "anwendungid", "typ" from "formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formulare', true);
 
 
@@ -1122,7 +1122,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername" from "formular_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "formularid" from "formular_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formular_Parameter', true);
 
 
@@ -1185,7 +1185,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "interface", "functor", "modulename", "titel", "name" from "anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "titel", "name", "interface", "functor", "modulename" from "anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungen', true);
 
 
@@ -1242,7 +1242,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "target", "source", "name", "id" from "actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "target", "source", "name", "typ" from "actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionen', true);
 
 
@@ -1302,7 +1302,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "event" from "formular_actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "event", "action", "formular" from "formular_actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formularaktionenzuordnen', true);
 
 
@@ -1323,7 +1323,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername" from "anwendungs_parameter" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "anwendungid" from "anwendungs_parameter" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungsparameter', true);
 
 
@@ -1344,7 +1344,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "what", "a_order_nr", "bezeichnung", "id" from "action_steps" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "bezeichnung", "what", "a_order_nr", "type", "actionid" from "action_steps" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionsschrittezuordnen', true);
 
 
@@ -1404,7 +1404,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "value", "name" from "report_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "value", "name", "reportid" from "report_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportparameter', true);
 
 
