@@ -1267,17 +1267,17 @@
 </xsl:if>
 
 <xsl:for-each select="//foreignkeys/foreignkey[@pktable=$TName][@pkcolumn=$FieldName]">
-			&lt;ownedAttribute xmi:type="uml:Property" name="" xmi:id="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>"	visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="@fkcolumn"/>" xmi:id="<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>"	visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
 				&lt;type xmi:type="uml:Class" xmi:idref="ID_<xsl:value-of select="@pktable"/>"/&gt;
-				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
-				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
+				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
+				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
 			&lt;/ownedAttribute&gt;
 </xsl:for-each>
 <xsl:for-each select="//foreignkeys/foreignkey[@fktable=$TName][@fkcolumn=$FieldName]">
-			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="@fkcolumn"/>" xmi:id="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
+			&lt;ownedAttribute xmi:type="uml:Property" name="" xmi:id="<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@ID"/>" visibility="protected" association="ASSOC_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@pkcolumn"/>_<xsl:value-of select="@fktable"/>_<xsl:value-of select="@fkcolumn"/>_<xsl:value-of select="@ID"/>" aggregation="none"&gt;
 				&lt;type  xmi:type="uml:Class" xmi:idref="ID_<xsl:value-of select="@fktable"/>"/&gt;
-				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
-				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="1"/&gt;
+				&lt;lowerValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_LOWER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
+				&lt;upperValue xmi:type="uml:LiteralString" xmi:id="MULTIPLICITY_UPPER_<xsl:value-of select="@pktable"/>_<xsl:value-of select="@fktable"/>" value="*"/&gt;
 			&lt;/ownedAttribute&gt;
 </xsl:for-each>
 </xsl:for-each>
