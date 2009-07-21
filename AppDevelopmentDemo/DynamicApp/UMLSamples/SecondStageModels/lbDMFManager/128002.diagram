@@ -1,0 +1,41 @@
+format 63
+
+classcanvas 128002 class_ref 133250 // users
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 31 160 2000
+end
+classcanvas 128130 class_ref 130690 // anwendungen
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 466 152 2004
+end
+classcanvas 128386 class_ref 130818 // anwendungen_formulare
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 435 420 3005
+end
+classcanvas 128642 class_ref 133122 // user_anwendungen
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 222 23 3005
+end
+relationcanvas 128258 relation_ref 132098 // <association>
+  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 234 223 3000 to ref 128130
+  role_a_pos 409 206 3000 role_b_pos 106 206 3000
+  multiplicity_a_pos 446 231 3000 multiplicity_b_pos 101 231 3000
+end
+relationcanvas 128514 relation_ref 131586 // <association>
+  from ref 128386 z 1999 stereotype "<<relationship>>" xyz 403 349 3000 to ref 128130
+  role_a_pos 522 301 3000 role_b_pos 526 402 3000
+  multiplicity_a_pos 497 301 3000 multiplicity_b_pos 498 402 3000
+end
+relationcanvas 128770 relation_ref 131970 // <association>
+  from ref 128642 z 1999 to point 509 53
+  line 129154 z 1999 stereotype "<<relationship>>" xyz 407 82 3000 to ref 128130
+  role_a_pos 521 135 3000 role_b_pos 366 37 3000
+  multiplicity_a_pos 496 135 3000 multiplicity_b_pos 360 62 3000
+end
+relationcanvas 128898 relation_ref 133506 // <association>
+  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 71 82 3000 to point 59 53
+  line 129026 z 1999 to ref 128642
+  role_a_pos 86 37 3000 role_b_pos 71 142 3000
+  multiplicity_a_pos 201 62 3000 multiplicity_b_pos 45 142 3000
+end
+end
