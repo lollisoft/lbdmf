@@ -553,6 +553,27 @@ int main(void)
 	
 	retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 
+	SQLSMALLINT bufferSize1 = 100;
+	SQLSMALLINT bufferSize2 = 100;
+	SQLSMALLINT bufferSize3 = 200;
+	SQLSMALLINT bufferSize4 = 100;
+	SQLSMALLINT bufferSize5 = 100;
+	UCHAR   driverVersion[100] = "";
+	UCHAR   driverName[100] = "";
+	UCHAR   dbmsVersion[200] = "";
+	UCHAR   dbmsName[100] = "";
+	UCHAR   databaseName[100] = "";
+	
+	retcode = SQLGetInfo(hdbc, SQL_DATABASE_NAME, databaseName,  bufferSize1, &bufferSize1);
+	retcode = SQLGetInfo(hdbc, SQL_DBMS_NAME,     dbmsName,      bufferSize2, &bufferSize2);
+	retcode = SQLGetInfo(hdbc, SQL_DBMS_VER,      dbmsVersion,   bufferSize3, &bufferSize3);
+	retcode = SQLGetInfo(hdbc, SQL_DRIVER_VER,    driverVersion, bufferSize4, &bufferSize4);
+	retcode = SQLGetInfo(hdbc, SQL_DRIVER_NAME,   driverName,    bufferSize5, &bufferSize5);
+	
+	printf("Database instance: database = %s\n", databaseName);
+	printf("Database information: database name = %s, database version = %s\n", dbmsName, dbmsVersion);
+	printf("ODBC driver information: driver name = %s, driver version = %s\n\n", driverName, driverVersion);
+	
 	retcode = SQLAllocStmt (hdbc, &hstmt);
 
 	retcode = SQLAllocStmt (hdbc, &hstmt_select);
