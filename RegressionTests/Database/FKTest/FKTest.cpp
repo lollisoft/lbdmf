@@ -92,6 +92,33 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Query, query2)
 		
 		query = database->getQuery("lbDMF", 0);
+
+		query->enableFKCollecting();
+		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\"");
+		
+		bool fkProblems = false;
+		
+		if (query->hasFKColumn("userid") == 0) {
+			_CL_LOG << "Error: Expect foreignkey userid in user_anwendungen." LOG_
+			fkProblems = true;
+		}
+		
+		if (query->hasFKColumn("anwendungenid") == 0) {
+			_CL_LOG << "Error: Expect foreignkey anwendungenid in user_anwendungen." LOG_
+			fkProblems = true;
+		}
+		
+		if (fkProblems) {
+			UAP(lb_I_Container, ForeignKeys)
+			
+			ForeignKeys = database->getForeignKeys("lbDMF");
+			
+			if (ForeignKeys->Count() == 0) {
+				_CL_LOG << "Error: Also getForeignKeys of database instance doesn't work." LOG_
+			}
+		}
+		
+		
 		query1 = database->getQuery("lbDMF", 0);
 		query2 = database->getQuery("lbDMF", 0);
 
@@ -104,16 +131,6 @@ int main(int argc, char *argv[]) {
 		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,4)");
 		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,5)");
 		query1->enableFKCollecting();
-
-		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\"");
-		
-		if (query->hasFKColumn("userid") == 0) {
-			_CL_LOG << "Error: Expect foreignkey userid in user_anwendungen." LOG_
-		}
-		
-		if (query->hasFKColumn("anwendungenid") == 0) {
-			_CL_LOG << "Error: Expect foreignkey anwendungenid in user_anwendungen." LOG_
-		}
 		
 		query->PrintData();
 		
