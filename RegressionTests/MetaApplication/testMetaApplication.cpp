@@ -58,42 +58,48 @@ extern "C" {
 
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
-	lb_I_Module* mm = NULL;
-	
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-	_CL_LOG << "Test MetaApplication" LOG_
+	{
+		// Preload lbClasses DLL with this line !
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
-	// Preload lbClasses DLL with this line !
-	UAP_REQUEST(mm, lb_I_String, s)
-	
-	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
+		// Don't forget this in a console application before metaapplication is initialized.
+		PM->initialize();
+		
+		_CL_LOG << "Test MetaApplication" LOG_
+		meta->initialize();
+		
+		meta->setLoadFromDatabase(true);
+		meta->save();
+		meta->setLoadFromDatabase(false);
+		meta->load();
+		
+		if (meta->getLoadFromDatabase() == false) {
+			_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
+		} else {
+			_CL_LOG << "Test 1: Saving and loading meta application data succeeded." LOG_
+		}
+		
+		meta->setLoadFromDatabase(false);
+		meta->save();
+		meta->setLoadFromDatabase(true);
+		meta->load();
+		
+		if (meta->getLoadFromDatabase() == true) {
+			_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
+		} else {
+			_CL_LOG << "Test 2: Saving and loading meta application data succeeded." LOG_
+		}
 
-	//meta->initialize();
-
-	meta->setLoadFromDatabase(true);
-	meta->save();
-	meta->setLoadFromDatabase(false);
-	meta->load();
-	
-	if (meta->getLoadFromDatabase() == false) {
-		_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
-	} else {
-		_CL_LOG << "Test 1: Saving and loading meta application data succeeded." LOG_
+		// Need to correctly cleanup
+		meta->unloadApplication();
+		meta->uninitialize();
+		PM->unload();
 	}
 	
-	meta->setLoadFromDatabase(false);
-	meta->save();
-	meta->setLoadFromDatabase(true);
-	meta->load();
+	unHookAll();
 	
-	if (meta->getLoadFromDatabase() == true) {
-		_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
-	} else {
-		_CL_LOG << "Test 2: Saving and loading meta application data succeeded." LOG_
-	}
-	
-
-        return 0;
+	return 0;
 }
