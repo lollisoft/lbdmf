@@ -444,9 +444,7 @@ UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<
 <xsl:choose>
 	<xsl:when test="$ActionType='lbDMF:masterdetail_action'">
 <!-- Dont use the tagged values for values when profiles are used. BoUML complains about the tagged values thus I should also use the new place -->
-<xsl:variable name="STELTProperty">STELT_<xsl:value-of select="$Property"/></xsl:variable>
--- <xsl:value-of select="$STELTProperty"/>
-<xsl:variable name="visibleField" select="//lbDMF:masterdetail_action[@xmi:id=$STELTProperty]/@sourcecolumn"/>
+<xsl:variable name="visibleField" select="//lbDMF:masterdetail_action[@base_Element=$Property]/@sourcecolumn"/>
 -- Build up a master detail action
 INSERT INTO actions (name, typ, source) values ('<xsl:value-of select="$Property"/>',  (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="$visibleField"/>');	
 INSERT INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for <xsl:value-of select="$ActionName"/>', 1, '<xsl:value-of select="$ActionName"/>', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = '<xsl:value-of select="$Property"/>' and source = '<xsl:value-of select="$visibleField"/>'));
