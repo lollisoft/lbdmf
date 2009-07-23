@@ -98,11 +98,14 @@
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="FormularID" select="$FormularID"/>
 		<xsl:with-param name="FieldName" select="$FieldName"/>
-	</xsl:call-template></xsl:variable><xsl:variable name="association">ASSOC_<xsl:value-of select="//packagedElement/ownedAttribute[@name=$FieldName]/type[@xmi:idref=$tableID]/../@xmi:id"/></xsl:variable>
-<xsl:variable name="associationType"><xsl:value-of select="//packagedElement/ownedAttribute[@association=$association][@aggregation='none']/type[@xmi:idref!=$tableID]/@xmi:idref"/></xsl:variable>
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
+	</xsl:call-template></xsl:variable><xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<!--
+$association = '<xsl:value-of select="$association"/>'
+$tableID = '<xsl:value-of select="$tableID"/>'
+$FieldName = '<xsl:value-of select="$FieldName"/>'
+-->
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
 </xsl:template>
-
 <xsl:template name="buildPostgreSQLVisibleFieldMapping">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
@@ -112,11 +115,14 @@ INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pk
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="FormularID" select="$FormularID"/>
 		<xsl:with-param name="FieldName" select="$FieldName"/>
-	</xsl:call-template></xsl:variable><xsl:variable name="association">ASSOC_<xsl:value-of select="//packagedElement/ownedAttribute[@name=$FieldName]/type[@xmi:idref=$tableID]/../@xmi:id"/></xsl:variable>
-<xsl:variable name="associationType"><xsl:value-of select="//packagedElement/ownedAttribute[@association=$association][@aggregation='none']/type[@xmi:idref!=$tableID]/@xmi:idref"/></xsl:variable>
-INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
+	</xsl:call-template></xsl:variable><xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<!--
+$association = '<xsl:value-of select="$association"/>'
+$tableID = '<xsl:value-of select="$tableID"/>'
+$FieldName = '<xsl:value-of select="$FieldName"/>'
+-->
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
 </xsl:template>
-
 <xsl:template name="buildMSSQLVisibleFieldMapping">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
@@ -126,9 +132,13 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="FormularID" select="$FormularID"/>
 		<xsl:with-param name="FieldName" select="$FieldName"/>
-	</xsl:call-template></xsl:variable><xsl:variable name="association">ASSOC_<xsl:value-of select="//packagedElement/ownedAttribute[@name=$FieldName]/type[@xmi:idref=$tableID]/../@xmi:id"/></xsl:variable>
-<xsl:variable name="associationType"><xsl:value-of select="//packagedElement/ownedAttribute[@association=$association][@aggregation='none']/type[@xmi:idref!=$tableID]/@xmi:idref"/></xsl:variable>
-INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$associationType]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
+	</xsl:call-template></xsl:variable><xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<!--
+$association = '<xsl:value-of select="$association"/>'
+$tableID = '<xsl:value-of select="$tableID"/>'
+$FieldName = '<xsl:value-of select="$FieldName"/>'
+-->
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
 </xsl:template>
 
 <xsl:template name="importDMFFormSqlite">
@@ -154,7 +164,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 </xsl:variable>
 
 INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', id, 1 FROM "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>';
-
+<!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildSqliteVisibleFieldMapping">
 		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -162,6 +172,23 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 		<xsl:with-param name="FormularID" select="$classID"/>
 		<xsl:with-param name="FieldName" select="../@name"/>
 	</xsl:call-template>
+</xsl:for-each>
+-->
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="tableID"><xsl:call-template name="lookupEntityID">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="$FieldName"/>
+	</xsl:call-template></xsl:variable>
+<xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<xsl:if test="$association!=''">
+<xsl:call-template name="buildSqliteVisibleFieldMapping">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="@name"/>
+	</xsl:call-template>
+</xsl:if>
 </xsl:for-each>
 
 -- Create query for <xsl:value-of select="$tablename"/> (<xsl:value-of select="@xmi:id"/>)
@@ -284,7 +311,7 @@ exec "DropFormular"('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of 
 
 
 INSERT INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/>', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
-
+<!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildMSSQLVisibleFieldMapping">
 		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -292,6 +319,23 @@ INSERT INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anw
 		<xsl:with-param name="FormularID" select="$classID"/>
 		<xsl:with-param name="FieldName" select="../@name"/>
 	</xsl:call-template>
+</xsl:for-each>
+-->
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="tableID"><xsl:call-template name="lookupEntityID">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="$FieldName"/>
+	</xsl:call-template></xsl:variable>
+<xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<xsl:if test="$association!=''">
+<xsl:call-template name="buildMSSQLVisibleFieldMapping">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="@name"/>
+	</xsl:call-template>
+</xsl:if>
 </xsl:for-each>
 
 -- Create query for <xsl:value-of select="$tablename"/> (<xsl:value-of select="@xmi:id"/>)
@@ -541,7 +585,7 @@ select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of 
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
-
+<!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
 		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -549,6 +593,23 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 		<xsl:with-param name="FormularID" select="$classID"/>
 		<xsl:with-param name="FieldName" select="../@name"/>
 	</xsl:call-template>
+</xsl:for-each>
+-->
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="tableID"><xsl:call-template name="lookupEntityID">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="$FieldName"/>
+	</xsl:call-template></xsl:variable>
+<xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<xsl:if test="$association!=''">
+<xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="@name"/>
+	</xsl:call-template>
+</xsl:if>
 </xsl:for-each>
 
 insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">

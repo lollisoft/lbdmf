@@ -14,17 +14,17 @@ The names src_actionid and dst_actionid are members of action_step_transitions!"
   xyzwh 274 25 2000 301 114
 relationcanvas 128258 relation_ref 130690 // <association>
   geometry VH
-  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 66 348 3000 to point 166 437
+  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 65 347 3000 to point 165 436
   line 128898 z 1999 to ref 128130
-  role_a_pos 247 421 3000 role_b_pos 178 261 3000
-  multiplicity_a_pos 360 446 3000 multiplicity_b_pos 151 261 3000
+  role_a_pos 258 420 3000 role_b_pos 177 258 3000
+  multiplicity_a_pos 359 445 3000 multiplicity_b_pos 153 258 3000
 end
 relationcanvas 128386 relation_ref 130818 // <association>
   geometry HV
-  from ref 128002 z 1999 to point 450 196
-  line 128770 z 1999 stereotype "<<relationship>>" xyz 462 290 3000 to ref 128130
-  role_a_pos 462 372 3000 role_b_pos 224 180 3000
-  multiplicity_a_pos 436 372 3000 multiplicity_b_pos 221 205 3000
+  from ref 128002 z 1999 to point 449 195
+  line 128770 z 1999 stereotype "<<relationship>>" xyz 461 289 3000 to ref 128130
+  role_a_pos 461 371 3000 role_b_pos 224 179 3000
+  multiplicity_a_pos 435 371 3000 multiplicity_b_pos 221 204 3000
 end
 line 129794 -_-_
   from ref 129026 z 1998 to ref 128386

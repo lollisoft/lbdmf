@@ -27,8 +27,8 @@ relationcanvas 129282 relation_ref 133506 // <association>
   geometry VH
   from ref 129154 z 1999 stereotype "<<relationship>>" xyz 89 261 3000 to point 81 195
   line 130818 z 1999 to ref 128898
-  role_a_pos 69 178 3000 role_b_pos 93 331 3000
-  multiplicity_a_pos 182 203 3000 multiplicity_b_pos 67 331 3000
+  role_a_pos 69 178 3000 role_b_pos 92 333 3000
+  multiplicity_a_pos 182 203 3000 multiplicity_b_pos 69 333 3000
 end
 relationcanvas 129538 relation_ref 131970 // <association>
   geometry HV
@@ -38,7 +38,7 @@ relationcanvas 129538 relation_ref 131970 // <association>
   multiplicity_a_pos 448 323 3000 multiplicity_b_pos 335 204 3000
 end
 relationcanvas 129794 relation_ref 132098 // <association>
-  from ref 129154 z 1999 stereotype "<<relationship>>" xyz 219 416 3000 to ref 129410
+  from ref 129154 z 1999 stereotype "<<relationship>>" xyz 219 415 3000 to ref 129410
   role_a_pos 361 393 3000 role_b_pos 126 394 3000
   multiplicity_a_pos 399 418 3000 multiplicity_b_pos 121 419 3000
 end

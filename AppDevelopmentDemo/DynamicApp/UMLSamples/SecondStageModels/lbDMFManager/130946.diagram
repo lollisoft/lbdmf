@@ -29,7 +29,7 @@ classcanvas 129538 class_ref 132354 // report_element_types
   xyz 524 565 3005
 end
 relationcanvas 128258 relation_ref 134402 // Reportparameter
-  from ref 128130 z 1999 label "Reportparameter" italic xyz 309 79 3000 stereotype "<<masterdetail_action>>" xyz 289 93 3000 to ref 128002
+  from ref 128130 z 1999 label "Reportparameter" italic xyz 309 79 1999 stereotype "<<masterdetail_action>>" xyz 289 93 3000 to ref 128002
   role_a_pos 192 76 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end

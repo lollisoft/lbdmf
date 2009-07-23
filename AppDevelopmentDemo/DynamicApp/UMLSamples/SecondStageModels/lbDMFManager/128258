@@ -1,6 +1,6 @@
 format 63
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 6
+  revision 7
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -306,6 +306,7 @@ ${inlines}
 
       attribute 135298 "bezeichnung"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -427,6 +428,7 @@ ${inlines}
 
       attribute 135810 "bezeichnung"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -506,6 +508,7 @@ ${inlines}
 
       attribute 136322 "name"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1241,6 +1244,7 @@ ${inlines}
 
       attribute 141314 "name"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1458,6 +1462,7 @@ ${inlines}
 
       attribute 142722 "beschreibung"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1615,6 +1620,7 @@ ${inlines}
 
       attribute 143874 "name"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1845,6 +1851,7 @@ ${inlines}
 
       attribute 145538 "name"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -2026,6 +2033,7 @@ ${inlines}
 
       attribute 146562 "name"
 	protected explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
