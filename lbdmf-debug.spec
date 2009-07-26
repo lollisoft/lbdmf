@@ -1,6 +1,6 @@
 Name: lbdmf
 Summary: Distributed Multiplatform Framework
-Version: 1.0rc4_debug
+Version: 1.0_debug
 Release: 1
 License: LGPL
 Group: Development/Tools
@@ -26,7 +26,7 @@ Requires: unixODBC >= 2.2.11 desktop-file-utils
 This is a framework to develop software. It's origin goal was to make me independent from other
 (commercial) frameworks and development tools.
 
-This release also is tested to build properly on SuSE Linux 9.1 and openSuSE 10.1.
+This release also is tested to build properly on SuSE Linux 9.1, openSuSE 10.1 and 11.1.
 
 You will need to install the following packages when building on 10.1:
 
