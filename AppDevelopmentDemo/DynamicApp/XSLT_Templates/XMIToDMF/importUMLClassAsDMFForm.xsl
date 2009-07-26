@@ -121,7 +121,7 @@ $association = '<xsl:value-of select="$association"/>'
 $tableID = '<xsl:value-of select="$tableID"/>'
 $FieldName = '<xsl:value-of select="$FieldName"/>'
 -->
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
 </xsl:template>
 <xsl:template name="buildMSSQLVisibleFieldMapping">
     <xsl:param name="ApplicationID"/>
@@ -138,7 +138,7 @@ $association = '<xsl:value-of select="$association"/>'
 $tableID = '<xsl:value-of select="$tableID"/>'
 $FieldName = '<xsl:value-of select="$FieldName"/>'
 -->
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
+INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('<xsl:value-of select="//packagedElement[@xmi:id=$tableID]/@name"/>', '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/@name"/>', '<xsl:value-of select="//packagedElement[@xmi:id=$association]/ownedAttribute/xmi:Extension/stereotype[@name='visible']/../../@name"/>');
 </xsl:template>
 
 <xsl:template name="importDMFFormSqlite">
