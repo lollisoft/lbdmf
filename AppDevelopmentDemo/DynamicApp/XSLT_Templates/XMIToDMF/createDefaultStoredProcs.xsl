@@ -135,6 +135,7 @@ begin
 	delete from anwendungen_formulare where anwendungid = appid and formularid = formid;
 	delete from formular_actions where formular = formid;
 	delete from formulare where anwendungid = appid and id = formid;
+	delete from foreignkey_visibledata_mapping where fktable = formname;
 
 	return true;
 end;
