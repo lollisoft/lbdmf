@@ -1,0 +1,658 @@
+2009-07-05 14:29  lollisoft
+
+	* Plugins/DatabaseLayerGateway/makefile.module: Corrected solaris
+	  linking flags.
+
+2009-07-05 13:43  lollisoft
+
+	* bindist.iss, license-bindist.txt, license-doc.txt, license.txt,
+	  make_src_dist.bat: Corrections in distribution files.
+
+2009-07-05 13:41  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl:
+	  Added inserting comment.
+
+2009-07-05 13:40  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl:
+	  Added calls to templates for entities.
+
+2009-07-05 13:38  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl:
+	  Added support for activity diagrams.
+
+2009-07-05 13:37  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLApplicationTables.xsl:
+	  Added support for Boolean and a deactivated block??
+
+2009-07-05 13:36  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl:
+	  Missing semicolon.
+
+2009-07-05 13:33  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
+	  Corrected visibleField variable declaration.
+
+2009-07-05 13:17  lollisoft
+
+	* Plugins/DatabaseForm/: lbDatabaseDialog.cpp,
+	  lbDatabaseTableViewDialog.cpp, lbDatabaseTableViewPanel.cpp:
+	  Corrected minimal tableview size. The AutoSize and AutoSizeColumns
+	  functions may need to be called after the call of Fit.
+
+2009-07-05 02:57  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp,
+	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseForm.h,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
+	  Plugins/DatabaseForm/plugin.cpp, Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Added new tableview dialog
+	  class and enabled switching between table view and form view. This
+	  does not interfer with panel and dialog view - as these are
+	  different flags.
+
+2009-07-05 02:46  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Return
+	  prior registered event ID for the name.
+
+2009-06-30 11:05  lollisoft
+
+	* make/STD_MAKE, vendor/mkmk/make-osx.sh: Added support for OSX
+	  10.5.6.
+
+2009-06-30 11:04  lollisoft
+
+	* Plugins/DatabaseForm/: lbDatabaseForm.h, lbDatabasePanel.cpp:
+	  Added flag to avoid validation while adding. But it seems to fail.
+
+2009-06-30 11:03  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Added replace commands for lesser and greater character.
+
+2009-06-29 17:06  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/BoUML/: CRM.xmi,
+	  CRM/128386, CRM/129282.diagram, CRM/CRM.prj: This version works
+	  with the bugfix in non linear activity handling.
+
+2009-06-29 17:01  lollisoft
+
+	* BaseDevelopment/lbclasses/skiplist.cpp: Function position must
+	  set iteration flag correctly.
+
+2009-06-29 16:59  lollisoft
+
+	* Plugins/DatabaseForm/: Actions.cpp, lbDatabasePanel.cpp: Non
+	  linear action handling bug fixed.
+
+2009-06-29 12:31  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Renamed
+	  a dispatch parameter.
+
+2009-06-29 12:24  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Renamed a dispatch parameter.
+
+2009-06-29 12:05  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Added code to write database credentials into XMISettings file.
+
+2009-06-29 12:03  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl:
+	  Added code to use new parameter for database credentials.
+
+2009-06-28 13:24  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: UML Projekt Dialog New
+	  attribute.png, UML Projekt Dialog New class.png, UML Projekt Ein
+	  paar Klassen.png, UML Projekt First release.png, UML Projekt
+	  Import.png, UML Projekt Klassendiagramm anlegen.png, UML Projekt
+	  Menu UML Import.png, UML Projekt Paket anlegen.png, UML Projekt
+	  Testen.png, UML Projekt Toolbar New aggregate.png, UML Projekt
+	  Toolbar New class.png, UML Projekt anlegen - Meldung.png, UML
+	  Projekt anlegen - Spracheinstellung.png: New pictures from the
+	  web version of the PDF documentation.
+
+2009-06-28 13:22  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/ActivityDiagram.png: Made it
+	  smaller to fit on 1024 screen width.
+
+2009-06-27 02:31  lollisoft
+
+	* Test/GUI/wxWrapper/splash.png: Changed version number.
+
+2009-06-27 02:30  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Added code to pass database name, user and password from property
+	  panel values to further improve the import mechanism.
+
+2009-06-27 02:24  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: ActivityDiagram.png,
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Added documentation of
+	  new activity features implemented with actions and action steps.
+
+2009-06-26 12:56  lollisoft
+
+	* RegressionTests/Basetypes/Basetypes.cpp: Freeing buffer to avoid
+	  a leak.
+
+2009-06-26 12:30  lollisoft
+
+	* BaseDevelopment/lbclasses/lbobject.cpp: Missing the one character
+	  for NULL terminating string.
+
+2009-06-26 10:12  lollisoft
+
+	* RegressionTests/Basetypes/Basetypes.cpp: This string crashes on
+	  openSuSE.
+
+2009-06-24 07:52  lollisoft
+
+	* Plugins/VisitorOperations/pluginXMLOutputStream.cpp: Added
+	  remarks.
+
+2009-06-24 06:22  lollisoft
+
+	* RegressionTests/Basetypes/Basetypes.cpp: Removed freeing buf.
+
+2009-06-24 06:13  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added some error
+	  messages.
+
+2009-06-19 12:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/BoUML/: CRM.xmi,
+	  CRM/128258, CRM/128386, CRM/128514, CRM/128642,
+	  CRM/129154.diagram, CRM/129282.diagram, CRM/CRM.prj,
+	  CRM/cpp_includes, CRM/generation_settings, CRM/idl_includes,
+	  CRM/java_imports, CRM/python_imports, CRM/stereotypes, CRM/tools:
+	  Initial UML samples with activities and profile.
+
+2009-06-18 22:44  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added check if sql query
+	  is empty string and show an error message instead of crash in
+	  database module (unicode conversion)
+
+2009-06-18 20:12  lollisoft
+
+	* vendor/mkmk/make.sh: Not used for osx builds.
+
+2009-06-18 19:38  lollisoft
+
+	* BaseDevelopment/Makefile, vendor/mkmk/make-osx.sh,
+	  vendor/mkmk/make.sh: Changes to compile on OSX 10.5.4
+
+2009-06-18 19:36  lollisoft
+
+	* make/STD_MAKE: Changed to non debug on mac and added support for
+	  OSX 1.5.4
+
+2009-06-18 18:54  lollisoft
+
+	* Plugins/: DatabaseForm/Actions.cpp,
+	  DatabaseForm/lbDatabaseForm.h,
+	  VisitorOperations/pluginDBInputStream.cpp,
+	  lbDMFDataModel/lbActionParameters.cpp,
+	  lbDMFDataModel/lbParameters.h: Corrected watcom related stuff.
+
+2009-06-18 18:39  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Corrected
+	  wrong column.
+
+2009-06-18 17:17  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Corrected lookup of
+	  toolbarimages.
+
+2009-06-18 17:16  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp: Corrected usage of trim.
+
+2009-06-18 15:49  lollisoft
+
+	* Test/GUI/wxWrapper/toolbarimages/antivirus.png: Implemented non
+	  linear actions. These are 'flow' controlled action steps that could
+	  be modelled in UML activity diagrams. Export is not yet implemented
+	  but import from UML works.
+
+2009-06-17 22:37  lollisoft
+
+	* BaseDevelopment/lbclasses/lbobject.cpp,
+	  BaseDevelopment/lbclasses/lbobject.h,
+	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
+	  Plugins/DatabaseForm/Actions.cpp,
+	  Plugins/DatabaseForm/ExecuteAction.cpp,
+	  Plugins/DatabaseForm/SendSignalAction.cpp,
+	  Plugins/DatabaseForm/lbDatabaseForm.h,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
+	  Plugins/DatabaseReport/lbDatabaseReport.h,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbDMFDataModel/lbActionParameters.cpp,
+	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionStepsModel.h,
+	  Plugins/lbDMFDataModel/lbParameters.h,
+	  Plugins/lbDMFDataModel/plugin.cpp,
+	  RegressionTests/Basetypes/Basetypes.cpp,
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/test.sql:
+	  Implemented non linear actions. These are 'flow' controlled action
+	  steps that could be modelled in UML activity diagrams. Export is not
+	  yet implemented but import from UML works.
+
+2009-06-10 13:56  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/: lbMetaApplication.cpp,
+	  lbMetaApplication.h: Added functions to help passing application
+	  process name.
+
+2009-06-10 13:53  lollisoft
+
+	* BaseDevelopment/: lbclasses/lbcontainer.cpp,
+	  lbclasses/lbcontainer.h, lbclasses/skiplist.cpp,
+	  lbclasses/skiplist.h, lbModule/lbModule.cpp: Added functions to
+	  enable position in the container to enable 'jumps'.
+
+2009-06-10 13:51  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added support to look
+	  for toolbar images in the application bundle.
+
+2009-06-10 13:48  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Reactivated copying
+	  toolbarimages. It still is in question how the user could select new
+	  ones, but that could be solved by a copy in mechanism.
+
+2009-06-10 13:46  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Added code to pass the
+	  application name and removed hardcoded application name.
+
+2009-06-10 13:44  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added support to look for
+	  toolbar images in the application bundle.
+
+2009-06-10 13:40  lollisoft
+
+	* BaseDevelopment/Makefile: Changed order of targets to enable
+	  application bundle packaging including wxWidgets library.
+
+2009-06-07 19:51  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Added to copy the required
+	  libraries into the bundle.
+
+2009-06-07 09:31  lollisoft
+
+	* Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Prepared for
+	  new release.
+
+2009-06-07 09:14  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl:
+	  Added a comment to tell wich database type the script was made for.
+
+2009-06-07 09:13  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl:
+	  Added a comment to tell wich database type the script was made for.
+	  Using package name of first class with stereotype 'form'.
+
+2009-06-07 09:11  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
+	  Import only forms that are linked to tables.
+
+2009-06-07 09:10  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/:
+	  UMLXMISnippets.xsl, gen_DMFToXMI_FormBootstrap.xsl: Initial and
+	  working attempt to automatically create forms. There is only a need
+	  to connect them to the tables and optionally creating the actions.
+
+2009-06-06 00:22  lollisoft
+
+	* bin-buildtools-dist.iss, bindist.iss, binsample.bat, dist.iss,
+	  docdist.iss, make_src_dist.bat: Prepared new release.
+
+2009-06-06 00:18  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Used table name instead of foreign column. Fixed.
+
+2009-06-05 10:57  lollisoft
+
+	* BaseDevelopment/lbclasses/lbOutputStream.cpp: Corrected close
+	  function according the _writeToBuffer flag.
+
+2009-06-05 10:24  lollisoft
+
+	* BaseDevelopment/lbclasses/lbOutputStream.cpp: Corrected output
+	  stream opened file logic.
+
+2009-06-04 23:49  lollisoft
+
+	* BaseDevelopment/lbclasses/lbOutputStream.cpp: Corrected check if
+	  file is really open and report that back.
+
+2009-06-04 16:34  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Added an error message if XMISettings file could not written.
+
+2009-06-04 14:28  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp: Corrected code how to load a
+	  plugin action.
+
+2009-06-04 14:27  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Added new
+	  functions into plugin manager and plugin module to support query of
+	  registered modules.
+
+2009-06-04 10:01  lollisoft
+
+	* configure: Added install target.
+
+2009-06-03 11:33  lollisoft
+
+	* BaseDevelopment/Makefile: Added support for creating debug rpm
+	  packages.
+
+2009-06-03 11:05  lollisoft
+
+	* lbdmf-debug.spec: Version don't like -.
+
+2009-06-03 10:58  lollisoft
+
+	* make_src_dist.sh, lbdmf-debug.spec: Added support for creating
+	  debug rpm packages.
+
+2009-06-02 22:37  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Using always wxSTAY_ON_TOP from
+	  now on and deactivated calling Raise.
+
+2009-06-02 21:33  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Added some debug messages to
+	  determine a crash in installation.
+
+2009-06-02 20:11  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Added
+	  search path for ../Database in case if initial SQL scripts are only
+	  located in development directory.
+
+2009-06-02 19:36  lollisoft
+
+	* vendor/databaselayer/src/Implementations/Sqllite/makefile.module:
+	  Added optional debug flags.
+
+2009-06-02 19:36  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/SqliteDatabaseLayer.cpp:
+	  Added printing sql command on failure.
+
+2009-06-02 19:34  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/test.sql:
+	  Bugfix in rewriting foreign key statements into triggers. (SQL
+	  statement used for testing)
+
+2009-06-02 19:34  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Bugfix in rewriting foreign key statements into triggers.
+
+2009-06-02 15:49  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Used wrong column name.
+
+2009-06-02 14:48  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Corrected rewrite trigger function. Last changes added a bug.
+
+2009-06-02 12:27  lollisoft
+
+	* BaseDevelopment/Makefile: Changed source path for copying XSLT
+	  templates.
+
+2009-05-29 15:42  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Deactivated calling Rez.
+
+2009-05-29 10:08  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/:
+	  UMLXMISnippets.xsl, gen_DMFToXMI.xsl: Added many improvements and
+	  a profile.
+
+2009-05-28 18:23  lollisoft
+
+	* BaseDevelopment/lbHook/lbHook.cpp: Added option to enable
+	  libraries located in bundle. But I am not sure if this is really
+	  needed. (When passing full path)
+
+2009-05-28 18:20  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Some more
+	  log messages and added search for libraries in bundle. This has to
+	  be reworked and the other changes for searching in bundles too to
+	  remove hardcoded executable name.
+
+2009-05-28 18:16  lollisoft
+
+	* BaseDevelopment/lbclasses/lbobject.cpp: Changed log message.
+
+2009-05-28 18:12  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Added option to enable libraries located in
+	  bundle.
+
+2009-05-28 18:10  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp: Added optional library search
+	  in bundle.
+
+2009-05-28 08:24  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Removed code to
+	  check for availability of a plugin.
+
+2009-05-28 08:21  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Missed setting a variable
+	  in default ctor.
+
+2009-05-26 11:15  lollisoft
+
+	* BaseDevelopment/Makefile: Added creating include directory.
+
+2009-05-25 19:03  lollisoft
+
+	* BaseDevelopment/Makefile: Corrected file extensions.
+
+2009-05-25 10:16  lollisoft
+
+	* BaseDevelopment/Makefile: Added include directory.
+
+2009-05-22 11:40  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Added function to
+	  execute SQL query.
+
+2009-05-22 09:37  lollisoft
+
+	* vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/:
+	  fk.c, test.sql: Found a bug in speintf parameter count and SQL
+	  triggers were wrong.
+
+2009-05-21 22:53  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Found a springf buffer overrun and propably still a problem. Added
+	  an extra space of 100 bytes.
+
+2009-05-21 19:43  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMISettings.xsl, createDefaultStoredProcs.xsl,
+	  importUML-ApplicationDB.xsl, importUML-SystemDB.xsl,
+	  importUMLApplicationTables.xsl, importUMLClassAsDMFForm.xsl:
+	  Updated from private development.
+
+2009-05-21 16:57  lollisoft
+
+	* BaseDevelopment/Makefile: Added packaging of DMFToXMI files.
+
+2009-05-21 16:56  lollisoft
+
+	* lbdmf.spec: New release
+
+2009-05-21 14:45  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Bugfix. Database
+	  columns of integer are LONG in application. Ignore multible foreign
+	  keys if one only is used.
+
+2009-05-20 00:43  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Catching a case where no columns
+	  are bound and log an error.
+
+2009-05-20 00:42  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Some bugfixes while
+	  closing the app. There is a bug in assigning the visible columns on
+	  foreign keys. This bug appears in sqlite usage, not in postgresql I
+	  think.
+
+	  Assign from bottom to top, if the dialog still appears. That solves
+	  it for now.
+
+2009-05-19 20:21  lollisoft
+
+	* Plugins/DatabaseLayerGateway/makefile.module: Corrected linking
+	  parameters.
+
+2009-05-19 20:17  lollisoft
+
+	* vendor/databaselayer/tests/makefile.module: Removed linking
+	  against odbc library.
+
+2009-05-19 20:10  lollisoft
+
+	*
+	  vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/fk.c:
+	  Some problems with the string append function. But still crashes in
+	  szone_free.
+
+2009-05-19 20:09  lollisoft
+
+	* vendor/databaselayer/src/Implementations/Sqllite/makefile.module:
+	  Cleaned up linking against sqlite library.
+
+2009-05-12 09:29  lollisoft
+
+	* make_src_dist.sh: Changes let the code compile on openSuSE 11.1.
+
+2009-04-21 12:43  lollisoft
+
+	* BaseDevelopment/lbclasses/lbInputStream.cpp,
+	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Blob/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Refresh/test.cpp,
+	  make/STD_MAKE: Obviously still not all compileable under openSuSE
+	  11.1
+
+2009-04-10 11:58  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added todo.
+
+2009-04-10 11:57  lollisoft
+
+	* Test/GUI/wxWrapperDLL/: wxWrapperDLL.cpp, wxWrapperDLL.h: Added
+	  code for reposting events in actions.
+
+2009-03-19 18:13  lollisoft
+
+	* Test/GUI/wxWrapperDLL/: wxWrapperDLL.cpp, wxWrapperDLL.h: Avoid
+	  setting status text when application performs a quit.
+
+2009-03-19 18:11  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Added a flag to avoid multiple
+	  calls to load the XRC resource.
+
+2009-03-15 12:43  lollisoft
+
+	* Test/GUI/wxWrapper/splash.png: Try to correct splash screen on
+	  openSuSE 10.1 buildserver.
+
+2009-03-15 12:19  lollisoft
+
+	* bindist.iss, license-bindist.txt, license.txt: Corrected license
+	  files.
+
+2009-03-15 11:13  lollisoft
+
+	* make/STD_MAKE: No debug now.
+
+2009-03-15 00:14  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Special bundle
+	  path only on Mac :-)
+
