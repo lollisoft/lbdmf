@@ -1165,6 +1165,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			for (int i = 0; i < num; i++) {
 				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
 					notebook->DeletePage(i);
+					break; // Bug: The num variable is not updated and will produce an index out of range error.
 				}
 			}
 		}
@@ -1173,6 +1174,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			for (int i = 0; i < num; i++) {
 				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
 					notebook->DeletePage(i);
+					break; // Bug: The num variable is not updated and will produce an index out of range error.
 				}
 			}
 		}
