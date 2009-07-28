@@ -37,7 +37,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (1.0rc4)
+/** \mainpage Distributed Multiplatform Framework (1.0)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -3799,14 +3799,14 @@ public:
 	 * succeed. If not, the module will be ignored.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
-	
+
 	/** \brief Runs the install method per plugin module.
 	 * The install method per plugin module may do install tasks. This routine is used to invoke all
 	 * install tasks. Each install task must be runnable isolated and should not depend on another install
 	 * task.
 	 */
 	virtual void LB_STDCALL runInstallers() = 0;
-	
+
 	/** \brief Unload plugins.
 	 *
 	 * Use this function to clean up all loaded plugin modules.
@@ -3933,7 +3933,7 @@ public:
 	 * Please do not call any install method before the plugin manager has initialized all plugins.
 	 */
 	virtual void LB_STDCALL install() {}
-	
+
 protected:
 	/**
 	 * Used internally in the macros to build the plugin list.
