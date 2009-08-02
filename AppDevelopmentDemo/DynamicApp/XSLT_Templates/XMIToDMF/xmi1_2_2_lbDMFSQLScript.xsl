@@ -1,5 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:UML="org.omg.xmi.namespace.UML" exclude-result-prefixes="UML">
 <xsl:import href="XMISettings.xsl"/>
+<xsl:import href="createDefaultStoredProcs.xsl"/>
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -27,14 +28,15 @@
             
             73252 Lenningen (germany)
 -->
+
   <xsl:output method="text" indent="no"/>
 
 <!-- ********** Select your database target ********** -->
 
-<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
 <!--
-<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
 -->
+<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
 
 
 <xsl:variable name="TargetDBType">
@@ -60,7 +62,6 @@
 
   <xsl:template name="XMI1_2_Root">
     <xsl:for-each select="XMI.content/UML:Model">
-	
       <xsl:call-template name="XMI1_2_Model"/>
     </xsl:for-each>
     <!--xsl:for-each select="UML:Package|UML:Subsystem">
@@ -94,106 +95,22 @@
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
-<xsl:message>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
-SET SESSION AUTHORIZATION 'postgres';
+		<!-- Generate System database definition -->
+		<xsl:variable name="AppName"><xsl:value-of select="@name"/></xsl:variable>
+		
+-- Application is <xsl:value-of select="@name"/>.
 
-DROP FUNCTION GetOrCreateApplication(varchar);
-DROP FUNCTION GetFormularId(int, varchar);
+		<xsl:call-template name="createDefaultStoredProcs">
+			<xsl:with-param name="ApplicationID" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>	
 
-CREATE OR REPLACE FUNCTION plpgsql_call_handler()
-  RETURNS language_handler AS
-'$libdir/plpgsql', 'plpgsql_call_handler'
-  LANGUAGE 'c' VOLATILE;
-
--- May be a problem
---DROP LANGUAGE plpgsql;
---CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
-
-
-CREATE OR REPLACE FUNCTION GetOrCreateApplication(varchar)
-  RETURNS int AS
-'
-declare
-applicationid int;
-applicationname alias for $1;
-begin
-  select id into applicationid from anwendungen where name =  applicationname;
-  if not applicationid is null then
-    return applicationid;
-  end if;
-  if applicationid is null then
-	insert into anwendungen (name, titel, modulename, functor, interface) values(applicationname, ''Application '' || applicationname, ''lbDynApp'', ''instanceOfApplication'', ''lb_I_Application'');
-	applicationid = GetOrCreateApplication(applicationname);
-	insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
-	insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''CRM'', applicationid);
-  end if;
-return applicationid;
-end;
-'
-  LANGUAGE 'plpgsql' VOLATILE;
-
-CREATE OR REPLACE FUNCTION GetOrCreateActiontype(varchar)
-  RETURNS int AS
-'
-declare
-actionid int;
-typename alias for $1;
-begin
-  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
-  if not actionid is null then
-    return actionid;
-  end if;
-  if actionid is null then
-	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
-	actionid = GetOrCreateActiontype(typename);
-  end if;
-return actionid;
-end;
-'
-  LANGUAGE 'plpgsql' VOLATILE;
-
-CREATE OR REPLACE FUNCTION ConnectActionToFormular(varchar, varchar)
-  RETURNS int AS
-'
-declare
-actionid int;
-action alias for $1;
-formular alias for $2;
-begin
-  select id into actionid from action_types where module = typename and action_handler = ''instanceOf'' || typename;
-  if not actionid is null then
-    return actionid;
-  end if;
-  if actionid is null then
-	insert into action_types (bezeichnung, module, action_handler) values(''Action of type '' || typename, typename, ''instanceOf'' || typename);
-	actionid = GetOrCreateActiontype(typename);
-  end if;
-return actionid;
-end;
-'
-  LANGUAGE 'plpgsql' VOLATILE;
-
-
-CREATE OR REPLACE FUNCTION GetFormularId(int, varchar)
-  RETURNS int AS
-'
-declare
-formularid int;
-applicationid alias for $1;
-applicationname alias for $2;
-begin
-	select id into formularid from formulare where anwendungid = applicationid and name = applicationname;
-	return formularid;
-end;
-'
-  LANGUAGE 'plpgsql' VOLATILE;
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
 </xsl:if>
-</xsl:message>
 	
 	
 -- Package: <xsl:value-of select="@name"/>
@@ -323,7 +240,7 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) values(
 
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 
-select "DropFormular"('<xsl:value-of select="../../@name"/>', '<xsl:value-of select="@name"/>');
+select DropFormular('<xsl:value-of select="../../@name"/>', '<xsl:value-of select="@name"/>');
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', 'style.png', GetOrCreateApplication('<xsl:value-of select="../../@name"/>'), 1);
@@ -350,8 +267,8 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 <xsl:when test="$datatype='image'"><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:when>
 <xsl:otherwise></xsl:otherwise>
 </xsl:choose>
-</xsl:for-each> from "<xsl:value-of select="@name"/>" order by "ID"', (select id from "formulare where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="../../@name"/>') and name = '<xsl:value-of select="@name"/>'));
-insert or ignore into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', 1);
+</xsl:for-each> from "<xsl:value-of select="@name"/>" order by "ID"', (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="../../@name"/>') and name = '<xsl:value-of select="@name"/>'));
+insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', true);
 
 <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 
@@ -364,10 +281,10 @@ insert or ignore into column_types (name, tablename, ro) values ('ID', '<xsl:val
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
 <xsl:if test="$datatype='image'">
-insert or ignore into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'image');
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'image');
 </xsl:if>
 <xsl:if test="$datatype='bigstring'">
-insert or ignore into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'bigstring');
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'bigstring');
 </xsl:if>
 </xsl:for-each>
 
@@ -429,8 +346,8 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 <xsl:when test="$datatype='image'"><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:when>
 <xsl:otherwise></xsl:otherwise>
 </xsl:choose>
-</xsl:for-each> from "<xsl:value-of select="@name"/>" order by "ID"', (select id from "formulare where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="../../@name"/>') and name = '<xsl:value-of select="@name"/>'));
-insert or ignore into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', 1);
+</xsl:for-each> from "<xsl:value-of select="@name"/>" order by "ID"', (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="../../@name"/>') and name = '<xsl:value-of select="@name"/>'));
+insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', 1);
 
 <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 
@@ -443,10 +360,10 @@ insert or ignore into column_types (name, tablename, ro) values ('ID', '<xsl:val
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
 <xsl:if test="$datatype='image'">
-insert or ignore into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'image');
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'image');
 </xsl:if>
 <xsl:if test="$datatype='bigstring'">
-insert or ignore into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'bigstring');
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'bigstring');
 </xsl:if>
 </xsl:for-each>
 
@@ -463,7 +380,7 @@ insert or ignore into column_types (name, tablename, specialcolumn, controltype)
 
 <xsl:variable name="parameters" select="./UML:BehavioralFeature.parameter/@name"/>
 
-INSERT OR IGNORE INTO "action_types" (bezeichnung) values ('Validator');
+insert into "action_types" (bezeichnung) values ('Validator');
 
 insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>');	
 
