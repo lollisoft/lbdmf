@@ -5569,8 +5569,9 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
-	*ConnectionName += "-";
-	*ConnectionName += user;
+	// If different applications are running, then the user may be the wrong (last used user), thus skip that
+	//*ConnectionName += "-";
+	//*ConnectionName += user;
 
 	setUser(user);
 
@@ -5696,8 +5697,9 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
-	*ConnectionName += "-";
-	*ConnectionName += user;
+	// If different applications are running, then the user may be the wrong (last used user), thus skip that
+	//*ConnectionName += "-";
+	//*ConnectionName += user;
 
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
