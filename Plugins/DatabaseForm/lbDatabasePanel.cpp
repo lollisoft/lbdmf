@@ -3985,22 +3985,24 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							
 							wxString f = wxString(s->charrep());
 							
-							wxImage* im;
+							wxImage* im = NULL;
 							
 							_LOG << "Assign a file to an image button: " << toolbarfile->charrep() LOG_
 							
-							if (f.Upper().Contains(".XPM") == 1) {
-								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
-							}
+							if (wxFile::Exists(toolbarfile->charrep())) {
+								if (f.Upper().Contains(".XPM") == 1) {
+									im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
+								}
+								
+								if (f.Upper().Contains(".PNG") == 1) {
+									im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+								}
 
-							if (f.Upper().Contains(".PNG") == 1) {
-								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+								wxBitmap bm = wxBitmap(*im);
+								wxBitmapButton* bmb = (wxBitmapButton*) w;
+								bmb->SetBitmapLabel(bm);
+								bmb->Refresh();
 							}
-							
-							wxBitmap bm = wxBitmap(*im);
-							wxBitmapButton* bmb = (wxBitmapButton*) w;
-							bmb->SetBitmapLabel(bm);
-							bmb->Refresh();
 						}
 					}
 				} else {
