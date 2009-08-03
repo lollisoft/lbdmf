@@ -1088,25 +1088,28 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 
+	if ((queryString == NULL) || 
+		(DBName == NULL) || 
+		(DBUser == NULL) || 
+		(DBPass == NULL) || 
+		(strcmp(queryString, "") == 0) || 
+		(strcmp(DBName, "") == 0) || 
+		(strcmp(DBUser, "") == 0) || 
+		(strcmp(DBPass, "") == 0)) {
+		UAP_REQUEST(getModuleManager(), lb_I_String, msg)
+		
+		*msg = _trans("Database SQL query, name, user or password is NULL or empty. Could not use database forms without proper parameters!");
+		if (formName != NULL) {
+			*msg += _trans("\n\nThe formular name is: '");
+			*msg += formName;
+			*msg += "'";
+		}
+		
+		msgBox(_trans("Error"), msg->charrep());
+		return NULL;
+	}
+
 	_LOG << "Create database formular for '" << formName << "', '" << queryString << "', '" << DBName << "', '" << DBUser << "', '" << DBPass << "'" LOG_
-
-	if (strcmp(queryString, "") == 0) {
-		char* msg = (char*) malloc(200);
-		msg[0] = 0;
-		strcpy(msg, _trans("SQL string is empty."));
-		msgBox(_trans("Error"), msg);
-		free(msg);
-		return NULL;
-	}
-
-	if (strcmp(DBName, "") == 0) {
-		char* msg = (char*) malloc(200);
-		msg[0] = 0;
-		strcpy(msg, _trans("Database name is empty"));
-		msgBox(_trans("Error"), msg);
-		free(msg);
-		return NULL;
-	}
 
 	if (frame->isPanelUsage()) {
 		if (!notebook) {
