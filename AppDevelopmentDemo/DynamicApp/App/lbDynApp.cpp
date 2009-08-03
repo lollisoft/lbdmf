@@ -1893,7 +1893,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 				}
 
-				*formName = forms->getName();
+				//*formName = forms->getName();
 				dbForm = gui->createDBForm(formName->charrep(), query->charrep(),
 										   DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
@@ -2377,7 +2377,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 						_LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
 						// This can lock the application in Mac OS X
 						// Maybe due to the splash sscreen
-						//metaapp->msgBox("Error", "No application database available.");
+						if (DBName->charrep() == NULL) 
+							metaapp->msgBox("Error", "No application database available. DBName = NULL. Please check your application parameter definition.");
+						else {
+							UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+							*msg = "No application database available. DBName = '";
+							*msg += DBName->charrep();
+							*msg += "'. Please check your application parameter definition.";
+							metaapp->msgBox("Error", msg->charrep());
+						}
 					}
 				}
 
