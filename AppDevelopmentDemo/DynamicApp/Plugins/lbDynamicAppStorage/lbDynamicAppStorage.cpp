@@ -1737,6 +1737,16 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			
 			_LOG << "Create database... (script is " << (const char*) result << ")" LOG_
 			sampleQuery->skipFKCollecting();
+			
+			if ((metaapp->getApplicationDatabaseBackend() != NULL) && (strcmp(metaapp->getApplicationDatabaseBackend(), "") == 0)) {
+				// Do an additional SQL command to create the PostgreSQL plsql handler, but ignore any failures
+				sampleQuery->query("CREATE OR REPLACE FUNCTION plpgsql_call_handler()"
+								   "RETURNS language_handler AS"
+								   "'$libdir/plpgsql', 'plpgsql_call_handler'"
+								   "LANGUAGE 'c' VOLATILE;\n"
+								   "CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;");
+			}
+			
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nYou may have a permission problem when you manually have created\ntables with another user prior.\nPlease see into the logfile for more information.");
@@ -1929,6 +1939,16 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			
 			_LOG << "Create system database... (script is " << (const char*) result << ")" LOG_
 			sampleQuery->skipFKCollecting();
+			
+			if ((metaapp->getSystemDatabaseBackend() != NULL) && (strcmp(metaapp->getSystemDatabaseBackend(), "") == 0)) {
+				// Do an additional SQL command to create the PostgreSQL plsql handler, but ignore any failures
+				sampleQuery->query("CREATE OR REPLACE FUNCTION plpgsql_call_handler()"
+								   "RETURNS language_handler AS"
+								   "'$libdir/plpgsql', 'plpgsql_call_handler'"
+								   "LANGUAGE 'c' VOLATILE;\n"
+								   "CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;");
+			}
+			
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
 				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
 				sampleQuery->enableFKCollecting();
