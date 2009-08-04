@@ -1858,6 +1858,17 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 
 			res = xsltApplyStylesheet(cur, doc, params);
 
+			if (res == NULL) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				
+				*msg = _trans("Failed to translate XMI file.\n\nXMI document: ");
+				*msg += (const char*) XMIURL;
+				*msg += "\n\nStylesheet: ";
+				*msg += (const char*) URL;
+				metaapp->msgBox(_trans("Error"), msg->charrep());
+				return err;
+			}
+			
 			_LOG << "Save resulting document as a string." LOG_
 
 			xsltSaveResultToString(&result, &len, res, cur);
