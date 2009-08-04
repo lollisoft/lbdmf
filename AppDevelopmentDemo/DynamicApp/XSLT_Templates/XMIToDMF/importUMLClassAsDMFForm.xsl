@@ -634,7 +634,7 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="Aggregation" select="@aggregation"/>
 <xsl:if test="$Aggregation='none'"><xsl:if test="@association=''">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>" order by id', getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
+<xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>"', getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
 insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', true);
 
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">

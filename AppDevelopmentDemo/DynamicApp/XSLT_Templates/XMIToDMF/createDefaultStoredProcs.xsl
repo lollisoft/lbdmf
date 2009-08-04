@@ -1,4 +1,5 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+<xsl:import href="XMISettings.xsl"/>
 <xsl:output method="text"/>
 
 <xsl:template name="createDefaultStoredProcs">
@@ -186,6 +187,8 @@ delete from anwendungen_formulare where anwendungid in (select id from anwendung
 delete from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+delete from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
 drop table tempactions;  
 		</xsl:when>
