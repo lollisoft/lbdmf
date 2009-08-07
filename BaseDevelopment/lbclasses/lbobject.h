@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbobject.h,v 1.45 2009/06/17 20:37:17 lollisoft Exp $
+ * $Id: lbobject.h,v 1.46 2009/08/07 21:24:52 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.46  2009/08/07 21:24:52  lollisoft
+ * Added a parameter to enable case insensitive replacements and implemented it.
+ *
  * Revision 1.45  2009/06/17 20:37:17  lollisoft
  * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
  *
@@ -409,7 +412,7 @@ public:
 	int LB_STDCALL operator == (const char* toCompare) const;
 	int LB_STDCALL operator == (const lb_I_String* toCompare) const;
 	
-	lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with);
+	lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false);
  
 	lb_I_String* LB_STDCALL left(int until);
 	lb_I_String* LB_STDCALL right(int from);

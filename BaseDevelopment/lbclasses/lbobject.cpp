@@ -881,7 +881,7 @@ lb_I_String* LB_STDCALL lbString::right(int from) {
 }
 
 //http://groups.google.com/group/comp.lang.c/browse_thread/thread/2fd047f2da2d1e5e/735c8fb0edbc8cd5?lnk=gst&q=string+replace#735c8fb0edbc8cd5
-char *str_replace(char *str, const char *sub_str1, const char *sub_str2) 
+char *str_replace(char *str, const char *sub_str1, const char *sub_str2, bool nocase) 
 { 
 	char *new_str; 
 	const char *p; 
@@ -891,13 +891,25 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2)
 	signed long len; 
 	signed long diff; 
 	unsigned long count = 0; 
-	if ( (p=strstr(str, sub_str1)) == NULL ) 
-		return str; 
+	if (nocase) {
+		if ( (p=strcasestr(str, sub_str1)) == NULL ) 
+			return str; 
+	} else {
+		if ( (p=strstr(str, sub_str1)) == NULL ) 
+			return str; 
+	}
+	
 	++count; 
 	len = strlen(sub_str1); 
 	/* count the number of occurances of sub_str1 */ 
-	for ( p+=len; (p=strstr(p, sub_str1)) != NULL; p+=len ) 
-		++count; 
+	if (nocase) {
+		for ( p+=len; (p=strcasestr(p, sub_str1)) != NULL; p+=len ) 
+			++count; 
+	} else {
+		for ( p+=len; (p=strstr(p, sub_str1)) != NULL; p+=len ) 
+			++count; 
+	}
+	
 	diff = strlen(sub_str2) - len; 
 	/* allocate new memory (added null terminating) */ 
 	if ( (new_str=(char *)malloc((strlen(str) + count*diff + 1)*sizeof(char))) 
@@ -922,10 +934,10 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2)
 	return new_str; 
 } 
 
-lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with) {
+lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with, bool nocase) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 
-	*rep = str_replace(stringdata, toReplace, with);
+	*rep = str_replace(stringdata, toReplace, with, nocase);
 	if (rep->charrep() != NULL) {
 		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
 		setData(rep->charrep());
