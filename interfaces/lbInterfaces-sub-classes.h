@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.83 2009/06/17 20:37:18 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.84 2009/08/07 21:23:27 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.84  2009/08/07 21:23:27  lollisoft
+ * Added a parameter to enable case insensitive replacements.
+ *
  * Revision 1.83  2009/06/17 20:37:18  lollisoft
  * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
  *
@@ -611,7 +614,7 @@ public:
 		
 	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
 	
-	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with) = 0;
+	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false) = 0;
 	
 	virtual lb_I_String* LB_STDCALL left(int until) = 0;
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
