@@ -252,6 +252,7 @@ public:
 	bool						LB_STDCALL isFirst();
 	bool						LB_STDCALL isLast();
 	
+	bool						LB_STDCALL hasDefaultValue(char* columnname);
 	bool						LB_STDCALL isNullable(int pos);
 	bool						LB_STDCALL isNullable(char const * name);
 	bool						LB_STDCALL isNull(int pos);
@@ -2709,6 +2710,11 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 	return s.getPtr();
 }
 /*...e*/
+
+bool LB_STDCALL lbDatabaseLayerQuery::hasDefaultValue(char* columnname) {
+	_LOG << "lbQuery::hasDefaultValue(char* columnname) not implemented." LOG_
+	return false; // Not implemented
+}
 
 bool LB_STDCALL lbDatabaseLayerQuery::isNullable(int pos) {
 	if (currentdbLayer == NULL) {
