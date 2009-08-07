@@ -274,6 +274,9 @@ public:
 	 */
 	virtual bool	LB_STDCALL isNull(char const * name) = 0;
 
+	/** \brief Indicates, if a column has a default value.
+	 */
+	virtual bool	LB_STDCALL hasDefaultValue(char* columnname) = 0;
 	/**
 	 * \brief NULL indicator for pos column.
 	 */
