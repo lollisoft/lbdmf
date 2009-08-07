@@ -354,6 +354,7 @@ public:
 	bool		LB_STDCALL isFirst();
 	bool		LB_STDCALL isLast();
 
+	bool		LB_STDCALL hasDefaultValue(char* columnname);
 	bool		LB_STDCALL isNullable(int pos);
 	bool		LB_STDCALL isNullable(char const * name);
 	bool		LB_STDCALL isNull(int pos);
@@ -976,7 +977,11 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
-		if (ukdata == NULL) printf("NULL pointer!\n");
+		if (ukdata == NULL) {
+			_LOG << "Error: Index out of range. (elements " << boundColumns->Count() << ", position: " << pos << ")" LOG_
+			
+			return lb_I_Query::lbDBColumnUnknown;
+		}
 
 		UAP(lb_I_BoundColumn, bc)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
@@ -2965,6 +2970,74 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) {
 }
 /*...e*/
 
+bool LB_STDCALL lbQuery::hasDefaultValue(char* columnname) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbQuery::hasDefaultValue(" << columnname << ") called." LOG_
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
+	UAP(lb_I_String, tablename)
+	tablename = getTableName(columnname);
+
+	//QI(ColumnTypeKey, lb_I_KeyBase, ctkey)
+	//QI(ColumnTypeName, lb_I_Unknown, ctuk)
+	
+	SQLCHAR       szColumnDefault[TAB_LEN];
+	SQLRETURN     retcode;
+	SQLHSTMT      hstmt;
+	
+	/* Declare buffers for bytes available to return */
+	
+	SQLINTEGER cbColumnDefault;
+	
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+	
+	if (retcode != SQL_SUCCESS)
+	{
+		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		meta->setStatusText("Info", "Get columns failed.");
+		return false; // Do not indicate on failure
+	}
+	
+	UAP(lb_I_Parameter, SomeBaseSettings)
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+	
+	if (SomeBaseSettings != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+		
+		*name = "GeneralDBSchemaname";
+		SomeBaseSettings->getUAPString(*&name, *&schema);
+		
+		retcode = SQLColumns(hstmt, NULL, 0, 
+							 (unsigned char*) schema->charrep(), strlen(schema->charrep()), 
+							 (unsigned char*) tablename->charrep(), strlen(tablename->charrep()), (unsigned char*) columnname, strlen(columnname));
+	} else {
+		retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, (unsigned char*) tablename->charrep(), strlen(tablename->charrep()), (unsigned char*) columnname, strlen(columnname));
+	}
+	
+	
+	
+	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+		SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
+		if (retcode == SQL_SUCCESS) {
+			retcode = SQLFetch(hstmt);
+			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+				_LOG << "Error: Some error happened while fetching columns." LOG_
+				meta->setStatusText("Info", "Get columns failed.");
+				SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+				return false;
+			}
+			
+			return ((szColumnDefault != NULL) && strcmp((const char*) szColumnDefault, "") != 0);
+		}
+	}
+
+	SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+	
+	return false;
+}
+
+
 bool LB_STDCALL lbQuery::isNullable(int pos) {
 	return boundColumns->isNullable(pos);
 }
@@ -4013,6 +4086,10 @@ bool LB_STDCALL lbBoundColumn::setNull(bool b) {
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 	switch (_DataType) {
 
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 			return lb_I_Query::lbDBColumnFloat;
 
@@ -4116,6 +4193,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsLong(lb_I_Long* result, int asParamete
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 
 	switch (_DataType) {
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
@@ -4260,6 +4341,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
 				}
 					break;
+				case SQL_DOUBLE:
+				case SQL_REAL:
+				case SQL_DECIMAL:
+				case SQL_NUMERIC:
 				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
@@ -4355,6 +4440,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					}
 				}
 					break;
+				case SQL_DOUBLE:
+				case SQL_REAL:
+				case SQL_DECIMAL:
+				case SQL_NUMERIC:
 				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
@@ -4413,6 +4502,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		return ERR_NONE;
 	}
 /*...e*/
+	
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
 	lbErrCodes err = ERR_NONE;
@@ -4633,6 +4723,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 /*...e*/
 			break;
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_BIT:
 		case SQL_TINYINT:
@@ -4868,6 +4962,10 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
 			break;
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
@@ -4950,6 +5048,10 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
@@ -5046,6 +5148,10 @@ void LB_STDCALL lbBoundColumn::unbind() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
 			break;
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
@@ -5127,6 +5233,10 @@ void LB_STDCALL lbBoundColumn::rebind() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
+		case SQL_DOUBLE:
+		case SQL_REAL:
+		case SQL_DECIMAL:
+		case SQL_NUMERIC:
 		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
