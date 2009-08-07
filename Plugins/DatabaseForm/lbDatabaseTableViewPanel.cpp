@@ -1271,6 +1271,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillRow(int position) {
 void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
     TableView->BeginBatch();
     TableView->ClearGrid();
+	sampleQuery->first();
 	if (sampleQuery->dataFetched()) {
         int count = 0;
 		activateActionButtons();

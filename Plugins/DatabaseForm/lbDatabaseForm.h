@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.58 2009/07/05 00:57:31 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.59 2009/08/07 21:36:54 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.59  2009/08/07 21:36:54  lollisoft
+ * Corrected code to add new rows. Also added code to check for missing mandatory fields in the query that would make adding always fail. This will change the query, but didn't yet save it in the configuration.
+ *
  * Revision 1.58  2009/07/05 00:57:31  lollisoft
  * Added new tableview dialog class and enabled switching
  * between table view and form view. This does not interfer
@@ -1005,6 +1008,8 @@ public:
     void LB_STDCALL addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
+	bool LB_STDCALL checkMissingNotNullableColumns(char* sql, lb_I_Container* addcolumns);
+		
 	DECLARE_LB_UNKNOWN()
 
 /*...svariables:8:*/
@@ -1073,6 +1078,7 @@ public:
 	wxWindow* nextButton;
 	wxWindow* lastButton;
 	wxWindow* deleteButton;
+	wxWindow* addingButton;
 
 	bool allNaviDisabled;
 	bool noDataAvailable;

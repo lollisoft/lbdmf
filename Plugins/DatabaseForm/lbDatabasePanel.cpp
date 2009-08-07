@@ -30,6 +30,9 @@
 */
 /*...e*/
 
+
+#define GAP 2
+
 /*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
@@ -396,8 +399,8 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 					imagebutton->SetName(name);
 					
 					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(imagebutton, 1, wxALL, 5);
-					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+					sizerControl->Add(imagebutton, 1, wxALL, GAP);
+					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 
 					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, elementname)
@@ -424,8 +427,8 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 					ownerdraw->SetName(name);
 				
 					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(ownerdraw, 1, 0, 5);
-					sizerMain->Add(sizerControl, 1, wxALL, 5);
+					sizerControl->Add(ownerdraw, 1, 0, GAP);
+					sizerMain->Add(sizerControl, 1, wxALL, GAP);
 
 					if (FFI->isReadonly(name)) {
 				        ownerdraw->Disable();
@@ -483,8 +486,8 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 					bitmap->SetName(name);
 				
 					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(bitmap, 1, wxALL, 5);
-					sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
+					sizerControl->Add(bitmap, 1, wxALL, GAP);
+					sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, GAP);
 
 					if (FFI->isReadonly(name)) {
 				        bitmap->Disable();
@@ -875,8 +878,8 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 				
 				if (hideThisColumn == false) {
 					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(cbox, 1, wxALL, 5);
-					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+					sizerControl->Add(cbox, 1, wxALL, GAP);
+					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 				}
 /*...e*/
 			}
@@ -894,8 +897,8 @@ void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wx
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxALL, 5);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxALL, GAP);
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -931,8 +934,8 @@ void LB_STDCALL lbDatabasePanel::addFloatField(char* name, wxSizer* sizerMain, w
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxALL, 5);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxALL, GAP);
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -966,8 +969,8 @@ void LB_STDCALL lbDatabasePanel::addLongField(char* name, wxSizer* sizerMain, wx
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 				        text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxALL, 5);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxALL, GAP);
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
  							text->Disable();
@@ -1002,8 +1005,8 @@ void LB_STDCALL lbDatabasePanel::addIntegerField(char* name, wxSizer* sizerMain,
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 				        text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxALL, 5);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxALL, GAP);
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
  							text->Disable();
@@ -1020,8 +1023,8 @@ void LB_STDCALL lbDatabasePanel::addBinaryField(char* name, wxSizer* sizerMain, 
 						wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
 						text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxEXPAND | wxALL, 5);
-						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxEXPAND | wxALL, GAP);
+						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -1035,8 +1038,8 @@ void LB_STDCALL lbDatabasePanel::addBinaryField(char* name, wxSizer* sizerMain, 
 						free(buffer);
 						text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxEXPAND | wxALIGN_TOP | wxALL, 5);
-						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
+						sizerControl->Add(text, 1, wxEXPAND | wxALIGN_TOP | wxALL, GAP);
+						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -1049,8 +1052,8 @@ void LB_STDCALL lbDatabasePanel::addCheckField(char* name, wxSizer* sizerMain, w
 							"", wxPoint());
 						check->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(check, 1, wxALL, 5);	
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(check, 1, wxALL, GAP);	
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 
 						if (FFI->isReadonly(name)) {
 						        check->Disable();
@@ -1073,14 +1076,121 @@ void LB_STDCALL lbDatabasePanel::addDateField(char* name, wxSizer* sizerMain, wx
 						date->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(date, 1, wxALL, 5);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+						sizerControl->Add(date, 1, wxALL, GAP);
+						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 						
 						if (FFI->isReadonly(name)) {
 							date->Disable();
 						}
 }
 
+
+bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(char* sql, lb_I_Container* addcolumns) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, allcolumns)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, notnullablecolumns)
+	
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
+	
+	bool result = false;
+	
+	UAP(lb_I_Query, checkQuery)
+	
+	checkQuery = database->getQuery(_DBName->charrep(), 0);
+	checkQuery->query(SQLString->charrep(), true);
+	
+	int cols = checkQuery->getColumns();
+	
+	for (int co = 1; co <= cols; co++) {
+		UAP(lb_I_String, tablename)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tempname)
+		UAP(lb_I_String, name)
+		UAP(lb_I_Unknown, ukCol)
+		UAP(lb_I_Unknown, ukTab)
+		UAP(lb_I_KeyBase, keyTab)
+		name = checkQuery->getColumnName(co);
+		tablename = checkQuery->getTableName(name->charrep());
+		col->setData(co);
+		
+		// Insert all columns of the actual query
+		*tempname = tablename->charrep();
+		*tempname += ".";
+		*tempname += name->charrep();
+		QI(tempname, lb_I_Unknown, ukCol)
+		QI(tempname, lb_I_KeyBase, key);
+		columns->insert(&ukCol, &key);
+		
+		// Insert that columns, who are not nullable
+		if (!checkQuery->isNullable(co) && !checkQuery->hasDefaultValue(name->charrep())) {
+			result = true; // indicate not nullable columns
+			notnullablecolumns->insert(&ukCol, &key);
+		}
+		
+		QI(tablename, lb_I_KeyBase, keyTab)
+		
+		// Record tables in use
+		if (tables->exists(&keyTab) == 0) {
+			QI(tablename, lb_I_Unknown, ukTab)
+			tables->insert(&ukTab, &keyTab);
+		}
+	}
+	
+	// Check if there are more columns in the database that are not in the query
+	
+	tables->finishIteration();
+	while (tables->hasMoreElements()) {
+		UAP(lb_I_Unknown, ukTable)
+		UAP(lb_I_String, table)
+		ukTable = tables->nextElement();
+		QI(ukTable, lb_I_String, table)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
+		
+		*SQL = "SELECT * FROM ";
+		*SQL += table->charrep();
+		
+		
+		UAP(lb_I_Query, tempQuery)
+		
+		tempQuery = database->getQuery(_DBName->charrep(), 0);
+		
+		tempQuery->query(SQL->charrep(), true);
+		
+		cols = tempQuery->getColumns();
+		for (int co = 1; co <= cols; co++) {
+			UAP(lb_I_String, column)
+			UAP(lb_I_String, tablename)
+			UAP(lb_I_Unknown, ukTab)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, tempname)
+			UAP(lb_I_KeyBase, key)
+			
+			column = tempQuery->getColumnName(co);
+			tablename = tempQuery->getTableName(column->charrep());
+			*tempname = tablename->charrep();
+			*tempname += ".";
+			*tempname += column->charrep();
+
+			QI(tempname, lb_I_KeyBase, key)
+			
+			// Only when column is not yet in the list of columns
+			if (columns->exists(&key) == 0) {
+				// Only not nullable columns that are missing in the query are added to the resulting list
+				if (!tempQuery->isNullable(column->charrep())  && !tempQuery->hasDefaultValue(column->charrep())) {
+					QI(tempname, lb_I_Unknown, ukTab)
+					addcolumns->insert(&ukTab, &key);
+					result = true; // indicate not nullable columns
+				}
+			}			
+		}
+	}
+	
+	// Add code to automatically repair configuration
+	
+	return result;
+}
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
@@ -1283,6 +1393,53 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		SQLString->setData(_SQLString);
 	}
 
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, addcolumns)
+	
+	bool addmissingcolumns = false;
+	
+	if (checkMissingNotNullableColumns(SQLString->charrep(), *&addcolumns)) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
+		
+		*msg = _trans("There are columns in the database that are mandatory, but not in the SQL query.\n\nShould I add the missing columns?");
+		if (addcolumns->Count() > 0) {
+			*msg += _trans("\n\nThese columns are missing:\n\n");
+			addcolumns->finishIteration();
+			
+			while (addcolumns->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, s)
+				uk = addcolumns->nextElement();
+				QI(uk, lb_I_String, s)
+				
+				*msg += s->charrep();
+				*msg += "\n";
+			}
+		}
+		
+		addmissingcolumns = meta->askYesNo(msg->charrep());
+		if (addmissingcolumns) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, columns)
+			UAP(lb_I_String, table)
+			
+			while (addcolumns->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, s)
+				uk = addcolumns->nextElement();
+				QI(uk, lb_I_String, s)
+				
+				*columns += ", ";
+				*columns += s->charrep();
+			}
+			
+			*columns += " from ";
+			
+			SQLString->replace("from", columns->charrep(), true);
+			
+			_LOG << "Replaced query: '" << SQLString->charrep() << "'" LOG_
+		}
+	}
+	
 	//sampleQuery->skipPeeking();
 	sampleQuery->query(SQLString->charrep(), false);
 
@@ -1442,6 +1599,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 	deleteButton = buttonDelete;
 	refreshButton = buttonRefresh;
+	addingButton = buttonAdd;
 
 	sizerAddRem->Add(buttonAdd, 1, wxEXPAND | wxALL, 5);
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
@@ -2411,47 +2569,106 @@ const char* LB_STDCALL lbDatabasePanel::getControlValue(int pos) {
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\char\42\ name\41\:0:*/
 const char* LB_STDCALL lbDatabasePanel::getControlValue(char* name) {
-
+	lbErrCodes err = ERR_NONE;
 	wxString value;
 
 	wxWindow* w = FindWindowByName(wxString(name), this);
 
 /*...sGet the content:8:*/
-				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(name);
+	lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(name);
 
-				switch (coltype) {
-					case lb_I_Query::lbDBColumnBit:
-						{
-							wxCheckBox *check = (wxCheckBox*) w;
-							if (check->GetValue() == TRUE) {
-								value = "true";
-							} else {
-								value = "false";
-							}
-						}
-						break;
-					
-					case lb_I_Query::lbDBColumnChar:
-						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
+	if (sampleQuery->hasFKColumn(name) == 1) {
+		wxChoice* cbox = (wxChoice*) w;
+
+		int pos = cbox->GetSelection();
+		
+		if (pos != -1) {
+			err = ERR_NONE;
 			
-							value = tx->GetValue();
-						}
-						break;
-					
-					case lb_I_Query::lbDBColumnInteger:
-						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
+			UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 			
-							value = tx->GetValue();
-						}
-						break;
-					
-					
-					case lb_I_Query::lbDBColumnUnknown:
-					
-						break;
+			cbName->setData(name);
+			
+			UAP(lb_I_KeyBase, key_cbName)
+			UAP(lb_I_Unknown, uk_cbMapper)
+			UAP(lb_I_Container, cbMapper)
+			
+			QI(cbName, lb_I_KeyBase, key_cbName)
+			
+			uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+			
+			if (uk_cbMapper == NULL) {
+				_LOG << "Error: Could not find mapping container for '" << name << "'. Key was '" << key_cbName->charrep() << "'. List of elements:" LOG_
+				
+				ComboboxMapperList->finishIteration();
+				
+				while (ComboboxMapperList->hasMoreElements() == 1) {
+					UAP(lb_I_Unknown, uk)
+					UAP(lb_I_KeyBase, key)
+					uk = ComboboxMapperList->nextElement();
+					key = ComboboxMapperList->currentKey();
+					_LOG << "Element '" << key->charrep() << "'." LOG_
 				}
+			} else {
+				QI(uk_cbMapper, lb_I_Container, cbMapper)
+				
+				key->setData(pos);
+				
+				UAP(lb_I_KeyBase, key_pos)
+				
+				QI(key, lb_I_KeyBase, key_pos)
+				
+				UAP(lb_I_Unknown, uk_mapping)
+				
+				uk_mapping = cbMapper->getElement(&key_pos);
+				
+				if (uk_mapping == NULL)  { 
+					value = "";
+				} else {
+					UAP(lb_I_Integer, FK_id)
+					QI(uk_mapping, lb_I_Long, FK_id)
+					value = FK_id->charrep();
+				}
+			}
+		} else {
+			value = "";
+		}
+	} else {
+		switch (coltype) {
+			case lb_I_Query::lbDBColumnBit:
+			{
+				wxCheckBox *check = (wxCheckBox*) w;
+				if (check->GetValue() == TRUE) {
+					value = "true";
+				} else {
+					value = "false";
+				}
+			}
+				break;
+				
+			case lb_I_Query::lbDBColumnChar:
+			{
+				wxTextCtrl* tx = (wxTextCtrl*) w;
+				
+				value = tx->GetValue();
+			}
+				break;
+				
+			case lb_I_Query::lbDBColumnInteger:
+			{
+				wxTextCtrl* tx = (wxTextCtrl*) w;
+				
+				value = tx->GetValue();
+			}
+				break;
+				
+				
+			case lb_I_Query::lbDBColumnUnknown:
+				
+				break;
+		}
+	}
 /*...e*/
 
 	return value.c_str();
@@ -4221,33 +4438,35 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	if ((err = DoValidation(NULL)) != ERR_NONE) return err;
+	
 	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 	lbDBClear();
-
+	
 	err = sampleQuery->last();
 	
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
-
+	
 	if (err == ERR_DB_NODATA) {
 		sampleQuery->reopen();
 		err = sampleQuery->last();
-	
+		
 		if (err == ERR_DB_NODATA) {
 			DISABLE_FOR_NO_DATA()
-
+			
 			return ERR_DB_NODATA;
 		}
 	}
-
+	
 	lbDBRead();
-
+	
 	DISABLE_EOF()
-
+	
 	return ERR_NONE;
 }
 /*...e*/
 
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
+	refreshButton->SetLabel(_trans("Refresh"));
 	close();
 	
 	open();
@@ -4288,7 +4507,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		_CL_LOG << "Query is in add mode." LOG_
 		lbErrCodes err = ERR_NONE;
 		if ((err = DoValidation(NULL)) != ERR_NONE) return err;
-		lbDBUpdate();
+		if (lbDBUpdate() == ERR_NONE) {
+			refreshButton->SetLabel(_trans("Refresh"));
+			addingButton->SetLabel(_trans("Add"));
+		}
 		return err;
 	}
 	
@@ -4495,14 +4717,20 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
 					}
 				}
-				if (lbDBLast(NULL) != ERR_NONE) {
+				
+				lbErrCodes errLast = sampleQuery->last();
+				
+				if ((errLast != ERR_NONE) && (errLast != WARN_DB_NODATA)) {
 					_CL_LOG << "Move to last after updating failed." LOG_
 					skipValidation = true;
 					lbDBFirst(NULL);
 					skipValidation = false;
-
 				} else {
 					lbDBClear();
+					addingButton->SetLabel(_trans("Save"));
+					refreshButton->SetLabel(_trans("Cancel"));
+					refreshButton->Enable();
+					DISABLE_FOR_NO_DATA()
 				}
 			} else {
 				if (foreignkey != NULL) {
