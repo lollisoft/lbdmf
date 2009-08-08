@@ -1502,7 +1502,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
     if (columns > MAXCOLUMNS) {
         sizerMulticolumn = new wxBoxSizer(wxHORIZONTAL);
         sizerMulticolumn->Add(sizerColumn, 1, wxEXPAND | wxALL, 5);
-    }
+    } else {
+		sizerMain->Add(sizerColumn, 1, wxEXPAND | wxALL, 5);
+	}
 
 	for(int i = 1; i <= columns; i++) {
 		sizerField = new wxBoxSizer(wxHORIZONTAL);
