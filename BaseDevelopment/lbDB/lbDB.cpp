@@ -979,7 +979,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) {
 			_LOG << "Error: Index out of range. (elements " << boundColumns->Count() << ", position: " << pos << ")" LOG_
-			
+
 			return lb_I_Query::lbDBColumnUnknown;
 		}
 
@@ -2974,51 +2974,51 @@ bool LB_STDCALL lbQuery::hasDefaultValue(char* columnname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbQuery::hasDefaultValue(" << columnname << ") called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	
+
 	UAP(lb_I_String, tablename)
 	tablename = getTableName(columnname);
 
 	//QI(ColumnTypeKey, lb_I_KeyBase, ctkey)
 	//QI(ColumnTypeName, lb_I_Unknown, ctuk)
-	
-	SQLCHAR       szColumnDefault[TAB_LEN];
+
+	SQLCHAR       szColumnDefault[TAB_LEN] = "";
 	SQLRETURN     retcode;
 	SQLHSTMT      hstmt;
-	
+
 	/* Declare buffers for bytes available to return */
-	
+
 	SQLINTEGER cbColumnDefault;
-	
+
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
-	
+
 	if (retcode != SQL_SUCCESS)
 	{
 		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
 		meta->setStatusText("Info", "Get columns failed.");
 		return false; // Do not indicate on failure
 	}
-	
+
 	UAP(lb_I_Parameter, SomeBaseSettings)
 	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
-	
+
 	if (SomeBaseSettings != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
-		
+
 		*name = "GeneralDBSchemaname";
 		SomeBaseSettings->getUAPString(*&name, *&schema);
-		
-		retcode = SQLColumns(hstmt, NULL, 0, 
-							 (unsigned char*) schema->charrep(), strlen(schema->charrep()), 
+
+		retcode = SQLColumns(hstmt, NULL, 0,
+							 (unsigned char*) schema->charrep(), strlen(schema->charrep()),
 							 (unsigned char*) tablename->charrep(), strlen(tablename->charrep()), (unsigned char*) columnname, strlen(columnname));
 	} else {
 		retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, (unsigned char*) tablename->charrep(), strlen(tablename->charrep()), (unsigned char*) columnname, strlen(columnname));
 	}
-	
-	
-	
+
+
+
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
-		SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
+		retcode = SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
 		if (retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
@@ -3027,13 +3027,16 @@ bool LB_STDCALL lbQuery::hasDefaultValue(char* columnname) {
 				SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
 				return false;
 			}
-			
+
+            SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
 			return ((szColumnDefault != NULL) && strcmp((const char*) szColumnDefault, "") != 0);
+		} else {
+			_LOG << "Error: Binding col failed." LOG_
 		}
 	}
 
 	SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
-	
+
 	return false;
 }
 
@@ -4502,7 +4505,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		return ERR_NONE;
 	}
 /*...e*/
-	
+
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
 	lbErrCodes err = ERR_NONE;
@@ -5471,10 +5474,10 @@ public:
 	lb_I_String*	LB_STDCALL getDatabaseName();
 	lb_I_String*	LB_STDCALL getDBMSName();
 	lb_I_String*	LB_STDCALL getDBMSVersion();
-	
-	
-	
-	
+
+
+
+
 private:
 	RETCODE  retcode;
 	HENV     henv;
@@ -5495,80 +5498,80 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDatabase, lbDatabase)
 
-	
+
 lb_I_String*	LB_STDCALL lbDatabase::getDriverName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DRIVER_NAME,     Info,      bufferSize, &bufferSize);
 
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
 
 lb_I_String*	LB_STDCALL lbDatabase::getDriverVersion() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DRIVER_VER,     Info,      bufferSize, &bufferSize);
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
-	
+
 lb_I_String*	LB_STDCALL lbDatabase::getDatabaseName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DATABASE_NAME,     Info,      bufferSize, &bufferSize);
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
-	
+
 lb_I_String*	LB_STDCALL lbDatabase::getDBMSName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DBMS_NAME,     Info,      bufferSize, &bufferSize);
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
-	
+
 lb_I_String*	LB_STDCALL lbDatabase::getDBMSVersion() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DBMS_VER,     Info,      bufferSize, &bufferSize);
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
-	
-	
-	
-	
+
+
+
+
 lbDatabase::lbDatabase() {
 	ref = STARTREF;
 	henv = 0;
@@ -5980,7 +5983,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 			*msg += " ...";
 
 			_LOG << msg->charrep() LOG_
-			
+
 			meta->setStatusText("Info", msg->charrep());
 
 			tables->insert(&uk, &key);
@@ -6645,7 +6648,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 		param->getUAPString(*&paramname, *&tablename);
 
 		_CL_LOG << "Getting foreign keys for table '" << tablename->charrep() << "'" LOG_
-		
+
 		if (SomeBaseSettings != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
