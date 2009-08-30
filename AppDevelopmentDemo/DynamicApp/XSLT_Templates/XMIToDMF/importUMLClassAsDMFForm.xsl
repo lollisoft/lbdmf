@@ -273,6 +273,7 @@ INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((sele
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
 -- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 	</xsl:when>
+<!-- Old code not working. Creation of actions are placed in main file.
 	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
 -- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 <xsl:variable name="parameters">
@@ -284,6 +285,7 @@ INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((sele
 -- insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
 -- insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
 	</xsl:when>
+-->
 	<xsl:otherwise>
 	</xsl:otherwise>
 </xsl:choose>
@@ -408,6 +410,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
 -- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 	</xsl:when>
+<!-- Old code not working. Creation of actions are placed in main file.
 	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
 -- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 <xsl:variable name="parameters">
@@ -419,6 +422,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 -- insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
 -- insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
 	</xsl:when>
+-->
 	<xsl:otherwise>
 	</xsl:otherwise>
 </xsl:choose>
@@ -666,6 +670,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
 -- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 	</xsl:when>
+<!-- Old code not working. Creation of actions are placed in main file.
 	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
 -- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 <xsl:variable name="parameters">
@@ -677,6 +682,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), '<xsl:value-of select="$parameters"/>');	
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), (select id from action_types where bezeichnung = 'Activity'));
 	</xsl:when>
+-->	
 	<xsl:otherwise>
 	</xsl:otherwise>
 </xsl:choose>
