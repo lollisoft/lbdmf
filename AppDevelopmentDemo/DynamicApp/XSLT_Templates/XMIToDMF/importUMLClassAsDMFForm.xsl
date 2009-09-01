@@ -144,7 +144,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 <xsl:template name="importDMFFormSqlite">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
--- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/>
+-- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/> in Sqlite database
 
 <xsl:variable name="tablename"><xsl:call-template name="lookupEntityName">
 		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -273,19 +273,6 @@ INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((sele
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
 -- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 	</xsl:when>
-<!-- Old code not working. Creation of actions are placed in main file.
-	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
--- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
-<xsl:variable name="parameters">
-	<xsl:for-each select="./ownedParameter">
-	<xsl:if test="position()!=1">,</xsl:if>
-	<xsl:value-of select="@name"/>
-	</xsl:for-each>
-</xsl:variable>
--- insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
--- insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
-	</xsl:when>
--->
 	<xsl:otherwise>
 	</xsl:otherwise>
 </xsl:choose>
@@ -295,11 +282,128 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 </xsl:if>
 
 </xsl:template>
+<xsl:template name="importDMFFormPostgres">
+    <xsl:param name="ApplicationID"/>
+    <xsl:param name="ApplicationName"/>
+-- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/> in PostgreSQL database 
 
+<xsl:variable name="tablename"><xsl:call-template name="lookupEntityName">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="@xmi:id"/>
+	</xsl:call-template></xsl:variable>
+
+<xsl:variable name="classname" select="@name"/>
+<xsl:variable name="classID" select="@xmi:id"/>
+select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>');
+
+<xsl:variable name="ToolbarImageName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value"/></xsl:if>
+</xsl:variable>
+
+insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
+	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
+<!--
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
+<xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="../@name"/>
+	</xsl:call-template>
+</xsl:for-each>
+-->
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="tableID"><xsl:call-template name="lookupEntityID">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="$FieldName"/>
+	</xsl:call-template></xsl:variable>
+<xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
+<xsl:if test="$association!=''">
+<xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$classID"/>
+		<xsl:with-param name="FieldName" select="@name"/>
+	</xsl:call-template>
+</xsl:if>
+</xsl:for-each>
+
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="Aggregation" select="@aggregation"/>
+<xsl:choose>
+	<xsl:when test="@name=''">
+	</xsl:when>
+	<xsl:when test="@association!=''">
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
+		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
+		<xsl:choose>
+			<xsl:when test="$datatype='bigstring'"></xsl:when>
+			<xsl:when test="$datatype='image'"></xsl:when>
+			<xsl:otherwise><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="Aggregation" select="@aggregation"/>
+<xsl:if test="$Aggregation='none'"><xsl:if test="@association=''">
+<xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>"', getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
+insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', true);
+
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
+<xsl:variable name="datatype" select="//packagedElement[@xmi:id=$datatypeid]/@name"/>
+<xsl:if test="$datatype='image'">
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, '<xsl:value-of select="$datatype"/>');
+</xsl:if>
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:toolbarimagefile'">
+insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'toolbarimagefile');
+</xsl:if>
+<xsl:if test="./@association != ''">
+-- Association from <xsl:value-of select="$classname"/> to <xsl:value-of select="$datatype"/>
+<!-- Create the desired formular action based on the selected stereotype -->
+
+<xsl:call-template name="createPostgreSQLFormularActionByProperty">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="Property" select="@xmi:id"/>
+		<xsl:with-param name="FromFormularID" select="$classID"/>
+		<xsl:with-param name="ToFormularID" select="$datatypeid"/>		
+</xsl:call-template>
+
+</xsl:if>
+</xsl:for-each>
+-- Create operation definitions
+<xsl:for-each select="./ownedOperation[@xmi:type='uml:Operation']">
+<xsl:choose>
+	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:codegeneration'">
+-- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
+
+INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="./ownedParameter/@name"/>');
+INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
+
+	</xsl:when>
+	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
+-- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
+	</xsl:when>
+	<xsl:otherwise>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
+
+</xsl:template>
 <xsl:template name="importDMFFormMSSQL">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
--- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/>
+-- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/> in MSSQL database
 
 <xsl:variable name="tablename"><xsl:call-template name="lookupEntityName">
 		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -410,24 +514,26 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
 -- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 	</xsl:when>
-<!-- Old code not working. Creation of actions are placed in main file.
-	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
--- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
-<xsl:variable name="parameters">
-	<xsl:for-each select="./ownedParameter">
-	<xsl:if test="position()!=1">,</xsl:if>
-	<xsl:value-of select="@name"/>
-	</xsl:for-each>
-</xsl:variable>
--- insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', 7, '<xsl:value-of select="$parameters"/>');	
--- insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
-	</xsl:when>
--->
 	<xsl:otherwise>
 	</xsl:otherwise>
 </xsl:choose>
 </xsl:for-each>
 INSERT INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = '<xsl:value-of select="@name"/>' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:template>
+
+<xsl:template name="lookupVisibleField">
+    <xsl:param name="ApplicationID"/>
+    <xsl:param name="ApplicationName"/>
+    <xsl:param name="FromFormularID"/>
+<!-- Get the entity name by calling existing template -->
+<xsl:variable name="EntityName"><xsl:call-template name="lookupEntityName">
+    <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+    <xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+    <xsl:with-param name="FormularID" select="$FromFormularID"/>
+</xsl:call-template></xsl:variable>
+<xsl:variable name="FormID" select="//packagedElement[@xmi:type='uml:Class'][@name=$EntityName]/@xmi:id"/>
+<xsl:variable name="EntityID" select="//packagedElement[@xmi:type='uml:Dependency'][@client=$FormID]/@supplier"/>
+<xsl:value-of select="//packagedElement[@xmi:id=$EntityID]/ownedAttribute[@xmi:type='uml:Property']/xmi:Extension/stereotype[@name='visible']/../../@name"/>
 </xsl:template>
 
 
@@ -552,144 +658,7 @@ update actions set source = '<xsl:value-of select="$visibleField"/>' where sourc
 
 </xsl:template>
 
-<xsl:template name="lookupVisibleField">
-    <xsl:param name="ApplicationID"/>
-    <xsl:param name="ApplicationName"/>
-    <xsl:param name="FromFormularID"/>
-<!-- Get the entity name by calling existing template -->
-<xsl:variable name="EntityName"><xsl:call-template name="lookupEntityName">
-    <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-    <xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-    <xsl:with-param name="FormularID" select="$FromFormularID"/>
-</xsl:call-template></xsl:variable>
-<xsl:variable name="FormID" select="//packagedElement[@xmi:type='uml:Class'][@name=$EntityName]/@xmi:id"/>
-<xsl:variable name="EntityID" select="//packagedElement[@xmi:type='uml:Dependency'][@client=$FormID]/@supplier"/>
-<xsl:value-of select="//packagedElement[@xmi:id=$EntityID]/ownedAttribute[@xmi:type='uml:Property']/xmi:Extension/stereotype[@name='visible']/../../@name"/>
-</xsl:template>
 
-<xsl:template name="importDMFFormPostgres">
-    <xsl:param name="ApplicationID"/>
-    <xsl:param name="ApplicationName"/>
--- Generate DMF form definition for <xsl:value-of select="$ApplicationName"/>
-
-<xsl:variable name="tablename"><xsl:call-template name="lookupEntityName">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="FormularID" select="@xmi:id"/>
-	</xsl:call-template></xsl:variable>
-
-<xsl:variable name="classname" select="@name"/>
-<xsl:variable name="classID" select="@xmi:id"/>
-select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>');
-
-<xsl:variable name="ToolbarImageName">
-<xsl:if test="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/></xsl:if>
-<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value"/></xsl:if>
-</xsl:variable>
-
-insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
-	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
-<!--
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
-<xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="FormularID" select="$classID"/>
-		<xsl:with-param name="FieldName" select="../@name"/>
-	</xsl:call-template>
-</xsl:for-each>
--->
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="tableID"><xsl:call-template name="lookupEntityID">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="FormularID" select="$classID"/>
-		<xsl:with-param name="FieldName" select="$FieldName"/>
-	</xsl:call-template></xsl:variable>
-<xsl:variable name="association"><xsl:value-of select="//packagedElement[@xmi:id=$tableID]/ownedAttribute[@name=$FieldName]/type[@xmi:type='uml:Class']/@xmi:idref"/></xsl:variable>
-<xsl:if test="$association!=''">
-<xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="FormularID" select="$classID"/>
-		<xsl:with-param name="FieldName" select="@name"/>
-	</xsl:call-template>
-</xsl:if>
-</xsl:for-each>
-
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="Aggregation" select="@aggregation"/>
-<xsl:choose>
-	<xsl:when test="@name=''">
-	</xsl:when>
-	<xsl:when test="@association!=''">
-	</xsl:when>
-	<xsl:otherwise>
-		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
-		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
-		<xsl:choose>
-			<xsl:when test="$datatype='bigstring'"></xsl:when>
-			<xsl:when test="$datatype='image'"></xsl:when>
-			<xsl:otherwise><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:otherwise>
-		</xsl:choose>
-	</xsl:otherwise>
-</xsl:choose>
-</xsl:for-each>
-
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="Aggregation" select="@aggregation"/>
-<xsl:if test="$Aggregation='none'"><xsl:if test="@association=''">
-<xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>"', getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
-insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', true);
-
-<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
-<xsl:variable name="datatype" select="//packagedElement[@xmi:id=$datatypeid]/@name"/>
-<xsl:if test="$datatype='image'">
-insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, '<xsl:value-of select="$datatype"/>');
-</xsl:if>
-<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:toolbarimagefile'">
-insert into column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', true, 'toolbarimagefile');
-</xsl:if>
-<xsl:if test="./@association != ''">
--- Association from <xsl:value-of select="$classname"/> to <xsl:value-of select="$datatype"/>
-<!-- Create the desired formular action based on the selected stereotype -->
-
-<xsl:call-template name="createPostgreSQLFormularActionByProperty">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="Property" select="@xmi:id"/>
-		<xsl:with-param name="FromFormularID" select="$classID"/>
-		<xsl:with-param name="ToFormularID" select="$datatypeid"/>		
-</xsl:call-template>
-
-</xsl:if>
-</xsl:for-each>
--- Create operation definitions
-<xsl:for-each select="./ownedOperation[@xmi:type='uml:Operation']">
-<xsl:choose>
-	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">
--- Generate callxslt operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
-	</xsl:when>
-<!-- Old code not working. Creation of actions are placed in main file.
-	<xsl:when test="./xmi:Extension/stereotype/@name='validator'">
--- Generate validator operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
-<xsl:variable name="parameters">
-	<xsl:for-each select="./ownedParameter">
-	<xsl:if test="position()!=1">,</xsl:if>
-	<xsl:value-of select="@name"/>
-	</xsl:for-each>
-</xsl:variable>
-insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), '<xsl:value-of select="$parameters"/>');	
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'FormValidator'), (select id from action_types where bezeichnung = 'Activity'));
-	</xsl:when>
--->	
-	<xsl:otherwise>
-	</xsl:otherwise>
-</xsl:choose>
-</xsl:for-each>
-insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="@name"/>'));
-
-</xsl:template>
 
 
 
