@@ -60,6 +60,12 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifdef LINUX
+#ifndef OSX
+#define BIND_BOOL_DEFAULT
+#endif
+#endif
+
 
 /*...sLB_DATABASE_DLL scope:0:*/
 #define LB_DB_DLL
@@ -4201,6 +4207,20 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		case SQL_DECIMAL:
 		case SQL_NUMERIC:
 		case SQL_FLOAT:
+			if (asParameter == 1) {
+				char* b = (char*) malloc(strlen((char const *) buffer)+3);
+				b[0] = 0;
+				sprintf(b, "'%s'", buffer);
+				result->setData(b);
+				free(b);
+			} else {
+				result->setData((char*) buffer);
+				result->trim();
+			}
+			
+			result->replace(",", ".");
+			break;
+
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
 		case SQL_CHAR:
@@ -4220,7 +4240,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				result->setData((char*) buffer);
 				result->trim();
 			}
-
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
@@ -4264,16 +4283,16 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 			if (bi != 0) {
 #endif
 #ifndef OSX
-				bool b = *(bool*) buffer;
-				if (b == true) {
+			bool b = *(bool*) buffer;
+			if (b == true) {
 #endif
-					result->setData("true");
-				}
-				else {
-					result->setData("false");
-				}
+				result->setData("true");
 			}
-			break;
+			else {
+				result->setData("false");
+			}
+		}
+		break;
 #endif
 	        default:
 	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
@@ -4731,8 +4750,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 		case SQL_DECIMAL:
 		case SQL_NUMERIC:
 		case SQL_FLOAT:
+#ifndef BIND_BOOL_DEFAULT
 		case SQL_BIT:
 		case SQL_TINYINT:
+#endif
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
