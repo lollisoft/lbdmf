@@ -2757,6 +2757,9 @@ public:
 
 	virtual void LB_STDCALL setStatusText(char* name, const char* value) = 0;
 
+	// Hack to avoid crash when the window close button is pressed. Used in OnExit in dynamic.cpp.
+	virtual void LB_STDCALL disableStatusbar() = 0;
+
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */

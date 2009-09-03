@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.165 2009/07/19 22:42:12 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.166 2009/09/03 17:32:43 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.165 $
+ * $Revision: 1.166 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.165 2009/07/19 22:42:12 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.166 2009/09/03 17:32:43 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.166  2009/09/03 17:32:43  lollisoft
+ * Corrected exit behaviour when clicking on window close button.
+ *
  * Revision 1.165  2009/07/19 22:42:12  lollisoft
  * Using the new plugin install method per plugin module.
  *
@@ -2191,6 +2194,8 @@ int MyApp::OnExit() {
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 
 	_CL_LOG << "Unload application ..." LOG_
+
+	metaApp->disableStatusbar();
 
 	metaApp->unloadApplication();
 

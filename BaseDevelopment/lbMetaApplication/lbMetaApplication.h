@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.65 2009/07/19 22:40:20 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.66 2009/09/03 17:32:43 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.66  2009/09/03 17:32:43  lollisoft
+ * Corrected exit behaviour when clicking on window close button.
+ *
  * Revision 1.65  2009/07/19 22:40:20  lollisoft
  * Moved the installation step of an initial database to the new plugin install method.
  *
@@ -389,7 +392,7 @@ public:
 	void LB_STDCALL addStatusBar_TextArea(char* name);
 	
 	void LB_STDCALL setStatusText(char* name, const char* value);
-
+	void LB_STDCALL disableStatusbar();
 	
 	lbErrCodes LB_STDCALL enableEvent(char* name);
 	lbErrCodes LB_STDCALL disableEvent(char* name);
@@ -492,6 +495,8 @@ protected:
 	bool isPropertyPanelFloating;
 	bool isPropertyPanelLeft;
 	
+	bool isStatusbarActive;
+
 	// Internal (ODBC) is an empty string. Not empty is a plugin namespace.
 	bool _use_system_database_backend;
 	bool _use_application_database_backend;

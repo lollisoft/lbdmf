@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.160 $
+ * $Revision: 1.161 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.160 2009/07/19 22:40:20 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.161 2009/09/03 17:32:43 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.161  2009/09/03 17:32:43  lollisoft
+ * Corrected exit behaviour when clicking on window close button.
+ *
  * Revision 1.160  2009/07/19 22:40:20  lollisoft
  * Moved the installation step of an initial database to the new plugin install method.
  *
@@ -651,6 +654,8 @@ lb_MetaApplication::lb_MetaApplication() {
 	isPropertyPanelFloating = false;
 	isPropertyPanelLeft = true;
 
+	isStatusbarActive = true;
+
 	_use_application_database_backend = false;
 	_use_system_database_backend = false;
 	_application_database_backend = strdup("");
@@ -669,6 +674,10 @@ lb_MetaApplication::lb_MetaApplication() {
 	dispatcher->setEventManager(eman.getPtr());
 	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
+}
+
+void LB_STDCALL lb_MetaApplication::disableStatusbar() {
+	isStatusbarActive = false;
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
@@ -2330,6 +2339,8 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
 void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value) {
 	lbErrCodes err = ERR_NONE;
+
+	if (!isStatusbarActive) return;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
