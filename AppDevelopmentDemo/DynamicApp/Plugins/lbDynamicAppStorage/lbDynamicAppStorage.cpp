@@ -184,6 +184,10 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 		*param = "overwriteDatabase";
 		activedocument->getUAPString(*&param, *&overwrite);
+		if (overwrite->charrep() == NULL) {
+			_LOG << "Warning: The overwriteDatabase parameter was not passed. Set it to no." LOG_
+			*overwrite = "no";
+		}
 	}
 	
 	// Write the settings file for the application database here ...
