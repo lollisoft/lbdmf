@@ -858,7 +858,7 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 int LB_STDCALL lbString::strpos(const char* with) {
 	char* st = stristr(charrep(), with);
 	if (st != NULL) {
-		return stringdata - st;
+		return st - stringdata;
 	}
 	return -1;
 }
@@ -958,6 +958,36 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2, bool no
 	return new_str;
 }
 
+lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, substituted)
+	
+	/// \todo Implement catching failures.
+	*substituted = charrep();
+	
+	_LOG << "Substitute a string. The string: " << substituted->charrep() LOG_
+	
+	while (substituted->strpos("{") > -1) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, replacer)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP(lb_I_String, right)
+		UAP(lb_I_String, left)
+		right = substituted->right(substituted->strpos("{")+1); 
+		left = right->left(right->strpos("}"));
+		*replacer = "{";
+		*replacer += left->charrep();
+		*replacer += "}";
+		_LOG << "Have a parameter to substitute: " << left->charrep() LOG_
+		params->getUAPString(*&left, *&value);
+		
+		_LOG << "Substitute the parameter " << replacer->charrep() << " with " << value->charrep() LOG_
+		substituted->replace(replacer->charrep(), value->charrep());
+	}
+	
+	setData(substituted->charrep());
+	
+	return *this;
+}
+
 lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with, bool nocase) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 
@@ -1038,7 +1068,7 @@ char* LB_STDCALL lbString::stristr(const char *String, const char *Pattern)
       for (start = (char *)String; *start != NUL; start++)
       {
             /* find start of pattern in string */
-            for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start++)
+			for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start++)
                   ;
             if (NUL == *start)
                   return NULL;
@@ -1046,7 +1076,7 @@ char* LB_STDCALL lbString::stristr(const char *String, const char *Pattern)
             pptr = (char *)Pattern;
             sptr = (char *)start;
 
-            while (toupper(*sptr) == toupper(*pptr))
+			while (toupper(*sptr) == toupper(*pptr))
             {
                   sptr++;
                   pptr++;

@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbobject.h,v 1.46 2009/08/07 21:24:52 lollisoft Exp $
+ * $Id: lbobject.h,v 1.47 2009/09/09 17:43:51 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.47  2009/09/09 17:43:51  lollisoft
+ * Added substitutePlaceholder function. Fixed bug in strpos.
+ *
  * Revision 1.46  2009/08/07 21:24:52  lollisoft
  * Added a parameter to enable case insensitive replacements and implemented it.
  *
@@ -417,6 +420,7 @@ public:
 	lb_I_String* LB_STDCALL left(int until);
 	lb_I_String* LB_STDCALL right(int from);
 	int LB_STDCALL strpos(const char* with);
+	lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params);
 	
 	DECLARE_LB_KEYBASE()
 
