@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.84 $
+ * $Revision: 1.85 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.84 2009/08/07 21:23:27 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.85 2009/09/09 17:45:40 uid108140 Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.85  2009/09/09 17:45:40  uid108140
+ * Added substitutePlaceholder function. Some more docs.
+ *
  * Revision 1.84  2009/08/07 21:23:27  lollisoft
  * Added a parameter to enable case insensitive replacements.
  *
@@ -614,11 +617,21 @@ public:
 		
 	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
 	
+	/** \brief Replace a substring.
+	 * This function changes the content of this instance.
+	 */
 	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false) = 0;
+	
+	/** \brief Replace all occurences of placeholders with their values from params.
+	 * This function changes the content of this instance on success.
+	 */
+	virtual lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params) = 0;
 	
 	virtual lb_I_String* LB_STDCALL left(int until) = 0;
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
 	virtual int LB_STDCALL strpos(const char* with) = 0;
+	
+	
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/
