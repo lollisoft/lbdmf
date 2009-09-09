@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.65 2009/07/19 22:37:14 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.66 2009/09/09 07:53:19 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.66  2009/09/09 07:53:19  lollisoft
+ * Fixed a memory leak.
+ *
  * Revision 1.65  2009/07/19 22:37:14  lollisoft
  * Implemented new 'install' functionality for each plugin module. The lb_I_PluginModule became a default implementation to do nothing.
  *
@@ -827,7 +830,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 			/// \todo Change to a better plugin directory.
 			char* pl = "/usr";
-
+			free(pluginDir);
 			pluginDir = (char*) malloc(strlen(pl)+strlen("/plugins")+1);
 			pluginDir[0] = 0;
 			strcat(pluginDir, pl);
