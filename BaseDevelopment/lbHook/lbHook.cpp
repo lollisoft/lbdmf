@@ -626,6 +626,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			free(newname);
 		
 			newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
+			newname[0] = 0;
 			strcat(newname, "..");
 			strcat(newname, SLASH);
 			strcat(newname, "plugins");
