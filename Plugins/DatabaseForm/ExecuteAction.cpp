@@ -133,6 +133,57 @@ void LB_STDCALL lbExecuteAction::setParameter(lb_I_ActionStep_Parameters* myPara
 	replacers = myParams;
 }
 
+/** \brief Execute an application.
+ * This function starts an external application. Using external applications enhance the functionality of this application by not touching
+ * the application.
+ *
+ * A sample to start an external application on Mac OS X is a report engine. Using OpenRPT from xTuple the action definition looks like this:
+ * 
+ * actions entry:
+ * 208568;11;"Formulare dieser Anwendung drucken";"anwendungid";"";1
+ * 
+ * action type entry:
+ * 208567;15;"CreateReport";"instanceOflbExecuteAction";"lbDatabaseForm"
+ * 
+ * action step entry
+ * 208569;33;"Print";1;"/Applications/xTuple/rptrender.app/Contents/MacOS/rptrender -databaseURL=pgsql://vmhost:5432/lbdmf -username=dba -passwd=trainres -loadfromdb={ReportName} -printerName={PrinterName} -printpreview -close -param=filter:int={anwendungid}";15;11 
+ * 
+ * action step parameter entries:
+ * 208586;25;"PrinterName";"vmhost";"lb_I_String";"A description ...";33
+ * 208587;26;"ReportName";"Formulare";"lb_I_String";"A description ...";33
+ *
+ * The used report must be defined in the report table. The best is to use OpenRPT to design it.
+ * The report table must be created manually yet and looks like this:
+ * 
+ * -- Table: report
+ * 
+ * -- DROP TABLE report;
+ * 
+ * CREATE TABLE report
+ * (
+ * report_id integer NOT NULL DEFAULT nextval(('report_report_id_seq'::text)::regclass),
+ * report_name text,
+ * report_sys boolean,
+ * report_source text,
+ * report_descrip text,
+ * report_grade integer NOT NULL,
+ * report_loaddate timestamp without time zone,
+ * CONSTRAINT report_pkey PRIMARY KEY (report_id)
+ * )
+ * WITH (OIDS=TRUE);
+ * ALTER TABLE report OWNER TO dba;
+ * GRANT ALL ON TABLE report TO dba;
+ * COMMENT ON TABLE report IS 'Report definition information';
+ * 
+ * -- Index: report_name_grade_idx
+ * 
+ * -- DROP INDEX report_name_grade_idx;
+ * 
+ * CREATE UNIQUE INDEX report_name_grade_idx
+ * ON report
+ * USING btree
+ * (report_name, report_grade);
+ */
 long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbExecuteAction::execute()" LOG_
@@ -209,9 +260,10 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 		
 			wxString s = wxString(What->charrep());
 		
+			// Replaces a placeholder that belongs to value from the form (SourceFieldValue)
 			What->replace(rep->charrep(), SourceFieldValue->charrep());
 
-			// Build up the required parameters (with substituted placeholders) for the configured signal
+			// Build up the required parameters that may occur in What
 			int I = 0;
 			while (replacers->hasMoreActionStepParameters()) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -229,9 +281,7 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 				params->setUAPString(*&name, *&value);
 			}			
 			
-			_LOG << "Substitute parameters" LOG_
 			What->substitutePlaceholder(*&params);
-			_LOG << "Substituted parameters" LOG_
 
 			_LOG << "Replaced placeholders for execution command: " << What->charrep() LOG_
 			
