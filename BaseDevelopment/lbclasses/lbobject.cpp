@@ -964,8 +964,6 @@ lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) 
 	/// \todo Implement catching failures.
 	*substituted = charrep();
 	
-	_LOG << "Substitute a string. The string: " << substituted->charrep() LOG_
-	
 	while (substituted->strpos("{") > -1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, replacer)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -976,10 +974,9 @@ lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) 
 		*replacer = "{";
 		*replacer += left->charrep();
 		*replacer += "}";
-		_LOG << "Have a parameter to substitute: " << left->charrep() LOG_
+
 		params->getUAPString(*&left, *&value);
 		
-		_LOG << "Substitute the parameter " << replacer->charrep() << " with " << value->charrep() LOG_
 		substituted->replace(replacer->charrep(), value->charrep());
 	}
 	
