@@ -270,6 +270,20 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 			
 			dispatcher->dispatch(appActionSteps->getActionStepBezeichnung(), uk.getPtr(), &uk_result);
 			
+///\todo Check if there is a need to evaluate the result or pass it back (askYesNo).
+
+/*
+ * At least in a case of askYesNo there may be a change in a flow in a non linear action. Thus a value must be passed back.
+ * To distinguish each result of such an action the name could be used from getActionStepBezeichnung().
+ */
+#define PASS_BACK_RESULT 
+#ifdef PASS_BACK_RESULT
+			UAP_REQUEST(getModuleInstance(), lb_I_String, passback)
+			*passback = appActionSteps->getActionStepBezeichnung();
+			
+			params->setUAPString(*&passback, *&result);
+#endif
+			
 			return -1;
 		}
 	}
