@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.59 2009/08/07 21:36:54 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.60 2009/09/09 17:49:21 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.60  2009/09/09 17:49:21  lollisoft
+ * Added code to replace placeholder by configured parameters in addition to passed SourceFieldName.
+ *
  * Revision 1.59  2009/08/07 21:36:54  lollisoft
  * Corrected code to add new rows. Also added code to check for missing mandatory fields in the query that would make adding always fail. This will change the query, but didn't yet save it in the configuration.
  *
@@ -524,6 +527,7 @@ public:
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
+	UAP(lb_I_ActionStep_Parameters, replacers)
 };
 /*...e*/
 /*...sclass lbExecuteAction:0:*/

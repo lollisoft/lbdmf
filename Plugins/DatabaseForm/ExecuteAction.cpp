@@ -130,7 +130,7 @@ void LB_STDCALL lbExecuteAction::setTransitions(lb_I_Action_Step_Transitions* my
 }
 
 void LB_STDCALL lbExecuteAction::setParameter(lb_I_ActionStep_Parameters* myParams) {
-	
+	replacers = myParams;
 }
 
 long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
@@ -209,13 +209,33 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 		
 			wxString s = wxString(What->charrep());
 		
-			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+			What->replace(rep->charrep(), SourceFieldValue->charrep());
 
-			*What = s.c_str();
+			// Build up the required parameters (with substituted placeholders) for the configured signal
+			int I = 0;
+			while (replacers->hasMoreActionStepParameters()) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				
+				UAP(lb_I_String, valueSubstituted)
+				
+				replacers->setNextActionStepParameter();
+				
+				*name = replacers->getActionStepParameterName();
+				*value = replacers->getActionStepParameterValue();
+				
+				_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for application." LOG_
+				
+				params->setUAPString(*&name, *&value);
+			}			
 			
-			// Do the system call here
+			_LOG << "Substitute parameters" LOG_
+			What->substitutePlaceholder(*&params);
+			_LOG << "Substituted parameters" LOG_
+
+			_LOG << "Replaced placeholders for execution command: " << What->charrep() LOG_
 			
-			wxExecute(What->charrep());
+			wxExecute(What->charrep()); // probably add parameters for filter:  -param=anwendungid:{anwendungid}
 
 			return -1;
 		}
