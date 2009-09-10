@@ -3424,7 +3424,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	///\todo Implement
 	if (cursorFeature == false) return ERR_NONE;
-	
+	pos--; // Externally starting at 1.
 	cursor = pos;
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
 		cursor = 0;
