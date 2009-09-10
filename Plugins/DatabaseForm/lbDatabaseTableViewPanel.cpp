@@ -1275,7 +1275,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
 	if (sampleQuery->dataFetched()) {
         int count = 0;
 		activateActionButtons();
-		lbErrCodes err = sampleQuery->absolute(page*numRows);
+		lbErrCodes err = sampleQuery->absolute((page*numRows == 0) ? 1 : page*numRows);
 		while ((err == ERR_NONE) && (count < numRows)) {
             lbDBRead();
             fillRow(count);
