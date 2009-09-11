@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.202 $
+# * $Revision: 1.203 $
 # * $Name:  $
-# * $Id: Makefile,v 1.202 2009/06/18 17:38:33 lollisoft Exp $
+# * $Id: Makefile,v 1.203 2009/09/11 10:58:16 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.203  2009/09/11 10:58:16  lollisoft
+# * Corrected UML sample file directory.
+# *
 # * Revision 1.202  2009/06/18 17:38:33  lollisoft
 # * Changes to compile on OSX 10.5.4
 # *
@@ -1336,7 +1339,7 @@ install:
 	mkdir -p $(prefix)/share/lbdmf
 	mkdir -p $(prefix)/share/applications
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
-	mkdir -p $(prefix)/share/lbdmf/BoUML
+	mkdir -p $(prefix)/share/lbdmf/UMLSamples
 	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/include
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
@@ -1353,7 +1356,7 @@ install:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
-	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
+	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
@@ -1366,7 +1369,7 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf
 	mkdir -p $(prefix)/share/applications
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
-	mkdir -p $(prefix)/share/lbdmf/BoUML
+	mkdir -p $(prefix)/share/lbdmf/UMLSamples
 	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/include
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
@@ -1383,7 +1386,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
-	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
+	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
