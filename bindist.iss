@@ -33,7 +33,6 @@ Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.xpm"; DestDi
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.png"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\develop\Projects\CPP\BaseDevelopment\MetaApp-Bindist.mad"; DestDir: "{app}"; DestName: "MetaApp.mad"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\BoUML\*.*"; DestDir: "{app}\BoUML CRM Initial Model\BoUML"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; DestDir: "{app}\BoUML Samples Second Stage"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
