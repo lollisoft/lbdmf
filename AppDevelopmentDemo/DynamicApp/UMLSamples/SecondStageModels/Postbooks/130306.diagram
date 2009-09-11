@@ -1,0 +1,276 @@
+format 63
+
+activitynodecanvas 128002 activitynode_ref 129154 // initial
+  xyz 151 27 2000
+end
+activitynodecanvas 128130 activitynode_ref 129282 // decision
+  xyz 149 74 2000
+end
+activitynodecanvas 128258 activitynode_ref 129410 // decision
+  xyz 149 147 2000
+end
+activitynodecanvas 128386 activitynode_ref 129538 // decision
+  xyz 149 212 2000
+end
+activitynodecanvas 128514 activitynode_ref 129666 // decision
+  xyz 149 283 2000
+end
+activitynodecanvas 128642 activitynode_ref 129794 // decision
+  xyz 149 348 2000
+end
+activitynodecanvas 128770 activitynode_ref 129922 // decision
+  xyz 149 410 2000
+end
+activitynodecanvas 128898 activitynode_ref 130050 // decision
+  xyz 149 484 2000
+end
+activitynodecanvas 129026 activitynode_ref 130178 // decision
+  xyz 149 590 2000
+end
+activitynodecanvas 129154 activitynode_ref 130306 // activity_final
+  xyz 149 737 2000
+end
+activityactioncanvas 130434 activityaction_ref 129154 // activity action customer name is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 403 72 2000 187 41
+end
+activityactioncanvas 130818 activityaction_ref 129282 // activity action seterror
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 684 718 2000 101 61
+end
+activityactioncanvas 131586 activityaction_ref 129410 // activity action customer number is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 401 144 2000 189 41
+end
+activityactioncanvas 132482 activityaction_ref 129538 // activity action cust_custtype_id is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 400 213 2000 193 41
+end
+activityactioncanvas 133122 activityaction_ref 129666 // activity action cust_salesrep_id is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 399 280 2000 193 41
+end
+activityactioncanvas 133762 activityaction_ref 129794 // activity action cust_shipform_id is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 399 346 2000 193 41
+end
+activityactioncanvas 134402 activityaction_ref 129922 // activity action cust_terms_id is empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 400 404 2000 193 49
+end
+activityactioncanvas 135554 activityaction_ref 130050 // activity action cust_creditstatus is not G or W or H
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 414 483 2000 231 41
+end
+activityactioncanvas 136194 activityaction_ref 130178 // activity action cust_balmethod is not B or O
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 437 587 2000 197 41
+end
+activitynodecanvas 137218 activitynode_ref 131458 // decision
+  xyz 149 675 2000
+end
+activitynodecanvas 137858 activitynode_ref 131586 // decision
+  xyz 231 485 2000
+end
+activitynodecanvas 138370 activitynode_ref 131714 // decision
+  xyz 343 484 2000
+end
+activitynodecanvas 139010 activitynode_ref 131842 // decision
+  xyz 341 590 2004
+end
+flowcanvas 129282 flow_ref 129154 // <flow>
+  
+  from ref 128002 z 1999 to ref 128130
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129410 flow_ref 129282 // <flow>
+  
+  from ref 128130 z 1999 to ref 128258
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129538 flow_ref 129410 // <flow>
+  
+  from ref 128258 z 1999 to ref 128386
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129666 flow_ref 129538 // <flow>
+  
+  from ref 128386 z 1999 to ref 128514
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129794 flow_ref 129666 // <flow>
+  
+  from ref 128514 z 1999 to ref 128642
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129922 flow_ref 129794 // <flow>
+  
+  from ref 128642 z 1999 to ref 128770
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130050 flow_ref 129922 // <flow>
+  
+  from ref 128770 z 1999 to ref 128898
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130690 flow_ref 130306 // <flow>
+  
+  from ref 128130 z 1999 label "[cust_name == \"\"]" xyz 236 75 1999 to ref 130434
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130946 flow_ref 130434 // <flow>
+  
+  from ref 130818 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 131074 "<<transformation>>
+result = 0"
+    xyzwh 418 675 1999 143 47
+end
+flowcanvas 131842 flow_ref 130562 // <flow>
+  
+  from ref 128258 z 1999 label "[cust_number == \"\"]" xyz 232 145 1999 to ref 131586
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 131970 flow_ref 130690 // <flow>
+  
+  from ref 130434 z 1999 to point 731 90
+  line 132226 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 132098 flow_ref 130818 // <flow>
+  
+  from ref 131586 z 1999 to point 707 160
+  line 132354 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 132738 flow_ref 130946 // <flow>
+  
+  from ref 128386 z 1999 label "[cust_custtype_id == \"\"]" xyz 217 217 1999 to ref 132482
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 132866 flow_ref 131074 // <flow>
+  
+  from ref 132482 z 1999 to point 691 231
+  line 132994 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 133378 flow_ref 131202 // <flow>
+  
+  from ref 128514 z 1999 label "[cust_salesrep_id == \"\"]" xyz 219 284 1999 to ref 133122
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 133506 flow_ref 131330 // <flow>
+  
+  from ref 133122 z 1999 to point 678 298
+  line 133634 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 134018 flow_ref 131458 // <flow>
+  
+  from ref 128642 z 1999 label "[cust_shipform_id == \"\"]" xyz 221 350 1999 to ref 133762
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 134146 flow_ref 131586 // <flow>
+  
+  from ref 133762 z 1999 to point 667 364
+  line 134274 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 134658 flow_ref 131714 // <flow>
+  
+  from ref 128770 z 1999 label "[cust_terms_id == \"\"]" xyz 228 412 1999 to ref 134402
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 135426 flow_ref 132226 // <flow>
+  
+  from ref 128898 z 1999 label "[cust_creditstatus == \"G\"]" xyz 11 545 1999 to ref 129026
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 135938 flow_ref 132482 // <flow>
+  
+  from ref 135554 z 1999 to point 662 500
+  line 136066 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 136578 flow_ref 132738 // <flow>
+  
+  from ref 136194 z 1999 to point 656 605
+  line 136706 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 136834 flow_ref 132866 // <flow>
+  
+  from ref 134402 z 1999 to point 658 423
+  line 137090 z 1999 to ref 130818
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 137346 flow_ref 134018 // <flow>
+  
+  from ref 129026 z 1999 label "[cust_balmethod == \"B\"]" xyz 15 642 1999 to ref 137218
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 137474 flow_ref 134146 // <flow>
+  
+  from ref 137218 z 1999 to ref 129154
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 137602 "<<transformation>>
+result = 1"
+    xyzwh 227 678 1999 150 47
+end
+flowcanvas 137986 flow_ref 134274 // <flow>
+  
+  from ref 128898 z 1999 to ref 137858
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 138242 flow_ref 134530 // <flow>
+  
+  from ref 137858 z 1999 label "[cust_creditstatus == \"W\"]" xyz 228 532 1999 to ref 129026
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 138498 flow_ref 134658 // <flow>
+  
+  from ref 137858 z 1999 to ref 138370
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 138626 flow_ref 134786 // <flow>
+  
+  from ref 138370 z 1999 to ref 135554
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 138754 flow_ref 134914 // <flow>
+  decenter_begin 756
+  
+  from ref 138370 z 1999 label "[cust_creditstatus == \"H\"]" xyz 264 560 1999 to ref 129026
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 139138 flow_ref 135042 // <flow>
+  
+  from ref 129026 z 1999 to ref 139010
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 139266 flow_ref 135170 // <flow>
+  
+  from ref 139010 z 1999 to ref 136194
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 139394 flow_ref 135298 // <flow>
+  
+  from ref 139010 z 1999 label "[cust_balmethod == \"O\"]" xyz 275 645 1999 to ref 137218
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+line 131202 -_-_
+  from ref 130946 z 1998 to ref 131074
+line 137730 -_-_
+  from ref 137474 z 1998 to ref 137602
+end

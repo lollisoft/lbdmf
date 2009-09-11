@@ -1,0 +1,549 @@
+format 63
+"postbooks" // DMFToUML::postbooks
+  revision 17
+  modified_by 2 "lothar"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  classview 129154 "Class View"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    class 139906 "custinfo"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value ""
+      attribute 847490 "cust_number"
+	protected explicit_type "text"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 270850 "cust_active"
+	protected explicit_type "boolean"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271362 "cust_name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271490 "cust_creditlmt"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271618 "cust_creditrating"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 271746 "cust_financecharge"
+	protected explicit_type "boolean"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 270978 "cust_custtype_id"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 846338 "cust_shipform_id"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 846210 "cust_salesrep_id"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 272130 "cust_terms_id"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 272002 "cust_partialship"
+	protected explicit_type "boolean"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 203266 // (Customer type details)
+	relation 167426 ---> name "Customer type details"
+	  stereotype "lbDMF:detailmaster_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 203266 // (Customer type details)
+	  b parent class_ref 140034 // custtype
+	  association_explicit_type "cust_number"
+	ncouples 1
+	key "lbDMF:detailmaster_action:sourcecolumn" value "cust_id"
+      end
+
+      classrelation 203394 // <dependency>
+	relation 167554 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 203394 // <dependency>
+	  b parent class_ref 173698 // custinfo
+      end
+
+      operation 129154 "validatecustinfo"
+	stereotype "validator"
+	public explicit_return_type ""
+	nparams 8
+	  param in name "cust_number" explicit_type "string"
+	  param in name "cust_name" explicit_type "string"
+	  param in name "cust_balmethod" explicit_type "string"
+	  param in name "cust_creditstatus" explicit_type "string"
+	  param in name "cust_custtype_id" explicit_type "string"
+	  param in name "cust_salesrep_id" explicit_type "string"
+	  param in name "cust_shipform_id" explicit_type "string"
+	  param in name "cust_terms_id" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 140034 "custtype"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value ""
+      attribute 277506 "custtype_code"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 277634 "custtype_descrip"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 277762 "custtype_char"
+	protected explicit_type "boolean"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 203522 // <dependency>
+	relation 167682 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 203522 // <dependency>
+	  b parent class_ref 173826 // custtype
+      end
+    end
+
+    activity 129154 "validatecustinfo"
+      stereotype "validator"
+      activitydiagram 130306 "DoValidation"
+	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+	show_infonote default drawing_language default show_stereotype_properties default
+	size A4
+      end
+
+      activitynode 129154 initial ""
+	flow 129154 "<flow>"
+	  on activitynode_ref 129282 // decision
+	end
+      end
+
+      activitynode 129282 decision ""
+	flow 129282 "<flow>"
+	  on activitynode_ref 129410 // decision
+	end
+
+	flow 130306 "<flow>"
+	  on activityaction_ref 129154 // activity action customer name is empty
+	    uml_guard "cust_name == \"\""
+	end
+      end
+
+      activitynode 129410 decision ""
+	flow 129410 "<flow>"
+	  on activitynode_ref 129538 // decision
+	end
+
+	flow 130562 "<flow>"
+	  on activityaction_ref 129410 // activity action customer number is empty
+	    uml_guard "cust_number == \"\""
+	end
+      end
+
+      activitynode 129538 decision ""
+	flow 129538 "<flow>"
+	  on activitynode_ref 129666 // decision
+	end
+
+	flow 130946 "<flow>"
+	  on activityaction_ref 129538 // activity action cust_custtype_id is empty
+	    uml_guard "cust_custtype_id == \"\""
+	end
+      end
+
+      activitynode 129666 decision ""
+	flow 129666 "<flow>"
+	  on activitynode_ref 129794 // decision
+	end
+
+	flow 131202 "<flow>"
+	  on activityaction_ref 129666 // activity action cust_salesrep_id is empty
+	    uml_guard "cust_salesrep_id == \"\""
+	end
+      end
+
+      activitynode 129794 decision ""
+	flow 129794 "<flow>"
+	  on activitynode_ref 129922 // decision
+	end
+
+	flow 131458 "<flow>"
+	  on activityaction_ref 129794 // activity action cust_shipform_id is empty
+	    uml_guard "cust_shipform_id == \"\""
+	end
+      end
+
+      activitynode 129922 decision ""
+	flow 129922 "<flow>"
+	  on activitynode_ref 130050 // decision
+	end
+
+	flow 131714 "<flow>"
+	  on activityaction_ref 129922 // activity action cust_terms_id is empty
+	    uml_guard "cust_terms_id == \"\""
+	end
+      end
+
+      activitynode 130050 decision ""
+	flow 132226 "<flow>"
+	  on activitynode_ref 130178 // decision
+	    uml_guard "cust_creditstatus == \"G\""
+	end
+
+	flow 134274 "<flow>"
+	  on activitynode_ref 131586 // decision
+	end
+      end
+
+      activitynode 130178 decision ""
+	flow 134018 "<flow>"
+	  on activitynode_ref 131458 // decision
+	    uml_guard "cust_balmethod == \"B\""
+	end
+
+	flow 135042 "<flow>"
+	  on activitynode_ref 131842 // decision
+	end
+      end
+
+      activitynode 130306 activity_final ""
+      end
+
+      activityaction 129154 "customer name is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "The customer name must not be empty."
+	key "signal" value "showMsgBox"
+	key "title" value "Error"
+	flow 130690 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 129282 "seterror"
+	opaque_action
+	flow 130434 "<flow>"
+	  on activitynode_ref 130306 // activity_final
+	      uml_transformation "result = 0"
+	end
+      end
+
+      activityaction 129410 "customer number is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "The customer number is empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 130818 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 129538 "cust_custtype_id is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_custtype_id is empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 131074 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 129666 "cust_salesrep_id is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_salesrep_id is empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 131330 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 129794 "cust_shipform_id is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_shipform_id is empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 131586 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 129922 "cust_terms_id is empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_terms_id is empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 132866 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 130050 "cust_creditstatus is not G or W or H"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_creditstatus is not G or W or H"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 132482 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      activityaction 130178 "cust_balmethod is not B or O"
+	send_signal_action
+	ncouples 3
+	key "msg" value "cust_balmethod is not B or O"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 132738 "<flow>"
+	  on activityaction_ref 129282 // activity action seterror
+	end
+      end
+
+      parameter 129154 "cust_name" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129282 "cust_number" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129410 "cust_custtype_id" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129538 "cust_salesrep_id" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129666 "cust_shipform_id" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129794 "cust_terms_id" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 129922 "cust_creditstatus" explicit_type ""
+	unordered 
+	in
+      end
+
+      parameter 130050 "cust_balmethod" explicit_type ""
+	unordered 
+	in
+      end
+
+      activitynode 131458 decision ""
+	flow 134146 "<flow>"
+	  on activitynode_ref 130306 // activity_final
+	      uml_transformation "result = 1"
+	end
+      end
+
+      activitynode 131586 decision ""
+	flow 134530 "<flow>"
+	  on activitynode_ref 130178 // decision
+	    uml_guard "cust_creditstatus == \"W\""
+	end
+
+	flow 134658 "<flow>"
+	  on activitynode_ref 131714 // decision
+	end
+      end
+
+      activitynode 131714 decision ""
+	flow 134786 "<flow>"
+	  on activityaction_ref 130050 // activity action cust_creditstatus is not G or W or H
+	end
+
+	flow 134914 "<flow>"
+	  on activitynode_ref 130178 // decision
+	    uml_guard "cust_creditstatus == \"H\""
+	end
+      end
+
+      activitynode 131842 decision ""
+	flow 135170 "<flow>"
+	  on activityaction_ref 130178 // activity action cust_balmethod is not B or O
+	end
+
+	flow 135298 "<flow>"
+	  on activitynode_ref 131458 // decision
+	    uml_guard "cust_balmethod == \"O\""
+	end
+      end
+    end
+  end
+end
