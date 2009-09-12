@@ -1,6 +1,6 @@
 format 63
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 7
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
