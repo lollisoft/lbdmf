@@ -880,7 +880,7 @@ lb_I_String* LB_STDCALL lbString::right(int from) {
 	return part.getPtr();
 }
 
-#ifdef __WATCOMC__ || SOLARIS
+#if defined(__WATCOMC__) || defined(SOLARIS)
 // Watcom or Windows has no implementation for it.
 const char *
 strcasestr(const char *str, const char *substr)
