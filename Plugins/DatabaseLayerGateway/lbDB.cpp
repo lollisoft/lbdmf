@@ -3023,7 +3023,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 		return err;
 	}
 	
-	absolute(backup_cursor);
+	absolute(backup_cursor+1); // absolute substracts 1
 	if (theResult == NULL) {
 		_LOG << "Error: Got no resultset after a reopen!" LOG_
 		return ERR_DB_QUERYFAILED;
@@ -3761,7 +3761,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					theResult = NULL; // It will go invalid.
 					currentdbLayer->Close();
 					open();
-					absolute(pos);
+					absolute(pos+1); // absolute substracts 1
 #endif
 				}
 				catch (DatabaseLayerException& ex)
@@ -3829,7 +3829,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							pStatement = NULL;
                             currentdbLayer->Close();
                             open();
-							absolute(pos);
+							absolute(pos+1); // absolute substracts 1
 						}
 						_LOG << "Error: Retry adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
 					}
@@ -3952,7 +3952,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			theResult = NULL; // It will go invalid.
 			currentdbLayer->Close();
 			open();
-			absolute(pos);
+			absolute(pos+1); // absolute substracts 1
 #endif
 		}
 		catch (DatabaseLayerException ex) {
@@ -4048,7 +4048,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	queryValues.Clear();
 
 	reopen();
-	absolute(pos);
+	absolute(pos+1); // absolute substracts 1
 
 	if (currentCursorview.Count() == 0) {
 		_CL_VERBOSE << "Error: Reopen failed." LOG_
