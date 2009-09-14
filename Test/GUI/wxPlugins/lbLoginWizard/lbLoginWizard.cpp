@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
-            
+
             40235 Duesseldorf (germany)
 */
 /*...e*/
@@ -78,9 +78,9 @@ public:
 	virtual ~lbPluginModuleLoginWizard();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	virtual void LB_STDCALL initialize();
-	
+
 	DECLARE_PLUGINS()
 };
 
@@ -109,7 +109,7 @@ void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
 
 lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
-        
+
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -118,7 +118,7 @@ lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
-public lb_I_AppSelectPage, 
+public lb_I_AppSelectPage,
 public wxWizardPageSimple
 {
 public:
@@ -128,30 +128,31 @@ public:
 	}
 
 	virtual ~wxAppSelectPage();
-		
+
 	DECLARE_LB_UNKNOWN()
 
 /*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
 	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
 			//m_bitmap = wxBITMAP(wiztest2);
-                        userid = NULL;
+            userid = NULL;
+			loggingin = false;
 			sizerMain  = new wxBoxSizer(wxVERTICAL);
 
 			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
 			box = new wxChoice(this, -1);
-	        
+
 			sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
 			sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
-	        
+
 			SetSizer(sizerMain);
-	        
+
 			sizerMain->SetSizeHints(this);
 			//sizerMain->Fit(this);
-	        
+
 			box->SetFocusFromKbd();
 			Layout();
-			
+
 			Centre();
 	}
 
@@ -168,20 +169,20 @@ public:
 
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_Container, apps)
-		
+
 		meta->setUserName(user);
-		
+
 		apps = meta->getApplications();
 
 		box->Clear();
-		
+
 		while (apps->hasMoreElements()) {
 			UAP(lb_I_String, name)
 			UAP(lb_I_Unknown, uk)
-			
+
 			uk = apps->nextElement();
 			QI(uk, lb_I_String, name)
-			
+
 			box->Append(wxString(name->charrep()));
 		}
 
@@ -198,7 +199,7 @@ public:
 	virtual bool TransferDataFromWindow()
 	{
 		// The application must have been selected here by the user.
-	        return TRUE;
+	        return !loggingin;
 	}
 /*...e*/
 
@@ -209,11 +210,12 @@ public:
 
 			if (!app.IsEmpty()) {
 				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
+
 				char* _app = strdup(app.c_str());
-			
+
+                loggingin = true;
 				meta->loadApplication(userid, _app);
-			
+
 				free(_app);
 			}
 		}
@@ -222,6 +224,7 @@ public:
 private:
 	wxCheckBox *m_checkbox;
 	char* userid;
+	bool  loggingin;
 	wxChoice* box;
 	wxString app;
 	wxBoxSizer* sizerMain;
@@ -231,9 +234,9 @@ private:
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 
-	
-	
-	
+
+
+
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
 	long l;
@@ -244,7 +247,7 @@ private:
 BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
     EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
 END_EVENT_TABLE()
-        
+
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -273,9 +276,9 @@ public:
 DECLARE_LB_UNKNOWN()
 
 	wxLogonPage() {
-	
+
 	}
-	
+
 	virtual ~wxLogonPage() {
 	}
 
@@ -333,28 +336,28 @@ DECLARE_LB_UNKNOWN()
 	virtual bool TransferDataFromWindow()
 	{
 		lbErrCodes err = ERR_NONE;
-		
+
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
-		
+
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-			
+
 			if (meta->login(user, pass)) {
 				appselect->setLoggedOnUser(user);
 				if (pass) free(pass);
 				if (user) free(user);
-				
+
 				return TRUE;
 			} else {
 				char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
 				char* buf1 = strdup(_trans("Error"));
 				wxMessageDialog dialog(NULL, buf, buf1, wxOK);
-				
+
 				dialog.ShowModal();
-				
+
 				free(buf);
 				free(buf1);
-				
+
 				return FALSE;
 			}
 	}
@@ -370,38 +373,38 @@ DECLARE_LB_UNKNOWN()
 		sizerMain  = new wxBoxSizer(wxVERTICAL);
 		sizerHor   = new wxBoxSizer(wxHORIZONTAL);
 		sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
-		sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+		sizerLeft  = new wxBoxSizer(wxVERTICAL);
 		sizerRight = new wxBoxSizer(wxVERTICAL);
 
 		int LoginOk;
 		int LoginCancel;
-	
+
 		char eventName[100] = "";
-		
+
 		sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
-	
+
 		createTextCtrl("Benutzer:");
 		createPasswdCtrl("Passwort:");
 
 		//#define CONNECTOR ((wxFrame*) frame)
 		#define CONNECTOR this
-	
+
 		SetAutoLayout(TRUE);
-		
+
 		sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 		sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
-		
+
 		SetSizer(sizerMain);
-	
+
 		sizerMain->SetSizeHints(this);
 		sizerMain->Fit(this);
-		
+
 		//Centre();
 	}
 /*...e*/
 
-    
+
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 
@@ -413,7 +416,7 @@ DECLARE_LB_UNKNOWN()
 
 	wxWindow* OkButton;
 	wxWindow* CancelButton;
-	
+
 	wxString textValue;
 
 	wxBoxSizer* sizerMain;
@@ -437,7 +440,7 @@ lbErrCodes LB_STDCALL wxLogonPage::setData(lb_I_Unknown* uk) {
 
 /*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
 char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
-	
+
 	wxWindow* w = FindWindowByName(wxString(_name));
 
 	if (w != NULL) {
@@ -453,7 +456,7 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-class lbLoginHandler : 
+class lbLoginHandler :
 	public lb_I_Unknown,
 	public lb_I_LogonHandler,
 	public lb_I_EventHandler {
@@ -465,7 +468,7 @@ public:
 
 		lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 		lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
-		
+
 		wxWizard *wizard;
 		wxWizardPageSimple *page1;
 };
@@ -482,7 +485,7 @@ lbErrCodes LB_STDCALL lbLoginHandler::setData(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lbLoginHandler::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbLoginHandler::runLogin, "RunLogin");
-	
+
 	return ERR_NONE;
 }
 
@@ -496,7 +499,7 @@ lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 	wxSize size = text->GetBestSize();
 
 	wxLogonPage *page2 = new wxLogonPage(wizard);
-	
+
 	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 
 	//page2->init(frame);
@@ -511,7 +514,7 @@ lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 	page2->SetPrev(page1);
 	page2->SetNext(page3);
 	page3->SetPrev(page2);
-	
+
 	wizard->SetPageSize(size);
 
 	if ( !wizard->RunWizard(page1) )
@@ -548,7 +551,7 @@ public:
 	virtual ~lbPluginLoginWizard();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 	/** \brief Init the menu emtries.
@@ -556,7 +559,7 @@ public:
 	 * This connects the login feature to a menu.
 	 */
 	virtual void LB_STDCALL initialize();
-	
+
 	/** \brief Run the login manually.
 	 *
 	 * This let the login wizard appear manually without invoking it from
@@ -576,9 +579,9 @@ public:
 
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
 	void LB_STDCALL releaseImplementation();
-	
+
 	UAP(lb_I_Unknown, loginHandler)
-};	
+};
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
         ADD_INTERFACE(lb_I_PluginImpl)
@@ -606,29 +609,29 @@ bool LB_STDCALL lbPluginLoginWizard::canAutorun() {
 
 lbErrCodes LB_STDCALL lbPluginLoginWizard::autorun() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
-	
+
 	int lEvent;
-	
+
 	ev->registerEvent("RunLogin", lEvent);
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, disp)
-	
+
 	lbLoginHandler* hdl = new lbLoginHandler();
 	hdl->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 	QI(hdl, lb_I_Unknown, loginHandler)
-	
+
 	hdl->registerEventHandler(*&disp);
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	char* file = strdup(_trans("&File"));
 	char* entry = strdup(_trans("Login via &Plugin\tCtrl-P"));
-	
+
 	meta->addMenuEntry(file, entry, "RunLogin", "");
-	
+
 	free(file);
 	free(entry);
 
@@ -675,7 +678,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemSetModuleName(__FILE__);
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -686,7 +689,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                 	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -702,7 +705,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/

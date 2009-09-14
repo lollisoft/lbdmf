@@ -152,6 +152,7 @@ public:
 private:
 	wxCheckBox *m_checkbox;
 	char* userid;
+	bool  loggingin;
 	wxChoice* box;
 	wxString app;
 	wxBoxSizer* sizerMain;
@@ -180,7 +181,8 @@ wxAppSelectPage::wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 {
 	//m_bitmap = wxBITMAP(wiztest2);
 
-        userid = NULL;
+    userid = NULL;
+    loggingin = false;
 
 	sizerMain  = new wxBoxSizer(wxVERTICAL);
 
@@ -207,7 +209,7 @@ lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
 /*...svirtual bool wxAppSelectPage\58\\58\TransferDataFromWindow\40\\41\:0:*/
 	bool wxAppSelectPage::TransferDataFromWindow()
 	{
-	        return TRUE;
+	        return !loggingin;
 	}
 /*...e*/
 /*...svoid wxAppSelectPage\58\\58\OnWizardPageChanging\40\wxWizardEvent\38\ event\41\:0:*/
@@ -222,6 +224,7 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
 				char* _app = strdup(app.c_str());
 
 				_CL_LOG << "Load application '" << _app << "'" LOG_
+				loggingin = true;
 				meta->loadApplication(userid, _app);
 
 				free(_app);
@@ -1088,23 +1091,23 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 
-	if ((queryString == NULL) || 
-		(DBName == NULL) || 
-		(DBUser == NULL) || 
-		(DBPass == NULL) || 
-		(strcmp(queryString, "") == 0) || 
-		(strcmp(DBName, "") == 0) || 
-		(strcmp(DBUser, "") == 0) || 
+	if ((queryString == NULL) ||
+		(DBName == NULL) ||
+		(DBUser == NULL) ||
+		(DBPass == NULL) ||
+		(strcmp(queryString, "") == 0) ||
+		(strcmp(DBName, "") == 0) ||
+		(strcmp(DBUser, "") == 0) ||
 		(strcmp(DBPass, "") == 0)) {
 		UAP_REQUEST(getModuleManager(), lb_I_String, msg)
-		
+
 		*msg = _trans("Database SQL query, name, user or password is NULL or empty. Could not use database forms without proper parameters!");
 		if (formName != NULL) {
 			*msg += _trans("\n\nThe formular name is: '");
 			*msg += formName;
 			*msg += "'";
 		}
-		
+
 		msgBox(_trans("Error"), msg->charrep());
 		return NULL;
 	}
