@@ -1,3 +1,13 @@
+2009-09-14 19:24  lollisoft
+
+	* Test/GUI/: wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
+	  wxWrapperDLL/wxWrapperDLL.cpp: Login bug solved. (Hack)
+
+2009-09-14 10:17  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Missed changes for the
+	  index shift (absolute substracts 1).
+
 2009-09-13 11:02  lollisoft
 
 	* BaseDevelopment/lbclasses/lbobject.cpp: Added strcasestr for
