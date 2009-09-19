@@ -1,6 +1,6 @@
 format 63
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 6
+  revision 7
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -237,6 +237,15 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 140290 // (anwendungid)
+	relation 137218 ---> name "anwendungid"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140290 // (anwendungid)
+	  b parent class_ref 135682 // Formulare
       end
     end
 

@@ -1,6 +1,6 @@
 format 63
 "DMFToUML" // DMFToUML
-  revision 2
+  revision 4
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -29,6 +29,8 @@ format 63
   package_ref 128130 // lbDMF Manager
 
   package_ref 128258 // lbDMFManager_Entities
+
+  package_ref 129538 // Reports
 
   package_ref 128386 // lbDMF
 end
