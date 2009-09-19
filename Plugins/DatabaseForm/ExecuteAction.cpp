@@ -263,27 +263,30 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			// Replaces a placeholder that belongs to value from the form (SourceFieldValue)
 			What->replace(rep->charrep(), SourceFieldValue->charrep());
 
-			// Build up the required parameters that may occur in What
-			int I = 0;
-			while (replacers->hasMoreActionStepParameters()) {
-				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-				
-				UAP(lb_I_String, valueSubstituted)
-				
-				replacers->setNextActionStepParameter();
-				
-				*name = replacers->getActionStepParameterName();
-				*value = replacers->getActionStepParameterValue();
-				
-				_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for application." LOG_
-				
-				params->setUAPString(*&name, *&value);
-			}			
 			
-			What->substitutePlaceholder(*&params);
-
-			_LOG << "Replaced placeholders for execution command: " << What->charrep() LOG_
+			if (replacers != NULL) {
+				// Build up the required parameters that may occur in What
+				int I = 0;
+				while (replacers->hasMoreActionStepParameters()) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+					
+					UAP(lb_I_String, valueSubstituted)
+					
+					replacers->setNextActionStepParameter();
+					
+					*name = replacers->getActionStepParameterName();
+					*value = replacers->getActionStepParameterValue();
+					
+					_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for application." LOG_
+					
+					params->setUAPString(*&name, *&value);
+				}			
+				
+				What->substitutePlaceholder(*&params);
+				
+				_LOG << "Replaced placeholders for execution command: " << What->charrep() LOG_
+			}
 			
 			wxExecute(What->charrep()); // probably add parameters for filter:  -param=anwendungid:{anwendungid}
 
