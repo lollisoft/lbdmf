@@ -15,6 +15,22 @@
 						<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 						<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 					</xsl:call-template>
+					
+		<xsl:for-each select="ownedAttribute[@xmi:type='uml:Property'][@aggregation='none']">
+		<xsl:variable name="assocID" select="@association"/>
+		<xsl:variable name="assoc" select="//packagedElement[@xmi:id=$assocID]/@name"/>
+		<xsl:variable name="supplier" select="./type/@xmi:idref"/>
+		<xsl:variable name="client" select="../@xmi:id"/>
+		<xsl:if test="//packagedElement[@xmi:id=$supplier]/xmi:Extension/stereotype/@name='report'">
+-- Create report link from '<xsl:value-of select="$supplier"/>' to '<xsl:value-of select="$client"/>'
+		
+INSERT INTO "actions" (name, typ, source) VALUES ('Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>', 1, '<xsl:value-of select="$assoc"/>');
+INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Printing step', 1, '/Applications/xTuple/rptrender.app/Contents/MacOS/rptrender -databaseURL=pgsql://vmhost:5432/lbdmf -username=dba -passwd=trainres -loadFromDb=Report<xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/> -printpreview -close', (select id from action_types where action_handler = 'instanceOflbExecuteAction' and module = 'lbDatabaseForm' and bezeichnung = 'CreateReport'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'));
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'), 'evt_Print<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>_<xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>"/>');
+		</xsl:if>
+		</xsl:for-each>
+					
+					
 	</xsl:when>
 	<xsl:when test="$TargetDatabaseType='Sqlite'">
 					<xsl:call-template name="importDMFFormSqlite">

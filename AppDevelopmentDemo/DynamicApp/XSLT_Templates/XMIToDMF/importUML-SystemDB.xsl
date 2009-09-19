@@ -3,6 +3,7 @@
 <xsl:import href="importUMLClassAsDMFForm.xsl"/>
 <xsl:import href="importUMLApplicationTables.xsl"/>
 <xsl:import href="createDefaultStoredProcs.xsl"/>
+<xsl:import href="importUMLReports.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -63,6 +64,16 @@
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 					</xsl:call-template>
 				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFReport">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
+					</xsl:call-template>
+				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
 					<xsl:call-template name="importDMFForm">
@@ -70,6 +81,16 @@
 						<xsl:with-param name="ApplicationName" select="../@name"/>
 						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFReport">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
@@ -85,6 +106,18 @@
 			</xsl:choose>
 		</xsl:for-each>
 
+
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Dependency']">
+		<xsl:variable name="supplier" select="./@supplier"/>
+		<xsl:variable name="client" select="./@client"/>
+		<xsl:if test="//packagedElement[@xmi:id=$supplier]/xmi:Extension/stereotype/@name='report'">
+-- Create report link from '<xsl:value-of select="$supplier"/>' to '<xsl:value-of select="$client"/>'
+		
+INSERT INTO "actions" (name, typ, source) VALUES ('Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>', 1, '');
+INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Printing step', 1, 'lala', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'));
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'), 'evt_Print<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>_<xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>"/>');
+		</xsl:if>
+		</xsl:for-each>
 
 <!-- Generate Application database model -->
 <!--

@@ -188,6 +188,7 @@ delete from formulare where anwendungid in (select id from anwendungen where nam
 
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+update users set lastapp = NULL where lastapp in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 delete from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
 drop table tempactions;  
