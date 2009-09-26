@@ -1312,7 +1312,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	}
 
 	if (database == NULL) {
-		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+		meta->msgBox("Error", "Could not load database backend, either plugin or built in version.");
 		return;
 	}
 
@@ -4492,6 +4492,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
+	if (database == NULL) return ERR_NONE; // Form has not been initialized correctly or database backend was not loaded. Simply ignore it.
 	refreshButton->SetLabel(_trans("Refresh"));
 	close();
 
