@@ -1292,14 +1292,18 @@ public:
  */
 
 #define UAP_REQUEST(mm, interface, variable) \
-  	UAP(lb_I_Unknown, uk##variable) \
-  	UAP(interface, variable) \
-  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) { \
-  		_CL_LOG << "Error: Interface not defined" LOG_ \
-  	} else { \
-	  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
-	  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
-	}
+		lbErrCodes err##variable = ERR_NONE; \
+		UAP(lb_I_Unknown, uk##variable) \
+		UAP(interface, variable) \
+		err##variable = mm->request(#interface, &uk##variable); \
+		if (err##variable == ERR_MODULE_NO_INTERFACE) { \
+			_CL_LOG << "Error: Interface '" << #interface << "' not defined. Check if this is an implementation error or wrong module version." LOG_ \
+		} else if (err##variable == ERR_MODULE_NOT_FOUND) { \
+			_CL_LOG << "Error: Module for interface '" << #interface << "' could not be loaded or was not found." LOG_ \
+		} else { \
+			uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+			uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
+		}
 
 /*...e*/
 
