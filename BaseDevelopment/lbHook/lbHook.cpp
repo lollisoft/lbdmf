@@ -880,6 +880,7 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 
+		if (database == NULL) return text;
 		database->init();
 
 		char* lbDMFPasswd = getenv("lbDMFPasswd");

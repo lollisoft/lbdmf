@@ -589,7 +589,17 @@ void LB_STDCALL lbPluginModuleDynamicAppStorage::install() {
 		if (_check_for_databases_failure_step == -2) break; //
 		
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_BACKEND) {
-			meta->msgBox("Error", "No system database backed available. Please check your installation and logfile!");
+			//meta->msgBox("Error", "No system database backed available. Please check your installation and logfile!");
+			meta->setSystemDatabaseBackend("DatabaseLayerGateway");
+            meta->setApplicationDatabaseBackend("DatabaseLayerGateway");
+            meta->useSystemDatabaseBackend(true);
+            meta->useApplicationDatabaseBackend(true);
+			
+			if (!installDatabase()) {
+				meta->msgBox("Error", "Fallback to local database variant failed too!");
+				break;
+			}
+			
 			break;
 		}
 		if (_check_for_databases_failure_step == META_DB_FAILURE_SYS_DB_INITIALIZE) {
