@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.161 $
+ * $Revision: 1.162 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.161 2009/09/03 17:32:43 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.162 2009/09/26 18:57:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.162  2009/09/26 18:57:14  lollisoft
+ * Bugfix for a crash when the application was set to use ODBC, but that was not available when restarted.
+ *
  * Revision 1.161  2009/09/03 17:32:43  lollisoft
  * Corrected exit behaviour when clicking on window close button.
  *
@@ -2936,6 +2939,27 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
+
+			if (database == NULL) {
+				setSystemDatabaseBackend("DatabaseLayerGateway");
+				setApplicationDatabaseBackend("DatabaseLayerGateway");
+				useSystemDatabaseBackend(true);
+				useApplicationDatabaseBackend(true);
+
+				// A second try here
+				char* dbbackend = getSystemDatabaseBackend();
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+					AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+					_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+				}
+				if (database == NULL) {
+					msgBox("Error", "Getting application list failed. Even local database backend failed to load.");
+					apps++;
+					return apps.getPtr();
+				}
+			}
+
 			_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
 		}
 
