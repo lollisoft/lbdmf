@@ -24,7 +24,7 @@
 		<xsl:if test="//packagedElement[@xmi:id=$supplier]/xmi:Extension/stereotype/@name='report'">
 -- Create report link from '<xsl:value-of select="$supplier"/>' to '<xsl:value-of select="$client"/>'
 		
-INSERT INTO "actions" (name, typ, source) VALUES ('Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>', 1, '<xsl:value-of select="$assoc"/>');
+INSERT INTO "actions" (name, typ, source) VALUES ('Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="$assoc"/>');
 INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Printing step', 1, '/Applications/xTuple/rptrender.app/Contents/MacOS/rptrender -databaseURL=pgsql://vmhost:5432/lbdmf -username=dba -passwd=trainres -loadFromDb=Report<xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/> -printpreview -close', (select id from action_types where action_handler = 'instanceOflbExecuteAction' and module = 'lbDatabaseForm' and bezeichnung = 'CreateReport'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'));
 INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>'), (select id from actions where name = 'Print <xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>'), 'evt_Print<xsl:value-of select="//packagedElement[@xmi:id=$client]/@name"/>_<xsl:value-of select="//packagedElement[@xmi:id=$supplier]/@name"/>"/>');
 		</xsl:if>
@@ -272,7 +272,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltyp
 	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:codegeneration'">
 -- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 
-INSERT OR IGNORE INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="./ownedParameter/@name"/>');
+INSERT OR IGNORE INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>');
 INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
 INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
 
@@ -280,7 +280,7 @@ INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((sele
 	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:test_application_via_lua'">
 -- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 
-INSERT OR IGNORE INTO "actions" (name, typ, source, stereotype) VALUES ('Test <xsl:value-of select="@name"/> via wxLua', 1, '<xsl:value-of select="./ownedParameter/@name"/>', 'test_application_via_lua');
+INSERT OR IGNORE INTO "actions" (name, typ, source, stereotype) VALUES ('Test <xsl:value-of select="@name"/> via wxLua', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>', 'test_application_via_lua');
 INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate wxLua code', 1, 'gen_wxLuaFixedFormularClasses.xsl', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = 'Test <xsl:value-of select="@name"/> via wxLua'));
 INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Test application via wxLua', 2, 'name', (select id from action_types where action_handler = 'instanceOflbExecuteAction'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
 INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
@@ -401,7 +401,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:codegeneration'">
 -- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 
-INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="./ownedParameter/@name"/>');
+INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>');
 INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
 INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
 
@@ -522,7 +522,7 @@ INSERT INTO "column_types" (name, tablename, specialcolumn, controltype) values 
 	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:codegeneration'">
 -- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 
-INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', 1, '<xsl:value-of select="./ownedParameter/@name"/>');
+INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>');
 INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, 'lala', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
 INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
 
