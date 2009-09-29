@@ -1,506 +1,57 @@
+2009-09-28 12:35  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Added code to create disk
+	  image.
+
+2009-09-27 13:28  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  createDefaultStoredProcs.xsl, importUMLClassAsDMFForm.xsl: Fixed
+	  a bug using hardcoded action types. Added creating report table on
+	  demand via a function.
+
+2009-09-26 20:57  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Bugfix
+	  for a crash when the application was set to use ODBC, but that was
+	  not available when restarted.
+
+2009-09-26 12:54  lollisoft
+
+	* BaseDevelopment/lbclasses/lbobject.cpp,
+	  BaseDevelopment/lbHook/lbHook.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Fixing a null pointer crash when required database object was not
+	  instantiated.
+
+2009-09-26 12:49  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Fixed a crash when
+	  refreshing an empty form and give an error message at initialisation
+	  when no database instance were loaded.
+
+2009-09-19 16:36  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
+	  128002, 128130, 128258, 128386, 129538, 132098.diagram,
+	  lbDMFManager.prj: Added a sample report definition.
+
+2009-09-19 16:34  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMISettings.xsl, createDefaultStoredProcs.xsl,
+	  importUML-SystemDB.xsl, importUMLClassAsDMFForm.xsl,
+	  importUMLReports.xsl: Importing the lbDMF Manager application
+	  with a report definition works.
+
+2009-09-19 16:32  lollisoft
+
+	* Plugins/DatabaseForm/ExecuteAction.cpp: Fixed a crash when no
+	  execution parameter were given.
+
 2009-09-14 19:24  lollisoft
 
 	* Test/GUI/: wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
 	  wxWrapperDLL/wxWrapperDLL.cpp: Login bug solved. (Hack)
 
-2009-09-14 10:17  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp: Missed changes for the
-	  index shift (absolute substracts 1).
-
-2009-09-13 11:02  lollisoft
-
-	* BaseDevelopment/lbclasses/lbobject.cpp: Added strcasestr for
-	  solaris. (defined...)
-
-2009-09-13 10:57  lollisoft
-
-	* BaseDevelopment/lbclasses/lbobject.cpp: Added strcasestr for
-	  solaris.
-
-2009-09-12 11:13  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
-	  128002, 128130, 128258, 128386, lbDMF Manager.prj,
-	  lbDMFManager.prj: Renamed project due to RPM problems with
-	  spaces.
-
-2009-09-11 14:36  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Added documentation for
-	  printing.
-
-2009-09-11 12:58  lollisoft
-
-	* BaseDevelopment/Makefile: Corrected UML sample file directory.
-
-2009-09-11 12:35  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/:
-	  SecondStageModels/Postbooks/129154,
-	  SecondStageModels/Postbooks/129154.diagram,
-	  SecondStageModels/Postbooks/129282,
-	  SecondStageModels/Postbooks/129538,
-	  SecondStageModels/Postbooks/129666,
-	  SecondStageModels/Postbooks/130306.diagram,
-	  SecondStageModels/Postbooks/Postbooks.prj,
-	  SecondStageModels/Postbooks/cpp_includes,
-	  SecondStageModels/Postbooks/generation_settings,
-	  SecondStageModels/Postbooks/idl_includes,
-	  SecondStageModels/Postbooks/java_imports,
-	  SecondStageModels/Postbooks/python_imports,
-	  SecondStageModels/Postbooks/stereotypes,
-	  SecondStageModels/Postbooks/tools,
-	  InitialModels/Postbooks/129154,
-	  InitialModels/Postbooks/129154.diagram,
-	  InitialModels/Postbooks/129282, InitialModels/Postbooks/129410,
-	  InitialModels/Postbooks/129538, InitialModels/Postbooks/129666,
-	  InitialModels/Postbooks/129794,
-	  InitialModels/Postbooks/Postbooks.prj,
-	  InitialModels/Postbooks/cpp_includes,
-	  InitialModels/Postbooks/generation_settings,
-	  InitialModels/Postbooks/idl_includes,
-	  InitialModels/Postbooks/java_imports,
-	  InitialModels/Postbooks/python_imports,
-	  InitialModels/Postbooks/stereotypes,
-	  InitialModels/Postbooks/tools: Initial
-
-2009-09-10 13:32  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp: Adjusted starting index to
-	  be 1.
-
-2009-09-10 13:31  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp: Bugfix for not
-	  displaying data when using ODBC database.
-
-2009-09-09 22:18  lollisoft
-
-	* BaseDevelopment/lbclasses/lbobject.cpp: Removed some log messages
-	  - works.
-
-2009-09-09 22:17  lollisoft
-
-	* Plugins/DatabaseForm/ExecuteAction.cpp: Added some documentation
-	  and a sample based on printing with external OpenRPT application
-	  (rptrender).
-
-2009-09-09 19:50  lollisoft
-
-	* Plugins/DatabaseForm/SendSignalAction.cpp: Pass back the result
-	  of a dispatcher call. Useful when getting user input.
-
-2009-09-09 19:49  lollisoft
-
-	* Plugins/DatabaseForm/: ExecuteAction.cpp, lbDatabaseForm.h: Added
-	  code to replace placeholder by configured parameters in addition to
-	  passed SourceFieldName.
-
-2009-09-09 19:43  lollisoft
-
-	* BaseDevelopment/lbclasses/: lbobject.cpp, lbobject.h: Added
-	  substitutePlaceholder function. Fixed bug in strpos.
-
-2009-09-09 09:53  lollisoft
-
-	* BaseDevelopment/lbHook/lbHook.cpp: Fixed an uninitialized char
-	  array.
-
-2009-09-09 09:53  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Fixed a
-	  memory leak.
-
-2009-09-03 19:32  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
-	  Test/GUI/wxWrapper/dynamic.cpp: Corrected exit behaviour when
-	  clicking on window close button.
-
-2009-09-03 18:51  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Fixed an uninitialized variable. Strange is the location where it
-	  crashed. (std:string constructor in stream output class passing NULL
-	  pointer).
-
-2009-09-03 12:53  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Numeric value contained comma but
-	  required dots only. Boolean values stored now as 0 or -1 values to
-	  avoid buffer length problems.
-
-2009-09-03 11:07  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/PostbooksReversed.png: Added
-	  new screenshot with reversed postbooks form. The shot shows two
-	  columns because of the new feature if there are too much columns
-	  that would not fit into one column.
-
-2009-09-01 18:10  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Added missing part for type lbDMF:codegeneration.
-
-2009-09-01 16:07  lollisoft
-
-	* Test/GUI/wxWrapper/: splash.png, Inkscape Icons/Splash
-	  Screen.svg: Changed to version 1.0
-
-2009-08-30 13:24  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Deactivated wrong codegeneration snippets for actions.
-
-2009-08-08 21:35  lollisoft
-
-	* BaseDevelopment/lbclasses/lbobject.cpp: Watcom or Windows is
-	  missing strcasestr.
-
-2009-08-08 21:31  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Corrected new layout
-	  feature.
-
-2009-08-08 20:47  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added support for more
-	  than one column of data controls.  This is helpful when much
-	  controls are shown.
-
-2009-08-08 20:45  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Open Watcom does not initialize
-	  variables. Have to be done explizitly.  Other corrections.
-
-2009-08-07 23:36  lollisoft
-
-	* Plugins/DatabaseForm/: lbDatabaseForm.h, lbDatabasePanel.cpp,
-	  lbDatabaseTableViewPanel.cpp: Corrected code to add new rows.
-	  Also added code to check for missing mandatory fields in the query
-	  that would make adding always fail. This will change the query, but
-	  didn't yet save it in the configuration.
-
-2009-08-07 23:33  lollisoft
-
-	* Plugins/DatabaseForm/Actions.cpp: Telling wich field has not been
-	  passed as parameter.
-
-2009-08-07 23:31  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp: Added dummy method
-	  hasDefaultValue to determine if a mandatory field really needs
-	  input.
-
-2009-08-07 23:28  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Added method hasDefaultValue to
-	  determine if a mandatory field really needs input. Added support for
-	  more SQL datatypes and fixed a bug if a given position is not in the
-	  bound columns.
-
-2009-08-07 23:24  lollisoft
-
-	* BaseDevelopment/lbclasses/: lbobject.cpp, lbobject.h: Added a
-	  parameter to enable case insensitive replacements and implemented
-	  it.
-
-2009-08-04 13:35  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  createDefaultStoredProcs.xsl, importUMLClassAsDMFForm.xsl:
-	  Corrected postgresql import stuff (missing database paramerers).
-
-2009-08-04 13:32  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Added code to install plpgsql language handler to ease initial
-	  PostgreSQL database creation.
-
-2009-08-04 10:16  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Added missing check of return value to avoid crash. Also added a
-	  error message in that case.
-
-2009-08-03 20:24  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Bugfix: formus
-	  used where it is NULL and reactivated error message when no proper
-	  database login is provided.
-
-2009-08-03 20:22  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added correct check of
-	  all given params, because without proper parameters the database
-	  forms are useless.
-
-2009-08-03 18:45  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Bugfix for not capable of handling
-	  more than one database at the same time with different logins.
-
-2009-08-03 16:50  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Bugfix for a crash when
-	  the toolbar image name is empty.
-
-2009-08-02 19:05  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
-	  Corrections to new database schema and added usage of
-	  createDefaultStoredProcs.
-
-2009-07-28 13:19  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Bugfix in possible index
-	  overrun.
-
-2009-07-26 11:13  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Corrected copy & paste bug.
-
-2009-07-26 11:12  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl:
-	  Added cleanup of visible field definition per form.
-
-2009-07-23 12:13  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/:
-	  UMLSamples/SecondStageModels/lbDMFManager/128002.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/128130.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/128258,
-	  UMLSamples/SecondStageModels/lbDMFManager/128386.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/129538.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/129666.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/129794.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/130946.diagram,
-	  UMLSamples/SecondStageModels/lbDMFManager/lbDMF Manager.prj,
-	  XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl,
-	  XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl: Corrected
-	  creation of mapping for foreign keys to visible columns.
-
-2009-07-21 22:06  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl:
-	  Reverted the change of direction due to the fact that it was correct
-	  here.
-
-2009-07-21 20:41  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
-	  128002, 128002.diagram, 128130, 128130.diagram, 128258,
-	  128258.diagram, 128386, 128386.diagram, 129538.diagram,
-	  129666.diagram, 129794.diagram, 130946.diagram, cpp_includes,
-	  generation_settings, idl_includes, java_imports, lbDMF
-	  Manager.prj, python_imports, stereotypes, tools: Initial UML
-	  model release that produces the main sample application. The SQL
-	  scripts are generated from this model.
-
-2009-07-21 18:23  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/:
-	  DMFToXMI/UMLXMISnippets.xsl,
-	  XMIToDMF/importUMLApplicationTables.xsl,
-	  XMIToDMF/importUMLClassAsDMFForm.xsl: Changed direction of
-	  associations to conform BoUML.
-
-2009-07-21 11:08  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.h: My address has been changed
-	  a long time ago.
-
-2009-07-21 11:07  lollisoft
-
-	* RegressionTests/MetaApplication/testMetaApplication.cpp: This
-	  code now runs without a crash at exit (access to code from unloaded
-	  modules).
-
-	  This is also a basic sample to use the meta application in a console
-	  application. Only the log messages should be removed.
-
-2009-07-21 10:36  lollisoft
-
-	* RegressionTests/Database/Plain-ODBC-Test/test.cpp: Added sample
-	  code to read out the database and driver version and other
-	  information.
-
-2009-07-21 10:35  lollisoft
-
-	* RegressionTests/Database/FKTest/FKTest.cpp: Moved the foreign key
-	  test to be the first database code. This eases extraction of the
-	  logged data.
-
-	  The foreign key problem was a wrong driver version.  New
-	  functionality to retrieve database and driver version could be used
-	  to warn about such issues.
-
-2009-07-20 16:20  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Missing writing of execute_droprules.
-
-2009-07-20 00:44  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Bugfix in detecting
-	  unconfigured combo box setup.
-
-2009-07-20 00:42  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp: Using the new plugin install
-	  method per plugin module.
-
-2009-07-20 00:39  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h: Moved the
-	  installation step of an initial database to the new plugin install
-	  method.
-
-2009-07-20 00:37  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Implemented
-	  new 'install' functionality for each plugin module. The
-	  lb_I_PluginModule became a default implementation to do nothing.
-
-2009-07-20 00:35  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp,
-	  Plugins/DatabaseLayerGateway/lbDB.h,
-	  BaseDevelopment/lbDB/lbDB.cpp: Added definitions for required
-	  database informations.
-
-2009-07-18 11:42  lollisoft
-
-	* RegressionTests/Database/FKTest/FKTest.cpp: Added explicite check
-	  for foreign keys.
-
-2009-07-17 22:44  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  createDefaultStoredProcs.xsl, importUML-SystemDB.xsl,
-	  importUMLClassAsDMFForm.xsl: Corrected PostgreSQL SQL script
-	  generation.
-
-2009-07-17 18:16  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Bugfix for
-	  forgotten new flag to overwrite database while UML import.
-
-2009-07-17 15:09  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/: App/lbDynApp.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp: Implemented
-	  flag for overwriting database. Defaults to false.
-
-2009-07-17 14:11  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/:
-	  gen_DMFToXMI.xsl, gen_DMFToXMI_FormBootstrap.xsl: Corrected
-	  namespace to correspond to BoUML.
-
-2009-07-17 13:59  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl:
-	  Corrected creation of foreign key XMI elements.
-
-2009-07-17 13:53  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp: More log messages instead
-	  verbose console only. Added missing setNull('...', false); calls.
-
-2009-07-17 13:47  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  importUML-SystemDB.xsl, importUMLClassAsDMFForm.xsl: Corrected
-	  lookup of profile based data (schema lbDMF).
-
-2009-07-17 12:23  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLApplicationTables.xsl:
-	  Now creating trigger statements in XSLT template rather than in
-	  database module.
-
-2009-07-16 11:29  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Corrected using visible field configured in the STELT tags.
-
-2009-07-15 10:09  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  importUML-ApplicationDB.xsl, importUMLApplicationTables.xsl:
-	  Corrected drop and create statements for relations.
-
-2009-07-12 13:09  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Added logging tables retrieved and
-	  also the remarks.
-
-2009-07-12 12:46  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp: Added frame to fix hang at exit
-	  if splash is still shown.
-
-2009-07-12 01:35  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Corrected problem with selecting more than one action.
-
-2009-07-12 00:57  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
-	  Corrected creation of toolbar image file.
-
-2009-07-11 21:47  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp:
-	  Corrected behaviour when ODBC database is available, but
-	  installation fails.  Added a question in case to switch to local
-	  Sqlite database.
-
-2009-07-11 21:45  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added a new line at the
-	  end of a pending message.
-
-2009-07-11 21:44  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp: Added NO_SPLASH option in
-	  environment.
-
-2009-07-11 17:17  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Ignore toolbar file names
-	  that are empty.
-
-2009-07-11 17:17  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: When the ODBC database is
-	  initially available, the schema name is not loaded yet. The result
-	  was an NULL string strlen will fail.
