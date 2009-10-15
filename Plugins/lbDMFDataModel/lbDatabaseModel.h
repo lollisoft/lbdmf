@@ -121,7 +121,7 @@ public:
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentLen)
 	UAP(lb_I_Long, currentisFK)
-	UAP(lb_I_Long, currentisNullable)
+	UAP(lb_I_Long, currentNullable)
 	UAP(lb_I_Long, currentmarked)
 
 
@@ -144,7 +144,7 @@ public:
 	UAP(lb_I_String, paramnameTyp)
 	UAP(lb_I_String, paramnameLen)
 	UAP(lb_I_String, paramnameIsFK)
-	UAP(lb_I_String, paramnameIsNullable)
+	UAP(lb_I_String, paramnameNullable)
 	UAP(lb_I_String, paramnamePKField)
 	UAP(lb_I_String, paramnamePKTable)
 	UAP(lb_I_String, paramnameID)

@@ -428,7 +428,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	*paramnameTableName = "4";
 	*paramnameTyp = "7";
 	*paramnameLen = "18";
-	*paramnameIsNullable = "17";
+	*paramnameNullable = "11";
 	*paramnameID = "ID";
 	*paramnamemarked = "marked";
 
@@ -576,7 +576,7 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 	param->setUAPString(*&paramnameTyp, *&Typ);
 	param->setUAPLong(*&paramnameLen, *&Len);
 	param->setUAPLong(*&paramnameIsFK, *&IsFK);
-	param->setUAPLong(*&paramnameIsNullable, *&IsNullable);
+	param->setUAPLong(*&paramnameNullable, *&IsNullable);
 	param->setUAPLong(*&paramnameID, *&ID);
 	param->setUAPLong(*&paramnamemarked, *&marked);
 
@@ -656,7 +656,7 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 		param->getUAPString(*&paramnameTyp, *&currentTyp);
 		param->getUAPLong(*&paramnameLen, *&currentLen);
 		param->getUAPLong(*&paramnameIsFK, *&currentisFK);
-		param->getUAPLong(*&paramnameIsNullable, *&currentisNullable);
+		param->getUAPLong(*&paramnameNullable, *&currentNullable);
 		param->getUAPLong(*&paramnameID, *&currentID);
 		param->getUAPLong(*&paramnamemarked, *&currentmarked);
 		
@@ -749,7 +749,7 @@ void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	param->getUAPString(*&paramnameTyp, *&currentTyp);
 	param->getUAPLong(*&paramnameLen, *&currentLen);
 	param->getUAPLong(*&paramnameIsFK, *&currentisFK);
-	param->getUAPLong(*&paramnameIsNullable, *&currentisNullable);
+	param->getUAPLong(*&paramnameNullable, *&currentNullable);
 	param->getUAPLong(*&paramnameID, *&currentID);
 	param->getUAPLong(*&paramnamemarked, *&currentmarked);
 }
@@ -799,7 +799,7 @@ bool  LB_STDCALL lbDBColumnsModel::isFK() {
 }
 
 bool  LB_STDCALL lbDBColumnsModel::isNullable() {
-	if (currentisNullable->getData() == (long) 1)
+	if (currentNullable->getData() == (long) 1)
 		return true;
 	else
 		return false;
