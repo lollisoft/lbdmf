@@ -15,7 +15,7 @@ cp -R `wx-config --prefix`/lib/lib`wx-config --basename`* wxWrapper.app/Contents
 
 hdiutil create -ov -size 80m -volname lbDMF-1.0.1 lbDMF-1.0.1-`uname -p`.dmg -fs HFS+
 
-sleep 2
+sleep 5
 
 hdiutil attach lbDMF-1.0.1-`uname -p`.dmg
 
