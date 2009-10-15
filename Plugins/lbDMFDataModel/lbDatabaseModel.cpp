@@ -423,14 +423,15 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKTable)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameID)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamemarked)
-/*
+
 	*paramnameName = "5";
 	*paramnameTableName = "4";
 	*paramnameTyp = "7";
 	*paramnameLen = "18";
+	*paramnameIsNullable = "17";
 	*paramnameID = "ID";
 	*paramnamemarked = "marked";
-*/
+
 	_CL_VERBOSE << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
 }
 
