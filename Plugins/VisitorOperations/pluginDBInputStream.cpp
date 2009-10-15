@@ -981,7 +981,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 				//		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
 				//		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
 				//		param->getUAPLong(*&nameNullable, *&Nullable);
-				//		param->getUAPString(*&nameRemarks, *&szRemarks);
+						param->getUAPString(*&nameRemarks, *&szRemarks);
 				//		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
 				//		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
 				//		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
@@ -1007,7 +1007,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 				}
 
 
-				columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
+				columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
 			}
 	}
 #endif

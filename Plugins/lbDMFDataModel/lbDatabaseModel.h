@@ -73,7 +73,7 @@ public:
 	virtual ~lbDBColumnsModel();
 	
 	bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer);
-	long		LB_STDCALL addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id = -1);
+	long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isfk, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id = -1);
 	bool		LB_STDCALL selectColumn(long _id);
 	int			LB_STDCALL getColumnCount();
 	bool		LB_STDCALL hasMoreColumns();
@@ -88,10 +88,12 @@ public:
 
 	long		LB_STDCALL getColumnID();
 	char*		LB_STDCALL getColumnName();
+	char*		LB_STDCALL getColumnComment();
 	char*		LB_STDCALL getColumnTableName();
 	char*		LB_STDCALL getColumnTyp();
 	long		LB_STDCALL getColumnLen();
 	bool		LB_STDCALL isFK();
+	bool		LB_STDCALL isNullable();
 	char*		LB_STDCALL getColumnPKTable();
 	char*		LB_STDCALL getColumnPKField();
 
@@ -111,6 +113,7 @@ public:
 
 	UAP(lb_I_Container, Columns)
 	UAP(lb_I_String, currentName)
+	UAP(lb_I_String, currentComment)
 	UAP(lb_I_String, currentTableName)
 	UAP(lb_I_String, currentTyp)
 	UAP(lb_I_String, currentPKTable)
@@ -118,25 +121,30 @@ public:
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentLen)
 	UAP(lb_I_Long, currentisFK)
+	UAP(lb_I_Long, currentisNullable)
 	UAP(lb_I_Long, currentmarked)
 
 
 	// Do not alloc new objects for each addColumn call.
 	UAP(lb_I_String, Name)
+	UAP(lb_I_String, Comment)
 	UAP(lb_I_String, TableName)
 	UAP(lb_I_String, Typ)
 	UAP(lb_I_String, pkField)
 	UAP(lb_I_String, pkTable)
 	UAP(lb_I_Long, IsFK)
+	UAP(lb_I_Long, IsNullable)
 	UAP(lb_I_Long, ID)
 	UAP(lb_I_Long, Len)
 	UAP(lb_I_Long, marked)
 
 	UAP(lb_I_String, paramnameName)
+	UAP(lb_I_String, paramnameComment)
 	UAP(lb_I_String, paramnameTableName)
 	UAP(lb_I_String, paramnameTyp)
 	UAP(lb_I_String, paramnameLen)
 	UAP(lb_I_String, paramnameIsFK)
+	UAP(lb_I_String, paramnameIsNullable)
 	UAP(lb_I_String, paramnamePKField)
 	UAP(lb_I_String, paramnamePKTable)
 	UAP(lb_I_String, paramnameID)

@@ -503,12 +503,25 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 	while (dbcolumns->hasMoreColumns()) {
 		dbcolumns->setNextColumn();
 		
-		*oStream << 
-		"<column tablename=\"" << dbcolumns->getColumnTableName() << 
-		"\" name=\"" << dbcolumns->getColumnName() <<
-		"\" typ=\"" << dbcolumns->getColumnTyp() <<
-		"\" len=\"" << dbcolumns->getColumnLen() <<
-		"\"/>" << "\n";
+		if (dbcolumns->isNullable()) {
+			*oStream << 
+			"<column tablename=\"" << dbcolumns->getColumnTableName() << 
+			"\" name=\"" << dbcolumns->getColumnName() <<
+			"\" remarks=\"" << dbcolumns->getColumnComment() <<
+			"\" typ=\"" << dbcolumns->getColumnTyp() <<
+			"\" len=\"" << dbcolumns->getColumnLen() <<
+			"\" nullable=\"" << "1" <<
+			"\"/>" << "\n";
+		} else {
+			*oStream << 
+			"<column tablename=\"" << dbcolumns->getColumnTableName() << 
+			"\" name=\"" << dbcolumns->getColumnName() <<
+			"\" remarks=\"" << dbcolumns->getColumnComment() <<
+			"\" typ=\"" << dbcolumns->getColumnTyp() <<
+			"\" len=\"" << dbcolumns->getColumnLen() <<
+			"\" nullable=\"" << "0" <<
+			"\"/>" << "\n";
+		}
         
         columns++;
 	

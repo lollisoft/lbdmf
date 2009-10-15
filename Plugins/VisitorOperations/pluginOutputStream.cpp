@@ -557,11 +557,14 @@ void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
 		
 		*oStream << columns->getColumnID();
 		*oStream << columns->getColumnName();
+		*oStream << columns->getColumnComment();
 		*oStream << columns->getColumnTyp();
 		*oStream << columns->getColumnLen();
 		*oStream << columns->getColumnPKTable();
 		*oStream << columns->getColumnPKField();
 		*oStream << columns->getColumnTableName();
+		(columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
+		(columns->isFK() == true) ? *oStream << 1 : *oStream << 0;
 	}
 }
 

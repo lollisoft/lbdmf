@@ -392,6 +392,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	Columns->setCloning(false);
 
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
+	REQUEST(getModuleInstance(), lb_I_String, currentComment)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
 	REQUEST(getModuleInstance(), lb_I_String, currentTyp)
 	REQUEST(getModuleInstance(), lb_I_String, currentPKField)
@@ -402,6 +403,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
 
 	REQUEST(getModuleInstance(), lb_I_String, Name)
+	REQUEST(getModuleInstance(), lb_I_String, Comment)
 	REQUEST(getModuleInstance(), lb_I_String, TableName)
 	REQUEST(getModuleInstance(), lb_I_String, Typ)
 	REQUEST(getModuleInstance(), lb_I_String, pkField)
@@ -412,6 +414,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	REQUEST(getModuleInstance(), lb_I_String, paramnameName)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameComment)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameTableName)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameTyp)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameLen)
@@ -420,14 +423,14 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKTable)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameID)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamemarked)
-
+/*
 	*paramnameName = "5";
 	*paramnameTableName = "4";
 	*paramnameTyp = "7";
 	*paramnameLen = "18";
 	*paramnameID = "ID";
 	*paramnamemarked = "marked";
-
+*/
 	_CL_VERBOSE << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
 }
 
@@ -541,7 +544,7 @@ void LB_STDCALL lbDBColumnsModel::lookupPage(int index) {
 	}
 }
 
-long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id) {
+long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comment, const char* typ, long len, bool isfk, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 
@@ -549,6 +552,7 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, 
 	lookupPage(_id);
 
 	*Name = name;
+	*Comment = name;
 	*TableName = tablename;
 	*Typ = typ;
 	Len->setData(len);
@@ -556,15 +560,22 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* typ, 
 		IsFK->setData((long) 1);
 	else
 		IsFK->setData((long) 0);
+	if (isNullable)
+		IsNullable->setData((long) 1);
+	else
+		IsNullable->setData((long) 0);
 	*pkField = PKField;
 	*pkTable = PKTable;
 	
 	ID->setData(_id);
 	
 	param->setUAPString(*&paramnameName, *&Name);
+	param->setUAPString(*&paramnameComment, *&Comment);
 	param->setUAPString(*&paramnameTableName, *&TableName);
 	param->setUAPString(*&paramnameTyp, *&Typ);
 	param->setUAPLong(*&paramnameLen, *&Len);
+	param->setUAPLong(*&paramnameIsFK, *&IsFK);
+	param->setUAPLong(*&paramnameIsNullable, *&IsNullable);
 	param->setUAPLong(*&paramnameID, *&ID);
 	param->setUAPLong(*&paramnamemarked, *&marked);
 
@@ -639,9 +650,12 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 		QI(uk, lb_I_Parameter, param)
 
 		param->getUAPString(*&paramnameName, *&currentName);
+		param->getUAPString(*&paramnameComment, *&currentComment);
 		param->getUAPString(*&paramnameTableName, *&currentTableName);
 		param->getUAPString(*&paramnameTyp, *&currentTyp);
 		param->getUAPLong(*&paramnameLen, *&currentLen);
+		param->getUAPLong(*&paramnameIsFK, *&currentisFK);
+		param->getUAPLong(*&paramnameIsNullable, *&currentisNullable);
 		param->getUAPLong(*&paramnameID, *&currentID);
 		param->getUAPLong(*&paramnamemarked, *&currentmarked);
 		
@@ -729,9 +743,12 @@ void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	QI(uk, lb_I_Parameter, param)
 		
 	param->getUAPString(*&paramnameName, *&currentName);
+	param->getUAPString(*&paramnameComment, *&currentComment);
 	param->getUAPString(*&paramnameTableName, *&currentTableName);
 	param->getUAPString(*&paramnameTyp, *&currentTyp);
 	param->getUAPLong(*&paramnameLen, *&currentLen);
+	param->getUAPLong(*&paramnameIsFK, *&currentisFK);
+	param->getUAPLong(*&paramnameIsNullable, *&currentisNullable);
 	param->getUAPLong(*&paramnameID, *&currentID);
 	param->getUAPLong(*&paramnamemarked, *&currentmarked);
 }
@@ -742,6 +759,10 @@ void  LB_STDCALL lbDBColumnsModel::finishColumnIteration() {
 
 char* LB_STDCALL lbDBColumnsModel::getColumnName() {
 	return currentName->charrep();
+}
+
+char* LB_STDCALL lbDBColumnsModel::getColumnComment() {
+	return currentComment->charrep();
 }
 
 char* LB_STDCALL lbDBColumnsModel::getColumnTableName() {
@@ -768,8 +789,16 @@ long  LB_STDCALL lbDBColumnsModel::getColumnLen() {
 	return currentLen->getData();
 }
 
+
 bool  LB_STDCALL lbDBColumnsModel::isFK() {
 	if (currentisFK->getData() == (long) 1)
+		return true;
+	else
+		return false;
+}
+
+bool  LB_STDCALL lbDBColumnsModel::isNullable() {
+	if (currentisNullable->getData() == (long) 1)
 		return true;
 	else
 		return false;
