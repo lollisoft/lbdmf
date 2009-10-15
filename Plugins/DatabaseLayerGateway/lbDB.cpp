@@ -5181,10 +5181,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 //			dummyLong->setData((long)-1);
 //			*name = "NumPrecRadix";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
-//			dummyLong->setData((long)-1);
-//			*name = "Nullable";
-//			param->setUAPLong(*&name, *&dummyLong);
+			///\todo Check if sqlite can provide that information.
+			dummyLong->setData((long)2);
+			*name = "11";
+			param->setUAPLong(*&name, *&dummyLong);
 			
 //			*dummyString = (const char*) "";
 //			*name = "Remarks";
