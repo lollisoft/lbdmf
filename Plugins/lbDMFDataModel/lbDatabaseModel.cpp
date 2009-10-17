@@ -89,7 +89,7 @@ long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schem
 	*Type = type;
 	*Remarks = remarks;
 	ID->setData(_id);
-	
+
 	*paramname = "Catalog";
 	param->setUAPString(*&paramname, *&Catalog);
 	*paramname = "Schema";
@@ -109,7 +109,7 @@ long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schem
 	UAP(lb_I_Unknown, ukParam)
 	QI(ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
-	
+
 	Tables->insert(&ukParam, &key);
 
 	return -1;
@@ -123,10 +123,10 @@ void		LB_STDCALL lbDBTableModel::deleteUnmarked() {
 		if (!ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getTableID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			Tables->remove(&key);
 			Tables->finishIteration();
 		}
@@ -141,10 +141,10 @@ void		LB_STDCALL lbDBTableModel::deleteMarked() {
 		if (ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getTableID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			Tables->remove(&key);
 			Tables->finishIteration();
 		}
@@ -153,13 +153,13 @@ void		LB_STDCALL lbDBTableModel::deleteMarked() {
 
 bool LB_STDCALL lbDBTableModel::selectTable(long id) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	ID->setData(id);
 	QI(ID, lb_I_KeyBase, key)
 
@@ -167,7 +167,7 @@ bool LB_STDCALL lbDBTableModel::selectTable(long id) {
 
 	if (uk != NULL) {
 		QI(uk, lb_I_Parameter, param)
-		
+
 		*paramname = "Catalog";
 		param->getUAPString(*&paramname, *&currentCatalog);
 		*paramname = "Schema";
@@ -182,7 +182,7 @@ bool LB_STDCALL lbDBTableModel::selectTable(long id) {
 		param->getUAPLong(*&paramname, *&currentID);
 		*paramname = "marked";
 		param->getUAPLong(*&paramname, *&marked);
-		
+
 		return true;
 	}
 
@@ -215,10 +215,10 @@ void  LB_STDCALL lbDBTableModel::setNextTable() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
-		
+
 	uk = Tables->nextElement();
 	QI(uk, lb_I_Parameter, param)
-		
+
 	*paramname = "Catalog";
 	param->getUAPString(*&paramname, *&currentCatalog);
 	*paramname = "Schema";
@@ -233,7 +233,7 @@ void  LB_STDCALL lbDBTableModel::setNextTable() {
 	param->getUAPLong(*&paramname, *&currentID);
 	*paramname = "marked";
 	param->getUAPLong(*&paramname, *&marked);
-	
+
 }
 
 void  LB_STDCALL lbDBTableModel::finishTableIteration() {
@@ -269,14 +269,14 @@ long  LB_STDCALL lbDBTableModel::getTableID() {
 class lbPluginDBTableModel : public lb_I_PluginImpl {
 public:
 	lbPluginDBTableModel();
-	
+
 	virtual ~lbPluginDBTableModel();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -285,7 +285,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, ukDBTableModel)
 };
 
@@ -325,7 +325,7 @@ lbErrCodes LB_STDCALL lbPluginDBTableModel::autorun() {
 
 void LB_STDCALL lbPluginDBTableModel::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDBTableModel::run() {
 	return true;
 }
@@ -337,12 +337,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDBTableModel::peekImplementation() {
 	if (ukDBTableModel == NULL) {
 		lbDBTableModel* DBTableModel = new lbDBTableModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return ukDBTableModel.getPtr();
 }
 /*...e*/
@@ -353,13 +353,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDBTableModel::getImplementation() {
 	if (ukDBTableModel == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDBTableModel* DBTableModel = new lbDBTableModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
-	
+
 	lb_I_Unknown* r = ukDBTableModel.getPtr();
 	ukDBTableModel.resetPtr();
 	return r;
@@ -419,6 +419,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, paramnameTyp)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameLen)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameIsFK)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameNullable)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKField)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKTable)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameID)
@@ -509,7 +510,7 @@ lbErrCodes LB_STDCALL lbDBColumnsModel::setData(lb_I_Unknown*) {
 
 
 	}
-	
+
 #endif
 
 	return ERR_NOT_IMPLEMENTED;
@@ -567,9 +568,9 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 		IsNullable->setData((long) 0);
 	*pkField = PKField;
 	*pkTable = PKTable;
-	
+
 	ID->setData(_id);
-	
+
 	param->setUAPString(*&paramnameName, *&Name);
 	param->setUAPString(*&paramnameComment, *&Comment);
 	param->setUAPString(*&paramnameTableName, *&TableName);
@@ -584,7 +585,7 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 	UAP(lb_I_Unknown, ukParam)
 	QI(ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
-	
+
 	Columns->insert(&ukParam, &key);
 
 	return -1;
@@ -600,10 +601,10 @@ void		LB_STDCALL lbDBColumnsModel::deleteUnmarked() {
 		if (!ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getColumnID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			Columns->remove(&key);
 			Columns->finishIteration();
 		}
@@ -620,10 +621,10 @@ void		LB_STDCALL lbDBColumnsModel::deleteMarked() {
 		if (ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getColumnID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			Columns->remove(&key);
 			Columns->finishIteration();
 		}
@@ -641,7 +642,7 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	ID->setData(user_id);
 	QI(ID, lb_I_KeyBase, key)
 
@@ -659,7 +660,7 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 		param->getUAPLong(*&paramnameNullable, *&currentNullable);
 		param->getUAPLong(*&paramnameID, *&currentID);
 		param->getUAPLong(*&paramnamemarked, *&currentmarked);
-		
+
 		return true;
 	}
 
@@ -739,10 +740,10 @@ void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
-	
+
 	uk = Columns->nextElement();
 	QI(uk, lb_I_Parameter, param)
-		
+
 	param->getUAPString(*&paramnameName, *&currentName);
 	param->getUAPString(*&paramnameComment, *&currentComment);
 	param->getUAPString(*&paramnameTableName, *&currentTableName);
@@ -810,14 +811,14 @@ bool  LB_STDCALL lbDBColumnsModel::isNullable() {
 class lbPluginDBColumnsModel : public lb_I_PluginImpl {
 public:
 	lbPluginDBColumnsModel();
-	
+
 	virtual ~lbPluginDBColumnsModel();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -826,7 +827,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, ukDBTableModel)
 };
 
@@ -866,7 +867,7 @@ lbErrCodes LB_STDCALL lbPluginDBColumnsModel::autorun() {
 
 void LB_STDCALL lbPluginDBColumnsModel::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDBColumnsModel::run() {
 	return true;
 }
@@ -878,12 +879,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDBColumnsModel::peekImplementation() {
 	if (ukDBTableModel == NULL) {
 		lbDBColumnsModel* DBTableModel = new lbDBColumnsModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return ukDBTableModel.getPtr();
 }
 /*...e*/
@@ -894,13 +895,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDBColumnsModel::getImplementation() {
 	if (ukDBTableModel == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDBColumnsModel* DBTableModel = new lbDBColumnsModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
-	
+
 	lb_I_Unknown* r = ukDBTableModel.getPtr();
 	ukDBTableModel.resetPtr();
 	return r;
@@ -954,8 +955,8 @@ lbErrCodes LB_STDCALL lbDBForeignKeysModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
-													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name, 
+long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
+													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name,
 													long key_seq, long update_rule, long delete_rule, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, PKTableCatalog)
@@ -992,8 +993,8 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	DeleteRule->setData(delete_rule);
 
 	ID->setData(_id);
-	
-	
+
+
 	*paramname = "PKTableCatalog";
 	param->setUAPString(*&paramname, *&PKTableCatalog);
 	*paramname = "PKTableSchema";
@@ -1029,7 +1030,7 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	UAP(lb_I_Unknown, ukParam)
 	QI(ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
-	
+
 	ForeignKeys->insert(&ukParam, &key);
 
 	return -1;
@@ -1043,10 +1044,10 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteUnmarked() {
 		if (!ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getForeignKeyID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			ForeignKeys->remove(&key);
 			ForeignKeys->finishIteration();
 		}
@@ -1061,10 +1062,10 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteMarked() {
 		if (ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getForeignKeyID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			ForeignKeys->remove(&key);
 			ForeignKeys->finishIteration();
 		}
@@ -1073,13 +1074,13 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteMarked() {
 
 bool LB_STDCALL lbDBForeignKeysModel::selectForeignKey(long user_id) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	ID->setData(user_id);
 	QI(ID, lb_I_KeyBase, key)
 
@@ -1118,7 +1119,7 @@ bool LB_STDCALL lbDBForeignKeysModel::selectForeignKey(long user_id) {
 
 	*paramname = "marked";
 	param->getUAPLong(*&paramname, *&marked);
-		
+
 		return true;
 	}
 
@@ -1151,10 +1152,10 @@ void  LB_STDCALL lbDBForeignKeysModel::setNextForeignKey() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
-		
+
 	uk = ForeignKeys->nextElement();
 	QI(uk, lb_I_Parameter, param)
-		
+
 	*paramname = "PKTableCatalog";
 	param->getUAPString(*&paramname, *&currentPKTableCatalog);
 	*paramname = "PKTableSchema";
@@ -1185,7 +1186,7 @@ void  LB_STDCALL lbDBForeignKeysModel::setNextForeignKey() {
 
 	*paramname = "marked";
 	param->getUAPLong(*&paramname, *&marked);
-	
+
 }
 
 void  LB_STDCALL lbDBForeignKeysModel::finishForeignKeyIteration() {
@@ -1245,14 +1246,14 @@ long  LB_STDCALL lbDBForeignKeysModel::getForeignKeyDeleteRule() {
 class lbPluginDBForeignKeysModel : public lb_I_PluginImpl {
 public:
 	lbPluginDBForeignKeysModel();
-	
+
 	virtual ~lbPluginDBForeignKeysModel();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -1261,7 +1262,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, ukDBTableModel)
 };
 
@@ -1301,7 +1302,7 @@ lbErrCodes LB_STDCALL lbPluginDBForeignKeysModel::autorun() {
 
 void LB_STDCALL lbPluginDBForeignKeysModel::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDBForeignKeysModel::run() {
 	return true;
 }
@@ -1313,12 +1314,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDBForeignKeysModel::peekImplementation() {
 	if (ukDBTableModel == NULL) {
 		lbDBForeignKeysModel* DBTableModel = new lbDBForeignKeysModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return ukDBTableModel.getPtr();
 }
 /*...e*/
@@ -1329,13 +1330,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDBForeignKeysModel::getImplementation() {
 	if (ukDBTableModel == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDBForeignKeysModel* DBTableModel = new lbDBForeignKeysModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
-	
+
 	lb_I_Unknown* r = ukDBTableModel.getPtr();
 	ukDBTableModel.resetPtr();
 	return r;
@@ -1383,7 +1384,7 @@ lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
 	REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
 	REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
-	
+
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
@@ -1400,7 +1401,7 @@ lbErrCodes LB_STDCALL lbDBPrimaryKeysModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
 													long key_seq, const char* column_name, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, TableCatalog)
@@ -1408,7 +1409,7 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnName_V2)
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, KeySequence)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
@@ -1424,7 +1425,7 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	KeySequence->setData(key_seq);
 
 	ID->setData(_id);
-	
+
 	*paramname = "TableCatalog";
 	param->setUAPString(*&paramname, *&TableCatalog);
 	*paramname = "TableSchema";
@@ -1449,7 +1450,7 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	UAP(lb_I_Unknown, ukParam)
 	QI(ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
-	
+
 	PrimaryKeys->insert(&ukParam, &key);
 
 	return -1;
@@ -1463,10 +1464,10 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteUnmarked() {
 		if (!ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getPrimaryKeyID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			PrimaryKeys->remove(&key);
 			PrimaryKeys->finishIteration();
 		}
@@ -1481,10 +1482,10 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteMarked() {
 		if (ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 			ID->setData(getPrimaryKeyID());
-			
+
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
-			
+
 			PrimaryKeys->remove(&key);
 			PrimaryKeys->finishIteration();
 		}
@@ -1493,13 +1494,13 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteMarked() {
 
 bool LB_STDCALL lbDBPrimaryKeysModel::selectPrimaryKey(long user_id) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	ID->setData(user_id);
 	QI(ID, lb_I_KeyBase, key)
 
@@ -1527,7 +1528,7 @@ bool LB_STDCALL lbDBPrimaryKeysModel::selectPrimaryKey(long user_id) {
 
 	*paramname = "marked";
 	param->getUAPLong(*&paramname, *&marked);
-		
+
 		return true;
 	}
 
@@ -1560,10 +1561,10 @@ void  LB_STDCALL lbDBPrimaryKeysModel::setNextPrimaryKey() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
-		
+
 	uk = PrimaryKeys->nextElement();
 	QI(uk, lb_I_Parameter, param)
-		
+
 	*paramname = "TableCatalog";
 	param->getUAPString(*&paramname, *&currentTableCatalog);
 	*paramname = "TableSchema";
@@ -1574,16 +1575,16 @@ void  LB_STDCALL lbDBPrimaryKeysModel::setNextPrimaryKey() {
 	param->getUAPString(*&paramname, *&currentColumnName);
 	*paramname = "ColumnName_V2";
 	param->getUAPString(*&paramname, *&currentColumnName_V2);
-	
+
 	*paramname = "KeySequence";
 	param->getUAPLong(*&paramname, *&currentKeySequence);
-	
+
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
-	
+
 	*paramname = "marked";
 	param->getUAPLong(*&paramname, *&marked);
-	
+
 }
 
 void  LB_STDCALL lbDBPrimaryKeysModel::finishPrimaryKeyIteration() {
@@ -1623,14 +1624,14 @@ long  LB_STDCALL lbDBPrimaryKeysModel::getPrimaryKeySequence() {
 class lbPluginDBPrimaryKeysModel : public lb_I_PluginImpl {
 public:
 	lbPluginDBPrimaryKeysModel();
-	
+
 	virtual ~lbPluginDBPrimaryKeysModel();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -1639,7 +1640,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, ukDBTableModel)
 };
 
@@ -1679,7 +1680,7 @@ lbErrCodes LB_STDCALL lbPluginDBPrimaryKeysModel::autorun() {
 
 void LB_STDCALL lbPluginDBPrimaryKeysModel::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDBPrimaryKeysModel::run() {
 	return true;
 }
@@ -1691,12 +1692,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDBPrimaryKeysModel::peekImplementation() {
 	if (ukDBTableModel == NULL) {
 		lbDBPrimaryKeysModel* DBTableModel = new lbDBPrimaryKeysModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return ukDBTableModel.getPtr();
 }
 /*...e*/
@@ -1707,13 +1708,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDBPrimaryKeysModel::getImplementation() {
 	if (ukDBTableModel == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDBPrimaryKeysModel* DBTableModel = new lbDBPrimaryKeysModel();
 		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
-	
+
 	lb_I_Unknown* r = ukDBTableModel.getPtr();
 	ukDBTableModel.resetPtr();
 	return r;
