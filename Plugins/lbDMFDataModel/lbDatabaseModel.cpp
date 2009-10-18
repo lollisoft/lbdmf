@@ -430,6 +430,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	*paramnameTyp = "7";
 	*paramnameLen = "18";
 	*paramnameNullable = "11";
+	*paramnameComment = "12";
 	*paramnameID = "ID";
 	*paramnamemarked = "marked";
 
