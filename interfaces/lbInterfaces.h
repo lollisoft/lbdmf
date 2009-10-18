@@ -3570,7 +3570,7 @@ public:
 class lb_I_DBColumns : public lb_I_Unknown {
 public:
 	virtual bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer) = 0;
-	virtual long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isfk, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id = -1) = 0;
+	virtual long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectColumn(long _id) = 0;
 	virtual int			LB_STDCALL getColumnCount() = 0;
 	virtual bool		LB_STDCALL hasMoreColumns() = 0;
@@ -3583,7 +3583,6 @@ public:
 	virtual char*		LB_STDCALL getColumnComment() = 0;
 	virtual char*		LB_STDCALL getColumnTyp() = 0;
 	virtual long		LB_STDCALL getColumnLen() = 0;
-	virtual bool		LB_STDCALL isFK() = 0;
 	virtual bool		LB_STDCALL isNullable() = 0;
 	virtual char*		LB_STDCALL getColumnPKTable() = 0;
 	virtual char*		LB_STDCALL getColumnPKField() = 0;

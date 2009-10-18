@@ -639,7 +639,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
 	char* typ = NULL;
 	int   len;
 	int   isNullable;
-	int   isFK;
 	char* PKTable = NULL;
 	char* PKField = NULL;
 	char* tablename = NULL;
@@ -656,9 +655,8 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
 		*iStream >> PKField;
 		*iStream >> tablename;
 		*iStream >> isNullable;
-		*iStream >> isFK;
 		
-		columns->addColumn(name, comment, typ, len, (isFK == 1) ? true : false, (isNullable == 1) ? true : false, PKTable, PKField, tablename, ID);
+		columns->addColumn(name, comment, typ, len, (isNullable == 1) ? true : false, PKTable, PKField, tablename, ID);
 	}
 }
 
