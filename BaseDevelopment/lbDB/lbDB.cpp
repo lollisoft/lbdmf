@@ -6396,11 +6396,11 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	UAP(lb_I_Parameter, SomeBaseSettings)
 	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
 
-	UCHAR TableCatalog[TAB_LEN];
-	UCHAR TableSchema[TAB_LEN];
-	UCHAR TableName[TAB_LEN];
-	UCHAR ColumnName[COL_LEN];
-	UCHAR ColumnName_V2[COL_LEN];
+	UCHAR TableCatalog[TAB_LEN] = "";
+	UCHAR TableSchema[TAB_LEN] = "";
+	UCHAR TableName[TAB_LEN] = "";
+	UCHAR ColumnName[COL_LEN] = "";
+	UCHAR ColumnName_V2[COL_LEN] = "";
 
 	SQLSMALLINT KeySequence;
 
