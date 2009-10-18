@@ -5186,9 +5186,9 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 			*name = "11";
 			param->setUAPLong(*&name, *&dummyLong);
 			
-//			*dummyString = (const char*) "";
-//			*name = "Remarks";
-//			param->setUAPString(*&name, *&dummyString);
+			*dummyString = (const char*) "";
+			*name = "12";
+			param->setUAPString(*&name, *&dummyString);
 			
 //			*dummyString = (const char*) "";
 //			*name = "ColumnDefault";

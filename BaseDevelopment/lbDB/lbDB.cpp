@@ -6128,7 +6128,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		 //SQLBindCol(hstmt, 9, SQL_C_SSHORT, &DecimalDigits, 0, &cbDecimalDigits);
 		 //SQLBindCol(hstmt, 10, SQL_C_SSHORT, &NumPrecRadix, 0, &cbNumPrecRadix);
 		 SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable); //SQL_NO_NULLS = 0, SQL_NULLABLE = 1, SQL_NULLABLE_UNKNOWN = 2
-		 //SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
+		 SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
 		 //SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
 		 //SQLBindCol(hstmt, 14, SQL_C_SSHORT, &SQLDataType, 0, &cbSQLDataType);
 		 //SQLBindCol(hstmt, 15, SQL_C_SSHORT, &DatetimeSubtypeCode, 0, &cbDatetimeSubtypeCode);
@@ -6311,8 +6311,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 //				 number->setData((long)Nullable);
 //				 param->setUAPLong(*&nameNullable, *&number);
 
-//				 *value = (const char*) szRemarks;
-//				 param->setUAPString(*&nameRemarks, *&value);
+				 *value = (const char*) szRemarks;
+				 param->setUAPString(*&nameRemarks, *&value);
 
 //				 *value = (const char*) szColumnDefault;
 //				 param->setUAPString(*&nameColumnDefault, *&value);
