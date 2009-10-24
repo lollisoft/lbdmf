@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.103 $
+ * $Revision: 1.104 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.103 2009/05/29 13:42:52 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.104 2009/10/24 21:01:35 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.104  2009/10/24 21:01:35  lollisoft
+ * Added new partial stuff to handle idl files.
+ *
  * Revision 1.103  2009/05/29 13:42:52  lollisoft
  * Deactivated calling Rez.
  *
@@ -421,9 +424,12 @@
 #define FRAMEWORK_TARGET  18
 #define WXFRAMEWORK_TARGET  19
 
+// Separate mkmk invoke to build the pice of make rule for generating the sources.
+// Generating an extra makefile for this would be callable before the real makefile would be build.
 #define LEX_TARGET 20
 #define YACC_TARGET 21
 
+#define IDL_TARGET 22
 
 // These are the new cross compiling targets
 // This is absolutely beta !
@@ -431,14 +437,6 @@
 #define EXE_TARGET_CROSS 200
 #define DLL_TARGET_CROSS 201
 #define LIB_TARGET_CROSS 202
-
-
-
-
-// Separate mkmk invoke to build the pice of make rule for generating the sources.
-// Generating an extra makefile for this would be callable before the real makefile would be build.
-#define LEX_TARGET 20
-#define YACC_TARGET 21
 
 /*...e*/
 
@@ -891,7 +889,7 @@ void ObjExt(char *s, char *ObjName, int Len)
                 }
         }
 
-        if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
+        if ((targettype != IDL_TARGET) && (targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
         strcat(ObjName,".$(OBJ)");
 }
 /*...e*/
@@ -1774,7 +1772,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.103 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.104 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1988,12 +1986,14 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         CPPFlag = 1;
         strcpy(Compiler, "$(CPP)");
   }
-  
-  if ((targettype == LEX_TARGET) || (targettype == YACC_TARGET)) {
+
+  if ((targettype == IDL_TARGET) || (targettype == LEX_TARGET) || (targettype == YACC_TARGET)) {
         ObjExt(Name,ObjName,sizeof(ObjName));
         if (targettype == LEX_TARGET) {
                 sprintf(Line, "lex.yy.c: %s",Name);
-        } else {
+        } else if (targettype == IDL_TARGET) {
+                sprintf(Line, "%s.hh: %s",ObjName,Name);
+	  } else {
                 sprintf(Line, "%s.output: %s",ObjName,Name);
         }
   } else {
@@ -2012,6 +2012,10 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   int len;
   
   switch (targettype) {
+        case IDL_TARGET:
+		    printf("\t\t@(dir=omniORB4; $(CreateDir))\n", Compiler, Name);
+	          printf("\t\t$(OMNIORB_IDL) -v -ComniORB4 $<\n", Compiler, Name);
+                                break;
                 case LEX_TARGET:
                 printf("\t\t@%s -i %s\n\n", Compiler, Name);
                                 break;
