@@ -1,0 +1,1091 @@
+
+version 2.3.2
+
+- block SIGPIPE to avoid beeing killed when peer aborts a unix socket
+  connection (Chris McClellen)
+- workaround for VC++ bug wrt anonymous structures (Oliver Willenbrock)
+- fixed problem with read() returning ECONNRESET after writing on a
+  connection that has been closed by the peer
+- fixed sprintf() bugs in os-windows.cc (Ken Anders Redergard)
+- fixed bug in IR browser (reported by Heinz)
+- fixed scoping rules for #pragma prefix (reported by Fred Patrick)
+- include tools directory in Makefile.win32 for target w95-all
+- workaround for VC++ namespace problems (Jasper Ullrich)
+- link nsd.exe with util.obj to avoid segmentation faults (Ferran Boladeres)
+
+version 2.3.1
+
+- Fixed CORBA::InterfaceDef::describe_interface(), which must include info
+  for inherited ops and attributes as per 2.3 spec. Fixed code that depended
+  on the old behavior.
+- workaround for VC++ namespace problems in generated OBV code
+  (Andreas Rudolf)
+- fixed bug for coercions between bounded and unbounded strings
+- Don't assert(0) if POA initialization fails (i.e. -POAImplName without
+  an option), but throw an exception instead. (Carsten Zerbst)
+- Added support for file: and http: URI's according to the INS spec. (See
+  also RFC 1630). Referenced files must contain a single IOR. HTTP client
+  speaks 0.9 so far.
+- ird, micod and nsd now sport a `--ior' option to write their object
+  reference into a file. Therefore, you can now connect to a Naming Ser-
+  vice in an entirely CORBA compliant manner: `nsd --ior /tmp/nsd.ref',
+  then run `client -ORBInitRef NameService=file://localhost/tmp/nsd.ref'.
+- Got rid of local static objects, which cause problems when MICO is used
+  as loadable module.
+- fixed CORBA::ORB::poll_next_response() and CORBA::ORB::get_next_response()
+- do not enter dispatcher in CORBA::Request::poll_response()
+- Persistent POAs with SYSTEM_ID prefix UIDs with a GUID and do not need to
+  save their state in the IMR any more
+- fixed operator <<= (CORBA::Any&, CORBA::UnknownUserException*)
+- fixed bug in UnknownComponent::decode() (Marcus Wittig)
+- added examples of Jon Siegel's upcoming book
+- made IDL compiler less sensitive to \r (Andreas Schultz)
+- micod now attempts to restart a failed (POA persistent) server after 30
+  seconds (overridable using `imr activate') (Bernhard Wallner)
+- added workaround for broken Visibroker recursive typecodes (Drew MacInnis)
+- dont print error messages in resolve_initial_references() (A. Kersting)
+- improved property service (Leif Jacobsmeier)
+- changed relationship for better traversing graph of related objects
+  (patch provided by Dmitry V. Sedov)
+- bug fix for --feed-ir: do not feed included definitions by default
+  (reported by Nikolaj Logvinov)
+- require fully scoped name for CORBA::Principal in IDL specifications
+  (reported by Michael Dickson)
+- check for EWOULDBLOCK after select() (reported by Thomas Graefenhain)
+- fixed bug in automatic port selection in UDPTransport (reported by
+  Leif Jacobsmeier)
+- added workaround for "typedef char *string" name clash in exception.h
+- fixed bug in StaticRequest::get_response() (David J Worthey)
+- fixed bug in TypeCode::equal() when comparing unions (Sai-Lai Lo &
+  Chengjiang Lin) 
+- fixed problem with handling of Object IDs containing `/' or `\\'
+  in POA (Andreas Hess)
+- fixed problems with --enable-corba2-1 (reported by David Worthey)
+- changed ORB::create_list(len) to not fill the list with "len" elements
+  but only reserve space for "len" element as per CORBA 2.3 spec
+- CORBA 2.3 specifies a Any::type(CORBA::TypeCode_ptr) method that conflicts
+  with the existing method. renamed old method to set_type() and implemented
+  reimplemented type() to conform to the CORBA 2.3 specs
+- moved part of README-WIN32 to the docs
+- fixed bug in POA::servant_to_reference (Carsten Zerbst)
+- use INS-compliant encoding for "path names" in nsadmin, if actually
+  talking to an Interoperable Naming Service (Yu Cao)
+- fixed relship and relship demo for --disable-except and --disable-std-eh
+- fixed win32 related problems (Alexander Rieger)
+- fixed bugs in POA mediator related to servers not started by micod
+  (Alexander Rieger)
+- fixed bug in IIOPProxy::make_conn()
+- work around missing ftime() prototype on Solaris 2.5.1 (reported by
+  Guochun Lin)
+- fixed gcc 2.95 related problems in SSL code (reported by Martin Bassner)
+- added options for irix CC to fix sysmbol tabel overflow (Yu Cao)
+- changed Any::to_object and Any::to_abstract_base extraction again
+  to return a duplicate as per CORBA 2.3 spec (reported by Jasper Ulrich)
+- only unforward upon COMM_FAILURE, TRANSIENT, OBJECT_NOT_EXIST
+  system exceptions in Request and StaticRequest (reported by Dirk
+  Foersterling)
+- fixed configure problem; do not try to link with libstdc++ when
+  not using miniSTL (reported by Andy Kersting)
+- changed RandomGenerator IDL to fix name clash with STL (reported by
+  Andy Kersting)
+- fixed relationship service code to work with --disable-std-eh (reported
+  by Marcel May)
+
+version 2.3.0
+
+- fix for OS/2 in admin/config.sub (Ralf Barkow)
+- integrated new release of the relationship service (Karel Gardas)
+- fixed bug in NamingContext::list() (Rudolf Koenig)
+- fixed bug in Request::send_deferred() (reported by Yu Cao)
+- fixed bug that led to an infinite loop in the IIOP code when contacting
+  a nonexistent object in an existent server (reported by Robert Switzer)
+- fixed crash that occured under certain conditions when decoding garbage
+  (reported by Roger Karrer)
+- describe win32 fix to reduce delay after server restart in README-WIN32
+  (Wolf-Dieter Held)
+- unforward objects in ORB::redo_request() before redoing the invocation
+- added send_deferred() and get_response() to StaticRequest (Christophe Rene)
+- fix for gcc 2.95 (Martin Cornelius) 
+- added some new commands to nsadmin (iordump, repoid, locurl) (Rudolf Weber)
+- fixed bugs in coss/trader/Makefile
+- added workaround for problems with sending on a closed TCP connection
+- ORB changes for CORBA 2.3
+- updated demo/dynany for CORBA 2.3 DynAny
+- DynAny changes for CORBA 2.3 (these are substantial, code using DynAny
+  needs a major rework)
+- various Makefile fixes for Win32 (Rudolf Janz)
+- fixed race condition in POA Mediator (Wolf-Dieter Held)
+- fixed Win32 process handling problems (Wolf-Dieter Held)
+- fixed bug in client side IIOP connection reference counting (bug reported
+  by Alexander Rieger)
+- set MICORC=/dev/null in all demo scripts
+- fixed bugs in trader federation code (Oscar Stiffelman)
+- POA changes for CORBA 2.3
+- OBV changes for CORBA 2.3 (inheritance changes, and the syntax for
+  initializers has changed; `factory' is now a keyword)
+- implemented time service (Carsten Zerbst)
+- new option --regname for event and property daemons to specify the
+  name(s) under which to register with the naming service
+- renamed naming.idl, trader.idl, typerepo.idl to CosNaming.idl,
+  CosTrading.idl, CosTradingRepos.idl, respectively
+- changes for Sun C++ 4.2
+- mico-shld.def.in: added missing $libdirs to command line (Don Libes)
+- fixed bug in name service restore() code (Jacques Tremblay)
+- allow shell style comments in .micorc file
+- renamed LevelRecord::None due to problems with X11 (Thomas Langen)
+- fixed bug in IMR saving code in micod (Johan van den Berg)
+- allow passing NIL to connect_*() in event service (Georg Kindermann)
+- remove gtkmico-c.cc (Jim Robinson)
+- raise TRANSIENT instead of COMM_FAILURE when connection breaks after
+  invocation has been sent (Georg Kindermann)
+- fix to make --relative-paths work when include path contains ./'s
+  (Harri Porten)
+- fix for --enable-final (Will Taylor)
+- run ldconfig after make install (Dirk A. Mueller)
+- avoid warnings for -pedantic (Dirk A. Mueller)
+- prefer exception over exception.h in except2.cc (Jasper Ullrich)
+- fixed gcc 2.7.2 problem in transport.cc (Hann Wei Toh)
+- fixed include prefix for win32 makefiles in demo/services/* and
+  demo/boa/* (Chris McDonald)
+- fixed problem with unresolved external Exception::_raise()
+- fixed configure bug related to --disable-mini-stl (Rainer Wirtz)
+- fixed problem with passing string constants to UDPTransport::write()
+  (Harri Porten)
+- fixed problems with function pointer casts in ssl.cc (Andy Kersting)
+- fixed bug in coss/trader/register.h; the define is called USE_CORBA_2_1
+- fixes for Cygwin32 in ir-browser/diiproxy.cc (Dr. Volker Zell)
+- fixes for QT 1.44 in qtmico.h (Rudolf Weber)
+- fixed bugs in Any::to_object() and Any::to_abstract_base() (Owen Taylor)
+- fix for IRIX 6.5 in idl/yacc.yy (Yu Cao)
+- fixed bug in BOAImpl::del_record()
+- added redlich/README to MANIFEST
+- added option -ORBNoResolve to avoid resolving given IP addresses into
+  hostnames (dotted decimal notation is used instead)
+- IDL compiler:
+  * avoid assignment of arrays in generated code (Frederic Lacoste-Seris,
+    Graham Hudspith, Georg Kindermann)
+  * generate two distinct marshallers for recursive and non-recursive
+    sequences of the same type, because recursive and non-recursive
+    sequences use different sequence templates
+  * changed generated code to make it compile with CORBA-SMALL.h
+  * fixed bug in IDL code generator (Guenter Kempter)
+  * removed option --query-server-for-narrow which is now the default.
+    use option --do-not-query-server-for-narrow to disable interaction
+    with remote servers during a _narrow() operation
+  * removed option --use-dii
+
+version 2.2.7
+
+- create implementation repositorty entries for BOA persistent
+  servers in a local implementation repository to avoid polluting
+  micod's global implementation repository
+- added file CONVERT which describes how existing code must be
+  changed for MICO 2.2.7
+- changes for OpenSSL (Rudolf Weber)
+- fixed memory management bug in Buffer::reset()
+- added experimental UDP support; see demo/mcast for a simple
+  fault tolerance example
+- allow multiple IOR profiles of the same type
+- removed the check for gcc version in configure, there are too many
+  different versions out there.
+- added patches for "Advanced CORBA Programming with C++"; see demo/henning
+- made --enable-final work again
+- fixed bug in BOA: has_object() must return TRUE if passed object
+  is the remote (i.e., micod) objref of an object in this BOA
+- added COM/CORBA interworking demo (see demo/com-interworking) (provided
+  by Massimo Di Giorgio)
+- ported SSL support to Win32 (Alfonso Urdaneta)
+- fixes for 64 bit platforms in buffer.cc: pointers cannot be cast to
+  32 bit integer types
+- nsadmin: dont interpret slashes in names enclosed in quotes (')
+- nsadmin: allow using null IORs
+- improved overall performance by about 35% (according to demo/bench)
+- new option -ORBIIOPBlocking to make IIOP use sockets in blocking
+  mode. this gains some extra performance but nested method invocations
+  dont work when this option is specified.
+- updated sections "Exceptions" and "Untyped Values" in the documentation
+  to reflect recent changes
+- configure changes for DG/UX (Eric Raskin)
+- added -bbigtoc option for AIX (Markus Pohlmann)
+- fixes for gcc 2.7.2
+- restructured demo directory
+- fixed memory leak in StaticServerRequest (Steffen Hansen)
+- reworked array forany templates to be CORBA compliant
+- environment variable MICORC can be set to the name of the config
+  file; -ORBConfFile option overrides $MICORC
+- changed event daemon to only pull when there are connected push
+  consumers or pulling pull consumers
+- made event daemon more robust with respect to pull/push supplier/consumer
+  crashes (TANAKA Shinya)
+- fixes for IRIX 6.5 (Kevin Schmeichel)
+- added imr option "locate" (J. Tremblay)
+- made <<= operators return void as per CORBA spec
+- fixed bug in sequence<double> non-copying any extraction operator
+- fixed bug in Context::get_values(): scope can be NULL
+- use idl compiler to generate enum TCKind
+- added missing <<=, >>= operators and _tc_* constants for system exceptions
+- added missing Any::operator<<= (const Exception &)
+- added missing non-copying versions of some <<= operators
+- added missing builtin <<=, >>= operators for Any_var
+- added ostream << operator for String_var
+- changes for SSLeay 0.9
+- fixed bug in FLtk dispatcher (Jacques Tremblay)
+- fixes for Sun CC (Stephen Gallimore)
+- fixed bug in BOAImpl::has_object() (Christophe Brethes)
+- changed exception handling support to be CORBA compliant (Wil Evers)
+- started to implement DynValue (still incomplete)
+- improved oneway performance over IIOP by 100%
+- moved TransportPrefPolicy to module MICOPolicy
+- added BiDirPolicy
+- added workarounds for VC++ namespace problems (Rudolf Janz)
+- added configure option --enable-corba2-1 to make MICO compliant
+  to the CORBA 2.1 standard
+- Interface Repository:
+  * when checking for duplicate repository IDs, the complete IR has
+    to be searched
+  * some more error checking for invalid parameters
+  * lookup et al searched in the wrong direction (!)
+  * fixed bug in IR, which caused a "duplicate member error" when
+    feeding unions like:
+      union U switch (T1) {
+      case L1:
+      case L2: sequence<T2> x;
+      };
+- IDL Compiler:
+  * added new option --gen-included-defs to generate code explicitly for
+    #included definitions
+  * added new option --gen-full-dispatcher which will add dispatching code
+    in the skeleton of an interfaces for all inherited operations and
+    attributes
+  * added new option --codegen-midl to generate Microsoft MIDL out
+    of a CORBA IDL specification (Massimo Di Giorgio)
+  * removed backend for IDL to C mapping. The following options are
+    no longer available: --codegen-c, --no-codegen-c, --h-suffix
+  * many C++ mapping bug fixes (OpenGroup)
+  * added missing support for coercing unsigned long long to other basic types
+  * changed TypeCode::equal() to follow recursions if remove_aliases==TRUE
+    to prevent idl compiler from generating duplicate sequence marshallers
+    as in
+      struct S1 { sequence<S1> s; };
+      struct S2 { sequence<S1> s; };
+    where sequence<S1> marshaller was generated twice.
+  * the skeleton code does no longer automatically free the old value of
+    a variable length inout param (string, wstring, (abstract) interface,
+    valuetype, valuebox) if the user replaces the value; that is the
+    user has to free the old value if he wants to replace it. This is
+    the way the CORBA spec wants it. REQUIRES CHANGES IN USER CODE.
+  * fixed memory leaks in non-copying Any extraction operators: ownership of
+    the extracted value is maintained by the Any and user must not delete it.
+    This affects the non-copying extraction operators for: string, wstring,
+    (abstract) interface, valuetype, valuebox, struct, union, exception,
+    sequence, array. REQUIRES CHANGES IN USER CODE.
+  * generate more efficient skeleton code for variable length out parameters
+    and return values.
+  * generate more efficient method dispatchers for interfaces with
+    lots of methods.
+  * generate more efficient marshalling code for sequences and arrays
+    of base types.
+  * new option --config to print some important MICO configuration infos.
+  * fixed memory leak in generated SII demarshallers for (abstract) interfaces
+  * cleaned up VC++ workarounds
+  * "export" is now a C++ keyword
+
+version 2.2.6
+
+- Objects by Value
+- added some OBV demos (demo/obv)
+- some C++ mapping fixes
+- fixed bug in POA wrt objects without any profiles (Jacques Tremblay)
+- added doc about persistent POAs and reference-counted servants
+
+version 2.2.5
+
+- added message level interceptors; see demo/interceptor for an example
+- added TransportPrefPolicy to let the user control which transport mechanism
+  should be used to communicate with an object that supports multiple
+  transport mechanisms (like IIOP, SSL/IOP, ...)
+- changed event service to use SSI instead of DSI
+- use the CORBA 2.2 way of encoding the default case label of a union typecode
+- raise appropriate exceptions when trying to do nonlocal operations on
+  locality constrained objects
+- added FLtk dispatcher (Jacques Tremblay)
+- implemented Interoperable Naming Service. Rewrote Naming Service
+  to use the POA
+- added support for LynxOS in configure.in (Hans-Joachim Baader)
+- made configure recognise OpenNT C++ compiler
+- new configure option --enable-compiled-headers to make the C++ compiler
+  precompile header files to speed up compilation (currently only supported
+  for SGI C++ 2.7.1)
+- Added improved memory leak checker for Linux/x86
+- made ORB::get_iface(), ORB::get_impl(), ORB::is_a() throw exceptions
+- reimplemented FixedBase::compute_params() to be more robust
+- changed TypeCode::create_*_tc() to not copy the element types
+- changes for CORBA 2.3:
+  * started to implement GIOP 1.2
+  * updated interface repository
+- win32 changes:
+  * workarounds for VC++ bugs (Rudolf Janz)
+  * ported naming, event, and trading service (Rudolf Janz)
+  * fixed windows related problem in sequence.h (Rudolf Janz)
+  * IMPORTANT: read README-WIN32 for important news
+- bug fixes:
+  * fixed memory leak in miniSTL vector (reported by Oliver Mangold)
+  * fixed typo in MICO::UniCodesetConv::decode() (Robert Switzer)
+  * SII called ClientInterceptor::after_unmarshal instead of
+    ClientInterceptor::finish_request
+  * renamed _T to _MICO_T due to problems with FreeBSD
+  * forward disconnect_*() calls to consumers/suppliers in event channel
+    proxies (reported by Christophe Rene)
+  * fixes for SGI C++ Compiler 7.2.1 (Marc Stuessel)
+  * also list services in list_initial_services() that register on demand
+  * notify callbacks when dispatcher moves events to a new dispatcher (bug
+    reported by Leif Jakobsmeier)
+  * install CORBA-SMALL.h
+  * made auxdir/qtmico.cc and tools/ir-browser/dii.cc compile again
+- POA:
+  * speedup for some common use cases
+  * changed Active Object Map to handle large numbers of objects
+    more efficiently
+  * fixed _get_interface
+  * updated ServantManagers to more closely follow the specs. The
+    ServantManager skeletons don't derive from CORBA::Object any
+    more
+  * updates for CORBA 2.3 (RefCountServantBase et al.)
+  * upon shutdown, the POAManager now signals running services a
+    SIGTERM and waits for them to terminate (giving them a chance
+    to save their state)
+- IDL compiler:
+  * if an object has an empty repo id (like objects generated by the
+    interoperable naming service extension) always query the server
+    for narrow (i.e., behave as if --query-server-for-narrow was
+    specified if the repo id is empty)
+
+version 2.2.4
+
+- added CORBA::Bounds exception and made the DII use it
+- removed octet, char, wchar, and boolean wrapper classes
+- an invocation on a colocated POA-based object now decays to a
+  direct procedure call
+- made minstl's set and map use a simplified and faster vector template
+- use idl compiler to translate ioptypes.idl and ssliop.idl
+- set the completion status of system exceptions to MAYBE or YES instead
+  of NO where appropriate
+- optimized micod by using GIOP location forwarding, so that using micod
+  no longer introduces a performance drawback. This relies on two client
+  side GIOP features some CORBA implementations do not support although
+  prescribed by the CORBA specification: 1) resending of outstanding
+  invocations when CloseConnection is received and 2) fallback to original
+  unforwarded object reference when connection to forwarded location
+  fails. Therefore this feature must be explicitely enabled by giving
+  micod the --forward command line option.
+- renamed "_not_existent" to "_non_existent" as per CORBA spec
+- changed BOA to forward all requests to mediator after deactivate_impl()
+  or deactivate_obj() has been called
+- changed IIOPServer to orderly shutdown (send a CloseConnection message on)
+  all open connections upon ORB::shutdown()
+- fixed client side location forward handling: must fall back to
+  the original unforwarded IOR when the connection to the forwarded
+  location breaks
+- added Trading Service (Torben Weis)
+- added "Success Stories" section on web page
+- use of namespaces is now on by default (use --disable-namespace to avoid
+  using namespaces)
+- moved DynAny to libmico (libmicoaux is still there but is empty). also
+  use idl compiler to generate DynAny declarations.
+- replaced assertions by throwing appropriate exceptions in libmico.
+  new configure option --disable-orb-excepts to turn this off (i.e.,
+  revert to pre 2.2.4 behaviour)
+- added configure options to selectively turn on services (Karel Gardas)
+- Initialize POA when first referenced. Also solves bootstrapping problem
+  with micod.
+- new way to reduce compilation times and compiler memory usage by cutting
+  down the code included by CORBA.h. There are two ways to go:
+  1) before including CORBA.h #define MICO_CONF_NO_X to turn off feature
+     X (where X can be IR, IMR, POA, INTERCEPT, DYNANY).
+  2) before including CORBA-SMALL.h #define MICO_CONF_X to turn on feature X
+- changed implementation repository and related tools to store a tag
+  along with each repository id. when bind()ing to an object with a
+  specified tag micod will now only launch servers that implement objects
+  with given tag and repoid. see demo/account2/account script for how to
+  tell micod the tag.
+  IMPORTANT NOTE: if an object has a non-empty tag you MUST tell micod the
+  tag; otherwise bind()ing to the object will fail.
+- updated property service; wrote propertyd demo (Leif Jakobsmeier)
+- added simple IIOP firewall support for use with TIS plug-gw (see
+  www.technosec.com for details) (Rudolf Schreiner)
+- print better error message when IIOPServer::listen() fails (Stefan Wille)
+- redo invocations when CloseConnection is received before the reply
+  arrives to fix interoperability problems with ORBs that close idle
+  connections automatically (reported by Jennifer Harris)
+- add POA support in imr_impl.cc (Karel Gardas)
+- initialize variables in GIOPCodec ctor before using them (Greg Banks)
+- Added demo for random.org (Frank Schneider)
+- Added iordump utility
+- bug fixes:
+  * when a client called a server and the server called back the client
+    a client crash made the server crash as well. fixed this
+  * fixed bug in StaticRequest::invoke() (invocation was sent twice
+    after a forward)
+  * fixed bug in IIOP code: GIOPConn::do_read() must not continue if
+    the callback deleted the connection
+  * fixed bug in TypeCode::equal(): must compare the element types of
+    recursive sequenes, not only the recursion depth.
+  * fixed bug in TCSeqObject::marshal() and TCSeqObject::demarshal()
+  * fixed bug in GIOPInContext and GIOPOutContext, which caused memory
+    being freed twice in some circumstances
+  * fixed bugs in configure script (reported by Doug Anderson)
+  * fixed bug in marshalling of recursive type codes
+  * fixed bug in IIOP server side locate request processing which caused
+    a server to hang forever whenever a locate request was received (reported
+    by Nikolaj Logvino)
+  * make sure OSNet::sock_init() is called before any socket related
+    function is called (Chin Huang)
+  * fixed prg target in auxdir/Makefile (reported by Mike Sample)
+  * fixed BOA memory leak (reported by Chris Cannam)
+  * Fixed bug in GTK config (Marc G. Fournier)
+- Win32 changes:
+  * more Win32 improvements and bug fixes (Rudolf Janz, Martin Sander)
+  * lots of changes for Win32: most makefiles are in place now, micod
+    and some services work now (Rudolf Janz)
+  * MICO can now be compiled under Windows95
+- changes for CORBA 2.3:
+  * added new system exceptions
+  * updated Policy support
+  * updated TypeCode
+  * updated support for idl type fixed<d,s>
+  * added basic support for Objects By Value
+  * replaced CORBA::Status by void
+  * added a default value for the Id parameter of ORB_init() and BOA_init()
+  * added replace(), release(), and get_buffer() methods to sequence templates
+  * changed Any::from_fixed and Any::to_fixed to match the spec
+  * renamed _narrow() to _downcast() for exceptions
+- IDL compiler:
+  * emit Any marshalling code for types in --pseudo interfaces
+    (see ORB::create_policy for rationale).
+  * fixed problem with POA ties inheriting from interfaces in a module
+    (reported by Markus Pohlmann)
+  * fixed bug in operation dispatcher of server skeleton (Gerd Aschemann)
+  * fixed mapping of types in container types (structs and unions)
+  * fixed #pragmas directly after an #include
+  * added missing constructor for member initialization of
+    exceptions (reported by Doug Anderson)
+  * fixed c++ mapping for wchar IN parameters
+  * the Static Invocation Interface (SII) is now being used by default.
+    The SII makes the marshalling of parameters much faster. The old
+    marshalling code that makes use of the DII can be activated via
+    --use-dii. Support for Any and TypeCode must now be activated
+    explicitly via options --any and --typecode.
+  * made <<= and >>= operators use the SII marshallers
+  * do not generate Any marshalling for --pseudo unless --any is on
+  * new option --c++-skel that causes the idl compiler to emit
+    code needed only by servers into a separate file <name>_skel.cc
+  * reduced size of generated code:
+    - moved client side exception handling code to mico_sii_throw()
+    - emit server side try-catch code for system exceptions only once
+      per interface instead of once per method
+    - omit generation of StaticTypeInfo::copy() to avoid instantiation
+      of copy constructors for the associated type
+
+version 2.2.3
+
+- added support for Persistent POAs; see demo/poa/account-3 for an example
+- added new activation mode "poa" to micod to allow automated activation
+  of servers with persistent POAs
+- allow nested method invocations in POACurrent
+- allow activation of persistent POA servers with `imr activate'
+- fixed _this() in POA-based skeletons
+- fixed idle() in SelectDispatcher
+- fixed initialization bug when using a static libmico.
+- Workaround for egcs 1.1 on Linux (Torben Weis)
+- fixed bug in DynUnion when using Unions with implicit default
+- fixed bug in Object::_is_equivalent()
+- fixed bug in Buffer::dump() (Christophe Rene)
+- IR: don't allow creation of an interface within an interface
+  (Christophe Rene)
+- IDL compiler:
+  * fixed bug related to POA tie classes for interfaces in modules
+  * don't give an error for unknown #pragma directives
+  * reset #pragma prefix to nothing at the end of an #included file
+  * added --no-poa-ties option
+
+version 2.2.2
+
+- fixed bug in BOA and micod related to unshared servers: newly created
+  objects were not moved to a new server
+- made SelectDispatcher signal-safe to fix a bug that sometimes crashed
+  micod when a server crashed or terminated (reported by Torben Weis)
+- changes for VC++ 6.0 (Travis Rein)
+- fixed bug in property service (reported by Karel Gardas)
+- made some refinements to Win32 install process
+- added MFC demo under Win32 (see demo/mfc)
+- fixed bug in IDL compiler related to aliases of arrays (reported by
+  Christophe Rene)
+- fixed bug in IDL compiler related to forward declarations of
+  interfaces and re-opening of modules
+
+version 2.2.1
+
+- tried to fix problem with global InitInterceptors
+- fixed imr activate to really activate the given implementation (reported
+  by Torben Weis)
+- fixed bug to make aborting a deferred DII invocation work (reported by
+  Philippe Merle)
+- fixes in PropertyService for compilers != gcc
+- fixed bug in TypeCodeConst
+- fixed bugs in mico-setup.* scripts
+- added POA documentation (Frank)
+- added property service (written by Leif Jacobsmeier)
+- configure changes for emx (reported by Ralf Barkow)
+- tried to fix Win32 problems in generated code (reported by Olivier Richaud)
+- tried to work around IDL compiler crashes under Win32 (Martin Sander)
+- reorganized make process under Win32
+- fixes for --enable-final
+- added demo/interop/{README,Makefile}, which were missing in 2.2.0
+- fixes for namespaces
+- fixes for egcs 1.1
+- IDL compiler:
+  * improved code generation for --c++-impl (Rick H. Wesson)
+  * use correct file suffix with --hh-suffix (Robert Klemme)
+  * bug fix for --query-server-for-narrow (Christophe Rene)
+  * bug fix for mapping of arrays (Christophe Rene)
+  * bug fix concerning forward declarations of interfaces (Robert Klemme)
+  * accept preprocessor options -E and -M
+
+version 2.2.0
+
+- added JacORB interoperability demo (Thomas Fricke)
+- cleaned up mico-* scripts (Robert Klemme)
+- updated copyright headers in source files
+- fixes for Win32 (Martin Sander)
+- added operator* to VAR templates
+- added Any::from_static_any() and Any::to_static_any(), which will be
+  used to speed up <<= and >>= operators
+- added POA demos (Frank).
+- made configure check whether struct ctors, dtors, op= have to be
+  explicitely specified to work around g++ bugs. Changed code generation
+  to place #ifdefs around affected code.
+- fixed bug in ORB::perform_work()
+- fixed problems with static variables in inline methods (reported by
+  Stefan Schaefer)
+- implemented basic support for CORBA 2.2 DomainManager stuff
+- implemented CORBA 2.2 service information stuff
+- changed mico-c++, mico-shc++, mico-ld, and mico-shld scripts to work
+  with compilers other than gcc
+- fixed bug in bstring fix (Andrew Metcalfe)
+- fixed memory leak in DataDecoder destructor (Andrew Metcalfe)
+- fixed bug in ORB shutdown processing
+- started to port MICO to IBM xlC
+- Interface Repository bug fix related to wrong construction of
+  multiple nested recursive structs/unions
+- started to port MICO to HP aCC
+- integrated CORBA 2.2 POA, Current, and Policy stuff (Frank)
+- fixed problem with basic_string<>::c_str() (reported by Andrew Metcalfe)
+- added CORBA 2.2 method Exception::_raise()
+- fixed problem with oneway invocation buffering
+- added missing #define's in CORBA.h for Win32
+- IDL compiler:
+  * allow re-opening of modules
+  * added missing declaration "Exception *_ex" for !HAVE_EXCEPTIONS
+  * declare union read accessor methods for base types, objects, and
+    arrays as const
+  * fixed wrong mapping of aliases to strings in operation signatures
+    (reported by Leif Jacobsmeier)
+  * fixed bugs in generation of wstring union accessor methods
+  * instantiate _tc_* constants on demand to reduce memory footprint
+  * fix bug in generation of constants when using namespaces
+  * fixed problems with constants and _tc_* constants when modules
+    are mapped to namespaces
+  * removed some MICO specific operations from IR. The IDL compiler
+    can now generate code from a foreign IR via --repo-id.
+  * added new option --c++-impl which will generate some default
+    C++ implementations for interfaces (donated by Stefan Westerfeld)
+  * make sure that template_impl.h is only included after all generated
+    code (there was a problem before if a generated .h file included
+    another generated .h file)
+  * bug fix for wrong bounds during evaluation of short consts
+    (reported by Bert Bril)
+
+version 2.1.1
+
+- moved CORBA::NameValuePair implementation from auxdir/dynany_impl.cc
+  to orb/dynany.cc due to problems with unresolved externals when
+  using gcc 2.7.2
+- changed the way the BOA matches target objects of invocations with
+  objects in the active object map to allow adding new IOR profiles after
+  the object has been created
+- started to port MICO to the SUN C++ compiler 4.x (Andreas Schultz)
+- tried to fix problem with *Wrapper classes on Sinix+gcc2.7.2 (reported
+  by Klaus Thiele)
+- generate .zip file distribution in admin/mkrelease
+- separated out OS specific code into include/mico/os-*.h and orb/os-*.cc
+- raise CORBA::MARSHAL when arguments and/or results cannot be decoded
+- added ServerRequestBase::cancel()
+- started to port MICO for the Visual-C++ compiler. See README-WIN32 for
+  details (with a lot of help from Martin Sander)
+- started to write an FAQ
+- included GNU cpp in the distribution for use by the idl compiler and ird
+- made configure check whether compiler supports const overloading of
+  conversion operators and define the *_var conversion operators accordingly
+- fixed bug in ServiceContextList handling (reported by Andrew Metcalfe)
+- wrote StaticAny test (test/dii/static.cc)
+- fixed bugs in decoder get_*s() methods
+- changed SSL support to be compliant with revision 1.2-final of the security
+  service specification (omg document orbos/98-01-14.pdf) with one exception
+  for Visibroker compatibilty (see include/mico/ssliop.h for details)
+- fixed type name clashes in orb/uni_*.{cc,h}
+- ObjectAdapter::skeleton() can now return NIL if there is no skeleton for
+  the object in question
+- fixes for PowerMax OS (by Andrew Metcalfe)
+- fixes for Cygnus CDK beta 19; updated installation instructions for beta 19
+- fixed typos in CDR put_*s() and get_*s() methods (reported by
+  Andrew Metcalfe)
+- fixed horrible bug in DataDecoder::encaps_begin() (reported by FP)
+- IDL compiler bug fixes:
+  * fixed some problems with aliases of arrays and added some
+    missing functions for array templates (reported by Christophe Rene)
+  * proper order of generated code for nested declarations
+    (found by Kristian Kvilekval)
+  * print proper error message for wrong const expressions
+    (reported by Christophe Rene)
+  * generate proper code for typedef of wstring (reported
+    by Rick H. Wesson)
+  * fixed some bugs related to --feed-included-defs and forward
+    declarations (pointed out by Christophe Rene)
+  * initialization of const decls defined in modules (found by
+    Andrew Metcalfe)
+  * print error and exit when cpp cannot be executed
+  * insert space between two closing brackets of nested sequence templates
+    (reported by Christophe Rene)
+- added CORBA 2.2 methods to ServerRequest (FP)
+- added configure option --disable-static (FP)
+- new option --pseudo for the IDL compiler. If used, only pseudo
+  stubs and skeletons are generated. Needed for the upcoming POA.
+  (provided by Frank Pilhofer)
+
+version 2.1.0
+
+- when --relative-paths is specified to the IDL compiler emit #include
+  statements relative to paths specified by -I options
+- added relationship service and demo written by Karel Gardas
+- added Interceptor::ConnInterceptor that allows for connection monitoring
+  on server side; see demo/interceptor for an example
+- avoid use of *::clear() on STL containers, since the old HP-STL in
+  gcc 2.7.2 doesnt support it
+- mostly removed BOA dependencies from DSI/SSI (patches provided by FP)
+- new option -ORBNoCodeSets to not add code set information to object
+  references (may be needed when talking to not CORBA 2.1 compliant ORBs)
+- new option -ORBConfFile to specify config file name (defaults to ~/.micorc)
+- duplicate some objects in ServerRequest to make sure they are not
+  deleted until interceptors are executed (by Greg Banks)
+- made erase (end()) work on MiniSTL data structures (bug reported by
+  Andrew Vajoczki)
+- implemented static invocation interface (SII) and static skeleton
+  interface (SSI); see test/dii/siiclient.cc and test/dii/siiserver.cc
+  for an example
+- added code set converters for UCS-4, UTF-7, UTF-8, UTF-16, ISO-8859-*,
+  various IBM code pages, ASCII, EBCDIC, KOI8-R, Mac, Windows, HTML
+  (donated by Marcus Mueller)
+- fixed HP-UX select() hangs (by Greg Banks)
+- fixed bug in tools/ir-browser/Makefile (reported by Bruno Thomas)
+- added basic support for code set conversion as per 2.2 spec
+- added missing ComponentDecoder destructor
+- fixes for IRIX CC (reported by Christoph Best)
+- bugfix in interface repository (hinted by Christophe Rene)
+- adopted BOA to new micod
+- redesigned and reimplemented part of micod:
+  * removed object adapter (esp. BOA) dependencies
+  * provide a flexible framework for implementing arbitrary activation policies
+  * fixed all design problems regarding object migration
+- added configure option --enable-namespace to turn on namespace support
+  (off by default, because current egcs releases have namespaces, but
+  they are broken in subtle ways).
+- bugfix in Tcl dispatcher (by FP)
+- more Visibroker/SSL interoperability fixes
+- changed IDL compiler in order to initialize non-global const
+  declarations in the implementation file
+- some changes to the IDL compiler for 2.2 compliance
+  * added _out types
+  * added in(), out() and inout() methods for _var types
+  * C++ keywords are prefixed by "_cxx_"
+- added IDL compiler option --relative-paths to generate relative
+  paths for #include directives for C++ mapping
+- added IDL compiler option --feed-included-defs for feeding
+  #include'd definitions into IR. Default is not to feed them
+- IDL compiler bug fixes:
+  * treat TypeCode as a scoped name and not as a IDL keyword
+    (reported by Rick H. Wesson)
+  * give verbose error message if there is no value for an
+    explicit default member of a union (reported by R. Switzer)
+  * give verbose error message for mal-formed #pragma directives
+    (reported by Rick H. Wesson)
+  * bug fix for unmarshalling of explicit default union members
+    (reported by Frank Pilhofer)
+  * bug fix related to stub generation for exceptions declared
+    on global scope (reported by Daniel Veillard)
+  * print proper error message for wrong const expressions
+    (reported by Christophe Rene)
+  * don't allow re-opening of interfaces
+    (reported by Christophe Rene)
+
+version 2.0.8
+
+- support for Principal::get_property("peer-address")
+- fixed build problems on AIX
+- fix for gcc 2.7.2 and other dumb compilers: moved part of
+  dynany_impl.cc to orb/dynany.cc. otherwise you get unresolved
+  symbols when linking binaries without libmicoaux
+- more -Wall fixes
+- added configure option --enable-split
+
+version 2.0.7
+
+- avoid assert() expressions with side effects; -DNDEBUG dows now work
+- fixes for -Wall
+- more elaborate check for working namespaces in configure
+- added input queue to GIOPConn
+- fixed typo in stream_impl.cc
+- added #define MICO_BIN_VERSION suitable for use with /lib/cpp directives
+- fixed problems with imr activate
+- Object::_non_existent() now returns TRUE if the server cannot be contacted
+  instead of dumping core
+- fixed bugs in Any::except_get_end() and Any::struct_get_end()
+  (reported by Frank Pilhofer)
+- fixed interoperability problems with VisiBroker when using SSL
+- preserve implicit default union case during extraction from Any
+- fixed bug in xwcscmp()
+- fixed some problems with --disable-except
+- fixed bug in wide string output
+- fixed a bug in handling of unknown IOR profiles
+- fixed bug in BOA::dispose() (dug out by Torben Weis)
+- changes for IR browser to work with JavaCUP 0.10g
+- don't generate marshalling code for type sequence<Object>
+- fixed bug in IDL compiler related to nested recursive unions
+- applied PowerMax patches (provided by Andrew Metcalfe)
+- fixed a bug in Principal::get_property (reported by Andrew Metcalfe)
+- fixed bug in interceptor code (reported by Andrew Metcalfe)
+- fixes in Tcl dispatcher for Tcl 8
+- moved DynAny stuff to CORBA module (as per CORBA 2.2 spec)
+- added Principal::set_peer_info()
+- fixed bug in DynAny that occured when using aliases of base types
+  (reported by Philippe Merle)
+- removed debug output in const.cc
+- fixed problem with ministl/function.h (patches by Owen Taylor)
+- fixes for GTK 1.0.0 (patches by Owen Taylor)
+- fixed some floating point problems
+
+version 2.0.6
+
+- incorporated most of the changes for SGI CC (patches provided by
+  Christoph Best)
+- incorporated most of the changes for PowerMax OS (patches provided by
+  Andrew Metcalfe)
+- added support for CORBA 2.2 types to IDL compiler and interface
+  repository (see test/idl/27)
+- made ORB::cancel() work
+- reimplemented BOAObjectRestorer using interceptors
+- added support for Interceptors as per OMG document orbos/98-01-08.pdf
+  (realtime CORBA joint submission), see demo/interceptor and demo/ssl
+  for examples
+- fixed AC_CHECK_SOCKET_SIZE_T for glibc (patch provided by Martin Baulig)
+- DynAny: added support for CORBA 2.2 types; speed and size optimizations
+- added CORBA 2.2 support for GIOP 1.1 and IIOP 1.1
+- moved the dispatchers into separate libs (i.e., libmicox, libmicoqt,
+  libmicogtk, libmicotcl)
+- changed semantics of BOA methods for CORBA 2.2 compliance:
+  * impl_is_ready() and obj_is_ready() do not block anymore, you have to
+    call orb->run() to start processing events
+  * deactivate_impl() and deactivate_obj() do not stop processing
+    events anymore, you have to use orb->shutdown() to make orb->run() return
+  THIS REQUIRES CHANGES IN USER CODE, see examples and documentation for
+  details.
+- added CORBA 2.2 ORB methods work_pending(), perform_work(), run(),
+  and shutdown()
+- reinstall signal handler after each handled signal in
+  UnixProcess::signal_handler()
+- added CORBA 2.2 ORB support for long long, unsigned long long,
+  long double, wchar, wstring, fixed
+- added support for SSL (interoperates with Visigenic's IIOP over SSL)
+  using SSLeay 0.8, see demo/ssl for an example
+- added list_properties() and get_property() methods to CORBA::Principal
+- calling get_principal() with a NIL environment pointer from within a
+  method implementation does now work
+- install all demos, not only the ones that can be compiled with current
+  configuration
+- added CORBA-c.cc to orb_all.cc
+- fixed byteordering bugs in iop.cc
+- do not link in both libtermcap and libncurses
+
+version 2.0.5
+
+- fixes for --enable-final (thanks to Dick Porter)
+- fixed installation bug that occured when not specifying --exec-prefix
+  to configure
+- added include/mico/stream.idl, which was missing in the 2.0.4 release
+
+version 2.0.4
+
+- added stream service (designed and implemented by Christian Becker)
+- preliminary support for namespaces (untested, might work with KAI C++)
+- integrated most of the changes for KAI C++ (provided by Ben Eng)
+- dont output dependencies for nonexisting files in mkdepend
+- fixed a bug in BOAServer::invoke()
+- added preliminary C language mapping (provided by Elliot Lee). see
+  demo/corba-c for an example. updated docs and man pages for new idl
+  compiler command line options.
+- added missing _duplicate()s in ObjectRecord::impl(...) and
+  ObjectRecord::iface(...)
+- added bind() method to BOAObjectRestorer that enables the server to
+  generate objects on demand (i.e., when a bind() for a non-existing object
+  is done on the server). see demo/account2 for an example.
+- repoid's in the implementation repository can now contain *, ?, and []
+  wildcards (just like in a shell), e.g. a server implementing all kinds
+  of objects can be registered with repoid IDL:*:1.0. this is useful in
+  conjunction with the above change.
+- fixed a bug in micod related to running persistent servers multiple times
+- added clear() to ministl's set, map, vector, and list
+- print more info for uncaught user exceptions
+- IDL compiler:
+  * #include directives in generated code now use correct suffix
+  * --version will exit IDL compiler
+  * files are always generated in working directory
+- fixed bugs in install targets in auxdir/Makefile and coss/Makefile
+- some performance optimizations (about 30% faster according to demo/bench)
+- do not turn inet:localhost:* into inet:<some local address>:*
+- made configure check for JDK 1.1
+- changes in bstring.h for -frepo
+- updated docs
+- bugfix in DynStruct::from_any() (provided by Philippe Merle)
+- wrote a Tcl dispatcher
+- changed BOA::create() and thus DynamicImplementation::_create_ref()
+  to not consume InterfaceDef and ImplementationDef arguments 
+- made event service and event service demo compile without exceptions
+- re-wrote tools/ir-browser for JDK 1.1.5
+- added interoperability test for JDK 1.2 beta 2.
+  see mico/demo/interop/jdk/README for details.
+- changed configure to figure out the type of the size argument to socket
+  calls
+- added a missing delete in QT dispatcher
+- fixed bugs in map::insert() and set::insert():
+  * lookup() used a == b instead of !_comp(a,b) && !_comp(b,a)
+  * the boolean returned from insert() was inversed
+- added events in demo/Makefile
+- fixes for -Wall in ministl/list.h
+- define INADDR_LOOPBACK in address.cc if its not in the system headers
+- do not include math.h in util.cc on SGI due to conflicts for initstate()
+
+version 2.0.3
+
+- added simple is_a() cache
+- changed ln -fs into ln -f -s
+- fixed some bugs in the event service
+- made configure fail if a working cpp cannot be found
+- fixed bug in install-sh
+
+version 2.0.2
+
+- rewrote part of the Event Service and implemented pull
+- added callback mechanism to DII
+- bug fix for prototype of Any insertion operator for enums
+- added event service (only untyped push so far) written by Kai-Uwe Sattler
+- changed DSI to be able to defer completion of requests
+- added some notes about Win32 in INSTALL and doc.tex
+- fixes for Cygnus CDK
+- added new IDL compiler option --query-server-for-narrow, which
+  obsoletes --query-ir-for-narrow (still left in but gives a warning)
+- use the server instead of the IR for _narrow().
+- fixed bug in IDL compiler related to array union members
+- fixed Ministl to work with egcs
+- added GTK support
+- fixed a bug with InterfaceDef::is_a( Object )
+- IDL compiler now handles forward declarations which are defined
+  in #included files.
+- fixed bug in IDL compiler related to const declarations
+
+version 2.0.1
+
+- added a missing return TRUE in Naming_impl.cc
+- #pragma on SGI now properly recognized
+- renamed aux to auxdir due to problems with Windows aux device
+- changes for win32+cygnus cdk
+
+version 2.0.0
+
+- replaced CORBA::* by MICO_* in array.h
+- solved some remaining problems with T* conversion operators in var.h
+- changes for *BSD in configure
+- again fixed a bug in ORB_instance()
+- fixed problems with -frepo
+- prevent nsd from binding to itself
+- added make install-cd
+- do not link in any libraries when creating shared libs in mico-shld.def
+- made configure check for exceptions in shared libraries
+- build libmicoaux and libmicocoss as shared libs if exceptions in shared
+  libs work
+- added demo/redlich and demo/siegel
+- fixes for egcs
+
+version 0.9b6
+
+- fixed bugs in mico-setup.* scripts
+- changed ministl to use !cmp(a,b) && !cmp(b,a) instead of a==b
+- changed configure to recognise egcs (untested)
+- only link in needed libs in mico-ld
+- catch broken linux gcc's in configure
+- changed licensing policy for idl compiler output
+- fixed byte ordering bug that showed up when running the BOA daemon on a
+  machine with byte order differing from client or server machine
+- beefed up the graphical interface repository browser
+- IDL compiler now generates _this() member functions
+- major re-work of the documentation
+- fixed bugs in 'make diffs'
+- changes in demo/ to be able to compile the demos outside of the MICO
+  build dir; make install now installs the demos under doc/mico/examples
+- do not use the -fPIC compiled object files for building static libs,
+  since specifying -fhandle-exceptions and -fPIC together produces buggy
+  code
+- fixed a bug in micod: bind() hung forever if reactivating a server
+  and binding to a transient object
+- fixed a serious bug in ORB_instance()
+- fixed a bug in the lookup of scoped names in the IR
+- added demo/activate
+- added diffs (in README.SIEGEL) to make the example from Siegel's CORBA
+  book work with MICO
+- added demo/interop
+- fixed a bug in Principal::encode()
+
+version 0.9b5
+
+- added extensive error checking in idl compiler
+- fixed scoping bugs in the idl compiler
+- added --h-suffix and --c-suffix options to the idl compiler
+- fixed gmake install
+- added shellscripts mico-setup.sh and mico-setup.csh scripts that
+  set up paths for using mico (in case it is not installed in the standard
+  paths)
+- added ctor, dtor, op= for SomeRecStruct in anytest.cc to force instantiation
+  of SequenceIndTmpl methods
+
+version 0.9b4
+
+- fixed DynAny bugs and added DynAny test file provided by Philippe Merle
+- build static and shared libmico
+- _narrow() does now handle the case where base and derived class are
+  in separate .idl files
+- new IDL compiler option --query-ir-for-narrow, see test/idl/26/README for
+  details
+- implemented #pragma support
+- support for recursive sequences
+- changes to make sequences of arrays work
+- some cleanups for -Wall
+- (hopefully) fixed that transport.cc assertion
+- implemented Object::_hash()
+- implemented obsolete TypeCode parameter interface
+- improved error handling all over the place
+- made the various IOR profiles and decoders reusable by not hardcoding
+  the profile id into them
+- added code for handling unknown IOR profiles
+- check for IEEE compliant floating point types and only use the
+  floating point converters if non IEEE compliant floating point types are
+  detected
+- some speedups for Buffer, IIOPServer, IIOPProxy
+
+version 0.9b3
+
+- made TypeCode::member_label() return a copy of the Any and changed all the
+  places where it was used (only dynany_impl.cc).
+- fixed memory leaks in typecode.cc and dynany_impl.cc
+- fixed HP-UX idl compiler trouble
+- made Any::replace(tc, 0) work
+- fixed the repository id for pk_Object in ir_impl.cc
+- changed String_var to not replace (char *)0 by ""
+- fixes for systems without exception support
+- misc changes for -frepo
+- added omg.org prefix for exception repoid's
+- fixes for 64 bit systems
+- updated manual pages
+
+version 0.9b2
+
+- fixed bugs in the BOA to enable unshared servers to invoke methods on
+  on objects after deactivate_obj() was called on them.
+- updated docs and demo/account3 for the above change.
+- micod is now able to save and restore the contents of the implementation
+  repository (option --db <file> turns this on).
+- changed the way --no-exceptions is handled by the idl compiler: code for
+  exception classes is still generated but throwing them will result in
+  an error message and program abort.
+- added manual pages for nsadmin and nsd.
+
+version 0.9b1
+
+- added "activate" subcommand to imr to force activation of an implementation
+  (needed for servers that register with the naming service).
+- objects are now restored on demand (i.e., when invoked). before 0.9b1
+  all objects were restored at server startup.
+- bind() can now distinguish between objects of the same type by passing
+  it the BOA::ReferenceData of the requested object; see demo/account2 for
+  an example.
+- made Object::_get_interface() and Object::_is_a() work.
+- changed Object::_save_object() to return a Boolean. transient objects
+  should not implement this method, persistent object should make it return
+  TRUE. This requires changes in user code.
+- added support for DynAny; demo/dynany contains an example how to use it.
+- added naming service + admin tool (donated by Kai-Uwe Sattler); demo/naming
+  contains an example how to use it.
+- wrote a graphical interface repository browser; see tools/ir-browser.
+- added support for contexts.
+- added an example (demo/account4) for object migration.
+- mostly finished the interface repository.
+- fixed problems in the generated _narrow() code.
+- changed the way #include<foo.idl> is handled by the idl compiler:
+  no code is generated for included files, instead foo.h is included. that
+  means you have to run all #included files through the idl compiler by hand.
+  the advantage is that you can now build libraries of CORBA objects. 
+- lots of bugfixes and minor changes.
+- documentation updates. 
+
+version 0.8b1:
+
+- lots of bug fixes
+- support for oneway methods
+- support for arrays
+- support for unions
+- support for const expressions
+- support for using MICO in X11 applications (Xt and preliminary
+  support for Qt), see demo/x11 and demo/qtmico for examples
+- the BOA can now load CORBA objects into a client at runtime using
+  loadable modules, giving you maximum performance while still allowing
+  for runtime binding, see demo/shlib for an example
+- support for installing a user defined identifier (BOA::ReferenceData)
+  in object implementations, see demo/account2 for an example
+- MICO provides now four wrapper scripts mico-c++/mico-ld and
+  mico-shc++/mico-shld for compiling/linking mico applications and
+  loadable modules, respectively
+- lots of reorganizations to reduce the size of the library and
+  the generated binaries
+- speedups
+- made --enable-repo work (needed on HP-UX)
+- shared libs now work on HP-UX
+- documentation updates
+- docs are now available as
+  * ps,
+  * ps in booklet format,
+  * archive of html pages
+- updated licensing conditions: libs and generated code is now covered
+  by LGPL, everthing else by the GPL
+- added unshared-server example, see demo/account3
+
+version 0.7b1:
+
+- lots of bug fixes
+- support for exceptions
+- support for IDL type Object
+- major speedup for local communication
+- support for shared libraries
+- works now on 64 bit hardware (e.g., DEC alpha)
+- documentation updates
+- implemented some missing functionality:
+  * ORB methods for sending multiple requests
+  * ORB::create_operation_list()
+  * ServerRequest::op_def()
+

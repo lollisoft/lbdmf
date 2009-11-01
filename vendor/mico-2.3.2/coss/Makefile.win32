@@ -1,0 +1,158 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and\or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and\or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\MakeVars.win32
+
+SUBDIRS = naming events property streams trader relship
+
+STATIC_OBJS = \
+  naming\CosNaming.obj \
+  events\CosEventComm.obj events\CosEventChannelAdmin.obj \
+  property\PropertyService_impl.obj \
+  property\PropertyService.obj \
+  streams\stream.obj streams\stream_impl.obj\
+  trader\CosTrading.obj trader\CosTradingRepos.obj \
+  relship\CosObjectIdentity.obj relship\CosRelationships.obj \
+  relship\CosGraphs.obj \
+  relship\CosContainment.obj relship\CosReference.obj \
+  relship\CosGraphsExtension.obj \
+  relship\IdentifiableObject_impl.obj relship\Role_impl.obj \
+  relship\Relationship_impl.obj relship\RelationshipIterator_impl.obj \
+  relship\TraversalFactory_impl.obj relship\Traversal_impl.obj \
+  relship\TraversalCriteria_impl.obj relship\Node_impl.obj \
+  relship\GraphsRole_impl.obj relship\EdgeIterator_impl.obj \
+  relship\CosContainment_impl.obj relship\CosReference_impl.obj \
+  relship\GenericCriteriaFactory_impl.obj \
+  relship\RandomGenerator.obj relship\random.obj \
+  relship\RandomGenerator_impl.obj \
+  relship\InterfaceDefsHelper.obj relship\NamedRoleTypesHelper.obj
+
+
+
+SHARED_OBJS = $(STATIC_OBJS)
+
+DLL_OBJS = $(STATIC_OBJS)
+
+all: lib prg
+w95-all: w95-lib w95-prg
+
+#lib: sublib micocoss$(VERSION).dll
+#     copy micocoss$(VERSION).dll ..\win32-bin
+#     copy micocoss$(VERSION).lib ..\win32-bin\lib
+
+lib: sublib micocoss$(VERSION).lib
+     copy micocoss$(VERSION).lib ..\win32-bin\lib
+
+w95-lib: w95-sublib micocoss$(VERSION).lib
+     copy micocoss$(VERSION).lib ..\win32-bin\lib
+
+#prg: sublib micocoss$(VERSION).lib micocoss$(VERSION).dll subprg
+prg: sublib micocoss$(VERSION).lib subprg
+
+w95-prg: w95-sublib micocoss$(VERSION).lib w95-subprg
+
+sublib:
+	set path=$(SRCDIR)\win32-bin;%path%;
+	for %i in ( $(SUBDIRS) ); do \
+           cmd /c  "cd %i & $(MAKE) /nologo /f Makefile.win32  lib"
+
+w95-sublib:
+	set path=$(SRCDIR)\win32-bin;%path%;
+            cd naming
+            $(MAKE) /nologo /f Makefile.win32  lib
+            cd ..\events
+            $(MAKE) /nologo /f Makefile.win32  lib
+            cd ..\streams
+            $(MAKE) /nologo /f Makefile.win32  lib
+            cd ..\property
+            $(MAKE) /nologo /f Makefile.win32  lib
+            cd ..\trader
+            $(MAKE) /nologo /f Makefile.win32  lib
+            cd ..\relship
+            $(MAKE) /nologo /f Makefile.win32  lib
+	    cd ..
+
+
+subprg:
+	set path=$(SRCDIR)\win32-bin;%path%;
+	for %i in ( $(SUBDIRS) ); do \
+           cmd /c  "cd %i & $(MAKE) /nologo /f Makefile.win32  prg"
+
+w95-subprg:
+            cd naming
+            $(MAKE) /nologo /f Makefile.win32  prg
+            cd ..\events
+            $(MAKE) /nologo /f Makefile.win32  prg
+            cd ..\streams
+            $(MAKE) /nologo /f Makefile.win32  prg
+            cd ..\property
+            $(MAKE) /nologo /f Makefile.win32  prg
+            cd ..\trader
+            $(MAKE) /nologo /f Makefile.win32  prg
+            cd ..\relship
+            $(MAKE) /nologo /f Makefile.win32  prg
+	    cd ..
+
+
+#win32dll.def: $(SHARED_OBJS) ../orb/win32def.exe win32dll.dmp
+##	..\orb\win32def.exe "micocoss$(VERSION)" "MICO is CORBA" win32dll.dmp > win32dll.def
+
+#win32dll.dmp: $(SHARED_OBJS)
+#	dumpbin /symbols $(DLL_OBJS) > win32dll.dmp
+
+#micocoss$(VERSION).dll: $(SHARED_OBJS) win32dll.def
+#	copy ..\orb\mico$(VERSION).dll .
+#	$(LINK) $(LINKDLLFLAGS) $(DLL_OBJS) ../orb/mico$(VERSION).lib /out:micocoss$(VERSION).dll \
+#			/def:win32dll.def
+#	del mico$(VERSION).dll
+
+micocoss$(VERSION).lib: $(STATIC_OBJS) 
+	$(AR) $(ARFLAGS) $(STATIC_OBJS) /out:$@ 
+
+clean:
+	for %i in ( $(SUBDIRS) ) ; do cmd /c "cd %i& $(MAKE) /nologo /f Makefile.win32 clean"
+	del  *~ *.obj *.def *.dmp micocoss.exp micocoss$(VERSION).dll micocoss$(VERSION).lib \
+		 *.pdb 2> nul
+
+w95-clean:
+            cd naming
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..\events
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..\streams
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..\relship
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..\property
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..\trader
+            $(MAKE) /nologo /f Makefile.win32  clean
+            cd ..
+
+	del  *~ *.obj *.def *.dmp micocoss.exp micocoss$(VERSION).dll micocoss$(VERSION).lib \
+		 *.pdb 2> nul
+
+../orb/win32def.exe: ../orb/win32def.cc
+	cl /TP ../orb/win32def.cc /o../orb/win32def.exe
+	del /f win32def.exe
+
+

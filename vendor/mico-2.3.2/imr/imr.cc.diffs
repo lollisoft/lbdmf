@@ -1,0 +1,132 @@
+*** orig/imr.cc	Tue Dec 14 17:29:44 1999
+--- imr.cc	Tue Dec 14 16:55:36 1999
+***************
+*** 1795,1820 ****
+  
+  CORBA::ImplementationDef_skel::ImplementationDef_skel( const CORBA::BOA::ReferenceData &_id )
+  {
+!   CORBA::ImplementationDef_var _impl =
+!     _find_impl( "IDL:omg.org/CORBA/ImplementationDef:1.0", "ImplementationDef" );
+!   assert( !CORBA::is_nil( _impl ) );
+!   _create_ref( _id,
+!     0,
+!     _impl,
+!     "IDL:omg.org/CORBA/ImplementationDef:1.0" );
+!   register_dispatcher( new StaticInterfaceDispatcherWrapper<ImplementationDef_skel>( this ) );
+  }
+  
+  CORBA::ImplementationDef_skel::ImplementationDef_skel( CORBA::Object_ptr _obj )
+  {
+!   CORBA::ImplementationDef_var _impl =
+!     _find_impl( "IDL:omg.org/CORBA/ImplementationDef:1.0", "ImplementationDef" );
+!   assert( !CORBA::is_nil( _impl ) );
+!   _restore_ref( _obj,
+!     CORBA::BOA::ReferenceData(),
+!     0,
+!     _impl );
+!   register_dispatcher( new StaticInterfaceDispatcherWrapper<ImplementationDef_skel>( this ) );
+  }
+  
+  CORBA::ImplementationDef_skel::~ImplementationDef_skel()
+--- 1795,1829 ----
+  
+  CORBA::ImplementationDef_skel::ImplementationDef_skel( const CORBA::BOA::ReferenceData &_id )
+  {
+!   /*
+!    * this one is special: we cannot create an ImplementationDef for
+!    * ImplementationDef...
+!    * use a NIL ImplementationDef and pass in the repository id as 4th
+!    * argument to create_ref()
+!    */
+!   _create_ref (_id, CORBA::InterfaceDef::_nil(),
+! 	       CORBA::ImplementationDef::_nil(),
+! 	       "IDL:omg.org/CORBA/ImplementationDef:1.0");
+!   
+!   register_dispatcher (
+!  	new StaticInterfaceDispatcherWrapper<ImplementationDef_skel> (this));
+  }
+  
+  CORBA::ImplementationDef_skel::ImplementationDef_skel( CORBA::Object_ptr _obj )
+  {
+!   /*
+!    * this one is special: we cannot create an ImplementationDef for
+!    * ImplementationDef...
+!    * use a NIL ImplementationDef and pass in the repository id as 4th
+!    * argument to create_ref()
+!    */
+!   _restore_ref (_obj,
+! 		CORBA::BOA::ReferenceData(),
+! 		CORBA::InterfaceDef::_nil(),
+! 		CORBA::ImplementationDef::_nil());
+!  
+!   register_dispatcher (
+!  	new StaticInterfaceDispatcherWrapper<ImplementationDef_skel> (this));
+  }
+  
+  CORBA::ImplementationDef_skel::~ImplementationDef_skel()
+***************
+*** 1968,1993 ****
+  
+  CORBA::ImplRepository_skel::ImplRepository_skel( const CORBA::BOA::ReferenceData &_id )
+  {
+!   CORBA::ImplementationDef_var _impl =
+!     _find_impl( "IDL:omg.org/CORBA/ImplRepository:1.0", "ImplRepository" );
+!   assert( !CORBA::is_nil( _impl ) );
+!   _create_ref( _id,
+!     0,
+!     _impl,
+!     "IDL:omg.org/CORBA/ImplRepository:1.0" );
+!   register_dispatcher( new StaticInterfaceDispatcherWrapper<ImplRepository_skel>( this ) );
+  }
+  
+  CORBA::ImplRepository_skel::ImplRepository_skel( CORBA::Object_ptr _obj )
+  {
+!   CORBA::ImplementationDef_var _impl =
+!     _find_impl( "IDL:omg.org/CORBA/ImplRepository:1.0", "ImplRepository" );
+!   assert( !CORBA::is_nil( _impl ) );
+!   _restore_ref( _obj,
+!     CORBA::BOA::ReferenceData(),
+!     0,
+!     _impl );
+!   register_dispatcher( new StaticInterfaceDispatcherWrapper<ImplRepository_skel>( this ) );
+  }
+  
+  CORBA::ImplRepository_skel::~ImplRepository_skel()
+--- 1977,2013 ----
+  
+  CORBA::ImplRepository_skel::ImplRepository_skel( const CORBA::BOA::ReferenceData &_id )
+  {
+!   /*
+!    * this one is special: we can not create an ImplementationDef for
+!    * ImplRepository, because creating an ImplementationDef needs
+!    * a running ImplRespository...
+!    * use a NIL ImplementationDef and pass in the repository id as 4th
+!    * argument to create_ref()
+!    */
+!   _create_ref (_id, CORBA::InterfaceDef::_nil(),
+! 	       CORBA::ImplementationDef::_nil(),
+! 	       "IDL:omg.org/CORBA/ImplRepository:1.0");
+!   
+!   register_dispatcher (
+! 	   new StaticInterfaceDispatcherWrapper<ImplRepository_skel> (this));
+  }
+  
+  CORBA::ImplRepository_skel::ImplRepository_skel( CORBA::Object_ptr _obj )
+  {
+!   /*
+!    * this one is special: we can not create an ImplementationDef for
+!    * ImplRepository, because creating an ImplementationDef needs
+!    * a running ImplRespository...
+!    * use a NIL ImplementationDef and pass in the repository id as 4th
+!    * argument to create_ref()
+!    */
+!   _restore_ref (_obj,
+! 		CORBA::BOA::ReferenceData(),
+! 		CORBA::InterfaceDef::_nil(),
+! 		CORBA::ImplementationDef::_nil());
+!   
+!   register_dispatcher (
+! 	   new StaticInterfaceDispatcherWrapper<ImplRepository_skel> (this));
+  }
+  
+  CORBA::ImplRepository_skel::~ImplRepository_skel()

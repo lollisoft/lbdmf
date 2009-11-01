@@ -1,0 +1,27 @@
+#include <CORBA-SMALL.h>
+#include "account.h"
+
+int main( int argc, char *argv[] )
+{
+    // ORB initialization
+    CORBA::ORB_var orb = CORBA::ORB_init( argc, argv, "mico-local-orb" );
+    CORBA::BOA_var boa = orb->BOA_init (argc, argv, "mico-local-boa");
+
+    // client side
+    assert (argc == 2);
+    CORBA::Object_var obj = orb->bind ("IDL:Bank:1.0", argv[1]);
+    assert (!CORBA::is_nil (obj));
+    Bank_var bank = Bank::_narrow (obj);
+    Account_var client = bank->create ();
+
+    client->deposit( 100 );
+    client->deposit( 100 );
+    client->deposit( 100 );
+    client->deposit( 100 );
+    bank->deposit_all_accounts( 100 );
+    client->withdraw( 240 );
+    client->withdraw( 10 );
+    cout << "Balance is " << client->balance() << endl;
+
+    return 0;
+}

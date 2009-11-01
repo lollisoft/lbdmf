@@ -1,0 +1,147 @@
+
+
+Frequently Asked Questions About MICO
+
+
+Q:  During compilation my gcc 2.7.2.x dies with an
+    "internal compiler error". What is going wrong?
+A:  Some Linux distributions (noteably Suse Linux 5 and Red Hat)
+  shipped broken gcc binaries. You have to recompile gcc 2.7.2.x, or
+  better yet, install egcs 1.x or gcc 2.8.x.
+
+
+
+Q:  I have installed gcc 2.8 or egcs, and it still dies
+  with an "internal compiler error".
+A:  You are encouraged to submit a bug report to the appropriate
+  compiler's mailing list. In the meantime, disabling optimization
+  usually works.
+
+  
+     ./configure --disable-optimize
+  
+
+
+
+Q:  During compilation gcc dies with a "virtual memory
+    exhausted" error.  What can I do?
+
+A:  Add more swap space. Under Linux you can simply create a
+  swap file:
+  
+  
+     su
+     dd if=/dev/zero of=/tmp/swapfile bs=1024 count=64000
+     mkswap /tmp/swapfile
+     swapon /tmp/swapfile
+  
+  There are similar ways for other unix flavors. Ask your sys admin.
+  If for some reason you cannot add more swap space, try turning off
+  optimization by rerunning configure: ./configure
+    --disable-optimize.
+
+
+
+Q:  I use Cygnus CDK and gcc dies with a "virtual memory
+    exhausted" error. How to fix this?
+A:  There seems to be a bug Cygnus CDK beta19 that prevents gcc
+    from using swap space. The only workaround is to disable optimization
+    by rerunning configure: ./configure --disable-optimize.
+
+
+
+Q:  I configured for namspace support but MICO doesn't compile?
+A:  Earlier versions of gcc and egcs (up to gcc 2.8 and egcs 1.0)
+    have very limited namespace support. The tests configure does to
+    check for working namespaces pass, but MICO itself fails to compile.
+    Rerun configure with --disable-namespace.
+
+
+
+Q:  Why do MICO programs fail with a COMM_FAILURE
+    exception when running on `localhost'?
+A:  Because MICO requires using your `real' host name. Never use
+    `localhost' in an address specification.
+
+
+
+Q:  MICO programs crash. Why?
+  
+A:  There is no easy answer (what did you expect?). But often
+  this is caused by linking in wrong library versions. For example
+  people often install egcs as a second compiler in their system and
+  set PATH such that egcs will be picked. But that is not enough: You
+  have to make sure that egcs' C++ libraries (esp. libstdc++) will be
+  linked in. One way to make MICO use an egcs installed in
+  /usr/local/egcs is:
+
+  
+     export PATH=/usr/local/egcs/bin:$PATH
+     export CXXFLAGS=-L/usr/local/egcs/lib
+     export LD_LIBRARY_PATH=/usr/local/egcs/lib:$LD_LIBRARY_PATH
+     ./configure
+  
+  
+  If that is not the cause you probably found a bug in MICO. Write a
+  mail to mico@vsb.cs.uni-frankfurt.de containing a
+  description of the problem, along with
+
+  
+  - the MICO version (make sure it is the latest by visiting
+       http://www.mico.org/)
+  - the operating system you are running on
+  - the hardware you are running on
+  - the compiler type and version you are using
+  - a stack trace
+  - To get a stack trace run the offending program in the
+    debugger:
+    
+      gdb <prog>
+      (gdb) run <args>
+      program got signal ???
+      (gdb) backtrace
+    
+    and include the output in your mail.
+  
+
+
+
+Q:  After creating Implementation Repository entries with
+    imr create imr list does not show the newly created entries. What
+    is going wrong?
+  
+A:  You must tell imr where micod is running,
+  otherwise imr will create its own implementation repository which is
+  destroyed when imr exits. You tell imr the location of the
+  implementation repository by using the -ORBImplRepoAddr
+  option, e.g.:
+  
+     micod -ORBIIOPAddr inet:jade:4242 &
+     imr -ORBImplRepoAddr inet:jade:4242
+  
+
+
+
+Q:  I'm using egcs 1.x. When I turn off MiniSTL compliation
+  aborts with
+  
+     /usr/ccs/bin/as: error: can't compute value of an expression
+     involving an external symbol
+  
+
+A:  This is a bug in the assember. One solution is to enable
+  debugging:
+  
+     ./configure --enable-debug
+  
+  The preferred solution is to install GNU as (in the binutils
+  package). See also the discussion on the egcs FAQ (the
+  -fsquangle option).
+
+
+
+Q:  Why don't exceptions work on Linux?
+A:  They do. You are experiencing a bug in the
+  assembler. Upgrade to binutils-2.8.1.0.15 or newer and recompile
+  MICO.
+

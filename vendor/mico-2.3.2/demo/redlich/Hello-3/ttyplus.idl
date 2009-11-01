@@ -1,0 +1,14 @@
+// IDL
+
+#include "tty.idl"     // Definition von `tty' einschliessen
+
+// Bilden verbesserte Abstraktion eines Terminals, indem wir:
+//   (1) alte Abstraktion (d.h. obiges Interface `tty') erben,
+//   (2) neue Funktionalitaet hinzufuegen.
+
+interface ttyplus : tty    {
+    readonly attribute  long  lines;    // phys. Zeilenzaehler
+    attribute           short columns;  // max. Spaltenzahl
+    void                clrscr();       // Bildschirm loeschen
+};
+

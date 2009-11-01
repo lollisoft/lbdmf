@@ -1,0 +1,62 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and\or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and\or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\..\MakeVars.win32
+LDLIBS    = micocoss$(VERSION).lib mico$(VERSION).lib $(CONFLIBS)
+LDFLAGS  = /LIBPATH:.. /LIBPATH:..\..\orb $(LDFLAGS)
+CXXFLAGS = -I. -I..\..\include -I..\..\include\windows /DBUILD_MICO_DLL $(CXXFLAGS) $(EHFLAGS)
+
+# generated files
+
+STATIC_OBJS = PropertyService.obj PropertyService_impl.obj
+SHARED_OBJS = $(STATIC_OBJS)
+
+SRV_OBJS = main.obj ..\..\orb\util.obj
+
+# normal rules
+
+all: lib prg
+
+lib: $(SHARED_OBJS)
+
+prg: propertyd.exe
+	copy propertyd.exe ..\..\win32-bin
+
+propertyd.exe: $(SRV_OBJS) 
+	$(LINK)  $(LDFLAGS) $(SRV_OBJS) $(LDLIBS) /out:propertyd.exe
+
+
+PropertyService.h PropertyService.cc: ..\..\include\mico\PropertyService.idl
+	$(IDL) ..\..\include\mico\PropertyService.idl
+	copy PropertyService.h ..\..\include\mico
+
+# cleaning
+
+clean:
+	-del /f /q *.o *.a *~ *.rpo *.objid *.exe *.obj *.pdb 2> nul
+	-del /q PropertyService.h PropertyService.cc ..\..\include\mico\PropertyService.h propertyd.exe 2> nul
+
+install:
+	$(IDIRCMD) $(INSTDIR)\bin
+	$(IBINCMD) propertyd $(INSTDIR)\bin
+
+

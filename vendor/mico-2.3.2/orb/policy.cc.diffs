@@ -1,0 +1,95 @@
+*** ../../orb/orig/policy.h	Fri Jan  8 23:46:06 1999
+--- policy.h	Fri Jan  8 23:43:45 1999
+***************
+*** 36,46 ****
+  #if !defined(MICO_NO_TOPLEVEL_MODULES) || defined(MICO_MODULE_CORBA)
+  
+  
+! typedef CORBA::ULong PolicyType;
+  class Policy;
+! typedef Policy *Policy_ptr;
+  typedef Policy_ptr PolicyRef;
+! typedef ObjVar<Policy> Policy_var;
+  typedef Policy_var Policy_out;
+  
+  
+--- 30,40 ----
+  #if !defined(MICO_NO_TOPLEVEL_MODULES) || defined(MICO_MODULE_CORBA)
+  
+  
+! //typedef CORBA::ULong PolicyType;
+  class Policy;
+! //typedef Policy *Policy_ptr;
+  typedef Policy_ptr PolicyRef;
+! //typedef ObjVar<Policy> Policy_var;
+  typedef Policy_var Policy_out;
+  
+  
+***************
+*** 66,89 ****
+  };
+  
+  
+! typedef IfaceSequenceTmpl<Policy_var,Policy_ptr> PolicyList;
+  #ifdef _WINDOWS
+  static PolicyList _dummy_PolicyList;
+  #endif
+  typedef TSeqVar<IfaceSequenceTmpl<Policy_var,Policy_ptr> > PolicyList_var;
+  typedef PolicyList_var PolicyList_out;
+  
+! enum SetOverrideType {
+!   SET_OVERRIDE = 0,
+!   ADD_OVERIDE
+! };
+  
+  typedef SetOverrideType& SetOverrideType_out;
+  
+  class DomainManager;
+! typedef DomainManager *DomainManager_ptr;
+  typedef DomainManager_ptr DomainManagerRef;
+! typedef ObjVar<DomainManager> DomainManager_var;
+  typedef DomainManager_var DomainManager_out;
+  
+  
+--- 60,83 ----
+  };
+  
+  
+! //typedef IfaceSequenceTmpl<Policy_var,Policy_ptr> PolicyList;
+  #ifdef _WINDOWS
+  static PolicyList _dummy_PolicyList;
+  #endif
+  typedef TSeqVar<IfaceSequenceTmpl<Policy_var,Policy_ptr> > PolicyList_var;
+  typedef PolicyList_var PolicyList_out;
+  
+! //enum SetOverrideType {
+! //  SET_OVERRIDE = 0,
+! //  ADD_OVERIDE
+! //};
+  
+  typedef SetOverrideType& SetOverrideType_out;
+  
+  class DomainManager;
+! //typedef DomainManager *DomainManager_ptr;
+  typedef DomainManager_ptr DomainManagerRef;
+! //typedef ObjVar<DomainManager> DomainManager_var;
+  typedef DomainManager_var DomainManager_out;
+  
+  
+***************
+*** 138,144 ****
+  };
+  
+  
+! typedef IfaceSequenceTmpl<DomainManager_var,DomainManager_ptr> DomainManagerList;
+  #ifdef _WINDOWS
+  static DomainManagerList _dummy_DomainManagerList;
+  #endif
+--- 132,138 ----
+  };
+  
+  
+! //typedef IfaceSequenceTmpl<DomainManager_var,DomainManager_ptr> DomainManagerList;
+  #ifdef _WINDOWS
+  static DomainManagerList _dummy_DomainManagerList;
+  #endif

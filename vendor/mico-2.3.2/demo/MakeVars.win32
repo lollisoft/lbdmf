@@ -1,0 +1,21 @@
+
+!include $(DIR_PREFIX)..\..\MakeVars.win32
+
+
+IDLGEN	   = 
+
+CXXFLAGS = $(CXXFLAGS) /I. /I$(DIR_PREFIX)..\..\include /I$(DIR_PREFIX)..\..\include\windows
+#sander
+CCFLAGS = $(CCFLAGS) /I. /I$(DIR_PREFIX)..\..\include /I$(DIR_PREFIX)..\..\include\windows
+
+LDLIBS          = $(DIR_PREFIX)..\..\win32-bin\lib\mico$(VERSION).lib
+COS_CXXFLAGS =
+COS_LDLIBS   = $(DIR_PREFIX)..\..\win32-bin\lib\micocoss$(VERSION).lib
+COS_LDFLAGS  =
+COS_DEPS     =
+
+AUX_CXXFLAGS =
+AUX_LDLIBS   = $(DIR_PREFIX)..\..\win32-bin\lib\micoaux$(VERSION).lib
+AUX_LDFLAGS  =
+AUX_DEPS     =
+

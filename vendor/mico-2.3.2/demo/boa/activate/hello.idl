@@ -1,0 +1,5 @@
+
+interface Hello {
+    void exit();
+    void hello (in string s);
+};

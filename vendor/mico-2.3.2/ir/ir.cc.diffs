@@ -1,0 +1,95 @@
+*** ../../ir/orig/ir.h	Wed Apr 14 23:40:04 1999
+--- ir.h	Wed Apr 14 23:37:52 1999
+***************
+*** 143,149 ****
+  };
+  
+  class ValueDef;
+! typedef ValueDef *ValueDef_ptr;
+  typedef ValueDef_ptr ValueDefRef;
+  typedef ObjVar<ValueDef> ValueDef_var;
+  typedef ValueDef_var ValueDef_out;
+--- 143,149 ----
+  };
+  
+  class ValueDef;
+! //typedef ValueDef *ValueDef_ptr;
+  typedef ValueDef_ptr ValueDefRef;
+  typedef ObjVar<ValueDef> ValueDef_var;
+  typedef ValueDef_var ValueDef_out;
+***************
+*** 158,164 ****
+  MICO_EXPORT_VAR_DECL CORBA::TypeCodeConst _tc_ValueDefSeq;
+  
+  class InterfaceDef;
+! typedef InterfaceDef *InterfaceDef_ptr;
+  typedef InterfaceDef_ptr InterfaceDefRef;
+  typedef ObjVar<InterfaceDef> InterfaceDef_var;
+  typedef InterfaceDef_var InterfaceDef_out;
+--- 158,164 ----
+  MICO_EXPORT_VAR_DECL CORBA::TypeCodeConst _tc_ValueDefSeq;
+  
+  class InterfaceDef;
+! //typedef InterfaceDef *InterfaceDef_ptr;
+  typedef InterfaceDef_ptr InterfaceDefRef;
+  typedef ObjVar<InterfaceDef> InterfaceDef_var;
+  typedef InterfaceDef_var InterfaceDef_out;
+***************
+*** 322,328 ****
+      virtual UnionDef_ptr create_union( const char* id, const char* name, const char* version, IDLType_ptr discriminator_type, const UnionMemberSeq& members ) = 0;
+      virtual EnumDef_ptr create_enum( const char* id, const char* name, const char* version, const EnumMemberSeq& members ) = 0;
+      virtual AliasDef_ptr create_alias( const char* id, const char* name, const char* version, IDLType_ptr original_type ) = 0;
+!     virtual InterfaceDef_ptr create_interface( const char* id, const char* name, const char* version, const InterfaceDefSeq& base_interfaces, CORBA::Boolean is_abstract ) = 0;
+      virtual ValueDef_ptr create_value( const char* id, const char* name, const char* version, CORBA::Boolean is_custom, CORBA::Boolean is_abstract, ValueDef_ptr base_value, CORBA::Boolean is_truncatable, const ValueDefSeq& abstract_base_values, InterfaceDef_ptr supported_interface, const InitializerSeq& initializers ) = 0;
+      virtual ValueBoxDef_ptr create_value_box( const char* id, const char* name, const char* version, IDLType_ptr original_type_def ) = 0;
+      virtual NativeDef_ptr create_native( const char* id, const char* name, const char* version ) = 0;
+--- 322,332 ----
+      virtual UnionDef_ptr create_union( const char* id, const char* name, const char* version, IDLType_ptr discriminator_type, const UnionMemberSeq& members ) = 0;
+      virtual EnumDef_ptr create_enum( const char* id, const char* name, const char* version, const EnumMemberSeq& members ) = 0;
+      virtual AliasDef_ptr create_alias( const char* id, const char* name, const char* version, IDLType_ptr original_type ) = 0;
+!     virtual InterfaceDef_ptr create_interface( const char* id, const char* name, const char* version, const InterfaceDefSeq& base_interfaces, CORBA::Boolean is_abstract
+! #ifdef USE_CORBA_2_1
+!   = FALSE
+! #endif
+! 	) = 0;
+      virtual ValueDef_ptr create_value( const char* id, const char* name, const char* version, CORBA::Boolean is_custom, CORBA::Boolean is_abstract, ValueDef_ptr base_value, CORBA::Boolean is_truncatable, const ValueDefSeq& abstract_base_values, InterfaceDef_ptr supported_interface, const InitializerSeq& initializers ) = 0;
+      virtual ValueBoxDef_ptr create_value_box( const char* id, const char* name, const char* version, IDLType_ptr original_type_def ) = 0;
+      virtual NativeDef_ptr create_native( const char* id, const char* name, const char* version ) = 0;
+***************
+*** 358,364 ****
+      UnionDef_ptr create_union( const char* id, const char* name, const char* version, IDLType_ptr discriminator_type, const UnionMemberSeq& members );
+      EnumDef_ptr create_enum( const char* id, const char* name, const char* version, const EnumMemberSeq& members );
+      AliasDef_ptr create_alias( const char* id, const char* name, const char* version, IDLType_ptr original_type );
+!     InterfaceDef_ptr create_interface( const char* id, const char* name, const char* version, const InterfaceDefSeq& base_interfaces, CORBA::Boolean is_abstract );
+      ValueDef_ptr create_value( const char* id, const char* name, const char* version, CORBA::Boolean is_custom, CORBA::Boolean is_abstract, ValueDef_ptr base_value, CORBA::Boolean is_truncatable, const ValueDefSeq& abstract_base_values, InterfaceDef_ptr supported_interface, const InitializerSeq& initializers );
+      ValueBoxDef_ptr create_value_box( const char* id, const char* name, const char* version, IDLType_ptr original_type_def );
+      NativeDef_ptr create_native( const char* id, const char* name, const char* version );
+--- 362,372 ----
+      UnionDef_ptr create_union( const char* id, const char* name, const char* version, IDLType_ptr discriminator_type, const UnionMemberSeq& members );
+      EnumDef_ptr create_enum( const char* id, const char* name, const char* version, const EnumMemberSeq& members );
+      AliasDef_ptr create_alias( const char* id, const char* name, const char* version, IDLType_ptr original_type );
+!     InterfaceDef_ptr create_interface( const char* id, const char* name, const char* version, const InterfaceDefSeq& base_interfaces, CORBA::Boolean is_abstract
+! #ifdef USE_CORBA_2_1
+!   = FALSE
+! #endif
+! 	);
+      ValueDef_ptr create_value( const char* id, const char* name, const char* version, CORBA::Boolean is_custom, CORBA::Boolean is_abstract, ValueDef_ptr base_value, CORBA::Boolean is_truncatable, const ValueDefSeq& abstract_base_values, InterfaceDef_ptr supported_interface, const InitializerSeq& initializers );
+      ValueBoxDef_ptr create_value_box( const char* id, const char* name, const char* version, IDLType_ptr original_type_def );
+      NativeDef_ptr create_native( const char* id, const char* name, const char* version );
+***************
+*** 1704,1710 ****
+  MICO_EXPORT_VAR_DECL CORBA::TypeCodeConst _tc_ExcDescriptionSeq;
+  
+  class OperationDef;
+! typedef OperationDef *OperationDef_ptr;
+  typedef OperationDef_ptr OperationDefRef;
+  typedef ObjVar<OperationDef> OperationDef_var;
+  typedef OperationDef_var OperationDef_out;
+--- 1712,1718 ----
+  MICO_EXPORT_VAR_DECL CORBA::TypeCodeConst _tc_ExcDescriptionSeq;
+  
+  class OperationDef;
+! //typedef OperationDef *OperationDef_ptr;
+  typedef OperationDef_ptr OperationDefRef;
+  typedef ObjVar<OperationDef> OperationDef_var;
+  typedef OperationDef_var OperationDef_out;

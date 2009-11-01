@@ -1,0 +1,59 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and\or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and\or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+all:  client1.exe server1.exe client2.exe server2.exe
+
+DIR_PREFIX=..\ 
+!include ..\..\MakeVars.win32
+INSTALL_DIR     = activate
+INSTALL_SRCS    = Makefile client.cc server.cc hello.idl
+INSTALL_SCRIPTS = hello-shared hello-unshared hello-permethod
+
+client1.exe: hello.h hello.obj client1.obj 
+	$(LD)  $(LDFLAGS) hello.obj client1.obj $(LDLIBS) /out:$@
+
+server1.exe: hello.h hello.obj server1.obj 
+	$(LD)  $(LDFLAGS) hello.obj server1.obj $(LDLIBS) /out:$@
+
+client2.exe: hello.h hello.obj client2.obj 
+	$(LD)  $(LDFLAGS) hello.obj client2.obj $(LDLIBS) /out:$@
+
+server2.exe: hello.h hello.obj server2.obj 
+	$(LD)  $(LDFLAGS) hello.obj server2.obj $(LDLIBS) /out:$@
+
+hello.h hello.cc : hello.idl $(IDLGEN)
+	$(IDL) hello.idl
+
+client1.obj: client.cc
+	$(CXX) /c $(CXXFLAGS) $(CPPFLAGS)  client.cc /Foclient1.obj
+
+client2.obj: client.cc
+	$(CXX) /c /DPERMETHOD $(CXXFLAGS) $(CPPFLAGS)  client.cc /Foclient2.obj
+
+server1.obj: server.cc
+	$(CXX) /c /DSHARED $(CXXFLAGS) $(CPPFLAGS)  server.cc /Foserver1.obj
+
+server2.obj: server.cc
+	$(CXX) /c $(CXXFLAGS) $(CPPFLAGS) server.cc /Foserver2.obj
+
+clean:
+	del /f /q 2> nul  hello.cc hello.h *.o core client?.exe server?.exe *~ .depend *.exe *.obj *.pdb

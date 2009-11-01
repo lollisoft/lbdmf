@@ -1,0 +1,10 @@
+13. August 	Added pragma prefix to idl file
+		Fixed error in USESECURE
+		Fixed error with INACCURACY in TimeService_UTO.cc
+		Changed doubled number in testUTO.tcl
+
+5. August 	Wrote short english explanation in LaTeX
+
+4. August	Solved problem with NameService
+
+22. July	First Release

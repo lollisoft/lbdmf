@@ -1,0 +1,7 @@
+struct SomeExcept {
+  string msg;
+};
+
+interface SomeIface {
+  void f ();
+};

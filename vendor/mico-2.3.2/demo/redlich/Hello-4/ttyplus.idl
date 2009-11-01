@@ -1,0 +1,11 @@
+// IDL
+#include "tty.idl"
+
+module Hello4   {
+    interface ttyplus : Hello3::tty    {
+        readonly attribute  long  lines;
+        attribute           short columns;
+        void                clrscr();
+    };
+};
+

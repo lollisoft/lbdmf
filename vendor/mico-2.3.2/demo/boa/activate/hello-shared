@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH=../../../daemon:../../../coss/naming:../../../imr:../../../ir:$PATH
+MICORC=/dev/null
+export MICORC
+
+ADDR=inet:`uname -n`:12456
+
+# run BOA daemon
+micod -ORBIIOPAddr $ADDR --forward &
+micod_pid=$!
+sleep 1
+
+trap "kill $micod_pid" 0
+
+# register server
+imr create Hello shared "`pwd`/server1" IDL:Hello:1.0 \
+  -ORBImplRepoAddr $ADDR
+
+# run client
+./client1 $ADDR
+# wait a bit to make sure we do not bind to the old object
+sleep 1
+./client1 $ADDR
+sleep 3

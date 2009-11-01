@@ -1,0 +1,44 @@
+#
+# MICO --- a CORBA 2.0 implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\MakeVars.win32
+
+LINK_BUG_OBJS=..\orb\util.obj ..\orb\typecode.obj
+
+CXXFLAGS = $(CXXFLAGS) /I. /I..\include /I..\include\windows
+
+SRCS = mediator.cc  poamediator.cc main.cc
+
+
+STATIC_OBJS = $(SRCS:.cc=.obj)
+
+
+prg: micod.exe
+	copy micod.exe ..\win32-bin
+
+micod.exe: $(STATIC_OBJS)
+	$(LINK) $(LINKFLAGS) /subsystem:console /out:micod.exe $(STATIC_OBJS) \
+		$(LINK_BUG_OBJS) ..\orb\mico$(VERSION).lib
+
+clean:
+	del /f $(STATIC_OBJS) micod.exe *.pdb *.pch *~ 2> nul
+

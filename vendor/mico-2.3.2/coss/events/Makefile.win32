@@ -1,0 +1,74 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and\or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and\or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\..\MakeVars.win32
+LDLIBS    = micocoss$(VERSION).lib mico$(VERSION).lib
+LDFLAGS   = /LIBPATH:..  /LIBPATH:..\..\orb $(LDFLAGS)
+CXXFLAGS  = /I. /I..\..\include /I..\..\include\windows $(CXXFLAGS) $(EHFLAGS)
+IDLFLAGS  = -I..\..\include --relative-paths
+
+# generated files
+
+SRV_OBJS=CosEvent_impl.obj main.obj ..\..\orb\util.obj 
+
+# normal rules
+
+all: lib prg
+
+lib:  CosEventComm.obj CosEventChannelAdmin.obj
+
+prg: eventd.exe
+	copy eventd.exe ..\..\win32-bin
+
+eventd.exe: $(SRV_OBJS) 
+	$(LINK)  $(LDFLAGS) $(SRV_OBJS) $(LDLIBS) /out:eventd.exe
+	copy eventd.exe ..\..\win32-bin
+
+CosEventComm.h CosEventComm.cc: ..\..\include\mico\CosEventComm.idl 
+	$(IDL) $(IDLFLAGS) ..\..\include\mico\CosEventComm.idl
+	copy CosEventComm.h ..\..\include\mico
+
+
+CosEventChannelAdmin.h CosEventChannelAdmin.cc: \
+		..\..\include\mico\CosEventChannelAdmin.idl
+	$(IDL) $(IDLFLAGS) \
+		..\..\include\mico\CosEventChannelAdmin.idl 
+	copy CosEventChannelAdmin.h ..\..\include\mico
+
+# cleaning
+
+clean:
+	-$(RM) *.o *.a *~ *.rpo *.objid eventd *.exe *.obj *.pdb 2> nul
+	-$(RM) .depend TAGS core nohup.out 2> nul
+	-$(RM) CosEventChannelAdmin.h CosEventChannelAdmin.cc  2> nul
+	-$(RM) ..\..\include\mico\CosEventChannelAdmin.h 2> nul
+	-$(RM) CosEventComm.h CosEventComm.cc  2> nul
+	-$(RM) ..\..\include\mico\CosEventComm.h 2> nul
+
+install:
+	$(IDIRCMD) $(INSTDIR)\bin
+	$(IBINCMD) eventd $(INSTDIR)\bin
+
+
+.depend :
+	echo '# Module dependencies' > .depend
+	$(MKDEPEND) $(CXXFLAGS) *.cc >> .depend
