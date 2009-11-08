@@ -42,11 +42,9 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
+	$(MKMK) $(TARGET) $(_MODULE) .,include,include/tv,include/cl,include/win32 \
 	classes/*.cc \
 	classes/win32/*.cc \
 	classes/wingr/*.cc \
@@ -74,11 +72,9 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
+	$(MKMK) $(TARGET) $(_MODULE) .,include,include/tv,include/cl,include/win32 \
 	*.cpp >> makefile
 endif
 
@@ -93,9 +89,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) exe $(_MODULE) include,include/tv,include/cl,include/win32 \
+	$(MKMK) exe $(_MODULE) .,include,include/tv,include/cl,include/win32 \
 	*.cc *.cpp \
 	>> makefile
 endif
@@ -110,9 +104,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) elf $(_MODULE) include,include/tv,include/cl,include/win32 \
+	$(MKMK) elf $(_MODULE) .,include,include/tv,include/cl,include/win32 \
 	*.cc \
 	>> makefile
 endif
@@ -129,9 +121,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp >> makefile
 
 endif
 
@@ -147,9 +137,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile.yacc
 	@echo all: $(_MODULE).output >> makefile.yacc
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir $(CUSTOM_FILES) >> makefile.yacc
+	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces $(CUSTOM_FILES) >> makefile.yacc
 
 endif
 
@@ -165,9 +153,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile.lex
 	@echo all: $(_MODULE).yy.c >> makefile.lex
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir $(CUSTOM_FILES) >> makefile.lex
+	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces $(CUSTOM_FILES) >> makefile.lex
 
 endif
 
@@ -183,9 +169,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp >> makefile
 
 endif
 
@@ -200,9 +184,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp >> makefile
 
 endif
 
@@ -217,9 +199,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp >> makefile
 
 endif
 
@@ -235,9 +215,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -253,9 +231,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -271,9 +247,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) dll $(_MODULE) ../dosdir ../libexslt/*.c *.c *.cpp >> makefile
+	@$(MKMK) dll $(_MODULE) .,../dosdir,../../include,../../interfaces ../libexslt/*.c *.c *.cpp >> makefile
 
 endif
 
@@ -291,9 +265,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) . *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) .,../../include,../../interfaces *.cpp >> makefile
 endif
 
 ifeq ($(TARGET), elf)
@@ -309,9 +281,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) . *.c *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) .,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -326,9 +296,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp *.c $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp *.c $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -343,9 +311,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir,../../include,../../interfaces  *.cpp >> makefile
 
 endif
 
@@ -360,9 +326,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) ../dosdir,../../include,../../interfaces *.cpp >> makefile
 
 endif
 
@@ -377,9 +341,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -394,9 +356,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -411,9 +371,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -429,9 +387,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../h *.cpp *.c $(CUSTOM_FILES)  >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../h,../../include,../../interfaces *.cpp *.c $(CUSTOM_FILES)  >> makefile
 
 endif
 
@@ -447,9 +403,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) exe $(_MODULE) ../h c/*.cpp c/*.c >> makefile
+	@$(MKMK) exe $(_MODULE) .,../h,../../include,../../interfaces c/*.cpp c/*.c >> makefile
 
 endif
 

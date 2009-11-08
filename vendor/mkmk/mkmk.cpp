@@ -12,11 +12,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.104 $
+ * $Revision: 1.105 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.104 2009/10/24 21:01:35 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.105 2009/11/08 11:49:32 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.105  2009/11/08 11:49:32  lollisoft
+ * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
+ *
+ * Corrected mkmk to find also include files in <> brackets.
+ *
+ * Corrected make system to work correctly with the new mkmk version. There may be a performance problem when compiling tvision code, thus that target is deactivated.
+ *
+ * Fixed some warnings.
+ *
  * Revision 1.104  2009/10/24 21:01:35  lollisoft
  * Added new partial stuff to handle idl files.
  *
@@ -656,7 +665,9 @@ void TIncludeParser::AddInclude(char *IncName)
         if (f != NULL) {
                 strcpy(realfile, IncName);
                 fclose(f);
-        } else { fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
+        } else {
+			//fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName);
+		}
   }
 /*...e*/
 
@@ -722,7 +733,7 @@ void TIncludeParser::ParseCLine(char *s)
         *p2=0;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-        printf("Add the include '%s' for line '%s'\n", p1, s);
+        fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
 #endif
 /*...e*/
 /// \todo Find a better way to skip wrong include detections.
@@ -736,6 +747,30 @@ void TIncludeParser::ParseCLine(char *s)
 /*...e*/
       }
     }
+    p1=strchr(t,'<');
+    if (p1)
+	  {
+		  p1++;
+		  p2=strchr(p1,'>');
+		  if (p2)
+		  {
+			  *p2=0;
+			  /*...sVERBOSE:0:*/
+#ifdef VERBOSE
+			  fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
+#endif
+			  /*...e*/
+			  /// \todo Find a better way to skip wrong include detections.
+			  if (strcmp(p1, "") != 0) {
+				  AddInclude(p1);
+			  }
+			  /*...sVERBOSE:0:*/
+#ifdef VERBOSE
+			  printf("Added\n");
+#endif
+			  /*...e*/
+		  }
+	  }
   }
 }
 /*...e*/
@@ -824,10 +859,11 @@ bool TIncludeParser::Parse(char *FileName, bool CPP)
 
   if (!BasicParse(FileName))
   {
-    fprintf(stderr,"TIncludeParser::Parser() WARNING: %s could not be opened\n",FileName);
+    //fprintf(stderr,"TIncludeParser::Parser() WARNING: %s could not be opened\n",FileName);
     return false;
+  } else {
+	  return true;
   }
-  else return true;
 }
 /*...e*/
 /*...sbool TIncludeParser\58\\58\BasicParse\40\char \42\FileName\41\:0:*/
@@ -1772,7 +1808,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.104 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.105 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1997,8 +2033,8 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 sprintf(Line, "%s.output: %s",ObjName,Name);
         }
   } else {
-        ObjExt(Name,ObjName,sizeof(ObjName));
-        sprintf(Line, "%s: makefile %s",ObjName,Name);
+      ObjExt(Name,ObjName,sizeof(ObjName));
+      sprintf(Line, "%s: makefile %s",ObjName,Name);
   }
 /*  
   fprintf(stderr, "Name is       '%s'.\n", Name);

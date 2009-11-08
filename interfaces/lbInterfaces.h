@@ -754,6 +754,8 @@ class lb_I_DBReportProperties;
 class lb_I_DirLocation;
 class lb_I_Action_Parameters;
 class lb_I_ActionStep_Parameters;
+class lb_I_TestFixture;
+class lb_I_TestMethod;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -776,6 +778,9 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 #ifdef TVISION
 typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 #endif
+
+typedef void (LB_STDCALL lb_I_TestFixture::*TestMethod)();
+
 /*...e*/
 
 /*
@@ -1008,6 +1013,15 @@ public:
 //friend class lb_I_gcManager;
 };
 /*...e*/
+
+class lb_I_TestMethod : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL setMethod(lb_I_TestFixture* TestMethodInstance, TestMethod methodFn) = 0;
+	virtual void LB_STDCALL call() = 0;
+	virtual TestMethod LB_STDCALL getMethod() = 0;
+	virtual lb_I_TestFixture* getTestInstance() = 0;
+
+};
 
 
 /*...sAutoPointer:0:*/
@@ -1953,6 +1967,113 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 }
 /*...e*/
 
+
+#define DECLARE_TESTFIXTURE() \
+void LB_STDCALL addTestMethod(TestMethod methodFn, char* _testname); \
+void LB_STDCALL registerTests(); \
+void LB_STDCALL setUp(); \
+void LB_STDCALL tearDown(); \
+void LB_STDCALL runTest(); \
+private: \
+UAP(lb_I_Container, TestMethods)
+
+#define BEGIN_IMPLEMENT_TESTFIXTURE(TF) \
+class TestMethod##TF : public lb_I_TestMethod { \
+public: \
+	TestMethod##TF(); \
+	virtual ~TestMethod##TF(); \
+	void LB_STDCALL setMethod(lb_I_TestFixture* TestMethodInstance, TestMethod methodFn); \
+	TestMethod LB_STDCALL getMethod(); \
+	lb_I_TestFixture* getTestInstance(); \
+	void LB_STDCALL call(); \
+\
+	DECLARE_LB_UNKNOWN() \
+\
+protected: \
+	lb_I_TestFixture* instance; \
+	TestMethod m_testmethod; \
+}; \
+\
+BEGIN_IMPLEMENT_LB_UNKNOWN(TestMethod##TF) \
+	ADD_INTERFACE(lb_I_TestMethod) \
+END_IMPLEMENT_LB_UNKNOWN() \
+lbErrCodes LB_STDCALL TestMethod##TF::setData(lb_I_Unknown* uk) { \
+	lbErrCodes err = ERR_NONE; \
+	UAP(lb_I_TestMethod, test) \
+	QI(uk, lb_I_TestMethod, test) \
+	if (test != NULL) { \
+		m_testmethod = test->getMethod(); \
+		instance = test->getTestInstance(); \
+	} \
+	return ERR_NOT_IMPLEMENTED; \
+} \
+TestMethod##TF::TestMethod##TF() { \
+	instance = NULL; \
+	ref = STARTREF; \
+} \
+TestMethod##TF::~TestMethod##TF() { \
+\
+} \
+TestMethod LB_STDCALL TestMethod##TF::getMethod() { \
+	return m_testmethod; \
+} \
+lb_I_TestFixture* TestMethod##TF::getTestInstance() { \
+	return instance; \
+} \
+void TestMethod##TF::setMethod(lb_I_TestFixture* TestMethodInstance, TestMethod methodFn) { \
+	instance = TestMethodInstance; \
+	m_testmethod = methodFn; \
+} \
+void TestMethod##TF::call() { \
+	if (instance) (instance->*(TestMethod) m_testmethod) (); \
+} \
+\
+void LB_STDCALL TF::addTestMethod(TestMethod methodFn, char* _testname) { \
+	lbErrCodes err = ERR_NONE; \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, testname) \
+	UAP(lb_I_KeyBase, tmkey) \
+	UAP(lb_I_Unknown, ukMethod) \
+	*testname = _testname; \
+	QI(testname, lb_I_KeyBase, tmkey) \
+	UAP(lb_I_TestMethod, m) \
+	TestMethod##TF* method = new TestMethod##TF(); \
+	method->setModuleManager(getModuleInstance(), __FILE__, __LINE__); \
+	QI(method, lb_I_TestMethod, m) \
+	m->setMethod(this, methodFn); \
+	QI(m, lb_I_Unknown, ukMethod) \
+	TestMethods->insert(&ukMethod, &tmkey); \
+} \
+void LB_STDCALL TF::runTest() { \
+	lbErrCodes err = ERR_NONE; \
+	TestMethods->finishIteration(); \
+	while (TestMethods->hasMoreElements() == 1) { \
+		UAP(lb_I_TestMethod, m) \
+		UAP(lb_I_Unknown, uk) \
+		uk = TestMethods->nextElement(); \
+		QI(uk, lb_I_TestMethod, m) \
+		if (m != NULL) { \
+			m->call(); \
+		} \
+	} \
+} \
+void LB_STDCALL TF::registerTests() { \
+	if (TestMethods == NULL) { \
+		REQUEST(getModuleInstance(), lb_I_Container, TestMethods) \
+	} else { \
+		TestMethods--; \
+		TestMethods.resetPtr(); \
+		REQUEST(getModuleInstance(), lb_I_Container, TestMethods) \
+	}
+
+
+
+#define END_IMPLEMENT_TESTFIXTURE() }
+
+#define ADD_TEST(TestName) addTestMethod((TestMethod) &lbTest::TestName, #TestName);
+
+#define TEST_CASE(testcase) void LB_STDCALL testcase();
+
+
 /*...sclass lb_I_Reference:0:*/
 /**
  * \brief This should be a class to be used as a 'smart' pointer.
@@ -2701,7 +2822,7 @@ public:
 
 	/** Add a menubar name after.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL) = 0;
 
 	/** Add a menu.
 	 */
@@ -4364,6 +4485,22 @@ public:
 
 	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
 	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
+};
+
+class lb_I_UnitTestModul : public lb_I_PluginModule {
+public:
+	virtual char* LB_STDCALL getTestFixture() = 0;
+	
+	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
+	//virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
+};
+
+class lb_I_TestFixture : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL registerTests() = 0;
+	virtual void LB_STDCALL setUp() = 0;
+	virtual void LB_STDCALL tearDown() = 0;
+	virtual void LB_STDCALL runTest() = 0;
 };
 
 /** \brief An attempt to implement a proxy class for other interfaces.

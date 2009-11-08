@@ -31,10 +31,19 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.1 $
  * $Name:  $
- * $Id: lbkey.h,v 1.22 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lbkey.h,v 1.1 2009/11/08 11:49:32 lollisoft Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.1  2009/11/08 11:49:32  lollisoft
+ * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
+ *
+ * Corrected mkmk to find also include files in <> brackets.
+ *
+ * Corrected make system to work correctly with the new mkmk version. There may be a performance problem when compiling tvision code, thus that target is deactivated.
+ *
+ * Fixed some warnings.
+ *
  * Revision 1.22  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *

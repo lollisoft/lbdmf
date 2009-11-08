@@ -2580,8 +2580,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
-	#define TAB_LEN 100
-	#define COL_LEN 100
+	// Defined earlyer
+	//#define TAB_LEN 100
+	//#define COL_LEN 100
 	lbErrCodes err = ERR_NONE;
 	void* that = this;
 

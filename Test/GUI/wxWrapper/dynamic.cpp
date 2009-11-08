@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.166 2009/09/03 17:32:43 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.167 2009/11/08 11:49:32 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,20 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.166 $
+ * $Revision: 1.167 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.166 2009/09/03 17:32:43 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.167 2009/11/08 11:49:32 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.167  2009/11/08 11:49:32  lollisoft
+ * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
+ *
+ * Corrected mkmk to find also include files in <> brackets.
+ *
+ * Corrected make system to work correctly with the new mkmk version. There may be a performance problem when compiling tvision code, thus that target is deactivated.
+ *
+ * Fixed some warnings.
+ *
  * Revision 1.166  2009/09/03 17:32:43  lollisoft
  * Corrected exit behaviour when clicking on window close button.
  *
@@ -1952,12 +1961,13 @@ public wxApp
 	 */
 	MyApp() {
 #ifdef LB_I_EXTENTIONS
-	  wxGUI = NULL;
-	  metaApp = NULL;
+		wxGUI = NULL;
+		metaApp = NULL;
 #endif
-	 panel = NULL;
+		panel = NULL;
+		frame = NULL;
 	}
-
+	
 	/**
 	 * Deletes the lb_I_GUI instance used for independent GUI component handlers.
 	 */
@@ -1975,6 +1985,9 @@ public wxApp
 	 */
     bool OnInit(void);
 
+	void FlushMenubarQueue();
+	void FlushMenuentryQueue();
+	
     int  OnExit();
 
 #ifdef LB_I_EXTENTIONS
@@ -2143,6 +2156,11 @@ protected:
         MyFrame *frame;
         #endif
         wxPanel *panel;
+	
+	// If the frame is not yet created, queue any menu creation events.
+	UAP(lb_I_Container, menubarQueue)
+	UAP(lb_I_Container, menuentryQueue)
+
 };
 /*...e*/
 
@@ -2210,6 +2228,32 @@ int MyApp::OnExit() {
 	return 0;
 }
 /*...e*/
+
+void MyApp::FlushMenubarQueue() {
+	if (menubarQueue != NULL) {
+		while (menubarQueue->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			uk = menubarQueue->nextElement();
+			addMenuBar(*&uk);
+		}
+		menubarQueue--;
+		menubarQueue = NULL;
+	}
+}
+
+void MyApp::FlushMenuentryQueue() {
+	if (menuentryQueue != NULL) {
+		while (menuentryQueue->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			uk = menuentryQueue->nextElement();
+			addMenuEntry(*&uk);
+		}
+		menuentryQueue--;
+		menuentryQueue = NULL;
+	}
+}
+
+
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
 bool MyApp::OnInit(void)
@@ -2268,13 +2312,27 @@ bool MyApp::OnInit(void)
 	ev_manager->registerEvent("setXRCFile", _setXRCFile);
 	ev_manager->registerEvent("askForDirectory", _askForDirectory);
 
+	/* Initialize early menu creation queues in case the frame has not been created yet.
+	 * The menu handlers only works after registered handler functions as of call to
+	 * registerEventHandler(*&disp);
+	 *
+	 * But ensure that before.
+	 */
+	if (menubarQueue == NULL) {
+		REQUEST(mm.getPtr(), lb_I_Container, menubarQueue)
+	}
+	
+	if (menuentryQueue == NULL) {
+		REQUEST(mm.getPtr(), lb_I_Container, menuentryQueue)
+	}
+
 	registerEventHandler(*&disp);
 
     /// \todo Find leak.
     metaApp++;
 
     lbErrCodes err = ERR_NONE;
-
+	
     if (wxGUI == NULL) {
         wxGUI = new lb_wxGUI();
         wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
@@ -2283,9 +2341,6 @@ bool MyApp::OnInit(void)
     if (metaApp != NULL) {
         metaApp->setGUI(wxGUI);
 	}
-
-	// Preload to enable flag modifications in plugins. Such as loading from database instead file
-	metaApp->load();
 
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();
@@ -2307,6 +2362,9 @@ bool MyApp::OnInit(void)
 
     frame->Centre();
 
+	// Preload to enable flag modifications in plugins. Such as loading from database instead file
+	metaApp->load();
+
     SetTopWindow(frame);
 
     PM->initialize();
@@ -2316,7 +2374,7 @@ bool MyApp::OnInit(void)
 	 * installer asks the user something.
 	 */
 	PM->runInstallers();
-
+/*
 	if (metaApp->usingSystemDatabaseBackend()) {
 		_LOG << "Have system database backend switch: true" LOG_
 	} else {
@@ -2328,10 +2386,10 @@ bool MyApp::OnInit(void)
 	} else {
 		_LOG << "Have application database backend switch: false" LOG_
 	}
-	
+ 
 	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
 	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
-	
+*/	
     wxImage::AddHandler(new wxPNGHandler);
 
     bool no_splash = false;
@@ -2402,6 +2460,9 @@ bool MyApp::OnInit(void)
         }
     }
 
+	FlushMenubarQueue();
+	FlushMenuentryQueue();
+	
     frame->Show(TRUE);
 
 #ifdef bla //LINUX
@@ -2622,29 +2683,43 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("name");
-	param->getUAPString(*&parameter, *&name);
+	if (frame == NULL) {
+		UAP(lb_I_KeyBase, mbarkey)
 
-	if (param->Count() > 1) {
-		parameter->setData("after");
-		param->getUAPString(*&parameter, *&after);
-
-		wxMenu *menu = new wxMenu;
-
-		wxMenuBar* mbar = frame->getMenuBar();
-
-		int pos = 0;
-
-		if (mbar) {
-			wxString m = wxString(after->getData());
-			pos = mbar->FindMenu(m);
-			mbar->Insert(pos+1, menu, name->getData());
+		parameter->setData("name");
+		param->getUAPString(*&parameter, *&name);
+		QI(name, lb_I_KeyBase, mbarkey)
+		
+		if (menubarQueue->exists(&mbarkey) != 0) {
+			menubarQueue->remove(&mbarkey);
 		}
+		
+		menubarQueue->insert(&uk, &mbarkey);
 	} else {
-		wxMenu *menu = new wxMenu;
-
-		wxMenuBar* mbar = frame->getMenuBar();
-		if (mbar) mbar->Append(menu, name->getData());
+		parameter->setData("name");
+		param->getUAPString(*&parameter, *&name);
+		
+		if (param->Count() > 1) {
+			parameter->setData("after");
+			param->getUAPString(*&parameter, *&after);
+			
+			wxMenu *menu = new wxMenu;
+			
+			wxMenuBar* mbar = frame->getMenuBar();
+			
+			int pos = 0;
+			
+			if (mbar) {
+				wxString m = wxString(after->getData());
+				pos = mbar->FindMenu(m);
+				mbar->Insert(pos+1, menu, name->getData());
+			}
+		} else {
+			wxMenu *menu = new wxMenu;
+			
+			wxMenuBar* mbar = frame->getMenuBar();
+			if (mbar) mbar->Append(menu, name->getData());
+		}
 	}
 
 	return err;
@@ -2675,66 +2750,91 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("menubar");
-	param->getUAPString(*&parameter, *&menubar);
-	parameter->setData("menuname");
-	param->getUAPString(*&parameter, *&menuname);
-	parameter->setData("handlername");
-	param->getUAPString(*&parameter, *&handlername);
+	if (frame == NULL) {
+		UAP_REQUEST(getModuleManager(), lb_I_String, key)
+		UAP(lb_I_KeyBase, menuentrykey)
+		
+		parameter->setData("menubar");
+		param->getUAPString(*&parameter, *&menubar);
+		parameter->setData("menuname");
+		param->getUAPString(*&parameter, *&menuname);
+		parameter->setData("handlername");
+		param->getUAPString(*&parameter, *&handlername);
 
-	if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL) || (handlername->charrep() == NULL)) {
-		_LOG << "Error: There are some parameters with NULL pointers!" LOG_
-		if ((menubar->charrep() == NULL)) {
-			*menubar = "Unknown menubar";
+		*key = *&menubar;
+		*key += *&menuname;
+		*key += *&handlername;
+		
+		QI(key, lb_I_KeyBase, menuentrykey)
+		
+		if (menubarQueue->exists(&menuentrykey) != 0) {
+			menubarQueue->remove(&menuentrykey);
 		}
-		if ((menuname->charrep() == NULL)) {
-			*menuname = "Unknown menuname";
+		
+		menubarQueue->insert(&uk, &menuentrykey);
+	} else {
+		parameter->setData("menubar");
+		param->getUAPString(*&parameter, *&menubar);
+		parameter->setData("menuname");
+		param->getUAPString(*&parameter, *&menuname);
+		parameter->setData("handlername");
+		param->getUAPString(*&parameter, *&handlername);
+		
+		if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL) || (handlername->charrep() == NULL)) {
+			_LOG << "Error: There are some parameters with NULL pointers!" LOG_
+			if ((menubar->charrep() == NULL)) {
+				*menubar = "Unknown menubar";
+			}
+			if ((menuname->charrep() == NULL)) {
+				*menuname = "Unknown menuname";
+			}
+			if ((handlername->charrep() == NULL)) {
+				*handlername = "Unknown handlername";
+			}
 		}
-		if ((handlername->charrep() == NULL)) {
-			*handlername = "Unknown handlername";
+		
+		_LOG << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
+		
+		
+		if (param->Count() > 3) {
+			parameter->setData("checkable");
+			param->getUAPString(*&parameter, *&checkable);
 		}
-	}
-
-	_LOG << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
-
-
-	if (param->Count() > 3) {
-		parameter->setData("checkable");
-		param->getUAPString(*&parameter, *&checkable);
-	}
-
-	int EvNr = 0;
-
-	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
-		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
-
-		return ERR_EVENT_NOTREGISTERED;
-	}
-
-	wxMenuBar* mbar = frame->getMenuBar();
-
-	int index;
-
-	index = mbar->FindMenu(wxString(menubar->getData()));
-
-	if (index == wxNOT_FOUND) {
-		_CL_LOG << "ERROR: Programming error. Forgotten to create the required menu. Do it here." LOG_
-		wxMenu *menu = new wxMenu;
-		mbar->Append(menu, menubar->getData());
+		
+		int EvNr = 0;
+		
+		if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+			_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+			
+			return ERR_EVENT_NOTREGISTERED;
+		}
+		
+		wxMenuBar* mbar = frame->getMenuBar();
+		
+		int index;
+		
 		index = mbar->FindMenu(wxString(menubar->getData()));
+		
+		if (index == wxNOT_FOUND) {
+			_CL_LOG << "ERROR: Programming error. Forgotten to create the required menu. Do it here." LOG_
+			wxMenu *menu = new wxMenu;
+			mbar->Append(menu, menubar->getData());
+			index = mbar->FindMenu(wxString(menubar->getData()));
+		}
+		
+		wxMenu* menu = mbar->GetMenu(index);
+		
+		
+		if ((param->Count() > 3) && (strcmp(checkable->charrep(), "yes") == 0))
+			menu->AppendCheckItem(EvNr, menuname->getData());
+		else
+			menu->Append(EvNr, menuname->getData());
+		
+		((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+									(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+									&lb_wxFrame::OnDispatch );
 	}
-
-	wxMenu* menu = mbar->GetMenu(index);
-
-
-	if ((param->Count() > 3) && (strcmp(checkable->charrep(), "yes") == 0))
-		menu->AppendCheckItem(EvNr, menuname->getData());
-	else
-		menu->Append(EvNr, menuname->getData());
-
-	((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
-          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-          &lb_wxFrame::OnDispatch );
+	
 
 	return ERR_NONE;
 /*...e*/

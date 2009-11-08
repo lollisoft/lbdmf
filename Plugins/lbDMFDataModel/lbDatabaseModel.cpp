@@ -399,6 +399,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentPKTable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
+	REQUEST(getModuleInstance(), lb_I_Long, currentNullable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
 
 	REQUEST(getModuleInstance(), lb_I_String, Name)

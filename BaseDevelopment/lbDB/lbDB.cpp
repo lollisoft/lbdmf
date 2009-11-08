@@ -120,9 +120,11 @@ void _dbError_STMT(char* lp, HSTMT hstmt);
 void _dbError_ENV(char* lp, HENV henv);
 void _dbError_DBC(char* lp, HDBC hdbc);
 
-#define TAB_LEN 128+1
+#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+//#define TAB_LEN 128+1
 #define REM_LEN 254+1
-#define COL_LEN 100
+//#define COL_LEN 100
 
 
 class lbQuery;
@@ -2512,8 +2514,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	UAP(lb_I_Parameter, SomeBaseSettings)
 	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
 
-	#define TAB_LEN 100
-	#define COL_LEN 100
+	//#define TAB_LEN 100
+	//#define COL_LEN 100
 
 	void* that = this;
 
@@ -6384,8 +6386,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getPrimaryKeys(" << connectionname << ") called." LOG_
-#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
-#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+//#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+//#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
 	PrimaryKeys++;
 

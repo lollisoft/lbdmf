@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
@@ -67,40 +67,51 @@ extern "C" {
 #ifdef USE_TEST_PLUGIN
 /*...slbTest:0:*/
 class lbTest :
-	public lb_I_Streamable,
-	public lb_I_Unknown {
+	public lb_I_TestFixture {
 public:
 	lbTest();
 	virtual ~lbTest();
 	
 	DECLARE_LB_UNKNOWN()
-	
-	void LB_STDCALL test();
-	
-	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; return ERR_NONE; }
-	
-	lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) { return ERR_NONE; }
-	lbErrCodes LB_STDCALL load(lb_I_InputStream* iStream) { return ERR_NONE; }
-	lbErrCodes LB_STDCALL save(lb_I_Database* oDB) { return ERR_NONE; }
-	lbErrCodes LB_STDCALL load(lb_I_Database* iDB) { return ERR_NONE; }
-	
-	UAP(lb_I_Unknown, op)
+	DECLARE_TESTFIXTURE()
+		
+	TEST_CASE(Test1)
+	TEST_CASE(Test2)
 };
 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbTest)
+	ADD_INTERFACE(lb_I_TestFixture)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbTest, lbTest)
 
+BEGIN_IMPLEMENT_TESTFIXTURE(lbTest)
+	ADD_TEST(Test1)
+	ADD_TEST(Test2)
+END_IMPLEMENT_TESTFIXTURE()
+
+void LB_STDCALL lbTest::setUp() {
+	_LOG << "lbTest::setUp() called." LOG_
+}
+
+void LB_STDCALL lbTest::tearDown() {
+	_LOG << "lbTest::tearDown() called." LOG_
+}
+
+void LB_STDCALL lbTest::Test1() {
+	_LOG << "lbTest::Test1() called." LOG_
+}
+
+void LB_STDCALL lbTest::Test2() {
+	_LOG << "lbTest::Test2() called." LOG_
+}
 
 /*...slbErrCodes LB_STDCALL lbTest\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbTest::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-		
-        _CL_LOG << "lbTest::setData(...) not implemented yet" LOG_
-
-        return ERR_NOT_IMPLEMENTED;
+    _CL_LOG << "lbTest::setData(...) not implemented yet" LOG_
+    return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
@@ -117,9 +128,6 @@ lbTest::~lbTest() {
 }
 /*...e*/
 
-void LB_STDCALL lbTest::test() {
-
-}
 /*...e*/
 #endif
 /*...sclass lbPluginTest implementation:0:*/

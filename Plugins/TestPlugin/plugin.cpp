@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
@@ -67,7 +67,10 @@ extern "C" {
 /*...e*/
 
 /*...sclass lbPluginModuleTest:0:*/
-class lbPluginModuleTest : public lb_I_PluginModule {
+/**
+ * \brief A unit test fixture.
+ */
+class lbPluginModuleTest : public lb_I_UnitTestModul {
 public:
 
 	lbPluginModuleTest();
@@ -75,7 +78,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	virtual void LB_STDCALL initialize();
+	char* LB_STDCALL getTestFixture();
+	void LB_STDCALL initialize();
 	
 	DECLARE_PLUGINS()
 };
@@ -83,14 +87,18 @@ public:
 
 /*...sclass lbPluginModuleTest implementation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleTest)
-        ADD_INTERFACE(lb_I_PluginModule)
+        ADD_INTERFACE(lb_I_UnitTestModul)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleTest)
+IMPLEMENT_FUNCTOR(instanceOfPluginUnitTestModule, lbPluginModuleTest)
 
 BEGIN_PLUGINS(lbPluginModuleTest)
-	ADD_PLUGIN(lbPluginTest, GUI)
+	ADD_PLUGIN(lbPluginTest, TestFixture1)
 END_PLUGINS()
+
+char* LB_STDCALL lbPluginModuleTest::getTestFixture() {
+	return "lbPluginModuleTest";
+}
 
 lbPluginModuleTest::lbPluginModuleTest() {
 	ref = STARTREF;

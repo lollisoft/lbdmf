@@ -1,11 +1,20 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.203 $
+# * $Revision: 1.204 $
 # * $Name:  $
-# * $Id: Makefile,v 1.203 2009/09/11 10:58:16 lollisoft Exp $
+# * $Id: Makefile,v 1.204 2009/11/08 11:49:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.204  2009/11/08 11:49:32  lollisoft
+# * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
+# *
+# * Corrected mkmk to find also include files in <> brackets.
+# *
+# * Corrected make system to work correctly with the new mkmk version. There may be a performance problem when compiling tvision code, thus that target is deactivated.
+# *
+# * Fixed some warnings.
+# *
 # * Revision 1.203  2009/09/11 10:58:16  lollisoft
 # * Corrected UML sample file directory.
 # *
@@ -818,16 +827,14 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
-	../vendor/tvision \
-	../vendor/tvision/examples/lbDMF \
-	../vendor/tvision/examples/dlgdsn \
-	../vendor/tvision/examples/listvi \
 	../AppDevelopment
 
 # Don't compile these every time.
 #	../vendor/propgrid \
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF \
+#	../vendor/tvision/examples/dlgdsn \
+#	../vendor/tvision/examples/listvi \
 #	../vendor/wxReportWriter \
 
 endif
@@ -854,9 +861,10 @@ BASEDIRECTORIES= \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
 	../ServerPlugins \
-	../ClientPlugins \
-	../vendor/tvision \
-	../vendor/tvision/examples/lbDMF
+	../ClientPlugins
+
+#	../vendor/tvision \
+#	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
 TARGETSHARED=so
@@ -880,7 +888,6 @@ ALLTARGETS = \
 	$(prefix)/Library/Frameworks \
 	$(prefix)/lib \
 	$(prefix)/plugins \
-	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
 	lbHook \
@@ -998,7 +1005,6 @@ ALLTARGETS = \
 	$(prefix)/bin \
 	$(prefix)/lib \
 	$(prefix)/plugins \
-	../include/lbkey.h \
 	$(ALLDIRS)
 
 endif
@@ -1067,7 +1073,6 @@ ALLTARGETS = \
 	$(prefix)/bin \
 	$(prefix)/lib \
 	$(prefix)/plugins \
-	../include/lbkey.h \
 	$(ALLDIRS)
 
 endif
@@ -1142,7 +1147,6 @@ ALLTARGETS = \
 	$(prefix)/bin \
 	$(prefix)/lib \
 	$(prefix)/plugins \
-	../include/lbkey.h \
 	$(ALLDIRS)
 
 endif
@@ -1553,9 +1557,6 @@ endif
 ../Test/Console/XML: dummy
 	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-
-../include/lbkey.h: dummy
-	touch ../include/lbkey.h
 
 ifeq ($(OSTYPE), solaris)
 ../vendor/dosdir: dummy
