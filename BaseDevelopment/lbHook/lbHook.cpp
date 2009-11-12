@@ -1196,7 +1196,7 @@ lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-char* LB_STDCALL lbKey::getKeyType() const {
+char const* LB_STDCALL lbKey::getKeyType() const {
     return "int";
 }
 
@@ -1267,7 +1267,7 @@ lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-char* LB_STDCALL lbKey_::getKeyType() const {
+char const* LB_STDCALL lbKey_::getKeyType() const {
     return "int";
 }
 
@@ -1299,7 +1299,7 @@ char* LB_STDCALL lbKey_::charrep() const {
 /*...slbStringKey:0:*/
 DLLEXPORT lbStringKey::lbStringKey() {
     ref = STARTREF;
-    key = "";
+    key = strdup("");
 }
 
 DLLEXPORT lbStringKey::lbStringKey(const char* _key) {
@@ -1339,7 +1339,7 @@ lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-char* LB_STDCALL lbStringKey::getKeyType() const {
+char const * LB_STDCALL lbStringKey::getKeyType() const {
     return "string";
 }
 

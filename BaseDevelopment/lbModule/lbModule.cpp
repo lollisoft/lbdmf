@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.122 $
+ * $Revision: 1.123 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.122 2009/06/10 11:55:06 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.123 2009/11/12 07:55:32 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.123  2009/11/12 07:55:32  lollisoft
+ * Corrected the core macros and functions to reduce deprecated const string warning.
+ *
  * Revision 1.122  2009/06/10 11:55:06  lollisoft
  * Added functions to enable position in the container to enable 'jumps'.
  *
@@ -1322,7 +1325,7 @@ lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 /*...sImplementation for key:0:*/
 // Implementation for key
 
-char* LB_STDCALL lbInstance::getKeyType() const {
+char const* LB_STDCALL lbInstance::getKeyType() const {
     return "string";
 }
 
@@ -2440,12 +2443,12 @@ public:
         
 	virtual void LB_STDCALL printReferences(char* addr);        
 
-	virtual char* LB_STDCALL getCreationLoc(char* addr);
-        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char* implName, char* file = "", int line = 0);
-        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char* implName, char* file, int line);
-        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char* implName, char* file, int line);
-        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char* implName, char* file, int line);
-        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char* implName, char* file = "", int line = 0);
+	virtual char* LB_STDCALL getCreationLoc(char const* addr);
+        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
+        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line);
+        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line);
+        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line);
+        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
         
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst);
 
@@ -2671,8 +2674,8 @@ printf("Increased\n");
 
 
 /*...sdebug helper:0:*/
-/*...schar\42\ LB_STDCALL lbModule\58\\58\getCreationLoc\40\char\42\ addr\41\:0:*/
-char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
+/*...schar\42\ LB_STDCALL lbModule\58\\58\getCreationLoc\40\char const\42\ addr\41\:0:*/
+char* LB_STDCALL lbModule::getCreationLoc(char const* addr) {
 #ifdef IR_USAGE
 	if (IR != NULL) {
 		return IR->getCreationLoc(addr);
@@ -2696,7 +2699,7 @@ void LB_STDCALL lbModule::printReferences(char* addr) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_create\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char* file, int line) {
+void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char const* implName, char const* file, int line) {
 #ifdef IR_USAGE
         char* buf = (char*) malloc(1000);
         buf[0] = 0;
@@ -2721,7 +2724,7 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_add\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char* implName, char* file, int line) {
+void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) {
 #ifdef IR_USAGE
         char addr[20] = "";
         sprintf(addr, "%p", (void*) that);
@@ -2735,7 +2738,7 @@ void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char* implName, char* f
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_release\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char* implName, char* file, int line) {
+void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) {
 	/**
 	 * A buffer with to few bytes may result in crashes. Because I do not make strlen checks,
 	 * I must set the buffer to 
@@ -2755,7 +2758,7 @@ void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char* implName, cha
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_destroy\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, char* implName, char* file, int line) {
+void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) {
 	/**
 	 * A buffer with to few bytes may result in crashes. Because I do not make strlen checks,
 	 * I must set the buffer to 
@@ -2776,7 +2779,7 @@ void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, char* implName, cha
 /*...e*/
 
 /*...sint  LB_STDCALL lbModule\58\\58\can_delete\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* file, int line) {
+int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char const* implName, char const* file, int line) {
 #ifdef IR_USAGE
 
 #endif

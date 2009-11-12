@@ -1132,7 +1132,7 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-char* LB_STDCALL lbString::getKeyType() const {
+char const* LB_STDCALL lbString::getKeyType() const {
     return "string";
 }
 
@@ -1222,7 +1222,7 @@ lbErrCodes LB_STDCALL lbFileLocation::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-char* LB_STDCALL lbFileLocation::getKeyType() const {
+char const* LB_STDCALL lbFileLocation::getKeyType() const {
     return "fileloc";
 }
 
@@ -1307,7 +1307,7 @@ lbErrCodes LB_STDCALL lbDirLocation::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-char* LB_STDCALL lbDirLocation::getKeyType() const {
+char const* LB_STDCALL lbDirLocation::getKeyType() const {
     return "dirloc";
 }
 
@@ -1398,7 +1398,7 @@ lbErrCodes LB_STDCALL lbInteger::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-char* LB_STDCALL lbInteger::getKeyType() const {
+char const* LB_STDCALL lbInteger::getKeyType() const {
     return "int";
 }
 
@@ -1456,7 +1456,7 @@ lbErrCodes LB_STDCALL lbBoolean::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-char* LB_STDCALL lbBoolean::getKeyType() const {
+char const* LB_STDCALL lbBoolean::getKeyType() const {
     return "bool";
 }
 
@@ -1611,7 +1611,7 @@ lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
 }
 
 /*...slbKeyUL:0:*/
-char* LB_STDCALL lbLong::getKeyType() const {
+char const* LB_STDCALL lbLong::getKeyType() const {
     return "UL";
 }
 

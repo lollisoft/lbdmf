@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.23 2005/06/27 10:32:10 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.24 2009/11/12 07:55:33 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.24  2009/11/12 07:55:33  lollisoft
+ * Corrected the core macros and functions to reduce deprecated const string warning.
+ *
  * Revision 1.23  2005/06/27 10:32:10  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -195,7 +198,7 @@ lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-char* LB_STDCALL lbKey_::getKeyType() const {
+char const* LB_STDCALL lbKey_::getKeyType() const {
     return "int";
 }
 
@@ -260,7 +263,7 @@ lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
 }
 
 
-char* LB_STDCALL lbKeyUL::getKeyType() const {
+char const* LB_STDCALL lbKeyUL::getKeyType() const {
     return "UL";
 }
 

@@ -1,32 +1,32 @@
 /*...sLicense:0:*/
 /*
 
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    This file is part of lbDMF.
-    Copyright (C) 2000-2007  Lothar Behrens (lothar.behrens@lollisoft.de)
+   DMF Distributed Multiplatform Framework (the initial goal of this library)
+   This file is part of lbDMF.
+   Copyright (C) 2000-2007  Lothar Behrens (lothar.behrens@lollisoft.de)
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-    The author of this work will be reached by e-Mail or paper mail.
-    e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+   The author of this work will be reached by e-Mail or paper mail.
+   e-Mail: lothar.behrens@lollisoft.de
+   p-Mail: Lothar Behrens
+   Heinrich-Scheufelen-Platz 2
 
-            73252 Lenningen (germany)
-*/
+   73252 Lenningen (germany)
+ */
 /*...e*/
 
 /**
@@ -162,371 +162,371 @@
  *	wmake -f makefile.wat all
  *	\endcode
  *
- * \section PSetup61 Make wxWidgets (2.6.x) source tree
- *
- *	Bevore you build the library, decide to build a static library or a shared library (DLL).
- *	If you like to have a DLL, modify the following file: config.wat in the build/msw directory.
- *
- *	# What type of library to build? [0,1]
- *	SHARED = 1
- *
- *	There is also a switch for debug or release builds:
- *
- *	# Type of compiled binaries [debug,release]
- *	BUILD = release
- *
- *	Start a normal MSDOS console (cmd) and type these lines (C:):
- *
- *	\code
- *	set DRIVE=C:
- *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
- *	%DRIVE%
- *	cd %WXDIR%\build\msw
- *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
- *	wmake -f makefile.wat all
- *	\endcode
- *
- *	or
- *
- *	Start a normal MSDOS console (cmd) and type these lines (D:):
- *
- *	\code
- *	set DRIVE=D:
- *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
- *	%DRIVE%
- *	cd %WXDIR%\build\msw
- *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
- *	wmake -f makefile.wat all
- *	\endcode
- *
- *	This should start compiling the wxWidgets code.
- *
- *	After you have built wxWitgets, you must copy the created DLL to the place where it should be
- *	installed:
- *
- * \section PSetup62 Copy DLL/library for wxWidgets 2.4.x/2.6.x:
- *
- *	From drive C:
- *
- *	\code
- *	set DRIVE=C:
- *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
- *	%DRIVE%
- *	cd %WXDIR%\src\msw
- *	mkdir %WXDIR%\..\..\Projects\dll\libs
- *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
- *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
- *	\endcode
- *
- *	From Drive D:
- *
- *	\code
- *	set DRIVE=D:
- *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
- *	%DRIVE%
- *	cd %WXDIR%\src\msw
- *	mkdir %WXDIR%\..\..\Projects\dll\libs
- *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
- *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
- *	\endcode
- *
- * \section PSetup7 Start compiling lbDMF source tree
- *
- *	If you have done this, you can restart the lbDMF Develop link and a simple console window
- *	starts.
- *
- *	Type make
- *
- * \section PSetup8 Database setup
- *
- *	To be able to run the sample applications, you need to create at least one database.
- *	Do this with the tools, provided from the database vendors.
- *
- *	The first database, needed should be named lbdmf and a correct ODBC configuration should
- *	be set up. See below.
- *
- *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
- *
- *	Create at least an user to have rights to change data. For the PostgreSQL database, create
- *	the user and create the tables with that user logged on. If you set up the tables with the
- *	database system user, your user has not the correct rigths.
- *
- *	Currently, I maintain MySQL and Sybase and PostgreSQL database scripts, but I prefer to use PostgreSQL.
- *
- *	Set the environment variables to connect with the correct user and password. If not, default values from
- *	my private database are used:
- *
- *	set lbDMFUser=<User>
- *
- *	set lbDMFpasswd=<Password>
- *
- * \section PSetup9 ODBC Setup
- *
- *	The setup must activate any updateable cursor switches, don't convert bools as char. As a sample, here are
- *	the nessesary registry files (their content) to setup a configuration to a local PostgreSQL installation
- *	(as administrator):
- *
- *	\note The samples here are for drive C: installation only.
- *
- *	The database ODBC setup:
- *
- *	\code
- *	Windows Registry Editor Version 5.00
- *
- *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources]
- *	"lbDMF"="PostgreSQL"
- *
- *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\lbDMF]
- *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
- *	"Fetch"="100"
- *	"CommLog"="0"
- *	"Debug"="0"
- *	"Optimizer"="1"
- *	"Ksqo"="1"
- *	"UniqueIndex"="1"
- *	"UseDeclareFetch"="0"
- *	"UnknownSizes"="0"
- *	"TextAsLongVarchar"="1"
- *	"UnknownsAsLongVarchar"="0"
- *	"BoolsAsChar"="0"
- *	"Parse"="0"
- *	"CancelAsFreeStmt"="0"
- *	"MaxVarcharSize"="254"
- *	"MaxLongVarcharSize"="8190"
- *	"ExtraSysTablePrefixes"="dd_;"
- *	"Description"=""
- *	"Database"="lbdmf"
- *	"Servername"="localhost"
- *	"Port"="5432"
- *	"SSLmode"="prefer"
- *	"Username"="dba"
- *	"Password"="trainres"
- *	"ReadOnly"="0"
- *	"ShowOidColumn"="0"
- *	"FakeOidIndex"="0"
- *	"RowVersioning"="0"
- *	"ShowSystemTables"="1"
- *	"Protocol"="6.4"
- *	"ConnSettings"=""
- *	"DisallowPremature"="0"
- *	"UpdatableCursors"="1"
- *	"LFConversion"="1"
- *	"TrueIsMinus1"="0"
- *	"BI"="0"
- *	"ByteaAsLongVarBinary"="0"
- *	"UseServerSidePrepare"="0"
- *	"LowerCaseIdentifier"="0"
- *	\endcode
- *
- *	The database ODBC driver setup:
- *
- *	\code
- *	Windows Registry Editor Version 5.00
- *
- *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL]
- *	"UsageCount"=dword:00000001
- *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
- *	"Setup"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
- *	"APILevel"="1"
- *	"SQLLevel"="1"
- *	"DriverODBCVer"="03.00"
- *	"FileUsage"="0"
- *	"ConnectFunctions"="YYN"
- *	"Fetch"="100"
- *	"CommLog"="0"
- *	"Debug"="0"
- *	"Optimizer"="1"
- *	"Ksqo"="1"
- *	"UniqueIndex"="1"
- *	"ReadOnly"="0"
- *	"UseDeclareFetch"="0"
- *	"UnknownSizes"="0"
- *	"TextAsLongVarchar"="1"
- *	"UnknownsAsLongVarchar"="0"
- *	"BoolsAsChar"="0"
- *	"Parse"="0"
- *	"CancelAsFreeStmt"="0"
- *	"MaxVarcharSize"="254"
- *	"MaxLongVarcharSize"="8190"
- *	"ExtraSysTablePrefixes"="dd_;"
- *	"CPTimeout"="<not pooled>"
- *	"ConnSettings"=""
- *	\endcode
- *
- * \section PSetup10 Run the sample GUI application
- *
- *	Simply after compiling the sources, let the build window open and type wxwrapper. Go to menu
- *	File->Login and login as behrens over the wizard and use password as the password.
- *
- *	After successfull login you should be able to select an application. Choose lbDMF Manager.
- *
- */
-/*...e*/
+* \section PSetup61 Make wxWidgets (2.6.x) source tree
+	*
+	 *	Bevore you build the library, decide to build a static library or a shared library (DLL).
+		*	If you like to have a DLL, modify the following file: config.wat in the build/msw directory.
+			*
+			 *	# What type of library to build? [0,1]
+			 *	SHARED = 1
+			 *
+			 *	There is also a switch for debug or release builds:
+			 *
+			 *	# Type of compiled binaries [debug,release]
+			 *	BUILD = release
+			 *
+			 *	Start a normal MSDOS console (cmd) and type these lines (C:):
+			 *
+			 *	\code
+			 *	set DRIVE=C:
+			 *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
+			 *	%DRIVE%
+			 *	cd %WXDIR%\build\msw
+			 *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
+			 *	wmake -f makefile.wat all
+			 *	\endcode
+			 *
+			 *	or
+			 *
+			 *	Start a normal MSDOS console (cmd) and type these lines (D:):
+			 *
+			 *	\code
+			 *	set DRIVE=D:
+			 *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
+			 *	%DRIVE%
+			 *	cd %WXDIR%\build\msw
+			 *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
+			 *	wmake -f makefile.wat all
+			 *	\endcode
+			 *
+			 *	This should start compiling the wxWidgets code.
+			 *
+			 *	After you have built wxWitgets, you must copy the created DLL to the place where it should be
+			 *	installed:
+			 *
+			 * \section PSetup62 Copy DLL/library for wxWidgets 2.4.x/2.6.x:
+			 *
+			 *	From drive C:
+			 *
+			 *	\code
+			 *	set DRIVE=C:
+			 *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
+			 *	%DRIVE%
+			 *	cd %WXDIR%\src\msw
+			 *	mkdir %WXDIR%\..\..\Projects\dll\libs
+			 *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+			 *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+			 *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+			 *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+			 *	\endcode
+			 *
+			 *	From Drive D:
+			 *
+			 *	\code
+			 *	set DRIVE=D:
+			 *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
+			 *	%DRIVE%
+			 *	cd %WXDIR%\src\msw
+			 *	mkdir %WXDIR%\..\..\Projects\dll\libs
+			 *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+			 *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+			 *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+			 *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+			 *	\endcode
+			 *
+			 * \section PSetup7 Start compiling lbDMF source tree
+			 *
+			 *	If you have done this, you can restart the lbDMF Develop link and a simple console window
+			 *	starts.
+			 *
+			 *	Type make
+			 *
+			 * \section PSetup8 Database setup
+			 *
+			 *	To be able to run the sample applications, you need to create at least one database.
+			 *	Do this with the tools, provided from the database vendors.
+			 *
+			 *	The first database, needed should be named lbdmf and a correct ODBC configuration should
+			 *	be set up. See below.
+			 *
+			 *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
+			 *
+			 *	Create at least an user to have rights to change data. For the PostgreSQL database, create
+			 *	the user and create the tables with that user logged on. If you set up the tables with the
+			 *	database system user, your user has not the correct rigths.
+			 *
+			 *	Currently, I maintain MySQL and Sybase and PostgreSQL database scripts, but I prefer to use PostgreSQL.
+			 *
+			 *	Set the environment variables to connect with the correct user and password. If not, default values from
+			 *	my private database are used:
+			 *
+			 *	set lbDMFUser=<User>
+			 *
+			 *	set lbDMFpasswd=<Password>
+			 *
+			 * \section PSetup9 ODBC Setup
+			 *
+			 *	The setup must activate any updateable cursor switches, don't convert bools as char. As a sample, here are
+			 *	the nessesary registry files (their content) to setup a configuration to a local PostgreSQL installation
+			 *	(as administrator):
+			 *
+			 *	\note The samples here are for drive C: installation only.
+			 *
+			 *	The database ODBC setup:
+			 *
+			 *	\code
+			 *	Windows Registry Editor Version 5.00
+			 *
+			 *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources]
+			 *	"lbDMF"="PostgreSQL"
+			 *
+			 *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\lbDMF]
+			 *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+			 *	"Fetch"="100"
+			 *	"CommLog"="0"
+			 *	"Debug"="0"
+			 *	"Optimizer"="1"
+			 *	"Ksqo"="1"
+			 *	"UniqueIndex"="1"
+			 *	"UseDeclareFetch"="0"
+			 *	"UnknownSizes"="0"
+			 *	"TextAsLongVarchar"="1"
+			 *	"UnknownsAsLongVarchar"="0"
+			 *	"BoolsAsChar"="0"
+			 *	"Parse"="0"
+			 *	"CancelAsFreeStmt"="0"
+			 *	"MaxVarcharSize"="254"
+			 *	"MaxLongVarcharSize"="8190"
+			 *	"ExtraSysTablePrefixes"="dd_;"
+			 *	"Description"=""
+			 *	"Database"="lbdmf"
+			 *	"Servername"="localhost"
+			 *	"Port"="5432"
+			 *	"SSLmode"="prefer"
+			 *	"Username"="dba"
+			 *	"Password"="trainres"
+			 *	"ReadOnly"="0"
+			 *	"ShowOidColumn"="0"
+			 *	"FakeOidIndex"="0"
+			 *	"RowVersioning"="0"
+			 *	"ShowSystemTables"="1"
+			 *	"Protocol"="6.4"
+			 *	"ConnSettings"=""
+			 *	"DisallowPremature"="0"
+			 *	"UpdatableCursors"="1"
+			 *	"LFConversion"="1"
+			 *	"TrueIsMinus1"="0"
+			 *	"BI"="0"
+			 *	"ByteaAsLongVarBinary"="0"
+			 *	"UseServerSidePrepare"="0"
+			 *	"LowerCaseIdentifier"="0"
+			 *	\endcode
+			 *
+			 *	The database ODBC driver setup:
+			 *
+			 *	\code
+			 *	Windows Registry Editor Version 5.00
+			 *
+			 *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL]
+			 *	"UsageCount"=dword:00000001
+			 *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+			 *	"Setup"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+			 *	"APILevel"="1"
+			 *	"SQLLevel"="1"
+			 *	"DriverODBCVer"="03.00"
+			 *	"FileUsage"="0"
+			 *	"ConnectFunctions"="YYN"
+			 *	"Fetch"="100"
+			 *	"CommLog"="0"
+			 *	"Debug"="0"
+			 *	"Optimizer"="1"
+			 *	"Ksqo"="1"
+			 *	"UniqueIndex"="1"
+			 *	"ReadOnly"="0"
+			 *	"UseDeclareFetch"="0"
+			 *	"UnknownSizes"="0"
+			 *	"TextAsLongVarchar"="1"
+			 *	"UnknownsAsLongVarchar"="0"
+			 *	"BoolsAsChar"="0"
+			 *	"Parse"="0"
+			 *	"CancelAsFreeStmt"="0"
+			 *	"MaxVarcharSize"="254"
+			 *	"MaxLongVarcharSize"="8190"
+			 *	"ExtraSysTablePrefixes"="dd_;"
+			 *	"CPTimeout"="<not pooled>"
+			 *	"ConnSettings"=""
+			 *	\endcode
+			 *
+			 * \section PSetup10 Run the sample GUI application
+			 *
+			 *	Simply after compiling the sources, let the build window open and type wxwrapper. Go to menu
+			 *	File->Login and login as behrens over the wizard and use password as the password.
+			 *
+			 *	After successfull login you should be able to select an application. Choose lbDMF Manager.
+			 *
+			 */
+			 /*...e*/
 
-/*...sDatabase Prototype GUI:0:*/
-/** \page PrototypeGUI Database prototype GUI documentation
- *
- * \section Introduction
- *
- * The main sample application, distributed also as binary sample, is aimed to be a prototype
- * for any kind of database applications. You could define forms and related information in a
- * configuration database.
- *
- * If you have a target database model for a specific application, then it is easy to build up
- * a prototype for it in minutes. Here you could see it in action on <a href="../../screens-sample-all.html">all platforms</a>
- *
- * \section Prepare1 Prepare for first run
- *
- * Before you could run the sample application, you need a proper set up database. As I most time
- * test and use <a href="http://www.postgresql.org">PostgreSQL</a>, you should have installed this
- * database engine. Also you should have set up an ODBC driver for that database. See \ref PSetup9 "ODBC Setup".
- *
- * \note The binary sample package contains an ODBC setup routine for a PostgreSQL database installed on your machine.
- *
- * After database installation (see \ref PSetup8 "Database setup") you need to run the script for that database.
- *
- * Source package:
- *
- * \li PostgreSQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-PostgreSQL.sql
- * \li MySQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-MySQL.sql
- * \li Sybase: /lbDMF/develop/Projects/CPP/Database/lbDMF-Sybase.sql
- *
- * Binary sample package:
- *
- * \li PostgreSQL: /lbDMF/Database/lbDMF-PostgreSQL.sql
- * \li MySQL: /lbDMF/Database/lbDMF-MySQL.sql
- * \li Sybase: /lbDMF/Database/lbDMF-Sybase.sql
- *
- * \section Application1 The application
- *
- * Let us start with an application - say - we have a small CD collection database.
- *
- * \section DatabaseSetup1 Database Setup
- *
- * The CD collection database will consist interpret, album and and title tables. To create
- * the database, please copy the SQL code below to your database query editor of your newly created database instance.
- *
- * \note You must declare a primary key for each table. If you don't do it, the GUI would not work properly.
- *
- * \code
- 	-- Force to use this user. Rename it accordingly.
- 	SET SESSION AUTHORIZATION 'dba';
+			 /*...sDatabase Prototype GUI:0:*/
+			 /** \page PrototypeGUI Database prototype GUI documentation
+			  *
+			  * \section Introduction
+			  *
+			  * The main sample application, distributed also as binary sample, is aimed to be a prototype
+			  * for any kind of database applications. You could define forms and related information in a
+			  * configuration database.
+			  *
+			  * If you have a target database model for a specific application, then it is easy to build up
+			  * a prototype for it in minutes. Here you could see it in action on <a href="../../screens-sample-all.html">all platforms</a>
+			  *
+			  * \section Prepare1 Prepare for first run
+			  *
+			  * Before you could run the sample application, you need a proper set up database. As I most time
+			  * test and use <a href="http://www.postgresql.org">PostgreSQL</a>, you should have installed this
+			  * database engine. Also you should have set up an ODBC driver for that database. See \ref PSetup9 "ODBC Setup".
+			  *
+			  * \note The binary sample package contains an ODBC setup routine for a PostgreSQL database installed on your machine.
+			  *
+			  * After database installation (see \ref PSetup8 "Database setup") you need to run the script for that database.
+			  *
+			  * Source package:
+			  *
+			  * \li PostgreSQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-PostgreSQL.sql
+			  * \li MySQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-MySQL.sql
+			  * \li Sybase: /lbDMF/develop/Projects/CPP/Database/lbDMF-Sybase.sql
+			  *
+			  * Binary sample package:
+			  *
+			  * \li PostgreSQL: /lbDMF/Database/lbDMF-PostgreSQL.sql
+			  * \li MySQL: /lbDMF/Database/lbDMF-MySQL.sql
+			  * \li Sybase: /lbDMF/Database/lbDMF-Sybase.sql
+			  *
+			  * \section Application1 The application
+			  *
+			  * Let us start with an application - say - we have a small CD collection database.
+			  *
+			  * \section DatabaseSetup1 Database Setup
+			  *
+			  * The CD collection database will consist interpret, album and and title tables. To create
+			  * the database, please copy the SQL code below to your database query editor of your newly created database instance.
+			  *
+			  * \note You must declare a primary key for each table. If you don't do it, the GUI would not work properly.
+			  *
+			  * \code
+			  -- Force to use this user. Rename it accordingly.
+			  SET SESSION AUTHORIZATION 'dba';
 
- 	CREATE TABLE interpret (
- 		id SERIAL,
- 		name CHAR(50),
- 		country CHAR(3),
- 		PRIMARY KEY (id)
- 	);
+			  CREATE TABLE interpret (
+			  id SERIAL,
+			  name CHAR(50),
+			  country CHAR(3),
+			  PRIMARY KEY (id)
+			  );
 
- 	CREATE TABLE album (
- 		id SERIAL,
- 		interpretid INT,
- 		name CHAR(50),
- 		go_public_date DATE,
- 		PRIMARY KEY (id),
- 		CONSTRAINT cst_album_interpret_interpretid FOREIGN KEY (interpretid)
- 			REFERENCES interpret (id) ON UPDATE NO ACTION ON DELETE NO ACTION
- 	);
+			  CREATE TABLE album (
+			  id SERIAL,
+			  interpretid INT,
+			  name CHAR(50),
+			  go_public_date DATE,
+			  PRIMARY KEY (id),
+			  CONSTRAINT cst_album_interpret_interpretid FOREIGN KEY (interpretid)
+			  REFERENCES interpret (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+			  );
 
- 	CREATE TABLE title (
- 		id SERIAL,
- 		albumid INT,
- 		songid INT,
- 		name CHAR(50),
- 		time TIME,
- 		PRIMARY KEY (id),
- 		CONSTRAINT cst_title_album_albumid FOREIGN KEY (albumid)
- 			REFERENCES album (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+			  CREATE TABLE title (
+			  id SERIAL,
+			  albumid INT,
+			  songid INT,
+			  name CHAR(50),
+			  time TIME,
+PRIMARY KEY (id),
+	CONSTRAINT cst_title_album_albumid FOREIGN KEY (albumid)
+	REFERENCES album (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 
- 	);
- * \endcode
- *
- * \section lbDMFDatabaseSetup1 Setup the configuration in the main config database
- *
- * To be able to run the application with forms against that tables, we need to setup some configuration for it.
- * Start the GUI and login with the default user 'user' and password 'TestUser'. Select the application 'lbDMF Manager'.
- * A menu would be created with some entries.
- *
- * \note You get a tabbed view per default. If you like to view more than one form in parallel, select 'File->switch panel usage'.
- *
- * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users.
- * There, add a new entry with 'Add' and then set up the users data correctly.
- *
- * \note If you add the first entry in the form, you should again press the add button and then delete one of the two created entries with delete. Say, this is still a little bad 'feature' and behaves in all forms.
- *
- * \section AddApplication1 Create a new application
- *
- * After you have created a new user, you must create a new application. This would <b>not</b> be done, if you press the button 'Anwendungen'.
- * You first must open a new form.
- *
- * Go to menu 'lbDMF Manager' and open 'Anwendungen' from <b>there</b>. The difference is, that you get opened the form 'Anwendungen',
- * whereas you open the 'User to application' mapping from the users form. This is because you could map multiple users to multiple
- * applications. (It is a N to N relation).
- *
- * \section ApplicationDataEntry1 Entries for the new application
- *
- * Enter the data for your new application as follows:
- *
- * \verbatim
-   Application name  = 'Music database'
-   Application title = 'Music database'
-   Module name       = 'lbDynApp'
-   Functor           = 'instanceOfApplication'
-   Interface         = 'lb_I_Application' \endverbatim
- *
- * If you have entered all data, again press add (remember deletion of temprary added data) <b>or</b>
- * press a navigation button to save the data.
- *
- * \section GotoDetail1 Connect the user with the application
- *
- * Go to tab 'Benutzer' and press 'Anwendungen' to connect the user to the newly created application. Create a new entry
- * by pressing 'Add' and select your new application from the drop down list. After this, you have to either save the data
- * or again press 'Add' and delete the secondly added entry again.
- *
- * \section SetFormular1 Setup database formulars
- *
- * For each table in the sample, you need to create a database formular configuration. To do this, you go to tab 'Anwendungen' and press
- * the button 'Formulare'. You will open a detail form, that will only show forms for your currently selected application in tab 'Anwendungen'
- *
- * From there you must use 'Add' to create new entries in that form. Press twice and let the second one alive - do not delete it again.
- * Setup formular name and all data as follows:
- *
- * \verbatim
-   name        = '<formname>'
-   menuname    = '<name in menu>'
-   eventname   = 'manage<formularname>'
-   menuhilfe   = '<menu help text>'
-   anwendungid = '<select your application>'
-   typ         = '<select Dynamisch aufgebautes Datenbankformular>' \endverbatim
- *
- * The event name must be unique per application. Double entries would be used once and the first entry retrieved from the database query wins.
- *
- * Each form could be of a dynamic type or a hard coded variant. Hardcoded is not implemented yet. The menu help 'menuhilfe' also is not implemented yet.
- *
- * Repeat this step for all your forms.
- *
- * \section SetQuery1 Setup SQL query parameter
- *
- * After you have created an application, connected the newly created user to that application and have created the forms, you need
- * to setup a SQL query for each form. Do this from the current tab by pressing the button 'Parameter'.
- *
- * Each form currently needs only one parameter - the query parameter. Add a new entry and setup as follows:
- * \verbatim
-   parametername  = 'query'
-   parametervalue = '<SQL query for that form>' \endverbatim
- *
- * Repeat this step by changing to tab 'Formulare', select the other forms and press 'Parameter' for each form.
- *
- * \section RestartAndTry Restart and try your application
- *
- * You could directly login to your new application, but this may buggy. Restart and try then.
- */
-/*...e*/
+	);
+	* \endcode
+	*
+	* \section lbDMFDatabaseSetup1 Setup the configuration in the main config database
+	*
+	* To be able to run the application with forms against that tables, we need to setup some configuration for it.
+	* Start the GUI and login with the default user 'user' and password 'TestUser'. Select the application 'lbDMF Manager'.
+	* A menu would be created with some entries.
+	*
+	* \note You get a tabbed view per default. If you like to view more than one form in parallel, select 'File->switch panel usage'.
+	*
+	* Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users.
+	* There, add a new entry with 'Add' and then set up the users data correctly.
+	*
+	* \note If you add the first entry in the form, you should again press the add button and then delete one of the two created entries with delete. Say, this is still a little bad 'feature' and behaves in all forms.
+	*
+	* \section AddApplication1 Create a new application
+	*
+	* After you have created a new user, you must create a new application. This would <b>not</b> be done, if you press the button 'Anwendungen'.
+	* You first must open a new form.
+	*
+	* Go to menu 'lbDMF Manager' and open 'Anwendungen' from <b>there</b>. The difference is, that you get opened the form 'Anwendungen',
+	* whereas you open the 'User to application' mapping from the users form. This is because you could map multiple users to multiple
+	* applications. (It is a N to N relation).
+	*
+	* \section ApplicationDataEntry1 Entries for the new application
+	*
+	* Enter the data for your new application as follows:
+	*
+	* \verbatim
+	Application name  = 'Music database'
+	Application title = 'Music database'
+	Module name       = 'lbDynApp'
+	Functor           = 'instanceOfApplication'
+	Interface         = 'lb_I_Application' \endverbatim
+	*
+	* If you have entered all data, again press add (remember deletion of temprary added data) <b>or</b>
+	* press a navigation button to save the data.
+	*
+	* \section GotoDetail1 Connect the user with the application
+	*
+	* Go to tab 'Benutzer' and press 'Anwendungen' to connect the user to the newly created application. Create a new entry
+	* by pressing 'Add' and select your new application from the drop down list. After this, you have to either save the data
+	* or again press 'Add' and delete the secondly added entry again.
+	*
+	* \section SetFormular1 Setup database formulars
+	*
+	* For each table in the sample, you need to create a database formular configuration. To do this, you go to tab 'Anwendungen' and press
+	* the button 'Formulare'. You will open a detail form, that will only show forms for your currently selected application in tab 'Anwendungen'
+	*
+	* From there you must use 'Add' to create new entries in that form. Press twice and let the second one alive - do not delete it again.
+	* Setup formular name and all data as follows:
+	*
+	* \verbatim
+	name        = '<formname>'
+	menuname    = '<name in menu>'
+	eventname   = 'manage<formularname>'
+	menuhilfe   = '<menu help text>'
+	anwendungid = '<select your application>'
+	typ         = '<select Dynamisch aufgebautes Datenbankformular>' \endverbatim
+	*
+	* The event name must be unique per application. Double entries would be used once and the first entry retrieved from the database query wins.
+	*
+	* Each form could be of a dynamic type or a hard coded variant. Hardcoded is not implemented yet. The menu help 'menuhilfe' also is not implemented yet.
+	*
+	* Repeat this step for all your forms.
+	*
+	* \section SetQuery1 Setup SQL query parameter
+	*
+	* After you have created an application, connected the newly created user to that application and have created the forms, you need
+	* to setup a SQL query for each form. Do this from the current tab by pressing the button 'Parameter'.
+	*
+	* Each form currently needs only one parameter - the query parameter. Add a new entry and setup as follows:
+	* \verbatim
+	parametername  = 'query'
+	parametervalue = '<SQL query for that form>' \endverbatim
+	*
+	* Repeat this step by changing to tab 'Formulare', select the other forms and press 'Parameter' for each form.
+	*
+	* \section RestartAndTry Restart and try your application
+	*
+	* You could directly login to your new application, but this may buggy. Restart and try then.
+	*/
+	/*...e*/
 
 #ifdef _MSC_VER
 
@@ -542,90 +542,90 @@
 #pragma warning 14 9;
 #endif
 
-/*...sdocu:0:*/
-/**
- * For all Interfaces are factories needed. How should I design these
- * factories ?
- */
+	/*...sdocu:0:*/
+	/**
+	 * For all Interfaces are factories needed. How should I design these
+	 * factories ?
+	 */
 
-/*...e*/
+	/*...e*/
 
-/*...sbasics:0:*/
-/*...sincludes and definitions:0:*/
-/**
- * All classes, that anounce callbacks, must implement the interface for
- * lb_I_CallbackManager. The callback manager did not need to handle its
- * own table, more it may delegate this to the static (singleton) handler.
- */
+	/*...sbasics:0:*/
+	/*...sincludes and definitions:0:*/
+	/**
+	 * All classes, that anounce callbacks, must implement the interface for
+	 * lb_I_CallbackManager. The callback manager did not need to handle its
+	 * own table, more it may delegate this to the static (singleton) handler.
+	 */
 
 
 #ifndef __LB_INTERFACES__
 #define __LB_INTERFACES__
 
-// If NULL is undefined, let it define by stddef.h
+	// If NULL is undefined, let it define by stddef.h
 #ifndef NULL
 #include <stddef.h>
 #endif
 
 #include <lbErrcodes.h>
 
-//#define LB_STDCALL
+	//#define LB_STDCALL
 
 #ifndef FALSE
 #define FALSE false
 #endif
 
-// KDevelop: Problems to set these variable :-)
+	// KDevelop: Problems to set these variable :-)
 #ifdef TVISION
- #ifndef LB_STDCALL
-  #ifdef WINDOWS
-   #define LB_STDCALL __cdecl
-   //__attribute__((cdecl))
-  #endif
-  #ifndef WINDOWS
-   #define LB_STDCALL
-  #endif
- #endif
+#ifndef LB_STDCALL
+#ifdef WINDOWS
+#define LB_STDCALL __cdecl
+	//__attribute__((cdecl))
+#endif
+#ifndef WINDOWS
+#define LB_STDCALL
+#endif
+#endif
 #endif
 
 #ifndef _MSC_VER
- #ifndef LB_STDCALL
-  #ifdef WINDOWS
-   #define LB_STDCALL __cdecl
-  #endif
-  #ifndef WINDOWS
-   #define LB_STDCALL
-  #endif
- #endif
+#ifndef LB_STDCALL
+#ifdef WINDOWS
+#define LB_STDCALL __cdecl
+#endif
+#ifndef WINDOWS
+#define LB_STDCALL
+#endif
+#endif
 
- #ifndef LB_FUNCTORCALL
-  #ifdef WINDOWS
-   #define LB_FUNCTORCALL __cdecl
-  #endif
-  #ifndef WINDOWS
-   #define LB_FUNCTORCALL
-  #endif
- #endif
+#ifndef LB_FUNCTORCALL
+#ifdef WINDOWS
+#define LB_FUNCTORCALL __cdecl
+#endif
+#ifndef WINDOWS
+#define LB_FUNCTORCALL
+#endif
+#endif
 #endif
 
 #ifdef _MSC_VER
- #ifndef LB_STDCALL
-  #ifdef WINDOWS
-   #define LB_STDCALL __cdecl
-  #endif
-  #ifndef WINDOWS
-   #define LB_STDCALL
-  #endif
- #endif
+#ifndef LB_STDCALL
+#ifdef WINDOWS
+#define LB_STDCALL __cdecl
+#endif
+#ifndef WINDOWS
+#define LB_STDCALL
+#endif
+#endif
 
- #ifndef LB_FUNCTORCALL
-  #ifdef WINDOWS
-   #define LB_FUNCTORCALL __cdecl
-  #endif
-  #ifndef WINDOWS
-   #define LB_FUNCTORCALL
-  #endif
- #endif
+#ifndef LB_FUNCTORCALL
+#ifdef WINDOWS
+#define LB_FUNCTORCALL __cdecl
+#endif
+#ifndef WINDOWS
+#define LB_FUNCTORCALL
+#endif
+#endif
 #endif
 
 #ifdef WINDOWS
@@ -634,7 +634,7 @@
 #endif
 
 #ifndef DLLEXPORT
-// Default to import. Modules redefine this in general.
+	// Default to import. Modules redefine this in general.
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLIMPORT
 #endif
@@ -648,236 +648,236 @@
 
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__
-/*...sbase types:0:*/
+	/*...sbase types:0:*/
 #ifndef __WATCOMC__
 #ifndef _MSC_VER
 #ifndef TVISION
-typedef unsigned short byte;
-typedef unsigned short u_short;
+	typedef unsigned short byte;
+	typedef unsigned short u_short;
 #endif
 #endif
 #endif
 #ifdef __POWERPP
-typedef unsigned short byte;
-typedef unsigned short u_short;
+	typedef unsigned short byte;
+	typedef unsigned short u_short;
 #endif
 #ifdef OSX
 #if (OSNAME == Panther)
-typedef unsigned long DWORD;
+	typedef unsigned long DWORD;
 #endif
 #if (OSTYPE == Leopard)
-//typedef unsigned int DWORD; // Leopard with IODBC
-typedef unsigned long DWORD;
+	//typedef unsigned int DWORD; // Leopard with IODBC
+	typedef unsigned long DWORD;
 #endif
 #endif
 #ifndef OSX
-typedef unsigned long DWORD;
+	typedef unsigned long DWORD;
 #endif
-typedef unsigned short LB_DATA;
-typedef unsigned short u_short;
-/*...e*/
+	typedef unsigned short LB_DATA;
+	typedef unsigned short u_short;
+	/*...e*/
 #endif // __BASE_TYPES_DEFINED__
 
-class lb_I_CallbackTarget;
-class lb_I_ProtocolTarget;
+	class lb_I_CallbackTarget;
+	class lb_I_ProtocolTarget;
 
-//#include <lbInterfaces-sub-transfer.h>
-/*...e*/
+	//#include <lbInterfaces-sub-transfer.h>
+	/*...e*/
 
-/*...sforward class decl\39\s:0:*/
-/**
- * The base interface, that currently implements only release.
- * A query interface should be added. But is M$'s solution usable ?
- */
+	/*...sforward class decl\39\s:0:*/
+	/**
+	 * The base interface, that currently implements only release.
+	 * A query interface should be added. But is M$'s solution usable ?
+	 */
 
-class lb_I_gcManager;
-class lb_I_Unknown;
-class lb_I_Module;
+	class lb_I_gcManager;
+	class lb_I_Unknown;
+	class lb_I_Module;
 
-class lb_I_Event;
-class lb_I_EventSink;
+	class lb_I_Event;
+	class lb_I_EventSink;
 
-class lb_I_Dispatcher;
-class lb_I_EventManager;
-class lb_I_EventHandler;
+	class lb_I_Dispatcher;
+	class lb_I_EventManager;
+	class lb_I_EventHandler;
 
-class lb_I_ConfigObject;
+	class lb_I_ConfigObject;
 
-class lb_I_Frame;
-class lb_I_Transfer_Data;
+	class lb_I_Frame;
+	class lb_I_Transfer_Data;
 
-// Base interface for visitors
-class lb_I_Aspect;
-class lb_I_Streamable;
-class lb_I_Integer;
-class lb_I_Long;
-class lb_I_Container;
-class lb_I_Database;
-class lb_I_Connection;
-class lb_I_ColumnBinding;
-class lb_I_BoundColumn;
-class lb_I_KeyBase;
-class lb_I_Query;
-class lb_I_MVC_View;
-class lb_I_InterfaceRepository;
-class lb_I_Element;
-class lb_I_FunctorEntity;
-class lb_I_InstanceReference;
-class lb_I_FileOperation;
-class lb_I_OutputStream;
-class lb_I_Locale;
-class lb_I_Parameter;
-class lb_I_Log;
-class lb_I_Window;
-class lb_I_wxFrame;
-class lb_I_MasterDetailFormDefinition;
-class lb_I_DatabaseReport;
-class lb_I_Project;
-class lb_I_Stream;
-class lb_I_CodeGenerator;
-class lb_I_ProjectManager;
-class lb_I_GUIApp;
-class lb_I_LogonPage;
-class lb_I_AppSelectPage;
-class lb_I_LogonHandler;
-class lb_I_DatabaseOperation;
-class lb_I_Document;
-class lb_I_Socket;
-class lb_I_Transfer_DataObject;
-class lb_I_Transfer;
-class lb_I_ThreadImplementation;
-class lb_I_Column_Types;
-class lb_I_Formular_Fields;
-class lb_I_FixedDatabaseForm;
-class lb_I_DBReportTextblock;
-class lb_I_DBReportProperties;
-class lb_I_DirLocation;
-class lb_I_Action_Parameters;
-class lb_I_ActionStep_Parameters;
-class lb_I_TestFixture;
-class lb_I_TestMethod;
-/*...e*/
+	// Base interface for visitors
+	class lb_I_Aspect;
+	class lb_I_Streamable;
+	class lb_I_Integer;
+	class lb_I_Long;
+	class lb_I_Container;
+	class lb_I_Database;
+	class lb_I_Connection;
+	class lb_I_ColumnBinding;
+	class lb_I_BoundColumn;
+	class lb_I_KeyBase;
+	class lb_I_Query;
+	class lb_I_MVC_View;
+	class lb_I_InterfaceRepository;
+	class lb_I_Element;
+	class lb_I_FunctorEntity;
+	class lb_I_InstanceReference;
+	class lb_I_FileOperation;
+	class lb_I_OutputStream;
+	class lb_I_Locale;
+	class lb_I_Parameter;
+	class lb_I_Log;
+	class lb_I_Window;
+	class lb_I_wxFrame;
+	class lb_I_MasterDetailFormDefinition;
+	class lb_I_DatabaseReport;
+	class lb_I_Project;
+	class lb_I_Stream;
+	class lb_I_CodeGenerator;
+	class lb_I_ProjectManager;
+	class lb_I_GUIApp;
+	class lb_I_LogonPage;
+	class lb_I_AppSelectPage;
+	class lb_I_LogonHandler;
+	class lb_I_DatabaseOperation;
+	class lb_I_Document;
+	class lb_I_Socket;
+	class lb_I_Transfer_DataObject;
+	class lb_I_Transfer;
+	class lb_I_ThreadImplementation;
+	class lb_I_Column_Types;
+	class lb_I_Formular_Fields;
+	class lb_I_FixedDatabaseForm;
+	class lb_I_DBReportTextblock;
+	class lb_I_DBReportProperties;
+	class lb_I_DirLocation;
+	class lb_I_Action_Parameters;
+	class lb_I_ActionStep_Parameters;
+	class lb_I_TestFixture;
+	class lb_I_TestMethod;
+	/*...e*/
 
-/*...scallback \47\ handler typedefs:0:*/
-/**
- * This is a base class for all callback able objects
- */
-///////////////////////////////////////////////////////////////
-// Type for lb protocol callback functions. This should be an interface.
-typedef lbErrCodes (LB_STDCALL lb_I_ProtocolTarget::*lbProtocolCallback)(lb_I_Transfer_Data* , lb_I_Transfer_Data*);
-typedef lbErrCodes (LB_STDCALL lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data*);
+	/*...scallback \47\ handler typedefs:0:*/
+	/**
+	 * This is a base class for all callback able objects
+	 */
+	///////////////////////////////////////////////////////////////
+	// Type for lb protocol callback functions. This should be an interface.
+	typedef lbErrCodes (LB_STDCALL lb_I_ProtocolTarget::*lbProtocolCallback)(lb_I_Transfer_Data* , lb_I_Transfer_Data*);
+	typedef lbErrCodes (LB_STDCALL lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data*);
 
 
 
-typedef lbErrCodes (LB_STDCALL lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer);
+	typedef lbErrCodes (LB_STDCALL lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer);
 
 
 #ifndef TVISION
-typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+	typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 #endif
 #ifdef TVISION
-typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+	typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 #endif
 
-typedef void (LB_STDCALL lb_I_TestFixture::*TestMethod)();
+	typedef void (LB_STDCALL lb_I_TestFixture::*TestMethod)();
 
-/*...e*/
+	/*...e*/
 
-/*
-	CL_LOG("Releasing instance");
-*/
-/*...sdefine RELEASE\40\instance\41\:0:*/
+	/*
+	   CL_LOG("Releasing instance");
+	 */
+	/*...sdefine RELEASE\40\instance\41\:0:*/
 #define RELEASE(instance) \
-	{ lbErrCodes err; \
-		if ((err = instance->release(__FILE__, __LINE__)) != ERR_NONE) { \
-			if (err == ERR_REFERENCE_COUNTING ) { \
-				_CL_LOG << "RELEASE(...) Reference count mismatch at " << __LINE__ << " in " << __FILE__ LOG_ \
-			} else { \
-			} \
+{ lbErrCodes err; \
+	if ((err = instance->release(__FILE__, __LINE__)) != ERR_NONE) { \
+		if (err == ERR_REFERENCE_COUNTING ) { \
+			_CL_LOG << "RELEASE(...) Reference count mismatch at " << __LINE__ << " in " << __FILE__ LOG_ \
 		} else { \
-			instance = NULL; \
 		} \
-	}
+	} else { \
+		instance = NULL; \
+	} \
+}
 
-/*...e*/
-/*...sdefine QI\40\source\44\ interface\44\ target\41\:0:*/
+	/*...e*/
+	/*...sdefine QI\40\source\44\ interface\44\ target\41\:0:*/
 #define QI(source, interface, target) \
-	target.setFile(__FILE__); \
+		target.setFile(__FILE__); \
 	target.setLine(__LINE__); \
-	{ \
-	 	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
-	}
-/*...e*/
-/*...e*/
+{ \
+	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
+}
+	/*...e*/
+	/*...e*/
 
-// UNKNOWN_AUTO_PTR was tested, use it.
+	// UNKNOWN_AUTO_PTR was tested, use it.
 
 #define USE_UAP
 
-/*...sclass miniLong:0:*/
-class miniLong {
-public:
-	miniLong() {
-		l = 0;
-	}
+	/*...sclass miniLong:0:*/
+	class miniLong {
+		public:
+			miniLong() {
+				l = 0;
+			}
 
-	miniLong(long _l) {
-		l = _l;
-	}
+			miniLong(long _l) {
+				l = _l;
+			}
 
-	miniLong(const miniLong& _l) {
-		l = _l.l;
-	}
+			miniLong(const miniLong& _l) {
+				l = _l.l;
+			}
 
-	~miniLong() {
-	}
+			~miniLong() {
+			}
 
-	operator long() { return l; }
+			operator long() { return l; }
 
-	miniLong& LB_STDCALL operator = (const long _l) {
-		l = _l;
-		return *this;
-	}
+			miniLong& LB_STDCALL operator = (const long _l) {
+				l = _l;
+				return *this;
+			}
 
-	long get() { return l; }
-	void set(long _l) { l = _l; }
-	long l;
-};
+			long get() { return l; }
+			void set(long _l) { l = _l; }
+			long l;
+	};
 /*...e*/
 
 /*...sclass miniString:0:*/
 class miniString {
-public:
-	miniString() {
-		ptr = (char*) malloc(1);
-		ptr[0] = 0;
-	}
-
-	virtual ~miniString() {
-		if (ptr) free(ptr);
-	}
-
-	char* get() {
-		return ptr;
-	}
-
-	void set(char* p) {
-		if (p) {
-			if (ptr) free(ptr);
-
-			ptr = (char*) malloc(strlen(p)+1);
+	public:
+		miniString() {
+			ptr = (char*) malloc(1);
 			ptr[0] = 0;
-			strcpy(ptr, p);
 		}
-	}
 
-protected:
-	char* ptr;
+		virtual ~miniString() {
+			if (ptr) free(ptr);
+		}
+
+		char* get() {
+			return ptr;
+		}
+
+		void set(char const* p) {
+			if (p) {
+				if (ptr) free(ptr);
+
+				ptr = (char*) malloc(strlen(p)+1);
+				ptr[0] = 0;
+				strcpy(ptr, p);
+			}
+		}
+
+	protected:
+		char* ptr;
 };
 /*...e*/
 
-	/* setData must check the type of this ! */
-	/* = may also be possible */
+/* setData must check the type of this ! */
+/* = may also be possible */
 /*...sclass lb_I_Unknown:0:*/
 #define STARTREF 0
 
@@ -891,13 +891,13 @@ protected:
  */
 class lb_I_Unknown {
 
-private:
-	/**
-	 * Hide this operator to prevent usage. Effect ??
-	 *
-	 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
-	 */
-//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+	private:
+		/**
+		 * Hide this operator to prevent usage. Effect ??
+		 *
+		 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
+		 */
+		//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
 
 	/**
 	 * Hide this operator to prevent usage. Effect ??
@@ -913,7 +913,7 @@ public:
 	 * it self. The pointer, you have in use, is undefined afterwards. You should set
 	 * it to NULL.
 	 */
-	virtual lbErrCodes LB_STDCALL release(char* file, int line) = 0;
+	virtual lbErrCodes LB_STDCALL release(char const* file, int line) = 0;
 
 	/**
 	 * This function returns it's location of creation. The creation of this instance
@@ -944,13 +944,13 @@ public:
 	 *
 	 * It is not clear, how to implement that.
 	 */
-	virtual char* LB_STDCALL getClassName() = 0;
+	virtual char const* LB_STDCALL getClassName() = 0;
 
 	/**
 	 * Set the module manager. This is the - so called - object hook to get new
 	 * instances of any kint of interface.
 	 */
-	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line) = 0;
+	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line) = 0;
 
 	/**
 	 * This returns the module manager, if you like to use it. It may not be set up
@@ -968,7 +968,7 @@ public:
 	 * An idea may be a dummy call to it at any point after instantiation and include code
 	 * to register all defined interfaces one per livetime.
 	 */
-	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) const = 0;
+	virtual lbErrCodes LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const = 0;
 
 	/**
 	 * This is an attempt to resolve any dangling references. As yet tried, a release on another
@@ -978,7 +978,7 @@ public:
 	 *
 	 * With the help of UAP, it may be possible, because it can hold such an ID for each reference.
 	 */
-	virtual char* LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line) = 0;
+	virtual char const* LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line) = 0;
 
         /**
          * This was used yet for put an object in a container. After inserting the object
@@ -1125,7 +1125,7 @@ public:
 				_autoPtr = NULL; \
 			} \
 		} \
-		void LB_STDCALL setFile(char* __file) { \
+		void LB_STDCALL setFile(char const* __file) { \
 			if (_file != NULL) { \
 				free(_file); \
 			} \
@@ -1163,7 +1163,7 @@ public:
 		interface* LB_STDCALL operator -> () const { \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer") \
 			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
-					char* className = _autoPtr->getClassName(); \
+					char const* className = _autoPtr->getClassName(); \
 					int len = strlen(className)+1; \
 					initialized = true; \
 					if (attachedClassName != NULL) free(attachedClassName); \
@@ -1176,7 +1176,7 @@ public:
 		interface* LB_STDCALL operator -> () { \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer") \
 			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
-					char* className = _autoPtr->getClassName(); \
+					char const* className = _autoPtr->getClassName(); \
 					int len = strlen(className)+1; \
 					initialized = true; \
 					if (attachedClassName != NULL) free(attachedClassName); \
@@ -1189,14 +1189,14 @@ public:
 		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator++ on invalid object pointer") \
-			_autoPtr->queryInterface(#interface, (void**) &temp, __FILE__, __LINE__); \
+			_autoPtr->queryInterface((char*) #interface, (void**) &temp, (char*) __FILE__, __LINE__); \
 			return *this; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr == NULL) return *this; \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator-- on invalid object pointer") \
-			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
+			if (_autoPtr->release((char*) __FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
 		interface ** LB_STDCALL operator & () { \
@@ -1359,16 +1359,16 @@ public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
 	    further_lock = state; \
 	} \
-	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line); \
+	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line); \
 	lb_I_Module*    LB_STDCALL getModuleManager(); \
 	void 		LB_STDCALL resetRefcount(); \
 	void 		LB_STDCALL setDebug(int i = 1) { debug_macro = i; } \
-	lbErrCodes 	LB_STDCALL release(char* file, int line); \
-	char* 		LB_STDCALL getClassName(); \
+	lbErrCodes 	LB_STDCALL release(char const* file, int line); \
+	char const*	LB_STDCALL getClassName(); \
 	char*           LB_STDCALL getCreationLoc() const; \
 	int 		LB_STDCALL deleteState(); \
-	char* 		LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line); \
-	lbErrCodes 	LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) const; \
+	char const*	LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line); \
+	lbErrCodes 	LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const; \
 	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
 	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
 	int 		LB_STDCALL getRefCount() { return ref; } \
@@ -1388,10 +1388,10 @@ public: \
  */
 
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
-char* LB_STDCALL classname::getClassName() { \
+char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
-char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
+char const* LB_STDCALL classname::_queryInterface(char const* name, void** unknown, char const* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
 	ID[0] = 0; \
 	strcat(ID, name); \
@@ -1416,7 +1416,7 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 		return _mm.getPtr(); \
 } \
 \
-void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
+void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char const* file, int line) { \
 	lastSMFile.set(file); \
 	lastSMLine = line; \
 	if (m == NULL) { \
@@ -1435,7 +1435,7 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	if (manager != NULL) { \
 		char *datei = strrchr(file, '\\'); \
 		if (datei == NULL) \
-			datei = file; \
+			datei = (char*) file; \
 		else \
 			datei++; \
 		m->notify_create(this, #classname, datei, line); \
@@ -1454,7 +1454,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	if (manager != NULL) return manager->getCreationLoc(buf); \
 	return strdup("Have no manager - location can't be found"); \
 } \
-lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
+lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 	if (_TRMemValidate(this)) { \
 	_CL_VERBOSE << #classname << "::release(" << __FILE__ << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	ref--; \
@@ -1464,13 +1464,13 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 		manager--; \
 	} \
         if (manager != NULL) { \
-        	manager->notify_release(this, #classname, file, line); \
+        	manager->notify_release(this, (char*) #classname, file, line); \
         } \
 	\
         if (ref == STARTREF) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
-        			manager->notify_destroy(this, #classname, file, line); \
+        			manager->notify_destroy(this, (char*) #classname, file, line); \
         			\
         			if (instance_counted.get() == 112233) { \
         				InstanceCount(-1); \
@@ -1546,7 +1546,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 } \
 \
-lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
+lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
 	char* buf = (char*) malloc(1000); \
 	buf[0] = 0; \
 	char _classname[100] = #classname; \
@@ -1605,10 +1605,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
  */
 
 #define BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(classname) \
-char* LB_STDCALL classname::getClassName() { \
+char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
-char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
+char const* LB_STDCALL classname::_queryInterface(char const* name, void** unknown, char const* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
 	ID[0] = 0; \
 	strcat(ID, name); \
@@ -1633,7 +1633,7 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 		return _mm.getPtr(); \
 } \
 \
-void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
+void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char const* file, int line) { \
 	if (m == NULL) { \
 		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
 		return; \
@@ -1649,7 +1649,7 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	if (manager != NULL) { \
 		char *datei = strrchr(file, '\\'); \
 		if (datei == NULL) \
-			datei = file; \
+			datei = (char*) file; \
 		else \
 			datei++; \
 		manager->notify_create(this, #classname, datei, line); \
@@ -1668,19 +1668,19 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	if (manager != NULL) return manager->getCreationLoc(buf); \
 	return strdup("Have no manager - location can't be found"); \
 } \
-lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
+lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 	if (_TRMemValidate(this)) { \
         ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
         if (manager != NULL) { \
-        	manager->notify_release(this, #classname, file, line); \
+        	manager->notify_release(this, (char*) #classname, file, line); \
         } \
 	\
         if (ref == STARTREF) { \
         	if (manager != NULL) { \
-        		if (manager->can_delete(this, #classname) == 1)	{ \
-        			manager->notify_destroy(this, #classname, file, line); \
+        		if (manager->can_delete(this, (char*) #classname) == 1)	{ \
+        			manager->notify_destroy(this, (char*) #classname, file, line); \
         			printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", STARTREF); \
         			ref++; \
         			return ERR_RELEASED; \
@@ -1740,7 +1740,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 } \
 \
-lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
+lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
 	char* buf = (char*) malloc(1000); \
 	buf[0] = 0; \
 	char _classname[100] = #classname; \
@@ -1834,7 +1834,7 @@ typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**,
 
 #define DECLARE_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line); \
 }
 
 /** \def IMPLEMENT_FUNCTOR Implements the functor in a cpp file.
@@ -1842,7 +1842,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  */
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	clsname* instance = new clsname(); \
@@ -1876,7 +1876,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  */
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line); \
 }
 
 /** \def IMPLEMENT_SINGLETON_FUNCTOR Implements the singleton functor in a cpp file.
@@ -1918,7 +1918,7 @@ public: \
 singletonHolder_##name singleton_##name; \
 \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	if (singleton_##name.get() == NULL) { \

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.85 $
+ * $Revision: 1.86 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.85 2009/09/09 17:45:40 uid108140 Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.86 2009/11/12 07:55:33 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.86  2009/11/12 07:55:33  lollisoft
+ * Corrected the core macros and functions to reduce deprecated const string warning.
+ *
  * Revision 1.85  2009/09/09 17:45:40  uid108140
  * Added substitutePlaceholder function. Some more docs.
  *
@@ -368,7 +371,7 @@ public:
 	/**
 	 * Returns the type of this key.
 	 */
-	virtual char* LB_STDCALL getKeyType() const = 0;
+	virtual char const* LB_STDCALL getKeyType() const = 0;
 
 	/**
 	 * Char representation of the key.
@@ -395,7 +398,7 @@ public: \
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const; \
     virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const; \
 \
-    virtual char* LB_STDCALL getKeyType() const; \
+    virtual char const* LB_STDCALL getKeyType() const; \
 \
     virtual char* LB_STDCALL charrep() const;
 /*...e*/
@@ -1577,13 +1580,13 @@ protected:
         virtual ~lb_I_Module() {}
 public:
 
-	virtual char* LB_STDCALL getCreationLoc(char* addr) = 0;
-        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char* implName, char* file = "", int line = 0) = 0;
-        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
-        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
-        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
+	virtual char* LB_STDCALL getCreationLoc(char const* addr) = 0;
+        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
+        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
 
-        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char* implName, char* file = "", int line = 0) = 0;
+        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
 
         /**
          * This function loads a module and stores the modulehandle in an array
