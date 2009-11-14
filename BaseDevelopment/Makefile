@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.204 $
+# * $Revision: 1.205 $
 # * $Name:  $
-# * $Id: Makefile,v 1.204 2009/11/08 11:49:32 lollisoft Exp $
+# * $Id: Makefile,v 1.205 2009/11/14 10:00:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.205  2009/11/14 10:00:27  lollisoft
+# * Corrected build system to support OSX 10.5.8
+# *
 # * Revision 1.204  2009/11/08 11:49:32  lollisoft
 # * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
 # *
@@ -713,15 +716,18 @@ OSPLATFORM_=$(OSPLATFORM)
 #OSVERSION=9.0.0
 #OSPLATFORM=ppc
 
+OSNAME=Panther
 
 ifeq ($(OSVERSION_), 9.0.0)
 OSNAME=Leopard
-else
+endif
+
 ifeq ($(OSVERSION_), 9.1.0)
 OSNAME=Leopard
-else
-OSNAME=Leopard
 endif
+
+ifeq ($(OSVERSION_), 9.8.0)
+OSNAME=Leopard
 endif
 
 endif
@@ -1823,7 +1829,7 @@ endif
 #	$(MAKE) -s -C $@
 
 lbHook: dummy
-	@echo prefix='$(prefix)'
+	@echo prefix='$(prefix)' OSNAME=$(OSNAME)
 ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
