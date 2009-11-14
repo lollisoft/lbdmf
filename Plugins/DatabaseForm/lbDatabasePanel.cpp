@@ -1179,6 +1179,17 @@ bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(char* sql, lb_I_
 			// Only when column is not yet in the list of columns
 			if (columns->exists(&key) == 0) {
 				// Only not nullable columns that are missing in the query are added to the resulting list
+				_LOG << "Check if column " << column->charrep() << " is mandatory." LOG_
+				if (tempQuery->isNullable(column->charrep())) {
+					_LOG << "The column is nullable." LOG_
+				} else {
+					_LOG << "The column is not nullable." LOG_
+				}
+				if (tempQuery->hasDefaultValue(column->charrep())) {
+					_LOG << "The column has a default value." LOG_
+				} else {
+					_LOG << "The column has no default value." LOG_
+				}
 				if (!tempQuery->isNullable(column->charrep())  && !tempQuery->hasDefaultValue(column->charrep())) {
 					QI(tempname, lb_I_Unknown, ukTab)
 					addcolumns->insert(&ukTab, &key);
