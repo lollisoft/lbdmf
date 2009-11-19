@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.205 $
+# * $Revision: 1.206 $
 # * $Name:  $
-# * $Id: Makefile,v 1.205 2009/11/14 10:00:27 lollisoft Exp $
+# * $Id: Makefile,v 1.206 2009/11/19 16:14:16 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.206  2009/11/19 16:14:16  lollisoft
+# * Optimized CC build to write mkmk into /bin.
+# *
 # * Revision 1.205  2009/11/14 10:00:27  lollisoft
 # * Corrected build system to support OSX 10.5.8
 # *
@@ -1571,7 +1574,7 @@ ifeq ($(OSTYPE), solaris)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(HOME)/bin
+	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
 endif
 
@@ -1582,7 +1585,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(HOME)/bin
+	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
 endif
 
@@ -1593,7 +1596,7 @@ ifeq ($(OSTYPE), linux)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(HOME)/bin
+	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
 endif
 
