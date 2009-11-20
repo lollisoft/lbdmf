@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.206 $
+# * $Revision: 1.207 $
 # * $Name:  $
-# * $Id: Makefile,v 1.206 2009/11/19 16:14:16 lollisoft Exp $
+# * $Id: Makefile,v 1.207 2009/11/20 19:32:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.207  2009/11/20 19:32:53  lollisoft
+# * Corrected HOME path usage to become prefix.
+# *
 # * Revision 1.206  2009/11/19 16:14:16  lollisoft
 # * Optimized CC build to write mkmk into /bin.
 # *
@@ -1607,7 +1610,7 @@ ifeq ($(OSTYPE), osx)
 
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
-	cp $@/mkmk $(HOME)/bin
+	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
 
 ../vendor/propgrid: dummy
@@ -1633,12 +1636,12 @@ endif
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 ../vendor/wxARG/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxActiveRecordGenerator -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-	cp ../vendor/wxARG/src/wxActiveRecordGenerator $(HOME)/bin
+	cp ../vendor/wxARG/src/wxActiveRecordGenerator $(prefix)/bin
 
 ../vendor/wxShapeFramework/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
@@ -1676,7 +1679,7 @@ ifeq ($(OSTYPE), solaris)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 #../Test/GUI/wxWrapper: dummy
 #	$(MAKE) -s -C $@ -f makefile.wx-sample
@@ -1714,7 +1717,7 @@ ifeq ($(OSTYPE), linux)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 #../Test/GUI/wxWrapper: dummy
 #	$(MAKE) -s -C $@ -f makefile.wx-sample
@@ -1752,7 +1755,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
-	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 #../Test/GUI/wxWrapper: dummy
 #	$(MAKE) -s -C $@ -f makefile.wx-sample
