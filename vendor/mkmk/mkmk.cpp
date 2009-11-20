@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.105 $
+ * $Revision: 1.106 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.105 2009/11/08 11:49:32 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.106 2009/11/20 11:18:11 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.106  2009/11/20 11:18:11  lollisoft
+ * Corrected bin directory to put executables into.
+ *
  * Revision 1.105  2009/11/08 11:49:32  lollisoft
  * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
  *
@@ -1035,7 +1038,7 @@ void writeExeTarget(char* modulename) {
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
-  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
+  printf("\t\t$(CP) $(PROGRAM) $(prefix)/bin\n");
 #endif
 
 
@@ -1808,7 +1811,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.105 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.106 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
