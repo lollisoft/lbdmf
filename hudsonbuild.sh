@@ -8,7 +8,7 @@ echo \# >> makefile
 
 echo export DEVROOT=`pwd` >> makefile
 echo export prefix=`pwd` >> makefile
-echo export PATH=`pwd`/bin:/usr/local/bin:$PATH >> makefile
+echo export PATH=`pwd`/bin:/usr/bin:/usr/local/bin:$PATH >> makefile
 echo export MODULELIB=lbModule.so >> makefile
 echo export LBXMLFUNCTOR=getlbDOMConfigInstance >> makefile
 echo export LBMODULEFUNCTOR=getlb_ModuleInstance >> makefile
