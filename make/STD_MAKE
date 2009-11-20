@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.127 $
+# * $Revision: 1.128 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.127 2009/11/14 10:00:15 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.128 2009/11/20 14:02:13 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.128  2009/11/20 14:02:13  lollisoft
+# * Fixed include of mpatrol.
+# *
 # * Revision 1.127  2009/11/14 10:00:15  lollisoft
 # * Corrected build system to support OSX 10.5.8
 # *
@@ -1066,6 +1069,19 @@ ifeq ($(DEBUG), no)
 DEBUG_CXX_FLAGS=
 endif
 
+
+ifeq ($(DEBUG_MEMORY), no) 
+STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
+	-I /usr/include \
+	-I /usr/include/c++/3.3.3/backward \
+	-I /usr/include/c++/4.3 \
+	-I . 
+endif
+
+ifeq ($(DEBUG_MEMORY), yes)
 STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/interfaces \
 	-I $(DEVROOT)$(RELPATH)/include \
@@ -1075,6 +1091,7 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I /usr/include/c++/4.3 \
 	-I $(HOME)/mpatrol/src \
 	-I . 
+endif
 
 STD_INCL_CPP = $(STD_INCL)
 
