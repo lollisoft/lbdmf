@@ -102,6 +102,7 @@ char* LB_STDCALL lbPluginModuleTest::getTestFixture() {
 
 lbPluginModuleTest::lbPluginModuleTest() {
 	ref = STARTREF;
+	_LOG << "lbPluginModuleTest::lbPluginModuleTest() called." LOG_
 }
 
 lbPluginModuleTest::~lbPluginModuleTest() {

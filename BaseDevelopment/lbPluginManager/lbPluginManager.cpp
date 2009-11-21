@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.67 2009/11/08 11:49:32 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.68 2009/11/21 10:35:07 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.68  2009/11/21 10:35:07  lollisoft
+ * Corrected unittest menu creation.
+ *
  * Revision 1.67  2009/11/08 11:49:32  lollisoft
  * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
  *
@@ -887,7 +890,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 	lbErrCodes err = ERR_NONE;
 	isInitialized = true;
 	isServerInitialized = true;
-	isUnitTestInitialized = true;
 	
 	// Why I have done this? It's rubbish.
 	
@@ -1111,8 +1113,8 @@ void LB_STDCALL lbPluginManager::initialize() {
 	
 	free(pluginDir);
 	free(toFind);
-		
-	if (PluginUnitTestModules->Count() > 0) {
+	
+	if (!isUnitTestInitialized && PluginUnitTestModules->Count() > 0) {
 		_LOG << "Have found unit tests in some plugin modules. Activate menu for starting the tests." LOG_
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
@@ -1126,6 +1128,8 @@ void LB_STDCALL lbPluginManager::initialize() {
 		//meta->addMenuBar(_trans("&Unittests"));
 		meta->addMenuEntry(_trans("&Unittests"), "run Unit Tests", "runUnitTests", "");
 	}
+
+	isUnitTestInitialized = true;
 }
 
 /*...e*/
