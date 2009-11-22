@@ -2132,11 +2132,11 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		wxPG_DEFAULT_STYLE );
 
 	if (currentProperties == NULL) {
-		pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
-		pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
-		pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+		pg->Append ( new wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+		pg->Append ( new wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
+		pg->Append ( new wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
 
-		pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
+		pg->Append ( new wxLongStringProperty (wxT("LongStringProperty"),
 		   wxPG_LABEL,
 		   wxT("This is much longer string than the ")
 		   wxT("first one. Edit it by clicking the button.")));
@@ -2161,10 +2161,10 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
-	if (pgid.IsOk()) {
+	if (wxPGIdIsOk(pgid)) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
-		pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+		pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
 	}
 }
 /*...e*/
@@ -2180,10 +2180,10 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
-	if (pgid.IsOk()) {
+	if (wxPGIdIsOk(pgid)) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
-		pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+		pg->Append(new wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
 	}
 }
 /*...e*/
@@ -2199,10 +2199,10 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
-	if (pgid.IsOk()) {
+	if (wxPGIdIsOk(pgid)) {
 		pg->SetPropertyValueString(pgid, s->charrep());
 	} else {
-		pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+		pg->Append(new wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 	}
 }
 /*...e*/
@@ -2218,10 +2218,10 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
-	if (pgid.IsOk()) {
+	if (wxPGIdIsOk(pgid)) {
 		pg->SetPropertyValueBool(pgid, s->getData());
 	} else {
-		pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
+		pg->Append(new wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
 	}
 }
 /*...e*/
@@ -2239,10 +2239,10 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 
 	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
-	if (pgid.IsOk()) {
+	if (wxPGIdIsOk(pgid)) {
 		pg->SetPropertyValueLong(pgid, i->getData());
 	} else {
-		pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
+		pg->Append(new wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
 	}
 }
 /*...e*/
