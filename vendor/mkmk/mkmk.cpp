@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.107 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.106 2009/11/20 11:18:11 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.107 2009/11/22 16:38:36 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.107  2009/11/22 16:38:36  lollisoft
+ * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE. Probgrid seems to not correctly initialize a variable that causes a division with zero (hack).
+ *
  * Revision 1.106  2009/11/20 11:18:11  lollisoft
  * Corrected bin directory to put executables into.
  *
@@ -1402,7 +1405,7 @@ void write_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(LIBS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
@@ -1811,7 +1814,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.106 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.107 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

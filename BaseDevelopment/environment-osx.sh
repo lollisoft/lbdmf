@@ -7,6 +7,7 @@ LBMODULEFUNCTOR=getlb_ModuleInstance
 DEVROOT=~/develop
 LD_LIBRARY_PATH=~/lib:
 OSTYPE=osx
+OSVERSION=`uname -r`
 PATH="/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin"
 
 export CVS_RSH
@@ -16,4 +17,5 @@ export LBMODULEFUNCTOR
 export DEVROOT
 export LD_LIBRARY_PATH
 export OSTYPE
+export OSVERSION
 export PATH

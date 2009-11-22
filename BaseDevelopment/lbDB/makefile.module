@@ -73,7 +73,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 VENDORLIBS= /usr/local/lib/libodbc.dylib
-LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
+LIBS=$(OSX_ARCH) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif

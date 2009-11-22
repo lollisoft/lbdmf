@@ -132,11 +132,11 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../databaselayer/include -I ../sqlite
 OBJDEP=
-C_ELFOPS += `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+C_ELFOPS += $(OSX_ARCH) `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
-L_OPS = -L. -F$(prefix)/lib `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -o
+L_OPS = $(OSX_ARCH) -L. -F$(prefix)/lib `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -o
 endif
 
 ifeq ($(DEBUG), no)
@@ -152,13 +152,13 @@ ifeq ($(LB_USE_FRAMEWORKS), no)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
-C_ELFOPS += -L. `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+C_ELFOPS += $(OSX_ARCH) -L. `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
 endif
 
-L_OPS = -lstdc++ -L. `wx-config --inplace --libs` -o
+L_OPS = $(OSX_ARCH) -lstdc++ -L. `wx-config --inplace --libs` -o
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so $(HOME)/lib/wxAUI.so 
 endif
 

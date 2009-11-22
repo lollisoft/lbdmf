@@ -1943,7 +1943,8 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
 	// Declare a binary buffer to retrieve 5000 bytes of data at a time.
 	SQLCHAR       BinaryPtr[1000];
 	SQLUINTEGER   PartID;
-	SQLINTEGER    PartIDInd, BinaryLenOrInd, NumBytes;
+	SQLINTEGER    PartIDInd, NumBytes;
+	SQLLEN	      BinaryLenOrInd;
 	SQLRETURN     rc, retcode;
 	SQLHSTMT      hstmt_blob;
 

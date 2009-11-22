@@ -3585,7 +3585,7 @@ void wxPropertyGrid::Init1()
     m_gutterWidth = wxPG_GUTTER_MIN;
     m_subgroup_extramargin = 10;
 
-    m_lineHeight = 0;
+    m_lineHeight = 1;
 
     m_width = m_height = m_fWidth = 0;
 

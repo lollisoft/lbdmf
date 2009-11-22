@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.207 $
+# * $Revision: 1.208 $
 # * $Name:  $
-# * $Id: Makefile,v 1.207 2009/11/20 19:32:53 lollisoft Exp $
+# * $Id: Makefile,v 1.208 2009/11/22 16:38:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.208  2009/11/22 16:38:36  lollisoft
+# * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE. Probgrid seems to not correctly initialize a variable that causes a division with zero (hack).
+# *
 # * Revision 1.207  2009/11/20 19:32:53  lollisoft
 # * Corrected HOME path usage to become prefix.
 # *
@@ -733,6 +736,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 9.8.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.0.0)
 OSNAME=Leopard
 endif
 
