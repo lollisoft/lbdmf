@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.128 $
+# * $Revision: 1.129 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.128 2009/11/20 14:02:13 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.129 2009/11/22 21:35:14 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.129  2009/11/22 21:35:14  lollisoft
+# * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE.
+# *
 # * Revision 1.128  2009/11/20 14:02:13  lollisoft
 # * Fixed include of mpatrol.
 # *
@@ -1264,6 +1267,10 @@ ifeq ($(OSVERSION_), 9.8.0)
 OSNAME=Leopard
 endif
 
+ifeq ($(OSVERSION_), 10.0.0)
+OSNAME=Leopard
+endif
+
 COMPILER_VERSION=
 #COMPILER_VERSION=-4
 
@@ -1280,16 +1287,18 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I /usr/include \
 	-I . 
 
+OSX_ARCH=-arch i386
+
 OBJ =o
 ifeq ($(DEBUG), no)
-C_OPS   = -c -DUNIX -DLINUX -DOSX
+C_OPS   = -c -DUNIX -DLINUX -DOSX $(OSX_ARCH)
 endif
 ifeq ($(DEBUG), yes)
-C_OPS   = -c -g -DUNIX -DLINUX -DOSX
+C_OPS   = -c -g -DUNIX -DLINUX -DOSX $(OSX_ARCH)
 endif
 C_SOOPS = $(C_OPS) -D$(OSNAME)
 C_ELFOPS= $(C_OPS) -D$(OSNAME)
-L_OPS   = -o
+L_OPS   = $(OSX_ARCH) -o
 LIBS    = #-lc /usr/lib/libSystem.dylib #-lcurses #-llibstdc++
 #-lefence
 CC =c++$(COMPILER_VERSION)
