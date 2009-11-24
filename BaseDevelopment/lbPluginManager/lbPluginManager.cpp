@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.68 2009/11/21 10:35:07 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.69 2009/11/24 21:30:47 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.69  2009/11/24 21:30:47  lollisoft
+ * Lost initialisation of flag to only once create an unit test menu.
+ *
  * Revision 1.68  2009/11/21 10:35:07  lollisoft
  * Corrected unittest menu creation.
  *
@@ -451,6 +454,7 @@ lbPluginManager::lbPluginManager() {
 	lastServerPlugin = false;
 	lastUnitTestPlugin = false;
 	isInitialized = false;
+	isUnitTestInitialized = false;
 	REQUEST(getModuleInstance(), lb_I_String, MyPluginDir)
 	_CL_LOG << "lbPluginManager::lbPluginManager() called." LOG_
 }
