@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.167 2009/11/08 11:49:32 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.168 2009/11/25 21:45:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.167 $
+ * $Revision: 1.168 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.167 2009/11/08 11:49:32 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.168 2009/11/25 21:45:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.168  2009/11/25 21:45:54  lollisoft
+ * Fixed copy & paste bug.
+ *
  * Revision 1.167  2009/11/08 11:49:32  lollisoft
  * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
  *
@@ -2231,6 +2234,7 @@ int MyApp::OnExit() {
 
 void MyApp::FlushMenubarQueue() {
 	if (menubarQueue != NULL) {
+		menubarQueue->finishIteration();
 		while (menubarQueue->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			uk = menubarQueue->nextElement();
@@ -2242,7 +2246,9 @@ void MyApp::FlushMenubarQueue() {
 }
 
 void MyApp::FlushMenuentryQueue() {
+	_LOG << "MyApp::FlushMenuentryQueue() called." LOG_
 	if (menuentryQueue != NULL) {
+		menuentryQueue->finishIteration();
 		while (menuentryQueue->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			uk = menuentryQueue->nextElement();
@@ -2767,11 +2773,11 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 		
 		QI(key, lb_I_KeyBase, menuentrykey)
 		
-		if (menubarQueue->exists(&menuentrykey) != 0) {
-			menubarQueue->remove(&menuentrykey);
+		if (menuentryQueue->exists(&menuentrykey) != 0) {
+			menuentryQueue->remove(&menuentrykey);
 		}
-		
-		menubarQueue->insert(&uk, &menuentrykey);
+		_LOG << "Frame not yet up. Put new menu entry into the queue. '" << menuentrykey->charrep() << "'" LOG_
+		menuentryQueue->insert(&uk, &menuentrykey);
 	} else {
 		parameter->setData("menubar");
 		param->getUAPString(*&parameter, *&menubar);
