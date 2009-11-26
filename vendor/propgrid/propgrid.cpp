@@ -2982,12 +2982,11 @@ void wxPGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 
     // Update everything inside the box
     wxRect r = GetUpdateRegion().GetBox();
-    wxRect fullRect = GetRect();
 
     // FIXME: This is just a workaround for a bug that causes splitters not
     //        to paint when other windows are being dragged over the grid.
-    r.x = fullRect.x;
-    r.width = fullRect.width;
+    r.x = 0;
+    r.width = GetClientSize().x;
 
     // Repaint this rectangle
     pg->DrawItems( dc, r.y, r.y + r.height, &r );
@@ -5113,8 +5112,6 @@ void wxPropertyGrid::OnPaint( wxPaintEvent& WXUNUSED(event) )
     dc.DrawRectangle(r);
 }
 
-// -----------------------------------------------------------------------
-
 void wxPropertyGrid::DrawExpanderButton( wxDC& dc, const wxRect& rect,
                                          wxPGProperty* property ) const
 {
@@ -5242,19 +5239,15 @@ void wxPropertyGrid::DrawItems( wxDC& dc,
 
         if ( dcPtr )
         {
-            dc.SetClippingRegion( *clipRect );
             paintFinishY = DoDrawItems(*dcPtr, NULL, NULL, clipRect,
                                        isBuffered);
 
-            dc.DestroyClippingRegion();
-
-            // Clear area beyond last painted item?
-            if ( paintFinishY < (clipRect->y+clipRect->height) )
+            if ( paintFinishY <= (clipRect->y+clipRect->height) )
             {
                 dcPtr->SetPen(m_colEmptySpace);
                 dcPtr->SetBrush(m_colEmptySpace);
                 dcPtr->DrawRectangle(0, paintFinishY, m_width,
-                                     (clipRect->y+clipRect->height));
+                                     dcPtr->GetSize().y - paintFinishY);
             }
         }
 
@@ -5264,7 +5257,6 @@ void wxPropertyGrid::DrawItems( wxDC& dc,
             dc.Blit(clipRect->x, clipRect->y, clipRect->width,
                     clipRect->height,
                     bufferDC, 0, 0, wxCOPY );
-            dc.DestroyClippingRegion(); // Is this really necessary?
             delete bufferDC;
         }
     #endif
@@ -5306,7 +5298,7 @@ int wxPropertyGrid::DoDrawItems( wxDC& dc,
     }
 
     if ( m_frozen || m_height < 1 || firstItem == NULL )
-        return clipRect->y;
+        return 0;
 
     wxCHECK_MSG( !m_pState->m_itemsAdded, clipRect->y, wxT("no items added") );
     wxASSERT( m_pState->m_properties->GetCount() );
@@ -5326,9 +5318,10 @@ int wxPropertyGrid::DoDrawItems( wxDC& dc,
 
     // Entire range outside scrolled, visible area?
     if ( firstItemTopY >= (int)m_pState->GetVirtualHeight() || lastItemBottomY <= 0 )
-        return clipRect->y;
+        return 0;
 
-    wxCHECK_MSG( firstItemTopY < lastItemBottomY, clipRect->y, wxT("invalid y values") );
+    wxCHECK_MSG( firstItemTopY < lastItemBottomY, clipRect->y,
+                 wxT("invalid y values") );
 
     /*
     wxLogDebug(wxT("  -> DoDrawItems ( \"%s\" -> \"%s\", height=%i (ch=%i), clipRect = 0x%lX )"),
@@ -5448,6 +5441,7 @@ int wxPropertyGrid::DoDrawItems( wxDC& dc,
     m_visPropArray[arrInd] = NULL;
 
     int gridWidth = state->m_width;
+    int rowHeight = m_fontHeight+(m_spacingy*2)+1;
 
     y = firstItemTopY;
     for ( arrInd=0;
@@ -5458,7 +5452,6 @@ int wxPropertyGrid::DoDrawItems( wxDC& dc,
         wxPGProperty* nextP = (wxPGProperty*) m_visPropArray[arrInd+1];
         wxPGProperty* parent = p->GetParent();
 
-        int rowHeight = m_fontHeight+(m_spacingy*2)+1;
         int textMarginHere = x;
         int renderFlags = wxPGCellRenderer::Control;
 
@@ -5764,7 +5757,7 @@ int wxPropertyGrid::DoDrawItems( wxDC& dc,
     }
 #endif
 
-    return y + yRelMod;
+    return y;
 }
 
 // -----------------------------------------------------------------------
@@ -7724,8 +7717,10 @@ void wxPropertyGrid::SetVirtualWidth( int width )
 
 void wxPropertyGridState::SetVirtualWidth( int width )
 {
+    // Sometimes width less than 0 is offered. Let's make things easy for
+    // everybody and deal with it here.
     if ( width < 0 )
-        return;
+        width = 0;
 
     wxPropertyGrid* pg = GetGrid();
     int gw = pg->GetClientSize().x;

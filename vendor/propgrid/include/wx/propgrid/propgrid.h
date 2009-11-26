@@ -84,7 +84,7 @@
 // for "configure" scripts under unix, use them.
 #define wxPROPGRID_MAJOR          1
 #define wxPROPGRID_MINOR          4
-#define wxPROPGRID_RELEASE        8
+#define wxPROPGRID_RELEASE        9
 
 // For non-Unix systems (i.e. when building without a configure script),
 // users of this component can use the following macro to check if the
@@ -5870,6 +5870,7 @@ public:
         wxVariant v(&value);
         SetPropVal( id, v );
     }
+#endif
 
     /** Sets value (wxVariant&) of a property.
     
@@ -5881,7 +5882,6 @@ public:
     {
         SetPropVal( id, value );
     }
-#endif
 
     /** Sets value (wxPoint&) of a property.
     */
@@ -7855,8 +7855,6 @@ protected:
     // Initializes some members (called by Create and complex constructor).
 	void Init2();
 
-	void OnPaint(wxPaintEvent &event );
-
     // main event receivers
     void OnMouseMove( wxMouseEvent &event );
     void OnMouseMoveBottom( wxMouseEvent &event );
@@ -7868,6 +7866,7 @@ protected:
     void OnKeyUp( wxKeyEvent &event );
     void OnNavigationKey( wxNavigationKeyEvent& event );
     void OnResize( wxSizeEvent &event );
+    void wxPropertyGrid::OnPaint( wxPaintEvent& event );
 
     // event handlers
     bool HandleMouseMove( int x, unsigned int y, wxMouseEvent &event );
