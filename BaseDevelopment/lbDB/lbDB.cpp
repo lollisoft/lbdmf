@@ -3030,8 +3030,8 @@ bool LB_STDCALL lbQuery::hasDefaultValue(char* columnname) {
 		retcode = SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
 		if (retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
-			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-				_LOG << "Error: Some error happened while fetching columns." LOG_
+			if (retcode == SQL_ERROR/* || retcode == SQL_SUCCESS_WITH_INFO*/) {
+				_LOG << "Error: Some error happened while fetching columns. (" << retcode << ")" LOG_
 				meta->setStatusText("Info", "Get columns failed.");
 				SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
 				return false;
@@ -6220,12 +6220,19 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 
 		while(retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
-			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-				_LOG << "Error: Some error happened while fetching columns." LOG_
+			if (retcode == SQL_ERROR/* || retcode == SQL_SUCCESS_WITH_INFO*/) {
+				_LOG << "Error: Some error happened while fetching columns. (" << retcode << ")" LOG_
 				meta->setStatusText("Info", "Get columns failed.");
-				columns->deleteAll();
+
+				UAP(lb_I_Unknown, uk)
+				QI(columns, lb_I_Unknown, uk)
+				columnsPageContainer->insert(&uk, &key);
+				columns--;
+				REQUEST(getModuleInstance(), lb_I_Container, columns)
+				_page = 0;
+
 				SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
-				return columns.getPtr();
+				return columnsPageContainer.getPtr();
 			 }
 			 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
 				 ;   /* Process fetched data */
