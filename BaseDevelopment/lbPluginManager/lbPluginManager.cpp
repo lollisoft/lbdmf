@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.69 2009/11/24 21:30:47 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.70 2009/11/27 15:57:02 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.70  2009/11/27 15:57:02  lollisoft
+ * Missed return value.
+ *
  * Revision 1.69  2009/11/24 21:30:47  lollisoft
  * Lost initialisation of flag to only once create an unit test menu.
  *
@@ -362,7 +365,7 @@ extern "C" {
 
 /*...sclass lbPluginManager:0:*/
 /// \brief Plugin manager implementation.
-class lbPluginManager : 
+class lbPluginManager :
 	public lb_I_PluginManager,
 	public lb_I_EventHandler
 {
@@ -371,7 +374,7 @@ public:
 	lbPluginManager();
 	virtual ~lbPluginManager();
 
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 
 	DECLARE_LB_UNKNOWN()
 
@@ -393,7 +396,7 @@ public:
 	lb_I_String* LB_STDCALL getPluginDirectory();
 
 	bool LB_STDCALL isRegistered(const char* name);
-        
+
 private:
 
 
@@ -405,7 +408,7 @@ private:
 	bool LB_STDCALL beginEnumUnitTestPlugins();
     lb_I_Plugin* LB_STDCALL nextUnitTestPlugin();
 
-	
+
 	bool isInitialized;
 	bool begunEnumerate;
 	bool firstEnumerate;
@@ -413,22 +416,22 @@ private:
 	bool isServerInitialized;
 	bool begunServerEnumerate;
 	bool firstServerEnumerate;
-	
+
 	bool isUnitTestInitialized;
 	bool begunUnitTestEnumerate;
 	bool firstUnitTestEnumerate;
-	
+
 	UAP(lb_I_Container, PluginModules)
 	UAP(lb_I_Container, PluginContainer)
-	
+
 	UAP(lb_I_Container, PluginServerModules)
 	UAP(lb_I_Container, PluginServerContainer)
-	
+
 	UAP(lb_I_Container, PluginUnitTestModules)
 	UAP(lb_I_Container, PluginUnitTestContainer)
-	
+
 	UAP(lb_I_String, MyPluginDir)
-	
+
 	bool firstPlugin;
 	bool lastPlugin;
 	bool firstServerPlugin;
@@ -474,7 +477,7 @@ bool LB_STDCALL lbPluginManager::isRegistered(const char* name) {
 	while (PluginModules->hasMoreElements()) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_PluginModule, plM)
-			
+
 		uk = PluginModules->nextElement();
 
 		QI(uk, lb_I_PluginModule, plM)
@@ -500,7 +503,7 @@ void LB_STDCALL lbPluginManager::unload() {
 
 	if (PluginModules != NULL) {
 		if (PluginModules->getRefCount() > 1) {
-			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginModules!" LOG_ 
+			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginModules!" LOG_
 		}
 		PluginModules--;
 		PluginModules.resetPtr();
@@ -511,37 +514,37 @@ void LB_STDCALL lbPluginManager::unload() {
 		PluginContainer.resetPtr();
 	}
 
-	
+
 	if (PluginServerModules == NULL) _CL_LOG << "Warning: PluginServerModules is NULL." LOG_
-		
+
 	if (PluginServerModules != NULL) {
 		if (PluginServerModules->getRefCount() > 1) {
-			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginServerModules!" LOG_ 
+			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginServerModules!" LOG_
 		}
 		PluginServerModules--;
 		PluginServerModules.resetPtr();
 	}
-	
+
 	if (PluginServerContainer != NULL) {
 		PluginServerContainer--;
 		PluginServerContainer.resetPtr();
 	}
-	
+
 	if (PluginUnitTestModules == NULL) _CL_LOG << "Warning: PluginUnitTestModules is NULL." LOG_
-		
+
 	if (PluginUnitTestModules != NULL) {
 		if (PluginUnitTestModules->getRefCount() > 1) {
-			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginUnitTestModules!" LOG_ 
+			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginUnitTestModules!" LOG_
 		}
 		PluginUnitTestModules--;
 		PluginUnitTestModules.resetPtr();
 	}
-	
+
 	if (PluginUnitTestContainer != NULL) {
 		PluginUnitTestContainer--;
 		PluginUnitTestContainer.resetPtr();
 	}
-	
+
 	isInitialized = false;
 }
 /*...e*/
@@ -554,19 +557,19 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoad\40\char\42\ module\41\:0:*/
 bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
-	
+
 	_LOG << "Try to load module '" << module << "'" LOG_
-		
+
 	char* pluginDir = NULL;
-	
+
 	pluginDir = (char*) malloc(strlen(path)+1);
-	
+
 	pluginDir[0] = 0;
 	strcat(pluginDir, path);
-				
+
 /*...sbuild PREFIX:0:*/
 #ifndef LINUX
 #ifdef __WATCOMC__
@@ -580,9 +583,9 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 #define PREFIX ""
 #endif
 /*...e*/
-				
+
 	// Instantiate an lb_I_PluginModule object
-	
+
 	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
@@ -596,14 +599,14 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
-	
+
 	UAP(lb_I_Unknown, ukPlugin)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
 	pluginName->setData(module);
-	
+
 	UAP(lb_I_KeyBase, key)
 	QI(pluginName, lb_I_KeyBase, key)
-		
+
 /*...sTry to load a plugin module:8:*/
 	if (PluginModules->exists(&key) != 0) {
 		_LOG << "Warning: Plugin already registered. (" << pluginName->charrep() << ")" LOG_
@@ -611,49 +614,49 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 		free(pluginDir);
 	} else {
 		if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
-				
+
 			// It may be a Microsoft compiled plugin...
 			if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
-					
+
 				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-					
+
 				PluginModules->insert(&ukPlugin, &key);
-					
+
 				UAP(lb_I_Unknown, ukPlugin1)
-						
+
 				ukPlugin1 = PluginModules->getElement(&key);
-					
+
 				UAP(lb_I_PluginModule, plM)
 				QI(ukPlugin1, lb_I_PluginModule, plM)
-						
+
 				plM->setModule(pluginModule);
 				plM->initialize();
 				_LOG << "Info: Plugin registered. (" << pluginName->charrep() << ")" LOG_
-					
+
 				free(pluginModule);
 				free(pluginDir);
-				return true;	
+				return true;
 			}
 			free(pluginModule);
 			free(pluginDir);
-				
+
 			return false;
-				
+
 		} else {
 			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 			PluginModules->insert(&ukPlugin, &key);
-				
+
 			UAP(lb_I_Unknown, ukPlugin1)
-					
+
 			ukPlugin1 = PluginModules->getElement(&key);
-				
+
 			UAP(lb_I_PluginModule, plM)
 			QI(ukPlugin1, lb_I_PluginModule, plM)
-					
+
 			plM->setModule(pluginModule);
 			plM->initialize();
 			_LOG << "Info: Plugin registered. (" << pluginName->charrep() << ")" LOG_
-				
+
 			free(pluginModule);
 			free(pluginDir);
 		}
@@ -666,19 +669,19 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoadServerModule\40\char\42\ module\41\:0:*/
 bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
-	
+
 	_CL_VERBOSE << "Try to load server module '" << module << "'" LOG_
-		
+
 	char* pluginDir = NULL;
-	
+
 	pluginDir = (char*) malloc(strlen(path)+1);
-	
+
 	pluginDir[0] = 0;
 	strcat(pluginDir, path);
-				
+
 /*...sbuild PREFIX:0:*/
 #ifndef LINUX
 #ifdef __WATCOMC__
@@ -692,9 +695,9 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 #define PREFIX ""
 #endif
 /*...e*/
-				
+
 	// Instantiate an lb_I_PluginModule object
-	
+
 	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
@@ -708,14 +711,14 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 	strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
-	
+
 	UAP(lb_I_Unknown, ukPlugin)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
 	pluginName->setData(module);
-	
+
 	UAP(lb_I_KeyBase, key)
 	QI(pluginName, lb_I_KeyBase, key)
-		
+
 /*...sTry to load a plugin module:8:*/
 	if (PluginServerModules->exists(&key) != 0) {
 		_CL_LOG << "Warning: Server plugin already registered." LOG_
@@ -723,49 +726,49 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 		free(pluginDir);
 	} else {
 		if (manager->makeInstance(PREFIX "instanceOfPluginServerModule", pluginModule, &ukPlugin) != ERR_NONE) {
-				
+
 			// It may be a Microsoft compiled plugin...
 			if (manager->makeInstance("instanceOfPluginServerModule", pluginModule, &ukPlugin) == ERR_NONE) {
-					
+
 				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-					
+
 				PluginServerModules->insert(&ukPlugin, &key);
-					
+
 				UAP(lb_I_Unknown, ukPlugin1)
-						
+
 				ukPlugin1 = PluginServerModules->getElement(&key);
-					
+
 				UAP(lb_I_ApplicationServerModul, plM)
 				QI(ukPlugin1, lb_I_ApplicationServerModul, plM)
-						
+
 				plM->setModule(pluginModule);
 				plM->initialize();
-					
+
 				free(pluginModule);
 				free(pluginDir);
-				return true;	
+				return true;
 			}
 			free(pluginModule);
 			free(pluginDir);
-				
+
 			return false;
-				
+
 		} else {
 			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 			PluginServerModules->insert(&ukPlugin, &key);
-				
+
 			UAP(lb_I_Unknown, ukPlugin1)
-					
+
 			ukPlugin1 = PluginServerModules->getElement(&key);
-				
+
 			UAP(lb_I_ApplicationServerModul, plM)
 			QI(ukPlugin1, lb_I_ApplicationServerModul, plM)
-					
+
 			_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
-					
+
 			plM->setModule(pluginModule);
 			plM->initialize();
-				
+
 			free(pluginModule);
 			free(pluginDir);
 		}
@@ -779,19 +782,19 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoadUnitTestModule\40\char\42\ module\41\:0:*/
 bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
-	
+
 	_CL_VERBOSE << "Try to load unit test module '" << module << "'" LOG_
-	
+
 	char* pluginDir = NULL;
-	
+
 	pluginDir = (char*) malloc(strlen(path)+1);
-	
+
 	pluginDir[0] = 0;
 	strcat(pluginDir, path);
-	
+
 	/*...sbuild PREFIX:0:*/
 #ifndef LINUX
 #ifdef __WATCOMC__
@@ -805,9 +808,9 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path)
 #define PREFIX ""
 #endif
 	/*...e*/
-	
+
 	// Instantiate an lb_I_PluginModule object
-	
+
 	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
@@ -821,14 +824,14 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path)
 	strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
-	
+
 	UAP(lb_I_Unknown, ukPlugin)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
 	pluginName->setData(module);
-	
+
 	UAP(lb_I_KeyBase, key)
 	QI(pluginName, lb_I_KeyBase, key)
-	
+
 	/*...sTry to load a plugin module:8:*/
 	if (PluginUnitTestModules->exists(&key) != 0) {
 		_CL_LOG << "Warning: Server plugin already registered." LOG_
@@ -836,55 +839,55 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path)
 		free(pluginDir);
 	} else {
 		if (manager->makeInstance(PREFIX "instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) != ERR_NONE) {
-			
+
 			// It may be a Microsoft compiled plugin...
 			if (manager->makeInstance("instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) == ERR_NONE) {
-				
+
 				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-				
+
 				PluginUnitTestModules->insert(&ukPlugin, &key);
-				
+
 				UAP(lb_I_Unknown, ukPlugin1)
-				
+
 				ukPlugin1 = PluginUnitTestModules->getElement(&key);
-				
+
 				UAP(lb_I_UnitTestModul , plM)
 				QI(ukPlugin1, lb_I_UnitTestModul, plM)
-				
+
 				plM->setModule(pluginModule);
 				plM->initialize();
-				
+
 				free(pluginModule);
 				free(pluginDir);
-				return true;	
+				return true;
 			}
 			free(pluginModule);
 			free(pluginDir);
-			
+
 			return false;
-			
+
 		} else {
 			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 			PluginUnitTestModules->insert(&ukPlugin, &key);
-			
+
 			UAP(lb_I_Unknown, ukPlugin1)
-			
+
 			ukPlugin1 = PluginUnitTestModules->getElement(&key);
-			
+
 			UAP(lb_I_UnitTestModul, plM)
 			QI(ukPlugin1, lb_I_UnitTestModul, plM)
-			
+
 			_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
-			
+
 			plM->setModule(pluginModule);
 			plM->initialize();
-			
+
 			free(pluginModule);
 			free(pluginDir);
 		}
 	}
 	/*...e*/
-	
+
 	return true;
 }
 /*...e*/
@@ -894,12 +897,11 @@ void LB_STDCALL lbPluginManager::initialize() {
 	lbErrCodes err = ERR_NONE;
 	isInitialized = true;
 	isServerInitialized = true;
-	
 	// Why I have done this? It's rubbish.
-	
+
 	if (!firstEnumerate) {
 		firstEnumerate = true;
-		
+
 		if (PluginModules != NULL) {
 			PluginModules--;
 		}
@@ -908,24 +910,24 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 	if (!firstServerEnumerate) {
 		firstServerEnumerate = true;
-		
+
 		if (PluginServerModules != NULL) {
 			PluginServerModules--;
 		}
 		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
 	}
-	
+
 	if (!firstUnitTestEnumerate) {
 		firstUnitTestEnumerate = true;
-		
+
 		if (PluginUnitTestModules != NULL) {
 			PluginUnitTestModules--;
 		}
 		REQUEST(manager.getPtr(), lb_I_Container, PluginUnitTestModules)
 	}
-	
+
 	/*...sMask and find structure:0:*/
-#ifdef WINDOWS	
+#ifdef WINDOWS
 	_finddata_t find;
 #endif
 
@@ -944,7 +946,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 /*...sPrepare plugin directory to scan:0:*/
 	char* pluginDir = getenv("PLUGIN_DIR");
-	
+
 	if (pluginDir == NULL) {
 		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
 		#ifndef WINDOWS
@@ -965,11 +967,11 @@ void LB_STDCALL lbPluginManager::initialize() {
 		pluginDir[0] = 0;
 		strcpy(pluginDir, temp);
 	}
-	
-#ifdef WINDOWS	
+
+#ifdef WINDOWS
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
-	
+
 	strcat(toFind, pluginDir);
 #ifdef WINDOWS
 	strcat(toFind, "\\");
@@ -988,13 +990,13 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 	DIR *dir;
 	struct dirent *dir_info;
-	
+
 /*...sfor direntry:8:*/
 	_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 	if ((dir = opendir(pluginDir)) == NULL) {
 
     	free(pluginDir);
-		
+
 		char* pwd = getenv("PWD");
 		if (pwd == NULL) pwd = ".";
 
@@ -1002,7 +1004,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		pluginDir[0] = 0;
 		strcat(pluginDir, pwd);
 		strcat(pluginDir, "/plugins");
-		
+
 		_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 		if ((dir = opendir(pluginDir)) == NULL) {
 
@@ -1021,18 +1023,18 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 				char* pwd = getenv("PWD");
 				if (pwd == NULL) pwd = ".";
-///\todo Rework this.				
+///\todo Rework this.
 				pluginDir = (char*) malloc(strlen(pwd)+strlen("/wxWrapper.app/Contents/Resources")+strlen("/plugins")+1);
 				pluginDir[0] = 0;
 				strcat(pluginDir, pwd);
 				strcat(pluginDir, "/wxWrapper.app/Contents/Resources/plugins");
-				
+
 				_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 				if ((dir = opendir(pluginDir)) == NULL) {
 					_LOG << "Plugin directory not found." LOG_
-					
+
 					free(pluginDir);
-					
+
 					return;
 				}
 			}
@@ -1044,7 +1046,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
-	
+
 	strcat(toFind, pluginDir);
 #ifdef WINDOWS
 	strcat(toFind, "\\");
@@ -1058,7 +1060,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 #endif
 #endif
 	strcat(toFind, mask);
-	
+
 	dir_info = readdir(dir);
 #endif
 
@@ -1081,7 +1083,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 	if (dir_info != NULL) {
 #endif
-#ifdef WINDOWS	
+#ifdef WINDOWS
 		tryLoad(find.name, pluginDir);
 		tryLoadServerModule(find.name, pluginDir);
 		tryLoadUnitTestModule(find.name, pluginDir);
@@ -1091,7 +1093,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		tryLoadServerModule(dir_info->d_name, pluginDir);
 		tryLoadUnitTestModule(dir_info->d_name, pluginDir);
 #endif
-		
+
 #ifdef WINDOWS
 		while (_findnext(handle, &find) == 0) {
 			tryLoad(find.name, pluginDir);
@@ -1108,27 +1110,26 @@ void LB_STDCALL lbPluginManager::initialize() {
 			}
 		}
 #endif
-#ifdef WINDOWS		
+#ifdef WINDOWS
 		_findclose(handle);
 #endif
 	} else {
 		printf("No plugins found.\n");
 	}
-	
+
 	free(pluginDir);
 	free(toFind);
-	
 	if (!isUnitTestInitialized && PluginUnitTestModules->Count() > 0) {
 		_LOG << "Have found unit tests in some plugin modules. Activate menu for starting the tests." LOG_
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 		int runUnitTests = 0;
-		
+
 		eman->registerEvent("runUnitTests", runUnitTests);
 		registerEventHandler(*&dispatcher);
 
-		
+
 		//meta->addMenuBar(_trans("&Unittests"));
 		meta->addMenuEntry(_trans("&Unittests"), "run Unit Tests", "runUnitTests", "");
 	}
@@ -1140,28 +1141,29 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 lbErrCodes lbPluginManager::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbPluginManager::runUnitTests, "runUnitTests");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::runUnitTests(lb_I_Unknown* uk) {
 	_LOG << "Unittests starting." LOG_
-	
+
 	if (beginEnumUnitTestPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
 			pl = nextUnitTestPlugin();
 			if (pl == NULL) break;
-			
+
 			UAP(lb_I_Unknown, uk)
-			
+
 			if (pl->hasInterface("lb_I_TestFixture")) {
 				lbErrCodes err = ERR_NONE;
 				UAP(lb_I_TestFixture, fixture)
 				uk = pl->getImplementation();
 				QI(uk, lb_I_TestFixture, fixture)
-				
+
 				fixture->registerTests();
 				fixture->setUp();
-				
+
 				fixture->runTest();
 
 				fixture->tearDown();
@@ -1169,8 +1171,9 @@ lbErrCodes LB_STDCALL lbPluginManager::runUnitTests(lb_I_Unknown* uk) {
 		}
 	}
 	_LOG << "Unittests ready." LOG_
+	return ERR_NONE;
 }
-	
+
 /** \todo Need to think about the copy iterator problem.
  * The need for a copy iterator or saving the current iteration if a new one
  * should start, should be thought about, since without that an endless loop
@@ -1184,19 +1187,19 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pos)
 	UAP(lb_I_KeyBase, key)
 	QI(pos, lb_I_KeyBase, key)
-	
+
 	int i = 0;
-	
+
 	copy->setCloning(false);
-	
+
 	// Copy the list to avoid an endless loop if any plugin wants to load another plugin
 	PluginModules->finishIteration();
 	while (PluginModules->hasMoreElements()) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_PluginModule, plM)
-		
+
 		uk = PluginModules->nextElement();
-		
+
 		if (uk == NULL) {
 			_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 			continue;
@@ -1208,14 +1211,14 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 		copy->insert(&uk, &key);
 	}
 	PluginModules->finishIteration();
-	
+
 	copy->finishIteration();
 	while (copy->hasMoreElements()) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_PluginModule, plM)
-		
+
 		uk = copy->nextElement();
-		
+
 		if (uk == NULL) {
 			_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 			continue;
@@ -1228,9 +1231,9 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (!isInitialized) initialize();
-	
+
 	PluginModules->finishIteration();
-	
+
 	if (PluginModules->hasMoreElements()) {
 		begunEnumerate = true;
 		firstPlugin = true;
@@ -1244,39 +1247,39 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	lbErrCodes err = ERR_NONE;
 
 	if (!isInitialized) initialize();
-	
+
 	if (begunEnumerate) {
 		if (firstPlugin) {
 			firstPlugin = FALSE;
-		
-			/* 
+
+			/*
 			   If no more plugin modules found return NULL.
-			   
+
 			   If there are more plugins in a plugin module, return one.
-			   
+
 			   If No more plugins in a module, go to next module and try there.
 			 */
-			
+
 			while (PluginModules->hasMoreElements()) {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_PluginModule, plM)
-			
+
 				uk = PluginModules->nextElement();
-		
+
 				if (uk == NULL) {
 					_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 					return NULL;
 				}
-		
+
 				QI(uk, lb_I_PluginModule, plM)
-		
+
 				if (PluginContainer != NULL) {
 					PluginContainer--;
 					PluginContainer.resetPtr();
 				}
-								
+
 				PluginContainer = plM->getPlugins();
-			
+
 				if (PluginContainer == NULL) {
 					_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 					return NULL;
@@ -1285,22 +1288,22 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				if (PluginContainer->Count() == 0) {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
 				}
-			
+
 				if (PluginContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					uk = PluginContainer->nextElement();
-				
+
 					UAP(lb_I_Plugin, plugin)
 					QI(uk, lb_I_Plugin, plugin)
 					plugin++;
-					
+
 					return plugin.getPtr();
 				}
 			}
-			
+
 			return NULL;
 		} else {
-		
+
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
@@ -1309,16 +1312,16 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				        UAP(lb_I_Plugin, plugin)
 				        QI(uk, lb_I_Plugin, plugin)
 					plugin++;
-						
+
 				        return plugin.getPtr();
 				} else {
 					firstPlugin = true;
-					
+
 					return nextPlugin();
 				}
 			}
-		}	
-	
+		}
+
 	} else {
 		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
 	}
@@ -1335,35 +1338,35 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 			pl = nextPlugin();
 			if (pl == NULL) break;
 
-			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_ 
+			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {
 				PluginContainer->finishIteration();
 				PluginModules->finishIteration();
-				
+
 				pl++;
-				
+
 				return pl.getPtr();
 			}
 		}
-		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_ 
+		_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_
 		_CL_LOG "Plugins registered:" LOG_
 
 
 		if (beginEnumPlugins()) {
-	
+
 			while (true) {
 				UAP(lb_I_Plugin, pl)
 				pl = nextPlugin();
-			
+
 				if (pl == NULL) break;
-	
+
 				//pl->initialize();
-				
+
 				_CL_LOG << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
-#ifdef bla				
+#ifdef bla
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)
-				
+
 					uk = pl->getImplementation();
 					if (uk != NULL) {
 						_CL_LOG << "Loaded: " << uk->getClassName() LOG_
@@ -1386,9 +1389,9 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumServerPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumServerPlugins() {
 	if (!isServerInitialized) initialize();
-	
+
 	PluginServerModules->finishIteration();
-	
+
 	if (PluginServerModules->hasMoreElements()) {
 		begunServerEnumerate = true;
 		return true;
@@ -1401,67 +1404,67 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 	lbErrCodes err = ERR_NONE;
 
 	if (!isServerInitialized) initialize();
-	
+
 	if (begunServerEnumerate) {
 		if (firstServerPlugin) {
 			firstServerPlugin = FALSE;
-		
-			/* 
+
+			/*
 			   If no more plugin modules found return NULL.
-			   
+
 			   If there are more plugins in a plugin module, return one.
-			   
+
 			   If No more plugins in a module, go to next module and try there.
 			 */
-			
+
 			while (PluginServerModules->hasMoreElements()) {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_ApplicationServerModul, plM)
-			
+
 				uk = PluginServerModules->nextElement();
-		
+
 				if (uk == NULL) {
 					_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 					return NULL;
 				}
-		
+
 				QI(uk, lb_I_ApplicationServerModul, plM)
-		
+
 				_CL_LOG << "Got a plugin module with " << plM->getRefCount() << " references." LOG_
 
 				if (PluginServerContainer != NULL) {
 					PluginServerContainer--;
 					PluginServerContainer.resetPtr();
 				}
-								
+
 				PluginServerContainer = plM->getPlugins();
-			
+
 				if (PluginServerContainer == NULL) {
 					_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 					return NULL;
 				}
-				
+
 				_CL_LOG << "Got a PluginContainer with " << PluginServerContainer->getRefCount() << " references." LOG_
 
 				if (PluginServerContainer->Count() == 0) {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
 				}
-			
+
 				if (PluginServerContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					uk = PluginServerContainer->nextElement();
-				
+
 					UAP(lb_I_Plugin, plugin)
 					QI(uk, lb_I_Plugin, plugin)
 					plugin++;
-					
+
 					return plugin.getPtr();
 				}
 			}
-			
+
 			return NULL;
 		} else {
-		
+
 			if (!lastServerPlugin) {
 				if (PluginServerContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
@@ -1470,16 +1473,16 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 				        UAP(lb_I_Plugin, plugin)
 				        QI(uk, lb_I_Plugin, plugin)
 					plugin++;
-						
+
 				        return plugin.getPtr();
 				} else {
 					firstPlugin = true;
-					
+
 					return nextServerPlugin();
 				}
 			}
-		}	
-	
+		}
+
 	} else {
 		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
 	}
@@ -1496,35 +1499,35 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingServerPlugin(char* matc
 			UAP(lb_I_Plugin, pl)
 			pl = nextServerPlugin();
 			if (pl == NULL) break;
-			
+
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
 				PluginServerContainer->finishIteration();
 				PluginServerModules->finishIteration();
-				
+
 				pl++;
-				
+
 				return pl.getPtr();
 			}
 		}
-		_LOG "lbPluginManager::getFirstMatchingServerPlugin('" << match << "', '" << _namespace << "'): Didn't find any plugin.!" LOG_ 
+		_LOG "lbPluginManager::getFirstMatchingServerPlugin('" << match << "', '" << _namespace << "'): Didn't find any plugin.!" LOG_
 		_LOG "Plugins registered:" LOG_
 
 
 		if (beginEnumServerPlugins()) {
-	
+
 			while (true) {
 				UAP(lb_I_Plugin, pl)
 				pl = nextServerPlugin();
-			
+
 				if (pl == NULL) break;
-	
+
 				pl->initialize();
-				
+
 				_LOG << "Plugin name: " << pl->getName() LOG_
-#ifdef bla				
+#ifdef bla
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)
-				
+
 					uk = pl->getImplementation();
 					if (uk != NULL) {
 						_CL_LOG << "Loaded: " << uk->getClassName() LOG_
@@ -1546,9 +1549,9 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingServerPlugin(char* matc
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumUnitTestPlugins() {
 		if (!isInitialized) initialize();
-		
+
 		PluginUnitTestModules->finishIteration();
-		
+
 		if (PluginUnitTestModules->hasMoreElements()) {
 			begunUnitTestEnumerate = true;
 			firstUnitTestPlugin = true;
@@ -1560,93 +1563,93 @@ bool LB_STDCALL lbPluginManager::beginEnumUnitTestPlugins() {
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\nextPlugin\40\\41\:0:*/
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextUnitTestPlugin() {
 		lbErrCodes err = ERR_NONE;
-		
+
 		if (!isInitialized) initialize();
-		
+
 		if (begunUnitTestEnumerate) {
 			if (firstUnitTestPlugin) {
 				firstUnitTestPlugin = FALSE;
-				
-				/* 
+
+				/*
 				 If no more plugin modules found return NULL.
-				 
+
 				 If there are more plugins in a plugin module, return one.
-				 
+
 				 If No more plugins in a module, go to next module and try there.
 				 */
-				
+
 				while (PluginUnitTestModules->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					UAP(lb_I_UnitTestModul, plM)
-					
+
 					uk = PluginUnitTestModules->nextElement();
-					
+
 					if (uk == NULL) {
 						_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 						return NULL;
 					}
-					
+
 					QI(uk, lb_I_UnitTestModul, plM)
-					
+
 					if (PluginUnitTestContainer != NULL) {
 						PluginUnitTestContainer--;
 						PluginUnitTestContainer.resetPtr();
 					}
-					
+
 					_LOG << "Processing test fixture " << plM->getTestFixture() LOG_
-					
+
 					PluginUnitTestContainer = plM->getPlugins();
-					
+
 					if (PluginUnitTestContainer == NULL) {
 						_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 						return NULL;
 					}
-					
+
 					if (PluginUnitTestContainer->Count() == 0) {
 						_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
 					}
-					
+
 					if (PluginUnitTestContainer->hasMoreElements()) {
 						UAP(lb_I_Unknown, uk)
 						uk = PluginUnitTestContainer->nextElement();
-						
+
 						UAP(lb_I_Plugin, plugin)
 						QI(uk, lb_I_Plugin, plugin)
 						plugin++;
-						
+
 						return plugin.getPtr();
 					}
 				}
-				
+
 				return NULL;
 			} else {
-				
+
 				if (!lastUnitTestPlugin) {
 					if (PluginUnitTestContainer->hasMoreElements()) {
 						UAP(lb_I_Unknown, uk)
 				        uk = PluginUnitTestContainer->nextElement();
-						
+
 				        UAP(lb_I_Plugin, plugin)
 				        QI(uk, lb_I_Plugin, plugin)
 						plugin++;
-						
+
 				        return plugin.getPtr();
 					} else {
 						firstUnitTestPlugin = true;
-						
+
 						return nextUnitTestPlugin();
 					}
 				}
-			}	
-			
+			}
+
 		} else {
 			_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
 		}
-		
+
 		return NULL;
 	}
 /*...e*/
-	
+
 /// \todo Implement plugin installation mechanism.
 bool LB_STDCALL lbPluginManager::attach(lb_I_PluginModule* toAttach) {
 	return FALSE;
@@ -1677,7 +1680,7 @@ public:
 	void 			LB_STDCALL initialize();
 	bool 			LB_STDCALL run();
 	void 			LB_STDCALL uninitialize();
-	
+
 	void 			LB_STDCALL setPluginManager(lb_I_PluginManager* plM);
 	void 			LB_STDCALL setAttached(lb_I_PluginImpl* impl);
 	lb_I_PluginImpl*	LB_STDCALL getAttached();
@@ -1721,14 +1724,14 @@ lbPlugin::lbPlugin() {
 	_namespace = NULL;
 	_version = NULL;
 	ref = STARTREF;
-	
+
 //	implementation = NULL;
 	isPreInitialized = false;
 }
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
-	if (implementation != NULL) 
+	if (implementation != NULL)
 		_CL_VERBOSE << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
 
 	if (_version) free (_version);
@@ -1742,20 +1745,20 @@ lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 	_CL_VERBOSE << "lbPlugin::setData(...) called." LOG_
-	
+
 	UAP(lb_I_Plugin, pl)
 	QI(uk, lb_I_Plugin, pl)
-	
+
 	setName(pl->getName());
 	setModule(pl->getModule());
 	setNamespace(pl->getNamespace());
 	setVersion(pl->getVersion());
 
 	setAttached(pl->getAttached());
-	
-	// getAttached increments reference, but this is not needed here. 
+
+	// getAttached increments reference, but this is not needed here.
 	implementation--;
-	
+
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -1769,14 +1772,14 @@ void LB_STDCALL lbPlugin::setPluginManager(lb_I_PluginManager* plM) {
 /*...svoid LB_STDCALL lbPlugin\58\\58\setAttached\40\lb_I_PluginImpl\42\ impl\41\:0:*/
 void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (impl == NULL) {
 		_CL_VERBOSE << "lbPlugin::setAttached(NULL) called." LOG_
 		return;
 	}
-	
+
 	QI(impl, lb_I_Unknown, implementation)
-	
+
 	if (implementation == NULL) _CL_LOG << "Error: lbPlugin::setAttached() failure!" LOG_
 }
 /*...e*/
@@ -1785,11 +1788,11 @@ lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
 	lbErrCodes err = ERR_NONE;
 
 	if (implementation == NULL) return NULL;
-	
+
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
 	impl++;
-	
+
 	return impl.getPtr();
 }
 /*...e*/
@@ -1799,7 +1802,7 @@ void LB_STDCALL lbPlugin::uninitialize() {
 	if (implementation != NULL) {
 		UAP(lb_I_PluginImpl, impl)
 		QI(implementation, lb_I_PluginImpl, impl)
-	
+
 		impl->releaseImplementation();
 	}
 }
@@ -1815,7 +1818,7 @@ void LB_STDCALL lbPlugin::setModule(char* module) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lbPlugin\58\\58\setName\40\char\42\ name\41\:0:*/
-void LB_STDCALL lbPlugin::setName(char* name) { 
+void LB_STDCALL lbPlugin::setName(char* name) {
 	if (_name) free(_name);
 	_name = NULL;
 	if (name) {
@@ -1826,7 +1829,7 @@ void LB_STDCALL lbPlugin::setName(char* name) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lbPlugin\58\\58\setVersion\40\char\42\ version\41\:0:*/
-void LB_STDCALL lbPlugin::setVersion(char* version) { 
+void LB_STDCALL lbPlugin::setVersion(char* version) {
 	if (_version) free(_version);
 	_version = NULL;
 	if (version) {
@@ -1914,7 +1917,7 @@ preinitialize();
 if (isPreInitialized) {
 QI(implementation, lb_I_PluginImpl, impl)
 
-UAP(lb_I_PluginImpl, impl)		
+UAP(lb_I_PluginImpl, impl)
 QI(implementation, lb_I_PluginImpl, impl)
 
 return impl->autorun();
@@ -1932,7 +1935,7 @@ preinitialize();
 _CL_VERBOSE << "lbPlugin::initialize() has preinitialized underlying class." LOG_
 
 if (isPreInitialized && !postInitialized) {
-UAP(lb_I_PluginImpl, impl)		
+UAP(lb_I_PluginImpl, impl)
 QI(implementation, lb_I_PluginImpl, impl)
 
 _CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
@@ -1959,14 +1962,14 @@ of any interface. May be, this would be a database form (lb_I_DatabaseForm).
 In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
    It would eventually return another instance, where it not would be the lb_I_PluginImpl.
 	 */
-	
+
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (implementation == NULL) {
 		_LOG << "lbPlugin::peekImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
 		return NULL;
 	}
-	
+
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
 
@@ -1976,8 +1979,8 @@ In such a case, it is better to call the lb_I_PluginImpl::getImplementation() fu
 		_CL_LOG << "Error: Could not instantiate plugin implementation with given interface. (" << _name << ")" LOG_
 		return NULL;
 	}
-	
-	
+
+
 	uk = impl->peekImplementation();
 
 	return uk;
@@ -1991,17 +1994,17 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 	   in two parts.
 	   The first may be the lb_I_PluginImpl and the second may be the real implementation
 	   of any interface. May be, this would be a database form (lb_I_DatabaseForm).
-	   
+
 	   In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
 	   It would eventually return another instance, where it not would be the lb_I_PluginImpl.
 	 */
-	
+
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (implementation == NULL) {
 		_CL_LOG << "lbPlugin::getImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
 	}
-	
+
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
 
@@ -2011,8 +2014,8 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 		_CL_LOG << "Error: Could not instantiate plugin implementation with given interface. (" << _name << ")" LOG_
 		return NULL;
 	}
-	
-	
+
+
 	uk = impl->getImplementation();
 
 	return uk;
@@ -2022,19 +2025,19 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Unknown* temp;
-	
+
 	if (implementation == NULL) preinitialize();
-	
+
 	lb_I_Unknown* uk;
 
 	uk = peekImplementation();
-	
+
 	/*
 		It may be a combined plugin implementation. Currently these, could not have
 		any other interface than lb_I_PluginImpl. This is due to multible inheritation
 		problems and the same base class lb_I_Unknown.
         */
-        
+
 	if (uk == NULL) {
 		_LOG << "Warning: hasInterface(...) is useless, when peekImplementation returns a NULL pointer!" LOG_
 		_LOG << "Info: Plugin name is " << _name << ", Modul is " << _module << ", Namespace is " << _namespace LOG_
@@ -2048,9 +2051,9 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
-	
+
 	impl->releaseImplementation();
-	
+
 	return false;
 }
 /*...e*/
@@ -2068,7 +2071,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemSetModuleName(__FILE__);
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -2079,7 +2082,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                 	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -2095,7 +2098,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
