@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.130 $
+# * $Revision: 1.131 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.130 2009/11/27 09:15:28 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.131 2009/11/27 09:41:04 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.131  2009/11/27 09:41:04  lollisoft
+# * Inversed OSX i386 detection.
+# *
 # * Revision 1.130  2009/11/27 09:15:28  lollisoft
 # * Corrected platform selection.
 # *
@@ -1294,7 +1297,7 @@ ifeq ($(OSPLATFORM), powerpc)
 OSX_ARCH=
 endif
 
-ifneq ($(OSPLATFORM), i386)
+ifeq ($(OSPLATFORM), i386)
 OSX_ARCH=-arch i386
 endif
 
