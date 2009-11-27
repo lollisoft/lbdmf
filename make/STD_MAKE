@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.129 $
+# * $Revision: 1.130 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.129 2009/11/22 21:35:14 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.130 2009/11/27 09:15:28 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.130  2009/11/27 09:15:28  lollisoft
+# * Corrected platform selection.
+# *
 # * Revision 1.129  2009/11/22 21:35:14  lollisoft
 # * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE.
 # *
@@ -1287,7 +1290,13 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I /usr/include \
 	-I . 
 
+ifeq ($(OSPLATFORM), powerpc)
+OSX_ARCH=
+endif
+
+ifneq ($(OSPLATFORM), i386)
 OSX_ARCH=-arch i386
+endif
 
 OBJ =o
 ifeq ($(DEBUG), no)
