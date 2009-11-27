@@ -364,7 +364,7 @@
 
 //
 // wxPGVariantAndBool
-//	
+//
 // Helper class that wraps wxVariant and bool. Need to use this class
 // instead of writeback arguments in some virtual methods of custom
 // property classes.
@@ -488,7 +488,7 @@ struct wxPGPaintData
     int                     m_drawnWidth;
 
     /** In a measure item call, set this to the height of item at m_choiceItem index. */
-    int                     m_drawnHeight;   
+    int                     m_drawnHeight;
 };
 
 
@@ -575,7 +575,7 @@ public:
         m_refCount++;
     }
 
-    void DecRef() 
+    void DecRef()
     {
         m_refCount--;
         if ( !m_refCount )
@@ -1710,7 +1710,7 @@ class CLASSNAME : public wxPGVariantData \
 { \
 _WX_PG_IMPLEMENT_VARIANT_DATA_CLASS(CLASSNAME, DATATYPE, DATATYPE&, \
                                     const DATATYPE&, wxPGDoesNothing(), \
-                                    wxVariant(new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
+                                    wxVariant((wxVariantData*) new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
 _WX_PG_IMPLEMENT_VARIANT_DATA_SHALLOW_EQ(CLASSNAME, DATATYPE) \
 public: \
     virtual void* GetValuePtr() { return (void*)&m_value; } \
@@ -1722,7 +1722,7 @@ class CLASSNAME : public wxPGVariantData \
 { \
 _WX_PG_IMPLEMENT_VARIANT_DATA_CLASS(CLASSNAME, DATATYPE, DATATYPE&, \
                                     const DATATYPE&, wxPGDoesNothing(), \
-                                    wxVariant(new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
+                                    wxVariant((wxVariantData*) new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
 _WX_PG_IMPLEMENT_VARIANT_DATA_SHALLOW_EQ(CLASSNAME, DATATYPE) \
 public: \
     virtual void* GetValuePtr() { return (void*)&m_value; } \
@@ -1736,7 +1736,7 @@ class CLASSNAME : public wxPGVariantData \
 { \
 _WX_PG_IMPLEMENT_VARIANT_DATA_CLASS(CLASSNAME, DATATYPE, DATATYPE&, \
                                     const DATATYPE&, wxPGDoesNothing(), \
-                                    wxVariant(new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
+                                    wxVariant((wxVariantData*) new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
 _WX_PG_IMPLEMENT_VARIANT_DATA_PROPER_EQ(CLASSNAME, DATATYPE) \
 public: \
     virtual void* GetValuePtr() { return (void*)&m_value; } \
@@ -1749,7 +1749,7 @@ class CLASSNAME : public wxPGVariantData \
 { \
 _WX_PG_IMPLEMENT_VARIANT_DATA_CLASS(CLASSNAME, DATATYPE, DATATYPE&, \
                                     const DATATYPE&, wxPGDoesNothing(), \
-                                    wxVariant(new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
+                                    wxVariant((wxVariantData*) new CLASSNAME(DATATYPE())), wxPGDoesNothing()) \
 _WX_PG_IMPLEMENT_VARIANT_DATA_PROPER_EQ(CLASSNAME, DATATYPE) \
 public: \
     virtual void* GetValuePtr() { return (void*)&m_value; } \
@@ -3108,7 +3108,7 @@ public:
 
     /** Returns height of children, recursively, and
         by taking expanded/collapsed status into account.
-        
+
         iMax is used when finding property y-positions.
     */
     int GetChildrenHeight( int lh, int iMax = -1 ) const;
@@ -3775,7 +3775,7 @@ public:
     }
 
 #if wxPG_COMPATIBILITY_1_2_0
-    /** 
+    /**
         Used to return true if choices in general were likely to have values.
         Now always returns true since if value was not specified for choice,
         index is used.
@@ -3785,7 +3785,7 @@ public:
     */
     wxDEPRECATED( bool HasValues() const );
 
-    /** 
+    /**
         Used to return true if given choice has valid value. Now always returns
         since if value was not specified for choice, index is used.
 
@@ -5873,7 +5873,7 @@ public:
 #endif
 
     /** Sets value (wxVariant&) of a property.
-    
+
         @remarks
         Use wxPropertyGrid::ChangePropertyValue() instead if you need to run through
         validation process and send property change event.
