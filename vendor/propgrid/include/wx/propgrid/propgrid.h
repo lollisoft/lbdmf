@@ -7866,7 +7866,7 @@ protected:
     void OnKeyUp( wxKeyEvent &event );
     void OnNavigationKey( wxNavigationKeyEvent& event );
     void OnResize( wxSizeEvent &event );
-    void wxPropertyGrid::OnPaint( wxPaintEvent& event );
+    void OnPaint( wxPaintEvent& event );
 
     // event handlers
     bool HandleMouseMove( int x, unsigned int y, wxMouseEvent &event );
