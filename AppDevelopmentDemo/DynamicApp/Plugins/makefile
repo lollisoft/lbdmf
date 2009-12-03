@@ -62,6 +62,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbDMFXslt \
 	lbDynamicAppStorage
 endif
 
@@ -73,6 +74,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbDMFXslt \
 	lbDynamicAppStorage
 endif
 
@@ -84,6 +86,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbDMFXslt \
 	lbDynamicAppStorage
 endif
 
@@ -95,6 +98,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbDMFXslt \
 	lbDynamicAppStorage
 endif
 
@@ -106,6 +110,7 @@ TARGETWXPLUGIN=wxplugin
 TARGETPLUGIN=plugin
 
 ALLTARGETS = \
+	lbDMFXslt \
 	lbDynamicAppStorage
 endif
 
@@ -128,6 +133,10 @@ mkrelease:
 dummy:
 
 lbDynamicAppStorage: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+lbDMFXslt: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
