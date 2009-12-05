@@ -28,6 +28,10 @@
 */
 /*...e*/
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 /*...sLB_CLASSES_DLL scope:0:*/
 #define LB_CLASSES_DLL
 #include <lbclasses-module.h>
@@ -48,8 +52,11 @@ extern "C" {
 #include <iostream>
 
 //#include <lbInterfaces.h>
+
 #include <lbthread.h>
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 int lbThread::threadCount = 0;
 

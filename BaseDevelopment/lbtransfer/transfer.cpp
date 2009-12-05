@@ -27,12 +27,17 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include "module.h"
 
 #include <conio.h>
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-
+#endif
 #include <lbInclude.h>
 #include <signal.h>
 

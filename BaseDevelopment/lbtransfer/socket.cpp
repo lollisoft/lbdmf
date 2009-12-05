@@ -27,6 +27,10 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include "module.h"
 #include <signal.h>
 /*...sinclude:0:*/
@@ -39,7 +43,9 @@
 /*...e*/
 
 #include <iostream>
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 #include <lbInclude.h>
 
 #include <socket.h>

@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.131 $
+# * $Revision: 1.132 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.131 2009/11/27 09:41:04 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.132 2009/12/05 16:52:24 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.132  2009/12/05 16:52:24  lollisoft
+# * Added support for precompiled header.
+# *
 # * Revision 1.131  2009/11/27 09:41:04  lollisoft
 # * Inversed OSX i386 detection.
 # *
@@ -610,6 +613,14 @@ WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
+WATCOM_RTTI=-xr
+
+# Activate precompilation per module. Each module must use this switch.
+# wxWidgets uses it's own precompiled file, so no global switch should be used.
+
+WATCOM_PCH=-fh=lbDMF.pch /DLBDMF_PREC
+#WATCOM_PCH=
+
 
 ifeq ($(MODE), _DEBUG)
 WATCOM_STDDEBUG=-d2 -hd 
@@ -654,7 +665,8 @@ $(WATCOM_RELAX_ALIAS) \
 $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
 $(WATCOM_STACK) \
-$(WATCOM_PROFILING)
+$(WATCOM_PROFILING) \
+$(WATCOM_RTTI)
 
 OBJ =obj
 # Watcom -zp4
