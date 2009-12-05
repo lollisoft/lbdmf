@@ -228,6 +228,26 @@
 /*...e*/
 
 /*...s_LOG:0:*/
+#define LOG_IMPROVED
+#ifdef LOG_IMPROVED
+
+#define _LOG \
+	if (isInitializing() != 0) { \
+	} else { \
+		time_t Zeitstempel; \
+			tm *nun; \
+			Zeitstempel = time(0); \
+			nun = localtime(&Zeitstempel); \
+	                createLogInstance(); \
+                        char tmstring[100] = ""; \
+                        sprintf(tmstring, "%4d.%2d.2%d - %2d:%2d:%2d", \
+                        nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
+			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+
+#endif
+                                             		
+
+#ifndef LOG_IMPROVED										                                                                		
 #define _LOG \
 	if (isInitializing() != 0) { \
 	} else { \
@@ -239,6 +259,8 @@
 		*(getLoggerInstance()) << nun->tm_year+1900 << '.' << nun->tm_mon+1 << '.' << nun->tm_mday \
 		<< " - " << nun->tm_hour << ':' << nun->tm_min << ':' << nun->tm_sec << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
+
+#endif
 /*...e*/
 /*...s LOG_:0:*/
 #define  LOG_  << '\n'; }
@@ -386,6 +408,8 @@ DLLEXPORT int LB_STDCALL isInitializing();
 DLLEXPORT void LB_STDCALL setInitializing(int i);
 DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
 DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
+DLLEXPORT void createLogInstance();
+
 
 #ifdef OSX
 bool LB_STDCALL OSXMemValidate(void* ptr);
