@@ -28,6 +28,10 @@
 */
 /*...e*/
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 /*...sincludes:0:*/
 #include <stdarg.h>
 
@@ -69,7 +73,9 @@
 #include <lbhook-module.h>
 /*...e*/
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -149,6 +155,38 @@ static bool _isSetTRMemTrackBreak = false;
 static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 char* translated = NULL;
 /*...e*/
+
+
+DLLEXPORT void createLogInstance() {
+			if (getLoggerInstance() == NULL) {
+				setInitializing(1);
+				lb_I_Module* modMan = getModuleInstance();
+
+				if (modMan != NULL) {
+					lb_I_Unknown *Unknown = NULL;
+					modMan->initialize();
+					lbErrCodes err = modMan->request("lb_I_Log", &Unknown);
+					\
+					if (Unknown != NULL) {
+						lb_I_Log* log;
+						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__);
+						setLoggerInstance(log);
+						Unknown->release(__FILE__, __LINE__);
+						if (log == NULL) {
+							exit (1);
+						} else {
+						}
+					} else {
+						exit(1);
+					}
+					modMan->release(__FILE__, __LINE__);
+				} else {
+					exit(1);
+				}
+			}
+			setInitializing(0);
+}
+
 
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, char *f, int level) {
