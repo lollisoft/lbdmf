@@ -25,11 +25,21 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.132 $
+# * $Revision: 1.133 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.132 2009/12/05 16:52:24 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.133 2009/12/06 19:21:21 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.133  2009/12/06 19:21:21  lollisoft
+# * Modified build process to use precompiled files.
+# * Corrected the long build time problem. It is located in the _LOG macro.
+# * Updated wxPropgrid to 1.4.9.1 and updated building against wxMSW 2.8.10.
+# *
+# * Build works, but running the application fails with not properly initialized error.
+# * (0xc0000005)
+# *
+# * Also updated the iss files for the new planned release.
+# *
 # * Revision 1.132  2009/12/05 16:52:24  lollisoft
 # * Added support for precompiled header.
 # *
@@ -618,7 +628,8 @@ WATCOM_RTTI=-xr
 # Activate precompilation per module. Each module must use this switch.
 # wxWidgets uses it's own precompiled file, so no global switch should be used.
 
-WATCOM_PCH=-fh=lbDMF.pch /DLBDMF_PREC
+WATCOM_PCH=-fh=lbDMF.pch /DLBDMF_PREC /DWX_PRECOMP
+
 #WATCOM_PCH=
 
 
@@ -666,7 +677,8 @@ $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
 $(WATCOM_STACK) \
 $(WATCOM_PROFILING) \
-$(WATCOM_RTTI)
+$(WATCOM_RTTI) \
+$(WATCOM_PCH)
 
 OBJ =obj
 # Watcom -zp4

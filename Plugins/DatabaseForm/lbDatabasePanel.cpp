@@ -1,6 +1,4 @@
 /*...sLicence:0:*/
-/*...sLicence:0:*/
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -35,6 +33,8 @@
 #define MAXCOLUMNS 17
 
 /*...sincludes:0:*/
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -63,9 +63,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
+#endif
 
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
@@ -79,9 +79,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__

@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
-            
+
             40235 Duesseldorf (germany)
 */
 /*...e*/
@@ -33,25 +33,33 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #include <conio.h>
 
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
 #ifndef OSX
 #include <malloc.h>
 #endif
+
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 #ifdef WINDOWS
@@ -73,7 +81,7 @@ cleanUp clean_up;
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -81,11 +89,11 @@ int main(int argc, char *argv[]) {
 
 	// Preload lbClasses DLL with this line !
 	UAP_REQUEST(mm, lb_I_String, s)
-	
+
 	UAP_REQUEST(mm, lb_I_Parameter, param)
 	UAP_REQUEST(mm, lb_I_String, name)
 	UAP_REQUEST(mm, lb_I_String, value)
-	
+
 	*name = "Param1";
 	*value = "Value1";
 	param->setUAPString(*&name, *&value);
@@ -98,10 +106,10 @@ int main(int argc, char *argv[]) {
 
 
 	UAP_REQUEST(mm, lb_I_String, result)
-	
+
 	*name = "Param2";
 	param->getUAPString(*&name, *&result);
-	
+
 	_CL_LOG << "Got back '" << result->charrep() << "'" LOG_
 
 
@@ -110,13 +118,13 @@ int main(int argc, char *argv[]) {
 	UAP(lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, uk)
 	QI(name, lb_I_KeyBase, key)
-	
+
 	*name = "Parameters";
-	
+
 	container->insert(&uk, &key);
-	
-	
-	
+
+
+
         return 0;
 }
 

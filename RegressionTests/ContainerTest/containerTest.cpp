@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -33,18 +33,24 @@
 
 #endif
 /*...sincludes:0:*/
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #include <conio.h>
 
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -53,7 +59,12 @@ extern "C" {
 #include <malloc.h>
 #endif
 #endif
+
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
+
 /*...e*/
 
 void printContainer(lb_I_Container* container) {
@@ -63,9 +74,9 @@ void printContainer(lb_I_Container* container) {
 		e = container->nextElement();
 		if (e != NULL) {
 			UAP(lb_I_String, s)
-			
+
 			QI(e, lb_I_String, s)
-			
+
 			printf("String is: %s\n", s->getData());
 		}
 	}
@@ -75,18 +86,18 @@ void fillContainer(lb_I_Container* container) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(IData, lb_I_KeyBase, key)
 	QI(SData, lb_I_Unknown, uk)
-	
+
 	for (int i = 1; i <= 10; i++) {
 		IData->setData(i);
 		*SData = "Element ";
 		*SData += IData->charrep();
-		
+
 		container->insert(&uk, &key);
 	}
 }
@@ -95,18 +106,18 @@ void fillContainer(lb_I_Container* container, int howMany) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(IData, lb_I_KeyBase, key)
 	QI(SData, lb_I_Unknown, uk)
-	
+
 	for (int i = 1; i <= howMany; i++) {
 		IData->setData(i);
 		*SData = "Element ";
 		*SData += IData->charrep();
-		
+
 		container->insert(&uk, &key);
 	}
 }
@@ -116,72 +127,72 @@ void fillContainerStringKey(lb_I_Container* container, int howMany) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, SKey)
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(SKey, lb_I_KeyBase, key)
 	QI(SData, lb_I_Unknown, uk)
-	
+
 	for (int i = 1; i <= howMany; i++) {
 		IData->setData(i);
 		*SKey = "Huge keydata ";
 		*SKey += IData->charrep();
 		*SData = "Element ";
 		*SData += IData->charrep();
-		
+
 		container->insert(&uk, &key);
 	}
 }
 
 void fillContainerRequestInLoop(lb_I_Container* container, int howMany) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	for (int i = 1; i <= howMany; i++) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
-		
+
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		QI(IData, lb_I_KeyBase, key)
 		QI(SData, lb_I_Unknown, uk)
-		
+
 		IData->setData(i);
 		*SData = "Element ";
 		*SData += IData->charrep();
-		
+
 		container->insert(&uk, &key);
 	}
 }
 
 void fillContainerStringKeyRequestInLoop(lb_I_Container* container, int howMany) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	for (int i = 1; i <= howMany; i++) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, SKey)
-		
+
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		QI(SKey, lb_I_KeyBase, key)
 		QI(SData, lb_I_Unknown, uk)
-		
+
 		IData->setData(i);
 		*SKey = "Huge keydata ";
 		*SKey += IData->charrep();
 		*SData = "Element ";
 		*SData += IData->charrep();
-		
+
 		container->insert(&uk, &key);
 	}
 }
 
 void fillContainerRequestInLoopWithParameter(lb_I_Container* container, int howMany) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	container->setCloning(false);
 
 	for (int i = 1; i <= howMany; i++) {
@@ -192,15 +203,15 @@ void fillContainerRequestInLoopWithParameter(lb_I_Container* container, int howM
 		UAP_REQUEST(getModuleInstance(), lb_I_String, N2)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, P3)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, N3)
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
-		
+
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		QI(IData, lb_I_KeyBase, key)
 		QI(param, lb_I_Unknown, uk)
-		
+
 		IData->setData(i);
 		*P1 = "Parameter ";
 		*P1 += IData->charrep();
@@ -214,20 +225,20 @@ void fillContainerRequestInLoopWithParameter(lb_I_Container* container, int howM
 		*P3 += IData->charrep();
 		*N3 = "Parameter ";
 		*N3 += IData->charrep();
-		
+
 		param->setUAPString(*&N1, *&P1);
 		param->setUAPString(*&N2, *&P2);
 		param->setUAPString(*&N3, *&P3);
-		
+
 		container->insert(&uk, &key);
 	}
 }
 
 void fillContainerStringKeyRequestInLoopWithParameter(lb_I_Container* container, int howMany) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	container->setCloning(false);
-	
+
 	for (int i = 1; i <= howMany; i++) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, SKey)
@@ -238,19 +249,19 @@ void fillContainerStringKeyRequestInLoopWithParameter(lb_I_Container* container,
 		UAP_REQUEST(getModuleInstance(), lb_I_String, N2)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, P3)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, N3)
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
-		
+
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		QI(SKey, lb_I_KeyBase, key)
 		QI(param, lb_I_Unknown, uk)
-		
+
 		IData->setData(i);
 		*SKey = "Huge keydata ";
 		*SKey += IData->charrep();
-		
+
 		*P1 = "Parameter ";
 		*P1 += IData->charrep();
 		*N1 = "Parameter ";
@@ -263,7 +274,7 @@ void fillContainerStringKeyRequestInLoopWithParameter(lb_I_Container* container,
 		*P3 += IData->charrep();
 		*N3 = "Parameter ";
 		*N3 += IData->charrep();
-		
+
 		param->setUAPString(*&N1, *&P1);
 		param->setUAPString(*&N2, *&P2);
 		param->setUAPString(*&N3, *&P3);
@@ -277,13 +288,13 @@ void fillContainerFromDBProblems(lb_I_Container* container) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, SData)
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(IData, lb_I_KeyBase, key)
 	QI(SData, lb_I_Unknown, uk)
-	
+
 	int i = 0;
 	i++;
 	IData->setData(i);
@@ -297,7 +308,7 @@ void fillContainerFromDBProblems(lb_I_Container* container) {
 	IData->setData(i);
 	*SData = "id_reg";
 	container->insert(&uk, &key);
-	
+
 }
 
 
@@ -306,9 +317,9 @@ void searchContainerElement(lb_I_Container* container, int i) {
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, IData)
 	QI(IData, lb_I_KeyBase, key)
-	
+
 	IData->setData(i);
-	
+
 	if (container->exists(&key) == 1) {
 		UAP(lb_I_String, SData)
 		UAP(lb_I_Unknown, uk)
@@ -323,7 +334,7 @@ void searchContainerElement(lb_I_Container* container, int i) {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -331,19 +342,19 @@ int main(int argc, char *argv[]) {
 
 	// Preload lbClasses DLL with this line !
 	UAP_REQUEST(mm, lb_I_String, s)
-	
+
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
 
 	UAP_REQUEST(mm, lb_I_Container, container)
 	UAP_REQUEST(mm, lb_I_Container, container1)
-	
+
 	container->setCloning(true);
 	fillContainer(*&container);
 	printContainer(*&container);
 
 	container1->setCloning(false);
 	//container->deleteAll();
-	
+
 	fillContainer(*&container1);
 	printContainer(*&container1);
 
@@ -358,23 +369,23 @@ int main(int argc, char *argv[]) {
 	searchContainerElement(*&container, 7);
 	searchContainerElement(*&container, 8);
 	searchContainerElement(*&container, 4711);
-	
-	container->deleteAll();
-	
-	fillContainerFromDBProblems(*&container);
-	
-	printContainer(*&container);
 
-	printf("Container has %d elements.\n", container->Count());
-	
 	container->deleteAll();
 
 	fillContainerFromDBProblems(*&container);
-	
+
 	printContainer(*&container);
-	
+
 	printf("Container has %d elements.\n", container->Count());
-	
+
+	container->deleteAll();
+
+	fillContainerFromDBProblems(*&container);
+
+	printContainer(*&container);
+
+	printf("Container has %d elements.\n", container->Count());
+
 	container->deleteAll();
 
 	_LOG << "Test with 10." LOG_
@@ -390,7 +401,7 @@ int main(int argc, char *argv[]) {
 	_LOG << "Done testing" LOG_
 
 	container->deleteAll();
-	
+
 	_LOG << "Test stringkey with 10." LOG_
 	fillContainerStringKey(*&container, 10);
 	_LOG << "Test stringkey with 100." LOG_
@@ -402,9 +413,9 @@ int main(int argc, char *argv[]) {
 	_LOG << "Test stringkey with 100000." LOG_
 	fillContainerStringKey(*&container, 100000);
 	_LOG << "Done testing" LOG_
-	
+
 	container->deleteAll();
-	
+
 	_LOG << "Test request in loop with 10." LOG_
 	fillContainerRequestInLoop(*&container, 10);
 	_LOG << "Test request in loop with 100." LOG_
@@ -416,9 +427,9 @@ int main(int argc, char *argv[]) {
 	_LOG << "Test request in loop with 100000." LOG_
 	fillContainerRequestInLoop(*&container, 100000);
 	_LOG << "Done testing" LOG_
-	
+
 	container->deleteAll();
-	
+
 	_LOG << "Test request in loop stringkey with 10." LOG_
 	fillContainerStringKeyRequestInLoop(*&container, 10);
 	_LOG << "Test request in loop stringkey with 100." LOG_
@@ -430,9 +441,9 @@ int main(int argc, char *argv[]) {
 	_LOG << "Test request in loop stringkey with 100000." LOG_
 	fillContainerStringKeyRequestInLoop(*&container, 100000);
 	_LOG << "Done testing" LOG_
-	
+
 	container->deleteAll();
-	
+
 	_LOG << "Test request in loop with parameter with 10." LOG_
 	fillContainerRequestInLoopWithParameter(*&container, 10);
 	_LOG << "Test request in loop with parameter with 100." LOG_
@@ -444,9 +455,9 @@ int main(int argc, char *argv[]) {
 	_LOG << "Test request in loop with parameter with 100000." LOG_
 	fillContainerRequestInLoopWithParameter(*&container, 100000);
 	_LOG << "Done testing" LOG_
-	
+
 	container->deleteAll();
-	
+
 	_LOG << "Test request in loop with parameter stringkey with 10." LOG_
 	fillContainerStringKeyRequestInLoopWithParameter(*&container, 10);
 	_LOG << "Test request in loop with parameter stringkey with 100." LOG_
@@ -458,7 +469,7 @@ int main(int argc, char *argv[]) {
 	_LOG << "Test request in loop with parameter stringkey with 100000." LOG_
 	fillContainerStringKeyRequestInLoopWithParameter(*&container, 100000);
 	_LOG << "Done testing" LOG_
-	
-	
+
+
 	return 0;
 }

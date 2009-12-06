@@ -23,12 +23,14 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sincludes:0:*/
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -57,8 +59,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
+#endif
 
 
 
@@ -73,9 +76,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
@@ -148,9 +148,9 @@ lb_I_String* LB_STDCALL lbSendSignalAction::substitutePlaceholder(lb_I_String* v
 		*replacer = "{";
 		*replacer += right->charrep();
 		*replacer = "}";
-		
+
 		params->getUAPString(*&right, *&value);
-		
+
 		substituted->replace(replacer->charrep(), value->charrep());
 	}
 	substituted++;
@@ -160,12 +160,12 @@ lb_I_String* LB_STDCALL lbSendSignalAction::substitutePlaceholder(lb_I_String* v
 long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbSendSignalAction::execute()" LOG_
-	
+
 	if(SignalParams == NULL) {
 		_LOG << "Error: SignalParams is NULL. lbSendSignalAction can't be used without this." LOG_
 		return 0;
 	}
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
@@ -175,7 +175,7 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
@@ -190,13 +190,13 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 	params->getUAPString(*&parameter, *&SourceFieldName);
 	parameter->setData("source Form");
 	params->getUAPString(*&parameter, *&SourceFormName);
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
-		
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, docparams)
-		
+
 	if (docparams != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -204,19 +204,19 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 		UAP(lb_I_Action_Steps, appActionSteps)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
-		
+
 		docparams->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		docparams->getUAPContainer(*&name, *&document);
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
-		
+
+
 		if (appActionSteps != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
@@ -229,12 +229,12 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 			/**********************************************************/
 			/* Start dispatching given parameters from the what field */
 			/**********************************************************/
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, inputname)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, inputvalue)
 			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
-			
+
 			// Build up the required parameters (with substituted placeholders) for the configured signal
 			int I = 0;
 			while (SignalParams->hasMoreActionStepParameters()) {
@@ -247,43 +247,43 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 
 				*name = SignalParams->getActionStepParameterName();
 				*value = SignalParams->getActionStepParameterValue();
-				
+
 				_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for dispatcher." LOG_
-			
+
 				if (I++ == 0) *msg += ", ";
 				*msg += value->charrep();
-				
+
 				valueSubstituted = substitutePlaceholder(*&value, *&params);
 				param->setUAPString(*&name, *&valueSubstituted);
 			}
-			
+
 			*msg += ")";
 			meta->setStatusText("Info", msg->charrep());
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 			UAP(lb_I_Unknown, uk_result)
 			QI(result, lb_I_Unknown, uk_result)
-			
+
 			dispatcher->dispatch(appActionSteps->getActionStepBezeichnung(), uk.getPtr(), &uk_result);
-			
+
 ///\todo Check if there is a need to evaluate the result or pass it back (askYesNo).
 
 /*
  * At least in a case of askYesNo there may be a change in a flow in a non linear action. Thus a value must be passed back.
  * To distinguish each result of such an action the name could be used from getActionStepBezeichnung().
  */
-#define PASS_BACK_RESULT 
+#define PASS_BACK_RESULT
 #ifdef PASS_BACK_RESULT
 			UAP_REQUEST(getModuleInstance(), lb_I_String, passback)
 			*passback = appActionSteps->getActionStepBezeichnung();
-			
+
 			params->setUAPString(*&passback, *&result);
 #endif
-			
+
 			return -1;
 		}
 	}

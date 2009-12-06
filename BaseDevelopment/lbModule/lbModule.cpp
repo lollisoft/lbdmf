@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.123 $
+ * $Revision: 1.124 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.123 2009/11/12 07:55:32 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.124 2009/12/06 19:20:16 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.124  2009/12/06 19:20:16  lollisoft
+ * Modified build process to use precompiled files.
+ * Corrected the long build time problem. It is located in the _LOG macro.
+ * Updated wxPropgrid to 1.4.9.1 and updated building against wxMSW 2.8.10.
+ *
+ * Build works, but running the application fails with not properly initialized error.
+ * (0xc0000005)
+ *
+ * Also updated the iss files for the new planned release.
+ *
  * Revision 1.123  2009/11/12 07:55:32  lollisoft
  * Corrected the core macros and functions to reduce deprecated const string warning.
  *
@@ -444,6 +454,10 @@
 #define USE_INTERFACE_REPOSITORY
 
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -473,7 +487,9 @@ extern "C" {
 #endif
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 /*...sLB_MODULE_DLL scope:0:*/
 #define LB_MODULE_DLL

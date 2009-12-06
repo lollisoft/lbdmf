@@ -22,11 +22,16 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 #define USE_IMMEDIALY_CLOSE
 #define USE_SQLITE
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -45,7 +50,9 @@ extern "C" {
 }
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 #include <stdio.h>
 #ifndef OSX
@@ -121,12 +128,12 @@ class lbDatabaseLayerQuery;
 class lbDatabaseLayerBoundColumn;
 
 class lbDatabaseLayerBoundColumns: public lb_I_ColumnBinding {
-public:	
+public:
 	lbDatabaseLayerBoundColumns() { ref = STARTREF; ArraySize = 1; }
 	virtual ~lbDatabaseLayerBoundColumns() {
 		_CL_VERBOSE << "lbDatabaseLayerBoundColumns::~lbDatabaseLayerBoundColumns() called." LOG_
 	}
-	
+
 	DECLARE_LB_UNKNOWN()
 
 	lb_I_Container*		LB_STDCALL getBoundColumns();
@@ -139,7 +146,7 @@ public:
 
 	int					LB_STDCALL getMode();
 
-        
+
 	lbErrCodes			LB_STDCALL getString(int column, lb_I_String* instance);
 	lbErrCodes			LB_STDCALL getLong(int column, lb_I_Long* instance);
 	lbErrCodes			LB_STDCALL getString(const char* column, lb_I_String* instance);
@@ -169,13 +176,13 @@ public:
 
 	void				LB_STDCALL rebind();
 	void				LB_STDCALL unbind();
-	
+
 	void				LB_STDCALL add();
 	void				LB_STDCALL finishadd();
-	
+
 	bool				LB_STDCALL hasValidData();
 	void				LB_STDCALL invalidateData();
-		
+
 	int					LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
@@ -195,63 +202,63 @@ public:
 	virtual ~lbDatabaseLayerQuery();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	virtual						lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb);
-	
+
 	virtual						lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
 	virtual						lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
-	
+
 	void						LB_STDCALL skipFKCollecting();
 	void						LB_STDCALL enableFKCollecting();
 	void						LB_STDCALL prepareFKList();
-	
+
 	lb_I_String*				LB_STDCALL getTableName(char* columnName = NULL);
-	
+
 	void						LB_STDCALL dbError(char* lp, HSTMT hstmt);
-	
+
 	void						LB_STDCALL PrintData(bool reverse);
 	void						LB_STDCALL PrintCurrent();
 	void						LB_STDCALL PrintHeader();
 	void						LB_STDCALL PrintFooter();
-	
+
 	void						LB_STDCALL skipPeeking() { peeking = false; }
-	
+
 	lbErrCodes					LB_STDCALL query(char* q, bool bind);
-	
+
 	lbErrCodes					LB_STDCALL bind();
 	void						LB_STDCALL unbind();
-	
+
 	bool						LB_STDCALL dataFetched();
-	
+
 	lbErrCodes					LB_STDCALL add();
 	int							LB_STDCALL isAdding() { return mode; }
-	
+
 	lbErrCodes					LB_STDCALL remove();
-	
+
 	lbErrCodes					LB_STDCALL update();
-	
+
 	int							LB_STDCALL getColumns();
 	bool						LB_STDCALL hasColumnName(char* name);
-	
+
 	lb_I_String*				LB_STDCALL getColumnName(int col);
-	
+
 	int							LB_STDCALL hasFKColumn(char* FKName);
-	
+
 	int							LB_STDCALL getFKColumns();
-	
+
 	lb_I_String*				LB_STDCALL getFKColumn(int pos);
-	
+
 	lb_I_String*				LB_STDCALL getFKColumn(char* table, char* primary);
-	
+
 	lb_I_String*				LB_STDCALL getPKTable(char const * FKName);
 	lb_I_String*				LB_STDCALL getPKColumn(char const * FKName);
-	
+
 	int							LB_STDCALL getPKColumns();
 	lb_I_String*				LB_STDCALL getPKColumn(int pos);
-	
+
 	bool						LB_STDCALL isFirst();
 	bool						LB_STDCALL isLast();
-	
+
 	bool						LB_STDCALL hasDefaultValue(char* columnname);
 	bool						LB_STDCALL isNullable(int pos);
 	bool						LB_STDCALL isNullable(char const * name);
@@ -259,53 +266,53 @@ public:
 	bool						LB_STDCALL isNull(char const * name);
 	bool						LB_STDCALL setNull(int pos, bool b = true);
 	bool						LB_STDCALL setNull(char const * name, bool b = true);
-	
+
 	lb_I_Query::lbDBColumnTypes	LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes	LB_STDCALL getColumnType(char* name);
-	
+
 	lbDBCaseSensity				LB_STDCALL getCaseSensity();
-	
+
 	void						LB_STDCALL setReadonly(char* column, bool updateable = true);
 	bool						LB_STDCALL getReadonly(char* column);
-	
+
 	/* Navigation */
-	
+
 	int							LB_STDCALL getPosition() { return cursor; }
 	lbErrCodes					LB_STDCALL absolute(int pos);
-	
+
 	lbErrCodes					LB_STDCALL first();
 	lbErrCodes					LB_STDCALL next();
 	lbErrCodes					LB_STDCALL previous();
 	lbErrCodes					LB_STDCALL last();
 	char*						LB_STDCALL setWhereClause(const char* query, char* where);
-	
+
 	char*						LB_STDCALL addWhereClause(const char* query, char* where);
-	
+
 	void						LB_STDCALL setAutoRefresh(bool b);
-	
+
 	lbErrCodes					LB_STDCALL reopen();
 	void						LB_STDCALL close();
 	lbErrCodes					LB_STDCALL open();
-	
+
 #ifdef UNBOUND
 	virtual char*				LB_STDCALL getChar(int column);
 #endif
-#ifndef UNBOUND       
+#ifndef UNBOUND
 	lb_I_String*				LB_STDCALL getAsString(int column);
 	lb_I_String*				LB_STDCALL getAsString(const char* column);
 	lb_I_Long*					LB_STDCALL getAsLong(int column);
 	lbErrCodes					LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
-	
+
 	lb_I_BinaryData*			LB_STDCALL getBinaryData(int column);
 	lb_I_BinaryData*			LB_STDCALL getBinaryData(const char* column);
 	lbErrCodes					LB_STDCALL setBinaryData(int column, lb_I_BinaryData* value);
 	lbErrCodes					LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
-#endif        
-	
+#endif
+
 	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, char* dbname, bool ro = false);
-	
+
 	lbErrCodes					LB_STDCALL executeDirect(char* SQL);
-	
+
 	/** \brief Build a cursor set.
 	 * Generates a list of keys in a 'window' of the main resultset.
 	 */
@@ -315,28 +322,28 @@ public:
 	 * Generates a list of keys in a 'window' of the main resultset.
 	 */
 	lbErrCodes					LB_STDCALL previousCursorSet(long first_id);
-	
+
 	/** \brief Selects the current row.
 	 * This function is responsible to get a row by issuing a query with cursorWhere based on currentCursorview[cursor].
 	 * If there would be an under or overflow, a new query will be issued to get a new list of currentCursorview ID's.
 	 * Based on overflow and underflow the correct position will be stored into cursor.
 	 */
 	bool						LB_STDCALL selectCurrentRow();
-	
+
 	/** \brief Select the cached row at current cachedRowIndex.
 	 * A cached row is one of several rows for a statement where no cursor feature is present. The cursor behaviour therefore
 	 * is implemented on cached data.
 	 */
 	lbErrCodes					LB_STDCALL selectCachedRow();
-	
+
 	/** \brief Create meta information.
 	 */
 	void						LB_STDCALL createMetaInformation();
-	
+
 	/** \brief Destroy meta information.
 	 */
 	void						LB_STDCALL destroyMetaInformation();
-	
+
 	/**
 	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
 	 * This function is public in class level, not on interface level.
@@ -344,23 +351,23 @@ public:
 	HSTMT LB_STDCALL getCurrentStatement() {
 		return hstmt;
 	}
-	
+
 	int LB_STDCALL isReadonly() {
 		return _readonly;
 	}
-	
+
 #ifndef UNBOUND
 	lb_I_ColumnBinding* getBoundColumns() {
 		return boundColumns.getPtr();
 	}
 #endif
-	
+
 private:
 	int		cursor;
-	
+
 	/// If any function such as first or next has been successfully called.
 	bool	_dataFetched;
-	
+
 	/// Indicates a look forward to indicate if any more data is available.
 	bool 	peeking;
 	bool    skipAutoQuery;
@@ -381,20 +388,20 @@ private:
 	bool	_autoRefresh;
 	int		mode;  // insert = 1, select = 0
 				   //	char* lpszTable;
-	
+
 	static	int     skipFKCollections;
 	int		preparingFKColumns;
-	
+
 	// Number of columns for the query
 	SQLSMALLINT cols;
-	
+
 	UAP(lb_I_Container, primaryColumns)
 	UAP(lb_I_Container, ForeignColumns)
-		
+
 	UAP(lb_I_Container, mapPKTable_PKColumns_To_FKName)
-		
+
 	UAP(lb_I_Container, ReadOnlyColumns)
-	
+
 	UAP(lb_I_Container, binaryDataColumns)
 
 	/* \brief When there is a JOIN in the query or more than one table in the select statement.
@@ -402,9 +409,9 @@ private:
 	 */
 	UAP(lb_I_Container, cachedDataRows)
 	UAP(lb_I_Container, cachedDataColumns)
-	
 
-	
+
+
 	/* \brief Caching some meta information of the current query.
 	 *
 	 */
@@ -416,16 +423,16 @@ private:
 	// Maps foreign columns to their primary columns.
 	UAP(lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
 
-#ifdef UNBOUND	
+#ifdef UNBOUND
 	UAP(lb_I_Container, boundColumns)
 #endif
 #ifndef UNBOUND
 	UAP(lb_I_ColumnBinding, boundColumns)
 #endif
 	char buff[100];
-	
+
 	int count;
-	
+
 	/**
 	 * The status of the last fetch.
 	 *
@@ -434,38 +441,38 @@ private:
 	 * 1  means, that the last row was reached.
 	 */
 	int fetchstatus;
-	
+
 	/// Holds values in a 'window' of the current resultset.
 	wxArrayString currentCursorview;
-	
+
 	// Holds the min values per window of yet determined key values.
 	wxArrayInt minWindowValues;
 	// Holds the max values per window of yet determined key values. The numer of elements must correspond to minWindowValues to always get a pair.
 	wxArrayInt maxWindowValues;
-	
+
 	// The primary key names to be used for cursorWhere creation.
 	wxArrayString primarykeys;
 	wxArrayString tables;
 	bool cursorFeature;
 	int max_in_cursor;
 	int max_in_cursor_default;
-	
+
 	// The query in some parts
 	wxString plainQuery;	// The columns including 'FROM'
 	wxString joinClause;	// If there are JOIN rules
 	wxString whereClause;	// If there are where clauses
 	wxString orderRule;		// If there are order rules
-	
+
 	wxString cursorWhere;	// Actiual cursor position
-	
+
 	// Datamanipulation helpers
-	
+
 	wxArrayString nullColumns;
 	wxArrayString nullValues;
-	
+
 	wxArrayString queryColumns;
 	wxArrayString queryValues;
-	
+
 	DatabaseLayer* currentdbLayer;
 	DatabaseResultSet* theResult;
 };
@@ -475,7 +482,7 @@ int lbDatabaseLayerQuery::skipFKCollections = 0;
 /*...e*/
 /*...sclass def lbDatabaseLayerBoundColumn:0:*/
 class lbDatabaseLayerBoundColumn: public lb_I_BoundColumn {
-public:	
+public:
 	lbDatabaseLayerBoundColumn() {
 		ref = STARTREF;
 		bound = 0;
@@ -493,7 +500,7 @@ public:
 		_hasValidData = false;
 		columnName = NULL;
 	}
-	
+
 	virtual ~lbDatabaseLayerBoundColumn() {
 		if (columnName != NULL) {
 			_CL_VERBOSE << "~lbDatabaseLayerBoundColumn('" << columnName << "') called." LOG_
@@ -501,7 +508,7 @@ public:
 		} else {
 			_CL_VERBOSE << "~lbDatabaseLayerBoundColumn(?) called." LOG_
 		}
-		
+
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
@@ -515,15 +522,15 @@ public:
 				_CL_VERBOSE << "lbDatabaseLayerBoundColumn::~lbDatabaseLayerBoundColumn() failed: Unknown or not supported datatype for column '" << columnName << "'" LOG_
 				break;
 		}
-		
+
 		if (cbBufferLength != NULL) delete[] cbBufferLength;
-		
+
 		if ((bound != 0) && (buffer != NULL)) {
 			free(buffer);
 			buffer = NULL;
 		}
 	}
-	
+
 	lbDatabaseLayerBoundColumn(const lbDatabaseLayerBoundColumn& _ref) {
 		printf("lbDatabaseLayerBoundColumn(const lbDatabaseLayerBoundColumn& _ref) called\n");
 	}
@@ -563,13 +570,13 @@ public:
 
 	void		LB_STDCALL rebind();
 	void		LB_STDCALL unbind();
-	
+
 	void		LB_STDCALL add();
 	void		LB_STDCALL finishadd();
-	
+
 	bool	LB_STDCALL hasValidData();
 	void	LB_STDCALL invalidateData();
-	
+
 protected:
 
 	char* LB_STDCALL getColumnName_c_str() { return columnName; }
@@ -578,7 +585,7 @@ protected:
 		bound = b;
 		_DataType = dt;
 		buffer = bu;
-		
+
 		if (name == NULL) {
 			_LOG << "ERROR: Cloning data with NULL pointer" LOG_
 		}
@@ -594,7 +601,7 @@ protected:
 
 	virtual void LB_STDCALL setColumn(char* col) {
 		if (columnName != NULL) free(columnName);
-		
+
 		columnName = (char*) malloc(strlen(col)+1);
 		columnName[0] = 0;
 		strcpy(columnName, col);
@@ -612,8 +619,8 @@ protected:
 	void*		buffer;
 	int			buffersize;
 	lbDatabaseLayerQuery*	query;
-	
-	
+
+
 	/** \brief SQL_NULL_DATA indicator.
 	 *
 	 * This normally contains the buffer length of the filled data. If there is NULL data,
@@ -641,7 +648,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...sunimplemented:0:*/
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumns::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "lbDatabaseLayerBoundColumns::setData(...) not implemented yet" LOG_
-        
+
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -659,11 +666,11 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setBoundColumns(lb_I_Con
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isBound(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -692,11 +699,11 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(char const * name) {
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -720,11 +727,11 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(char const * name) {
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -742,16 +749,16 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(int pos) {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::unbind() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->unbind();
 		}
 	}
@@ -760,16 +767,16 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::unbind() {
 /*...svoid LB_STDCALL lbDatabaseLayerBoundColumns\58\\58\rebind\40\\41\:0:*/
 void LB_STDCALL lbDatabaseLayerBoundColumns::rebind() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->rebind();
 		}
 	}
@@ -778,16 +785,16 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::rebind() {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::add() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->add();
 		}
 	}
@@ -795,16 +802,16 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::add() {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::finishadd() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->finishadd();
 		}
 	}
@@ -812,16 +819,16 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::finishadd() {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::indicateNullValues() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			if (bc->isNull()) {
 				bc->bindNullColumn();
 			}
@@ -831,14 +838,14 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::indicateNullValues() {
 
 void	LB_STDCALL lbDatabaseLayerBoundColumns::invalidateData() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	while ((boundColumns != NULL) && (boundColumns->hasMoreElements())) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_BoundColumn, bc)
 		uk = boundColumns->nextElement();
-		
+
 		QI(uk, lb_I_BoundColumn, bc)
-		
+
 		if (bc != NULL) {
 			bc->invalidateData();
 		}
@@ -847,26 +854,26 @@ void	LB_STDCALL lbDatabaseLayerBoundColumns::invalidateData() {
 
 bool	LB_STDCALL lbDatabaseLayerBoundColumns::hasValidData() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	while ((boundColumns != NULL) && (boundColumns->hasMoreElements())) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_BoundColumn, bc)
 		uk = boundColumns->nextElement();
-		
+
 		QI(uk, lb_I_BoundColumn, bc)
-		
+
 		if (bc != NULL) {
 			if (!bc->hasValidData()) return false;
 		}
 	}
-	
+
 	return true;
 }
 
 
 bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(char const * name, bool b) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	int pos = getColumnIndex(name);
 
 	return setNull(pos, b);
@@ -875,11 +882,11 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(char const * name, bool b) 
 bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(int pos, bool b) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -895,16 +902,16 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(int pos, bool b) {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::unbindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->unbindReadonlyColumns();
 		}
 	}
@@ -912,16 +919,16 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::unbindReadonlyColumns() {
 
 void LB_STDCALL lbDatabaseLayerBoundColumns::rebindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_BoundColumn, bc)
-			
+
 			uk = boundColumns->nextElement();
-			
+
 			QI(uk, lb_I_BoundColumn, bc)
-			
+
 			bc->rebindReadonlyColumns();
 		}
 	}
@@ -931,11 +938,11 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -956,24 +963,24 @@ int LB_STDCALL lbDatabaseLayerBoundColumns::getColumnIndex(const char* name) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 		stringKey->setData(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) {
 			_LOG << "lbDatabaseLayerBoundColumns::getColumnIndex('" << name << "') returned no data !" LOG_
-			
+
 			return -1;
 		}
 
 		UAP(lb_I_Integer, pos)
-		
+
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
-		
+
 		return pos->getData();
 	}
 
@@ -984,25 +991,25 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 		stringKey->setData(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) {
 			_LOG << "lbDatabaseLayerBoundColumns::getColumnType('" << name << "') returned no data !" LOG_
-			
+
 			return lb_I_Query::lbDBColumnUnknown;
 		}
 
 		UAP(lb_I_BoundColumn, bc)
 		UAP(lb_I_Integer, pos)
-		
+
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
-		
+
 		return getColumnType(pos->getData());
 	}
 
@@ -1013,25 +1020,25 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(char* column, bool upda
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 		stringKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
 		UAP(lb_I_Integer, pos)
-		
+
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
-		
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos.getPtr());
 		UAP(lb_I_Unknown, ukdata1)
 		UAP(lb_I_KeyBase, key1)
-		
+
 		QI(integerKey, lb_I_KeyBase, key1)
 
 		ukdata1 = boundColumns->getElement(&key1);
@@ -1047,27 +1054,27 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(char* column, bool upda
 bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 		stringKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		
+
 
 		UAP(lb_I_Integer, pos)
-		
+
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
-		
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(pos.getPtr());
 		UAP(lb_I_Unknown, ukdata1)
 		UAP(lb_I_KeyBase, key1)
-		
+
 		QI(integerKey, lb_I_KeyBase, key1)
 
 		ukdata1 = boundColumns->getElement(&key1);
@@ -1084,11 +1091,11 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(char* column) {
 lb_I_BoundColumn* LB_STDCALL lbDatabaseLayerBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 		integerKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
-		
+
 		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
@@ -1098,7 +1105,7 @@ lb_I_BoundColumn* LB_STDCALL lbDatabaseLayerBoundColumns::getBoundColumn(int col
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		bc++;
-		
+
 		return bc.getPtr();
 	}
 	return NULL;
@@ -1114,10 +1121,10 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 	HSTMT hstmt = qq->getCurrentStatement();
 	query = qq;
 
-	SQLSMALLINT num = 0;	
+	SQLSMALLINT num = 0;
 	///\todo Implement getting number of columns.
 	SQLRETURN sqlreturn = 0;//SQLNumResultCols(hstmt, &num);
-	
+
 	if (boundColumns == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
 	} else {
@@ -1129,7 +1136,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 		lbErrCodes err = ERR_NONE;
 
 		// Create the instance ...
-		
+
 		lbDatabaseLayerBoundColumn* bc = new lbDatabaseLayerBoundColumn();
 
 		lb_I_Module* m = getModuleManager();
@@ -1145,7 +1152,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 		UAP(lb_I_KeyBase, key)
 
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
-		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
+		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
 
 		boundColumns->insert(&uk, &key);
 
@@ -1166,10 +1173,10 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 
 		if (ColumnNameMapping == NULL) {
 			// Create the index mapping instnce
-			
+
 			REQUEST(manager.getPtr(), lb_I_Container, ColumnNameMapping)
 		}
-		
+
 		UAP(lb_I_KeyBase, skey)
 		UAP(lb_I_String, string)
 
@@ -1180,7 +1187,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 		UAP(lb_I_Unknown, ivalue)
 
 		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
-		
+
 		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
 		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
 		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
@@ -1218,7 +1225,7 @@ lbErrCodes	LB_STDCALL lbDatabaseLayerBoundColumns::getString(int column, lb_I_St
 
 lbErrCodes	LB_STDCALL lbDatabaseLayerBoundColumns::getString(const char* column, lb_I_String* instance) {
 	getString(getColumnIndex(column), instance);
-	
+
 	return ERR_NONE;
 }
 
@@ -1226,11 +1233,11 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setString(char* column, 
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Unknown, ukdata)
 	UAP(lb_I_KeyBase, key)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Column)
-	
+
 	Column->setData(column);
-	
+
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
 
@@ -1244,7 +1251,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setString(char* column, 
 
 	UAP(lb_I_Unknown, uk_bc)
 	uk_bc = boundColumns->getElement(&index);
-	
+
 	UAP(lb_I_BoundColumn, bc)
 	QI(uk_bc, lb_I_BoundColumn, bc)
 
@@ -1265,16 +1272,16 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 UAP(lb_I_Integer, key)
 
-lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) { 
+lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
 	peeking = true;
 	ref = STARTREF;
-	_readonly = readonly; 
-	hdbc = 0; 
-	hstmt = 0; 
+	_readonly = readonly;
+	hdbc = 0;
+	hstmt = 0;
 	henv = 0;
 	hupdatestmt = 0;
-	databound = 0; 
-	count = 0; 
+	databound = 0;
+	count = 0;
 	firstfetched = 0;
 	cols = 0;
 	cursor = 0;
@@ -1292,7 +1299,7 @@ lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
 	skipAutoQuery = false;
 	numPrimaryKeys = 0;
 	max_in_cursor_default = max_in_cursor = 100;
-	
+
 	if (ReadOnlyColumns == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
 	}
@@ -1321,7 +1328,7 @@ lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
 	if (cachedColumnForeignColumnsToPrimaryColumns == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnForeignColumnsToPrimaryColumns)
 	}
-	
+
 }
 
 lbDatabaseLayerQuery::~lbDatabaseLayerQuery() {
@@ -1332,7 +1339,7 @@ lbDatabaseLayerQuery::~lbDatabaseLayerQuery() {
 	}
 	if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
 		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_
-			
+
 			// The global variable for getTableName() :-(
 			if (lpszTable) {
 				/// \todo Return a ministring object, that gets automatically deleted.
@@ -1348,14 +1355,14 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	int count = 0;
 	// Be sure
 	destroyMetaInformation();
-	
+
 	if (szSql) {
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
-		
+
 		if (tempResult != NULL) {
 			ResultSetMetaData* metadata = tempResult->GetMetaData();
 			count = metadata->GetColumnCount();
-			
+
 			for(int i=1;i<=count;i++) {
 				UAP_REQUEST(getModuleManager(), lb_I_String, name)
 				UAP_REQUEST(getModuleManager(), lb_I_String, tablename)
@@ -1365,14 +1372,14 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_Unknown, ukT)
 				UAP(lb_I_Unknown, ukTable)
-				
+
 				QI(columnIndex, lb_I_KeyBase, key)
 				QI(name, lb_I_Unknown, uk)
 				QI(type, lb_I_Unknown, ukT)
 				QI(tablename, lb_I_Unknown, ukTable)
 
 				columnIndex->setData(i);
-				
+
 				type->setData(metadata->GetColumnType(i));
 				wxString column = metadata->GetColumnName(i);
 
@@ -1380,44 +1387,44 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 
 				cachedColumnNames->insert(&uk, &key);
 				cachedColumnTypes->insert(&ukT, &key);
-				
+
 				// Store the number of primary keys for the table of the first column.
 				/// \todo Joins and multible tables not supported yet.
 				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
 
 				wxString table = metadata->GetTableForColumn(column);
 				*tablename = table.c_str();
-				
+
 				// Store the table name per column
 				cachedColumnTableNames->insert(&ukTable, &key);
-				
+
 				// Creating the mapping from foreign key to their primary column
 				int fkcolumns = currentdbLayer->GetForeignKeys(table);
-				
+
 				for (int ifk = 0; ifk<fkcolumns;ifk++) {
 					if (currentdbLayer->GetForeignKeyFKColumn(ifk) == column) {
 						UAP(lb_I_Unknown, ukPK)
 						UAP(lb_I_KeyBase, keyForeign)
 						UAP_REQUEST(getModuleManager(), lb_I_String, pkColumn)
 						*pkColumn = currentdbLayer->GetForeignKeyPKColumn(ifk).c_str();
-						
+
 						QI(name, lb_I_KeyBase, keyForeign)
 						QI(pkColumn, lb_I_Unknown, ukPK)
-						
+
 						cachedColumnForeignColumnsToPrimaryColumns->insert(&ukPK, &keyForeign);
 					}
 				}
-				
+
 			}
 		} else {
 			_LOG << "Error: szSql resulted in no resultset!" LOG_
 		}
-		
+
 		currentdbLayer->CloseResultSet(tempResult);
 	} else {
 			_LOG << "Error: szSql should have a value!" LOG_
 	}
-	
+
 	if (getColumns() != count) {
 		_LOG << "Error: Number of reported columns not equal to expected!" LOG_
 	}
@@ -1427,7 +1434,7 @@ void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
 	cachedColumnTableNames->deleteAll();
 	cachedColumnNames->deleteAll();
 	cachedColumnTypes->deleteAll();
-	
+
 	cachedColumnPrimaryColumns->deleteAll();
 	cachedColumnForeignColumnsToPrimaryColumns->deleteAll();
 }
@@ -1465,7 +1472,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintData(bool reverse) {
 	int cols = getColumns();
 
 	PrintHeader();
-	
+
 	if (reverse == false) {
 /*...sforward:8:*/
 	err = first();
@@ -1473,22 +1480,22 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintData(bool reverse) {
 
 	if (err == ERR_NONE) {
 	    PrintCurrent();
-	    
+
 	    err = next();
-	    
+
 	    while (err == ERR_DB_ROWDELETED) err = next();
-	    
+
 	    while (err == ERR_NONE) {
 			PrintCurrent();
-			
+
 			err = next();
-			
+
 			while (err == ERR_DB_ROWDELETED) err = next();
 	    }
-		
+
 	    if (err == WARN_DB_NODATA) {
 	    		PrintCurrent();
-	    }	    
+	    }
 	}
 /*...e*/
 	} else {
@@ -1497,36 +1504,36 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintData(bool reverse) {
 	while (err == ERR_DB_ROWDELETED) err = previous();
 	if (err == ERR_NONE) {
 	    PrintCurrent();
-	    
+
 	    err = previous();
-	    
+
 	    while (err == ERR_DB_ROWDELETED) err = previous();
-	    
+
 	    while (err == ERR_NONE) {
 			PrintCurrent();
-			
+
 			err = previous();
-			
+
 			while (err == ERR_DB_ROWDELETED) err = previous();
 	    }
-		
+
 	    if (err == WARN_DB_NODATA) {
 	    		PrintCurrent();
-	    }	    
+	    }
 	}
 /*...e*/
 	}
-	
+
 	PrintFooter();
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::PrintFooter() {
 	int cols = getColumns();
-	
+
 	for (int i = 1; i < cols; i++) {
 		printf("-------------------");
 	}
-	
+
 	printf("-------------------\n");
 }
 
@@ -1547,7 +1554,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 	UAP(lb_I_String, s)
 	UAP(lb_I_Long, l)
 	int cols = getColumns();
-	
+
 	for (int i = 1; i <= cols-1; i++) {
 		UAP(lb_I_String, s)
 		UAP(lb_I_Long, l)
@@ -1659,23 +1666,23 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, char* d
 	if (dbName) free(dbName);
 	dbName = NULL;
 	if (dbname) dbName = strdup(dbname);
-	
+
 	if (currentdbLayer) {
 		_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer available." LOG_
 	} else {
 		_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) Instance of currentdbLayer not available." LOG_
 	}
-	
+
 	if (!dbLayer || !dbLayer->IsOpen()) {
 		_LOG << "Error: database not opened!" LOG_
 		return ERR_DB_INIT;
 	}
-	
+
 	if (ro) {
 		_CL_VERBOSE << "Set actual query to be readonly." LOG_
 		_readonly = 1;
 	} else _readonly = 0;
-	
+
 	return ERR_NONE;
 }
 
@@ -1688,13 +1695,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::bind() {
 char* LB_STDCALL lbDatabaseLayerQuery::setWhereClause(const char* query, char* where) {
 	char* temp = NULL;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
-	
+
 	*orginal = query;
-		
+
 	if (where != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, order)
 		char* orderClause = orginal->stristr(orginal->charrep(), "ORDER BY");
-		
+
 		if (orderClause != NULL) {
 			char* t;
 			orderClause[-1] = 0;
@@ -1741,29 +1748,29 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 	// Maybe cursor possible
 	cursorFeature = true;
 	_dataFetched = false;
-	
+
     if (q == NULL) {
 		_LOG << "Error: Have got a NULL pointer for the query to execute!" LOG_
 		return ERR_DB_QUERYFAILED;
 	}
-	
+
 	if (szSql != q) {
 		if (szSql != NULL) free(szSql);
 		szSql = strdup(q);
 	}
-	
+
 	if (theResult != NULL) {
 		///\todo Cleanup resultset.
 	}
-	
+
 	if (strcmp(szSql, "COMMIT") == 0) {
 		currentdbLayer->RunQuery(szSql);
 		return ERR_NONE;
 	}
-	
+
 	try {
 		theResult = currentdbLayer->RunQueryWithResults(szSql);
-		
+
 		if (theResult != NULL) {
 			_CL_VERBOSE << "Have got a resultset for '" << szSql << "'" LOG_
 			_dataFetched = false;
@@ -1772,7 +1779,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				if (skipFKCollections == 0) prepareFKList();
 
 				ResultSetMetaData* metadata = theResult->GetMetaData();
-				
+
 				// Get all tables once
 				int count = metadata->GetColumnCount();
 				for (int i = 1; i <= count; i++) {
@@ -1781,33 +1788,33 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 
 				_CL_VERBOSE << "lbDatabaseLayerQuery::query() Error: There is no data! Query was: " << q LOG_
-				
+
 				// As figured out by the translation function
 				// Keep for meta data
 				currentdbLayer->CloseResultSet(theResult);
-				
+
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
 				_dataFetched = true;
 				if (skipFKCollections == 0) prepareFKList();
-							
 
-/*				
+
+/*
 				if (theQuery.Upper().Contains("JOIN")) {
 					joinClause = theQuery.SubString(theQuery.Find(wxString("JOIN")), theQuery.Length());
-					
+
 					if (joinClause.Upper().Contains("WHERE")) {
 						whereClause = joinClause.SubString(theQuery.Find(wxString("WHERE")), joinClause.Length());
 						joinClause = joinClause.SubString(0, theQuery.Find(wxString("WHERE")) -1);
 					}
-					
+
 				} else if (theQuery.Upper().Contains("WHERE")) {
 					whereClause = theQuery.SubString(theQuery.Find(wxString("WHERE")), theQuery.Length());
 				}
-*/				
+*/
 				wxString theQuery = wxString(szSql);
-			
+
 				if (theQuery.Upper().Contains("INSERT")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
@@ -1842,29 +1849,29 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 
 				ResultSetMetaData* metadata = theResult->GetMetaData();
-				
+
 				// Get all tables once
 				int count = metadata->GetColumnCount();
 				for (int i = 1; i <= count; i++) {
 					wxString table = metadata->GetTableForColumn(i);
 					if (tables.Index(table) == wxNOT_FOUND) tables.Add(table);
 				}
-				
+
 				if (tables.Count() > 1)
 				// Maybe a join or more difficult query I not yet want to handle cursor for
 					cursorFeature = false;
-				
+
 	// The query in some parts
 	//wxString plainQuery;	// The columns including 'FROM'
 	//wxString joinClause;	// If there are JOIN rules
 	//wxString whereClause;	// If there are where clauses
-	
+
 	//wxString cursorWhere;	// Actiual cursor position
 
-				
+
 				if (theQuery.Upper().Contains("JOIN"))
 					cursorFeature = false;
-				
+
 				if (theQuery.Upper().Contains(" WHERE ")) {
 					//cursorFeature = false;
 					whereClause = theQuery.SubString(theQuery.Upper().Find("WHERE"), theQuery.Length());
@@ -1882,41 +1889,41 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 					}
 				}
 
-				
+
 				if (cursorFeature) {
 					int pkeys = currentdbLayer->GetPrimaryKeys(tables[0]);
-					
+
 					if (pkeys >= 1) {
 						wxString tempSQL = "SELECT ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 						tempSQL += " from ";
 						tempSQL += tables[0];
-						
+
 						if (whereClause != "") {
 							tempSQL += " ";
 							tempSQL += whereClause;
 							tempSQL += " ";
 						}
-						
+
 						/* What about the order by clauses that are no based on primary keys ?
 						 * It could be used the values of that ordering to be filled in the currentCursorview.
 						 * To avoid the problem if there are, for sample 500 rows with the same 'ordering key',
 						 * The primary key could be added at the end of the order list.
-						 */ 
+						 */
 						tempSQL += " order by ";
 						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-						
+
 						_CL_VERBOSE << "Created help query: " << tempSQL.c_str() LOG_
-						
+
 						DatabaseResultSet* tempResult;
-						
+
 						try {
 							tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 						} catch (DatabaseLayerException ex) {
 							_LOG << "lbDatabaseLayerQuery() Error: Catched an exeption while issuing temporary query! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << tempSQL.c_str() LOG_
 							return ERR_DB_QUERYFAILED;
 						}
-						
+
 						int count = 0;
 						if (tempResult && tempResult->Next()) {
 							count++;
@@ -1933,33 +1940,33 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 						}
 						cursor = 0;
 						max_in_cursor = count;
-						
+
 						// Keep for meta data
 						currentdbLayer->CloseResultSet(theResult);
 						currentdbLayer->CloseResultSet(tempResult);
-						
+
 						selectCurrentRow();
 					} else {
 						cursorFeature = false;
 					}
-				} else {					
+				} else {
 					UAP(lb_I_KeyBase, rowKey)
 					UAP_REQUEST(getModuleInstance(), lb_I_Integer, Row)
 					QI(Row, lb_I_KeyBase, rowKey)
 					ResultSetMetaData* metadata = theResult->GetMetaData();
 					// Cache the data, because after a finish, no data will be given back.
 					cachedDataColumns->deleteAll();
-					
+
 					int row = 1;
 					Row->setData(row);
-					
+
 					for (int i_cache = 1; i_cache <= getColumns(); i_cache++) {
 						UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
 						UAP(lb_I_KeyBase, key)
 						UAP(lb_I_Unknown, uk)
 						I->setData(i_cache);
 						QI(I, lb_I_KeyBase, key)
-						
+
 						switch (getColumnType(i_cache)) {
 							case lbDBColumnBit:
 							{
@@ -1998,9 +2005,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 							{
 								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
 								wxMemoryBuffer buffer;
-								
+
 								if (theResult) theResult->GetResultBlob(i_cache, buffer);
-								
+
 								binarydata->append(buffer.GetData(), buffer.GetBufSize());
 								binarydata->append((void*) "", 1);
 								QI(binarydata, lb_I_Unknown, uk)
@@ -2029,15 +2036,15 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 							}
 								break;
 						}
-						
+
 						cachedDataColumns->insert(&uk, &key);
 					}
 
 					UAP(lb_I_Unknown, ukcachedDataColumns)
 					QI(cachedDataColumns, lb_I_Unknown, ukcachedDataColumns)
-					
+
 					cachedDataRows->insert(&ukcachedDataColumns, &rowKey);
-					
+
 					// Cache the complete resultset and finish.
 					while (theResult->Next()) {
 						Row->setData(++row);
@@ -2049,7 +2056,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 							UAP(lb_I_Unknown, uk)
 							I->setData(i_cache);
 							QI(I, lb_I_KeyBase, key)
-							
+
 							switch (getColumnType(i_cache)) {
 								case lbDBColumnBit:
 								{
@@ -2088,9 +2095,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 								{
 									UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
 									wxMemoryBuffer buffer;
-									
+
 									if (theResult) theResult->GetResultBlob(i_cache, buffer);
-									
+
 									binarydata->append(buffer.GetData(), buffer.GetBufSize());
 									binarydata->append((void*) "", 1);
 									QI(binarydata, lb_I_Unknown, uk)
@@ -2119,13 +2126,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 								}
 									break;
 							}
-							
+
 							cachedDataColumns->insert(&uk, &key);
 						}
-						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);						
+						cachedDataRows->insert(&ukcachedDataColumns, &rowKey);
 					}
 					// Keep for meta data
-					currentdbLayer->CloseResultSet(theResult);	
+					currentdbLayer->CloseResultSet(theResult);
 				}
 			}
 		} else {
@@ -2159,7 +2166,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		_LOG << "lbDatabaseLayerQuery::query() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << q LOG_
 		return ERR_DB_QUERYFAILED;
 	}
-	
+
 }
 /*...e*/
 /*...svirtual char\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getAsString\40\int column\41\:0:*/
@@ -2176,7 +2183,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
 	QI(col, lb_I_KeyBase, key)
 	col->setData(column);
-	
+
 	if (cachedDataColumns->exists(&key) == 1) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_String, value)
@@ -2189,7 +2196,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 		REQUEST(getModuleInstance(), lb_I_String, value)
 		*value = "";
 	}
-	
+
 	// Caller get's an owner
 	value++;
 
@@ -2200,12 +2207,12 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(const char* column) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
-	
+
 	// Caller get's an owner
 	string++;
-	
+
 	///\todo Implement this.
-	
+
 	return string.getPtr();
 }
 
@@ -2217,7 +2224,7 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
 	QI(col, lb_I_KeyBase, key)
 	col->setData(column);
-	
+
 	if (cachedDataColumns->exists(&key) == 1) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_Long, value)
@@ -2228,12 +2235,12 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 	} else {
 		REQUEST(getModuleInstance(), lb_I_Long, value)
 	}
-	
+
 	// Caller get's an owner
 	value++;
-	
+
 	///\todo Implement this.
-	
+
 	return value.getPtr();
 }
 
@@ -2245,7 +2252,7 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
 	wxMemoryBuffer buffer;
 
 	if (theResult) theResult->GetResultBlob(column, buffer);
-	
+
 	binarydata->append(buffer.GetData(), buffer.GetBufSize());
 	binarydata->append((void*) "", 1);
 
@@ -2259,7 +2266,7 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
 	QI(col, lb_I_KeyBase, key)
 	col->setData(column);
-	
+
 	if (cachedDataColumns->exists(&key) == 1) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_BinaryData, value)
@@ -2270,14 +2277,14 @@ lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {
 	} else {
 		REQUEST(getModuleInstance(), lb_I_BinaryData, value)
 	}
-	
+
 	value->append((void*) "", 1);
 
 	// Caller get's an owner
 	value++;
-	
+
 	///\todo Implement this.
-	
+
 	return value.getPtr();
 }
 
@@ -2298,19 +2305,19 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_Binar
 
 	UAP(lb_I_String, name)
 	name = getColumnName(column);
-	
+
 	setNull(column, false);
-	
+
 	UAP(lb_I_Unknown, ukValue)
 	UAP(lb_I_KeyBase, key)
-	
+
 	QI(name, lb_I_KeyBase, key)
 	QI(value, lb_I_Unknown, ukValue)
-	
+
 	if (binaryDataColumns->exists(&key)) binaryDataColumns->remove(&key);
 	binaryDataColumns->insert(&ukValue, &key);
-	
-/*	
+
+/*
 	wxString tempSQL = "UPDATE ";
 	tempSQL += tables[0];
 	tempSQL += " SET ";
@@ -2319,7 +2326,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(int column, lb_I_Binar
 	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 	tempSQL += " = ";
 	tempSQL += currentCursorview[cursor];
-	
+
 	PreparedStatement* pStatement = currentdbLayer->PrepareStatement(tempSQL);
 
 	if (pStatement) {
@@ -2337,18 +2344,18 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 	UAP(lb_I_Unknown, ukValue)
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-	
+
 	setNull(column, false);
-	
+
 	*name = column;
-	
+
 	QI(name, lb_I_KeyBase, key)
 	QI(value, lb_I_Unknown, ukValue)
-	
+
 	if (binaryDataColumns->exists(&key)) binaryDataColumns->remove(&key);
 	binaryDataColumns->insert(&ukValue, &key);
-	
-/*	
+
+/*
 	wxString tempSQL = "UPDATE ";
 	tempSQL += tables[0];
 	tempSQL += " SET ";
@@ -2357,13 +2364,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setBinaryData(const char* column, lb
 	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 	tempSQL += " = ";
 	tempSQL += currentCursorview[cursor];
-	
+
 	PreparedStatement* pStatement = currentdbLayer->PrepareStatement(tempSQL);
-	
+
 	for (int i = 1; i <= getColumns(); i++) {
 		UAP(lb_I_String, name)
 		name = getColumnName(i);
-		
+
 		if (strcmp(name->charrep(), column) == 0 && pStatement) {
 			pStatement->SetParamBlob(1, value->getData(), value->getSize());
 			pStatement->RunQuery();
@@ -2384,12 +2391,12 @@ int LB_STDCALL lbDatabaseLayerQuery::getColumns() {
 	}
 
 	int count = cachedColumnNames->Count();
-	
+
 	return count;
 }
 
 bool LB_STDCALL lbDatabaseLayerQuery::hasColumnName(char* name) {
-	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true; 
+	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true;
 	return false;
 }
 
@@ -2402,24 +2409,24 @@ int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(char* FKName) {
 			_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
 			return 0;
 		}
-	
+
 		UAP(lb_I_KeyBase, key)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
-	
+
 		s->setData(FKName);
 		//s->toLower();
-		
+
 		QI(s, lb_I_KeyBase, key)
-	
+
 		if (ForeignColumns != NULL) {
 			if (ForeignColumns->exists(&key) == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
 			UAP(lb_I_String, T)
-			
+
 			uk = ForeignColumns->getElement(&key);
 			QI(uk, lb_I_String, s)
-			
+
 			// Check, if FKName does not point from other table to me
 			T = getTableName(FKName);
 			if (strcmp(s->charrep(), T->charrep()) != 0) return 1;
@@ -2445,23 +2452,23 @@ int LB_STDCALL lbDatabaseLayerQuery::getFKColumns() {
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getFKColumn\40\int pos\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(int pos) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (skipFKCollections == 1) return NULL;
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_String,  s)
-	
+
 	// getKeyAt returns it's reference.
 	// Bugfix: increment reference here.
 	// Implementation of lb_I_Element should be fixed.
 
 	// It is fixed now.
-	
+
 	uk = ForeignColumns->getKeyAt(pos);
-	
+
 	QI(uk, lb_I_String, s)
 	s++;
-	
+
 	return s.getPtr();
 }
 /*...e*/
@@ -2470,13 +2477,13 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* pri
 	lbErrCodes err = ERR_NONE;
 
 	_CL_VERBOSE << "lbDatabaseLayerQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	UAP(lb_I_KeyBase, key_PKTable_PKName)
-	
+
 	*PKTable_PKName = table;
 	*PKTable_PKName += primary;
-	
+
 	QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 
 	UAP(lb_I_Unknown, result)
@@ -2494,21 +2501,21 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* pri
 			UAP(lb_I_KeyBase, key)
 			UAP(lb_I_Unknown, value)
 			UAP(lb_I_String, s)
-			
+
 			value = mapPKTable_PKColumns_To_FKName->nextElement();
 			key = mapPKTable_PKColumns_To_FKName->currentKey();
 			QI(value, lb_I_String, s)
-			
+
 			_CL_VERBOSE << "Element in 'mapPKTable_PKColumns_To_FKName' : " << s->charrep() << "' with key '" << key->charrep() << "'" LOG_
 		}
-		
+
 		return NULL;
 	}
 
 	QI(result, lb_I_String, FKName)
 
 	FKName++;
-	
+
 	return FKName.getPtr();
 }
 /*...e*/
@@ -2521,30 +2528,30 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
 		return NULL;
 	}
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
-	
+
 	s->setData(FKName);
 	//s->toLower();
-	
+
 	QI(s, lb_I_KeyBase, key)
-	
+
 	if (ForeignColumns->exists(&key) == 1) {
 		UAP(lb_I_String, string)
 		UAP(lb_I_Unknown, uk)
-		
+
 		uk = ForeignColumns->getElement(&key)->clone(__FILE__, __LINE__);
-		
+
 		QI(uk, lb_I_String, string)
 
 		string++;
-		
+
 		return string.getPtr();
 	}
-	
+
 	_LOG << "Error: Didn't found primary table from foreign key name. (" << FKName << ")" LOG_
-	
+
 	return NULL;
 }
 /*...e*/
@@ -2555,7 +2562,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, FK)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	if (theResult == NULL) {
 		_LOG << "Error: No resultset available." LOG_
 		*s = "";
@@ -2565,7 +2572,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 
 	*FK = FKName;
 	QI(FK, lb_I_KeyBase, key)
-	
+
 	if (cachedColumnForeignColumnsToPrimaryColumns->exists(&key) == 1) {
 		uk = cachedColumnForeignColumnsToPrimaryColumns->getElement(&key);
 		QI(uk, lb_I_String, s)
@@ -2613,14 +2620,14 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 
 	UAP(lb_I_String, tbl)
 	UAP(lb_I_String, col)
-	
+
 	col = getColumnName(1);
 	tbl = getTableName(col->charrep());
-	
+
     char* table = tbl->charrep();
-	
+
     // Use fk code from Cody Pisto
-	
+
 	try {
 		int count = currentdbLayer->GetForeignKeys(table);
 		for (int i = 0; i < count; i++) {
@@ -2628,45 +2635,45 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
-			
+
 			wxString fkEntry = currentdbLayer->GetForeignKeyFKColumn(i);
 			wxString pkEntry = currentdbLayer->GetForeignKeyPKColumn(i);
 			wxString pkTable = currentdbLayer->GetForeignKeyPKTable(i);
-			
+
 			*PKTable = pkTable.c_str();
-			*PKName = pkEntry.c_str();		
+			*PKName = pkEntry.c_str();
 			*FKName = fkEntry.c_str();
-			
+
 			UAP(lb_I_Unknown, uk_PKTable)
 			UAP(lb_I_KeyBase, key_FKName)
-				
+
 			UAP(lb_I_Unknown, uk_FKName)
 			UAP(lb_I_KeyBase, key_PKTable_PKName)
-				
+
 			QI(FKName, lb_I_KeyBase, key_FKName)
 			QI(PKTable, lb_I_Unknown, uk_PKTable)
-				
-				
+
+
 			if (isVerbose())
 			printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
-			
+
 			ForeignColumns->insert(&uk_PKTable, &key_FKName);
-			
+
 			*PKTable_PKName = PKTable->charrep();
 			// Geht wahrscheinlich nicht.
 			//PKColumn = getPKColumn(FKName->charrep());
 			*PKTable_PKName += PKName->charrep();
-			
+
 			QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 			QI(FKName, lb_I_Unknown, uk_FKName)
-				
+
 			//PKTable_PKName->toLower();
-				
-			_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+
+			_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() <<
 			"' to '" << FKName->charrep() << "'" LOG_
-				
+
 			mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 		}
 	} catch (...) {
@@ -2677,20 +2684,20 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 /*...sint LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumns\40\\41\:0:*/
 int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 	SWORD count = 0;
-	
+
 	if (currentdbLayer == NULL) {
 		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
 	}
-	
+
 	if (theResult == NULL) {
 		_CL_VERBOSE << "Error: No resultset available." LOG_
 		if (szSql) {
-			_CL_VERBOSE << "The last SQL query was " << szSql LOG_ 
+			_CL_VERBOSE << "The last SQL query was " << szSql LOG_
 		}
 		return 0;
 	}
-	
+
 	return numPrimaryKeys;
 }
 /*...e*/
@@ -2705,9 +2712,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 	*s = col.c_str();
 	s++;
-	
+
 	_CL_VERBOSE << "lbDatabaseLayerQuery::getPKColumn(" << pos-1 << ") returns " << s->charrep() LOG_
-	
+
 	return s.getPtr();
 }
 /*...e*/
@@ -2739,7 +2746,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
 	UAP(lb_I_String, tableName)
 	*columnName = name;
 	tableName = getTableName(columnName->charrep());
-	
+
 	return currentdbLayer->GetColumnNullable(tableName->charrep(), columnName->charrep());
 }
 
@@ -2750,7 +2757,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
 	}
 	UAP(lb_I_String, columnName)
 	columnName = getColumnName(pos);
-	
+
 	return isNull(columnName->charrep());
 }
 
@@ -2777,7 +2784,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
 bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
 	wxString nullFlag = "false";
 	if (b) nullFlag = "true";
-	
+
 	if (nullColumns.Index(wxString(name)) != wxNOT_FOUND) {
 		nullValues[nullColumns.Index(wxString(name))] = nullFlag;
 	} else {
@@ -2800,16 +2807,16 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 	UAP_REQUEST(getModuleManager(), lb_I_Integer, index)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	index->setData(pos);
 	QI(index, lb_I_KeyBase, key)
-	
+
 	if (cachedColumnTypes->exists(&key) == 1) {
 		uk = cachedColumnTypes->getElement(&key);
 		QI(uk, lb_I_Integer, type)
 
 		int t = type->getData();
-		
+
 		switch (t) {
 			case ResultSetMetaData::COLUMN_INTEGER: return lbDBColumnInteger;
 			case ResultSetMetaData::COLUMN_STRING: return lbDBColumnChar;
@@ -2818,7 +2825,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 			case ResultSetMetaData::COLUMN_TEXT: return lbDBColumnBinary;
 			case ResultSetMetaData::COLUMN_BLOB: return lbDBColumnBinary;
 			case ResultSetMetaData::COLUMN_DATE: return lbDBColumnDate;
-			default: 
+			default:
 			{
 				_LOG << "Warning: Column type not known: " << t LOG_
 				return lbDBColumnUnknown;
@@ -2833,24 +2840,24 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char* name) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleManager(), lb_I_String, Name)
-	
+
 	*Name = name;
-	
+
 	if (!theResult) {
 		_CL_VERBOSE << "lbDatabaseLayerQuery::getColumnType('" << name << "') Error: No result set available for this operation!" LOG_
 		return lbDBColumnUnknown;
 	}
-	
+
 	cachedColumnNames->finishIteration();
 	while (cachedColumnNames->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_String, column)
 		UAP(lb_I_Integer, index)
-		
+
 		uk = cachedColumnNames->nextElement();
 		QI(uk, lb_I_String, column)
-		
+
 		if (column->equals(*&Name)) {
 			key = cachedColumnNames->currentKey();
 			QI(key, lb_I_Integer, index)
@@ -2866,19 +2873,19 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char*
 void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable) {
 	lbErrCodes err = ERR_NONE;
 
-	if (updateable == true) 
+	if (updateable == true)
 		_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(" << column << ", TRUE)" LOG_
 	else
 		_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(" << column << ", FALSE)" LOG_
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(col, lb_I_KeyBase, key)
 	QI(col, lb_I_Unknown, uk)
-	
+
 	col->setData(column);
 
 	if (ReadOnlyColumns == NULL) {
@@ -2888,7 +2895,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 	if (!ReadOnlyColumns->exists(&key) && updateable == true) {
 		ReadOnlyColumns->insert(&uk, &key);
 	}
-	
+
 	if (ReadOnlyColumns->exists(&key) && updateable == false) {
 		ReadOnlyColumns->remove(&key);
 	}
@@ -2927,17 +2934,17 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 			}
 		}
 	}
-	
+
 	cachedColumnNames->finishIteration();
 	while (cachedColumnNames->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_String, column)
 		UAP(lb_I_Integer, index)
-		
+
 		uk = cachedColumnNames->nextElement();
 		QI(uk, lb_I_String, column)
-		
+
 		if (column->equals(*&name)) {
 			key = cachedColumnNames->currentKey();
 			QI(key, lb_I_Integer, index)
@@ -2969,20 +2976,20 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 	if (theResult == NULL) {
 		_CL_VERBOSE << "Error: No resultset available." LOG_
 		if (szSql) {
-			_CL_VERBOSE << "The last SQL query was " << szSql LOG_ 
+			_CL_VERBOSE << "The last SQL query was " << szSql LOG_
 		}
 		*t = "Error";
 		t++;
-		return t.getPtr(); 
+		return t.getPtr();
 	}
-	
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_String, column)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
 
 	index->setData(col);
 	QI(index, lb_I_KeyBase, key)
-	
+
 	if (cachedColumnNames->exists(&key) == 1) {
 		UAP(lb_I_Unknown, uk)
 		uk = cachedColumnNames->getElement(&key);
@@ -2990,7 +2997,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 		column++;
 		return column.getPtr();
 	}
-	
+
 	*t = "";
 	t++;
 	return t.getPtr();
@@ -3015,7 +3022,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 	int backup_cursor = cursor;
 	currentCursorview.Clear();
 	lbErrCodes err = query(szSql, true);
-	
+
 	if ((err == ERR_DB_QUERYFAILED) || (err == ERR_DB_NODATA)) {
 		_CL_VERBOSE << "Warning: Reopen of current statement failed." LOG_
 		if ((err = open()) != ERR_NONE) {
@@ -3023,7 +3030,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::reopen() {
 		}
 		return err;
 	}
-	
+
 	absolute(backup_cursor+1); // absolute substracts 1
 	if (theResult == NULL) {
 		_LOG << "Error: Got no resultset after a reopen!" LOG_
@@ -3051,11 +3058,11 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 				_CL_LOG << "lbDatabaseLayerQuery::close() don't closed the resultset." LOG_
 			}
 		}
-		
+
 		currentdbLayer = NULL;
 	}
 #endif
-	
+
 	if (theResult) {
 		theResult = NULL;
 	}
@@ -3064,7 +3071,7 @@ void LB_STDCALL lbDatabaseLayerQuery::close() {
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	_CL_VERBOSE << "lbDatabaseLayerQuery::open() called." LOG_
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (currentdbLayer == NULL) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Database, database)
@@ -3076,11 +3083,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName); // Internally open is called, thus .db3 is appended.
 		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Recreated currentdbLayer instance." LOG_
 	}
-	
+
 	if (!currentdbLayer->IsOpen()) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 		*connName = "";
-		
+
 #ifdef OSX
 		/// \todo Implement a more save check if this application is really running and is a bundle.
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -3093,9 +3100,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		currentdbLayer->Open(connName->charrep());
 		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Opened database." LOG_
 	}
-	
+
 	if (skipAutoQuery) return ERR_NONE;
-	
+
 	if ((err = query(szSql, true)) != ERR_NONE) {
 		return err;
 	}
@@ -3108,13 +3115,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	_CL_VERBOSE << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
-	
+
 	if (cursor < 0) {
 		// Handle underflow
 		// Try to read 100 more key values less than the first key in currentCursorview: currentCursorview[0]-1
-		
+
 		wxString tempSQL = "SELECT ";
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " FROM ";
@@ -3127,24 +3134,24 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		} else {
 			tempSQL += " WHERE ";
 		}
-		
+
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " < ";
 		tempSQL += currentCursorview[0];
 		tempSQL += " ORDER BY ";
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
-		
+		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
+
 		_CL_VERBOSE << "Cursor is < 0. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
-		
+
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
-		
+
 		max_in_cursor = max_in_cursor_default;
-		
+
 		wxArrayString tempCursorview;
 
 		currentCursorview.Clear();
-		
+
 		int count = 0;
 		if ((tempResult != NULL) && tempResult->Next()) {
 			count++;
@@ -3155,22 +3162,22 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				if (count == max_in_cursor) break;
 			}
 		}
-		
+
 		for (int reverseid = count-1; reverseid >= 0; reverseid--) {
 			currentCursorview.Add(tempCursorview[reverseid]);
 		}
-		
+
 		// Overwrite in case of lesser elements in last cursor reading
 		max_in_cursor = count;
 		// Position the cursor at the end
 		cursor = count-1;
-		
+
 		currentdbLayer->CloseResultSet(tempResult);
 	} else if (cursor >= max_in_cursor) {
 		// Handle overflow
-		
+
 		// Try to read 100 more key values from the last key in currentCursorview: currentCursorview[99]+1
-		
+
 		if (cursor > max_in_cursor) {
 			// Jump to last
 			wxString tempSQL = "SELECT ";
@@ -3182,21 +3189,21 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				tempSQL += " ";
 				tempSQL += whereClause;
 			}
-		
+
 			tempSQL += " ORDER BY ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
-			
+			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
+
 			_CL_VERBOSE << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
-			
+
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
-			
+
 			max_in_cursor = max_in_cursor_default;
-			
+
 			wxArrayString tempCursorview;
-			
+
 			currentCursorview.Clear();
-			
+
 			int count = 0;
 			if ((tempResult != NULL) && tempResult->Next()) {
 				count++;
@@ -3211,11 +3218,11 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 					if (count == max_in_cursor) break;
 				}
 			}
-			
+
 			for (int reverseid = count-1; reverseid >= 0; reverseid--) {
 				currentCursorview.Add(tempCursorview[reverseid]);
 			}
-			
+
 			// Overwrite in case of lesser elements in last cursor reading
 			max_in_cursor = count;
 			// Position the cursor at the end
@@ -3227,7 +3234,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " FROM ";
 			tempSQL += tables[0];
-			
+
 			if (currentCursorview.Count() > 0) {
 
 				if (whereClause != "") {
@@ -3237,16 +3244,16 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				} else {
 					tempSQL += " WHERE ";
 				}
-		
+
 				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 				tempSQL += " > ";
-			
+
 				if (max_in_cursor-1 < 0) {
 					tempSQL += currentCursorview[0];
 				} else {
 					tempSQL += currentCursorview[max_in_cursor-1];
 				}
-				
+
 				tempSQL += " ORDER BY ";
 				tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			} else {
@@ -3256,15 +3263,15 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 					tempSQL += whereClause;
 				}
 			}
-			
+
 			_CL_VERBOSE << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
-			
+
 			max_in_cursor = max_in_cursor_default;
-			
+
 			currentCursorview.Clear();
-			
+
 			int count = 0;
 			if (tempResult && tempResult->Next()) {
 				count++;
@@ -3279,12 +3286,12 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 					if (count == max_in_cursor) break;
 				}
 			}
-			
+
 			// Overwrite in case of lesser elements in last cursor reading
 			max_in_cursor = count;
-			
+
 			cursor = 0;
-			
+
 			currentdbLayer->CloseResultSet(tempResult);
 		}
 	}
@@ -3296,33 +3303,33 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	}
 	cursorWhere += currentdbLayer->GetPrimaryKeyColumn(0);
 	cursorWhere += " = ";
-	
+
 	if (currentCursorview.Count() == 0) {
 		_CL_VERBOSE << "Warning: No cursor data could be built up." LOG_
 		return false;
 	}
-	
+
 	cursorWhere += currentCursorview[cursor];
 
 	wxString newQuery = plainQuery + joinClause + cursorWhere;
 
 	theResult = currentdbLayer->RunQueryWithResults(newQuery);
-	
+
 	if (theResult && theResult->Next()) {
 		ResultSetMetaData* metadata = theResult->GetMetaData();
 		for (int i = 1; i <= metadata->GetColumnCount(); i++) {
 			UAP(lb_I_String, name)
 			name = getColumnName(i);
-			if (theResult->IsFieldNull(i)) 
+			if (theResult->IsFieldNull(i))
 				setNull(i, true);
 			else
 				setNull(i, false);
 		}
 
 		// Cache the data, because after a finish, no data will be given back.
-		
+
 		cachedDataColumns->deleteAll();
-		
+
 		for (int i_cache = 1; i_cache <= getColumns(); i_cache++) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
 			UAP(lb_I_KeyBase, key)
@@ -3368,9 +3375,9 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				{
 					UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
 					wxMemoryBuffer buffer;
-					
+
 					if (theResult) theResult->GetResultBlob(i_cache, buffer);
-					
+
 					binarydata->append(buffer.GetData(), buffer.GetBufSize());
 					binarydata->append((void*) "", 1);
 					QI(binarydata, lb_I_Unknown, uk)
@@ -3399,20 +3406,20 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				}
 					break;
 			}
-			
+
 			cachedDataColumns->insert(&uk, &key);
 		}
-		
-		
-		
+
+
+
 		// Force a finish with an error message when there was more than one row that is unexpected in this cursor algorithm.
 		while (theResult->Next()) {
 			_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Warning: Simulated cursor gave back more than one row." LOG_
 		}
-		
+
 		// Keep for meta data
 		currentdbLayer->CloseResultSet(theResult);
-		
+
 		return true;
 	} else {
 		if (theResult) currentdbLayer->CloseResultSet(theResult);
@@ -3451,22 +3458,22 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::selectCachedRow() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, row)
 	UAP(lb_I_KeyBase, key)
 	QI(row, lb_I_KeyBase, key)
-	
+
 	row->setData(cachedRowIndex);
-	
+
 	if (cachedDataRows->exists(&key) == 1) {
 		UAP(lb_I_Unknown, uk)
-		
+
 		uk = cachedDataRows->getElement(&key);
 		cachedDataColumns--;
 		cachedDataColumns.resetPtr();
 		QI(uk, lb_I_Container, cachedDataColumns)
-		
+
 		if (cachedDataColumns == NULL) {
 				_LOG << "Error: Stored element is not of type lb_I_Container (" << uk->getClassName() << ")!" LOG_
 		}
-		
-		return ERR_NONE;	
+
+		return ERR_NONE;
 	} else {
 		return ERR_DB_NODATA;
 	}
@@ -3554,9 +3561,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, l
 		_CL_VERBOSE << "Error: Query is readonly." LOG_
 		return ERR_DB_READONLY;
 	}
-	
+
 	setNull(columnName->charrep(), false);
-	
+
 	if (getColumnType(columnName->charrep()) == lbDBColumnBit) {
         if (*value == "true") {
             if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
@@ -3564,14 +3571,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, l
             } else {
                 queryColumns.Add(columnName->charrep());
                 queryValues.Add("1");
-            }        
+            }
         } else {
             if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
                 queryValues[queryColumns.Index(columnName->charrep())] = "0";
             } else {
                 queryColumns.Add(columnName->charrep());
                 queryValues.Add("0");
-            }        
+            }
         }
 	} else {
         if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
@@ -3636,13 +3643,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		open();
 		skipAutoQuery = false;
 	}
-	
+
 	if (!currentdbLayer->IsOpen()) {
 		skipAutoQuery = true;
 		open();
 		skipAutoQuery = false;
 	}
-	
+
 /// \todo Create a prepared statement for it.
 	if (queryColumns.Count() == 0) {
 		_LOG << "Warning: Noting to update." LOG_
@@ -3656,7 +3663,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			_CL_VERBOSE << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
-		
+
 		wxString strSQL = _("INSERT INTO ");
 		strSQL += tables[0];
 		strSQL += " ( ";
@@ -3664,24 +3671,24 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			if (i > 0) strSQL += ", ";
 			strSQL += queryColumns[i];
 		}
-		
+
 		if (binaryDataColumns->Count() > 0) {
 			binaryDataColumns->finishIteration();
-			
+
 			while (binaryDataColumns->hasMoreElements()) {
 				UAP(lb_I_Unknown, ukBinary)
 				UAP(lb_I_BinaryData, binary)
 				UAP(lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
-				
+
 				ukBinary = binaryDataColumns->nextElement();
 				key = binaryDataColumns->currentKey();
-				
+
 				strSQL += ", ";
 				strSQL += key->charrep();
 			}
 		}
-		
+
 		strSQL += " ) VALUES (";
 
 		for (int i = 0; i < queryValues.Count(); i++) {
@@ -3694,17 +3701,17 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 		if (binaryDataColumns->Count() > 0) {
 			binaryDataColumns->finishIteration();
-			
+
 			while (binaryDataColumns->hasMoreElements()) {
 				UAP(lb_I_Unknown, ukBinary)
 				UAP(lb_I_BinaryData, binary)
 				UAP(lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
-				
+
 				ukBinary = binaryDataColumns->nextElement();
 				key = binaryDataColumns->currentKey();
 				QI(ukBinary, lb_I_BinaryData, binary)
-				
+
 				if (binary->getData() == NULL) {
 					strSQL += ", NULL";
 				} else {
@@ -3712,7 +3719,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			}
 		}
-		
+
 		strSQL += " )";
 
 		_CL_VERBOSE << "Insert statement: " << strSQL.c_str() LOG_
@@ -3728,29 +3735,29 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				for (int i = 0; i < queryValues.Count(); i++) {
 					pStatement->SetParamString(i+1, queryValues[i]);
 				}
-				
+
 				int offset = queryValues.Count();
-				
+
 				if (binaryDataColumns->Count() > 0) {
 					binaryDataColumns->finishIteration();
-					
+
 					while (binaryDataColumns->hasMoreElements()) {
 						UAP(lb_I_Unknown, ukBinary)
 						UAP(lb_I_BinaryData, binary)
 						UAP(lb_I_String, name)
 						UAP(lb_I_KeyBase, key)
-						
+
 						ukBinary = binaryDataColumns->nextElement();
 						key = binaryDataColumns->currentKey();
 						QI(ukBinary, lb_I_BinaryData, binary)
-						
+
 						if (binary->getData() == NULL) {
 						} else {
 							pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
-						}					
+						}
 					}
 				}
-				
+
 				try
 				{
 					pStatement->RunQuery();
@@ -3768,7 +3775,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				catch (DatabaseLayerException& ex)
 				{
 					_CL_VERBOSE << "Error: Adding a row failed (Sql: " << strSQL.c_str() << ", Exception: " << ex.GetErrorMessage().c_str() << ")" LOG_
-					
+
 					try {
 						currentdbLayer->CloseStatement(pStatement);
 						pStatement = NULL;
@@ -3777,7 +3784,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
                         skipAutoQuery = true;
 						open();
 						skipAutoQuery = false;
-						
+
 #ifdef USE_IMMEDIALY_CLOSE
 						pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
 #endif
@@ -3789,26 +3796,26 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							for (int i = 0; i < queryValues.Count(); i++) {
 								pStatement->SetParamString(i+1, queryValues[i]);
 							}
-							
+
 							int offset = queryValues.Count();
-							
+
 							if (binaryDataColumns->Count() > 0) {
 								binaryDataColumns->finishIteration();
-								
+
 								while (binaryDataColumns->hasMoreElements()) {
 									UAP(lb_I_Unknown, ukBinary)
 									UAP(lb_I_BinaryData, binary)
 									UAP(lb_I_String, name)
 									UAP(lb_I_KeyBase, key)
-									
+
 									ukBinary = binaryDataColumns->nextElement();
 									key = binaryDataColumns->currentKey();
 									QI(ukBinary, lb_I_BinaryData, binary)
-									
+
 									if (binary->getData() == NULL) {
 									} else {
 										pStatement->SetParamBlob(++offset, binary->getData(), binary->getSize());
-									}					
+									}
 								}
 							}
 
@@ -3819,7 +3826,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 							pStatement = NULL;
                             currentdbLayer->Close();
 							open();
-#endif							
+#endif
 						}
 					}
 					catch (DatabaseLayerException& ex)
@@ -3843,12 +3850,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 			_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
 		}
-		
+
 		if (currentCursorview.Count() == 0) {
             _LOG << "Error: Have no data loaded. Thus updating is impossible." LOG_
 			return ERR_DB_NODATA;
 		}
-		
+
 		wxString strSQL = _("UPDATE ");
 		strSQL += tables[0];
 		strSQL += " SET ";
@@ -3883,15 +3890,15 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			}
 		}
-		
+
 		if (binaryDataColumns->Count() > 0) {
 			binaryDataColumns->finishIteration();
-			
+
 			while (binaryDataColumns->hasMoreElements()) {
 				UAP(lb_I_Unknown, ukBinary)
 				UAP(lb_I_BinaryData, binary)
 				UAP(lb_I_KeyBase, key)
-				
+
 				ukBinary = binaryDataColumns->nextElement();
 				key = binaryDataColumns->currentKey();
 				QI(ukBinary, lb_I_BinaryData, binary)
@@ -3903,7 +3910,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			}
 		}
-		
+
 		strSQL += " WHERE ";
 		strSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		strSQL += " = ";
@@ -3911,7 +3918,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 
 
 		PreparedStatement* pStatement = NULL;
-		
+
 		try {
 #ifdef USE_IMMEDIALY_CLOSE
 			pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
@@ -3927,12 +3934,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		int paramNo = 0;
 		if (binaryDataColumns->Count() > 0) {
 			binaryDataColumns->finishIteration();
-			
+
 			while (binaryDataColumns->hasMoreElements()) {
 				UAP(lb_I_Unknown, ukBinary)
 				UAP(lb_I_BinaryData, binary)
 				UAP(lb_I_String, name)
-				
+
 				ukBinary = binaryDataColumns->nextElement();
 				QI(ukBinary, lb_I_BinaryData, binary)
 				if (binary->getData() != NULL) {
@@ -3940,12 +3947,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				}
 			}
 		}
-		
+
 		_LOG << "Update Sqlite database with statement: '" << strSQL.c_str() << "'" LOG_
 
 		try {
 			pStatement->RunQuery();
-			
+
 #ifdef USE_IMMEDIALY_CLOSE
 			currentdbLayer->CloseStatement(pStatement);
 			_LOG << "Updated a row." LOG_
@@ -3990,7 +3997,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 				skipAutoQuery = true;
 				open();
 				skipAutoQuery = false;
-				
+
 				try {
 #ifdef USE_IMMEDIALY_CLOSE
 					pStatement = ((SqliteDatabaseLayer*) currentdbLayer)->PrepareStatement(strSQL, false);
@@ -4002,16 +4009,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 					_LOG << "Preparing update query failed: " << strSQL.c_str() LOG_
 					return ERR_DB_UPDATEFAILED;
 				}
-				
+
 				int paramNo = 0;
 				if (binaryDataColumns->Count() > 0) {
 					binaryDataColumns->finishIteration();
-					
+
 					while (binaryDataColumns->hasMoreElements()) {
 						UAP(lb_I_Unknown, ukBinary)
 						UAP(lb_I_BinaryData, binary)
 						UAP(lb_I_String, name)
-						
+
 						ukBinary = binaryDataColumns->nextElement();
 						QI(ukBinary, lb_I_BinaryData, binary)
 						if (binary->getData() != NULL) {
@@ -4019,12 +4026,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 						}
 					}
 				}
-				
+
 				_LOG << "Update Sqlite database again with statement: '" << strSQL.c_str() << "'" LOG_
-				
+
 				try {
 					pStatement->RunQuery();
-					
+
 #ifdef USE_IMMEDIALY_CLOSE
 					currentdbLayer->CloseStatement(pStatement);
 					pStatement = NULL;
@@ -4041,7 +4048,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 #endif
 					return ERR_DB_UPDATEFAILED;
 				}
-				
+
 			}
 		}
 	}
@@ -4054,11 +4061,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	if (currentCursorview.Count() == 0) {
 		_CL_VERBOSE << "Error: Reopen failed." LOG_
 	}
-	
+
 	if (binaryDataColumns->Count() > 0) {
 		binaryDataColumns->deleteAll();
 	}
-	
+
 	return ERR_NONE;
 }
 
@@ -4124,42 +4131,42 @@ bool LB_STDCALL lbDatabaseLayerBoundColumn::setNull(bool b) {
 			cbBufferLength[0] = 0;
 		}
 		rebind();
-		_hasValidData = false;		
+		_hasValidData = false;
 	}
-	
+
 	return true;
 }
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\getType\40\\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumn::getType() {
 	switch (_DataType) {
-	
+
 		case SQL_FLOAT:
 			return lb_I_Query::lbDBColumnFloat;
-			
+
 		case SQL_BIT:
 			return lb_I_Query::lbDBColumnBit;
-			
+
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
 			return lb_I_Query::lbDBColumnDate;
 
 		case SQL_CHAR:
 		case SQL_VARCHAR:
-		case SQL_LONGVARCHAR: 
-		
+		case SQL_LONGVARCHAR:
+
 			return lb_I_Query::lbDBColumnChar;
-			
-		case SQL_INTEGER: 
+
+		case SQL_INTEGER:
 			return lb_I_Query::lbDBColumnInteger;
 
-		case SQL_BIGINT: 
+		case SQL_BIGINT:
 			return lb_I_Query::lbDBColumnBigInteger;
-			
+
 		case SQL_LONGVARBINARY:
 		case SQL_BINARY:
 			return lb_I_Query::lbDBColumnBinary;
-		
+
 		default: return lb_I_Query::lbDBColumnUnknown;
 	}
 
@@ -4168,11 +4175,11 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumn::getType() {
 /*...slbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setData(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
-        
+
         UAP(lb_I_BoundColumn, column)
-        
+
         QI(uk, lb_I_BoundColumn, column)
-	        
+
         /**
          * I cannot use normal use of setData, because the internal pointers would
          * be copied to others. The ODBC bound column instead uses the old pointer.
@@ -4187,7 +4194,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setData(lb_I_Unknown* uk) {
 		leaveOwnership(*&column, this);
 
 		_hasValidData = true;
-		
+
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -4200,10 +4207,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::leaveOwnership(lb_I_BoundColum
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->columnName);
 	oO->bound = 0;
 	nO->isReadonly = oO->isReadonly;
-	
+
 	nO->cbBufferLength = oO->cbBufferLength;
 	oO->cbBufferLength = NULL;
-	
+
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -4217,7 +4224,7 @@ lb_I_Unknown* LB_STDCALL lbDatabaseLayerBoundColumn::getData() {
 /*...e*/
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsLong(lb_I_Long* result, int asParameter) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	switch (_DataType) {
 		case SQL_INTEGER:
 		{
@@ -4229,13 +4236,13 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsLong(lb_I_Long* result, i
 			_CL_VERBOSE << "lbDatabaseLayerBoundColumn::getAsLong(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
 	       	break;
 	}
-	
+
 	return err;
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\44\ int asParameter\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* result, int asParameter) {
-	
+
 	switch (_DataType) {
 		case SQL_FLOAT:
 		case SQL_DATE:
@@ -4257,7 +4264,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 				result->setData((char*) buffer);
 				result->trim();
 			}
-			
+
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "lbDatabaseLayerBoundColumn::getAsString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
@@ -4297,12 +4304,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 #ifdef OSX
 			int bi = 0;
 			bi = *(int*) buffer;
-			
+
 			if (bi != 0) {
 				result->setData("true");
 			} else {
 				result->setData("false");
-			}	
+			}
 #endif
 #ifndef OSX
 			bool b = *(bool*) buffer;
@@ -4310,7 +4317,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 				result->setData("true");
 			} else {
 				result->setData("false");
-			}	
+			}
 #endif
 		}
 			break;
@@ -4339,11 +4346,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromLong(lb_I_Long* set, in
 			case SQL_INTEGER:
 			{
 				long l = set->getData();
-				
+
 				long* pl = (long*) buffer;
-				
+
 				void* b = pl+1;
-				
+
 				memcpy(b, &l, sizeof(l));
 			}
 				break;
@@ -4366,16 +4373,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 			_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
 			return ERR_NONE;
 		}
-		
+
 		if (mode == 1) {
 			switch (_DataType) {
 				case SQL_DATE:
 				case SQL_TYPE_DATE:
 				{
 					// Must set an offset for the insert buffer
-					
+
 					char* bb = (char*) buffer;
-					
+
 					char* b = strcpy(bb + ColumnSize + 1, set->getData());
 					cbBufferLength[1] = strlen((char*) buffer);
 					if (cbBufferLength[1] > ColumnSize+1) {
@@ -4392,12 +4399,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 				case SQL_BIT:
 				case SQL_TINYINT:
 #endif
-					
+
 				{
 					// Must set an offset for the insert buffer
-					
+
 					char* bb = (char*) buffer;
-					
+
 					char* b = strcpy(bb + ColumnSize + 1, set->getData());
 					cbBufferLength[1] = strlen((char*) buffer);
 				}
@@ -4406,49 +4413,49 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 				{
 					long l = 0;
 					l = atol(set->getData());
-					
+
 					long* pl = (long*) buffer;
-					
+
 					void* b = pl+1;
-					
+
 					memcpy(b, &l, sizeof(l));
 				}
 					break;
-					
+
 				case SQL_BIGINT:
 				{
 #ifndef _MSC_VER
 					long long l = 0;
 					l = atoll(set->getData());
 					long long* pl = (long long*) buffer;
-#endif					
+#endif
 #ifdef _MSC_VER
 					__int64 l = 0;
 					l = _atoi64(set->getData());
 					__int64* pl = (__int64*) buffer;
-#endif										
+#endif
 					void* b = pl+1;
-					
+
 					memcpy(b, &l, sizeof(l));
 				}
 					break;
 				case SQL_BINARY:
 					_CL_VERBOSE << "lbDatabaseLayerBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'"  LOG_
 					break;
-#ifdef BIND_BOOL_DEFAULT					
+#ifdef BIND_BOOL_DEFAULT
 				case SQL_BIT:
 				case SQL_TINYINT:
 				{
-#ifdef OSX				
+#ifdef OSX
 					long l = 0;
 					if (strcmp(set->charrep(), "true") == 0) {
 						l = 1;
 					}
-					
+
 					long* pl = (long*) buffer;
-					
+
 					void* b = pl+1;
-					
+
 					memcpy(b, &l, sizeof(l));
 #endif
 #ifndef OSX
@@ -4456,16 +4463,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 					if (strcmp(set->charrep(), "true") == 0) {
 						l = true;
 					}
-					
+
 					bool* pl = (bool*) buffer;
-					
+
 					void* b = pl+1;
-					
+
 					memcpy(b, &l, sizeof(l));
-#endif 
+#endif
 				}
 				break;
-#endif			
+#endif
 			}
 		} else {
 			switch (_DataType) {
@@ -4487,7 +4494,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 				case SQL_BIT:
 				case SQL_TINYINT:
 #endif
-					
+
 				{
 					char* b = strcpy((char*) buffer, set->getData());
 					cbBufferLength[0] = strlen((char*) buffer);
@@ -4506,7 +4513,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 				case SQL_BINARY:
 					_CL_VERBOSE << "lbDatabaseLayerBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
 					break;
-#ifdef BIND_BOOL_DEFAULT					
+#ifdef BIND_BOOL_DEFAULT
 				case SQL_BIT:
 				case SQL_TINYINT:
 				{
@@ -4523,15 +4530,15 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 					if (strcmp(set->charrep(), "true") == 0) {
 						l = true;
 					}
-					
+
 					*((bool*) buffer) = l;
 #endif
 					//memcpy(buffer, &l, sizeof(bool));
 				}
 				break;
-#endif					
+#endif
 			}
-			
+
 		}
 		_hasValidData = true;
 		return ERR_NONE;
@@ -4546,7 +4553,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::prepareBoundColumn(lb_I_Query*
 /*...svoid       LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\checkReadonly\40\int column\41\:0:*/
 void       LB_STDCALL lbDatabaseLayerBoundColumn::checkReadonly(int column) {
 ///\todo Implement.
-}	
+}
 /*...e*/
 void LB_STDCALL lbDatabaseLayerBoundColumn::bindNullColumn() {
 ///\todo Implement.
@@ -4594,7 +4601,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerBoundColumn::getColumnName() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData(columnName);
 	colName++;
-	
+
 	return colName.getPtr();
 }
 /*...e*/
@@ -4609,9 +4616,9 @@ class lbConnection : public lb_I_Connection
 {
 public:
     lbConnection();
-	
+
     virtual ~lbConnection();
-	
+
 	DECLARE_LB_UNKNOWN()
 
 
@@ -4620,13 +4627,13 @@ public:
 
 //-- Private interface -----------------------------------------
 	virtual void LB_STDCALL setDBName(char* name);
-	
+
 	virtual void LB_STDCALL setDBUser(char* name);
-	
+
 	virtual void LB_STDCALL setConnection(DatabaseLayer* _dbl);
-	
+
 	virtual DatabaseLayer* LB_STDCALL getConnection();
-	
+
 protected:
 
 	DatabaseLayer* dbl;
@@ -4679,7 +4686,7 @@ char* LB_STDCALL lbConnection::getDBName() {
 	return _dbname;
 }
 
-char* LB_STDCALL lbConnection::getDBUser() { 
+char* LB_STDCALL lbConnection::getDBUser() {
 	return _dbuser;
 }
 
@@ -4688,10 +4695,10 @@ void LB_STDCALL lbConnection::setDBName(char* name) {
 		free(_dbname);
 		_dbname = NULL;
 	}
-	
+
 	_dbname = (char*) malloc(strlen(name)+1);
 	_dbname[0] = 0;
-	
+
 	if (name) strcpy(_dbname, name);
 }
 
@@ -4700,7 +4707,7 @@ void LB_STDCALL lbConnection::setDBUser(char* name) {
 		free(_dbuser);
 		_dbuser = NULL;
 	}
-	
+
 	_dbuser = (char*) malloc(strlen(name)+1);
 	_dbuser[0] = 0;
 
@@ -4711,19 +4718,19 @@ void LB_STDCALL lbConnection::setConnection(DatabaseLayer* _dbl) {
 	dbl = _dbl;
 }
 
-DatabaseLayer* LB_STDCALL lbConnection::getConnection() { 
+DatabaseLayer* LB_STDCALL lbConnection::getConnection() {
 	return dbl;
 }
 
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbConnection::setData() called." LOG_
-	
+
 	UAP(lb_I_Connection, con)
 	QI(uk, lb_I_Connection, con)
-	
-	lbConnection* connection; 
-	
+
+	lbConnection* connection;
+
 	if (con.getPtr() != NULL) {
 	    connection = (lbConnection*) con.getPtr();
 		_CL_LOG << "lbConnection::setData() called and copies the connection." LOG_
@@ -4741,7 +4748,7 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	    if (connection->getDBUser()) _dbuser = strdup(connection->getDBUser());
 		connection->setConnection(NULL); // Only one instance should have the database instance.
 	}
-	
+
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -4759,59 +4766,59 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbDatabaseLayerDatabase, lbDatabaseLayerDa
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "DatabaseLayerGateway";
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverVersion() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "1.0";
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDatabaseName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
-	
+
 	*s = (const char*) db;
-	
+
 	return s.getPtr();
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSName() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "Sqlite";
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSVersion() {
 	UAP_REQUEST(getModuleManager(), lb_I_String, s);
 	s++;
-	
+
 	SQLSMALLINT bufferSize = 255;
 	UCHAR   Info[255] = "tbd.";
-	
+
 	*s = (const char*) Info;
-	
+
 	return s.getPtr();
 }
 
@@ -4848,8 +4855,8 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 	catch (DatabaseLayerException ex) {
 		_LOG << "lbDatabaseLayerDatabase::close() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << "." LOG_
 	}
-	
-	
+
+
 	connected = false;
 }
 
@@ -4868,7 +4875,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+
 	QI(connName, lb_I_KeyBase, key)
 
 	*connName = "";
@@ -4880,13 +4887,13 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	meta->getGUI(&g);
 	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
 #endif
-	
+
 	*connName += connectionname;
 	*connName += ".db3";
-	
+
 	if (db) free(db);
 	db = strdup(connName->charrep());
-	
+
 	if (connPooling == NULL) {
 		_LOG << "lbDatabaseLayerDatabase::open() Initialize connection pooling." LOG_
 		REQUEST(getModuleInstance(), lb_I_Container, connPooling)
@@ -4896,7 +4903,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 	if (connPooling->exists(&key) == 1) {
 		uk = connPooling->getElement(&key);
 		lbConnection* conn = (lbConnection*) uk.getPtr();
-		
+
 		dbl = conn->getConnection();
 	} else {
 		dbl = new SqliteDatabaseLayer();
@@ -4914,7 +4921,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
 
 	if (dbl == NULL) dbl = new SqliteDatabaseLayer();
 	if (!dbl->IsOpen()) dbl->Open(connName->charrep());
-	
+
 	connected = true;
 }
 
@@ -4970,15 +4977,15 @@ lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, i
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
 	open(connectionname);
-	
+
 	if (query->init(dbl, connectionname) != ERR_NONE) {
 		_LOG << "ERROR: Initializion of query has been failed!" LOG_
-		
+
 		//return NULL;
 	}
 
 	lb_I_Query* q = NULL;
-	
+
 	query->queryInterface("lb_I_Query", (void**) &q, __FILE__, __LINE__);
 
 	return q;
@@ -4993,7 +5000,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	*connName = "";
-	
+
 #ifdef OSX
 	/// \todo Implement a more save check if this application is really running and is a bundle.
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -5005,7 +5012,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
-	
+
 	wxArrayString tables = dbl->GetTables();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -5013,15 +5020,15 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	QI(table, lb_I_KeyBase, key)
-	
+
 	for (int i = 0; i < tables.Count(); i++) {
 		*table = tables[i].c_str();
-	
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 		QI(param, lb_I_Unknown, uk)
-		
+
 		*value = (const char*) "";
 		*name = "TableCatalog";
 		param->setUAPString(*&name, *&value);
@@ -5037,7 +5044,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 		*value = (const char*) "";
 		*name = "TableRemarks";
 		param->setUAPString(*&name, *&value);
-		
+
 		container->insert(&uk, &key);
 	}
 
@@ -5050,7 +5057,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columnsPageContainer)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columnsPageContainer++;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	meta->setStatusText("Info", "Get columns ...");
@@ -5058,7 +5065,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	*connName = "";
-	
+
 #ifdef OSX
 	/// \todo Implement a more save check if this application is really running and is a bundle.
 	lb_I_GUI* g = NULL;
@@ -5069,12 +5076,12 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
-	
+
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
-	
+
 	long ind = 0;
-	
+
 	wxArrayString tables = dbl->GetTables();
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
@@ -5087,58 +5094,58 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 
 	for (int i = 0; i < tables.Count(); i++) {
 		wxString table = tables[i];
-		
+
 		wxString q = "select * from ";
 		q += table;
 		q += " LIMIT 0";
 
 		_CL_LOG << "SQL: " << q.c_str() LOG_
-		
+
 		pResult = dbl->ExecuteQuery(q);
 		pResult->Next();
 		pMetaData = pResult->GetMetaData();
-		
-		
+
+
 		// 1-based
 		for(long ii=1; ii<=pMetaData->GetColumnCount(); ii++)
 		{
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, typeName)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, typeLong)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dummyString)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, dummyLong)
-			
+
 //			dummyLong->setData((long)0);
 //			*name = "DatetimeSubtypeCode";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			*dummyString = (const char*) "sqlite";
 //			*name = "TableCatalog";
 //			param->setUAPString(*&name, *&dummyString);
-			
+
 //			*dummyString = (const char*) "lbDMF";
 //			*name = "TableSchema";
 //			param->setUAPString(*&name, *&dummyString);
-			
+
 			*TableName = (const char*) table.c_str();
 			*name = "4";
 			param->setUAPString(*&name, *&TableName);
-			
+
 			*colName = pMetaData->GetColumnName(ii).c_str();
 			*name = "5";
 			param->setUAPString(*&name, *&colName);
-			
+
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 //			typeLong->setData((long)colTypeLong);
 //			*name = "DataType";
 //			param->setUAPLong(*&name, *&typeLong);
-			
+
 			// Implement mapping to the same as of PostgreSQL typenames !!!
 			/// \todo What is here the best type naming for all the different databases ?
 			switch (colTypeLong)
@@ -5170,15 +5177,15 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 			};
 			*name = "7";
 			param->setUAPString(*&name, *&typeName);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "BufferLength";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "DecimalDigits";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "NumPrecRadix";
 //			param->setUAPLong(*&name, *&dummyLong);
@@ -5186,38 +5193,38 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 			dummyLong->setData((long)2);
 			*name = "11";
 			param->setUAPLong(*&name, *&dummyLong);
-			
+
 			*dummyString = (const char*) "";
 			*name = "12";
 			param->setUAPString(*&name, *&dummyString);
-			
+
 //			*dummyString = (const char*) "";
 //			*name = "ColumnDefault";
 //			param->setUAPString(*&name, *&dummyString);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "SQLDataType";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "CharOctetLength";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			dummyLong->setData((long)-1);
 //			*name = "OrdinalPosition";
 //			param->setUAPLong(*&name, *&dummyLong);
-			
+
 //			*dummyString = (const char*) "";
 //			*name = "IsNullable";
 //			param->setUAPString(*&name, *&dummyString);
-			
+
 			dummyLong->setData((long)-1);
 			*name = "18";
 			param->setUAPLong(*&name, *&dummyLong);
-			
+
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
-				
+
 			index->setData(++ind);
 			columns->insert(&uk, &key);
 
@@ -5229,7 +5236,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 				columnsImported += columnsPortion;
 				columnsPortion = 0;
 				l->setData(columnsImported);
-	
+
 				*msg = "Got ";
 				*msg += l->charrep();
 				*msg += " of columns ...";
@@ -5247,13 +5254,13 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 				_page = 0;
 			}
 		}
-		
+
 		if (pMetaData != NULL)
 		{
 			pResult->CloseMetaData(pMetaData);
 			pMetaData = NULL;
 		}
-		
+
 		if (pResult != NULL)
 		{
 			dbl->CloseResultSet(pResult);
@@ -5281,17 +5288,17 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 	//meta->setStatusText("Info", "Get primary keys ...");
 
 	columns++;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 	UAP(lb_I_KeyBase, key)
 	QI(index, lb_I_KeyBase, key)
-		
+
 	long ind = 0;
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	*connName = "";
-	
+
 #ifdef OSX
 	/// \todo Implement a more save check if this application is really running and is a bundle.
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -5303,15 +5310,15 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
-	
+
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
-	
+
 	wxArrayString tables = dbl->GetTables();
 
 	for (int i = 0; i < tables.Count(); i++) {
 		int fks = dbl->GetPrimaryKeys(tables[i]);
-		
+
 		for (int ii = 0;ii < fks;ii++) {
 			wxString pkcol = dbl->GetPrimaryKeyColumn(ii);
 			wxString pkseq = dbl->GetPrimaryKeySequence(ii);
@@ -5320,7 +5327,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-			
+
 			*name = "TableCatalog";
 			*value = (const char*) "";
 			param->setUAPString(*&name, *&value);
@@ -5336,14 +5343,14 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 			*name = "ColumnName_V2";
 			*value = (const char*) "";
 			param->setUAPString(*&name, *&value);
-			
+
 			*name = "KeySequence";
 			value->setData(pkseq.c_str());
 			param->setUAPString(*&name, *&value);
-	
+
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
-			
+
 			*msg = "Get primary column ";
 			*msg += (const char*) pkcol.c_str();
 			*msg += " of table ";
@@ -5354,7 +5361,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 
 			//meta->setStatusText("Info", msg->charrep());
 
-			
+
 			columns->insert(&uk, &key);
 			}
 	}
@@ -5370,17 +5377,17 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 	//meta->setStatusText("Info", "Get foreign keys ...");
 
 	columns++;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 	UAP(lb_I_KeyBase, key)
 	QI(index, lb_I_KeyBase, key)
-		
+
 	long ind = 0;
 
 	DatabaseLayer* dbl = new SqliteDatabaseLayer();
 	UAP_REQUEST(getModuleInstance(), lb_I_String, connName)
 	*connName = "";
-	
+
 #ifdef OSX
 	/// \todo Implement a more save check if this application is really running and is a bundle.
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -5392,27 +5399,27 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 	*connName += connectionname;
 	*connName += ".db3";
 	dbl->Open(connName->charrep());
-	
+
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
-	
+
 	wxArrayString tables = dbl->GetTables();
 	for (int i = 0; i < tables.Count(); i++) {
 	    if (!tables[i].Upper().Contains("SQLITE_STAT1")) {
 			//printf("Get foreign keys for table %s.\n", tables[i].c_str());
 			int fks = dbl->GetForeignKeys(tables[i]);
-			
+
 			if (fks > 0) {
 				for (int ii = 0;ii < fks;ii++) {
 					wxString fkcol = dbl->GetForeignKeyFKColumn(ii);
 					wxString pkcol = dbl->GetForeignKeyPKColumn(ii);
 					wxString pktab = dbl->GetForeignKeyPKTable(ii);
-					
+
 					UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 					UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-						
+
 					*name = "PKTableCatalog";
 					*value = (const char*) "";
 					param->setUAPString(*&name, *&value);
@@ -5446,12 +5453,12 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 					*name = "DeleteRule";
 					number->setData(-1);
 					param->setUAPLong(*&name, *&number);
-					
+
 					index->setData(++ind);
-					
+
 					UAP(lb_I_Unknown, uk)
 					QI(param, lb_I_Unknown, uk)
-						
+
 					*msg = "Get foreign column ";
 					*msg += (const char*) fkcol.c_str();
 					*msg += " of table ";
@@ -5461,7 +5468,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connect
 					*msg += " of table ";
 					*msg += (const char*) pktab.c_str();
 					*msg += " ...";
-					
+
 					//meta->setStatusText("Info", msg->charrep());
 					columns->insert(&uk, &key);
 				}
@@ -5500,19 +5507,19 @@ public:
 	void initIntefaceList();
 
 	int errorsOccured;
-	
+
 	// Created once and contains all interface nodes
 	unsigned int interfaces; // current interface index
 	unsigned int len;
-	
+
 	/**
 	 * Indicates the current search mode (currently only over interfaces).
 	 */
 	int CurrentSearchMode;
 	char* searchArgument;
-	
+
 	/**
-	 * Indicates an invalid search status like 
+	 * Indicates an invalid search status like
 	 * 	noPrevious interface;
 	 *	noNext     interface;
 	 *
@@ -5531,7 +5538,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
 
-lbDBInterfaceRepository::lbDBInterfaceRepository() {	
+lbDBInterfaceRepository::lbDBInterfaceRepository() {
 	manager = NULL;
 	ref = STARTREF;
 	henv = 0;
@@ -5564,8 +5571,8 @@ lbDBInterfaceRepository::lbDBInterfaceRepository() {
         	_dbError("SQLAllocConnect()", henv);
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
-        }	
-        
+        }
+
 	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
 
         if (retcode != SQL_SUCCESS)
@@ -5584,8 +5591,8 @@ lbDBInterfaceRepository::lbDBInterfaceRepository() {
                 return ERR_DB_CONNECT;
         }
 
-	retcode = SQLConnect(hdbc, (unsigned char*) "lbDMFConfig", SQL_NTS, 
-				   (unsigned char*) "lbDMF", SQL_NTS, 
+	retcode = SQLConnect(hdbc, (unsigned char*) "lbDMFConfig", SQL_NTS,
+				   (unsigned char*) "lbDMF", SQL_NTS,
 				   (unsigned char*) "lbDMF", SQL_NTS); /* Connect to data source */
 
 	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
@@ -5607,7 +5614,7 @@ lbDBInterfaceRepository::lbDBInterfaceRepository() {
 	        SQLFreeEnv(henv);
 	        return ERR_DB_CONNECT;
 	}
-        
+
 
 #endif
 
@@ -5627,7 +5634,7 @@ void LB_STDCALL lbDBInterfaceRepository::setCurrentSearchInterface(const char* i
 	searchArgument = strdup(iface);
 	interfaces = 0;
 	CurrentSearchMode = 1;
-	
+
 //	initIntefaceList();
 }
 
@@ -5637,7 +5644,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 		printf("SearchMode not set. Please call first lbDBInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
 		return NULL;
 	}
-	
+
 	if (CurrentSearchMode != 1) {
 		printf("SearchMode currently not provided.\n");
 		return NULL;
@@ -5647,31 +5654,31 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 	// Search for that node, containing specifed interface.
 	for (interfaces; interfaces < len; interfaces++) {
 /*...sOld DOM code:0:*/
-#ifdef bla	
+#ifdef bla
 		DOM_Node node = DOMlist.item(interfaces);
-		
+
 		DOM_NamedNodeMap attributeMap = node.getAttributes();
-		
+
 		DOM_Node InterfaceName = attributeMap.getNamedItem(DOMString("Name"));
-		
+
 		if (InterfaceName.getNodeValue().equals(DOMString(searchArgument))) {
-		
+
 			DOMString nodename = node.getNodeName();
-		
+
 			char* module = NULL;
 			char* functor = NULL;
-		
+
 			// Navidate to the Function node to get the functor name
 			node = node.getParentNode().getParentNode();
 			DOM_NodeList nodeList = node.getChildNodes();
-		
+
 /*...sfind function name value:24:*/
 		// Find function name
 		for (unsigned int index = 0; index < nodeList.getLength(); index++) {
 			node = nodeList.item(index);
 			if (node.getNodeName().equals(DOMString("FunctionName"))) break;
 		}
-				
+
 		attributeMap = node.getAttributes();
 
 		DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
@@ -5680,14 +5687,14 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 		        printf("Error: Attribute not found\n"); // LOG_
 
 		        return NULL;
-		        
+
 		}
 /*...e*/
 			DOMString functorName = an_attr.getNodeValue();
 
 			DOM_Node moduleNode = node.getParentNode().getParentNode().getParentNode();
 			nodeList = moduleNode.getChildNodes();
-			
+
 /*...sfind module for that functor:24:*/
 
 			DOM_Node moduleNameNode;
@@ -5696,13 +5703,13 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 	                for (int i = 0; i < nodeList.getLength(); i++) {
 	                        moduleNameNode = nodeList.item(i);
 	                        if (moduleNameNode.getNodeName().equals(DOMString("ModuleName"))) break;
-	                }			
+	                }
 
 			attributeMap = moduleNameNode.getAttributes();
 			an_attr = attributeMap.getNamedItem(DOMString("Name"));
-			
+
 			if (an_attr == NULL) {
-			        printf("Error: Attribute not found\n"); 
+			        printf("Error: Attribute not found\n");
 			        for (unsigned int l = 0; l < attributeMap.getLength(); l++) {
 			        	DOM_Node n = attributeMap.item(l);
 			        	printf("Debug of Node ");
@@ -5714,7 +5721,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 			        return NULL;
 
 			}
-			
+
 /*...e*/
 
 			DOMString moduleName = an_attr.getNodeValue();
@@ -5722,23 +5729,23 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 			char* temp = functorName.transcode();
 			functor = strdup(temp);
 			functorName.deletetranscoded(temp);
-			
+
 			temp = moduleName.transcode();
 			module = strdup(temp);
 			moduleName.deletetranscoded(temp);
-			
-			
+
+
 			lbFunctorEntity* fe = new lbFunctorEntity;
 			fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
 			lb_I_FunctorEntity* _fe = NULL;
 			fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
-			
+
 			_fe->setModule(module);
 			_fe->setFunctor(functor);
-			
-			
+
+
 			return _fe;
-			
+
 		}
 /*...sRubbish:0:*/
 #ifdef bla
@@ -5749,22 +5756,22 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 			module = module.getParentNode();
 			module = module.getParentNode();
 			module = module.getParentNode();
-			
+
 			DOM_Node functor = node.getParentNode();
 			functor = functor.getParentNode();
 /*...e*/
 
 			DOM_NodeList DOMlist = module.getChildNodes();
 			int count = DOMlist.getLength();
-			
+
 			DOM_Node child;
 			char* modulename = NULL;
 			char* functorname = NULL;
-			
+
 /*...sget module name:24:*/
 			for (int ii = 0; ii < count; ii++) {
 				child = DOMlist.item(ii);
-				
+
 				if (child.getNodeName() == DOMString("ModuleName")) {
 					DOM_NamedNodeMap attributeMap = child.getAttributes();
 
@@ -5784,7 +5791,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 
 					DOMString value = an_attr.getNodeValue();
 					char* temp = value.transcode();
-					
+
 					// Bugfix in XML4C - do cleanup directly
 					modulename = strdup(temp);
 					value.deletetranscoded(temp);
@@ -5793,14 +5800,14 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 				}
 			}
 /*...e*/
-			
+
 			DOMlist = functor.getChildNodes();
 			count = DOMlist.getLength();
-			
+
 /*...sget functor name:24:*/
 			for (ii = 0; ii < count; ii++) {
 				child = DOMlist.item(ii);
-				
+
 				if (child.getNodeName() == DOMString("FunctionName")) {
 					DOM_NamedNodeMap attributeMap = child.getAttributes();
 
@@ -5820,7 +5827,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 
 					DOMString value = an_attr.getNodeValue();
 					char* temp = value.transcode();
-					
+
 					// Bugfix in XML4C - do cleanup directly
 					functorname = strdup(temp);
 					value.deletetranscoded(temp);
@@ -5830,7 +5837,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 /*...e*/
 
 			printf("lbDBInterfaceRepository got functor %s in module %s for %s\n", functorname, modulename, iface);
-			
+
 			break;
 		}
 #endif
@@ -5862,17 +5869,17 @@ lbErrCodes LB_STDCALL lbDBInterfaceRepository::parse() {
 	    parser.setDoValidation(true);
 
 	    parser.setErrorHandler(errReporter);
-		
+
 /*...e*/
 
 
 /*...stry parsing \40\no explicid allocation\41\:12:*/
 	    // Parse the file and catch any exceptions that propogate out
-	    try	
+	    try
 		{
 		    errorsOccured = 0;
 	            parser.parse(filename);
-	
+
 	            doc = parser.getDocument();
 		}
 
@@ -5916,11 +5923,11 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemOpen();
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-			
+
                 	TRMemSetModuleName(__FILE__);
-                	
+
                 	_CL_VERBOSE << "DLL lbDB loaded." LOG_
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -5931,7 +5938,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                        	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -5942,9 +5949,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         else
                         {
                         	// Cleanup the static container holding open connections.
-                        	
+
                         	//if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
-                                
+
                                 _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
                         break;
@@ -5953,10 +5960,10 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/
 #endif
 
-    
+

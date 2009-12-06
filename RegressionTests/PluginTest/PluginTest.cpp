@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -33,19 +33,23 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -55,7 +59,10 @@ extern "C" {
 #endif
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 /*...sDocumentation:0:*/
@@ -70,27 +77,27 @@ extern "C" {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 
 	_CL_LOG << "Plugin regression tests..." LOG_
-	
+
 	UAP_REQUEST(mm, lb_I_PluginManager, PM)
 
 	PM->initialize();
 
 	if (PM->beginEnumPlugins()) {
-	
+
 		while (true) {
-		
+
 			UAP(lb_I_Plugin, pl)
-			
+
 			pl = PM->nextPlugin();
-			
+
 			if (pl == NULL) break;
 
 			pl->initialize();
-		
+
 		}
 	}
 
@@ -111,18 +118,18 @@ int main(int argc, char *argv[]) {
 
 lb_I_Unknown* findPluginByInterfaceAndNamespace(char* _interface, char* _namespace) {
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Plugin, pl)
-		
+
 	pl = PM->getFirstMatchingPlugin(_interface, _namespace);
-	
+
 	_CL_LOG << "References to plugin wrapper instance: " << pl->getRefCount() LOG_
-		
+
 	if (pl != NULL) {
        	        uk = pl->getImplementation();
        	        uk++;
-	        	        
+
        	        return uk.getPtr();
        	}
        	return NULL;
@@ -139,13 +146,13 @@ int main(int argc, char *argv[]) {
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
 #endif
-	
+
 	mm = getModuleInstance();
 
 	_CL_LOG << "Plugin regression tests..." LOG_
 
 	char answer[100];
-	
+
 	COUT << "Do you want to list plugins with plugin manager (y/n) ? ";
 	CIN >> answer;
 
@@ -155,25 +162,25 @@ int main(int argc, char *argv[]) {
 /*...sTest list plugins:8:*/
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 		UAP_REQUEST(mm, lb_I_PluginManager, PM)
-	
+
 		if (PM->beginEnumPlugins()) {
-	
+
 			while (true) {
 				UAP(lb_I_Plugin, pl)
 				pl = PM->nextPlugin();
-			
+
 				if (pl == NULL) break;
-	
+
 				pl->initialize();
-				
+
 				_CL_LOG << "Plugin name: " << pl->getName() LOG_
 			}
 		}
-		
+
 		_CL_LOG << "* Unload plugin manager *" LOG_
-		
+
 		PM->unload();
-		
+
 		_CL_LOG << "*        Unloaded       *" LOG_
 	}
 /*...e*/
@@ -187,25 +194,25 @@ int main(int argc, char *argv[]) {
 
 		if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 			UAP_REQUEST(mm, lb_I_PluginManager, PM)
-	
+
 			if (PM->beginEnumPlugins()) {
-	
+
 				while (true) {
 					UAP(lb_I_Plugin, pl)
 					pl = PM->nextPlugin();
-			
+
 					if (pl == NULL) break;
-		
+
 					pl->initialize();
-				
+
 					_CL_LOG << "Plugin name: " << pl->getName() << " from " << pl->getModule() << "." LOG_
-				
+
 					COUT << "Load (y/n) ? ";
 					CIN >> answer;
-				
+
 					if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 						UAP(lb_I_Unknown, uk)
-					
+
 						uk = pl->getImplementation();
 						if (uk != NULL) {
 							_CL_LOG << "Loaded: " << uk->getClassName() LOG_
@@ -215,16 +222,16 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
-			
+
 			_CL_LOG << "* Unload plugin manager *" LOG_
-			
+
 			PM->unload();
-			
+
 			_CL_LOG << "*        Unloaded       *" LOG_
 		}
 	}
 /*...e*/
-	
+
 	COUT << "Do you want to load two plugins with plugin manager (y/n) ? ";
 	CIN >> answer;
 
@@ -237,24 +244,24 @@ int main(int argc, char *argv[]) {
 
 		{
 			UAP_REQUEST(mm, lb_I_PluginManager, PM)
-	
+
 /*...sLoad first from given list:32:*/
 			if (PM->beginEnumPlugins()) {
-	
+
 				while (true) {
 					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
 					pl = PM->nextPlugin();
-			
+
 					if (pl == NULL) break;
-		
+
 					pl->initialize();
-				
+
 					_CL_LOG << "Plugin name: " << pl->getName() LOG_
-				
+
 					COUT << "Load (y/n) ? ";
 					CIN >> answer;
-				
+
 					if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 						uk1 = pl->getImplementation();
 						if (uk1 != NULL) {
@@ -270,26 +277,26 @@ int main(int argc, char *argv[]) {
 				setVerbose(false);
 			}
 /*...e*/
-			
+
 			_CL_LOG << "Loaded first plugin." LOG_
-			
+
 /*...sLoad second from given list:32:*/
 			if (PM->beginEnumPlugins()) {
-	
+
 				while (true) {
 					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
 					pl = PM->nextPlugin();
-			
+
 					if (pl == NULL) break;
-		
+
 					pl->initialize();
-				
+
 					_CL_LOG << "Plugin name: " << pl->getName() LOG_
-				
+
 					COUT << "Load (y/n) ? ";
 					CIN >> answer;
-				
+
 					if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 						uk2 = pl->getImplementation();
 						if (uk2 != NULL) {
@@ -305,9 +312,9 @@ int main(int argc, char *argv[]) {
 				setVerbose(false);
 			}
 /*...e*/
-			
+
 			_CL_LOG << "* Unload plugin manager *" LOG_
-			
+
 			_CL_LOG << "*        Unloaded       *" LOG_
 		}
 		_CL_LOG << "Have the following plugins loaded and plugin manager released:" LOG_
@@ -322,43 +329,43 @@ int main(int argc, char *argv[]) {
 
 	COUT << "Do you want to locale module (y/n) ? ";
 	CIN >> answer;
-	
+
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 		char* t = "Dynamic sample";
 		char* translated = _trans(t);
-		
+
 		_CL_LOG << "Translated " << t << " to " << translated LOG_
 	}
-	
+
 	char repeat[100] = "y";
 
 	COUT << "Do you want to test a plugin module (y/n) ? ";
 	CIN >> answer;
 
-	while ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) && 
+	while ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) &&
 	       (strcmp(repeat, "y") == 0) || (strcmp(repeat, "Y") == 0))
 	{
 /*...sDo loop:16:*/
 
 		char moduleName[100];
 		char functorName[100];
-	
+
 		if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 			COUT << "Module name: ";
 			CIN >> moduleName;
-	
+
 			COUT << "Functor: ";
 			CIN >> functorName;
-		
+
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_PluginModule, plM)
-		
+
 			if (mm->makeInstance(functorName, moduleName, &uk) != ERR_NONE) {
 				COUT << "ERROR: Module or functor not found!" << ENDL;
 			}
-			
+
 			QI(uk, lb_I_PluginModule, plM)
-			
+
 			if (plM != NULL) {
 			        COUT << "Call initialize of plugin module." << ENDL;
 			        plM->setModuleManager(mm, __FILE__, __LINE__);
@@ -377,9 +384,9 @@ int main(int argc, char *argv[]) {
 	                if (mm->makeInstance(functorName, moduleName, &uk) != ERR_NONE) {
 	                        COUT << "ERROR: Module or functor not found!" << ENDL;
 	                }
-	                
+
 	                QI(uk, lb_I_PluginModule, plM)
-	                
+
 	                if (plM != NULL) {
 	                	COUT << "Call initialize of plugin module." << ENDL;
 	                	plM->setModuleManager(mm, __FILE__, __LINE__);
@@ -401,14 +408,14 @@ int main(int argc, char *argv[]) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, plName)
 	UAP(lb_I_KeyBase, plKey)
 
-	while ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) && 
+	while ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) &&
 	       (strcmp(repeat, "y") == 0) || (strcmp(repeat, "Y") == 0))
 	{
 		char namesp[100] = "";
 		char interf[100] = "";
 
 		UAP(lb_I_Unknown, uk)
-		
+
 		COUT << "Interface: ";
 		CIN >> interf;
 		COUT << "Namespace: ";
@@ -418,10 +425,10 @@ int main(int argc, char *argv[]) {
 
 	        *plName = uk->getClassName();
 	        QI(plName, lb_I_KeyBase, plKey)
-		        
+
 	        plugins->insert(&uk, &plKey);
-	        _CL_LOG << "Found one: " << uk->getClassName() LOG_	        	        
-	        
+	        _CL_LOG << "Found one: " << uk->getClassName() LOG_
+
 	        COUT << "Do you want to find another plugin with interface and namespace (y/n) ? ";
 	        CIN >> answer;
 	}
@@ -436,20 +443,20 @@ int main(int argc, char *argv[]) {
 	{
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Unknown, uk1)
-		
+
 		uk = findPluginByInterfaceAndNamespace("lb_I_User_Applications", "Model");
 		uk1 = findPluginByInterfaceAndNamespace("lb_I_User_Applications", "Model");
-		
+
 		_CL_LOG << "Loaded problematic plugin. It has " << uk->getRefCount() << " references." LOG_
 	}
 /*...e*/
 
 	COUT << "Do you want to print names of yet loaded plugins (y/n) ? ";
 	CIN >> answer;
-	
+
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) &&
 	       (strcmp(repeat, "y") == 0) || (strcmp(repeat, "Y") == 0))
-	
+
 	while (plugins->hasMoreElements()) {
 		UAP(lb_I_Unknown, uk)
 		uk = plugins->nextElement();
@@ -462,9 +469,9 @@ int main(int argc, char *argv[]) {
         PM->unload();
         PM--;
         PM.resetPtr();
-	
+
 	_CL_LOG << "Unloaded plugins." LOG_
-	
+
 	mm->release(__FILE__, __LINE__);
 
 }

@@ -32,7 +32,12 @@
 #pragma warning( disable: 4101 )
 
 #endif
+
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -46,7 +51,9 @@ extern "C" {
 }
 #endif            
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 #include <stdio.h>
 #include <iostream>

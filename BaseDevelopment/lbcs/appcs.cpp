@@ -29,11 +29,18 @@
 /*...e*/
 #define APPCS_DLL
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include <string.h>
 #include <conio.h>
 //#include <lbInterfaces.h>
 //#include <lbInclude.h>
+
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 #include <appcs.h>
 //#include <appbus.h>

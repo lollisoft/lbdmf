@@ -14,38 +14,38 @@
 
 	Google posting: VARCHAR, CHAR types changed ?
 	http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/df155225d9d4a291/e9903c90492969b2#e9903c90492969b2
-  
+
 	Test's:
-	
+
 	MSSQL:		Deletes the two rows, but no detection of them to be deleted.
 				There would be no datachanges, except the value in the primary
 				key (id = 0).
-	  
+
 				All 6 rows would be printed out.
-		
+
 	Sybase:			There is a hang. Don't know why ?
-		  
+
 	PostgreSQL:		The data would be deleted and with my modified version of the ODBC driver
 				I detect bodus pointer values (Linux/Windows).
-			
+
 				Driver version 07.03.0200 without changes does crash.
 				Driver version 07.03.0200 with changes does not crash, but detection of
 				bodus pointers does not result in a comparable output as of MSSQL.
-			  
+
 				Google posting: QR_get_value_backend_row returns invalid pointers !
 				http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/5eab6fe60712e7b6/a15b55bedd0bb9a4#a15b55bedd0bb9a4
-				
+
 	MySQL:			Not tested.
 
-  
+
 	TODO:	Find out, what are the reason's for the different database vendors.
 
 		Fix the undefined behaviour in PostgreSQL driver version 07.03.0200.
 
-		Why is there a difference between using 
+		Why is there a difference between using
 
 		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_IF_NEEDED
-	
+
 		and
 
 		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_ODBC
@@ -59,24 +59,28 @@
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
 	version 2.1 of the License, or (at your option) any later version.
-  
+
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     Lesser General Public License for more details.
-	
+
 	You should have received a copy of the GNU Lesser General Public
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	  
-		
+
+
 	The author of this work will be reached by e-Mail or paper mail.
 	e-Mail: lothar.behrens@lollisoft.de
 	p-Mail: Lothar Behrens
 	Heinrich-Scheufelen-Platz 2
-		  
+
 	73252 Lenningen (germany)
 */
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -93,11 +97,13 @@
 #ifdef WINDOWS
 #include <iostream.h>
 #endif
-#ifdef LINUX 
+#ifdef LINUX
 #include <iostream>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 
 #define _SQL_ROW_DELETED 1000
@@ -122,7 +128,7 @@ void trim(char* stringdata) {
 
 void refresh(HSTMT hstmt) {
 	RETCODE retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-	
+
 	if (retcode != SQL_SUCCESS)
 	{
 		printf("ERROR: Refreshing data failed.\n");
@@ -161,20 +167,20 @@ void remove(HSTMT hstmt, char* id) {
 		printf("ERROR: Removing data failed.\n");
 		dbError("SQLSetPos(SQL_DELETE)", hstmt);
 	}
-/*	
+/*
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-	
+
 	if (retcode != SQL_SUCCESS)
 	{
 		printf("ERROR: Removing data failed.\n");
 		dbError("SQLSetPos(SQL_REFRESH)", hstmt);
 	}
-*/	
+*/
 }
 
 void update(HSTMT hstmt) {
 	RETCODE retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
-	
+
 	if (retcode != SQL_SUCCESS)
 	{
 		dbError("SQLSetPos(SQL_UPDATE)", hstmt);
@@ -206,65 +212,65 @@ void update(HSTMT hstmt) {
 RETCODE absolute(HSTMT hstmt, int pos) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
-	
+
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched, &RowStat[0]);
-	
+
 	CHECK_ROWSTAT()
 
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
-	
+
 	return retcode;
 }
 
 RETCODE last(HSTMT hstmt) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
-	
+
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
-	
+
 	CHECK_ROWSTAT()
 
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
-	
+
 	return retcode;
 }
 
 RETCODE first(HSTMT hstmt) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
-	
+
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
-	
+
 	CHECK_ROWSTAT()
 
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
-	
+
 	return retcode;
 }
 
 RETCODE next(HSTMT hstmt) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
-	
+
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
-	
+
 	CHECK_ROWSTAT()
 
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
-	
+
 	return retcode;
 }
 
 RETCODE previous(HSTMT hstmt) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
-	
+
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-	
+
 	CHECK_ROWSTAT()
 
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
-	
+
 	return retcode;
 }
 
@@ -276,15 +282,15 @@ char* getColumnName(HSTMT hstmt, int col) {
 	SQLSMALLINT     BufferLength = 500;
 	SQLSMALLINT     DataType = 0;
 	SQLSMALLINT     NameLength = 0;
-	
+
 	SQLSMALLINT     DecimalDigits = 0;
 	SQLSMALLINT     Nullable = 0;
 	SQLUINTEGER     ColumnSize;
-	
+
 	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
 		BufferLength, &NameLength, &DataType,
 		&ColumnSize, &DecimalDigits, &Nullable);
-	
+
 	if (ret != SQL_SUCCESS) {
 		if (ret == SQL_SUCCESS_WITH_INFO) {
 			strcpy(lbQuery_column_Name, (char*) ColumnName);
@@ -292,7 +298,7 @@ char* getColumnName(HSTMT hstmt, int col) {
 			dbError("SQLDescribeCol()", hstmt);
 			strcpy(lbQuery_column_Name, "");
 		}
-		
+
 		return lbQuery_column_Name;
 	} else {
 		strcpy(lbQuery_column_Name, (char*) ColumnName);
@@ -311,7 +317,7 @@ void PrintData(HSTMT hstmt, int cols, bool reverse, bool position = true) {
 		} else {
 			retcode = SQL_SUCCESS;
 		}
-		
+
 		if ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 			PrintCurrent(cols, hstmt);
 			retcode = next(hstmt);
@@ -320,7 +326,7 @@ void PrintData(HSTMT hstmt, int cols, bool reverse, bool position = true) {
 				PrintCurrent(cols, hstmt);
 				retcode = next(hstmt);
 				while (retcode == _SQL_ROW_DELETED) retcode = next(hstmt);
-			}      
+			}
 		}
 	} else {
 		if (position == true) {
@@ -338,7 +344,7 @@ void PrintData(HSTMT hstmt, int cols, bool reverse, bool position = true) {
 				PrintCurrent(cols, hstmt);
 				retcode = previous(hstmt);
 				while (retcode == _SQL_ROW_DELETED) retcode = previous(hstmt);
-			}      
+			}
 		}
 	}
 	PrintFooter(cols);
@@ -348,7 +354,7 @@ void PrintFooter(int cols) {
 	for (int i = 1; i < cols; i++) {
 		printf("-------------------");
 	}
-	
+
 	printf("-------------------\n");
 }
 
@@ -356,9 +362,9 @@ void PrintHeader(int cols, HSTMT hstmt) {
 	for (int i = 1; i < cols; i++) {
 		printf("%19s", getColumnName(hstmt, i));
 	}
-	
+
 	printf("%19s\n", getColumnName(hstmt, cols));
-	
+
 	PrintFooter(cols);
 }
 
@@ -380,17 +386,17 @@ void PrintCurrent(int cols, HSTMT hstmt) {
 	trim(temp);
 	printf("%19s", temp);
 	free(temp);
-	
+
 	temp = strdup(test);
 	trim(temp);
 	printf("%19s", temp);
 	free(temp);
-	
+
 	temp = strdup(btest);
 	trim(temp);
 	printf("%19s", temp);
 	free(temp);
-	
+
 	temp = strdup(btest1);
 	trim(temp);
 	printf("%19s\n", temp);
@@ -402,12 +408,12 @@ void _dbError_DBC(char* lp, HDBC hdbc) {
 	SQLINTEGER NativeError;
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
-	
+
 	i = 1;
-	
+
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_DBC, hdbc, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
-		
+
 		COUT << "Error in lbQuery: (" << lp << ") " <<
 			SqlState << ": " << (int) NativeError << " - " << Msg << ENDL;
 		i++;
@@ -419,12 +425,12 @@ void _dbError_ENV(char* lp, HENV henv) {
 	SQLINTEGER NativeError;
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
-	
+
 	i = 1;
-	
+
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_ENV, henv, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
-		
+
 		COUT << "Error in lbQuery: (" << lp << ") " <<
 			SqlState << ": " << (int) NativeError << " - " << Msg << ENDL;
 		i++;
@@ -437,11 +443,11 @@ void dbError(char* lp, HSTMT hstmt)
 	SQLINTEGER NativeError;
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
-	
+
 	i = 1;
-	
+
 	printf("Any error happens in %s\n", lp);
-	
+
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
 		Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
 		COUT << "Error in lbQuery: (" << lp << ") " <<
@@ -452,7 +458,7 @@ void dbError(char* lp, HSTMT hstmt)
 
 // This statement crashes inside SQLExecDirect(...)
 UCHAR buf5[] = "select id, test, btest, btest1 from regressiontest";
-	
+
 
 void setQuery(unsigned char* q, HSTMT &hstmt) {
 	RETCODE retcode;
@@ -463,7 +469,7 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	}
 
 	retcode = SQLExecDirect(hstmt, q, SQL_NTS);
-	
+
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 
 	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, id, sizeof(id), &cbBufferLength);
@@ -482,20 +488,20 @@ int main(void)
 	HSTMT       hstmt = NULL;                           // Statement handle
 	HSTMT       hstmt_select = NULL;                    // Statement handle
 	UCHAR       *DSN = (unsigned char*) "lbDMF";		// Data Source Name buffer
-	UCHAR       user[64] = "dba";                       // UserID buffer 
+	UCHAR       user[64] = "dba";                       // UserID buffer
 	UCHAR       passwd[64] = "trainres";                // Password buffer
-	
-	
+
+
 	char *buf1;
-	
+
 	COUT << "Select 1 for Sybase\nSelect 2 for PostgreSQL\nSelect 3 for MS SQL: ";
-	
+
 	int select;
-	
+
 	CIN >> select;
-	
+
 	COUT << "You have selected " << select << ENDL;
-	
+
 	switch (select) {
 	case 1:
 		DSN = (unsigned char*) strdup("lbDMF-sybase");
@@ -527,30 +533,30 @@ int main(void)
 			")");
 		break;
 	}
-	
-	
+
+
 	long cbBufferLength = 0;
-	
+
 	RETCODE retcode;
-	
+
 	retcode = SQLAllocEnv (&henv);
-	
+
 	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
 	if (retcode != SQL_SUCCESS) _dbError_ENV("SQLSetConnectAttr()", henv);
-	
+
 	retcode = SQLAllocConnect (henv, &hdbc);
-	
+
 	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0); /*(void*)SQL_CUR_USE_ODBC*/
-	//retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*) SQL_CUR_USE_ODBC, 0); 
+	//retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*) SQL_CUR_USE_ODBC, 0);
 	if (retcode != SQL_SUCCESS) _dbError_DBC("SQLSetConnectAttr()", hdbc);
-	
+
 	retcode = SQLConnect(hdbc, DSN, SQL_NTS, user, SQL_NTS, passwd, SQL_NTS);
-	
+
 	if (retcode != SQL_SUCCESS) {
 		printf("Error while connecting to database!\n");
 		return 0;
 	}
-	
+
 	retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 
 	SQLSMALLINT bufferSize1 = 100;
@@ -563,55 +569,55 @@ int main(void)
 	UCHAR   dbmsVersion[200] = "";
 	UCHAR   dbmsName[100] = "";
 	UCHAR   databaseName[100] = "";
-	
+
 	retcode = SQLGetInfo(hdbc, SQL_DATABASE_NAME, databaseName,  bufferSize1, &bufferSize1);
 	retcode = SQLGetInfo(hdbc, SQL_DBMS_NAME,     dbmsName,      bufferSize2, &bufferSize2);
 	retcode = SQLGetInfo(hdbc, SQL_DBMS_VER,      dbmsVersion,   bufferSize3, &bufferSize3);
 	retcode = SQLGetInfo(hdbc, SQL_DRIVER_VER,    driverVersion, bufferSize4, &bufferSize4);
 	retcode = SQLGetInfo(hdbc, SQL_DRIVER_NAME,   driverName,    bufferSize5, &bufferSize5);
-	
+
 	printf("Database instance: database = %s\n", databaseName);
 	printf("Database information: database name = %s, database version = %s\n", dbmsName, dbmsVersion);
 	printf("ODBC driver information: driver name = %s, driver version = %s\n\n", driverName, driverVersion);
-	
+
 	retcode = SQLAllocStmt (hdbc, &hstmt);
 
 	retcode = SQLAllocStmt (hdbc, &hstmt_select);
-	
+
 	printf("Set select statement options...\n");
-	
+
 	retcode = SQLSetStmtOption(hstmt_select, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
 	if (retcode != SQL_SUCCESS) dbError("SQLSetStmtOption()", hstmt_select);
-	
+
 	retcode = SQLSetStmtOption(hstmt_select, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
 	if (retcode != SQL_SUCCESS) dbError("SQLSetStmtOption()", hstmt_select);
-	
+
 	UCHAR buf6[] = "drop table regressiontest";
-	
+
 	retcode = SQLExecDirect(hstmt, buf6, sizeof(buf6));
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
-	
-	
+
+
 	UCHAR *buf2 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (test) values('Nix')" : (UCHAR*) "insert into regressiontest (test) values('Nix')";
 	UCHAR *buf3 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (btest) values(1)" : (UCHAR*) "insert into regressiontest (btest) values(true)";
 	UCHAR *buf4 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (btest1) values(1)" : (UCHAR*) "insert into regressiontest (btest1) values(true)";
 	UCHAR *buf12 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (test) values('Nix')" : (UCHAR*) "insert into regressiontest (test) values('Nix')";
 	UCHAR *buf13 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (btest) values(1)" : (UCHAR*) "insert into regressiontest (btest) values(true)";
 	UCHAR *buf14 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (btest1) values(1)" : (UCHAR*) "insert into regressiontest (btest1) values(true)";
-	
-	
+
+
 	//if ((select == 2) || (select == 3)) {
 	retcode = SQLExecDirect(hstmt, (unsigned char*) buf1, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 	//}
-	
+
 	retcode = SQLExecDirect(hstmt, buf2, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 	retcode = SQLExecDirect(hstmt, buf3, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 	retcode = SQLExecDirect(hstmt, buf4, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
-	
+
 	retcode = SQLExecDirect(hstmt, buf12, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 	retcode = SQLExecDirect(hstmt, buf13, SQL_NTS);
@@ -625,63 +631,63 @@ int main(void)
 
 	SWORD count = 0;
 	retcode = SQLNumResultCols(hstmt_select, &count);
-	
+
 	//if (count == 0) count = 4;
-	
+
 	if (retcode != SQL_SUCCESS) dbError("SQLNumResultCols()", hstmt_select);
-	
+
 	printf("Number of columns: %d.\n", count);
-	
+
 	// Force an error
 	char* columnName = getColumnName(hstmt_select, 0);
-	
+
 	printf("Have got column name '%s' for column 0\n", columnName);
-	
+
 	PrintData(hstmt_select, count, false);
-	
+
 	first( hstmt_select);
 	next(  hstmt_select);
-	
+
 	remove(hstmt_select, id);
 	//update(hstmt_select);
-	
+
 	next(  hstmt_select);
-	
+
 	remove(hstmt_select, id);
 	//update(hstmt_select);
-	
+
 	// Close Cursor
 	setQuery(buf5, hstmt_select);
-	
+
 	//refresh(hstmt_select);
-	
+
 	absolute(hstmt_select, 1);
-	
+
 	PrintData(hstmt_select, count, false, false);
-	
+
 	first( hstmt_select);
-	
+
 	printf("Test changing data...\n");
-	
-	sprintf(btest, "%d", 1); 
-	sprintf(btest1, "%d", 1); 
+
+	sprintf(btest, "%d", 1);
+	sprintf(btest1, "%d", 1);
 	update(hstmt_select);
-	
+
 	PrintData(hstmt_select, count, false);
-	
+
 	PrintData(hstmt_select, count, true);
-	
+
 	// Free the allocated statement handles
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);
-	
+
 	// Free the allocated connection handle
 	retcode = SQLFreeConnect (hdbc);
-	
+
 	// Free the allocated ODBC environment handle
 	retcode = SQLFreeEnv (henv);
-	
+
 	printf("Ready.\n");
-	
+
 	switch (select) {
 	case 1:
 	case 3:
@@ -690,8 +696,8 @@ int main(void)
 		if (buf1 != NULL) free(buf1);
 		break;
 	}
-	
+
 	getchar();
-	
+
 	return 0;
 }

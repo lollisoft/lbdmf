@@ -29,11 +29,12 @@
 /*...e*/
 
 /*...sincludes:0:*/
-
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
@@ -51,7 +52,9 @@ extern "C" {
 
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 //#define USE_RDCD_MODEL
 

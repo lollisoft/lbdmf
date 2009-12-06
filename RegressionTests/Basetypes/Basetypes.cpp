@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
-            
+
             40235 Duesseldorf (germany)
 */
 /*...e*/
@@ -33,18 +33,23 @@
 
 #endif
 /*...sincludes:0:*/
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #include <conio.h>
 
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -53,7 +58,12 @@ extern "C" {
 #include <malloc.h>
 #endif
 #endif
+
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
+
 /*...e*/
 
 /*...sDocumentation:0:*/
@@ -67,18 +77,18 @@ extern "C" {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	_CL_LOG << "Test basetypes" LOG_
-	
+
 	UAP_REQUEST(mm, lb_I_String, string1)
 	UAP_REQUEST(mm, lb_I_String, string2)
 
 	string1->setData("Test basetypes...");
 	string2->setData("Test basetypes...");
-	
+
 	if (*&string1 == *&string2) {
 		_CL_LOG << "Strings are identical" LOG_
 	} else {
@@ -118,7 +128,7 @@ int main(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -133,28 +143,28 @@ int main(int argc, char *argv[]) {
 	if (l1->equals(*&l2)) {
 	    _CL_LOG << "Long values are equal." LOG_
 	} else {
-	    _CL_LOG << "Long values are not equal." LOG_	
+	    _CL_LOG << "Long values are not equal." LOG_
 	}
 
-	
+
 	UAP_REQUEST(mm, lb_I_String, replaceTest)
-	
+
 	*replaceTest = "\"Hallo\"";
 	replaceTest->replace("Hallo", "Duda");
 	replaceTest->replace("\"", "'");
 	replaceTest->replace("a'", "aaa'");
 	printf("Replaced string: %s\n", replaceTest->charrep());
-	
+
 	*replaceTest = "Hallo == \"\"";
 	replaceTest->replace("Hallo", "Duda");
 	replaceTest->replace("\"", "&quot;");
 	printf("Replaced string: %s\n", replaceTest->charrep());
-	
+
 	*replaceTest = "select \"lala\" from \"bla\" where \"lili\" = 'lolo'";
 	replaceTest->replace("\"", "&quot;");
 	printf("Replaced string: %s\n", replaceTest->charrep());
-	
-	
+
+
 	UAP_REQUEST(mm, lb_I_String, string1)
 	char buf1[100] = "";
 	UAP_REQUEST(mm, lb_I_String, string2)
@@ -164,7 +174,7 @@ int main(int argc, char *argv[]) {
 	string2->setData("Test basetypes...");
 
 	_CL_LOG << "Test (*&string1 == *&string2)" LOG_
-	
+
 	if (*&string1 == *&string2) {
 		_CL_LOG << "Strings are identical" LOG_
 	} else {
@@ -203,33 +213,33 @@ int main(int argc, char *argv[]) {
         }
 
 	_CL_LOG << "Test Stream classes." LOG_
-	
+
 	UAP_REQUEST(mm, lb_I_OutputStream, out)
-	
+
 	out->setFileName("Test.txt");
 	out->open();
-	
+
 	int n = 0;
 
 	int count = 10;
-	
+
 	*out << count;
 	for (int i = 0; i < count; i++) {
 		*out << "Testline: " << i;
 	}
 
 	out->close();
-	
+
 	UAP_REQUEST(mm, lb_I_InputStream, in)
 
 	in->setFileName("Test.txt");
-	
+
 	in->open();
-	
+
 	char* buf = NULL;
 
-	*in >> count;	
-	
+	*in >> count;
+
 	for (int i = 0; i < count; i++) {
 		n = 0;
 		*in >> buf >> n;
@@ -238,11 +248,11 @@ int main(int argc, char *argv[]) {
 
 	free(buf);
 	buf = NULL;
-	
+
 	_CL_LOG << "Test string appending..." LOG_
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, testappend)
-	
+
 	*testappend = "1 part.";
 	*testappend += " 2 part.";
 	*testappend += " 3 part.";
@@ -254,9 +264,9 @@ int main(int argc, char *argv[]) {
 	*testappend += " 9 part.";
 	*testappend += " 10 part.";
 	*testappend += " 11 part.";
-	
-	
+
+
 	_CL_LOG << "Produced this string: " << testappend->charrep() LOG_
-	
+
         return 0;
 }

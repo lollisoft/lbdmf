@@ -22,9 +22,13 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -54,7 +58,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 
 #define LB_PLUGINMANAGER_DLL
@@ -74,14 +80,14 @@ extern "C" {
 class lbPluginDatabase : public lb_I_PluginImpl {
 public:
 	lbPluginDatabase();
-	
+
 	virtual ~lbPluginDatabase();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -128,7 +134,7 @@ lbErrCodes LB_STDCALL lbPluginDatabase::autorun() {
 
 void LB_STDCALL lbPluginDatabase::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDatabase::run() {
 	return true;
 }
@@ -141,7 +147,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::peekImplementation() {
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return impl.getPtr();
 }
 
@@ -152,7 +158,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 		instanceOflbDatabaseLayerDatabase(&impl, manager.getPtr(), __FILE__, __LINE__);
 	}
-	
+
 	lb_I_Unknown* r = impl.getPtr();
 	impl.resetPtr();
 	return r;
@@ -160,7 +166,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::getImplementation() {
 
 void LB_STDCALL lbPluginDatabase::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
-	
+
 /*	if (impl != NULL) {
 		impl->release(__FILE__, __LINE__);
 		impl.resetPtr();

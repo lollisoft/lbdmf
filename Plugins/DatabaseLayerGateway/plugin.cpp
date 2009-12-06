@@ -23,11 +23,16 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -56,8 +61,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
+#endif
 
 
 
@@ -76,9 +82,9 @@ public:
 	virtual ~lbPluginModuleDatabaseLayerGateway();
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	void LB_STDCALL initialize();
-	
+
 	DECLARE_PLUGINS()
 };
 /*...e*/
@@ -115,7 +121,7 @@ lbErrCodes LB_STDCALL lbPluginModuleDatabaseLayerGateway::setData(lb_I_Unknown* 
 	if (uk != NULL) {
 		_CL_LOG << "Cloning object with " << uk->getRefCount() << " references." LOG_
 	}
-        
+
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/

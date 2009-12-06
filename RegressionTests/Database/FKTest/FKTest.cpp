@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -32,19 +32,24 @@
 #pragma warning( disable: 4101 )
 
 #endif
+
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -54,7 +59,9 @@ extern "C" {
 #endif
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
@@ -64,8 +71,8 @@ int main(int argc, char *argv[]) {
 #ifdef WINDOWS
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-#endif	
-	
+#endif
+
 	mm = getModuleInstance();
 
 	_CL_LOG << "Database regression tests..." LOG_
@@ -86,39 +93,39 @@ int main(int argc, char *argv[]) {
 
 		UAP_REQUEST(mm, lb_I_String, col)
 		UAP_REQUEST(mm, lb_I_String, val)
-		
+
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
 		UAP(lb_I_Query, query2)
-		
+
 		query = database->getQuery("lbDMF", 0);
 
 		query->enableFKCollecting();
 		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\"");
-		
+
 		bool fkProblems = false;
-		
+
 		if (query->hasFKColumn("userid") == 0) {
 			_CL_LOG << "Error: Expect foreignkey userid in user_anwendungen." LOG_
 			fkProblems = true;
 		}
-		
+
 		if (query->hasFKColumn("anwendungenid") == 0) {
 			_CL_LOG << "Error: Expect foreignkey anwendungenid in user_anwendungen." LOG_
 			fkProblems = true;
 		}
-		
+
 		if (fkProblems) {
 			UAP(lb_I_Container, ForeignKeys)
-			
+
 			ForeignKeys = database->getForeignKeys("lbDMF");
-			
+
 			if (ForeignKeys->Count() == 0) {
 				_CL_LOG << "Error: Also getForeignKeys of database instance doesn't work." LOG_
 			}
 		}
-		
-		
+
+
 		query1 = database->getQuery("lbDMF", 0);
 		query2 = database->getQuery("lbDMF", 0);
 
@@ -131,9 +138,9 @@ int main(int argc, char *argv[]) {
 		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,4)");
 		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,5)");
 		query1->enableFKCollecting();
-		
+
 		query->PrintData();
-		
+
 		query->first();
 		query->update();
 		query->next();
@@ -165,20 +172,20 @@ int main(int argc, char *argv[]) {
 		*col = "anwendungenid";
 		*val = "0";
 		query->setString(*&col, *&val);
-		
-		if (query->isNullable("userid")) 
+
+		if (query->isNullable("userid"))
 			query->setNull("userid");
 		else
 			_CL_LOG << "Column userid not set to NULL." LOG_
 
-		if (query->isNullable("anwendungenid")) 
+		if (query->isNullable("anwendungenid"))
 			query->setNull("anwendungenid");
 		else
 			_CL_LOG << "Column anwendungenid not set to NULL." LOG_
 
 		if (!query->isNull("userid")) _CL_LOG << "Error: Expect column 'userid' to be NULL!" LOG_
 		if (!query->isNull("anwendungenid")) _CL_LOG << "Error: Expect column 'anwendungenid' to be NULL!" LOG_
-	
+
 		_CL_LOG << "Call query->update() on added row with all fk values proper set to NULL." LOG_
 		if (query->update() != ERR_NONE) {
 			_CL_LOG << "Error adding wrong key values." LOG_

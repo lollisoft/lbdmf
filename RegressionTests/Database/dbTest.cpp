@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -33,19 +33,24 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -56,7 +61,10 @@ extern "C" {
 #endif
 //#include "testdll.h"
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 /*...sDocumentation:0:*/
@@ -71,12 +79,12 @@ extern "C" {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	_CL_LOG << "Database regression tests..." LOG_
-	
+
 	UAP_REQUEST(mm, lb_I_Database, database)
 
 	database->init();
@@ -113,9 +121,9 @@ int main(int argc, char *argv[]) {
 	query2->query("select test, btest, btest1 from regressiontest");
 
 	query2->PrintData();
-	
+
 	query3 = database->getQuery("lbDMF", 0);
-	
+
 	query3->query("drop table regressiontest");
 	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
 	query3->PrintData();
@@ -127,11 +135,11 @@ int main(int argc, char *argv[]) {
 		case lb_I_Query::lbDBColumnBit:
 			_CL_LOG << "lb_I_Query::lbDBColumnBit" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnChar:
 			_CL_LOG << "lb_I_Query::lbDBColumnChar" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnBinary:
 			_CL_LOG << "lb_I_Query::lbDBColumn" LOG_
 			break;
@@ -139,7 +147,7 @@ int main(int argc, char *argv[]) {
 		case lb_I_Query::lbDBColumnInteger:
 			_CL_LOG << "lb_I_Query::lbDBColumnInteger" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnUnknown:
 			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
 			break;
@@ -149,21 +157,21 @@ int main(int argc, char *argv[]) {
 
 	UAP_REQUEST(mm, lb_I_String, col)
 	UAP_REQUEST(mm, lb_I_String, val)
-	
+
 	col->setData("ro");
 	val->setData("true");
 
-	query3->setString(*&col, *&val);	
-	
+	query3->setString(*&col, *&val);
+
 	_CL_LOG << "Try update:" LOG_
-	
+
 	query3->update();
-	
+
 	_CL_LOG << "Try move first" LOG_
-	
+
 	query3->first();
 
-	_CL_LOG << "Print out changed data:" LOG_	
+	_CL_LOG << "Print out changed data:" LOG_
 	query3->PrintData();
 
         return 0;
@@ -185,8 +193,8 @@ int main(int argc, char *argv[]) {
 #ifdef WINDOWS
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-#endif	
-	
+#endif
+
 	mm = getModuleInstance();
 
 	_CL_LOG << "Database regression tests..." LOG_
@@ -194,9 +202,9 @@ int main(int argc, char *argv[]) {
 
 /*...sBlock:8:*/
 	{
-	
+
 		// Try preload lbClasses
-	
+
 		UAP_REQUEST(mm, lb_I_Database, database)
 
 		if (database->init() == ERR_DB_INIT) {
@@ -238,7 +246,7 @@ int main(int argc, char *argv[]) {
 				"btest1 bool DEFAULT false,"
 				"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 				");";
-	
+
 		// I have problems which collecting foreign key data, if no result sets are there.
 		query->skipFKCollecting();
 		query->query(buf);
@@ -280,10 +288,10 @@ int main(int argc, char *argv[]) {
 		query2->first();
 		UAP_REQUEST(mm, lb_I_String, col)
 		UAP_REQUEST(mm, lb_I_String, val)
-		
+
 		col->setData("btest");
 		val->setData("true");
-		
+
 		query2->setString(*&col, *&val);
 		query2->update();
 		query2->next();
@@ -292,7 +300,7 @@ int main(int argc, char *argv[]) {
 		query2->remove();
 		query2->update();
 		//query2->previous();
-		
+
 		query2->PrintData();
 		query2->PrintData(true);
 
@@ -301,14 +309,14 @@ int main(int argc, char *argv[]) {
 		query3 = database1->getQuery("lbDMF", 0);
 
 		query3->query("select 'userid', 'anwendungenid' from 'user_anwendungen' where userid = 2");
-		
+
 		query3->first();
 		query3->add();
-		
+
 		*col = "userid";
 		*val = "2";
 		query3->setString(*&col, *&val);
-		
+
 		_CL_LOG << "Call query->update() on added row." LOG_
 		query3->update();
 		_CL_LOG << "Called query->update() on added row." LOG_
@@ -335,8 +343,8 @@ int main(int argc, char *argv[]) {
 	query2->query("select test, btest, btest1 from regressiontest");
 
 //	query2->PrintData();
-	
-	
+
+
 	query3->query("select tablename, name, 'specialColumn', 'controlType', ro from column_types");
 //	query3->PrintData();
 
@@ -347,11 +355,11 @@ int main(int argc, char *argv[]) {
 		case lb_I_Query::lbDBColumnBit:
 			_CL_LOG << "lb_I_Query::lbDBColumnBit" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnChar:
 			_CL_LOG << "lb_I_Query::lbDBColumnChar" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnBinary:
 			_CL_LOG << "lb_I_Query::lbDBColumn" LOG_
 			break;
@@ -359,26 +367,26 @@ int main(int argc, char *argv[]) {
 		case lb_I_Query::lbDBColumnInteger:
 			_CL_LOG << "lb_I_Query::lbDBColumnInteger" LOG_
 			break;
-					
+
 		case lb_I_Query::lbDBColumnUnknown:
 			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
 			break;
 	}
 #ifdef TEST_SNORT
 	database->connect("snort", "snort", "snort", "Muffin.345");
-	
+
 	UAP(lb_I_Query, query4)
 
 	query4 = database->getQuery("snort", 0);
 
 	char userQuery[1000] = "";
-	
+
 	COUT << "Please enter your SQL query: ";
 	CIN.getline(userQuery, sizeof(userQuery));
 
-//	query4->skipFKCollecting();	
+//	query4->skipFKCollecting();
 	query4->query(userQuery);
-	
+
 	query4->PrintData();
 #endif
 

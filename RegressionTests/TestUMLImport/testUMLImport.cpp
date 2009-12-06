@@ -33,6 +33,10 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -53,7 +57,10 @@ extern "C" {
 #include <malloc.h>
 #endif
 #endif
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 

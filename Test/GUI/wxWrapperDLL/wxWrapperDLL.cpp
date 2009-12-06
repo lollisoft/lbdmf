@@ -44,8 +44,6 @@
 //#define IN_PANEL
 #endif
 
-#include <lbConfigHook.h>
-
 /*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "lbLoginWizard.cpp"
@@ -53,7 +51,7 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
+#include <lbDMF_wxPrec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
@@ -68,6 +66,10 @@
 #include "mondrian.xpm"
 #endif
 /*...e*/
+
+#ifndef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
@@ -1700,7 +1702,6 @@ void LB_STDCALL lb_wxGUI::showPendingMessages() {
 		pendingMessages.resetPtr();
 	}
 }
-/*...e*/
 
 /*...slb_wxFrame:0:*/
 

@@ -28,11 +28,17 @@
 */
 /*...e*/
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
-#include <lbInterfaces.h>
-#include <lbConfigHook.h>
+//#include <lbInterfaces.h>
 
+#ifndef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #ifdef LB_CLASSES_DLL
 lb_I_Log *log;

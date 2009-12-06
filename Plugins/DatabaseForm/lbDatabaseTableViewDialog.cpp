@@ -1,6 +1,4 @@
 /*...sLicence:0:*/
-/*...sLicence:0:*/
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,12 +23,14 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sincludes:0:*/
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -59,9 +59,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
+#endif
 
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
@@ -75,9 +75,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
@@ -105,40 +102,40 @@ extern "C" {
 /*
 	This database dialog sample uses a fixed query yet.
 	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
-	
+
 	It should be changed in any way, if there are more different sample queries.
 	Handling creation and usage of form elements directly in wxDialog failed
 	anyhow.
-	
+
 	So I decided to use a derivation of it and put the handlers for the navigation
 	into this class and use it only by this class.
-	
+
 	I am not sure, if it will work if I create more than one dialog. The peoblem
 	may be my event handling mechanism.
-	
+
 	Here I use the following code to register my handlers:
-	
+
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewDialog::lbDBFirst, "DatabaseFirst");
-	
+
 	It registers the event "DatabaseFirst" for this instance, because the this pointer is used inside
 	my dispatching functionality.
-	
+
 	The identifer used here - "DatabaseFirst" - is a logical one. To be sure to get a free ID that
 	also works inside wxWidgets, eman registers ID's above 5000 - I think.
-	
+
 	To get a different ID for the second 'different' dialog - showing other data, It would be the best
 	idea to use the following unique things:
-	
+
 	process ID, thread ID optional, this pointer and the hostname.
-	
+
 	This leads into difficult code to build up the unique identifer, but macros would help.
-	
-	
+
+
 	At least:
-	
+
 	It would be easy to implement the native wxWidgets event handling mechanism, but then I am not
 	able to do a programmatical navigation from outside wxWidgets.
-	
+
 	This is only an idea - a remote control at application level.
 */
 /*...e*/
@@ -155,24 +152,24 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseTableViewDialog, lbDatabaseTableViewDialog
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::setData(lb_I_Unknown* uk) {
 		lbErrCodes err = ERR_NONE;
-		
+
         _CL_LOG << "lbDatabaseTableViewDialog::setData(...) not implemented yet" LOG_
 
 #ifdef bla
 		UAP(lb_I_DatabaseForm, dbForm)
 		QI(uk, lb_I_DatabaseForm, dbForm)
-		
+
 		fa = ((lbDatabaseTableViewDialog*) dbForm.getPtr())->fa;
 		((lbDatabaseTableViewDialog*) dbForm.getPtr())->fa = NULL;
-	
+
 #endif
-		
+
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
 /*...slbDatabaseTableViewDialog\58\\58\lbDatabaseTableViewDialog\40\\41\:0:*/
-lbDatabaseTableViewDialog::lbDatabaseTableViewDialog() 
+lbDatabaseTableViewDialog::lbDatabaseTableViewDialog()
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
@@ -197,7 +194,7 @@ void LB_STDCALL lbDatabaseTableViewDialog::create(int parentId) {
 lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
 	char eventName[100] = "";
-	
+
 	sprintf(eventName, "%pDatabaseFirst", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewDialog::lbDBFirst, eventName);
 
@@ -209,13 +206,13 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::registerEventHandler(lb_I_Dispa
 
 	sprintf(eventName, "%pDatabaseLast", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewDialog::lbDBLast,  eventName);
-	
+
 	sprintf(eventName, "%pDatabaseAdd", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewDialog::lbDBAdd,  eventName);
-	
+
 	sprintf(eventName, "%pDatabaseDelete", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewDialog::lbDBDelete,  eventName);
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -233,18 +230,18 @@ void LB_STDCALL lbDatabaseTableViewDialog::init(char* _SQLString, char* DBName, 
 
 	sizerPanel->Add(panel, 1, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerPanel, 1, wxEXPAND | wxALL, 5);
-	
+
 	panel->init(_SQLString, DBName, DBUser, DBPass);
 
 	SetName(panel->getFormName());
 
 	SetAutoLayout(TRUE);
-		
+
 	SetSizer(sizerMain);
 
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
-	
+
 	//Centre();
 }
 /*...e*/
@@ -306,7 +303,7 @@ const char* LB_STDCALL lbDatabaseTableViewDialog::getControlValue(char* name) {
 	wxString value;
 
 	value = panel->getControlValue(name);
-	
+
 	return value.c_str();
 }
 /*...e*/
@@ -437,7 +434,7 @@ int LB_STDCALL lbDatabaseTableViewDialog::getForeignColumns(char* primaryTable)
 	return panel->getForeignColumns(primaryTable);
 }
 /*...e*/
-	
+
 lb_I_String* LB_STDCALL lbDatabaseTableViewDialog::getPrimaryColumn(int pos)
 {
 	return panel->getPrimaryColumn(pos);
@@ -447,7 +444,7 @@ lb_I_String* LB_STDCALL lbDatabaseTableViewDialog::getForeignColumn(int pos)
 {
 	return panel->getForeignColumn(pos);
 }
-	   
+
 bool LB_STDCALL lbDatabaseTableViewDialog::isCharacterColumn(char* name)
 {
 	return panel->isCharacterColumn(name);
@@ -459,14 +456,14 @@ bool LB_STDCALL lbDatabaseTableViewDialog::isCharacterColumn(char* name)
 class lbPluginDatabaseTableViewDialog : public lb_I_PluginImpl {
 public:
 	lbPluginDatabaseTableViewDialog();
-	
+
 	virtual ~lbPluginDatabaseTableViewDialog();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -475,7 +472,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, dbForm)
 };
 
@@ -543,12 +540,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewDialog::peekImplementation() {
 	if (dbForm == NULL) {
 		lbDatabaseTableViewDialog* dbDialog = new lbDatabaseTableViewDialog();
 		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(dbDialog, lb_I_Unknown, dbForm)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabaseTableViewDialog::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return dbForm.getPtr();
 }
 /*...e*/
@@ -559,13 +556,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewDialog::getImplementation() {
 	if (dbForm == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDatabaseTableViewDialog* dbDialog = new lbDatabaseTableViewDialog();
 		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(dbDialog, lb_I_Unknown, dbForm)
 	}
-	
+
 	lb_I_Unknown* r = dbForm.getPtr();
 	dbForm.resetPtr();
 	return r;
@@ -573,13 +570,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewDialog::getImplementation() {
 /*...e*/
 void LB_STDCALL lbPluginDatabaseTableViewDialog::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (dbForm != NULL) {
 		UAP(lb_I_DatabaseForm, form)
 		QI(dbForm, lb_I_DatabaseForm, form)
-	
+
 		form->destroy();
-		
+
 		dbForm.resetPtr();
 	}
 }

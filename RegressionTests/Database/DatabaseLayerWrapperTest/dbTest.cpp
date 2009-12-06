@@ -22,7 +22,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 #ifdef _MSC_VER
@@ -31,19 +31,23 @@
 
 #endif
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -54,17 +58,20 @@ extern "C" {
 #endif
 //#include "testdll.h"
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 
 lb_I_Unknown* findPluginByInterfaceAndNamespace(char* _interface, char* _namespace) {
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Plugin, pl)
-		
+
 	pl = PM->getFirstMatchingPlugin(_interface, _namespace);
-	
-		
+
+
 	if (pl != NULL) {
 				_CL_LOG << "References to plugin wrapper instance: " << pl->getRefCount() LOG_
        	        uk = pl->getImplementation();
@@ -80,7 +87,7 @@ lb_I_Database* loadDatabase() {
 	UAP(lb_I_Database, DatabaseWrapper)
 	UAP(lb_I_Unknown, ukDatabaseWrapper)
 	ukDatabaseWrapper = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
-	
+
 	if (ukDatabaseWrapper == NULL) {
 		_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
 		//preloaddb.resetPtr();
@@ -104,13 +111,13 @@ lb_I_Database* loadDatabase() {
 
 void initAndConnect(lb_I_Database* db, char* dbname) {
 	db->init();
-	
+
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
-	
+
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	db->connect(dbname, dbname, lbDMFUser, lbDMFPasswd);
 }
 
@@ -129,12 +136,12 @@ void createTables(lb_I_Query* q) {
 	"test BPCHAR DEFAULT 'Nothing', "
 	"btest bool DEFAULT false, "
 	"btest1 bool DEFAULT false)";
-	
+
 	q->skipFKCollecting();
 	q->query(buf);
-	
-	
-	buf = 
+
+
+	buf =
 	"CREATE TABLE \"test\" ("
 	"	id INTEGER PRIMARY KEY,"
 	"	test TEXT,"
@@ -147,9 +154,9 @@ void createTables(lb_I_Query* q) {
 	");\n"
 	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
 	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
-	
+
 	//printf("\n\nCreate database schema:\n%s\n\n", buf);
-	
+
 	// I have problems which collecting foreign key data, if no result sets are there.
 	q->skipFKCollecting();
 	q->query(buf);
@@ -163,11 +170,11 @@ void initDatabaseA(lb_I_Query* q) {
 	"test BPCHAR DEFAULT 'Nothing', "
 	"btest bool DEFAULT false, "
 	"btest1 bool DEFAULT false)";
-	
+
 	q->skipFKCollecting();
 	q->query(buf);
 
-	buf = 
+	buf =
 	"CREATE TABLE \"test\" ("
 	"	id INTEGER PRIMARY KEY,"
 	"	test BPCHAR,"
@@ -180,9 +187,9 @@ void initDatabaseA(lb_I_Query* q) {
 	");\n"
 	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg1\" ) REFERENCES \"regressiontest\" ( \"id\" );\n"
 	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"id\" )\n";
-	
+
 	//printf("\n\nCreate database schema:\n%s\n\n", buf);
-	
+
 	// I have problems which collecting foreign key data, if no result sets are there.
 	q->skipFKCollecting();
 	q->query(buf);
@@ -195,11 +202,11 @@ void initDatabaseB(lb_I_Query* q) {
 	"	test BPCHAR DEFAULT 'Nothing', "
 	"	btest bool DEFAULT false, "
 	"	btest1 bool DEFAULT false)";
-	
+
 	q->skipFKCollecting();
 	q->query(buf);
-	
-	buf = 
+
+	buf =
 	"CREATE TABLE \"test\" ("
 	"	\"ID\" INTEGER PRIMARY KEY,"
 	"	test BPCHAR,"
@@ -212,9 +219,9 @@ void initDatabaseB(lb_I_Query* q) {
 	");\n"
 	"ALTER TABLE \"test1\" ADD CONSTRAINT \"cst_test_id_reg1\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"ID\" );\n"
 	"ALTER TABLE \"test\" ADD CONSTRAINT \"cst_test_id_reg\" FOREIGN KEY ( \"id_reg\" ) REFERENCES \"regressiontest\" ( \"ID\" )\n";
-	
+
 	//printf("\n\nCreate database schema:\n%s\n\n", buf);
-	
+
 	// I have problems which collecting foreign key data, if no result sets are there.
 	q->skipFKCollecting();
 	q->query(buf);
@@ -228,13 +235,13 @@ int main(int argc, char *argv[]) {
 #ifdef WINDOWS
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-#endif	
-	
+#endif
+
 	mm = getModuleInstance();
 
 	UAP_REQUEST(mm, lb_I_String, preload)
 	UAP_REQUEST(mm, lb_I_PluginManager, PM)
-	
+
 	PM->initialize();
 
 #ifdef bla
@@ -244,11 +251,11 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Database, DatabaseWrapper)
 		UAP(lb_I_Database, DatabaseWrapper1)
 		UAP(lb_I_Database, DatabaseWrapper2)
-		
+
 		DatabaseWrapper = loadDatabase();
 		DatabaseWrapper1 = loadDatabase();
 		DatabaseWrapper2 = loadDatabase();
-			
+
 		initAndConnect(*&DatabaseWrapper, "lbDMF");
 
 		UAP(lb_I_Query, query2)
@@ -256,16 +263,16 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Query, queryA)
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
-		
+
 		query = DatabaseWrapper->getQuery("lbDMF", 0);
 		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
 
-		dropTables(*&query1);	
-		
+		dropTables(*&query1);
+
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
 		createTables(*&query);
-		
+
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
 		insertTestdata(*&query1);
@@ -293,7 +300,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		err = queryread1->first();
-		
+
 		if ((err == ERR_NONE) || (err == ERR_DB_NODATA)) {
 			_CL_LOG << "Error: No data found for query." LOG_
 		}
@@ -311,40 +318,40 @@ int main(int argc, char *argv[]) {
 		queryinsert2->PrintData();
 
 		//query1->enableFKCollecting();
-		
+
 		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
 		query1->query("select id, test, btest, btest1 from regressiontest");
-		
+
 		query1->PrintData();
 		query1->PrintData(true);
-		
+
 		DatabaseWrapper1->init();
-		
+
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		DatabaseWrapper1->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+
 		DatabaseWrapper2->init();
-		
+
 		lbDMFPasswd = getenv("lbDMFPasswd");
 		lbDMFUser   = getenv("lbDMFUser");
-		
+
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
+
 		DatabaseWrapper2->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-		
+
 		query2 = DatabaseWrapper1->getQuery("lbDMF", 0);
 		query2->skipPeeking();
 		query2->query("select test, id, btest, btest1 from regressiontest");
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-		
+
 		query2->last();
 		*column = "test";
 		*value = "Updated column";
@@ -353,7 +360,7 @@ int main(int argc, char *argv[]) {
 		*value = "0";
 		query2->setString(*&column, *&value);
 		query2->update();
-		
+
 		query2->add();
 		*column = "test";
 		*value = "Inserted column";
@@ -362,17 +369,17 @@ int main(int argc, char *argv[]) {
 		*value = "0";
 		query2->setString(*&column, *&value);
 		query2->update();
-		
+
 		query2->PrintData();
 		query2->enableFKCollecting();
 		query2->query("select * from test1");
 		int fkcolumns = query2->getFKColumns();
-		
+
 		UAP(lb_I_String, tn)
 		UAP(lb_I_String, cn)
 		cn = query2->getColumnName(1);
 		tn = query2->getTableName(cn->charrep());
-		
+
 		_CL_LOG << "Have " << fkcolumns << " foreign keys in table " << tn->charrep() << "." LOG_
 
 		for (int i = 1; i <= fkcolumns; i++) {
@@ -386,30 +393,30 @@ int main(int argc, char *argv[]) {
 		query3->enableFKCollecting();
 		query3->query("select * from test");
 		fkcolumns = query3->getFKColumns();
-		
+
 		cn = query3->getColumnName(1);
 		tn = query3->getTableName(cn->charrep());
 
 		_CL_LOG << "Have " << fkcolumns << " foreign keys in table " << tn->charrep() << "." LOG_
-		
+
 		for (int ii = 1; ii <= fkcolumns; ii++) {
 			UAP(lb_I_String, s)
 			s = query3->getFKColumn(ii);
 			_CL_LOG << "Foreign key " << s->charrep() LOG_
 		}
-		
+
 		UAP(lb_I_Container, tables)
-		
+
 		tables = DatabaseWrapper2->getTables("lbDMF");
-		
+
 		_CL_LOG << "Tables in database: "  LOG_
 
 		while (tables->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
-			
+
 			uk = tables->nextElement();
-			
+
 			QI(uk, lb_I_String, s)
 
 			if (s != NULL) {
@@ -424,24 +431,24 @@ int main(int argc, char *argv[]) {
 		}
 
 		UAP(lb_I_Container, columns)
-		
+
 		columns = DatabaseWrapper2->getColumns("lbDMF");
-		
+
 		_CL_LOG << "Columns in tables: "  LOG_
 
 		while (columns->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_Parameter, param)
-			
+
 			uk = columns->nextElement();
-			
+
 			QI(uk, lb_I_Parameter, param)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, columnName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, columnType)
-			
+
 			*name = "TableName";
 			param->getUAPString(*&name, *&tableName);
 
@@ -450,31 +457,31 @@ int main(int argc, char *argv[]) {
 
 			*name = "TypeName";
 			param->getUAPString(*&name, *&columnType);
-			
+
 			_CL_LOG << "TableName: " << tableName->charrep() << ", ColumnName: " << columnName->charrep() << ", TypeName: " << columnType->charrep() LOG_
 		}
-		
+
 		UAP(lb_I_Container, foreignkeys)
-		
+
 		foreignkeys = DatabaseWrapper2->getForeignKeys("lbDMF");
-		
+
 		_CL_LOG << "Foreign keys in lbDMF: "  LOG_
 		_CL_LOG << "********************** "  LOG_
 
 		while (foreignkeys->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_Parameter, param)
-			
+
 			uk = foreignkeys->nextElement();
-			
+
 			QI(uk, lb_I_Parameter, param)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pktableName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pkcolumnName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, fktableName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, fkcolumnName)
-			
+
 			*name = "PKTableName";
 			param->getUAPString(*&name, *&pktableName);
 
@@ -486,30 +493,30 @@ int main(int argc, char *argv[]) {
 
 			*name = "FKTableColumnName";
 			param->getUAPString(*&name, *&fkcolumnName);
-			
+
 			_CL_LOG << "PKTableName: " << pktableName->charrep() << ", PKTableColumnName: " << pkcolumnName->charrep() << ", FKTableName: " << fktableName->charrep() << ", FKTableColumnName: " << fkcolumnName->charrep() LOG_
 		}
-		
+
 		UAP(lb_I_Container, primarykeys)
-		
+
 		primarykeys = DatabaseWrapper2->getPrimaryKeys("lbDMF");
-		
+
 		_CL_LOG << "Primary keys in lbDMF: "  LOG_
 		_CL_LOG << "********************** "  LOG_
 
 		while (primarykeys->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_Parameter, param)
-			
+
 			uk = primarykeys->nextElement();
-			
+
 			QI(uk, lb_I_Parameter, param)
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pktableName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pkcolumnName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pkkeySequence)
-			
+
 			*name = "TableName";
 			param->getUAPString(*&name, *&pktableName);
 
@@ -518,13 +525,13 @@ int main(int argc, char *argv[]) {
 
 			*name = "KeySequence";
 			param->getUAPString(*&name, *&pkkeySequence);
-			
+
 			_CL_LOG << "TableName: " << pktableName->charrep() << ", ColumnName: " << pkcolumnName->charrep() << ", KeySequence: " << pkkeySequence->charrep() LOG_
 		}
-		
+
 		UAP(lb_I_Query, queryread)
 		UAP(lb_I_Query, queryinsert)
-			
+
 		queryread = DatabaseWrapper->getQuery("lbDMF", 0);
 		err = queryread->query("select * from test");
 
@@ -533,11 +540,11 @@ int main(int argc, char *argv[]) {
 		}
 
 		err = queryread->first();
-		
+
 		if ((err == ERR_NONE) || (err == ERR_DB_NODATA)) {
 			_CL_LOG << "Error: No data found for query." LOG_
 		}
-		
+
 		queryinsert = DatabaseWrapper->getQuery("lbDMF", 0);
 
 		err = queryinsert->query("insert into test1 (test1) values ('bla')");
@@ -545,15 +552,15 @@ int main(int argc, char *argv[]) {
 		if (err != ERR_NONE) {
 			_CL_LOG << "Error: Insert into table failed." LOG_
 		}
-		
+
 		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 
 		//preloaddb.resetPtr();
 	}
 #endif
-	
+
 	_CL_LOG << "Test two database files reopening problem ..." LOG_
-	
+
 	{
 		UAP(lb_I_Database, DatabaseWrapper)
 		UAP(lb_I_Database, DatabaseWrapper1)
@@ -561,13 +568,13 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Query, query1)
 		UAP(lb_I_Query, query2)
 		UAP(lb_I_Query, queryLock)
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 
 		DatabaseWrapper = loadDatabase();
 		DatabaseWrapper1 = loadDatabase();
-		
+
 		initAndConnect(*&DatabaseWrapper, "Database A");
 		initAndConnect(*&DatabaseWrapper1, "Database B");
 
@@ -576,7 +583,7 @@ int main(int argc, char *argv[]) {
 		query2 = DatabaseWrapper1->getQuery("Database B", 0);
 
 		_CL_LOG << "Print data from Database A ..." LOG_
-		
+
 		query->query("select ID, test, btest, btest1 from regressiontest");
 		query->first();
 		if (query->first() == ERR_NONE) {
@@ -587,7 +594,7 @@ int main(int argc, char *argv[]) {
 		if (query->first() == ERR_NONE) {
 			query->PrintData(false);
 		}
-		
+
 		_CL_LOG << "Print data from Database B ..." LOG_
 
 		query1->query("select ID, test, btest, btest1 from regressiontest");
@@ -600,9 +607,9 @@ int main(int argc, char *argv[]) {
 		if (query1->first() == ERR_NONE) {
 			query1->PrintData(false);
 		}
-		
+
 		_CL_LOG << "Recreate the tables ..." LOG_
-		
+
 		DatabaseWrapper->close();
 		query--;
 		query.resetPtr();
@@ -614,12 +621,12 @@ int main(int argc, char *argv[]) {
 
 		dropTables(*&query);
 		dropTables(*&query1);
-		
+
 		initDatabaseA(*&query);
 		initDatabaseB(*&query1);
-		
+
 		_CL_LOG << " Insert test data ..." LOG_
-		
+
 		// Create initial data and close.
 		query->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
@@ -632,32 +639,32 @@ int main(int argc, char *argv[]) {
 		query.resetPtr();
 		query1--;
 		query1.resetPtr();
-		
+
 		_CL_LOG << "Closed database to begin test ..." LOG_
 
 		query1 = DatabaseWrapper1->getQuery("Database B", 0);
 		query1->query("select ID, test, id_reg from test");
 		query1->first();
-		
+
 		_CL_LOG << "Print data from Database B (must be empty before lock) ..." LOG_
 		if (query1->first() == ERR_NONE) {
 			query1->PrintData(false);
 		}
-		
+
 		_CL_LOG << "Change in Database B to lock on regressiontest ..." LOG_
 
 		queryLock = DatabaseWrapper1->getQuery("Database B", 0);
 		queryLock->query("select ID, test, btest, btest1 from regressiontest");
 		queryLock->first();
-		
+
 		*column = "test";
 		*value = "some value";
 		queryLock->setString(*&column, *&value);
-		
+
 		*column = "btest";
 		*value = "false";
 		queryLock->setString(*&column, *&value);
-		
+
 		*column = "btest1";
 		*value = "true";
 		queryLock->setString(*&column, *&value);
@@ -671,7 +678,7 @@ int main(int argc, char *argv[]) {
 		*value = "some other value 1 ";
 
 		UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
-		
+
 		int len = strlen(value->charrep()+1);
 		void* buffer = malloc(len);
 		memcpy(buffer, value->charrep(), len);
@@ -682,7 +689,7 @@ int main(int argc, char *argv[]) {
 		*column = "id_reg";
 		*value = "1";
 		query1->setString(*&column, *&value);
-		
+
 		query1->update();
 
 		query1->add();
@@ -704,7 +711,7 @@ int main(int argc, char *argv[]) {
 		query1->first();
 		query1->PrintData(false);
 
-		
+
 		_CL_LOG "Now Database B, test has added data, but not finished. Try to change some of them in a new query." LOG_
 		query2 = DatabaseWrapper1->getQuery("Database B", 0);
 
@@ -725,28 +732,28 @@ int main(int argc, char *argv[]) {
 		binary->setData(buffer, len);
 		free(buffer);
 		query2->setBinaryData(column->charrep(), *&binary);
-		
+
 		query2->update();
 		query2->first();
 		query2->PrintData(false);
-		
+
 		query = DatabaseWrapper->getQuery("Database A", 0);
 		query->query("select ID, test, btest, btest1 from regressiontest");
 		query->first();
-		
+
 		*column = "test";
 		*value = "some value";
 		query->setString(*&column, *&value);
-		
+
 		*column = "btest";
 		*value = "false";
 		query->setString(*&column, *&value);
-		
+
 		*column = "btest1";
 		*value = "true";
 		query->setString(*&column, *&value);
 		query->update();
-		
+
 		query1->close();
 		DatabaseWrapper1->close();
 
@@ -756,24 +763,24 @@ int main(int argc, char *argv[]) {
 		if (query1->first() == ERR_NONE) {
 			query1->PrintData(false);
 		}
-		
+
 		query1->close();
 		DatabaseWrapper1->close();
-		
+
 		query1->open();
 		if (query1->first() == ERR_NONE) {
 			query1->PrintData(false);
 		}
-		
+
 		_CL_LOG << "Print data from Database A ..." LOG_
 
 		query->open();
 		if (query->first() == ERR_NONE) {
 			query->PrintData(false);
 		}
-		
+
 	}
-	
+
 	PM->unload();
 	//unHookAll();
 

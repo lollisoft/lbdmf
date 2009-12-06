@@ -38,11 +38,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.58 2009/06/29 15:01:01 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.59 2009/12/06 19:20:16 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.59  2009/12/06 19:20:16  lollisoft
+ * Modified build process to use precompiled files.
+ * Corrected the long build time problem. It is located in the _LOG macro.
+ * Updated wxPropgrid to 1.4.9.1 and updated building against wxMSW 2.8.10.
+ *
+ * Build works, but running the application fails with not properly initialized error.
+ * (0xc0000005)
+ *
+ * Also updated the iss files for the new planned release.
+ *
  * Revision 1.58  2009/06/29 15:01:01  lollisoft
  * Function position must set iteration flag correctly.
  *
@@ -266,6 +276,10 @@
  **************************************************************/
 /*...e*/
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -278,8 +292,9 @@
 #include <string.h>
 #endif
 
-#include <lbInterfaces.h>
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 /*...sLB_CLASSES_DLL scope:0:*/
 #define LB_CLASSES_DLL

@@ -29,6 +29,8 @@
 /*...e*/
 
 /*...sStandard includes:0:*/
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -56,10 +58,11 @@ extern "C" {
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
-/*...e*/
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
+#endif
+/*...e*/
 
 #define LB_PLUGINMANAGER_DLL
 #include <lbpluginmanager-module.h>
@@ -68,9 +71,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop

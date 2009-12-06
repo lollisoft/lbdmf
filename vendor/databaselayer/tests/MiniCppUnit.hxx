@@ -23,9 +23,9 @@
 
 /**
  * @mainpage
- * miniCppUnit 
+ * miniCppUnit
  * (C) 2003-2006 Pau Arumi & David Garcia
- * 
+ *
  * @version 2.5 2006-03-14
  *   - MS Visual compatibility: SConstruct ccflags, usage example, #ifdefs
  * @version 2.4 2006-03-14
@@ -41,7 +41,7 @@
  * @version 2.1 2004-11-04 char* especialization
  * @version 2.0 2004-10-26 TestsFactory
  * @version 1.0 2003-10-28 initial
- * 
+ *
  * Example of use:
  *
  * @code
@@ -55,9 +55,9 @@
  *			// etc
  *		}
  *		void testAddition()
- *		{ 
+ *		{
  *			ASSERT_EQUALS( 4, 1+1+2 );
- *		}  
+ *		}
  *		// etc
  * };
  *
@@ -69,18 +69,18 @@
  *	return TestFixtureFactory::theInstance().runTests() ? 0 : -1;
  * }
  * @endcode
- * Good things: 
+ * Good things:
  *
- *   - it's a tiny framework made up of two or three src files. 
+ *   - it's a tiny framework made up of two or three src files.
  *     => no need to install as a library
- *   - object oriented and makes use of several GoF patterns 
+ *   - object oriented and makes use of several GoF patterns
  *   - very simple usage. Just needs to learn very few C macros
  *   - string asserts are simpler to use than cppunit
  *   - string asserts are enhanced with coloured diffs
  *   - concrete test classes are totally decoupled via static factory
  *     => no src file have to include them all.
- *   - it have test suite hierarchies 
- *   - compatible with non-standard compliant VisualC6 
+ *   - it have test suite hierarchies
+ *   - compatible with non-standard compliant VisualC6
  *     (though not necessary good ;)
  */
 
@@ -101,7 +101,7 @@ namespace std
 #endif
 
 /**
- * A singleton class. 
+ * A singleton class.
  * Receives tests results and stores messages to the test log
  * for later listing.
  * It's a singleton for an easy global access from the 'Asserts'
@@ -113,8 +113,8 @@ class TestsListener
 public:
 	/** accessor to the global (static) singleton instance */
 	static TestsListener& theInstance();
-	std::stringstream& errorsLog();
 	std::string logString();
+	std::stringstream& errorsLog();
 	void currentTestName( std::string& name);
 	static void testHasRun();
 	static void testHasFailed();
@@ -123,16 +123,16 @@ public:
 	std::string summary();
 	/** returns wheather all run tests have passed */
 	static bool allTestsPassed();
-	
+
 private:
 	static const char* errmsgTag_nameOfTest() { return "Test failed: "; }
-	
+
 	/** constructor private: force the singleton to be wellbehaved ! */
 	TestsListener() : _currentTestName(0)
 	{
 		_executed=_failed=_exceptions=0;
 	}
-	
+
 	std::string* _currentTestName;
 	std::stringstream _log;
 	unsigned _executed;
@@ -169,9 +169,9 @@ class Assert
 {
 	static const char * errmsgTag_testFailedIn() { return "Test failed in "; }
 	static const char * errmsgTag_inLine() { return ", line: "; };
-	static const char * errmsgTag_failedExpression() { return "Failed expression: "; } 
-	static const char * errmsgTag_expected() { return "Expected: "; } 
-	static const char * errmsgTag_butWas() { return "But was: "; } 
+	static const char * errmsgTag_failedExpression() { return "Failed expression: "; }
+	static const char * errmsgTag_expected() { return "Expected: "; }
+	static const char * errmsgTag_butWas() { return "But was: "; }
 
 public:
 #ifdef _MSC_VER
@@ -195,7 +195,7 @@ public:
 	{
 		if(expected != result)
 		{
-			TestsListener::theInstance().errorsLog() 
+			TestsListener::theInstance().errorsLog()
 				<< file << ", line: " << linia << "\n"
 				<< errmsgTag_expected() << " " << expected << " "
 				<< errmsgTag_butWas() << " " << result << "\n";
@@ -206,24 +206,24 @@ public:
 	static void assertTrue(char* strExpression, bool expression,
 			const char* file="", int linia=0);
 
-	static void assertTrueMissatge(char* strExpression, bool expression, 
+	static void assertTrueMissatge(char* strExpression, bool expression,
 			const char* missatge, const char* file="", int linia=0);
 
 	static void assertEquals( const char * expected, const char * result,
 		const char* file="", int linia=0 );
-	
+
 	static void assertEquals( const bool expected, const bool result,
 		const char* file="", int linia=0 );
-	
+
 	static void assertEquals( const double expected, const double result,
 		const char* file="", int linia=0 );
 
 	static void assertEquals( const float expected, const float result,
 		const char* file="", int linia=0 );
-	
+
 	static void assertEquals( const long double expected, const long double result,
 		const char* file="", int linia=0 );
-	
+
 	static void assertEqualsEpsilon( const double expected, const double result, const double& epsilon,
 		const char* file="", int linia=0 );
 
@@ -232,18 +232,18 @@ public:
 	/**
 	 * we overload the assert with string doing colored diffs
 	 *
-	 * MS Visual6 doesn't allow string by reference :-( 
+	 * MS Visual6 doesn't allow string by reference :-(
 	 */
 	static void assertEquals( const std::string expected, const std::string result,
 		const char* file="", int linia=0 );
-	
+
 	static void fail(const char* motiu, const char* file="", int linia=0);
 
 
 };
 
 /**
- * A TestFixture is a class that contain TestCases --which corresponds to 
+ * A TestFixture is a class that contain TestCases --which corresponds to
  * ConcreteTestFixture methods-- common objects uder tests, and setUp and
  * tearDown methods which are automatically executed before and after each
  * test case.
@@ -253,8 +253,8 @@ public:
  * It does the 'Composite' role in the 'Composite' GoF pattern.
  * Its composite children are TestCases, which wrapps the test methods.
  *
- * It is a template class parametrized by ConcreteTestFixture so that it can 
- * instantiate TestCase objects templatized with this same parameter: it needs the 
+ * It is a template class parametrized by ConcreteTestFixture so that it can
+ * instantiate TestCase objects templatized with this same parameter: it needs the
  * concrete class type for calling its non-static methods.
  */
 template <typename ConcreteTestFixture>
@@ -270,14 +270,14 @@ protected:
 	 *
 	 * Makes the 'Leave' role in the 'Composite' GoF pattern because can't be
 	 * be a composition of other tests.
-	 * 
-	 * It's also a case of 'Command' pattern because it encapsules in an object 
+	 *
+	 * It's also a case of 'Command' pattern because it encapsules in an object
 	 * certain functionality whose execution depends on some deferred entity.
 	 */
 	class TestCase : public Test
 	{
 	public:
-		TestCase(ConcreteFixture* parent, TestCaseMethod method, const std::string & name) : 
+		TestCase(ConcreteFixture* parent, TestCaseMethod method, const std::string & name) :
 		  _parent(parent),
 		  _testCaseMethod(method),
 		  _name(name)
@@ -297,10 +297,10 @@ protected:
 			catch( std::exception& error )
 			{
 				TestsListener::theInstance().testHasThrown();
-				TestsListener::theInstance().errorsLog() 
+				TestsListener::theInstance().errorsLog()
 					<< "std::exception catched by MiniCppUnit: \n"
-					<< "what() : " 
-					<< Assert::yellow() << error.what() 
+					<< "what() : "
+					<< Assert::yellow() << error.what()
 					<< Assert::normal() << "\n";
 			}
 			catch ( TestFailedException& failure) //just for skiping current test case
@@ -309,7 +309,7 @@ protected:
 			catch(...)
 			{
 				TestsListener::theInstance().testHasThrown();
-				TestsListener::theInstance().errorsLog() 
+				TestsListener::theInstance().errorsLog()
 					<< "non standard exception catched by MiniCppUnit.\n";
 			}
 		}
@@ -328,7 +328,7 @@ protected:
     //------------- end of class TestCase ----------------------------
 
 private:
-	
+
 	typedef std::list<Test*> TestCases;
 	TestCases _testCases;
 	std::string _name;
@@ -336,17 +336,17 @@ private:
 	void testsList() const
 	{
 		std::cout << "\n+ " << name() << "\n";
-		for( TestCases::const_iterator it=_testCases.begin(); 
+		for( TestCases::const_iterator it=_testCases.begin();
 			it!=_testCases.end(); it++ )
 			std::cout << "  - "<< (*it)->name() << "\n";
 	}
-	
+
 
 public:
 	virtual void setUp() {}
 	virtual void tearDown() {}
 
-	std::string name() const 
+	std::string name() const
 	{
 		return _name;
 	};
@@ -372,10 +372,10 @@ public:
 			tearDown();
 		}
 	}
-	/** TestCase that wrapps TestFixture methods are dynamically created and owned by 
+	/** TestCase that wrapps TestFixture methods are dynamically created and owned by
 	 * the TestFixture. So here we clean it up*/
 	~TestFixture()
-	{	
+	{
 		TestCases::iterator it;
 		for( it =_testCases.begin(); it!=_testCases.end(); it++)
 			delete (*it);
@@ -389,7 +389,7 @@ public:
 class TestFixtureFactory
 {
 private:
-	/** Well behaved singleton: 
+	/** Well behaved singleton:
 	 *  Don't allow instantiation apart from theInstance(), so private ctr.*/
 	TestFixtureFactory()
 	{
@@ -407,7 +407,7 @@ public:
 	{
 		std::list<FixtureCreator>::iterator it;
 		for(it=_creators.begin(); it!=_creators.end(); it++)
-		{	
+		{
 			FixtureCreator creator = *it;
 			Test* test = creator();
 			test->runTest();
@@ -417,16 +417,16 @@ public:
 		if (errors!="") std::cout << "\n\nError Details:\n" << errors;
 		std::cout << TestsListener::theInstance().summary();
 
-		return TestsListener::theInstance().allTestsPassed();	
+		return TestsListener::theInstance().allTestsPassed();
 	}
 	void addFixtureCreator(FixtureCreator creator)
 	{
 		_creators.push_back( creator );
 	}
-	
+
 };
 
-/** 
+/**
  * Macro a usar després de cada classe de test
  */
 #define REGISTER_FIXTURE( ConcreteTestFixture ) \
@@ -494,5 +494,5 @@ static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
 
 
 
-			     
+
 #endif  // MiniCppUnit_hxx

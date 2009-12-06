@@ -29,6 +29,10 @@
 /*...e*/
 
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -46,7 +50,9 @@ extern "C" {
 }
 #endif
 
+#ifdef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 #include <stdio.h>
 #ifndef OSX
@@ -4032,7 +4038,6 @@ void LB_STDCALL lbQuery::dbError(char* lp, HSTMT hstmt)
 }
 
 /*...e*/
-/*...e*/
 
 /*...sclass lbBoundColumn:0:*/
 
@@ -4220,7 +4225,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				result->setData((char*) buffer);
 				result->trim();
 			}
-			
+
 			result->replace(",", ".");
 			break;
 
@@ -6278,11 +6283,11 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 
 				 *value = (const char*) szColumnName;
 				 param->setUAPString(*&nameColumnName, *&value);
-				 
+
 
 				 number->setData((long)Nullable);
 				 param->setUAPLong(*&nameNullable, *&number);
-				 
+
 //				 number->setData((long)DataType);
 //				 param->setUAPLong(*&nameDataType, *&number);
 

@@ -1,6 +1,4 @@
 /*...sLicence:0:*/
-/*...sLicence:0:*/
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,12 +23,14 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sincludes:0:*/
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -59,10 +59,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
-
+#endif
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
@@ -75,9 +74,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
@@ -115,21 +111,21 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseTableViewPanel, lbDatabaseTableViewPanel)
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewPanel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::setData(lb_I_Unknown* uk) {
 		lbErrCodes err = ERR_NONE;
-		
+
         _CL_VERBOSE << "lbDatabaseTableViewPanel::setData(...) not implemented yet" LOG_
 
 		UAP(lb_I_DatabaseForm, dbForm)
 		QI(uk, lb_I_DatabaseForm, dbForm)
-		
+
 		fa = ((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa;
 		((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa = NULL;
-		
+
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
 /*...slbDatabaseTableViewPanel\58\\58\lbDatabaseTableViewPanel\40\\41\:0:*/
-lbDatabaseTableViewPanel::lbDatabaseTableViewPanel() 
+lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 //	: wxPanel(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
 //	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
@@ -166,7 +162,7 @@ lbDatabaseTableViewPanel::~lbDatabaseTableViewPanel() {
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\create\40\int parentId\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::create(int parentId) {
 	wxWindow* w = FindWindowById(parentId);
-	
+
 	Create(w, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "panel");
 	SetFocus();
 	_created = true;
@@ -211,32 +207,32 @@ void LB_STDCALL lbDatabaseTableViewPanel::create(int parentId) {
 lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
 	char eventName[100] = "";
-	
+
 	// These event handlers are usually called by a button press.
 	// But when a table is used the button press should be simulated
 	// and a internal field representation by lb_I_Parameter will
 	// replace the dialog fields.
-	
+
 	// So this szenario could be valid:
-	
+
 	/*
 	 * 1.) The table is filled with the first 20 rows.
 	 * 2.) The first row will then be selected and the data will be
 	 *     set into the lb_I_Parameter representation.
 	 * 3.) User edits the columns in that row. This issues a copy event
-	 *     to copy the edited value into the corresponding 
+	 *     to copy the edited value into the corresponding
 	 *     lb_I_Parameter element.
-	 * 4.) User changes to another row. This invokes the current 
+	 * 4.) User changes to another row. This invokes the current
 	 *     lb_I_Parameter representation to be saved. Then the new
-	 *     selected row (from the database cursor) is copied to the 
-	 *     lb_I_Parameter representation. The new row then will be 
+	 *     selected row (from the database cursor) is copied to the
+	 *     lb_I_Parameter representation. The new row then will be
 	 *     compared with the one in the table to indicate a change.
 	 *
 	 *     Based on two different operation modes the changes from
 	 *     the database could be ignored and a change will fail, or
 	 *     the user could get the new values immediatly.
 	 */
-	
+
 	sprintf(eventName, "%pDatabaseFirst", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::lbDBFirst, eventName);
 
@@ -248,16 +244,16 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::registerEventHandler(lb_I_Dispat
 
 	sprintf(eventName, "%pDatabaseLast", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::lbDBLast,  eventName);
-	
+
 	sprintf(eventName, "%pDatabaseAdd", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::lbDBAdd,  eventName);
-	
+
 	sprintf(eventName, "%pDatabaseDelete", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::lbDBDelete,  eventName);
-	
+
 	sprintf(eventName, "%pDatabaseRefresh", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseTableViewPanel::lbDBRefresh,  eventName);
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -272,8 +268,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     int ID_ButtonNew;
     int ID_ButtonEdit;
     int ID_ButtonDelete;
-	int ID_CheckActivateFilter;	
-		
+	int ID_CheckActivateFilter;
+
 	sprintf(eventName, "%pChoiceFilterList", this);
 	eman->registerEvent(eventName, ID_ChoiceFilterList);
 	sprintf(eventName, "%pCheckFilterActive", this);
@@ -297,42 +293,42 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
 
     // Code from DialogBlocks CreateControls
     lbDatabaseTableViewPanel* itemPanel1 = this;
-	
+
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     itemPanel1->SetSizer(itemBoxSizer2);
-	
+
     wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
     itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxALL, 0);
-	
+
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer3->Add(itemBoxSizer4, 0, wxGROW|wxALL, 0);
-	
+
     wxStaticText* itemStaticText5 = new wxStaticText( itemPanel1, wxID_STATIC, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
     wxArrayString itemComboBox6Strings;
     wxComboBox* ChoiceFilterList = new wxComboBox( itemPanel1, ID_ChoiceFilterList, _T(""), wxDefaultPosition, wxDefaultSize, itemComboBox6Strings, wxCB_DROPDOWN );
     ChoiceFilterList->SetName(_T("ChoiceFilterList"));
     itemBoxSizer4->Add(ChoiceFilterList, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
     wxCheckBox* CheckFilterActive = new wxCheckBox( itemPanel1, ID_CheckFilterActive, _("Active"), wxDefaultPosition, wxDefaultSize, 0 );
     CheckFilterActive->SetValue(false);
     CheckFilterActive->SetName(_T("CheckFilterActive"));
     itemBoxSizer4->Add(CheckFilterActive, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
     wxButton* ButtonEditFilter = new wxButton( itemPanel1, ID_ButtonEditFilter, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonEditFilter->SetName(_T("ButtonEditFilter"));
     itemBoxSizer4->Add(ButtonEditFilter, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
     wxButton* ButtonDeleteFilter = new wxButton( itemPanel1, ID_ButtonDeleteFilter, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonDeleteFilter->SetName(_T("ButtonDeleteFilter"));
     itemBoxSizer4->Add(ButtonDeleteFilter, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
     itemBoxSizer4->Add(105, 5, 0, wxGROW|wxALL, 5);
-	
+
     wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer3->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
-	
+
     TableView = new wxGrid( itemPanel1, ID_TableView, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
     TableView->SetName(_T("TableView"));
     TableView->SetDefaultColSize(50);
@@ -341,36 +337,36 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     TableView->SetRowLabelSize(50);
     TableView->CreateGrid(0/*10*/, 0/*20*/, wxGrid::wxGridSelectCells);
     itemBoxSizer11->Add(TableView, 1, wxGROW|wxALL, 0);
-	
+
     wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
 	buttonSizer = itemBoxSizer13;
     itemBoxSizer11->Add(itemBoxSizer13, 0, wxGROW|wxALL, 0);
-	
+
     wxButton* ButtonClose = new wxButton( itemPanel1, ID_ButtonClose, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonClose->SetName(_T("ButtonClose"));
     itemBoxSizer13->Add(ButtonClose, 0, wxGROW|wxALL, 5);
-	
+
     wxButton* ButtonNew = new wxButton( itemPanel1, ID_ButtonNew, _("New"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonNew->SetName(_T("ButtonNew"));
     itemBoxSizer13->Add(ButtonNew, 0, wxGROW|wxALL, 5);
-	
+
     wxButton* ButtonEdit = new wxButton( itemPanel1, ID_ButtonEdit, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonEdit->SetName(_T("ButtonEdit"));
     itemBoxSizer13->Add(ButtonEdit, 0, wxGROW|wxALL, 5);
-	
+
     wxButton* ButtonDelete = new wxButton( itemPanel1, ID_ButtonDelete, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
     ButtonDelete->SetName(_T("ButtonDelete"));
     itemBoxSizer13->Add(ButtonDelete, 0, wxGROW|wxALL, 5);
-	
+
     wxCheckBox* CheckActivateFilter = new wxCheckBox( itemPanel1, ID_CheckActivateFilter, _("Activate filter"), wxDefaultPosition, wxDefaultSize, 0 );
     CheckActivateFilter->SetValue(false);
     CheckActivateFilter->SetName(_T("CheckActivateFilter"));
     itemBoxSizer13->Add(CheckActivateFilter, 0, wxGROW|wxALL, 5);
-    
-    
+
+
 	this->Connect( ID_TableView,  -1, wxEVT_GRID_SELECT_CELL,
 	(wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &lbDatabaseTableViewPanel::OnSelectCell);
-    
+
 	this->Connect( ID_TableView,  -1, wxEVT_GRID_CELL_CHANGE,
 	(wxObjectEventFunction) (wxEventFunction) (wxGridEventFunction) &lbDatabaseTableViewPanel::OnCellValueChanged);
 
@@ -380,12 +376,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
 
 int LB_STDCALL lbDatabaseTableViewPanel::lookupColumnIndex(char* name) {
     UAP(lb_I_String, Name)
-    
+
     for (int i = 1; i <= sampleQuery->getColumns(); i++) {
         Name = sampleQuery->getColumnName(i);
         if (*Name == name) return i;
     }
-    
+
     return -1;
 }
 
@@ -399,9 +395,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-					
+
 					*file = app->getDirLocation();
-					
+
 #ifdef OSX
 							*images = "/toolbarimages/";
 #endif
@@ -420,12 +416,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 			#ifdef OSX
 			#endif
 			#ifdef LINUX
-						*file = "/usr/share/lbdmf";			
+						*file = "/usr/share/lbdmf";
 						*file += images->charrep();
 						*file += "new.xpm";
 			#endif
 			#ifdef WINDOWS
-			#endif			    
+			#endif
 					}
 
 
@@ -434,15 +430,15 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 					char eventName[100] = "";
 					sprintf(eventName, "%pImageButtonClick%s", this, name);
 					eman->registerEvent(eventName,  ImageButonClick);
-					
+
 					_LOG << "Assign a file to an image button: " << file->charrep() LOG_
-					
+
 					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
 					im.Rescale(32, 32);
 					wxBitmap bm = wxBitmap(im);
 					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
 					imagebutton->SetName(name);
-					
+
 					addLabel(name, sizerLabel, hideThisColumn);
 					sizerControl->Add(imagebutton, 1, wxALL, 5);
 					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
@@ -451,26 +447,26 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 					UAP_REQUEST(manager.getPtr(), lb_I_String, elementname)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
-					
+
 					*elementname = name;
 					*element = "";
-					
+
 					QI(element, lb_I_Unknown, uk)
 					QI(elementname, lb_I_KeyBase, key)
-					
+
 					ImageButtonMapperList->insert(&uk, &key);
-					
+
 					this->Connect( ImageButonClick,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnImageButtonClick);
 				}
-				
+
 				if (strcmp(type, "ownerdraw") == 0) {
 					lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
 					ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 					ownerdraw->init(this);
-				
+
 					ownerdraw->SetName(name);
-				
+
 					addLabel(name, sizerLabel, hideThisColumn);
 					sizerControl->Add(ownerdraw, 1, 0, 5);
 					sizerMain->Add(sizerControl, 1, wxALL, 5);
@@ -484,9 +480,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-					
+
 					*file = app->getDirLocation();
-					
+
 #ifdef OSX
 							*images = "/toolbarimages/";
 #endif
@@ -505,12 +501,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 			#ifdef OSX
 			#endif
 			#ifdef LINUX
-						*file = "/usr/share/lbdmf";			
+						*file = "/usr/share/lbdmf";
 						*file += images->charrep();
 						*file += "new.xpm";
 			#endif
 			#ifdef WINDOWS
-			#endif			    
+			#endif
 					}
 
 
@@ -519,7 +515,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 					wxBitmap bm = wxBitmap(im);
 					wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, bm);
 					bitmap->SetName(name);
-				
+
 					addLabel(name, sizerLabel, hideThisColumn);
 					sizerControl->Add(bitmap, 1, wxALL, 5);
 					sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
@@ -528,7 +524,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 				        bitmap->Disable();
 					}
 				}
-				
+
 				free(type);
 /*...e*/
 }
@@ -543,33 +539,33 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 
 			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 			UAP(lb_I_KeyBase, key_cbName)
-			
+
 			QI(cbName, lb_I_KeyBase, key_cbName)
 			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper)
 
 			// This is the input parameter
 
 			*cbName = name;
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 			UAP(lb_I_KeyBase, key)
-	
+
 			UAP(lb_I_String, t)
-	
+
 			t = sampleQuery->getPKTable(name);
-	
+
 			table->setData(t->charrep());
-	
+
 			QI(table, lb_I_KeyBase, key)
-	
+
 			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
-			
+
 			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
 
 			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
-			
+
 			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper)
-			
+
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
@@ -579,12 +575,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
 			ID->setData(meta->getApplicationID());
-			
+
 			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
 				forms->setNextFormular();
 				FID->setData(forms->getApplicationID());
-				
+
 				if (FID->equals(*&ID)) {
 					if (strcmp(formName, forms->getName()) == 0) {
 						forms->finishFormularIteration();
@@ -594,17 +590,17 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 					}
 				}
 			}
-			
+
 			if (formFound == false) {
 						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
-			
+
 			long FormID = forms->getFormularID();
-			
+
 			formularfields->finishFieldsIteration();
 			while (formularfields->hasMoreFields()) {
 				formularfields->setNextField();
-				
+
 				if (formularfields->getFormularID() == FormID) {
 					if (strcmp(formularfields->getName(), name) == 0) {
 						definitionFound = true;
@@ -613,12 +609,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 					}
 				}
 			}
-			
+
 			if (definitionFound == false) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
+				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 				fkpkPanel->show();
 				fkpkPanel->destroy();
@@ -627,7 +623,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
-					
+
 					if (forms->getApplicationID() == ID) {
 						if (strcmp(formName, forms->getName()) == 0) {
 							forms->finishFormularIteration();
@@ -635,12 +631,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 						}
 					}
 				}
-				
+
 				long FormID = forms->getFormularID();
-				
+
 				while (formularfields->hasMoreFields()) {
 					formularfields->setNextField();
-					
+
 					if (formularfields->getFormularID() == FormID) {
 						if (strcmp(formularfields->getName(), name) == 0) {
 							definitionFound = true;
@@ -658,16 +654,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
-				
+
 				QI(name, lb_I_KeyBase, key)
 				*name = "ApplicationData";
 				params->getUAPContainer(*&name, *&document);
-				
+
 				*name = "FormularFields";
 				if (document->exists(&key) == 1) document->remove(&key);
 				QI(formularfields, lb_I_Unknown, uk)
 				document->insert(&uk, &key);
-				
+
 				database->open(DBName->charrep());
 				sampleQuery--;
 				sampleQuery = database->getQuery(DBName->charrep(), 0);
@@ -679,7 +675,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 					UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
 
 					*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
-					
+
 					*msglog = _trans("Failed to bind columns for query:\n\n");
 					*msglog += SQLString->charrep();
 					*msglog += _trans("\n\nDatabase: ");
@@ -694,10 +690,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 				}
 
 				sampleQuery->first();
-				
+
 			}
 
-#ifdef USE_FKPK_QUERY			
+#ifdef USE_FKPK_QUERY
 /*...sGet column to display instead key:56:*/
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
@@ -730,26 +726,26 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 			lbDMF_DB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 			FKColumnQuery = lbDMF_DB->getQuery("lbDMF", 0);
-			
+
 			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
-			
+
 			FKColumnQuery->query(buffer);
-			
+
 			err = FKColumnQuery->first();
 /*...e*/
-			
+
 			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
-			
+
 			// Define this function in my data model
 			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
-			
+
 			// ------------------
-			
+
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
+				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
 				fkpkPanel->show();
 				fkpkPanel->destroy();
@@ -759,13 +755,13 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
 				FKColumnQuery->query(buffer);
 				err = FKColumnQuery->first();
-				
+
 				sampleQuery->open();
 				if (!sampleQuery->dataFetched()) err = ERR_DB_NODATA;
 			}
 #else
 			err = ERR_NONE;
-#endif			
+#endif
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
@@ -774,127 +770,127 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
 
 				UAP(lb_I_Long, l)
-				
-#ifdef USE_FKPK_QUERY			
+
+#ifdef USE_FKPK_QUERY
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
 				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->getFKTable(); 
-#endif					
+				*PKTable = formularfields->getFKTable();
+#endif
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
-				
+
 				long old_fk = -1;
 				int i = lookupColumnIndex(name);
 				if (sampleQuery->dataFetched()) {
 					l = sampleQuery->getAsLong(i);
 					old_fk = l->getData();
 				}
-				
+
 				buffer[0] = 0;
-				
+
 				*TargetPKColumn = sampleQuery->getPKColumn(name);
-				
+
 				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
 				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
-				
+
 				_LOG << "Fill combobox based on the following query: " << buffer LOG_
-				
+
 				UAP(lb_I_Query, ReplacementColumnQuery)
-				
+
 				database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-				
+
 				ReplacementColumnQuery = database->getQuery(DBName->charrep(), 0);
-				
+
 				ReplacementColumnQuery->query(buffer);
-				
+
 				lbErrCodes DBerr = ReplacementColumnQuery->first();
-				
+
 				int cbox_pos = 0;
-				
+
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 /*...sHave data to fill into the combobox and create mappings:104:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
-					
+
 					data = ReplacementColumnQuery->getAsString(1);
-					
+
 					data->trim();
-					
+
 					if (*data == "") *data = "<empty>";
 					if (data->charrep() == NULL) *data = "<empty>";
-					
+
 					possible_fk = ReplacementColumnQuery->getAsLong(2);
-					
+
 					long possible_fk_pos = possible_fk->getData();
-					
+
 					cbox->Append(wxString(data->charrep()));
-					
+
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-					
+
 					UAP(lb_I_Unknown, uk_possible_fk)
 					UAP(lb_I_KeyBase, key_cbox_pos)
-					
+
 					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-					
+
 					key->setData(cbox_pos);
 					cbox_pos++;
-					
+
 					QI(key, lb_I_KeyBase, key_cbox_pos)
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
 
 					possible_fk_long->setData(possible_fk_pos);
 
 					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-					
+
 					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-					
+
 					if (DBerr != WARN_DB_NODATA)
-					// Only if not WARN_DB_NODATA					
+					// Only if not WARN_DB_NODATA
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 						UAP(lb_I_Unknown, uk_possible_fk)
 						UAP(lb_I_KeyBase, key_cbox_pos)
-						
+
 						DBerr = ReplacementColumnQuery->next();
-						
+
 						// Break out in case of no data (not peeking)
 						if (DBerr == ERR_DB_NODATA) break;
-						
+
 						data = ReplacementColumnQuery->getAsString(1);
-						
+
 						data->trim();
-						
+
 						if (*data == "") *data = "<empty>";
 						if (data->charrep() == NULL) *data = "<empty>";
-						
+
 						possible_fk = ReplacementColumnQuery->getAsLong(2);
-					
+
 						possible_fk_pos = possible_fk->getData();
-					
+
 						cbox->Append(wxString(data->charrep()));
-					
+
 						if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-					
+
 						key->setData(cbox_pos);
 						cbox_pos++;
-						
+
 						QI(key, lb_I_KeyBase, key_cbox_pos)
 						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
-						
+
 						possible_fk_long->setData(possible_fk_pos);
-						
+
 						QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-					
+
 						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-					
+
 						if (DBerr == WARN_DB_NODATA) break;
 					}
-					
+
 /*...e*/
 				}
-				
+
 				if (hideThisColumn == false) {
 					addLabel(name, sizerLabel, hideThisColumn);
 					sizerControl->Add(cbox, 1, wxALL, 5);
@@ -911,23 +907,23 @@ void LB_STDCALL lbDatabaseTableViewPanel::addTextField(char* name, wxSizer* size
 						//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
 						int i = lookupColumnIndex(name);
 						s = sampleQuery->getAsString(i);
-						
+
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-						_CL_LOG << "Have a numeric field." LOG_	
+						_CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
-						
+
 						wxArrayString ValArray;
 						ValArray.Add(".");
 						ValArray.Add("-");
@@ -941,30 +937,30 @@ void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(char* name, wxSizer* siz
 						ValArray.Add("7");
 						ValArray.Add("8");
 						ValArray.Add("9");
-						
+
 						val.SetIncludes(ValArray);
-					
+
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
 
 						s = sampleQuery->getAsString(i);
-						
+
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-                        _CL_LOG << "Have a numeric field." LOG_	
+                        _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
-						
+
 						wxArrayString ValArray;
 						ValArray.Add("0");
 						ValArray.Add("1");
@@ -977,20 +973,20 @@ void LB_STDCALL lbDatabaseTableViewPanel::addLongField(char* name, wxSizer* size
 						ValArray.Add("8");
 						ValArray.Add("9");
 						ValArray.Add("-");
-						
+
 						val.SetIncludes(ValArray);
 
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
-						
+
 						s = sampleQuery->getAsString(i);
-					
+
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 				        text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
  							text->Disable();
 						}
@@ -998,9 +994,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::addLongField(char* name, wxSizer* size
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-                        _CL_LOG << "Have a numeric field." LOG_	
+                        _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
-						
+
 						wxArrayString ValArray;
 						ValArray.Add("0");
 						ValArray.Add("1");
@@ -1013,20 +1009,20 @@ void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(char* name, wxSizer* s
 						ValArray.Add("8");
 						ValArray.Add("9");
 						ValArray.Add("-");
-						
+
 						val.SetIncludes(ValArray);
 
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
-						
+
 						s = sampleQuery->getAsString(i);
-					
+
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 				        text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
  							text->Disable();
 						}
@@ -1035,16 +1031,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(char* name, wxSizer* s
 
 void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 					UAP(lb_I_BinaryData, binary)
-					
+
 					binary = sampleQuery->getBinaryData(name);
-					
+
 					if (binary == NULL) {
 						wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
 						text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxEXPAND | wxALL, 5);
 						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
@@ -1052,14 +1048,14 @@ void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(char* name, wxSizer* si
 						char* buffer = (char*) malloc(binary->getSize()+1);
 						memcpy((void*) buffer, binary->getData(), binary->getSize());
 						buffer[binary->getSize()] = 0;
-						
+
 						wxTextCtrl *text = new wxTextCtrl(this, -1, buffer, wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
 						free(buffer);
 						text->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(text, 1, wxEXPAND | wxALIGN_TOP | wxALL, 5);
 						sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
@@ -1067,11 +1063,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(char* name, wxSizer* si
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-						wxCheckBox *check = new wxCheckBox(this, -1, 
+						wxCheckBox *check = new wxCheckBox(this, -1,
 							"", wxPoint());
 						check->SetName(name);
 						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(check, 1, wxALL, 5);	
+						sizerControl->Add(check, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
 
 						if (FFI->isReadonly(name)) {
@@ -1082,11 +1078,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::addCheckField(char* name, wxSizer* siz
 void LB_STDCALL lbDatabaseTableViewPanel::addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
-						
+
 						s = sampleQuery->getAsString(i);
 						wxDateTime dt;
 						dt.ParseDate(wxString(s->charrep()));
-#ifdef WINDOWS						
+#ifdef WINDOWS
 						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize, wxDP_DROPDOWN|wxDP_SHOWCENTURY);
 #endif
 #ifndef WINDOWS
@@ -1097,7 +1093,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addDateField(char* name, wxSizer* size
 						addLabel(name, sizerLabel, hideThisColumn);
 						sizerControl->Add(date, 1, wxALL, 5);
 						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
-						
+
 						if (FFI->isReadonly(name)) {
 							date->Disable();
 						}
@@ -1179,9 +1175,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::addBinaryColumn(char* name, wxSizer* s
 
 void LB_STDCALL lbDatabaseTableViewPanel::fillRow(int position) {
     UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnName)
-    
+
     TableView->AppendRows(1, false);
-    
+
     for (int i = 1; i <= sampleQuery->getColumns(); i++) {
         ColumnName = sampleQuery->getColumnName(i);
 		if (sampleQuery->hasFKColumn(ColumnName->charrep()) == 1) {
@@ -1209,7 +1205,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillRow(int position) {
                         setCellBool(position, i - 1, *&b);
 					}
 					break;
-					
+
                     case lb_I_Query::lbDBColumnFloat:
 					{
                         UAP_REQUEST(getModuleInstance(), lb_I_String, s)
@@ -1234,7 +1230,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillRow(int position) {
                         setCellText(position, i - 1, *&s);
 					}
 					break;
-					
+
                     case lb_I_Query::lbDBColumnBinary:
                     {
                         //UAP_REQUEST(lb_I_String, s)
@@ -1316,11 +1312,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, params)
-	
+
 	if (ImageButtonMapperList == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, ImageButtonMapperList)
 	}
-	
+
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, params)
 
@@ -1333,7 +1329,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 
 		params->setCloning(false);
 		document->setCloning(false);
-		
+
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
 		params->getUAPContainer(*&name, *&document);
@@ -1361,27 +1357,27 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 		*name = "AppActions";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Actions, appActions)
-		
+
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
+
 		*name = "AppActionTypes";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Types, appActionTypes)
 
 
-		if ((forms == NULL) || 
-		(formParams == NULL) || 
-		(appActions == NULL) || 
-		(appActionSteps == NULL) || 
+		if ((forms == NULL) ||
+		(formParams == NULL) ||
+		(appActions == NULL) ||
+		(appActionSteps == NULL) ||
 		(appActionTypes == NULL) ||
 		(appParams == NULL)) {
 			_LOG << "Error: Could not recieve one of the required document elements of application!" LOG_
 		} else {
 			// Preload more data.
-			
-			
+
+
 		}
 	}
 
@@ -1398,14 +1394,14 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 	if (database != NULL) {
 		_CL_LOG << "WARNING: Database instance available!" LOG_
 	}
-	
+
 	char* dbbackend = meta->getApplicationDatabaseBackend();
-	
-	if (strcmp(DBName, "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+
+	if (strcmp(DBName, "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead.
 		dbbackend = meta->getSystemDatabaseBackend();
 	}
-	
-	
+
+
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
@@ -1444,7 +1440,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 	sampleQuery = database->getQuery(DBName, 0);
 
 /*...e*/
-		
+
 /*...svariables:8:*/
 	int DatabaseFirst;
 	int DatabaseNext;
@@ -1455,11 +1451,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 	int DatabaseRefresh;
 	int ImageButtonClick;
 /*...e*/
-	
+
 
 /*...sInitialize navigation handlers:8:*/
 		char eventName[100] = "";
-		
+
 		sprintf(eventName, "%pDatabaseFirst", this);
 		eman->registerEvent(eventName, DatabaseFirst);
 
@@ -1489,7 +1485,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 		registerEventHandler(dispatcher.getPtr());
 
 /*...e*/
-	
+
 	sampleQuery->enableFKCollecting();
 
 	sampleQuery->setAutoRefresh(meta->getAutorefreshData());
@@ -1504,7 +1500,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 
 /*...sDetermine readonly fields:8:*/
 	if (FFI != NULL) delete FFI;
-	
+
 	/// \todo Add passing a parameter for the application ID.
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
@@ -1528,7 +1524,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
 
 		*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
-		
+
 		*msglog = _trans("Failed to bind columns for query:\n\n");
 		*msglog += SQLString->charrep();
 		*msglog += _trans("\n\nDatabase: ");
@@ -1543,7 +1539,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 	}
 
 	sampleQuery->first();
-	
+
 /*...screate database form elements:8:*/
 	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
 
@@ -1562,12 +1558,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 
 		UAP(lb_I_Query, FKColumnQuery)
 		UAP(lb_I_Query, FKColumnQuery1)
-		
+
 		name = sampleQuery->getColumnName(i);
 
 		/* Determine, if the column is a foreign key. If so try to get the
 		   configured column to show instead.
-		*/ 
+		*/
 
 		bool hideThisColumn = false;
 
@@ -1586,7 +1582,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 						createdControl = true;
 					}
 					break;
-					
+
                     case lb_I_Query::lbDBColumnFloat:
 					{
                         addFloatColumn(name->charrep(), sizerMain, sizerField, sizerField);
@@ -1605,7 +1601,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 						createdControl = true;
 					}
 					break;
-					
+
                     case lb_I_Query::lbDBColumnBinary:
                     {
                         addBinaryColumn(name->charrep(), sizerMain, sizerField, sizerField);
@@ -1641,7 +1637,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 	//wxButton *button2 = new wxButton(this, DatabasePrev, _trans("Prev"));
 	//wxButton *button3 = new wxButton(this, DatabaseNext, _trans("Next"));
 	//wxButton *button4 = new wxButton(this, DatabaseLast, _trans("Last"));
-	
+
 	//firstButton = button1;
 	//prevButton = button2;
 	//nextButton = button3;
@@ -1677,30 +1673,30 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 		forms->finishFormularIteration();
 		formActions->finishFormularActionIteration();
 		appActions->finishActionIteration();
-		
-		if (fa == NULL) fa = new FormularActions;	
-		
+
+		if (fa == NULL) fa = new FormularActions;
+
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
 				if (strcmp(forms->getName(), formName) == 0) {
 					long FormID = forms->getFormularID();
-					
+
 					while (formActions->hasMoreFormularActions()) {
 						formActions->setNextFormularAction();
-						
+
 						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->getFormularActionActionID();
 							char* eventName = formActions->getFormularActionEvent();
-							
+
 							appActions->selectAction(ActionID);
 							char* actionName = appActions->getActionName();
-							
+
 							// Helps to faster lookup the action ID from event name
 							fa->addRegisteredAction(ActionID, eventName);
-							
+
 							int actionID = 0;
 							char *evName = (char*) malloc(strlen(eventName) + 20);
 							sprintf(evName, "%p(%s)", this, eventName);
@@ -1724,31 +1720,31 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join Formulare on formular_actions.formular = Formulare.id "
 			     "where Formulare.name = '%s'";
-		
+
 		char *buf = (char*) malloc(strlen(_actionquery) + strlen(base_formName) + 1);
 		buf[0] = 0;
-		
+
 		sprintf(buf, _actionquery, base_formName);
-		
-		_CL_LOG << "Have action query: '" << buf << "'" LOG_ 
-			
-		actionQuery->skipFKCollecting();	
+
+		_CL_LOG << "Have action query: '" << buf << "'" LOG_
+
+		actionQuery->skipFKCollecting();
 		actionQuery->query(buf);
 		actionQuery->enableFKCollecting();
 		free(buf);
-		
+
 		err = actionQuery->first();
-		
+
 /*...sloop through and find actions:16:*/
 		while (err == ERR_NONE) {
 			UAP(lb_I_String, action)
 			UAP(lb_I_String, actionWhat)
-			
+
 			action = actionQuery->getAsString(1);
 			actionWhat = actionQuery->getAsString(2);
-			
+
 			actionWhat->trim();
-			
+
 			int actionID = 0;
 			char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
 			sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
@@ -1763,7 +1759,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 			free(eventName);
 			err = actionQuery->next();
 		}
-		
+
 /*...e*/
 /*...sget last action:16:*/
 		if (err == WARN_DB_NODATA) {
@@ -1788,27 +1784,27 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 /*...e*/
 /*...e*/
 	}
-	
+
 
 _CL_LOG << "Connect event handlers" LOG_
 /*...sconnect event handlers:8:*/
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
 /*
-	CONNECTOR->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
+	CONNECTOR->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-	CONNECTOR->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
+	CONNECTOR->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-	CONNECTOR->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
+	CONNECTOR->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
+	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
 
-	CONNECTOR->Connect( DatabaseAdd,  -1, wxEVT_COMMAND_BUTTON_CLICKED,   
+	CONNECTOR->Connect( DatabaseAdd,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
+	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
-	CONNECTOR->Connect( DatabaseRefresh, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
+	CONNECTOR->Connect( DatabaseRefresh, -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseTableViewPanel::OnDispatch);
 */
 /*...e*/
@@ -1827,17 +1823,17 @@ _CL_LOG << "Connect event handlers" LOG_
 
 
 	SetAutoLayout(TRUE);
-	
+
 	//sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 	//sizerMain->Add(sizerActions, 0, wxEXPAND | wxALL, 5);
 	//sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
 	//sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
-	
+
 	//SetSizer(sizerMain);
 
 	//sizerMain->SetSizeHints(this);
 	//sizerMain->Fit(this);
-	
+
 	//Centre();
 
 	_CL_LOG << "lbDatabaseTableViewPanel::init(...) ready. Move to first row." LOG_
@@ -1845,7 +1841,7 @@ _CL_LOG << "Connect event handlers" LOG_
 	fillTable();
 
 	_created = true;
-	
+
 	if (sampleQuery->getColumns() == 0) {
 		meta->msgBox("Warning", "Database backend does not contain any columns.");
 	}
@@ -1858,28 +1854,28 @@ void LB_STDCALL lbDatabaseTableViewPanel::activateActionButtons() {
 		forms->finishFormularIteration();
 		formActions->finishFormularActionIteration();
 		appActions->finishActionIteration();
-		
-		if (fa == NULL) fa = new FormularActions;	
-		
+
+		if (fa == NULL) fa = new FormularActions;
+
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
 				if (strcmp(forms->getName(), base_formName) == 0) {
 					long FormID = forms->getFormularID();
-					
+
 					while (formActions->hasMoreFormularActions()) {
 						formActions->setNextFormularAction();
-						
+
 						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->getFormularActionActionID();
 							char* eventName = formActions->getFormularActionEvent();
 							char* actionName = strdup (_trans(appActions->getActionName()));
 							appActions->selectAction(ActionID);
-							
+
 							_LOG << "Activate action '" << actionName << "'" LOG_
-							
+
 							wxWindow* w = FindWindowByLabel(actionName, this);
 							if (w) w->Enable();
 							free(actionName);
@@ -1897,19 +1893,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 		forms->finishFormularIteration();
 		formActions->finishFormularActionIteration();
 		appActions->finishActionIteration();
-		
-		if (fa == NULL) fa = new FormularActions;	
-		
+
+		if (fa == NULL) fa = new FormularActions;
+
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
 				if (strcmp(forms->getName(), base_formName) == 0) {
 					long FormID = forms->getFormularID();
-					
+
 					while (formActions->hasMoreFormularActions()) {
 						formActions->setNextFormularAction();
-						
+
 						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->getFormularActionActionID();
@@ -1934,25 +1930,25 @@ void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 void LB_STDCALL lbDatabaseTableViewPanel::addLabel(char* text, wxSizer* sizer, bool hideThisColumn) {
 	char* tLabel = (char*) malloc(strlen(text) + 6);
 	tLabel[0] = 0;
-	tLabel = strcat(tLabel, text); 
+	tLabel = strcat(tLabel, text);
 	wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
 	tLabel = strcat(tLabel, "_lbl");
 	label->SetName(_trans(tLabel));
 	if (hideThisColumn == false) sizer->Add(label, 1, wxALL|wxADJUST_MINSIZE, 5);
-	
+
 	free(tLabel);
 }
 
 void  LB_STDCALL lbDatabaseTableViewPanel::reopen() {
 	/*
 	 sampleQuery->reopen();
-	 
+
 	 prevButton->Enable();
 	 firstButton->Enable();
 	 lastButton->Enable();
 	 nextButton->Enable();
 	 deleteButton->Enable();
-	 
+
 	 if (sampleQuery->isFirst()) lbDBFirst(NULL);
 	 if (sampleQuery->isLast()) lbDBLast(NULL);
 	 lbDBRead();
@@ -1964,11 +1960,11 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::close() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::close() called." LOG_
-	
+
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
 
-		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead.
 			dbbackend = meta->getSystemDatabaseBackend();
 		}
 
@@ -1981,20 +1977,20 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::close() {
 			REQUEST(getModuleInstance(), lb_I_Database, database)
 			_LOG << "Using built in database backend for UML import operation..." LOG_
 		}
-		
+
 		if (database == NULL) {
 			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
 		}
 		database->init();
 	}
-	
+
 	if (err == ERR_DB_NODATA) {
 		DISABLE_FOR_NO_DATA()
-		
+
 		return ERR_DB_NODATA;
 	}
-	
+
 	_LOG << "lbDatabaseTableViewPanel::close() closes the database." LOG_
 	database->close();
 	return ERR_NONE;
@@ -2004,13 +2000,13 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::open() called." LOG_
-	
+
 	return ERR_NOT_IMPLEMENTED;
-	
+
 	if (database == NULL) {
 		char* dbbackend = meta->getApplicationDatabaseBackend();
-		
-		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+
+		if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead.
 			dbbackend = meta->getSystemDatabaseBackend();
 		}
 
@@ -2023,7 +2019,7 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 			REQUEST(getModuleInstance(), lb_I_Database, database)
 			_LOG << "Using built in database backend for UML import operation..." LOG_
 		}
-		
+
 		if (database == NULL) {
 			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
@@ -2031,7 +2027,7 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 		database->init();
 	}
 
-	
+
 	_LOG << "lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::open() opens the database." LOG_
 	database->open(_DBName->charrep());
 	sampleQuery--;
@@ -2040,115 +2036,115 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 	_LOG << "Got a new query for reopen: " << newSql LOG_
 	sampleQuery->query(newSql, false);
 	free(newSql);
-	
+
 	// Rebind the query and fetch the first entry as it was before finding out foreign keys.
 	if (sampleQuery->bind() != ERR_NONE) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
-		
+
 		*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
-		
+
 		*msglog = _trans("Failed to bind columns for query:\n\n");
 		*msglog += SQLString->charrep();
 		*msglog += _trans("\n\nDatabase: ");
 		*msglog += _DBName->charrep();
 		*msglog += _trans("\nUser: ");
 		*msglog += _DBUser->charrep();
-		
+
 		_LOG << msglog->charrep() LOG_
-		
+
 		meta->msgBox(_trans("Error"), msg->charrep());
 		return ERR_DB_NODATA;
 	}
-	
+
 	_LOG << "lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::open() fetches a record." LOG_
 	sampleQuery->first();
-	
+
 	lbDBRead();
-	
+
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
-	
+
 	int columns = sampleQuery->getColumns();
-	
+
 	for (int co = 1; co <= columns; co++) {
 		UAP(lb_I_String, name)
 		name = sampleQuery->getColumnName(co);
-		
+
 		if (FFI->isReadonly(name->charrep())) {
 			sampleQuery->setReadonly(name->charrep());
 		}
 	}
-	
+
 	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
-	
+
 	for(int i = 1; i <= columns; i++) {
 		UAP(lb_I_String, name)
-		
+
 		bool createdControl = false;
-		
+
 		UAP(lb_I_Query, FKColumnQuery)
 		UAP(lb_I_Query, FKColumnQuery1)
-		
+
 		name = sampleQuery->getColumnName(i);
-		
+
 		bool hideThisColumn = false;
-		
+
 		if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 			/*...sCreate a combobox:32:*/
 			lbErrCodes err = ERR_NONE;
-			
+
 			// Create a mapping instance for this combo box
 			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
 			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 			UAP(lb_I_KeyBase, key_cbName)
-			
+
 			QI(cbName, lb_I_KeyBase, key_cbName)
 			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper)
-			
+
 			// This is the input parameter
-			
+
 			*cbName = name->charrep();
-			
+
 			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 			UAP(lb_I_KeyBase, key)
-			
+
 			UAP(lb_I_String, t)
-			
+
 			t = sampleQuery->getPKTable(name->charrep());
-			
+
 			table->setData(t->charrep());
-			
+
 			QI(table, lb_I_KeyBase, key)
-			
+
 			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
-			
+
 			if (ComboboxMapperList->exists(&key_cbName) == 1) {
 				ComboboxMapperList->remove(&key_cbName);
 			}
-			
+
 			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
-			
+
 			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
-			
+
 			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper)
-			
+
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
-			
+
 			bool definitionFound = false;
 			bool formFound = false;
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
 			ID->setData(meta->getApplicationID());
-			
+
 			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
 				forms->setNextFormular();
 				FID->setData(forms->getApplicationID());
-				
+
 				if (FID->equals(*&ID)) {
 					if (strcmp(base_formName, forms->getName()) == 0) {
 						forms->finishFormularIteration();
@@ -2158,17 +2154,17 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 					}
 				}
 			}
-			
+
 			if (formFound == false) {
 				_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
-			
+
 			long FormID = forms->getFormularID();
-			
+
 			formularfields->finishFieldsIteration();
 			while (formularfields->hasMoreFields()) {
 				formularfields->setNextField();
-				
+
 				if (formularfields->getFormularID() == FormID) {
 					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 						definitionFound = true;
@@ -2177,48 +2173,48 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 					}
 				}
 			}
-			
+
 			if (definitionFound == false) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
+				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 				fkpkPanel->show();
 				fkpkPanel->destroy();
-				
+
 				UAP(lb_I_Parameter, params)
 				UAP(lb_I_Unknown, uk)
 				uk = meta->getActiveDocument();
 				QI(uk, lb_I_Parameter, params)
-				
+
 				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
-				
+
 				QI(name, lb_I_KeyBase, key)
 				*name = "ApplicationData";
 				params->getUAPContainer(*&name, *&document);
-				
+
 				*name = "FormularFields";
 				if (document->exists(&key) == 1) document->remove(&key);
 				QI(formularfields, lb_I_Unknown, uk)
 				document->insert(&uk, &key);
-				
-				
+
+
 				database->open(DBName->charrep());
 				sampleQuery--;
 				sampleQuery = database->getQuery(DBName->charrep(), 0);
-                
+
                 char* newSql = sampleQuery->setWhereClause(getQuery(), SQLWhere->charrep());
 				_LOG << "Got a new query for reopen: " << newSql LOG_
 				sampleQuery->query(newSql, false);
 				free(newSql);
-				
+
 				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
-					
+
 					if (forms->getApplicationID() == ID) {
 						if (strcmp(formName, forms->getName()) == 0) {
 							forms->finishFormularIteration();
@@ -2226,12 +2222,12 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 						}
 					}
 				}
-				
+
 				long FormID = forms->getFormularID();
-				
+
 				while (formularfields->hasMoreFields()) {
 					formularfields->setNextField();
-					
+
 					if (formularfields->getFormularID() == FormID) {
 						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 							definitionFound = true;
@@ -2241,12 +2237,12 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 					}
 				}
 			}
-			
-#ifdef USE_FKPK_QUERY			
+
+#ifdef USE_FKPK_QUERY
 			/*...sGet column to display instead key:56:*/
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
-			
+
 			UAP(lb_I_Database, lbDMF_DB)
 			char* dbbackend = meta->getSystemDatabaseBackend();
 			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -2258,46 +2254,46 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 				REQUEST(getModuleInstance(), lb_I_Database, lbDMF_DB)
 				_LOG << "Using built in database backend for UML import operation..." LOG_
 			}
-			
+
 			if (lbDMF_DB == NULL) {
 				_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 				return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
 			}
 			lbDMF_DB->init();
-			
+
 			char* lbDMFPasswd = getenv("lbDMFPasswd");
 			char* lbDMFUser   = getenv("lbDMFUser");
-			
+
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-			
+
 			lbDMF_DB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-			
+
 			FKColumnQuery = lbDMF_DB->getQuery("lbDMF", 0);
-			
+
 			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
-			
+
 			FKColumnQuery->query(buffer);
-			
+
 			err = FKColumnQuery->first();
 			/*...e*/
-			
+
 			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
-			
+
 			// Define this function in my data model
 			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
-			
+
 			// ------------------
-			
+
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				// Pass through the target connection and the current query	
+				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 				fkpkPanel->show();
 				fkpkPanel->destroy();
-				
+
 				FKColumnQuery1 = FKColumnQuery.getPtr();
 				FKColumnQuery.resetPtr();
 				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
@@ -2306,143 +2302,143 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 			}
 #else
 			err = ERR_NONE;
-#endif			
+#endif
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				/*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-				
+
 				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
-				
+
 				UAP(lb_I_Long, l)
-				
-#ifdef USE_FKPK_QUERY			
+
+#ifdef USE_FKPK_QUERY
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
 				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->getFKTable(); 
-#endif					
-				
+				*PKTable = formularfields->getFKTable();
+#endif
+
 				wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
 				wxChoice *cbox = (wxChoice*) w;
 				cbox->Clear();
 				//cbox->SetName(name->charrep());
-				
+
 				l = sampleQuery->getAsLong(i);
-				
+
 				int old_fk = l->getData();
-				
+
 				buffer[0] = 0;
-				
+
 				*TargetPKColumn = sampleQuery->getPKColumn(name->charrep());
-				
+
 				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
 				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
-				
+
 				_LOG << "Fill combobox based on the following query: " << buffer LOG_
-				
+
 				UAP(lb_I_Query, ReplacementColumnQuery)
-				
+
 				database->connect(_DBName->charrep(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
-				
+
 				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
-				
+
 				ReplacementColumnQuery->query(buffer);
-				
+
 				lbErrCodes DBerr = ReplacementColumnQuery->first();
-				
+
 				int cbox_pos = 0;
-				
+
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 					/*...sHave data to fill into the combobox and create mappings:104:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
-					
+
 					data = ReplacementColumnQuery->getAsString(1);
-					
+
 					data->trim();
-					
+
 					if (*data == "") *data = "<empty>";
 					if (data->charrep() == NULL) *data = "<empty>";
-					
+
 					possible_fk = ReplacementColumnQuery->getAsLong(2);
-					
+
 					long possible_fk_pos = possible_fk->getData();
-					
+
 					cbox->Append(wxString(data->charrep()));
-					
+
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-					
+
 					UAP(lb_I_Unknown, uk_possible_fk)
 					UAP(lb_I_KeyBase, key_cbox_pos)
-					
+
 					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-					
+
 					key->setData(cbox_pos);
 					cbox_pos++;
-					
+
 					QI(key, lb_I_KeyBase, key_cbox_pos)
 					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
-					
+
 					possible_fk_long->setData(possible_fk_pos);
-					
+
 					QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-					
+
 					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-					
+
 					if (DBerr != WARN_DB_NODATA)
-						// Only if not WARN_DB_NODATA					
+						// Only if not WARN_DB_NODATA
 						while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
 							UAP(lb_I_Unknown, uk_possible_fk)
 							UAP(lb_I_KeyBase, key_cbox_pos)
-							
+
 							DBerr = ReplacementColumnQuery->next();
-							
+
 							// Break out in case of no data (not peeking)
 							if (DBerr == ERR_DB_NODATA) break;
-							
+
 							data = ReplacementColumnQuery->getAsString(1);
-							
+
 							data->trim();
-							
+
 							if (*data == "") *data = "<empty>";
 							if (data->charrep() == NULL) *data = "<empty>";
-							
+
 							possible_fk = ReplacementColumnQuery->getAsLong(2);
-							
+
 							possible_fk_pos = possible_fk->getData();
-							
+
 							cbox->Append(wxString(data->charrep()));
-							
+
 							if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
-							
+
 							key->setData(cbox_pos);
 							cbox_pos++;
-							
+
 							QI(key, lb_I_KeyBase, key_cbox_pos)
 							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
-							
+
 							possible_fk_long->setData(possible_fk_pos);
-							
+
 							QI(possible_fk_long, lb_I_Unknown, uk_possible_fk)
-							
+
 							ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
-							
+
 							if (DBerr == WARN_DB_NODATA) break;
 						}
-					
+
 					/*...e*/
 				}
 				/*...e*/
 			}
-			
+
 			free(buffer);
 			/*...e*/
 		}
 	}
-	
+
     DISABLE_EOF()
     return ERR_NONE;
 }
@@ -2453,35 +2449,35 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::setName(char const * name, char 
 	if (untranslated_formName) free(untranslated_formName);
 
 	char* transl = _trans((char*) name);
-		
+
 	char* temp = (char*) malloc(strlen(transl)+1);
 	temp[0] = 0;
 	strcpy(temp, transl);
 
 	if (appention) {
 		formName = (char*) malloc(1+strlen(temp)+strlen(appention));
-		
+
 		base_formName = (char*) malloc(1+strlen(name));
 		untranslated_formName = (char*) malloc(1+strlen(name)+strlen(appention));
 	} else {
 		formName = (char*) malloc(1+strlen(temp));
-		
+
 		base_formName = (char*) malloc(1+strlen(name));
 		untranslated_formName = (char*) malloc(1+strlen(name));
 	}
-	
+
 	formName[0] = 0;
 	strcat(formName, temp);
 	if (appention) strcat(formName, appention);
 	free(temp);
-		
+
 	untranslated_formName[0] = 0;
 	strcat(untranslated_formName, name);
 	if (appention) strcat(untranslated_formName, appention);
-		
+
 	base_formName[0] = 0;
 	strcat(base_formName, name);
-		
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -2501,11 +2497,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::windowIsClosing(lb_I_Window* w) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_DatabaseForm, form)
 	QI(w, lb_I_DatabaseForm, form)
-	
+
 	if (form.getPtr() == _master) {
 		_master = NULL;
 	}
-	
+
 	if (form.getPtr() == _detail) {
 		_detail = NULL;
 	}
@@ -2513,9 +2509,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::windowIsClosing(lb_I_Window* w) {
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
-	
+
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
-	
+
 	_master = master;
 	_params = params;
 
@@ -2541,15 +2537,15 @@ void LB_STDCALL lbDatabaseTableViewPanel::setMasterForm(lb_I_DatabaseForm* maste
 		REQUEST(manager.getPtr(), lb_I_String, DBPass)
 	}
 
-	
+
 	updateFromMaster();
 }
 /*...e*/
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\setDetailForm\40\lb_I_DatabaseMasterForm\42\ detail\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::setDetailForm(lb_I_DatabaseForm* detail, lb_I_Parameter* params) {
-	
+
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
-	
+
 	_detail = detail;
 	_params = params;
 
@@ -2575,7 +2571,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::setDetailForm(lb_I_DatabaseForm* detai
 		REQUEST(manager.getPtr(), lb_I_String, DBPass)
 	}
 
-	
+
 	updateFromDetail();
 }
 /*...e*/
@@ -2613,26 +2609,26 @@ const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(char* name) {
 							}
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnChar:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							value = tx->GetValue();
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							value = tx->GetValue();
 						}
 						break;
-					
-					
+
+
 					case lb_I_Query::lbDBColumnUnknown:
-					
+
 						break;
 				}
 /*...e*/
@@ -2644,7 +2640,7 @@ const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(char* name) {
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::ignoreForeignKeys(char* toTable) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (ignoredPKTables == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
 	}
@@ -2652,12 +2648,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::ignoreForeignKeys(char* toTable) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
-	
+
 	string->setData(toTable);
-	
+
 	QI(string, lb_I_Unknown, uk)
 	QI(string, lb_I_KeyBase, key)
-	
+
 	ignoredPKTables->insert(&uk, &key);
 }
 /*...e*/
@@ -2671,19 +2667,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
-	
-	// Using the new = and += operators of the string interface. 
+
+	// Using the new = and += operators of the string interface.
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
-	
+
 	*newWhereClause = " where ";
 
 	// Build the query to get the ID from the given *&SourceFieldName
-	
+
 	*newMasterIDQuery = "select ";
-	
+
 	// Add the primary key names from the table, that are related to *&SourceFieldName
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -2708,7 +2704,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 	if (actionID->getData() == -1) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
-		
+
 		*msg = _trans("No action ID has been transferred!");
 
 		meta->msgBox(_trans("Error"), msg->charrep());
@@ -2717,12 +2713,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 
 	if (DBUser->charrep() == NULL) {
 		_LOG << "Error: No user name for database passed!" LOG_
-	} 
-	
+	}
+
 	if (DBName->charrep() == NULL) {
 		_LOG << "Error: No database name for database passed!" LOG_
 	}
-	
+
 	if (DBPass->charrep() == NULL) {
 		_LOG << "Error: No password for database passed!" LOG_
 	}
@@ -2731,8 +2727,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 	SourceFieldName->trim();
 	SourceFieldValue->trim();
 
-	_LOG << "Have master form '" << masterForm->charrep() << 
-	           "', source field name '" << SourceFieldName->charrep() << 
+	_LOG << "Have master form '" << masterForm->charrep() <<
+	           "', source field name '" << SourceFieldName->charrep() <<
 	           "' and source field value '" << SourceFieldValue->charrep() <<
 	           "' for detail form '" << formName << "'" LOG_
 
@@ -2740,9 +2736,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 /*...sDetermine the primary key values of the current master entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
 	UAP(lb_I_String, colName)
 	int columns = _master->getPrimaryColumns();
-	
+
 	if (columns == 0) {
-		
+
 		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
 			/// \todo Fixing code.
 			char* dbbackend = meta->getSystemDatabaseBackend();
@@ -2767,10 +2763,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 			database->connect("lbDMF", "lbDMF", DBUser->charrep(), DBPass->charrep());
 
 			correctionQuery = database->getQuery("lbDMF", 0);
-			
+
 			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open master form' and module = 'lbDatabaseForm') where id = ";
 			*SQL += actionID->charrep();
-			
+
 			correctionQuery->skipFKCollecting();
 			correctionQuery->query(SQL->charrep());
 			correctionQuery->enableFKCollecting();
@@ -2780,42 +2776,42 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 	}
 
 	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
-	
+
 	for (int i = 1; i <= columns-1; i++) {
 		colName = _master->getPrimaryColumn(i);
-		
+
 		*newMasterIDQuery += "\"";
 		*newMasterIDQuery += colName->charrep();
 		*newMasterIDQuery += "\", \"";
 	}
 
 	colName = _master->getPrimaryColumn(columns);
-		
+
 	*newMasterIDQuery += "\"";
 	*newMasterIDQuery += colName->charrep();
 	*newMasterIDQuery += "\"";
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
-	
+
 	*tableName = _master->getTableName(SourceFieldName->charrep());
-	
+
 	tableName->replace("\"", "");
-	
-	*newMasterIDQuery += " from \"";	
+
+	*newMasterIDQuery += " from \"";
 	*newMasterIDQuery += tableName->charrep();
 	*newMasterIDQuery += "\" where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
 
-	if (isChar) 
+	if (isChar)
 		*newMasterIDQuery += "\" = '";
 	else
 		*newMasterIDQuery += "\" = ";
-	
+
 	*newMasterIDQuery += SourceFieldValue->charrep();
 
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
-	
+
 	_LOG << "lbDatabaseTableViewPanel::updateFromMaster() generated new master id query: '" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
@@ -2828,7 +2824,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	char* dbbackend = meta->getApplicationDatabaseBackend();
 
-	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead.
 		dbbackend = meta->getSystemDatabaseBackend();
 	}
 
@@ -2849,12 +2845,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 	UAP(lb_I_Query, PKQuery)
 
 	database->init();
-	
+
 	_LOG << "Info: Connect to database." LOG_
 	_LOG << "Info: DBName: " << DBName->charrep() LOG_
 	_LOG << "Info: DBUser: " << DBUser->charrep() LOG_
-	
-	
+
+
 	if (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		_LOG << "Error: Failed to connect to database." LOG_
 		_LOG << "Info: DBName: " << DBName->charrep() LOG_
@@ -2878,31 +2874,31 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 
 		while (err == ERR_NONE) {
 			*newWhereClause += "(";
-			
+
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(i);
-		
+
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
 				UAP(lb_I_String, tn)
-		
+
 				tn = PKQuery->getTableName(colName->charrep());
 				fk = sampleQuery->getFKColumn(tn->charrep(), colName->charrep());
-		
+
 				if (fk == NULL) {
 					_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
-					_LOG << "Have master form '" << masterForm->charrep() << 
-					           "', source field name '" << SourceFieldName->charrep() << 
+					_LOG << "Have master form '" << masterForm->charrep() <<
+					           "', source field name '" << SourceFieldName->charrep() <<
 					           "' and source field value '" << SourceFieldValue->charrep() <<
 		        			   "' for detail form '" << formName << "'" LOG_
           goto HandleSimpleFilter;
           //return;
 				}
-				
+
 				*newWhereClause += fk->charrep();
 
 				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -2910,20 +2906,20 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 				if (w) w->Hide();
 
-				if (isChar) 
+				if (isChar)
 					*newWhereClause += " = '";
 				else
 					*newWhereClause += " = ";
-	
+
 				*newWhereClause += colValue->charrep();
-			
+
 				if (isChar) *newWhereClause += "'";
-			
+
 				*newWhereClause += " and ";
 
 				UAP(lb_I_Unknown, uk_colValue)
 				UAP(lb_I_KeyBase, key_fk)
-				
+
 				QI(colValue, lb_I_Unknown, uk_colValue)
 				QI(fk, lb_I_KeyBase, key_fk)
 
@@ -2937,19 +2933,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 			c = PKQuery->getColumnName(columns);
 			*colName = c->charrep();
 			colValue = PKQuery->getAsLong(columns);
-		
+
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
-		
+
 			UAP(lb_I_String, fk)
 			UAP(lb_I_String, tn)
-		
+
 			tn = PKQuery->getTableName(colName->charrep());
 			fk = sampleQuery->getFKColumn(tn->charrep(), colName->charrep());
-		
+
 			if (fk == NULL) {
 				_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
-				_LOG << "Have master form '" << masterForm->charrep() << 
-				           "', source field name '" << SourceFieldName->charrep() << 
+				_LOG << "Have master form '" << masterForm->charrep() <<
+				           "', source field name '" << SourceFieldName->charrep() <<
 				           "' and source field value '" << SourceFieldValue->charrep() <<
 	        			   "' for detail form '" << formName << "'" LOG_
 	      goto HandleSimpleFilter;
@@ -2962,64 +2958,64 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 			if (w) w->Hide();
 			w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 			if (w) w->Hide();
-			
-			if (isChar) 
+
+			if (isChar)
 				*newWhereClause += " = '";
 			else
 				*newWhereClause += " = ";
-	
+
 			*newWhereClause += colValue->charrep();
-			
+
 			if (isChar) *newWhereClause += "'";
 
 			UAP(lb_I_Unknown, uk_colValue)
 			UAP(lb_I_KeyBase, key_fk)
-				
+
 			QI(colValue, lb_I_Unknown, uk_colValue)
 			QI(fk, lb_I_KeyBase, key_fk)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
-			
+
 			*newWhereClause += ") ";
 
 			err = PKQuery->next();
-			
-			if (err != ERR_DB_NODATA) 
+
+			if (err != ERR_DB_NODATA)
 				*newWhereClause += " or ";
 		}
-		
+
 		if (err == WARN_DB_NODATA) {
 			*newWhereClause += "(";
-			
+
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(i);
-		
+
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
 				UAP(lb_I_String, tn)
-		
+
 				tn = PKQuery->getTableName(colName->charrep());
 				fk = sampleQuery->getFKColumn(
 						tn->charrep(),
 						colName->charrep()
 						);
-		
+
 				if (fk == NULL) {
 					_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
-					_LOG << "Have master form '" << masterForm->charrep() << 
-					           "', source field name '" << SourceFieldName->charrep() << 
+					_LOG << "Have master form '" << masterForm->charrep() <<
+					           "', source field name '" << SourceFieldName->charrep() <<
 					           "' and source field value '" << SourceFieldValue->charrep() <<
 		        			   "' for detail form '" << formName << "'" LOG_
           goto HandleSimpleFilter;
           //return;
 				}
-				
+
 				*newWhereClause += fk->charrep();
 
 				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -3027,20 +3023,20 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 				if (w) w->Hide();
 
-				if (isChar) 
+				if (isChar)
 					*newWhereClause += " = '";
 				else
 					*newWhereClause += " = ";
-	
+
 				*newWhereClause += colValue->charrep();
-			
+
 				if (isChar) *newWhereClause += "'";
-			
+
 				*newWhereClause += " and ";
 
 				UAP(lb_I_Unknown, uk_colValue)
 				UAP(lb_I_KeyBase, key_fk)
-				
+
 				QI(colValue, lb_I_Unknown, uk_colValue)
 				QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3048,14 +3044,14 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			}
-			
+
 /*...sBuild expression for last column:32:*/
 			c = PKQuery->getColumnName(columns);
 			*colName = c->charrep();
 			colValue = PKQuery->getAsLong(columns);
-		
+
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
-		
+
 			UAP(lb_I_String, fk)
 			UAP(lb_I_String, tn)
 			tn = PKQuery->getTableName(colName->charrep());
@@ -3063,14 +3059,14 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 					tn->charrep(),
 					colName->charrep()
 					);
-		
+
 			if (fk == NULL) {
 				_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
-				_LOG << "Have master form '" << masterForm->charrep() << 
-				           "', source field name '" << SourceFieldName->charrep() << 
+				_LOG << "Have master form '" << masterForm->charrep() <<
+				           "', source field name '" << SourceFieldName->charrep() <<
 				           "' and source field value '" << SourceFieldValue->charrep() <<
 	        			   "' for detail form '" << formName << "'" LOG_
-						   
+
 				*newWhereClause += "'";
 				_LOG << "New where clause until yet: '" << newWhereClause->charrep() LOG_
 	      goto HandleSimpleFilter;
@@ -3086,18 +3082,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 			w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 			if (w) w->Hide();
 
-			if (isChar) 
+			if (isChar)
 				*newWhereClause += " = '";
 			else
 				*newWhereClause += " = ";
-	
+
 			*newWhereClause += colValue->charrep();
-			
+
 			if (isChar) *newWhereClause += "'";
 
 			UAP(lb_I_Unknown, uk_colValue)
 			UAP(lb_I_KeyBase, key_fk)
-				
+
 			QI(colValue, lb_I_Unknown, uk_colValue)
 			QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3108,9 +3104,9 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 			*newWhereClause += ")";
 		}
 
-		Layout();		
-		
-		
+		Layout();
+
+
 	}
 /*...e*/
 
@@ -3129,7 +3125,7 @@ SkipHandleSimpleFilter:
 	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
   wxString tempw = newWhereClause->charrep();
-  
+
   if (tempw.Upper() == " WHERE ") {
   	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
 
@@ -3142,18 +3138,18 @@ SkipHandleSimpleFilter:
     *newWhereClause  += SourceFieldValue->charrep();
     if (isChar) *newWhereClause += "'";
   }
-	
+
 	_LOG << "Create a new query based on query: " << getQuery() << " and where clause: " << newWhereClause->charrep() LOG_
 
 	setFilter(newWhereClause->charrep());
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
-	_LOG << "Have created new query: '" << newQuery->charrep() << "'" LOG_ 
-	_LOG << " ... On database '" << DBName->charrep() << "', with user" LOG_ 
+	_LOG << "Have created new query: '" << newQuery->charrep() << "'" LOG_
+	_LOG << " ... On database '" << DBName->charrep() << "', with user" LOG_
 	_LOG << " ... '" << DBUser->charrep() << "'" LOG_
 
 	err = sampleQuery->query(newQuery->charrep());
-	
+
 	if (err != ERR_NONE) {
 			_CL_LOG << "Error: Failed to get data for detail form." LOG_
 			noDataAvailable = true;
@@ -3164,7 +3160,7 @@ SkipHandleSimpleFilter:
 			//nextButton->Disable();
 			//deleteButton->Disable();
 			deactivateActionButtons();
-			noDataAvailable = false;	
+			noDataAvailable = false;
 	} else {
 		err = sampleQuery->first();
 
@@ -3178,7 +3174,7 @@ SkipHandleSimpleFilter:
 			//nextButton->Disable();
 			//deleteButton->Disable();
 			deactivateActionButtons();
-			noDataAvailable = false;	
+			noDataAvailable = false;
 		} else {
 			lbDBRead();
 			//lastButton->Enable();
@@ -3187,7 +3183,7 @@ SkipHandleSimpleFilter:
 			//deleteButton->Enable();
 		}
 	}
-	
+
 	SetName(formName);
 }
 /*...e*/
@@ -3196,25 +3192,25 @@ SkipHandleSimpleFilter:
 void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 
 	_LOG << "lbDatabaseTableViewPanel::updateFromDetail() called." LOG_
 
 
-	// Using the new = and += operators of the string interface. 
+	// Using the new = and += operators of the string interface.
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
-	
+
 	*newWhereClause = " where "; // 'primary keys' = <foreign values>
 
 	// Build the query to get the ID from the given *&SourceFieldName
-	
-	*newMasterIDQuery = "select "; // 'Foreign keys' from detail table where detail id = 
-	
+
+	*newMasterIDQuery = "select "; // 'Foreign keys' from detail table where detail id =
+
 	// Add the primary key names from the table, that are related to *&SourceFieldName
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -3245,8 +3241,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 	SourceFieldName->trim();
 	SourceFieldValue->trim();
 
-	_LOG << "Have detail form '" << detailForm->charrep() << 
-	           "', source field name '" << SourceFieldName->charrep() << 
+	_LOG << "Have detail form '" << detailForm->charrep() <<
+	           "', source field name '" << SourceFieldName->charrep() <<
 	           "' and source field value '" << SourceFieldValue->charrep() <<
 	           "' for master form '" << formName << "'" LOG_
 
@@ -3254,10 +3250,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 /*...sDetermine the foreign key values of the current detail entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
 	UAP(lb_I_String, colName)
 	int columns = _detail->getForeignColumns();
-	
+
 	if (columns == 0) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
+
 		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
 			/// \todo Fixing code.
 			char* dbbackend = meta->getSystemDatabaseBackend();
@@ -3282,10 +3278,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
 			correctionQuery = database->getQuery(DBName->charrep(), 0);
-			
+
 			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open detail form' and module = 'lbDatabaseForm') where id = ";
 			*SQL += actionID->charrep();
-			
+
 			correctionQuery->skipFKCollecting();
 			correctionQuery->query(SQL->charrep());
 			correctionQuery->enableFKCollecting();
@@ -3293,19 +3289,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 
 		return;
 	}
-	
+
 	bool isChar = _detail->isCharacterColumn(SourceFieldName->charrep());
-	
+
 	UAP(lb_I_String, sourceTable)
 	sourceTable = _detail->getTableName(SourceFieldName->charrep());
-	
+
 	UAP(lb_I_String, tn)
 	for (int i = 1; i <= columns-1; i++) {
 		colName = _detail->getForeignColumn(i);
 		tn = _detail->getTableName(colName->charrep());
 
 		_CL_LOG << "lbDatabaseTableViewPanel::updateFromDetail() creates query column '" << colName->charrep() << "'" LOG_
-		
+
 		if (strcmp(sourceTable->charrep(), tn->charrep()) == 0) {
 			*newMasterIDQuery += colName->charrep();
 			*newMasterIDQuery += ", ";
@@ -3313,7 +3309,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 	}
 
 	colName = _detail->getForeignColumn(columns);
-		
+
 	_CL_LOG << "lbDatabaseTableViewPanel::updateFromDetail() creates query column '" << colName->charrep() << "'" LOG_
 	tn = _detail->getTableName(colName->charrep());
 	if (strcmp(sourceTable->charrep(), tn->charrep()) == 0) {
@@ -3327,16 +3323,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 	*newMasterIDQuery += SourceFieldName->charrep();
 	*newMasterIDQuery += "\"";
 
-	if (isChar) 
+	if (isChar)
 		*newMasterIDQuery += " = '";
 	else
 		*newMasterIDQuery += " = ";
-	
+
 	*newMasterIDQuery += SourceFieldValue->charrep();
 
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
-	
+
 	_LOG << "lbDatabaseTableViewPanel::updateFromDetail() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
@@ -3349,7 +3345,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	char* dbbackend = meta->getApplicationDatabaseBackend();
 
-	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead. 
+	if (strcmp(DBName->charrep(), "lbDMF") == 0) { // If currently running the system database, use the system backend switch instead.
 		dbbackend = meta->getSystemDatabaseBackend();
 	}
 
@@ -3402,30 +3398,30 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 		while (err == ERR_NONE) {
 			int subClause = 0;
 			*newWhereClause += "(";
-			
+
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(i);
-		
+
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
 				UAP(lb_I_String, pt)
-		
+
 				pt = PKQuery->getPKTable(colName->charrep());
-				
+
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
-				
+
 				if (*pt == *&st) {
 					if (subClause == 0) {
 						subClause++;
 					} else {
 						*newWhereClause += " and ";
-						subClause++;				
+						subClause++;
 					}
-				
+
 					fk = PKQuery->getPKColumn(colName->charrep());
 					*newWhereClause += fk->charrep();
 
@@ -3434,18 +3430,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 					if (w) w->Hide();
 
-					if (isChar) 
+					if (isChar)
 						*newWhereClause += " = '";
 					else
 						*newWhereClause += " = ";
-	
+
 					*newWhereClause += colValue->charrep();
-			
+
 					if (isChar) *newWhereClause += "'";
-			
+
 					UAP(lb_I_Unknown, uk_colValue)
 					UAP(lb_I_KeyBase, key_fk)
-				
+
 					QI(colValue, lb_I_Unknown, uk_colValue)
 					QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3460,15 +3456,15 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 				c = PKQuery->getColumnName(columns);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(columns);
-		
+
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
-		
+
 				UAP(lb_I_String, pt)
-				
+
 				pt = PKQuery->getPKTable(colName->charrep());
-				
+
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
 				if (*pt == *&st) {
@@ -3476,7 +3472,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 						subClause++;
 					} else {
 						*newWhereClause += " and ";
-						subClause++;				
+						subClause++;
 					}
 
 					fk = PKQuery->getPKColumn(colName->charrep());
@@ -3487,18 +3483,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 					if (w) w->Hide();
 
-					if (isChar) 
+					if (isChar)
 						*newWhereClause += " = '";
 					else
 						*newWhereClause += " = ";
-	
+
 					*newWhereClause += colValue->charrep();
-			
+
 					if (isChar) *newWhereClause += "'";
-			
+
 					UAP(lb_I_Unknown, uk_colValue)
 					UAP(lb_I_KeyBase, key_fk)
-				
+
 					QI(colValue, lb_I_Unknown, uk_colValue)
 					QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3507,32 +3503,32 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 					_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 				}
 /*...e*/
-			
+
 			*newWhereClause += ") ";
-			
+
 			err = PKQuery->next();
-			
-			if (err != ERR_DB_NODATA) 
+
+			if (err != ERR_DB_NODATA)
 				*newWhereClause += " or ";
 		}
-		
+
 		if (err == WARN_DB_NODATA) {
 			int subClause = 0;
 			*newWhereClause += "(";
-			
+
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
 				c = PKQuery->getColumnName(i);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(i);
-		
+
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
 				UAP(lb_I_String, pt)
-				
+
 				pt = PKQuery->getPKTable(colName->charrep());
-				
+
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
 				if (*pt == *&st) {
@@ -3540,7 +3536,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 						subClause++;
 					} else {
 						*newWhereClause += " and ";
-						subClause++;				
+						subClause++;
 					}
 					fk = PKQuery->getPKColumn(colName->charrep());
 					*newWhereClause += fk->charrep();
@@ -3550,18 +3546,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 					if (w) w->Hide();
 
-					if (isChar) 
+					if (isChar)
 						*newWhereClause += " = '";
 					else
 						*newWhereClause += " = ";
-	
+
 					*newWhereClause += colValue->charrep();
-			
+
 					if (isChar) *newWhereClause += "'";
-			
+
 					UAP(lb_I_Unknown, uk_colValue)
 					UAP(lb_I_KeyBase, key_fk)
-				
+
 					QI(colValue, lb_I_Unknown, uk_colValue)
 					QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3571,19 +3567,19 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 				}
 /*...e*/
 			}
-			
+
 /*...sBuild expression for one column:32:*/
 				c = PKQuery->getColumnName(columns);
 				*colName = c->charrep();
 				colValue = PKQuery->getAsLong(columns);
-		
+
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
-		
+
 				UAP(lb_I_String, fk)
 				UAP(lb_I_String, pt)
-				
+
 				pt = PKQuery->getPKTable(colName->charrep());
-				
+
 				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
 				if (*pt == *&st) {
@@ -3591,7 +3587,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 						subClause++;
 					} else {
 						*newWhereClause += " and ";
-						subClause++;				
+						subClause++;
 					}
 
 					fk = PKQuery->getPKColumn(colName->charrep());
@@ -3602,18 +3598,18 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
 					if (w) w->Hide();
 
-					if (isChar) 
+					if (isChar)
 						*newWhereClause += " = '";
 					else
 						*newWhereClause += " = ";
-	
+
 					*newWhereClause += colValue->charrep();
-			
+
 					if (isChar) *newWhereClause += "'";
-			
+
 					UAP(lb_I_Unknown, uk_colValue)
 					UAP(lb_I_KeyBase, key_fk)
-				
+
 					QI(colValue, lb_I_Unknown, uk_colValue)
 					QI(fk, lb_I_KeyBase, key_fk)
 
@@ -3626,25 +3622,25 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			*newWhereClause += ")";
 		}
 
-		Layout();		
+		Layout();
 
-		
+
 	}
 /*...e*/
 
 
 	newQuery->setData(getQuery());
-	
+
 	setFilter(newWhereClause->charrep());
 
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
-	
+
 	_LOG << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
-	
+
 	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
 	err = sampleQuery->query(newQuery->charrep());
-	
+
 	if (err != ERR_NONE) {
 			_CL_LOG << "Error: Failed to get data for master form." LOG_
 			noDataAvailable = true;
@@ -3655,7 +3651,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			//nextButton->Disable();
 			//deleteButton->Disable();
 			deactivateActionButtons();
-			noDataAvailable = false;	
+			noDataAvailable = false;
 	} else {
 		err = sampleQuery->first();
 
@@ -3669,7 +3665,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			//nextButton->Disable();
 			//deleteButton->Disable();
 			deactivateActionButtons();
-			noDataAvailable = false;	
+			noDataAvailable = false;
 		} else {
 			lbDBRead();
 			//lastButton->Enable();
@@ -3678,7 +3674,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 			//deleteButton->Enable();
 		}
 	}
-	
+
 	SetName(formName);
 }
 /*...e*/
@@ -3723,41 +3719,41 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBClear() {
 					case lb_I_Query::lbDBColumnBit:
 						{
 							wxCheckBox *check = (wxCheckBox*) w;
-							
+
 							check->SetValue(false);
 						}
 						break;
-					
+
 
 					case lb_I_Query::lbDBColumnChar:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							tx->SetValue(wxString(""));
 						}
 						break;
-			
+
 					case lb_I_Query::lbDBColumnDate:
 						{
 							wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
 							wxDateTime dt = wxDateTime::Now();
-			
+
 							tx->SetValue(dt);
 						}
 						break;
-			
-					case lb_I_Query::lbDBColumnBigInteger:		
+
+					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							tx->SetValue(wxString(""));
 						}
 						break;
 					case lb_I_Query::lbDBColumnBinary:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-						
+
 							tx->SetValue(wxString(""));
 						}
 						break;
@@ -3765,7 +3761,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBClear() {
 						break;
 				}
 
-				
+
 /*...e*/
 				}
 			}
@@ -3773,7 +3769,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBClear() {
 			_CL_VERBOSE << "Control '" << name->charrep() << "' nicht gefunden." LOG_
 		}
 	}
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -3789,11 +3785,11 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 		sampleQuery->query(SQLString->charrep(), true);
 		sampleQuery->setAutoRefresh(meta->getAutorefreshData());
 	}
-	
+
 	SetName(formName);
 
 	int columns = sampleQuery->getColumns();
-	
+
 	for (int i = 1; i <= columns; i++) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, val)
@@ -3801,38 +3797,38 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 		name = sampleQuery->getColumnName(i);
 
 		// Find the corresponding window
-		
+
 		wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
 
 		if (w != NULL) {
-		
+
 			if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxChoice* cbox = (wxChoice*) w;
-				
+
 				int pos = cbox->GetSelection();
-				
+
 				if (pos != -1) {
 					lbErrCodes err = ERR_NONE;
 
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-					
+
 					cbName->setData(name->charrep());
-					
+
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
 					UAP(lb_I_Container, cbMapper)
-					
+
 					QI(cbName, lb_I_KeyBase, key_cbName)
-					
+
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
-					
+
 					if (uk_cbMapper == NULL) {
 						_LOG << "Error: Could not find mapping container for '" << name->charrep() << "'. Key was '" << key_cbName->charrep() << "'. List of elements:" LOG_
-						
+
 						ComboboxMapperList->finishIteration();
-						
+
 						while (ComboboxMapperList->hasMoreElements() == 1) {
 							UAP(lb_I_Unknown, uk)
 							UAP(lb_I_KeyBase, key)
@@ -3842,29 +3838,29 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 						}
 					} else {
 						QI(uk_cbMapper, lb_I_Container, cbMapper)
-						
+
 						key->setData(pos);
-						
+
 						UAP(lb_I_KeyBase, key_pos)
-						
+
 						QI(key, lb_I_KeyBase, key_pos)
-						
+
 						UAP(lb_I_Unknown, uk_mapping)
-						
+
 						uk_mapping = cbMapper->getElement(&key_pos);
-						
-						if (uk_mapping == NULL)  { 
+
+						if (uk_mapping == NULL)  {
 							if (!sampleQuery->isNullable(name->charrep())) {
 								if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
 							}
 						} else {
 							UAP(lb_I_Integer, FK_id)
-							
+
 							QI(uk_mapping, lb_I_Long, FK_id)
-							
+
 							col->setData(name->charrep());
 							val->setData(FK_id->charrep());
-							
+
 							sampleQuery->setNull(name->charrep(), false);
 							sampleQuery->setString(*&col, *&val);
 						}
@@ -3879,7 +3875,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 				if (FFI->isSpecialColumn(name->charrep())) {
 					_CL_LOG << "lbDatabaseTableViewPanel::lbDBUpdate() updates special column" LOG_
 					lbErrCodes err = ERR_NONE;
-					
+
 					char* type = FFI->getControlType(name->charrep());
 
 					if (strcmp(type, "toolbarimagefile") == 0) {
@@ -3888,12 +3884,12 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 						*controlname = name->charrep();
 						UAP(lb_I_KeyBase, key)
 						QI(controlname, lb_I_KeyBase, key)
-						
+
 						UAP(lb_I_Unknown, uk)
-						
+
 						uk = ImageButtonMapperList->getElement(&key);
 						QI(uk, lb_I_String, filename)
-						
+
 						sampleQuery->setString(*&controlname, *&filename);
 					}
 				} else {
@@ -3909,27 +3905,27 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 									wxString v = "true";
 									col->setData(name->charrep());
 									val->setData(v.c_str());
-							
+
 									sampleQuery->setString(*&col, *&val);
 								} else {
 									wxString v = "false";
 									col->setData(name->charrep());
 									val->setData(v.c_str());
-								
+
 									sampleQuery->setString(*&col, *&val);
 								}
 							}
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
 							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 								wxString v = tx->GetValue();
-			
+
 								col->setData(name->charrep());
 								val->setData(v.c_str());
 
@@ -3937,14 +3933,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 							}
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnDate:
 						{
 							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
-			
+
 								wxDateTime v = tx->GetValue();
-			
+
 								col->setData(name->charrep());
 								val->setData(v.FormatISODate().c_str());
 
@@ -3953,15 +3949,15 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 							}
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 								wxString v = tx->GetValue();
-			
+
 								col->setData(name->charrep());
 								val->setData(v.c_str());
 
@@ -3973,14 +3969,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 						{
 							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 								wxString v = tx->GetValue();
-			
+
 								col->setData(name->charrep());
 
 								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
-								
-								if (v.Length() > 0) { 
+
+								if (v.Length() > 0) {
 									int len = v.Length()+1;
 									void* buffer = malloc(len);
 									memcpy(buffer, v.c_str(), len);
@@ -3991,14 +3987,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 							}
 						}
 						break;
-					
-					
+
+
 					case lb_I_Query::lbDBColumnUnknown:
-					
+
 						break;
 				}
 
-				
+
 /*...e*/
 				}
 			}
@@ -4011,7 +4007,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 
 		newTitle->setData(formName);
-		
+
 		*newTitle += ": Update failed !";
 
 		SetName(newTitle->charrep());
@@ -4020,12 +4016,12 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 			sampleQuery->reopen();
 			lbDBRead();
 		}
-		
+
 		_LOG << "Update a database record failed." LOG_
 
 		return ERR_UPDATE_FAILED;
 	}
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -4037,14 +4033,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBRead() {
   lbDBClear();
 
 	int columns = sampleQuery->getColumns();
-	
+
 	for (int i = 1; i <= columns; i++) {
 		UAP(lb_I_String, name)
 		name = sampleQuery->getColumnName(i);
 		// Find the corresponding window
-		
+
 		//wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
-		
+
 		//if (w != NULL) {
 			if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 				UAP(lb_I_Long, l)
@@ -4070,12 +4066,12 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBRead() {
 							currentRow->setUAPString(*&name, *&s);
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
 							UAP(lb_I_String, s)
-							
+
 							s = sampleQuery->getAsString(i);
 							currentRow->setUAPString(*&name, *&s);
 						}
@@ -4087,7 +4083,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBRead() {
 							currentRow->setUAPString(*&name, *&s);
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
@@ -4112,7 +4108,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBRead() {
 		//	_CL_VERBOSE << "Control '" << name->charrep() << "' nicht gefunden." LOG_
 		//}
 	}
-	
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -4131,9 +4127,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBFirst(lb_I_Unknown* uk) {
 
 	if (err == ERR_DB_NODATA) {
 		sampleQuery->reopen();
-		
+
 		err = sampleQuery->first();
-		
+
 		if (err == ERR_DB_NODATA) {
 			DISABLE_FOR_NO_DATA()
 
@@ -4144,7 +4140,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBFirst(lb_I_Unknown* uk) {
 	}
 
 	lbDBRead();
-	
+
 	DISABLE_BOF()
 
 	return ERR_NONE;
@@ -4160,7 +4156,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBNext(lb_I_Unknown* uk) {
 
 	// Skip all deleted rows
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
-	
+
 	if (err == WARN_DB_NODATA) {
 		nextButton->Disable();
 		lastButton->Disable();
@@ -4168,9 +4164,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBNext(lb_I_Unknown* uk) {
 
 	if (err == ERR_DB_NODATA) {
 		sampleQuery->reopen();
-		
+
 		err = sampleQuery->last();
-		
+
 		if (err == ERR_DB_NODATA) {
 			//prevButton->Disable();
 			//firstButton->Disable();
@@ -4178,15 +4174,15 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBNext(lb_I_Unknown* uk) {
 		} else {
 			DISABLE_EOF()
 		}
-		
+
 	} else {
 		//prevButton->Enable();
 		//firstButton->Enable();
 		//deleteButton->Enable();
-	
+
 		lbDBClear();
 	}
-		
+
 	lbDBRead();
 
 	return ERR_NONE;
@@ -4209,10 +4205,10 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBPrev(lb_I_Unknown* uk) {
 	}
 
 	if (err == ERR_DB_NODATA) {
-	
+
 		sampleQuery->reopen();
 		err = sampleQuery->first();
-		
+
 		if (err == ERR_DB_NODATA) {
 			nextButton->Disable();
 			lastButton->Disable();
@@ -4239,13 +4235,13 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBLast(lb_I_Unknown* uk) {
 	lbDBClear();
 
 	lbErrCodes err = sampleQuery->last();
-	
+
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
 
 	if (err == ERR_DB_NODATA) {
 		sampleQuery->reopen();
 		err = sampleQuery->last();
-	
+
 		if (err == ERR_DB_NODATA) {
 			DISABLE_FOR_NO_DATA()
 
@@ -4263,9 +4259,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBLast(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBRefresh(lb_I_Unknown* uk) {
 	close();
-	
+
 	open();
-	
+
 	return ERR_NONE;
 }
 
@@ -4282,105 +4278,105 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 
 			newTitle->setData(formName);
-		
+
 			*newTitle += ": Add failed !";
-			
+
 			_LOG << newTitle->charrep() LOG_
 
 			SetName(_trans(newTitle->charrep()));
 		} else {
 			// Delete fields and set foreign key columns to NULL
-			
+
 			if (sampleQuery->dataFetched()) lbDBClear(); // Clear fields and two step mode
 			errUpdate = ERR_NONE;
 		}
 	} else {
 		_CL_LOG << "Query is in add mode." LOG_
 	}
-	
+
 	char* foreignkey = NULL;
 	char* foreignkey_value = NULL;
-	
+
 /*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
-	
+
 		_CL_LOG << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
-	
+
 		for (int i = 1; i <= MasterDetailRelationData->Count(); i++) {
 			lbErrCodes err = ERR_NONE;
-		
+
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_KeyBase, key)
-			
+
 			UAP(lb_I_Long, value)
-			
+
 			uk = MasterDetailRelationData->getElementAt(i);
 			key = MasterDetailRelationData->getKeyAt(i);
-			
-			
+
+
 			QI(uk, lb_I_Long, value)
-			
+
 			_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
 
 			foreignkey = strdup(key->charrep());
 			foreignkey_value = strdup(value->charrep());
 
-			
+
 			wxWindow* w = FindWindowByName(wxString(key->charrep()), this);
-		
+
 			if (w != NULL) {
 				if (sampleQuery->hasFKColumn(key->charrep()) == 1) {
-					_LOG << "lbDatabaseTableViewPanel::lbDBAdd() Set dropdown control '" << 
-					key->charrep() << 
-					"' to '" << 
+					_LOG << "lbDatabaseTableViewPanel::lbDBAdd() Set dropdown control '" <<
+					key->charrep() <<
+					"' to '" <<
 					value->charrep() << "'" LOG_
 					/*...sfill combo box with data:48:*/
 					wxChoice* cbox = (wxChoice*) w;
-					
+
 					lbErrCodes err = ERR_NONE;
-					
+
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-					
+
 					cbName->setData(key->charrep());
-					
+
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
 					UAP(lb_I_Container, cbMapper)
-					
+
 					QI(cbName, lb_I_KeyBase, key_cbName)
-					
+
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
-					
+
 					QI(uk_cbMapper, lb_I_Container, cbMapper)
-					
+
 					int count = cbMapper->Count();
-					
+
 					if (count != 0) {
 						key1->setData(value->getData());
 						UAP(lb_I_KeyBase, key_FK_id)
 						QI(key1, lb_I_KeyBase, key_FK_id)
-						
+
 						UAP(lb_I_Unknown, uk_cbBoxPosition)
 						UAP(lb_I_Integer, cbBoxPosition)
-						
+
 						int cbPos = 0;
 						bool selected = false;
-						
+
 						cbMapper->finishIteration();
 						while (cbMapper->hasMoreElements() == 1) {
 							UAP(lb_I_Integer, sel)
 					        UAP(lb_I_Unknown, e)
 					        e = cbMapper->nextElement();
 					        QI(e, lb_I_Long, sel)
-							
+
 					        if (sel->equals(*&key_FK_id)) {
 					        	selected = true;
 					        	cbox->SetSelection(cbPos);
 					        }
 					        cbPos++;
 						}
-						
+
 						if (!selected) {
 							_LOG << "Error: Dropdown control couldn't correctly set." LOG_
 						}
@@ -4390,14 +4386,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 					/*...e*/
 				} else {
 					if (FFI->isSpecialColumn(key->charrep())) {
-						_CL_VERBOSE << "Set special control '" << 
-							key->charrep() << 
-							"' to '" << 
+						_CL_VERBOSE << "Set special control '" <<
+							key->charrep() <<
+							"' to '" <<
 							value->charrep() << "'" LOG_
 					} else {
-						_CL_VERBOSE << "Set text control '" << 
-							key->charrep() << 
-							"' to '" << 
+						_CL_VERBOSE << "Set text control '" <<
+							key->charrep() <<
+							"' to '" <<
 							value->charrep() << "'" LOG_
 					#ifdef bla
 /*...sfill controls with data:56:*/
@@ -4407,7 +4403,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 					case lb_I_Query::lbDBColumnBit:
 						{
 							wxCheckBox *check = (wxCheckBox*) w;
-#ifndef OSX	
+#ifndef OSX
 							if (sampleQuery->isNull(i)) {
 								check->SetValue(false);
 							} else {
@@ -4422,14 +4418,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 #endif
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnChar:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
 							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -4461,23 +4457,23 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 		DISABLE_FOR_ONE_DATA()
 		return ERR_NONE;
 	}
-	
+
 	_CL_LOG << "Determine update failed..." LOG_
 
 	if (errUpdate == ERR_UPDATE_FAILED) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 		_CL_LOG << "Updating after add failed." LOG_
-		
+
 		newTitle->setData(formName);
-		
+
 		*newTitle += ": Missing fields !";
-		
+
 		_LOG << newTitle->charrep() LOG_
-		
+
 		SetName(_trans(newTitle->charrep()));
 	} else {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
-		
+
 		if (allNaviDisabled == true) {
 			lbDBFirst(NULL);
 			lbDBClear();
@@ -4488,13 +4484,13 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
 						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
-						
+
 						*col = foreignkey;
 						*val = foreignkey_value;
-						
+
 						sampleQuery->setString(*&col, *&val);
 					} else {
-						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
+						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_
 					}
 				}
 				if (lbDBLast(NULL) != ERR_NONE) {
@@ -4509,19 +4505,19 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
 						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
-						
+
 						*col = foreignkey;
 						*val = foreignkey_value;
-						
+
 						sampleQuery->setString(*&col, *&val);
 					} else {
-						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
+						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_
 					}
 				}
 				_LOG << "lbDatabaseTableViewPanel::lbDBAdd() Actually update record data." LOG_
-				
+
 				lbDBUpdate();
-				
+
 				if (sampleQuery->update() == ERR_NONE) {
 					if (sampleQuery->last() == ERR_NONE)
 						lbDBRead();
@@ -4552,15 +4548,15 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewPanel\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	err = sampleQuery->remove();
-	
+
 	if (err == ERR_DB_ROWDELETED) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		meta->msgBox("Error", "Could not delete entry. It is in use.");
 		return ERR_NONE;
 	}
-	
+
 	if (err == INFO_DB_REOPENED) {
 		lbDBRead();
 
@@ -4579,15 +4575,15 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 				return ERR_NONE;
 			}
 		}
-		
+
 		err = sampleQuery->next();
-		
+
 		if (err == WARN_DB_NODATA) {
 			DISABLE_EOF()
 			lbDBRead();
 			return ERR_NONE;
 		}
-		
+
 		if (err == ERR_DB_NODATA) {
 			err = sampleQuery->first();
 			if (err == ERR_DB_NODATA) {
@@ -4596,7 +4592,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 				deactivateActionButtons();
 				return ERR_NONE;
 			}
-			
+
 			DISABLE_BOF()
 		} else {
 			//nextButton->Enable();
@@ -4605,7 +4601,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 			//firstButton->Enable();
 		}
 	}
-	
+
 	lbDBRead();
 	return ERR_NONE;
 }
@@ -4614,14 +4610,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBDelete(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewPanel\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	
+
 	meta->setStatusText("Info", "Executing action ...");
 
 	if (uk != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		
+
 /*...sResolve the related data for the action button \40\to be cached later\41\:16:*/
 		char* reversedEvent = NULL;
 		UAP(lb_I_Integer, eventID)
@@ -4637,7 +4633,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
 		wxString value;
 		wxString errmsg;
-		
+
 		if (w == NULL) 	{
 			UAP_REQUEST(getModuleInstance(), lb_I_String, err)
 			*err = "Didn't found a control with given name. Check, if your action settings use an existing field from the form. (";
@@ -4649,9 +4645,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 			errmsg = wxString("Found a control with given name: ") + wxString(s->charrep());
 			meta->setStatusText("Info", errmsg.c_str());
 		}
-		
+
 		if (sampleQuery->hasFKColumn(s->charrep()) == 1) {
-				wxChoice* cbox = (wxChoice*) w;		
+				wxChoice* cbox = (wxChoice*) w;
 				int pos = cbox->GetSelection();
 				if (pos != -1) {
 					lbErrCodes err = ERR_NONE;
@@ -4669,7 +4665,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 					QI(key, lb_I_KeyBase, key_pos)
 					UAP(lb_I_Unknown, uk_mapping)
 					uk_mapping = cbMapper->getElement(&key_pos);
-					if (uk_mapping == NULL)  { 
+					if (uk_mapping == NULL)  {
 						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
 					} else {
 						UAP(lb_I_Integer, FK_id)
@@ -4696,35 +4692,35 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 							}
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnChar:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							value = tx->GetValue();
 						}
 						break;
-					
+
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-			
+
 							value = tx->GetValue();
 						}
 						break;
-					
-					
+
+
 					case lb_I_Query::lbDBColumnUnknown:
-					
+
 						break;
 				}
 /*...e*/
 		}
 /*...e*/
-		
-		_LOG << "Have these event: " << reversedEvent << "." LOG_		
+
+		_LOG << "Have these event: " << reversedEvent << "." LOG_
 		_LOG << "Have got source field: " << s->charrep() << "." LOG_
-		_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+		_LOG << "The value for the field is " << value.c_str() << "." LOG_
 
 		errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
 		meta->setStatusText("Info", errmsg.c_str());
@@ -4784,7 +4780,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 void lbDatabaseTableViewPanel::OnImageButtonClick(wxCommandEvent& event ) {
 
 	wxObject* o = event.GetEventObject();
-	
+
 	if (o != NULL) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
@@ -4798,12 +4794,12 @@ void lbDatabaseTableViewPanel::OnImageButtonClick(wxCommandEvent& event ) {
 
 		UAP(lb_I_KeyBase, key)
 		QI(controlname, lb_I_KeyBase, key)
-						
+
 		UAP(lb_I_Unknown, uk)
-						
+
 		uk = ImageButtonMapperList->getElement(&key);
 		QI(uk, lb_I_String, filename)
-		
+
 #ifdef OSX
 		*images = "/toolbarimages/";
 #endif
@@ -4815,16 +4811,16 @@ void lbDatabaseTableViewPanel::OnImageButtonClick(wxCommandEvent& event ) {
 #endif
 		*newfilename = app->getDirLocation();
 		*newfilename += images->charrep();
-		
+
 		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", wxT("XPM Files (*.xpm)|*.xpm|PNG Files (*.png)|*.png"), wxOPEN);
 
 		if (fileDialog.ShowModal() == wxID_OK) {
 			*filename = fileDialog.GetFilename().c_str();
 
 			wxString f = wxString(filename->charrep());
-							
+
 			wxImage* im;
-							
+
 			if (f.Upper().Contains(".XPM") == 1) {
 				im = new wxImage(fileDialog.GetPath().c_str(), wxBITMAP_TYPE_XPM);
 			}
@@ -4836,7 +4832,7 @@ void lbDatabaseTableViewPanel::OnImageButtonClick(wxCommandEvent& event ) {
 			wxBitmap bm = wxBitmap(*im);
 			bmb->SetBitmapLabel(bm);
 		}
-		
+
 	} else {
 		_LOG << "Error: Image button click event didn't work!" LOG_
 	}
@@ -4852,23 +4848,23 @@ void lbDatabaseTableViewPanel::OnDispatch(wxCommandEvent& event ) {
                 {
                 	lbErrCodes err = ERR_NONE;
 			lb_I_Module* m = getModuleInstance();
-			
+
 			UAP_REQUEST(m, lb_I_EventManager, eman)
-		
+
 			UAP_REQUEST(m, lb_I_Dispatcher, dispatcher)
 			dispatcher->setEventManager(eman.getPtr());
 
 			UAP_REQUEST(m, lb_I_Integer, param)
-			
+
 			param->setData(event.GetId());
-			
+
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
-		
+
 			UAP_REQUEST(m, lb_I_String, result)
 			UAP(lb_I_Unknown, uk_result)
 			QI(result, lb_I_Unknown, uk_result)
-		
+
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }
                 break;
@@ -4903,19 +4899,19 @@ int LB_STDCALL lbDatabaseTableViewPanel::getPrimaryColumns()
 {
 	/*
 	   Directly forward the request to the formular field information class.
-	   
+
 	   But it would not simply be the primary columns, that are logically
 	   the master columns.
 	   For sample, a customer relationship management (CRM) system may have
 	   a customer number, wich is not the internal ID of the customer entry.
-	   
+
 	   So for the database form, it may be the readonly field - the customer
 	   number, that has not to be changed.
-	   
+
 	 */
 
 	int PKColumns = sampleQuery->getPKColumns();
-	
+
 	return PKColumns;
 }
 /*...e*/
@@ -4924,25 +4920,25 @@ int LB_STDCALL lbDatabaseTableViewPanel::getForeignColumns(char* primaryTable)
 {
 	/*
 	   Directly forward the request to the formular field information class.
-	   
+
 	   But it would not simply be the primary columns, that are logically
 	   the master columns.
 	   For sample, a customer relationship management (CRM) system may have
 	   a customer number, wich is not the internal ID of the customer entry.
-	   
+
 	   So for the database form, it may be the readonly field - the customer
 	   number, that has not to be changed.
-	   
+
 	 */
 
 	int PKColumns = sampleQuery->getFKColumns();
 
 	_CL_LOG << "lbDatabaseTableViewPanel::getForeignColumns(...) returns " << PKColumns << " columns." LOG_
-	
+
 	return PKColumns;
 }
 /*...e*/
-	
+
 lb_I_String* LB_STDCALL lbDatabaseTableViewPanel::getPrimaryColumn(int pos)
 {
 	return sampleQuery->getPKColumn(pos);
@@ -4952,7 +4948,7 @@ lb_I_String* LB_STDCALL lbDatabaseTableViewPanel::getForeignColumn(int pos)
 {
 	return sampleQuery->getFKColumn(pos);
 }
-	   
+
 bool LB_STDCALL lbDatabaseTableViewPanel::isCharacterColumn(char* name)
 {
 	return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
@@ -4964,14 +4960,14 @@ bool LB_STDCALL lbDatabaseTableViewPanel::isCharacterColumn(char* name)
 class lbPluginDatabaseTableViewPanel : public lb_I_PluginImpl {
 public:
 	lbPluginDatabaseTableViewPanel();
-	
+
 	virtual ~lbPluginDatabaseTableViewPanel();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
-	
+
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -4980,7 +4976,7 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
-	
+
 	UAP(lb_I_Unknown, dbForm)
 };
 
@@ -5018,7 +5014,7 @@ lbPluginDatabaseTableViewPanel::lbPluginDatabaseTableViewPanel() {
 
 lbPluginDatabaseTableViewPanel::~lbPluginDatabaseTableViewPanel() {
 	_CL_LOG << "lbPluginDatabaseTableViewPanel::~lbPluginDatabaseTableViewPanel() called.\n" LOG_
-	
+
 	if (dbForm != NULL) {
 		_CL_LOG << "dbForm is not NULL." LOG_
 		_CL_LOG << "*******************" LOG_
@@ -5036,7 +5032,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseTableViewPanel::autorun() {
 
 void LB_STDCALL lbPluginDatabaseTableViewPanel::initialize() {
 }
-	
+
 bool LB_STDCALL lbPluginDatabaseTableViewPanel::run() {
 	return true;
 }
@@ -5048,12 +5044,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewPanel::peekImplementation() {
 	if (dbForm == NULL) {
 		lbDatabaseTableViewPanel* dbPanel = new lbDatabaseTableViewPanel();
 		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabaseTableViewPanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
-	
+
 	return dbForm.getPtr();
 }
 /*...e*/
@@ -5064,13 +5060,13 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewPanel::getImplementation() {
 	if (dbForm == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-	
+
 		lbDatabaseTableViewPanel* dbPanel = new lbDatabaseTableViewPanel();
 		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	}
-	
+
 	lb_I_Unknown* r = dbForm.getPtr();
 	dbForm.resetPtr();
 	return r;
@@ -5078,12 +5074,12 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewPanel::getImplementation() {
 /*...e*/
 void LB_STDCALL lbPluginDatabaseTableViewPanel::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (dbForm != NULL) {
 		UAP(lb_I_DatabaseForm, form)
 		QI(dbForm, lb_I_DatabaseForm, form)
 		form->destroy();
-		
+
 		dbForm.resetPtr();
 	}
 }

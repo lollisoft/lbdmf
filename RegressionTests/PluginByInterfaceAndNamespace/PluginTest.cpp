@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
-            
+
             40235 Duesseldorf (germany)
 */
 /*...e*/
@@ -33,19 +33,23 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -55,7 +59,10 @@ extern "C" {
 #endif
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 /*...sDocumentation:0:*/
@@ -70,27 +77,27 @@ extern "C" {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 
 	_CL_LOG << "Plugin regression tests..." LOG_
-	
+
 	UAP_REQUEST(mm, lb_I_PluginManager, PM)
 
 	PM->initialize();
 
 	if (PM->beginEnumPlugins()) {
-	
+
 		while (true) {
-		
+
 			UAP(lb_I_Plugin, pl)
-			
+
 			pl = PM->nextPlugin();
-			
+
 			if (pl == NULL) break;
 
 			pl->initialize();
-		
+
 		}
 	}
 
@@ -111,18 +118,18 @@ int main(int argc, char *argv[]) {
 
 lb_I_Unknown* findPluginByInterfaceAndNamespace(char* _interface, char* _namespace) {
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Plugin, pl)
-		
+
 	pl = PM->getFirstMatchingPlugin(_interface, _namespace);
-	
+
 	_CL_LOG << "References to plugin wrapper instance: " << pl->getRefCount() LOG_
-		
+
 	if (pl != NULL) {
        	        uk = pl->getImplementation();
        	        uk++;
-	        	        
+
        	        return uk.getPtr();
        	}
        	return NULL;
@@ -139,14 +146,14 @@ int main(int argc, char *argv[]) {
 		TRMemOpen();
 		TRMemSetModuleName(__FILE__);
 	#endif
-	
+
 		mm = getModuleInstance();
 
 		UAP(lb_I_Unknown, uk)
 		uk = findPluginByInterfaceAndNamespace("lb_I_UserAccounts", "Model");
 
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		
+
 		PM->unload();
 	}
 

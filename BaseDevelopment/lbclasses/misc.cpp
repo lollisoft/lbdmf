@@ -31,10 +31,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: misc.cpp,v 1.48 2009/03/04 17:40:07 lollisoft Exp $
+ * $Id: misc.cpp,v 1.49 2009/12/06 19:20:16 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.49  2009/12/06 19:20:16  lollisoft
+ * Modified build process to use precompiled files.
+ * Corrected the long build time problem. It is located in the _LOG macro.
+ * Updated wxPropgrid to 1.4.9.1 and updated building against wxMSW 2.8.10.
+ *
+ * Build works, but running the application fails with not properly initialized error.
+ * (0xc0000005)
+ *
+ * Also updated the iss files for the new planned release.
+ *
  * Revision 1.48  2009/03/04 17:40:07  lollisoft
  * Added missing includes for openSuSE 11.1 version (GCC).
  *
@@ -220,6 +230,10 @@
  **************************************************************/
 /*...e*/
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 /*...sLB_CLASSES_DLL scope:0:*/
 #define LB_CLASSES_DLL
 #include <lbclasses-module.h>
@@ -228,6 +242,7 @@
 #define __MISC
 
 /*...sIncludes:0:*/
+
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
@@ -254,8 +269,9 @@ extern "C" {
 
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
+#endif
 
 #include <lbthread.h>
 #include <lb_misc.h>

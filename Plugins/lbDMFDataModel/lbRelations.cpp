@@ -27,6 +27,10 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #ifndef UNIX
@@ -35,7 +39,10 @@
 #ifdef UNIX
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>

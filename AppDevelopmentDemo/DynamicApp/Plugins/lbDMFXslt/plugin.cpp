@@ -11,6 +11,10 @@
 */
 /*...e*/
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -39,9 +43,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
+#endif
 
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/

@@ -35,15 +35,20 @@
 
 #endif
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...sLB_DMFDATAMODEL_DLL scope:0:*/
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>

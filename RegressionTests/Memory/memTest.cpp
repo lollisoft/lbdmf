@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -33,19 +33,23 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
+extern "C" {
 #endif
-#ifndef OSX            
+#ifndef OSX
 #include <conio.h>
 #endif
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -56,7 +60,10 @@ extern "C" {
 #endif
 //#include "testdll.h"
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 /*...sDocumentation:0:*/
@@ -73,7 +80,7 @@ int main(int argc, char *argv[]) {
 
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -84,7 +91,7 @@ int main(int argc, char *argv[]) {
 #ifdef MEM_TEST
 	{
 		_CL_LOG << "Memory regression tests..." LOG_
-	
+
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			string->setData("Test");
@@ -92,9 +99,9 @@ int main(int argc, char *argv[]) {
 
 		char* t = (char*) new char[100];
 		t[0] = 0;
-		
+
 		sprintf(t, "Unfreed memory :-)\n");
-	
+
 		printf("Ready.\n");
 	}
 
@@ -117,7 +124,7 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 	string->setData("Bla1");
 	container->insert(&uk, &key);
-	
+
 	container->deleteAll();
 
 #ifdef CONTAINER_TEST
@@ -133,7 +140,7 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 
 	container->deleteAll();
-	
+
 	string->setData("Bla");
 	container->insert(&uk, &key);
 	string->setData("Bla1");
@@ -144,7 +151,7 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 	string->setData("Bla4");
 	container->insert(&uk, &key);
-	
+
 	string->setData("Bla3");
 #endif
 
@@ -160,13 +167,13 @@ int main(int argc, char *argv[]) {
 	referenced here.
 	This shows the functioning reference counting, if automatic pointers (UAP's) are
 	used.
-	
+
 	There is an order of when the automatic pointers in maim and the static Memory instance
 	from trmem gets deleted.
-	
+
 	So the brackets are more for demonstration.
-	
-	\code	
+
+	\code
 {
 	UAP(lb_I_Unknown, ukdata)
 
@@ -191,15 +198,15 @@ int main(int argc, char *argv[]) {
 	printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
 	if (s != NULL) printf("Found string %s\n", s->getData());
 
-	printf("Try to dump content of container\n");	
+	printf("Try to dump content of container\n");
 	while (container->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, e)
 		e = container->nextElement();
 		if (e != NULL) {
 			UAP(lb_I_String, s)
-			
+
 			QI(e, lb_I_String, s)
-						
+
 			printf("String is: %s\n", s->getData());
 		}
 	}
@@ -211,10 +218,10 @@ int main(int argc, char *argv[]) {
 	container->deleteAll();
 
 	}
-	
+
 	mm->release(__FILE__, __LINE__);
 	getchar();
-	
+
 	return 0;
 }
  * \endcode
@@ -256,12 +263,12 @@ int main(int argc, char *argv[]) {
 #ifdef MEM_TEST
 
 	{
-		
+
 
 		printf("3. lbModule instance has %d references.\n", mm->getRefCount());
 		_CL_LOG << "Memory regression tests..." LOG_
 		printf("4. lbModule instance has %d references.\n", mm->getRefCount());
-	
+
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			printf("4a. lbModule instance has %d references.\n", mm->getRefCount());
@@ -297,9 +304,9 @@ int main(int argc, char *argv[]) {
 		container->insert(&uk, &key);
 		string->setData("Bla3");
 		container->insert(&uk, &key);
-		
+
 		string->setData("Other data");
-	
+
 		container->deleteAll();
 
 		container->insert(&uk, &key);
@@ -322,7 +329,7 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 
 	container->deleteAll();
-	
+
 	string->setData("Bla");
 	container->insert(&uk, &key);
 	string->setData("Bla1");
@@ -333,7 +340,7 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 	string->setData("Bla4");
 	container->insert(&uk, &key);
-	
+
 	string->setData("Bla3");
 	#endif
 /*...e*/
@@ -341,7 +348,7 @@ int main(int argc, char *argv[]) {
 /*...sCLONE_TEST:16:*/
 	#ifdef CLONE_TEST
 	UAP(lb_I_Container, clone)
-	
+
 		uk = container->clone(__FILE__, __LINE__);
 		QI(uk, lb_I_Container, clone)
 
@@ -350,12 +357,12 @@ int main(int argc, char *argv[]) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
 			UAP(lb_I_KeyBase, k)
-		
+
 			uk = clone->getElementAt(i);
 			k = clone->getKeyAt(i);
-			
+
 			QI(uk, lb_I_String, s)
-		
+
 			_CL_LOG << "Key: " << k->charrep() << ", Data: " << s->charrep() LOG_
 		}
 		#endif
@@ -368,35 +375,35 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Unknown, ukdata)
 
 		UAP(lb_I_String, s)
-	
+
 		ukdata = container->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
 		QI(ukdata, lb_I_String, s)
-	
+
 		UAP(lb_I_String, s1)
-	
+
 		ukdata = container->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
-	
+
 		QI(ukdata, lb_I_String, s1)
 
 		s1->setData("Changed");
 		char* cp1 = s1->getData();
 		char* cp = s->getData();
-	
+
 		printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
 		if (s != NULL) printf("Found string %s\n", s->getData());
-	
-		printf("Try to dump content of container\n");	
+
+		printf("Try to dump content of container\n");
 		while (container->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, e)
 			e = container->nextElement();
 			if (e != NULL) {
 				UAP(lb_I_String, s)
-				
+
 				QI(e, lb_I_String, s)
-							
+
 				printf("String is: %s\n", s->getData());
 			}
 		}
@@ -406,7 +413,7 @@ int main(int argc, char *argv[]) {
 
 		string->setData("Bla2");
 		container->remove(&key);
-		
+
 		string->setData("Bla3");
 		container->exists(&key);
 
@@ -417,8 +424,8 @@ int main(int argc, char *argv[]) {
 	printf("lbModule instance has %d references.\n", mm->getRefCount());
 
 	Instances();
-	
+
 	getchar();
-	
+
 	return 0;
 }

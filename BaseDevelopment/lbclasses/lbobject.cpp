@@ -35,10 +35,13 @@
 
 #endif
 
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
@@ -48,15 +51,15 @@
 extern "C" {
 #endif
 
-//#include <conio.h>
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
 
 /*...sLB_CLASSES_DLL scope:0:*/
 #define LB_CLASSES_DLL

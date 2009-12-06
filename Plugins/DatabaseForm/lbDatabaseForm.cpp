@@ -1,6 +1,4 @@
 /*...sLicence:0:*/
-/*...sLicence:0:*/
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,12 +23,15 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sincludes:0:*/
+
+#include <lbDMF_wxPrec.h>
+
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -59,9 +60,9 @@ extern "C" {
 #include <sys/malloc.h>
 #endif
 
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
+#endif
 
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
@@ -75,9 +76,6 @@ extern "C" {
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
 #endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
@@ -105,40 +103,40 @@ extern "C" {
 /*
 	This database dialog sample uses a fixed query yet.
 	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
-	
+
 	It should be changed in any way, if there are more different sample queries.
 	Handling creation and usage of form elements directly in wxDialog failed
 	anyhow.
-	
+
 	So I decided to use a derivation of it and put the handlers for the navigation
 	into this class and use it only by this class.
-	
+
 	I am not sure, if it will work if I create more than one dialog. The peoblem
 	may be my event handling mechanism.
-	
+
 	Here I use the following code to register my handlers:
-	
+
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, "DatabaseFirst");
-	
+
 	It registers the event "DatabaseFirst" for this instance, because the this pointer is used inside
 	my dispatching functionality.
-	
+
 	The identifer used here - "DatabaseFirst" - is a logical one. To be sure to get a free ID that
 	also works inside wxWidgets, eman registers ID's above 5000 - I think.
-	
+
 	To get a different ID for the second 'different' dialog - showing other data, It would be the best
 	idea to use the following unique things:
-	
+
 	process ID, thread ID optional, this pointer and the hostname.
-	
+
 	This leads into difficult code to build up the unique identifer, but macros would help.
-	
-	
+
+
 	At least:
-	
+
 	It would be easy to implement the native wxWidgets event handling mechanism, but then I am not
 	able to do a programmatical navigation from outside wxWidgets.
-	
+
 	This is only an idea - a remote control at application level.
 */
 /*...e*/
@@ -148,7 +146,7 @@ extern "C" {
 BEGIN_EVENT_TABLE(lbOwnerDrawControl, wxControl)
     EVT_PAINT  (lbOwnerDrawControl::OnPaint)
 END_EVENT_TABLE()
-   
+
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbOwnerDrawControl)
         ADD_INTERFACE(lb_I_Control)
@@ -174,17 +172,17 @@ void LB_STDCALL lbOwnerDrawControl::windowIsClosing(lb_I_Window* w) {
 }
 
 void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
-	
+
 	// Not sure, if it is a panel based dialog or a dialog.
 
 	lbDatabasePanel* p = (lbDatabasePanel*) parent;
-	Create(p, -1, wxPoint(), wxSize(40,40)); 
+	Create(p, -1, wxPoint(), wxSize(40,40));
 }
 
 void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-        
+
         dc.SetPen(*wxMEDIUM_GREY_PEN);
         for ( int i = 1; i <= 4; i++ )
  	       dc.DrawLine(0, i*10, i*10, 0);
@@ -202,7 +200,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemSetModuleName(__FILE__);
 
 			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
-                	
+
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -213,7 +211,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
                 	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
@@ -229,7 +227,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 default:
                         return FALSE;
         }
-        
+
         return TRUE;
 }
 /*...e*/

@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -33,18 +33,22 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #include <conio.h>
 
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -53,7 +57,10 @@ extern "C" {
 #include <malloc.h>
 #endif
 #endif
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 int main(int argc, char *argv[]) {
@@ -67,26 +74,26 @@ int main(int argc, char *argv[]) {
 
 		// Don't forget this in a console application before metaapplication is initialized.
 		PM->initialize();
-		
+
 		_CL_LOG << "Test MetaApplication" LOG_
 		meta->initialize();
-		
+
 		meta->setLoadFromDatabase(true);
 		meta->save();
 		meta->setLoadFromDatabase(false);
 		meta->load();
-		
+
 		if (meta->getLoadFromDatabase() == false) {
 			_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
 		} else {
 			_CL_LOG << "Test 1: Saving and loading meta application data succeeded." LOG_
 		}
-		
+
 		meta->setLoadFromDatabase(false);
 		meta->save();
 		meta->setLoadFromDatabase(true);
 		meta->load();
-		
+
 		if (meta->getLoadFromDatabase() == true) {
 			_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
 		} else {
@@ -98,8 +105,8 @@ int main(int argc, char *argv[]) {
 		meta->uninitialize();
 		PM->unload();
 	}
-	
+
 	unHookAll();
-	
+
 	return 0;
 }

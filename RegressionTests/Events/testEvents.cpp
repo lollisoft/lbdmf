@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
-            
+
             40235 Duesseldorf (germany)
 */
 /*...e*/
@@ -33,18 +33,22 @@
 
 #endif
 /*...sincludes:0:*/
+#ifdef LBDMF_PREC
+#include <lbConfigHook.h>
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
 #ifdef __cplusplus
-extern "C" {      
-#endif            
+extern "C" {
+#endif
 #include <conio.h>
 
 #ifdef __cplusplus
 }
-#endif            
+#endif
 
 #include <stdio.h>
 #include <iostream>
@@ -53,13 +57,16 @@ extern "C" {
 #include <malloc.h>
 #endif
 #endif
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
+#endif
+
 /*...e*/
 
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
-	
+
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -67,10 +74,10 @@ int main(int argc, char *argv[]) {
 
 	// Preload lbClasses DLL with this line !
 	UAP_REQUEST(mm, lb_I_String, s)
-	
+
 	UAP_REQUEST(mm, lb_I_EventManager, eman)
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
-	
+
 	int getBasicApplicationInfo;
 	int getMainModuleInfo;
 	int testPressed;
@@ -91,7 +98,7 @@ int main(int argc, char *argv[]) {
 
 	lb_I_EventHandler* handler;
 	meta->queryInterface("lb_I_EventHandler", (void**) &handler, __FILE__, __LINE__);
-	
+
 	handler->registerEventHandler(*&dispatcher);
 
 	// Leak s
