@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.133 $
+# * $Revision: 1.134 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.133 2009/12/06 19:21:21 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.134 2009/12/07 11:31:18 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.134  2009/12/07 11:31:18  lollisoft
+# * Fixed OS X architecture selection bug.
+# *
 # * Revision 1.133  2009/12/06 19:21:21  lollisoft
 # * Modified build process to use precompiled files.
 # * Corrected the long build time problem. It is located in the _LOG macro.
@@ -1317,11 +1320,11 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I /usr/include \
 	-I . 
 
-ifeq ($(OSPLATFORM), powerpc)
+ifeq ($(OSPLATFORM_), powerpc)
 OSX_ARCH=
 endif
 
-ifeq ($(OSPLATFORM), i386)
+ifneq ($(OSPLATFORM_), powerpc)
 OSX_ARCH=-arch i386
 endif
 
