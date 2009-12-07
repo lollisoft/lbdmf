@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.71 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.72 2009/12/07 11:33:08 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.72  2009/12/07 11:33:08  lollisoft
+ * Restored lost code.
+ *
  * Revision 1.71  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -1674,3 +1677,448 @@ bool LB_STDCALL lbPluginManager::attach(lb_I_PluginModule* toAttach) {
 bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	return FALSE;
 }
+/*...e*/
+	
+	/*...sclass lbPlugin:0:*/
+	/// \brief Plugin entity implementation.
+	class lbPlugin : public lb_I_Plugin {
+	public:
+		
+        lbPlugin();
+        virtual ~lbPlugin();
+		
+        DECLARE_LB_UNKNOWN()
+		
+		lb_I_Unknown* 		LB_STDCALL getImplementation();
+		bool 			LB_STDCALL hasInterface(char* name);
+		
+		void 			LB_STDCALL preinitialize();
+		
+		bool			LB_STDCALL canAutorun();
+		lbErrCodes		LB_STDCALL autorun();
+		void 			LB_STDCALL initialize();
+		bool 			LB_STDCALL run();
+		void 			LB_STDCALL uninitialize();
+		
+		void 			LB_STDCALL setPluginManager(lb_I_PluginManager* plM);
+		void 			LB_STDCALL setAttached(lb_I_PluginImpl* impl);
+		lb_I_PluginImpl*	LB_STDCALL getAttached();
+		
+		void LB_STDCALL setModule(char* module);
+		void LB_STDCALL setName(char* name);
+		void LB_STDCALL setVersion(char* version);
+		void LB_STDCALL setNamespace(char* __namespace);
+		char* LB_STDCALL getModule() { return _module; }
+		char* LB_STDCALL getName() { return _name; }
+		char* LB_STDCALL getVersion() { return _version; }
+		char* LB_STDCALL getNamespace() { return _namespace; }
+		
+	private:
+		lb_I_Unknown* LB_STDCALL peekImplementation();
+		
+		char* _name;
+		char* _version;
+		char* _namespace;
+		char* _module;
+		//	UAP(lb_I_PluginManager, _plM)
+		
+		UAP(lb_I_Unknown, implementation)
+		
+		bool isPreInitialized;
+		bool postInitialized;
+		
+	};
+	/*...e*/
+	/*...simplementation of class lbPlugin:0:*/
+	IMPLEMENT_FUNCTOR(instanceOfPlugin, lbPlugin)
+	
+	BEGIN_IMPLEMENT_LB_UNKNOWN(lbPlugin)
+	ADD_INTERFACE(lb_I_Plugin)
+	END_IMPLEMENT_LB_UNKNOWN()
+	
+	/*...slbPlugin\58\\58\lbPlugin\40\\41\:0:*/
+	lbPlugin::lbPlugin() {
+		_module = NULL;
+		_name = NULL;
+		_namespace = NULL;
+		_version = NULL;
+		ref = STARTREF;
+		
+		//	implementation = NULL;
+		isPreInitialized = false;
+	}
+	/*...e*/
+	/*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
+	lbPlugin::~lbPlugin() {
+		if (implementation != NULL)
+			_CL_VERBOSE << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
+			
+			if (_version) free (_version);
+		if (_module) free(_module);
+		if (_name) free(_name);
+		if (_namespace) free(_namespace);
+	}
+	/*...e*/
+	/*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+	lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
+		lbErrCodes err = ERR_NONE;
+		
+		_CL_VERBOSE << "lbPlugin::setData(...) called." LOG_
+		
+		UAP(lb_I_Plugin, pl)
+		QI(uk, lb_I_Plugin, pl)
+		
+		setName(pl->getName());
+		setModule(pl->getModule());
+		setNamespace(pl->getNamespace());
+		setVersion(pl->getVersion());
+		
+		setAttached(pl->getAttached());
+		
+		// getAttached increments reference, but this is not needed here.
+		implementation--;
+		
+		return ERR_NOT_IMPLEMENTED;
+	}
+	/*...e*/
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setPluginManager\40\lb_I_PluginManager\42\ plM\41\:0:*/
+	void LB_STDCALL lbPlugin::setPluginManager(lb_I_PluginManager* plM) {
+		//	_plM = plM;
+		//	_plM++;
+	}
+	/*...e*/
+	
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setAttached\40\lb_I_PluginImpl\42\ impl\41\:0:*/
+	void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
+		lbErrCodes err = ERR_NONE;
+		
+		if (impl == NULL) {
+			_CL_VERBOSE << "lbPlugin::setAttached(NULL) called." LOG_
+			return;
+		}
+		
+		QI(impl, lb_I_Unknown, implementation)
+		
+		if (implementation == NULL) _CL_LOG << "Error: lbPlugin::setAttached() failure!" LOG_
+			}
+	/*...e*/
+	/*...slb_I_PluginImpl\42\ LB_STDCALL lbPlugin\58\\58\getAttached\40\\41\:0:*/
+	lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
+		lbErrCodes err = ERR_NONE;
+		
+		if (implementation == NULL) return NULL;
+		
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+		impl++;
+		
+		return impl.getPtr();
+	}
+	/*...e*/
+	
+	void LB_STDCALL lbPlugin::uninitialize() {
+		lbErrCodes err = ERR_NONE;
+		if (implementation != NULL) {
+			UAP(lb_I_PluginImpl, impl)
+			QI(implementation, lb_I_PluginImpl, impl)
+			
+			impl->releaseImplementation();
+		}
+	}
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setModule\40\char\42\ module\41\:0:*/
+	void LB_STDCALL lbPlugin::setModule(char* module) {
+		if (_module) free(_module);
+		_module = NULL;
+		if (module) {
+			_module = (char*) malloc(strlen(module)+1);
+			_module[0] = 0;
+			strcpy(_module, module);
+		}
+	}
+	/*...e*/
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setName\40\char\42\ name\41\:0:*/
+	void LB_STDCALL lbPlugin::setName(char* name) {
+		if (_name) free(_name);
+		_name = NULL;
+		if (name) {
+			_name = (char*) malloc(strlen(name)+1);
+			_name[0] = 0;
+			strcpy(_name, name);
+		}
+	}
+	/*...e*/
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setVersion\40\char\42\ version\41\:0:*/
+	void LB_STDCALL lbPlugin::setVersion(char* version) {
+		if (_version) free(_version);
+		_version = NULL;
+		if (version) {
+			_version = (char*) malloc(strlen(version)+1);
+			_version[0] = 0;
+			strcpy(_version, version);
+		}
+	}
+	/*...e*/
+	/*...svoid LB_STDCALL lbPlugin\58\\58\setNamespace\40\char\42\ __namespace\41\:0:*/
+	void LB_STDCALL lbPlugin::setNamespace(char* __namespace) {
+		if (_namespace) free(_namespace);
+		_namespace = NULL;
+		if (__namespace) {
+			_namespace = (char*) malloc(strlen(__namespace)+1);
+			_namespace[0] = 0;
+			strcpy(_namespace, __namespace);
+		}
+	}
+	/*...e*/
+	
+	/*...svoid LB_STDCALL lbPlugin\58\\58\preinitialize\40\\41\:0:*/
+	void LB_STDCALL lbPlugin::preinitialize() {
+		lbErrCodes err = ERR_NONE;
+		if (isPreInitialized) return;
+		
+		UAP(lb_I_Unknown, ukPlugin)
+		
+		char* name = (char*) malloc(strlen(PREFIX)+strlen("instanceOf")+strlen(_name)+1);
+		
+		name[0] = 0;
+		strcat(name, PREFIX);
+		strcat(name, "instanceOf");
+		strcat(name, _name);
+		
+		_CL_VERBOSE << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
+		
+		if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+			
+			ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+			
+	        QI(ukPlugin, lb_I_Unknown, implementation)
+			
+			isPreInitialized = true;
+			
+		} else {
+			name[0] = 0;
+			strcat(name, "instanceOf");
+			strcat(name, _name);
+			
+			if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+				
+				ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);;
+				
+				QI(ukPlugin, lb_I_Unknown, implementation)
+				
+				isPreInitialized = true;
+				
+			} else {
+				_LOG << "lbPlugin::preinitialize() failed to load plugin (name = '" << name << "', module = '" << _module << "')! Maybe the configured plugin is not implemented, or not with that name." LOG_
+			}
+		}
+		
+		_CL_VERBOSE << "Preinitialized instance has " << implementation->getRefCount() << " references (implementation)." LOG_
+		
+		free(name);
+	}
+	/*...e*/
+	
+	bool	LB_STDCALL lbPlugin::canAutorun() {
+		lbErrCodes err = ERR_NONE;
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+		
+		if (impl != NULL) return impl->canAutorun();
+		return false;
+	}
+	
+	lbErrCodes		LB_STDCALL lbPlugin::autorun() {
+		lbErrCodes err = ERR_NONE;
+		UAP(lb_I_PluginImpl, impl)
+		
+		preinitialize();
+		
+		if (isPreInitialized) {
+			QI(implementation, lb_I_PluginImpl, impl)
+			
+			UAP(lb_I_PluginImpl, impl)
+			QI(implementation, lb_I_PluginImpl, impl)
+			
+			return impl->autorun();
+		}
+		
+		return ERR_PLUGIN_NOT_INITIALIZED;
+	}
+	
+	
+	void LB_STDCALL lbPlugin::initialize() {
+		lbErrCodes err = ERR_NONE;
+		
+		preinitialize();
+		
+		_CL_VERBOSE << "lbPlugin::initialize() has preinitialized underlying class." LOG_
+		
+		if (isPreInitialized && !postInitialized) {
+			UAP(lb_I_PluginImpl, impl)
+			QI(implementation, lb_I_PluginImpl, impl)
+			
+			_CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
+			impl->initialize();
+		}
+		_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_
+		
+		if (implementation == NULL) _CL_LOG << "Fatal: Have no implementation, but should have one!" LOG_
+			}
+	
+	bool LB_STDCALL lbPlugin::run() {
+		return true;
+	}
+	
+	/*...slb_I_Unknown\42\ LB_STDCALL lbPlugin\58\\58\peekImplementation\40\\41\:0:*/
+	lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
+		/*
+		 This would give back the plugin implementation class, but possibly not the
+		 underlying class. The reason may be the fact, that the plugin is implemented
+		 in two parts.
+		 The first may be the lb_I_PluginImpl and the second may be the real implementation
+		 of any interface. May be, this would be a database form (lb_I_DatabaseForm).
+		 
+		 In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
+		 It would eventually return another instance, where it not would be the lb_I_PluginImpl.
+		 */
+		
+		lbErrCodes err = ERR_NONE;
+		
+		if (implementation == NULL) {
+			_LOG << "lbPlugin::peekImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
+			return NULL;
+		}
+		
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+		
+		lb_I_Unknown* uk = NULL;
+		
+		if (impl == NULL) {
+			_CL_LOG << "Error: Could not instantiate plugin implementation with given interface. (" << _name << ")" LOG_
+			return NULL;
+		}
+		
+		
+		uk = impl->peekImplementation();
+		
+		return uk;
+	}
+	/*...e*/
+	/*...slb_I_Unknown\42\ LB_STDCALL lbPlugin\58\\58\getImplementation\40\\41\:0:*/
+	lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
+		/*
+		 This would give back the plugin implementation class, but possibly not the
+		 underlying class. The reason may be the fact, that the plugin is implemented
+		 in two parts.
+		 The first may be the lb_I_PluginImpl and the second may be the real implementation
+		 of any interface. May be, this would be a database form (lb_I_DatabaseForm).
+		 
+		 In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
+		 It would eventually return another instance, where it not would be the lb_I_PluginImpl.
+		 */
+		
+		lbErrCodes err = ERR_NONE;
+		
+		if (implementation == NULL) {
+			_CL_LOG << "lbPlugin::getImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
+		}
+		
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+		
+		lb_I_Unknown* uk = NULL;
+		
+		if (impl == NULL) {
+			_CL_LOG << "Error: Could not instantiate plugin implementation with given interface. (" << _name << ")" LOG_
+			return NULL;
+		}
+		
+		
+		uk = impl->getImplementation();
+		
+		return uk;
+	}
+	/*...e*/
+	/*...sbool LB_STDCALL lbPlugin\58\\58\hasInterface\40\char\42\ name\41\:0:*/
+	bool LB_STDCALL lbPlugin::hasInterface(char* name) {
+		lbErrCodes err = ERR_NONE;
+		lb_I_Unknown* temp;
+		
+		if (implementation == NULL) preinitialize();
+		
+		lb_I_Unknown* uk;
+		
+		uk = peekImplementation();
+		
+		/*
+		 It may be a combined plugin implementation. Currently these, could not have
+		 any other interface than lb_I_PluginImpl. This is due to multible inheritation
+		 problems and the same base class lb_I_Unknown.
+		 */
+		
+		if (uk == NULL) {
+			_LOG << "Warning: hasInterface(...) is useless, when peekImplementation returns a NULL pointer!" LOG_
+			_LOG << "Info: Plugin name is " << _name << ", Modul is " << _module << ", Namespace is " << _namespace LOG_
+			return false;
+		}
+		
+		if (uk->queryInterface(name, (void**) &temp, __FILE__, __LINE__) == ERR_NONE) {
+			temp->release(__FILE__, __LINE__);
+			return true;
+		}
+		
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+		
+		impl->releaseImplementation();
+		
+		return false;
+	}
+	/*...e*/
+	/*...e*/
+	
+	
+#ifdef WINDOWS
+	/*...sDllMain:0:*/
+	BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
+        char buf[100]="";
+		
+        switch (reason) {
+			case DLL_PROCESS_ATTACH:
+				TRMemOpen();
+				TRMemSetModuleName(__FILE__);
+				
+				if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
+				
+				if (situation) {
+					_CL_VERBOSE << "DLL statically loaded." LOG_
+				}
+				else {
+					_CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+				}
+				break;
+			case DLL_THREAD_ATTACH:
+				_CL_VERBOSE << "New thread starting.\n" LOG_
+				break;
+			case DLL_PROCESS_DETACH:
+				_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+				if (situation)
+				{
+					_CL_VERBOSE << "DLL released by system." LOG_
+				}
+				else
+				{
+					_CL_VERBOSE << "DLL released by program.\n" LOG_
+				}
+				break;
+			case DLL_THREAD_DETACH:
+				_CL_VERBOSE << "Thread terminating.\n" LOG_
+			default:
+				return FALSE;
+        }
+		
+        return TRUE;
+	}
+	/*...e*/
+#endif
