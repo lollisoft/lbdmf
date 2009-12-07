@@ -50,7 +50,7 @@ extern "C" {
 }
 #endif
 
-#ifdef LBDMF_PREC
+#ifndef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
 
