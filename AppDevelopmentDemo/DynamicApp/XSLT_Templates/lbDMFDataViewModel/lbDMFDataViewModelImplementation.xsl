@@ -29,13 +29,15 @@
 <xsl:import href="../include/exsl.xsl"/>
 
 <!-- Template to create a plugin definition for a given class-->
-<xsl:import href="wxARGFixedFormPlugin.xsl"/>
+<!--
+<xsl:import href="lbDMFFixedFormPlugin.xsl"/>
+-->
 
-<!-- Template to create a class definition for a given class -->
-<xsl:import href="wxARGFixedFormClassDecl.xsl"/>
+<!-- Template to create implementation code per class definition -->
+<xsl:import href="lbDMFDataViewModelDecl.xsl"/>
 
-<!-- Template to create a class implementation for a given class -->
-<xsl:import href="wxARGFixedFormClassImpl.xsl"/>
+<!-- Template to create implementation code per class definition -->
+<xsl:import href="lbDMFDataViewModelImpl.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
@@ -65,19 +67,20 @@
 
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="CreateFixedFormImplementation">
+<xsl:template name="CreateDataViewModelImplementation">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
 
 <!-- Create the header for the formular -->
-<exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}{$FormName}Implementation.h" method="text">
+<exsl:document href="{$basedir}/{$appexecutedir}/{$ApplicationName}_AppExecutable/{$ApplicationName}{$FormName}Implementation.h" method="text">
 /* Implementation class for fixed database formular header file
  * Application: <xsl:value-of select="$ApplicationName"/>
  * Formular: <xsl:value-of select="$FormName"/>
+ * ID: <xsl:value-of select="$FormularID"/>
  */
  
-<xsl:call-template name="createFormClassDecl">
+<xsl:call-template name="createDataViewModelClassDecl">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param>
 		<xsl:with-param name="ParamFormularName"><xsl:value-of select="$FormName"/></xsl:with-param>
@@ -86,23 +89,48 @@
 </exsl:document>
 
 <!-- Create the implementation for the formular -->
-<exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}{$FormName}Implementation.cpp" method="text">
+<exsl:document href="{$basedir}/{$appexecutedir}/{$ApplicationName}_AppExecutable/{$ApplicationName}{$FormName}Implementation.cpp" method="text">
 /* Implementation class for fixed database formular
- *  <xsl:value-of select="$ApplicationName"/>
+ * Application: <xsl:value-of select="$ApplicationName"/>
+ * Formular: <xsl:value-of select="$FormName"/>
+ * ID: <xsl:value-of select="$FormularID"/>
  */
  
-<!--<xsl:call-template name="createCPPPreample"/>-->
+<xsl:call-template name="createCPPPreample"/>
 
-<xsl:call-template name="createFormClassImpl">
+#ifdef __GNUG__
+#pragma implementation "<xsl:value-of select="$ApplicationName"/><xsl:value-of select="$FormName"/>Implementation.cpp"
+#pragma interface "<xsl:value-of select="$ApplicationName"/><xsl:value-of select="$FormName"/>Implementation.cpp"
+#endif
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include &lt;wx/wxprec.h&gt;
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include &lt;wx/wx.h&gt;
+#endif
+
+#include &lt;wx/wizard.h&gt;
+#include &lt;wx/image.h&gt;
+
+<xsl:call-template name="createDataViewModelClassImpl">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param>
 </xsl:call-template>
-<!--  
-<xsl:call-template name="createFormPlugin">
+
+<!--
+
+<xsl:call-template name="createDataViewPlugin">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param>
 </xsl:call-template>
+
 -->
+
 </exsl:document>
 
 </xsl:template>

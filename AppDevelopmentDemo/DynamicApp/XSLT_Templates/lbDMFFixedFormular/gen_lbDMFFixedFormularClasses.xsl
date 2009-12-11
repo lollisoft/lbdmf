@@ -32,19 +32,20 @@
 <xsl:import href="../include/lbDMFBaseTemplates.xsl"/>
 
 <!-- Template to create base class file for fixed database forms -->
-<xsl:import href="wxARGFixedFormBaseclass.xsl"/>
+<xsl:import href="lbDMFFixedFormBaseclass.xsl"/>
 
 <!-- Template to create formular implementation code per formular definition -->
-<xsl:import href="wxARGFixedFormImplementation.xsl"/>
+<xsl:import href="lbDMFFixedFormImplementation.xsl"/>
 
 <!-- Template to create application main module -->
-<xsl:import href="wxARGApplicationModul.xsl"/>
+<xsl:import href="lbDMFApplicationModul.xsl"/>
+
 
 <xsl:output method="text" indent="no"/>
 
 <xsl:template match="lbDMF">
-Export application code to <xsl:value-of select="$basedir"/>
-
+Export application code to
+<xsl:value-of select="$basedir"/>/<xsl:value-of select="$pluginsdir"/> done.
 
 <!-- Create the base class file and it's header file -->
 <xsl:call-template name="CreateFixedFormBaseclass"/>
@@ -103,7 +104,25 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="FormName" select="$FormularName"/>
 </xsl:call-template>
 </xsl:for-each>
+
+<!--
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]"><xsl:call-template name="createForm">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+</xsl:call-template>
+</xsl:for-each>
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]"><xsl:call-template name="createFormPlugin">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+</xsl:call-template>
+</xsl:for-each>
+-->
 </xsl:template>
+
+
+
+
 
 <!-- here is the template that does the replacement -->
 <xsl:template name="SubstringReplace">
@@ -124,4 +143,6 @@ Export application code to <xsl:value-of select="$basedir"/>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
+
+
 </xsl:stylesheet>

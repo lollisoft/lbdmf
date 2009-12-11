@@ -59,7 +59,7 @@
 
 
 <xsl:template name="CreateFixedFormBaseclass">
-<!--
+
 <exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}Base.h" method="text">
 /* Base class for fixed database formular header file
  *  <xsl:value-of select="$ApplicationName"/>
@@ -89,18 +89,19 @@ public:
 
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() {
-	    //Destroy();
+	    if (_created) Destroy();
+		_created = false;
 	};
 	
 	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);
 	
-	const char* LB_STDCALL getControlValue(char* name);
+	const lb_I_String* LB_STDCALL getControlValue(char* name);
 
 	int LB_STDCALL getPrimaryColumns();
 	
-	const char* LB_STDCALL getControlValue(int pos);
+	const lb_I_String* LB_STDCALL getControlValue(int pos);
 	int LB_STDCALL getControls();
 	
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
@@ -111,9 +112,9 @@ public:
 	   
 	bool LB_STDCALL isCharacterColumn(char* name);
 
-	char* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(char* columnName);
 	
-	char* LB_STDCALL getColumnName(int pos);
+	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	virtual lbErrCodes LB_STDCALL lbDBUpdate() = 0;
 	virtual lbErrCodes LB_STDCALL lbDBClear() = 0;
@@ -265,8 +266,7 @@ class <xsl:value-of select="$FormularName"/>;
 
 #endif //FIXED_FORMULAR_<xsl:value-of select="$ApplicationName"/>
 </exsl:document>
--->
-<!--
+
 <exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}Base.cpp" method="text">
 /* Base class for fixed database formular
  *  <xsl:value-of select="$ApplicationName"/>
@@ -437,7 +437,7 @@ char* LB_STDCALL FixedFormularBase::getQuery() {
 	return SQLString-&gt;charrep();
 }
 
-char* LB_STDCALL FixedFormularBase::getColumnName(int pos) {
+lb_I_String* LB_STDCALL FixedFormularBase::getColumnName(int pos) {
 	return sampleQuery-&gt;getColumnName(pos);
 }
 
@@ -445,12 +445,14 @@ int LB_STDCALL FixedFormularBase::getControls() {
 	return sampleQuery-&gt;getColumns();
 }
 
-const char* LB_STDCALL FixedFormularBase::getControlValue(int pos) {
-	return getControlValue(getColumnName(pos));
+const lb_I_String* LB_STDCALL FixedFormularBase::getControlValue(int pos) {
+	UAP(lb_I_String, v)
+	v = getColumnName(pos);
+	return getControlValue(v->charrep());
 }
 
-const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
-	wxString value;
+const lb_I_String* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	wxWindow* w = FindWindowByName(wxString(name), this);
 	lb_I_Query::lbDBColumnTypes coltype = sampleQuery-&gt;getColumnType(name);
 
@@ -459,9 +461,9 @@ const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
 			{
 				wxCheckBox *check = (wxCheckBox*) w;
 				if (check-&gt;GetValue() == TRUE) {
-					value = "true";
+					*value = "true";
 				} else {
-					value = "false";
+					*value = "false";
 				}
 			}
 			break;
@@ -470,7 +472,7 @@ const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
 			{
 				wxTextCtrl* tx = (wxTextCtrl*) w;
 			
-				value = tx-&gt;GetValue();
+				*value = tx-&gt;GetValue().c_str();
 			}
 			break;
 			
@@ -478,7 +480,7 @@ const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
 			{
 				wxTextCtrl* tx = (wxTextCtrl*) w;
 			
-				value = tx-&gt;GetValue();
+				*value = tx-&gt;GetValue().c_str();
 			}
 			break;
 					
@@ -486,7 +488,8 @@ const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
 			break;
 	}
 
-	return value.c_str();
+	value++;
+	return value.getPtr();
 }
 
 void LB_STDCALL FixedFormularBase::setFilter(char* filter) {
@@ -497,7 +500,7 @@ void LB_STDCALL FixedFormularBase::setFilter(char* filter) {
 	if (filter != NULL) SQLWhere-&gt;setData(filter);
 }
 
-char* FixedFormularBase::getTableName(char* columnName) {
+lb_I_String* FixedFormularBase::getTableName(char* columnName) {
 	return sampleQuery-&gt;getTableName(columnName);
 }
 
@@ -903,7 +906,7 @@ lbErrCodes LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::s
 /*...e*/
 
 </exsl:document>
--->
+
 </xsl:template>
 
 </xsl:stylesheet>

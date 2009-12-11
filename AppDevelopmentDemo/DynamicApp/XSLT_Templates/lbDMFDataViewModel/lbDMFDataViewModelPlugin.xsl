@@ -28,7 +28,7 @@
 -->
 <xsl:import href="../include/lbDMFBaseTemplates.xsl"/>
 
-<xsl:template name="createFormPlugin">
+<xsl:template name="createDataViewPlugin">
 		<xsl:param name="ApplicationID"/>
 		<xsl:param name="FormularID"/>
 

@@ -1,10 +1,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:UML="org.omg.xmi.namespace.UML" exclude-result-prefixes="UML">
-<xsl:import href="XMISettings.xsl"/>
-<xsl:import href="createDefaultStoredProcs.xsl"/>
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2007  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -28,8 +26,10 @@
             
             73252 Lenningen (germany)
 -->
+<xsl:import href="XMISettings.xsl"/>
+<xsl:import href="createDefaultStoredProcs.xsl"/>
 
-  <xsl:output method="text" indent="no"/>
+<xsl:output method="text" indent="no"/>
 
 <!-- ********** Select your database target ********** -->
 

@@ -32,13 +32,14 @@
 <xsl:import href="../include/lbDMFBaseTemplates.xsl"/>
 
 <!-- Template to create base class file for fixed database forms -->
-<xsl:import href="wxARGFixedFormBaseclass.xsl"/>
+<xsl:import href="TurboVisionFixedFormBaseclass.xsl"/>
 
 <!-- Template to create formular implementation code per formular definition -->
-<xsl:import href="wxARGFixedFormImplementation.xsl"/>
+<xsl:import href="TurboVisionFixedFormImplementation.xsl"/>
 
 <!-- Template to create application main module -->
-<xsl:import href="wxARGApplicationModul.xsl"/>
+<xsl:import href="TurboVisionApplicationModul.xsl"/>
+
 
 <xsl:output method="text" indent="no"/>
 
@@ -47,15 +48,15 @@ Export application code to <xsl:value-of select="$basedir"/>
 
 
 <!-- Create the base class file and it's header file -->
+<!--
 <xsl:call-template name="CreateFixedFormBaseclass"/>
-
 <xsl:call-template name="createMakeFileModule_ApplicationModule">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
-
 <xsl:call-template name="createMakeFileModule_FormularModul">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
+-->
 
 <xsl:call-template name="createApplicationHeader">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -65,6 +66,18 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
+<!-- Create PJD file -->
+<!--
+<xsl:call-template name="createFormClassImplPJDFile">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
+</xsl:call-template>
+-->
+<!-- Create XRC file -->
+<!--
+<xsl:call-template name="createFormClassImplXRCLayoutFile">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
+</xsl:call-template>
+-->
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
 <xsl:variable name="OrginalApplicationName" select="//lbDMF/applications/application[@ID=$ApplicationID]/@name"/>
@@ -72,7 +85,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 
 
 <!-- === Formular specific template ====================================================================== -->
-
+<!--
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -103,6 +116,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="FormName" select="$FormularName"/>
 </xsl:call-template>
 </xsl:for-each>
+-->
+
 </xsl:template>
 
 <!-- here is the template that does the replacement -->
@@ -124,4 +139,6 @@ Export application code to <xsl:value-of select="$basedir"/>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
+
+
 </xsl:stylesheet>

@@ -1,12 +1,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:UML="org.omg.xmi.namespace.UML" exclude-result-prefixes="UML">
-
-<!-- This file must be generated before this template could be applied. -->
-<xsl:import href="XMISettings.xsl"/>
-
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2007  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -30,7 +26,10 @@
             
             73252 Lenningen (germany)
 -->
-  <xsl:output method="text" indent="no"/>
+<!-- This file must be generated before this template could be applied. -->
+<xsl:import href="XMISettings.xsl"/>
+
+<xsl:output method="text" indent="no"/>
 
 <!-- ********** Select your database target ********** -->
 
