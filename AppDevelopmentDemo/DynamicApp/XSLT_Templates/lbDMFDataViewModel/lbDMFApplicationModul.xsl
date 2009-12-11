@@ -209,7 +209,7 @@ endif
 
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -218,11 +218,11 @@ L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxAUI
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
@@ -329,13 +329,13 @@ VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
 L_OPS = `wx-config --inplace --libs` -o
 
-VENDORLIBS=-L$(prefix)/lib -llbHook
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxAUI
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
@@ -477,6 +477,27 @@ extern "C" {
 #include &lt;<xsl:value-of select="$ApplicationName"/><xsl:value-of select="$FormularName"/>Implementation.h&gt;
 </xsl:for-each>
 
+#include &lt;wx/notebook.h&gt;
+
+#ifndef OSX
+#define wxAuiPaneInfo wxPaneInfo
+#define wxAuiManager wxFrameManager
+#include &lt;manager.h&gt;
+#endif
+
+#ifdef OSX
+ #ifdef USE_WXAUI
+  #ifdef OSVERSION_Panther
+   #define wxAuiPaneInfo wxPaneInfo
+   #define wxAuiManager wxFrameManager
+   #include &lt;manager.h&gt;
+  #else
+   #include &lt;wx/aui/aui.h&gt;
+  #endif
+ #endif
+#endif
+
+
 // -------------------------------------
 // MyApp
 // -------------------------------------
@@ -485,6 +506,7 @@ class MyApp: public wxApp
 {
 public:
     bool OnInit(void);
+    int  OnExit(void);
 };
 
 
@@ -532,6 +554,7 @@ enum my_events
 </xsl:for-each>
 
 
+    ID_DATABASE_BACKEND,
     ID_SORTED,
     ID_UNSORTED,
     ID_ACTIVATED,
@@ -545,10 +568,13 @@ class MyFrame: public wxFrame
 {
 public:
     MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h);
+    virtual ~MyFrame();
+
 
 public:
     void OnQuit(wxCommandEvent&amp; event);
     void OnAbout(wxCommandEvent&amp; event);
+    void OnSize(wxSizeEvent&amp; event);
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -578,7 +604,7 @@ public:
 	 */
 	void OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; event);
 </xsl:for-each>
-
+	void OnToggleDatabaseBackend(wxCommandEvent&amp; event);
 
 private:
 
@@ -609,21 +635,44 @@ private:
 	 * \brief Create a formular for <xsl:value-of select="$FormularName"/> data model
 	 */
 	<xsl:value-of select="$FormularName"/>* my<xsl:value-of select="$FormularName"/>;
+	wxDataViewCtrl* dataview_<xsl:value-of select="$FormularName"/>;
 </xsl:for-each>
 
-    wxDataViewCtrl* dataview_left;
-    wxPanel *panel;
+	DECLARE_EVENT_TABLE()
+
+    wxBoxSizer *sizerMain;
+    bool _backend_plugin;
+    wxNotebook* notebook;
+
+    wxAuiManager m_mgr;
 };
+
+BEGIN_EVENT_TABLE(MyFrame, wxFrame)
+    EVT_SIZE(MyFrame::OnSize)
+END_EVENT_TABLE()
+
+
+MyFrame::~MyFrame() {
+        // deinitialize the frame manager
+        m_mgr.UnInit();
+}
 
 MyFrame::MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h):
   wxFrame(frame, wxID_ANY, title, wxPoint(x, y), wxSize(w, h))
 {
     //SetIcon(wxICON(sample));
+    _backend_plugin = false;
+    notebook = NULL;
 
     wxMenu *file_menu = new wxMenu;
 
+    m_mgr.SetFrame(this);
+
+    SetMinSize(wxSize(w, h));
+
     file_menu->Append(DYNAMIC_ABOUT, _T("&amp;About"));
     file_menu->Append(DYNAMIC_QUIT, _T("E&amp;xit"));
+    file_menu->Append(ID_DATABASE_BACKEND, _T("Database backend"));
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -659,6 +708,10 @@ MyFrame::MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h):
                     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnQuit) );
     Connect( DYNAMIC_ABOUT, wxID_ANY,
                     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnAbout) );
+    Connect( ID_DATABASE_BACKEND, wxID_ANY,
+                    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnToggleDatabaseBackend) );
+
+
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -693,9 +746,37 @@ MyFrame::MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h):
 
     CreateStatusBar();
 
-    panel = new wxPanel( this, wxID_ANY );
-    dataview_left = NULL;
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+    dataview_<xsl:value-of select="$FormularName"/> = NULL;
+</xsl:for-each>
 }
+
+void MyFrame::OnToggleDatabaseBackend(wxCommandEvent&amp; event) {
+	_backend_plugin = !_backend_plugin;
+}
+
 
 void MyFrame::OnQuit(wxCommandEvent&amp; WXUNUSED(event) )
 {
@@ -708,6 +789,27 @@ void MyFrame::OnAbout(wxCommandEvent&amp; WXUNUSED(event) )
         _T("About <xsl:value-of select="$ApplicationName"/>"), wxOK);
 
     dialog.ShowModal();
+}
+
+void MyFrame::OnSize(wxSizeEvent&amp; event)
+{
+    // The event seemsnot to be triggered.
+    SetMinSize(event.GetSize());
+
+#ifdef SOLARIS
+#ifdef bla
+        if (skipfirstResizeEvent == false) {
+                m_mgr.Update();
+                event.Skip();
+        }
+        skipfirstResizeEvent = false;
+#endif
+#endif
+#ifndef SOLARIS
+        m_mgr.Update();
+        event.Skip();
+#endif
+
 }
 
 
@@ -758,16 +860,37 @@ void MyFrame::OnAbout(wxCommandEvent&amp; WXUNUSED(event) )
 	</xsl:call-template>
 </xsl:variable>
 void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; event) {
-    if (dataview_left) {
-        dataview_left-&gt;Destroy();
-        dataview_left = NULL;
+    if (!notebook) {
+        notebook = new wxNotebook(this, -1);
+        sizerMain = new wxBoxSizer(wxVERTICAL);
+
+        SetAutoLayout(TRUE);
+        notebook->SetAutoLayout(TRUE);
+
+        sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+
+        SetSizer(sizerMain);
+        m_mgr.AddPane(notebook,   wxCENTER, wxT("Workplace"));
+        m_mgr.Update();
+    }
+
+    if (dataview_<xsl:value-of select="$FormularName"/>) {
+        int num = notebook->GetPageCount();
+        for (int i = 0; i &lt; num; i++) {
+            if (strncmp(notebook-&gt;GetPageText(i).c_str(), "<xsl:value-of select="$FormularName"/>", strlen("<xsl:value-of select="$FormularName"/>")) == 0) {
+                notebook-&gt;DeletePage(i);
+                break; // Bug: The num variable is not updated and will produce an index out of range error.
+            }
+        }
     }	
 
     // Left wxDataViewCtrl
-    dataview_left = new wxDataViewCtrl( panel, wxID_ANY );
+    dataview_<xsl:value-of select="$FormularName"/> = new wxDataViewCtrl( notebook, wxID_ANY );
 
     <xsl:value-of select="$FormularName"/> *model = new <xsl:value-of select="$FormularName"/>;
-    dataview_left-&gt;AssociateModel( model );
+    model->SetBackend(_backend_plugin);
+    model->InitModel();
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AssociateModel( model );
 
     int column = 0;
 	<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
@@ -777,17 +900,17 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
 	<xsl:when test="@isfk='1'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
     wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
-    dataview_left-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 	</xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
     wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
-    dataview_left-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 	</xsl:when>
 	<xsl:otherwise>
 		<xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-    dataview_left-&gt;AppendToggleColumn( wxT("<xsl:value-of select="@name"/>"), column );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendToggleColumn( wxT("<xsl:value-of select="@name"/>"), column );
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
@@ -797,12 +920,12 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
 			<xsl:when test="@dbtype='Integer'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("long"), wxDATAVIEW_CELL_EDITABLE );
     wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
-    dataview_left-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
     wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
-    dataview_left-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 			</xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -814,10 +937,11 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
 
     // layout dataview controls.
 
-    wxBoxSizer *sizer = new wxBoxSizer( wxHORIZONTAL );
-    sizer->Add( dataview_left, 3, wxGROW );
-    panel->SetSizer( sizer );
-    sizer->Fit(this);
+    notebook->AddPage(dataview_<xsl:value-of select="$FormularName"/>, "<xsl:value-of select="$FormularName"/>", true);
+
+    m_mgr.Update();
+
+    Fit();
 }
 </xsl:for-each>
 
@@ -833,6 +957,11 @@ bool MyApp::OnInit(void)
     return true;
 }
 
+int MyApp::OnExit(void) {
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	PM->unload();
+	unHookAll();
+}
 
 </exsl:document>
 </xsl:template>

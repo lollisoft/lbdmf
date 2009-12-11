@@ -109,11 +109,16 @@ extern "C" {
 
 <xsl:value-of select="$FormularName"/>::<xsl:value-of select="$FormularName"/>() 
 {
-	InitModel();
+	//InitModel();
 }
 
 <xsl:value-of select="$FormularName"/>::~<xsl:value-of select="$FormularName"/>() {
 }
+
+void <xsl:value-of select="$FormularName"/>::SetBackend(bool backend) {
+	_backend_plugin = backend;
+}
+
 
 unsigned int <xsl:value-of select="$FormularName"/>::GetNumberOfRows()
 {
@@ -195,8 +200,16 @@ bool <xsl:value-of select="$FormularName"/>::InitModel() {
 	char* databasepass = "<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBPass'][@applicationid=$ApplicationID]/@value"/>";
 
 	char* dbbackend = "DatabaseLayerGateway";
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+
+
+	if (_backend_plugin) {
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+	} else {
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+	}
+
+
 
 	database-&gt;init();
 	if (database-&gt;connect(databasename, databasename, databaseuser, databasepass) != ERR_NONE) {

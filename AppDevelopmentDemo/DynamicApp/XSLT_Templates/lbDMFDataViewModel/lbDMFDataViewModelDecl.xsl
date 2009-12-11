@@ -71,6 +71,8 @@ public:
 	<xsl:value-of select="$FormularName"/>();
 	virtual ~<xsl:value-of select="$FormularName"/>();
 
+	virtual void SetBackend(bool backend);
+
 	virtual bool InitModel();
 /*
 	virtual long GetLongField(unsigned int col, unsigned int row);
@@ -122,6 +124,7 @@ protected:
 	wxArrayString m_columnTypes;
 	unsigned int numberOfRows;
 	unsigned int numberOfColumns;
+	bool _backend_plugin;
 };
 </xsl:template>
 
