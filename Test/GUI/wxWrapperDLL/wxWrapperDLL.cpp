@@ -1864,6 +1864,7 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
         _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+    	SetMinSize(event.GetSize());
 
 #ifdef SOLARIS
 #ifdef bla
