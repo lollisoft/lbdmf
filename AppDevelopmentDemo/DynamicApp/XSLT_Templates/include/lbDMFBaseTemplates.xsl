@@ -46,7 +46,10 @@
 </xsl:template>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
+<!-- I always have trouble using the valur from the database (platform specific). The application must chdir to the desired directory for these templates to work.
 <xsl:variable name="codegenbasedir" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegenbasedir']/@value"/>
+-->
+<xsl:variable name="codegenbasedir" select="''"/>
 <xsl:variable name="codegentarget" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegentarget']/@value"/>
 <xsl:variable name="basedir">
 <xsl:if test="$codegenbasedir=''"><xsl:value-of select="'.'"/></xsl:if>
@@ -56,13 +59,19 @@
 <xsl:variable name="pluginsdir">
 <xsl:choose>
 <xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/Plugins</xsl:when>
-<xsl:otherwise>Code/Targets/wxActiveRecords/Plugins</xsl:otherwise>
+<xsl:otherwise>Code/Targets/lbDMF/Plugins</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
 <xsl:variable name="appmoduledir">
 <xsl:choose>
 <xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/Modules</xsl:when>
-<xsl:otherwise>Code/Targets/wxActiveRecords/Modules</xsl:otherwise>
+<xsl:otherwise>Code/Targets/lbDMF/Modules</xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+<xsl:variable name="appexecutedir">
+<xsl:choose>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/App</xsl:when>
+<xsl:otherwise>Code/Targets/lbDMF/Applications</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
 
