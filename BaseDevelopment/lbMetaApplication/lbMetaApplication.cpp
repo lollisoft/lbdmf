@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.163 $
+ * $Revision: 1.164 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.163 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.164 2009/12/11 18:55:15 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.164  2009/12/11 18:55:15  lollisoft
+ * Bugfix when no application module is loaded, the name is also not available.
+ *
  * Revision 1.163  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -716,13 +719,14 @@ lb_MetaApplication::~lb_MetaApplication() {
 		app.resetPtr();
 	}
 
-	_CL_LOG << "Unload module " << moduleName << "." LOG_
+	if (moduleName) {
+		_CL_LOG << "Unload module " << moduleName << "." LOG_
+		lbUnloadModule(moduleName);
+		_CL_LOG << "Unloaded module." LOG_
 
-	if (moduleName) lbUnloadModule(moduleName);
+		free(moduleName);
+	}
 
-	_CL_LOG << "Unloaded module." LOG_
-
-	free(moduleName);
 
 	if (_dirloc != NULL) free(_dirloc);
 }
