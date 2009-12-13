@@ -1328,7 +1328,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
         frame = new lb_wxFrame();
 
-        frame->Create(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340));
+        frame->Create(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(600, 500));
 
         frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
         frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
@@ -1864,7 +1864,7 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
         _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
-    	SetMinSize(event.GetSize());
+    	//SetMinSize(event.GetSize());
 
 #ifdef SOLARIS
 #ifdef bla
