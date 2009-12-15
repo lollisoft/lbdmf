@@ -57,6 +57,15 @@ Source: "Q:\Develop\Projects\plugins\lbDynamicAppStorage.dll"; DestDir: "{app}\D
 Source: "Q:\Develop\Projects\plugins\lbLoginWizard.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbVisitorOperations.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 
+; Also now add the code generation plugin.
+Source: "Q:\Develop\Projects\plugins\lbDMFXslt.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+
+; --- wxLua Runtime to demonstrate code generation for it.
+Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+
+
 ; Stuff for Sqlite based databases
 Source: "Q:\Develop\Projects\dll\sqlite3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\databaselayer_sqllite.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -64,9 +73,9 @@ Source: "Q:\Develop\Projects\plugins\DatabaseLayerGateway.dll"; DestDir: "{app}\
 
 
 ; --- Some files needed from OW's BinNT directory
-Source: "Q:\develop\Tools\watcom\binnt\mt7r18.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Tools\watcom\binnt\clbr18.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Tools\watcom\binnt\plbr18.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\watcom\binnt\mt7r17.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\watcom\binnt\clbr17.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\watcom\binnt\plbr17.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ; --- Some files needed from libxml and libxslt
 Source: "Q:\Develop\Projects\dll\iconv.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\zlib1.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
