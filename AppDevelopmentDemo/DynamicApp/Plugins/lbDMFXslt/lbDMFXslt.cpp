@@ -220,7 +220,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	const char *p[16 + 1];
 
 	p[0] = NULL;
-
+	
 	UAP(lb_I_ApplicationParameter, appParams)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
@@ -234,6 +234,10 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
+
+	
 	*name = "source value";
 	_params->getUAPString(*&name, *&ApplicationName);
 
@@ -265,6 +269,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	} else {
 		_LOG << "lbDMFXslt::execute(): Error, did not have parameters" LOG_
 		chdir(oldcwd);
+		
+		*paramName = "result";
+		*paramValue = "0";
+		
+		params->setUAPString(*&paramName, *&paramValue);
+		
 		return 0;
 	}
 
@@ -318,6 +328,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 					if (database == NULL) {
 						_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
 						chdir(oldcwd);
+
+						*paramName = "result";
+						*paramValue = "0";
+						
+						params->setUAPString(*&paramName, *&paramValue);
+
 						return 0;
 					}
 				}
@@ -328,6 +344,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 					_LOG << "Error: Could not connect to given database: '" << "lbDMF" << "'" LOG_
 					
 					chdir(oldcwd);
+					
+					*paramName = "result";
+					*paramValue = "0";
+					
+					params->setUAPString(*&paramName, *&paramValue);
+					
 					return 0;
 				}
 				
@@ -380,6 +402,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	if (dispatcher->dispatch("exportApplicationToXMLBuffer", uk.getPtr(), &uk_result) == ERR_DISPATCH_FAILS) {
 		_LOG << "lbDMFXslt::execute(): Error: Failed to dispatch a call to 'exportApplicationToXMLBuffer'!" LOG_
 		chdir(oldcwd);
+		
+		*paramName = "result";
+		*paramValue = "0";
+		
+		params->setUAPString(*&paramName, *&paramValue);
+
 		return 0;
 	}
 
@@ -413,6 +441,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	if (value->charrep() == NULL) {
 		metaapp->setStatusText("Info", "Translate XML data failed!");
 		chdir(oldcwd);
+		
+		*paramName = "result";
+		*paramValue = "0";
+		
+		params->setUAPString(*&paramName, *&paramValue);
+		
 		return 0;
 	}
 
@@ -422,6 +456,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		_LOG << "Document content: " << value->charrep() LOG_
 		metaapp->setStatusText("Info", "Translate XML data failed.");
 		chdir(oldcwd);
+		
+		*paramName = "result";
+		*paramValue = "0";
+		
+		params->setUAPString(*&paramName, *&paramValue);
+
 		return 0;
 	}
 
@@ -450,6 +490,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 			if (stylesheetdoc == NULL) {
 				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
 				chdir(oldcwd);
+
+				*paramName = "result";
+				*paramValue = "0";
+				
+				params->setUAPString(*&paramName, *&paramValue);
+
 				return 0;
 			}
 			_LOG << "lbDMFXslt::execute(): Parse xml document as stylesheet." LOG_
@@ -478,6 +524,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		} else {
 			metaapp->setStatusText("Info", "Aborded Translating XML data ...");
 			chdir(oldcwd);
+
+			*paramName = "result";
+			*paramValue = "0";
+			
+			params->setUAPString(*&paramName, *&paramValue);
+
 			return 0;
 		}
 	}
@@ -528,6 +580,12 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		}
 	}
 #endif
+	
+	*paramName = "result";
+	*paramValue = "1";
+	
+	params->setUAPString(*&paramName, *&paramValue);
+	
 	return first_dst_actionid;
 }
 

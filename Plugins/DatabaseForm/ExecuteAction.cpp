@@ -288,7 +288,17 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 				_LOG << "Replaced placeholders for execution command: " << What->charrep() LOG_
 			}
 
-			wxExecute(What->charrep()); // probably add parameters for filter:  -param=anwendungid:{anwendungid}
+			long r = wxExecute(What->charrep()); // probably add parameters for filter:  -param=anwendungid:{anwendungid}
+			
+			if (r != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				
+				*name = "result";
+				*value = "0";
+				
+				params->setUAPString(*&name, *&value);
+			}
 
 			return -1;
 		}
