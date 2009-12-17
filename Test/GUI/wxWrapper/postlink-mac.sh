@@ -32,9 +32,14 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples /Volumes/lbDMF-1.0.1
 cp ../../../COPYING /Volumes/lbDMF-1.0.1
 cp ../../../license-bindist.txt /Volumes/lbDMF-1.0.1
 mkdir /Volumes/lbDMF-1.0.1/XSLT
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include /Volumes/lbDMF-1.0.1/XSLT
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI /Volumes/lbDMF-1.0.1/XSLT
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF /Volumes/lbDMF-1.0.1/XSLT
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include            /Volumes/lbDMF-1.0.1/XSLT/include
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI           /Volumes/lbDMF-1.0.1/XSLT/DMFToXMI
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF           /Volumes/lbDMF-1.0.1/XSLT/XMIToDMF
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel /Volumes/lbDMF-1.0.1/XSLT/lbDMFDataViewModel
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular /Volumes/lbDMF-1.0.1/XSLT/lbDMFFixedFormular
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision        /Volumes/lbDMF-1.0.1/XSLT/TurboVision
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords    /Volumes/lbDMF-1.0.1/XSLT/wxActiveRecords
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              /Volumes/lbDMF-1.0.1/XSLT/wxLua
 
 cat <<EOF >> /Volumes/lbDMF-1.0.1/Readme.txt
 Dear Mac user!

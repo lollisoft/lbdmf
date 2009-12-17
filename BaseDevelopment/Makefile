@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.208 $
+# * $Revision: 1.209 $
 # * $Name:  $
-# * $Id: Makefile,v 1.208 2009/11/22 16:38:36 lollisoft Exp $
+# * $Id: Makefile,v 1.209 2009/12/17 12:49:04 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.209  2009/12/17 12:49:04  lollisoft
+# * Added deploying missing XSLT templates.
+# *
 # * Revision 1.208  2009/11/22 16:38:36  lollisoft
 # * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE. Probgrid seems to not correctly initialize a variable that causes a division with zero (hack).
 # *
@@ -1376,9 +1379,13 @@ install:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xml $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
-	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/*.xsl $(prefix)/share/lbdmf/lbDMFDataViewModel
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular/*.xsl $(prefix)/share/lbdmf/lbDMFFixedFormular
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/*.xsl $(prefix)/share/lbdmf/TurboVision
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords/*.xsl $(prefix)/share/lbdmf/wxActiveRecords
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua/*.xsl $(prefix)/share/lbdmf/wxLua
 	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
