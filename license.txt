@@ -14,8 +14,8 @@ wxLua
 	A wxWidgets based scripting language
 	http://wxlua.sourceforge.net
 
-wxLua bookworm
-	A wxLua based database application by Hakki Dogusan
+wxLua with sqlite from the bookworm package
+	An enhanced wxWidgets library made by Hakki Dogusan
 	http://www.dogusan.net/dogusanh/pgbookworm.html
 
 libxml2
@@ -31,22 +31,25 @@ libexslt
 	http://xmlsoft.org/XSLT/EXSLT/index.html
 
 MKMK
-	by Luis Crespo.
+	by Luis Crespo. I have enhanced the tool but I am not able to contact him.
+	My enhanced version is in the CVS in vendor/mkmk.
 	http://www.cubic.org/docs/mkmk.htm
 
 wxRepWrt
 	by Juergen D. Geltinger
 	http://www.daily.de/RepWrt/
 
-wxPropertyGrid
+wxPropertyGrid On Windows using Open Watcom compiler I use the tagged version wxPG_1_2_2
+	located in CVS at vendor/propgrid.
 	Copyright © Jaakko Salli 2006-2009
 	http://wxpropgrid.sourceforge.net/cgi-bin/index?page=about
 
-wxDatabaseLayer
+wxDatabaseLayer I have enhanced the library to match my requirement for my lb_I_Database
+	and lb_I_Query interfaces. It is located in CVS at vendor/databaselayer.
 	by Joseph Blough
 	http://wxcode.sourceforge.net/components/databaselayer/
 
-wxWidgets
+wxWidgets I use wxMSW 2.8.8, because newer version are not working with Open Watcom.
 	Copyright (C) 1998-2005 Julian Smart, Robert Roebling et al
 	http://www.wxwidgets.org
 
