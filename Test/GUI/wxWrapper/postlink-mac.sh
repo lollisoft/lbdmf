@@ -40,6 +40,7 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular /
 cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision        /Volumes/lbDMF-1.0.1/XSLT/TurboVision
 cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords    /Volumes/lbDMF-1.0.1/XSLT/wxActiveRecords
 cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              /Volumes/lbDMF-1.0.1/XSLT/wxLua
+cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf /Volumes/lbDMF-1.0.1/
 
 cat <<EOF >> /Volumes/lbDMF-1.0.1/Readme.txt
 Dear Mac user!
