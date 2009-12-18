@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.209 $
+# * $Revision: 1.210 $
 # * $Name:  $
-# * $Id: Makefile,v 1.209 2009/12/17 12:49:04 lollisoft Exp $
+# * $Id: Makefile,v 1.210 2009/12/18 13:13:16 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.210  2009/12/18 13:13:16  lollisoft
+# * Added compile support for OS X 10.5.6
+# *
 # * Revision 1.209  2009/12/17 12:49:04  lollisoft
 # * Added deploying missing XSLT templates.
 # *
@@ -735,6 +738,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 9.1.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 9.6.0)
 OSNAME=Leopard
 endif
 
