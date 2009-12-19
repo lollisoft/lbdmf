@@ -9,7 +9,9 @@ cp -R $HOME/plugins wxWrapper.app/Contents/Resources
 # How to access them?
 cp toolbarimages/*.xpm wxWrapper.app/Contents/Resources/toolbarimages
 cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages
-cp -R `wx-config --prefix`/lib/lib`wx-config --basename`* wxWrapper.app/Contents/lib
+cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.0.6.0.dylib wxWrapper.app/Contents/lib
+cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.0.dylib wxWrapper.app/Contents/lib
+cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib wxWrapper.app/Contents/lib
 
 # Creating a new diskimage
 
