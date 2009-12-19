@@ -1,7 +1,538 @@
+2009-12-19 12:47  lollisoft
+
+	* mkchangelog.sh: Corrected for including files in base directory.
+
+2009-12-19 12:03  lollisoft
+
+	* bindist.iss: Changed location of pdf document.
+
+2009-12-19 01:15  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Hack for the problem to
+	  select correct wxWidgets library and their symlinks.
+
+2009-12-18 14:15  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Added deploying new pdf
+	  documentation.
+
+2009-12-18 14:13  lollisoft
+
+	* BaseDevelopment/Makefile: Added compile support for OS X 10.5.6
+
+2009-12-17 16:26  lollisoft
+
+	* bindist.iss: Changed doc pat for main pdf file in respect to Mac
+	  package..
+
+2009-12-17 14:59  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CRM/:
+	  128002, 128002.diagram, 128107.diagram, 128130.diagram,
+	  128258.diagram, 128770.diagram, 129282.diagram, 130434.diagram,
+	  130562.diagram, CRM.prj, cpp_includes, generation_settings,
+	  idl_includes, java_imports, python_imports, stereotypes, tools:
+	  Renamed initial CRM project from BoUML to CRM.
+
+2009-12-17 13:48  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh, BaseDevelopment/Makefile:
+	  Added deploying missing XSLT templates.
+
+2009-12-17 13:22  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Updated the
+	  documentation to match version.
+
+2009-12-17 12:09  lollisoft
+
+	* license-bindist.txt, license.txt: Corrected license text. Added
+	  notes where I have made enhancements in vendor code and where they
+	  placed in my CVS.
+
+2009-12-16 09:27  lollisoft
+
+	* Plugins/DatabaseForm/ExecuteAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp:
+	  Added returning result error code to enable workflow failures to be
+	  detected in workflow.
+
+2009-12-15 10:08  lollisoft
+
+	* Test/GUI/wxWrapper/: splash.png, Inkscape Icons/Splash
+	  Screen.svg: Changed version number.
+
+2009-12-15 09:26  lollisoft
+
+	* bindist.iss: Added binary plugin of the xslt code generator.
+	  Added lua binaries to demonstrate lua code generation.  Changed
+	  runtime DLL's of Open Watcom back to version 1.7.
+
+2009-12-13 09:30  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Changed initial size and
+	  commented out SetMinSize(...) in OnSize event handler. It does not
+	  behave as expected.
+
+2009-12-11 19:55  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Bugfix
+	  when no application module is loaded, the name is also not
+	  available.
+
+2009-12-11 19:54  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/:
+	  lbDMFApplicationModul.xsl, lbDMFDataViewModelDecl.xsl,
+	  lbDMFDataViewModelImpl.xsl: Enhanced the sample with using wxAUI.
+
+2009-12-11 19:53  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added try to set minimal
+	  size.
+
+2009-12-11 13:58  lollisoft
+
+	* BaseDevelopment/lbclasses/dllmain.cpp: Corrected license comment.
+
+2009-12-11 12:58  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua/wxLuaApplicationModul.xsl:
+	  Corrected path to where the db3 file is created when the binary
+	  sample initially has been started.
+
+2009-12-11 12:19  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/lbDMFBaseTemplates.xsl:
+	  No more use codegenbasedir, as the application should chdir to it.
+	  The templates have to always work from the current directory.
+
+2009-12-11 10:46  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/:
+	  DMFToXMI/UMLXMISnippets.xsl, DMFToXMI/gen_DMFToXMI.xsl,
+	  DMFToXMI/gen_DMFToXMI_FormBootstrap.xsl,
+	  TurboVision/DialogBlocksXMLSnippets.xsl,
+	  TurboVision/TurboVisionApplicationModul.xsl,
+	  TurboVision/TurboVisionControls.xsl,
+	  TurboVision/TurboVisionFixedFormBaseclass.xsl,
+	  TurboVision/TurboVisionFixedFormClassDecl.xsl,
+	  TurboVision/TurboVisionFixedFormClassImpl.xsl,
+	  TurboVision/TurboVisionFixedFormImplementation.xsl,
+	  TurboVision/TurboVisionFixedFormPlugin.xsl,
+	  TurboVision/TurboVisionFixedFormXRC.xsl,
+	  TurboVision/gen_TurboVisionFixedFormularClasses.xsl,
+	  XMIToDMF/createDefaultStoredProcs.xsl,
+	  XMIToDMF/importActivities.xsl,
+	  XMIToDMF/importUML-ApplicationDB.xsl,
+	  XMIToDMF/importUML-SystemDB.xsl,
+	  XMIToDMF/importUMLApplicationTables.xsl,
+	  XMIToDMF/importUMLClassAsDMFForm.xsl,
+	  XMIToDMF/importUMLReports.xsl, XMIToDMF/xmi1.2_2SQLScript.xsl,
+	  XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl,
+	  include/lbDMFBaseTemplates.xsl,
+	  lbDMFDataViewModel/gen_lbDMFDataViewModel.xsl,
+	  lbDMFDataViewModel/lbDMFApplicationModul.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelBaseclass.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelDecl.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelImpl.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelImplementation.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelPlugin.xsl,
+	  lbDMFFixedFormular/gen_lbDMFFixedFormularClasses.xsl,
+	  lbDMFFixedFormular/lbDMFApplicationModul.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormBaseclass.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormClassDecl.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormClassImpl.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormImplementation.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormPlugin.xsl,
+	  lbDMFFixedFormular/lbDMFFixedForm_InitHardcoded.xsl,
+	  wxActiveRecords/gen_wxActiveRecordClasses.xsl,
+	  wxActiveRecords/wxARGApplicationModul.xsl,
+	  wxActiveRecords/wxARGFixedFormBaseclass.xsl,
+	  wxActiveRecords/wxARGFixedFormClassDecl.xsl,
+	  wxActiveRecords/wxARGFixedFormClassImpl.xsl,
+	  wxActiveRecords/wxARGFixedFormImplementation.xsl,
+	  wxActiveRecords/wxARGFixedFormPlugin.xsl,
+	  wxLua/gen_wxLuaFixedFormularClasses.xsl,
+	  wxLua/wxLuaApplicationModul.xsl, wxLua/wxLuaDatabasePanel.xsl,
+	  wxLua/wxLuaHelperCode.xsl: Added new templates previously
+	  developed private. This shows the capabilities of generating code.
+
+2009-12-08 23:25  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added conditional to
+	  support older wxPropgrid version (wxPG_1_2_2 tag) due to compiler
+	  problems with wxMSW 2.8.10 and OW 1.8.
+
+2009-12-07 12:34  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Fixed copy & paste bug.
+
+2009-12-07 12:31  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp,
+	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Restored
+	  lost code.
+
+2009-12-07 12:31  lollisoft
+
+	* make/STD_MAKE: Fixed OS X architecture selection bug.
+
+2009-12-06 20:20  lollisoft
+
+	* BaseDevelopment/lbDev.prj, BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  BaseDevelopment/lbModule/lbModule.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  BaseDevelopment/lbclasses/dllmain.cpp,
+	  BaseDevelopment/lbclasses/lbInputStream.cpp,
+	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
+	  BaseDevelopment/lbclasses/lbcontainer.cpp,
+	  BaseDevelopment/lbclasses/lbkey.cpp,
+	  BaseDevelopment/lbclasses/lbobject.cpp,
+	  BaseDevelopment/lbclasses/lbthread.cpp,
+	  BaseDevelopment/lbclasses/misc.cpp,
+	  BaseDevelopment/lbclasses/skiplist.cpp,
+	  BaseDevelopment/lbcs/appcs.cpp, bin-buildtools-dist.iss,
+	  bindist.iss, AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/plugin.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
+	  make/STD_MAKE, Plugins/DatabaseForm/Actions.cpp,
+	  Plugins/DatabaseForm/ExecuteAction.cpp,
+	  Plugins/DatabaseForm/SendSignalAction.cpp,
+	  Plugins/DatabaseForm/ffi.cpp, Plugins/DatabaseForm/fkpk.cpp,
+	  Plugins/DatabaseForm/formularactions.cpp,
+	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseForm.cpp,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
+	  Plugins/DatabaseForm/plugin.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/DatabaseLayerGateway/plugin.cpp,
+	  Plugins/DatabaseLayerGateway/pluginDatabaseLayerGateway.cpp,
+	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
+	  Plugins/DatabaseReport/plugin.cpp, Plugins/TestPlugin/plugin.cpp,
+	  Plugins/TestPlugin/pluginTest.cpp,
+	  Plugins/VisitorOperations/plugin.cpp,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionTypesModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbApplicationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularsModel.cpp,
+	  Plugins/lbDMFDataModel/lbParameters.cpp,
+	  Plugins/lbDMFDataModel/lbRelations.cpp,
+	  Plugins/lbDMFDataModel/lbTranslationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbUsersModel.cpp,
+	  Plugins/lbDMFDataModel/plugin.cpp,
+	  RegressionTests/Basetypes/Basetypes.cpp,
+	  RegressionTests/ContainerTest/containerTest.cpp,
+	  RegressionTests/Database/dbTest.cpp,
+	  RegressionTests/Database/DatabaseLayerWrapperTest/dbTest.cpp,
+	  RegressionTests/Database/FKTest/FKTest.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Blob/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Refresh/test.cpp,
+	  RegressionTests/Events/testEvents.cpp,
+	  RegressionTests/Memory/memTest.cpp,
+	  RegressionTests/MetaApplication/testMetaApplication.cpp,
+	  RegressionTests/Parameter/Parameter.cpp,
+	  RegressionTests/PluginByInterfaceAndNamespace/PluginTest.cpp,
+	  RegressionTests/PluginTest/PluginTest.cpp,
+	  RegressionTests/PluginTranslationsModel/test.cpp,
+	  RegressionTests/TestUMLImport/testUMLImport.cpp,
+	  RegressionTests/Translation/testTranslation.cpp,
+	  Samples/HelloWorld/helloworld.cpp, Test/Console/XML/test.cpp,
+	  Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Modified build process to
+	  use precompiled files.  Corrected the long build time problem. It is
+	  located in the _LOG macro.  Updated wxPropgrid to 1.4.9.1 and
+	  updated building against wxMSW 2.8.10.
+
+	  Build works, but running the application fails with not properly
+	  initialized error.
+	  (0xc0000005)
+
+	  Also updated the iss files for the new planned release.
+
+2009-12-05 17:57  lollisoft
+
+	* BaseDevelopment/lbtransfer/: lbthread.cpp, socket.cpp,
+	  transfer.cpp: Added support for precompiled header.
+
+2009-12-05 17:52  lollisoft
+
+	* make/STD_MAKE: Added support for precompiled header.
+
+2009-12-05 17:45  lollisoft
+
+	* BaseDevelopment/lbHook/lbHook.cpp: Added support for precompiled
+	  header. Added void createLogInstance().
+
+2009-12-03 22:34  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Plugins/: lbDMFXslt/lbDMFXslt.cpp,
+	  lbDMFXslt/lbDMFXslt.h, lbDMFXslt/makefile.module,
+	  lbDMFXslt/plugin.cpp, makefile: Added the yet private part to
+	  generate code to the public. It makes no sense to keep this private.
+	  Is still have the LGPL license for that.
+
+2009-11-27 16:57  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Missed
+	  return value.
+
+2009-11-27 10:41  lollisoft
+
+	* make/STD_MAKE: Inversed OSX i386 detection.
+
+2009-11-27 10:15  lollisoft
+
+	* make/STD_MAKE: Corrected platform selection.
+
+2009-11-26 13:57  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Fixed a crash condition.
+
+2009-11-25 22:52  lollisoft
+
+	* BaseDevelopment/environment-osx.sh: Added detection of OSX
+	  architecture. But PPC currently makes no use of -arch.
+
+2009-11-25 22:51  lollisoft
+
+	* BaseDevelopment/lbHook/makefile.module: Fixed to use OSX_ARCH.
+
+2009-11-25 22:45  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Fixed copy & paste bug.
+
+2009-11-24 22:30  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Lost
+	  initialisation of flag to only once create an unit test menu.
+
+2009-11-22 22:35  lollisoft
+
+	* make/STD_MAKE: Compile Mac OS X on Snow Leopard only for i386.
+	  Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE.
+
+2009-11-22 21:15  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Ported to wxPropgrid
+	  1.4.8
+
+2009-11-22 17:38  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  BaseDevelopment/Makefile, BaseDevelopment/environment-osx.sh,
+	  BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbDB/makefile.module,
+	  BaseDevelopment/lbHook/makefile.module,
+	  BaseDevelopment/lbMetaApplication/makefile.module,
+	  BaseDevelopment/lbModule/makefile.module,
+	  BaseDevelopment/lbPluginManager/makefile.module,
+	  BaseDevelopment/lbclasses/makefile.module,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/TestPlugin/makefile.module,
+	  Plugins/VisitorOperations/makefile.module,
+	  Plugins/lbDMFDataModel/makefile.module, vendor/mkmk/make-osx.sh,
+	  vendor/mkmk/mkmk.cpp: Compile Mac OS X on Snow Leopard only for
+	  i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE.
+	  Probgrid seems to not correctly initialize a variable that causes a
+	  division with zero (hack).
+
+2009-11-21 11:35  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  Plugins/TestPlugin/plugin.cpp: Corrected unittest menu creation.
+
+2009-11-20 20:32  lollisoft
+
+	* BaseDevelopment/Makefile: Corrected HOME path usage to become
+	  prefix.
+
+2009-11-20 17:33  lollisoft
+
+	* hudsonbuild.sh: Missed path to sh.
+
+2009-11-20 15:02  lollisoft
+
+	* make/STD_MAKE: Fixed include of mpatrol.
+
+2009-11-20 12:18  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Corrected bin directory to put executables
+	  into.
+
+2009-11-20 12:07  lollisoft
+
+	* hudsonbuild.sh: Added missing path to wx-config.
+
+2009-11-20 11:56  lollisoft
+
+	* hudsonbuild.sh: Added new hudson CI build script.
+
+2009-11-19 17:14  lollisoft
+
+	* ccbuild.sh, BaseDevelopment/Makefile: Optimized CC build to write
+	  mkmk into /bin.
+
+2009-11-14 11:02  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added debug information
+	  to the mandatory field detection.
+
+2009-11-14 11:00  lollisoft
+
+	* make/STD_MAKE, BaseDevelopment/Makefile, vendor/mkmk/make-osx.sh:
+	  Corrected build system to support OSX 10.5.8
+
+2009-11-12 08:55  lollisoft
+
+	* BaseDevelopment/: lbHook/lbHook.cpp, lbModule/lbModule.cpp,
+	  lbclasses/lbkey.cpp, lbclasses/lbobject.cpp: Corrected the core
+	  macros and functions to reduce deprecated const string warning.
+
+2009-11-08 12:49  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
+	  BaseDevelopment/Makefile, BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  BaseDevelopment/lbclasses/lbkey.h, make/makefile.configure,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/TestPlugin/plugin.cpp, Plugins/TestPlugin/pluginTest.cpp,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Test/GUI/wxWrapper/dynamic.cpp, vendor/mkmk/mkmk.cpp: Implemented
+	  'unit test' like capabilities. The TestPlugin in the Plugins
+	  directory demonstrates the usage. Yet missing is a real test
+	  listener and stuff to display results. But it shows a working unit
+	  test mechanism using plugins.
+
+	  Corrected mkmk to find also include files in <> brackets.
+
+	  Corrected make system to work correctly with the new mkmk version.
+	  There may be a performance problem when compiling tvision code, thus
+	  that target is deactivated.
+
+	  Fixed some warnings.
+
+2009-10-24 23:01  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Added new partial stuff to handle idl
+	  files.
+
+2009-10-18 16:57  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Added missing initialisation.
+
+2009-10-18 16:54  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl:
+	  Added more type mappings (for MySQL). Corrected comment bug.
+
+2009-10-18 15:23  lollisoft
+
+	* Plugins/: lbDMFDataModel/lbDatabaseModel.cpp,
+	  lbDMFDataModel/lbDatabaseModel.h,
+	  VisitorOperations/pluginInputStream.cpp,
+	  VisitorOperations/pluginOutputStream.cpp: Removed isFK flag.
+
+2009-10-18 14:25  lollisoft
+
+	* Plugins/lbDMFDataModel/lbDatabaseModel.cpp: Added missing
+	  instantiation for comment (remarks).
+
+2009-10-18 14:24  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Added missing field
+	  remarks.
+
+2009-10-18 14:21  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Added missing field remarks.
+
+2009-10-17 16:40  lollisoft
+
+	* Plugins/lbDMFDataModel/lbDatabaseModel.cpp: Variable not
+	  instantiated.
+
+2009-10-15 22:33  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Added indicator to not
+	  know about nullable columns.
+
+2009-10-15 22:31  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Added small doc for nullable
+	  indicator values.
+
+2009-10-15 22:07  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.h: Corrected usage of
+	  nullable field.
+
+2009-10-15 21:43  lollisoft
+
+	* Plugins/lbDMFDataModel/lbDatabaseModel.cpp: Wrongly removed
+	  column names (position numbers).  Added new position 17 for nullable
+	  flag.
+
+2009-10-15 20:41  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed sleep time a bit.
+
+2009-10-15 20:39  lollisoft
+
+	* Plugins/: lbDMFDataModel/lbDatabaseModel.cpp,
+	  lbDMFDataModel/lbDatabaseModel.h,
+	  VisitorOperations/pluginDBInputStream.cpp,
+	  VisitorOperations/pluginInputStream.cpp,
+	  VisitorOperations/pluginOutputStream.cpp,
+	  VisitorOperations/pluginXMLOutputStream.cpp: Added functionality
+	  to save comments for columns and tables.
+
+2009-09-29 08:52  lollisoft
+
+	* ChangeLog-basic.txt: New changelog for release 1.0.1.
+
+2009-09-28 12:38  lollisoft
+
+	* lbdmf-debug.spec, lbdmf.spec: Changed release version.
+
 2009-09-28 12:35  lollisoft
 
 	* Test/GUI/wxWrapper/postlink-mac.sh: Added code to create disk
 	  image.
+
+2009-09-27 16:23  lollisoft
+
+	* dist.iss, docdist.iss, bin-buildtools-dist.iss, bindist.iss: New
+	  version.
 
 2009-09-27 13:28  lollisoft
 
@@ -49,6 +580,11 @@
 
 	* Plugins/DatabaseForm/ExecuteAction.cpp: Fixed a crash when no
 	  execution parameter were given.
+
+2009-09-14 21:32  lollisoft
+
+	* ChangeLog-basic.txt: Corrected changelog due to latest changes in
+	  login classes.
 
 2009-09-14 19:24  lollisoft
 
