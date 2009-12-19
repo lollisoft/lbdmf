@@ -87,7 +87,7 @@ Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; WorkingDir: "{app}"
-Name: "{group}\Applicationprototyping Dokumentation"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\Doc\ApplicationprototypingDokumentation.pdf"; WorkingDir: "{app}"
+Name: "{group}\Applicationprototyping Dokumentation"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\ApplicationprototypingDokumentation.pdf"; WorkingDir: "{app}"
 Name: "{userdesktop}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}"
 ;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
