@@ -5909,7 +5909,7 @@ void lbDBInterfaceRepository::initIntefaceList() {
 //        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 //        len = DOMlist.getLength();
         // Cleanup
-        delete [] savename;
+        free(savename);
 }
 /*...e*/
 /*...e*/

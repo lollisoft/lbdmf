@@ -37,6 +37,8 @@ public:
 
 	virtual void characters(const XMLCh* const chars, const unsigned int length)
 		{};
+
+	virutal ~XMLHandler(){}
 };
 
 

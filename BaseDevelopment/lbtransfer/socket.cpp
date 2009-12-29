@@ -268,7 +268,7 @@ return 1;
 	}
 /*...sSOCKET_VERBOSE:0:*/
 	#ifdef SOCKET_VERBOSE
-	_LOG << "lbSocket::isValid() leave with data") LOG_
+	_LOG << "lbSocket::isValid() leave with data" LOG_
 	#endif
 /*...e*/
 	return 1;

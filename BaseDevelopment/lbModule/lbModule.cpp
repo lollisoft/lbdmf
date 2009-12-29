@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.124 $
+ * $Revision: 1.125 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.124 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.125 2009/12/29 12:33:59 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.125  2009/12/29 12:33:59  lollisoft
+ * Bugfix for Tracker ID 2921178
+ *
  * Revision 1.124  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -698,7 +701,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
 
         lb_I_Unknown* uk_o = NULL; 
         if ((uk_o = container_data->getObject()) == NULL) { 
-                _CL_VERBOSE << "Failed to insert first element in SkipList::insert") LOG_ 
+                _CL_VERBOSE << "Failed to insert first element in SkipList::insert" LOG_ 
                 return ERR_CONTAINER_INSERT; 
         } else RELEASE(uk_o); 
     } 
@@ -3605,6 +3608,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		
 		if (*result == NULL) {
 			_CL_LOG << "Error: Requesting for " << request << " failed!" LOG_
+			free(buf);
 			return ERR_MODULE_NOT_FOUND;
 		}
 		

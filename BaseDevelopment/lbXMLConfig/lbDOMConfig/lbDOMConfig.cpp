@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.54 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.55 2009/12/29 12:33:59 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.55  2009/12/29 12:33:59  lollisoft
+ * Bugfix for Tracker ID 2921178
+ *
  * Revision 1.54  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -1724,7 +1727,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	DOM_NodeList DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 	int len = DOMlist.getLength();
 	// Cleanup
-	delete [] savename;
+	free(savename);
 
 /*...e*/
 	for (int i = 0; i < len; i++) {
@@ -2301,7 +2304,7 @@ void lbInterfaceRepository::initIntefaceList() {
         len = DOMlist.getLength();
         // Cleanup
 	printf("lbInterfaceRepository::initIntefaceList(): cleanup\n");
-        delete [] savename;
+        free(savename);
 }
 /*...e*/
 /*...e*/

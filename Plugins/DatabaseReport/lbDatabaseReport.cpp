@@ -1326,6 +1326,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		if (order) {
 			char* temp = strdup(order);
 			order[0] = 0;
+			free(temp);
 		}
 		
 		*newQuery = SQLString;
