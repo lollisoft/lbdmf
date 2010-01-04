@@ -6223,7 +6223,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 
 		char* lastTableName = NULL;
 
-		while(retcode == SQL_SUCCESS) {
+		while(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR/* || retcode == SQL_SUCCESS_WITH_INFO*/) {
 				_LOG << "Error: Some error happened while fetching columns. (" << retcode << ")" LOG_
