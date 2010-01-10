@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.66 2009/09/03 17:32:43 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.67 2010/01/10 10:17:06 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.67  2010/01/10 10:17:06  lollisoft
+ * Added code for interceptor functionality.
+ *
  * Revision 1.66  2009/09/03 17:32:43  lollisoft
  * Corrected exit behaviour when clicking on window close button.
  *
@@ -584,29 +587,17 @@ public:
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
-#ifdef IMPLEMENT_NEWSTUFF
-	
-	// The implementation itself should be in a plugin. That way I decouple the dispatcher from the hooks intarnals.
-	
-	/** \brief Implements execution of hook functions.
-	 *
-	 * Hooks, that are executed before could cancel the call to the dispatched function.
-	 * The following error codes should be implemented:
-	 * 
-	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
-	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
-	 */
-	lbErrCodes LB_STDCALL executeHooksBefore();
 
-	/** \brief Implements execution of hook functions.
-	 *
-	 * Hooks, that are executed before could cancel the call to the dispatched function.
-	 * The following error codes should be implemented:
-	 * 
-	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+#ifdef IMPLEMENT_NEWSTUFF
+	/**
+	 * Using the interceptor pattern at this place as it is simple to intercept all dynamic fnctionality.
+	 * The interceptor to add should be put into a queue, if there is no event handler registered. Then
+	 * it will be possible to add interceptors as early as possible.
 	 */
-	lbErrCodes LB_STDCALL executeHooksAfter();
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After, char* EvName);
+	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName);
 #endif
+	
 	UAP(lb_I_Container, dispatcher)
 	UAP(lb_I_EventManager, evManager)
 };
@@ -654,10 +645,36 @@ public:
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
 
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult);
-    
-    UAP(lb_I_Container, hooksBefore)
-    UAP(lb_I_Container, hooksAfter)
+
+#ifdef IMPLEMENT_NEWSTUFF
+	// Forwarded functions.
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After);
+	virtual lbErrCodes LB_STDCALL delInterceptor();
+
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+#endif	
+	
+	lb_I_EventHandler* _evHandlerInstance_interceptor;
+	lbEvHandler ev_interceptor_Before;
+	lbEvHandler ev_interceptor_After;
+
 	lb_I_EventHandler* _evHandlerInstance;
 	lbEvHandler ev;
 };

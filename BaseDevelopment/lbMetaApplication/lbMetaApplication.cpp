@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.164 $
+ * $Revision: 1.165 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.164 2009/12/11 18:55:15 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.165 2010/01/10 10:17:06 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.165  2010/01/10 10:17:06  lollisoft
+ * Added code for interceptor functionality.
+ *
  * Revision 1.164  2009/12/11 18:55:15  lollisoft
  * Bugfix when no application module is loaded, the name is also not available.
  *
@@ -1013,6 +1016,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			QI(this, lb_I_Unknown, ukAcceptor)
 			ukAcceptor->accept(*&fOp);
 
+#ifdef IMPLEMENT_NEWSTUFF
+			/* Here it seems the best and earliest place to load interceptor configuration.
+			 * Before any user could login (except applications without login required), the
+			 * interceptors were setup. The interceptors may be registered before the intented
+			 * event handler will be registered and thus the interceptor must be stored until
+			 * it could be activated.
+			 *
+			 * A stored interceptor not only needs the name of the event to intercept, but also
+			 * the class and the pointer to the methods to be used for interception. Currently I
+			 * do not know  how to store the pointer to the method, as I assume it will change on
+			 * each application start.
+			 *
+			 * A plugin must register the interceptors of interest to activate the interception
+			 * functionality. The dispatcher should cancel all dispatching calls who have a registered
+			 * interceptor that is not fully loaded.
+			 */
+#endif
+			
 			_LOG << "Read property sets from metaapp file..." LOG_
 			REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
 			propertySets->accept(*&fOp);
@@ -3711,6 +3732,75 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	return dispatch(id, EvData, EvResult);
 }
 /*...e*/
+
+#ifdef IMPLEMENT_NEWSTUFF
+
+lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After, char* EvName) {
+	int id = 0;
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	evManager->resolveEvent(EvName, id);
+	i->setData(id);
+	
+	UAP(lb_I_KeyBase, ik)
+	QI(i, lb_I_KeyBase, ik)
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_EvHandler, ev)
+	
+	if (dispatcher == NULL) {
+		_LOG << "Error: Have no dispatcher" LOG_
+		return ERR_ADD_INTERCEPTOR_FAILS;
+	} else {
+		uk = dispatcher->getElement(&ik);
+		
+		if (uk == NULL) {
+			_LOG << "Error: Could not add an interceptor." LOG_
+			return ERR_ADD_INTERCEPTOR_FAILS;
+		}
+		
+		QI(uk, lb_I_EvHandler, ev)
+		
+		ev->addInterceptor(evHandlerInstance, evHandler_Before, evHandler_After);
+	}
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(char* EvName) {
+	int id = 0;
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	evManager->resolveEvent(EvName, id);
+	i->setData(id);
+	
+	UAP(lb_I_KeyBase, ik)
+	QI(i, lb_I_KeyBase, ik)
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_EvHandler, ev)
+	
+	if (dispatcher == NULL) {
+		_LOG << "Error: Have no dispatcher" LOG_
+		return ERR_DELETE_INTERCEPTOR_FAILS;
+	} else {
+		uk = dispatcher->getElement(&ik);
+		
+		if (uk == NULL) {
+			_LOG << "Error: Could not delete an interceptor." LOG_
+			return ERR_DELETE_INTERCEPTOR_FAILS;
+		}
+		
+		QI(uk, lb_I_EvHandler, ev)
+		
+		ev->delInterceptor();
+	}
+	return ERR_NONE;
+}
+
+#endif
+
 /*...e*/
 
 /*...slb_EvHandler:0:*/
@@ -3751,10 +3841,65 @@ lbErrCodes LB_STDCALL lb_EvHandler::setHandler(lb_I_EventHandler* evHandlerInsta
 	return ERR_NONE;
 }
 
+#ifdef IMPLEMENT_NEWSTUFF
+
+lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After) {
+	lbErrCodes err = ERR_NONE;
+	
+	_evHandlerInstance_interceptor = evHandlerInstance;
+	ev_interceptor_Before = evHandler_Before;
+	ev_interceptor_After = evHandler_After;
+	
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::delInterceptor(char* EvName) {
+	lbErrCodes err = ERR_NONE;
+
+	_evHandlerInstance_interceptor = NULL;
+	ev_interceptor_Before = NULL;
+	ev_interceptor_After = NULL;
+	
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (_evHandlerInstance_interceptor && ev_interceptor_Before) {
+			err = (_evHandlerInstance_interceptor->*(lbEvHandler) ev_interceptor_Before) (evData);
+	}
+		
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (_evHandlerInstance_interceptor && ev_interceptor_After) {
+		err = (_evHandlerInstance_interceptor->*(lbEvHandler) ev_interceptor_After) (evData);
+	}
+	
+	return err;
+}
+
+#endif
 
 lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** evResult) {
+
+	// Assume the interceptor makes only sense if the real function is callable. Thus interceptor is here		
+#ifdef IMPLEMENT_NEWSTUFF
+	lbErrCodes err_interceptor_Before = executeInterceptorBefore(evData, evResult); 
+
+	if (err_interceptor_Before == ERR_HOOK_BEFORE_CANCEL) return;
+#endif
+	
 	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
 
+#ifdef IMPLEMENT_NEWSTUFF
+	lbErrCodes err_interceptor_After = executeInterceptorAfter(evData, evResult);
+#endif		
+	
 	return ERR_NONE;
 }
 /*...e*/

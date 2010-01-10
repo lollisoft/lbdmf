@@ -2428,6 +2428,33 @@ public:
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance() = 0;
 
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0;
+	
+#ifdef IMPLEMENT_NEWSTUFF
+	// Forwarded functions.
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After);
+	virtual lbErrCodes LB_STDCALL delInterceptor();
+	
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+	
+	/** \brief Implements execution of hook functions.
+	 *
+	 * Hooks, that are executed before could cancel the call to the dispatched function.
+	 * The following error codes should be implemented:
+	 * 
+	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
+	 */
+	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+#endif	
+	
+	
 };
 /*...e*/
 /*...sclass lb_I_EventHandler:0:*/
@@ -2546,6 +2573,13 @@ public:
 	 * lb_I_DispatchRequest variant. Parameter contains all needed data for the dispatch request.
 	 */
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0;
+
+#ifdef IMPLEMENT_NEWSTUFF
+	// Using the interceptor pattern at this place as it is simple to intercept all dynamic fnctionality.
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After, char* EvName);
+	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+#endif
+	
 /*...e*/
 };
 /*...e*/
