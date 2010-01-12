@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbobject.h,v 1.47 2009/09/09 17:43:51 lollisoft Exp $
+ * $Id: lbobject.h,v 1.48 2010/01/12 19:45:41 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.48  2010/01/12 19:45:41  lollisoft
+ * Mostly completed plugin based interceptor functionality for events.
+ *
  * Revision 1.47  2009/09/09 17:43:51  lollisoft
  * Added substitutePlaceholder function. Fixed bug in strpos.
  *
@@ -421,6 +424,7 @@ public:
 	lb_I_String* LB_STDCALL right(int from);
 	int LB_STDCALL strpos(const char* with);
 	lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params);
+	lb_I_Container* LB_STDCALL split(const char split_char);
 	
 	DECLARE_LB_KEYBASE()
 

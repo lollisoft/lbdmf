@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.86 $
+ * $Revision: 1.87 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.86 2009/11/12 07:55:33 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.87 2010/01/12 19:45:41 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.87  2010/01/12 19:45:41  lollisoft
+ * Mostly completed plugin based interceptor functionality for events.
+ *
  * Revision 1.86  2009/11/12 07:55:33  lollisoft
  * Corrected the core macros and functions to reduce deprecated const string warning.
  *
@@ -634,7 +637,7 @@ public:
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
 	virtual int LB_STDCALL strpos(const char* with) = 0;
 	
-	
+	virtual lb_I_Container* LB_STDCALL split(const char split_char) = 0;
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/

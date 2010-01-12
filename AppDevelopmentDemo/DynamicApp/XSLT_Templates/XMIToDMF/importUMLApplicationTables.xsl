@@ -321,8 +321,8 @@ select "dropTable"('<xsl:value-of select="$TableName"/>');
 -- CREATE Sqlite TABLE <xsl:value-of select="$TableName"/>
 CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:choose>
 	<xsl:when test="$Aggregation='none'">
-		<xsl:if test="./lowerValue/@value='1'">
-		<xsl:if test="./upperValue/@value='1'">
+		<xsl:if test="./lowerValue/@value!='1'">
+		<xsl:if test="./upperValue/@value!='1'">
 			<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
 			<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/><xsl:if test="position()!=1">,
 	</xsl:if>

@@ -690,6 +690,8 @@ PRIMARY KEY (id),
 	 * A query interface should be added. But is M$'s solution usable ?
 	 */
 
+	class lb_I_String;
+
 	class lb_I_gcManager;
 	class lb_I_Unknown;
 	class lb_I_Module;
@@ -756,6 +758,9 @@ PRIMARY KEY (id),
 	class lb_I_ActionStep_Parameters;
 	class lb_I_TestFixture;
 	class lb_I_TestMethod;
+	class lb_I_CryptoStream;
+	class lb_I_DispatchInterceptor;
+
 	/*...e*/
 
 	/*...scallback \47\ handler typedefs:0:*/
@@ -773,10 +778,17 @@ PRIMARY KEY (id),
 
 
 #ifndef TVISION
-	typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 #endif
 #ifdef TVISION
-	typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+#endif
+
+#ifndef TVISION
+typedef lbErrCodes (LB_STDCALL lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk);
+#endif
+#ifdef TVISION
+typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbEvHandler)(lb_I_Unknown* uk);
 #endif
 
 	typedef void (LB_STDCALL lb_I_TestFixture::*TestMethod)();
@@ -2415,6 +2427,10 @@ protected:
 	friend class lb_I_Dispatcher;
 };
 /*...e*/
+
+// Activate interceptor code
+#define IMPLEMENT_NEWSTUFF
+
 /*...sclass lb_I_EvHandler:0:*/
 /**
  * \brief An event handler entity.
@@ -2427,12 +2443,19 @@ public:
 	virtual lbEvHandler LB_STDCALL getHandler() = 0;
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance() = 0;
 
-	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0;
+	/** \brief Call the registered handler.
+	 * If the boolean flag hasDefinedInterceptor is true, the call will fail if no interceptor is registered. 
+	 */
+	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult, bool hasDefinedInterceptor = false) = 0;
 	
 #ifdef IMPLEMENT_NEWSTUFF
+	virtual lb_I_DispatchInterceptor* getInterceptor() = 0;
+	virtual lbInterceptor LB_STDCALL getBeforeInterceptor() = 0;
+	virtual lbInterceptor LB_STDCALL getAfterInterceptor() = 0;
+	
 	// Forwarded functions.
-	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After);
-	virtual lbErrCodes LB_STDCALL delInterceptor();
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) = 0;
+	virtual lbErrCodes LB_STDCALL delInterceptor() = 0;
 	
 	/** \brief Implements execution of hook functions.
 	 *
@@ -2442,7 +2465,7 @@ public:
 	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
-	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
 	
 	/** \brief Implements execution of hook functions.
 	 *
@@ -2451,7 +2474,9 @@ public:
 	 * 
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
-	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
+	
+	virtual void LB_STDCALL setInterceptorRequired(bool _required) = 0;
 #endif	
 	
 	
@@ -2576,36 +2601,50 @@ public:
 
 #ifdef IMPLEMENT_NEWSTUFF
 	// Using the interceptor pattern at this place as it is simple to intercept all dynamic fnctionality.
-	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After, char* EvName);
-	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName) = 0;
+	
+	//virtual lbErrCodes LB_STDCALL activateInterceptor(char* EvName, lb_I_EvHandler* ev) = 0;
+	
+	
+	/** \brief Get the list of interceptors to store anywhere.
+	 * This function is used to store the information of to be used interceptors.
+	 * The list is a string representation and may be encrypted.
+	 */
+	virtual lb_I_String* LB_STDCALL getInterceptorDefinitions() = 0;
+	
+	/** \brief Set the list of interceptors to be used.
+	 * The list is a string representation and may be encrypted.
+	 */
+	virtual lbErrCodes LB_STDCALL setInterceptorDefinitions(lb_I_String* s) = 0;
 #endif
 	
 /*...e*/
 };
 /*...e*/
 
-class lb_I_DispatcherHooks : public lb_I_Unknown {
+class lb_I_DispatchInterceptor : public lb_I_Unknown {
 public:
-	/** \brief Indicates usage of any UI interaction.
-	 *
-	 * The implementation requires exsistence of an UI to proper work.
+	/** \brief Describes the purpose of this interceptor.
+	 * The designer should be able to optain information about what interceptors he / she could activate.
 	 */
-	virtual bool		LB_STDCALL	requiresUserInterface() = 0;
-
-	/** \brief Execute a before hook.
-	 *
-	 * Execute a registered and as active marked before hook. The hook may build up hook results. The hook also may generate
-	 * EvResult entries. This enables hooked overrides of functionality.
-	 *
-	 * There may be more than one hook to be performed. Each hook has an execution order number.
+	virtual lb_I_String* LB_STDCALL getDescription() = 0;
+	/** \brief Get the vendor name.
+	 * Interceptors are typically vendor extensions to be hooked into basic functionalities such as permission handling.
 	 */
-	virtual lbErrCodes	LB_STDCALL	executeBefore(lb_I_Unknown* HookResults, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
+	virtual lb_I_String* LB_STDCALL getVendorName() = 0;
+	
+	/** \brief Initialize and activate the interceptor.
+	 * Call this function to register the interceptor to the dispatcher.
+	 *
+	 * \note If this is done in the designer and the plugin later is not deployed, then the dispatcher will cancel related events.
+	 */
+	virtual lbErrCodes LB_STDCALL initialize() = 0;
 };
 
 class lb_I_DatabaseForm;
 class lb_I_GUI;
 class lb_I_Form;
-class lb_I_String;
 
 /*...sclass lb_I_Frame:0:*/
 /**

@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.134 $
+# * $Revision: 1.135 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.134 2009/12/07 11:31:18 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.135 2010/01/12 19:45:41 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.135  2010/01/12 19:45:41  lollisoft
+# * Mostly completed plugin based interceptor functionality for events.
+# *
 # * Revision 1.134  2009/12/07 11:31:18  lollisoft
 # * Fixed OS X architecture selection bug.
 # *
@@ -1310,7 +1313,7 @@ COMPILER_VERSION=
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=no
+DEBUG=yes
 
 
 STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \

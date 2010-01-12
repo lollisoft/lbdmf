@@ -297,25 +297,27 @@ lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dis
 	 *     the user could get the new values immediatly.
 	 */
 
-	sprintf(eventName, "%pDatabaseFirst", this);
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+
+	sprintf(eventName, "%pDatabaseFirst", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBFirst, eventName);
 
-	sprintf(eventName, "%pDatabaseNext", this);
+	sprintf(eventName, "%pDatabaseNext", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBNext,  eventName);
 
-	sprintf(eventName, "%pDatabasePrev", this);
+	sprintf(eventName, "%pDatabasePrev", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBPrev,  eventName);
 
-	sprintf(eventName, "%pDatabaseLast", this);
+	sprintf(eventName, "%pDatabaseLast", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBLast,  eventName);
 
-	sprintf(eventName, "%pDatabaseAdd", this);
+	sprintf(eventName, "%pDatabaseAdd", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBAdd,  eventName);
 
-	sprintf(eventName, "%pDatabaseDelete", this);
+	sprintf(eventName, "%pDatabaseDelete", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBDelete,  eventName);
 
-	sprintf(eventName, "%pDatabaseRefresh", this);
+	sprintf(eventName, "%pDatabaseRefresh", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBRefresh,  eventName);
 
 	return ERR_NONE;
@@ -1362,26 +1364,27 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 /*...sInitialize navigation handlers:8:*/
 		char eventName[100] = "";
+		lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
 
-		sprintf(eventName, "%pDatabaseFirst", this);
+		sprintf(eventName, "%pDatabaseFirst", evHandler);
 		eman->registerEvent(eventName, DatabaseFirst);
 
-		sprintf(eventName, "%pDatabaseNext", this);
+		sprintf(eventName, "%pDatabaseNext", evHandler);
 		eman->registerEvent(eventName,  DatabaseNext);
 
-		sprintf(eventName, "%pDatabasePrev", this);
+		sprintf(eventName, "%pDatabasePrev", evHandler);
 		eman->registerEvent(eventName,  DatabasePrev);
 
-		sprintf(eventName, "%pDatabaseLast", this);
+		sprintf(eventName, "%pDatabaseLast", evHandler);
 		eman->registerEvent(eventName,  DatabaseLast);
 
-		sprintf(eventName, "%pDatabaseAdd", this);
+		sprintf(eventName, "%pDatabaseAdd", evHandler);
 		eman->registerEvent(eventName,  DatabaseAdd);
 
-		sprintf(eventName, "%pDatabaseDelete", this);
+		sprintf(eventName, "%pDatabaseDelete", evHandler);
 		eman->registerEvent(eventName,  DatabaseDelete);
 
-		sprintf(eventName, "%pDatabaseRefresh", this);
+		sprintf(eventName, "%pDatabaseRefresh", evHandler);
 		eman->registerEvent(eventName,  DatabaseRefresh);
 
 //		sprintf(eventName, "%pImageButtonClick", this);

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.37 2009/06/17 20:37:18 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.38 2010/01/12 19:45:41 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.38  2010/01/12 19:45:41  lollisoft
+ * Mostly completed plugin based interceptor functionality for events.
+ *
  * Revision 1.37  2009/06/17 20:37:18  lollisoft
  * Implemented non linear actions. These are 'flow' controlled action steps that could be modelled in UML activity diagrams. Export is not yet implemented but import from UML works.
  *
@@ -308,6 +311,13 @@ enum lbErrCodes {
 	
 	ERR_UML_IMPORT_LOADDATABASE_MODUL,
 	ERR_DYNAMIC_APP_LOAD_DBSCHEMA,
+	
+/* Error codes for interceptor stuff */	
+	
+	ERR_ADD_INTERCEPTOR_FAILS,
+	ERR_DELETE_INTERCEPTOR_FAILS,
+	ERR_INTERCEPTOR_MISSING,
+	ERR_INTERCEPTOR_BEFORE_CANCEL,
 	
 /* Errorcodes for form validation */	
 	ERR_FORM_VALIDATION

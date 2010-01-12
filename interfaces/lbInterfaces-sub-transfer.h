@@ -251,6 +251,17 @@ public:
 };
 /*...e*/
 
+/** \brief Simple encryption and decryption API.
+ */
+class lb_I_CryptoStream : 
+	public lb_I_Unknown {
+	public:
+		virtual bool setAlgorythm(char* name) = 0;
+		virtual lb_I_CryptoStream& LB_STDCALL operator<< (lb_I_String* string) = 0;
+		virtual lb_I_CryptoStream& LB_STDCALL operator>> (lb_I_String* string) = 0;
+};
+
+
 /*...sclass lb_I_Streamable:0:*/
 /**
  * \brief Interface for loadable and saveable objects.

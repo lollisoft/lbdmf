@@ -1069,6 +1069,55 @@ void LB_STDCALL lbString::setData(char const * p) {
     allocationsize = 1;
 }
 
+lb_I_Container* LB_STDCALL lbString::split(const char split_char) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, strings)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, part)
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	char* string = charrep();
+	char *block;            /* current item block */
+	long count;              /* number of items in array */
+	char split_string[2];   /* string to hold split character */
+	
+	/* generate string for strtok() from split_char */
+	sprintf(split_string, "%c", split_char);
+
+#ifdef bla
+	/* count number of blocks; if only one, return it as sole item */
+	count = 0;
+	block = strchr(string, split_char);
+	if ( block == NULL) count = 1;
+	while ( block != NULL )
+	{
+		block = strchr(block + 1, split_char);
+		count++;
+	}
+#endif
+	
+	QI(part, lb_I_Unknown, uk)
+	QI(index, lb_I_KeyBase, key)
+	
+	/* find each item, copy, and insert pointer to item in array */
+	count = 0;
+	for ( block = strtok(string, split_string); block != NULL; 
+		 block = strtok(NULL, split_string) )
+	{
+		*part = (char*) strdup(block);
+		index->setData(count);
+		strings->insert(&uk, &key);
+		count++;
+	}
+	
+	/* returnt the number of items in the array */
+	//return index;
+	strings++;
+	return strings.getPtr();
+}
+
 #define NUL '\0'
 /// \brief Code borrowed from http://c.snippets.org/index.php#TOP
 char* LB_STDCALL lbString::stristr(const char *String, const char *Pattern)

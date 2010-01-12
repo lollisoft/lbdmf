@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.67 2010/01/10 10:17:06 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.68 2010/01/12 19:45:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.68  2010/01/12 19:45:41  lollisoft
+ * Mostly completed plugin based interceptor functionality for events.
+ *
  * Revision 1.67  2010/01/10 10:17:06  lollisoft
  * Added code for interceptor functionality.
  *
@@ -594,10 +597,17 @@ public:
 	 * The interceptor to add should be put into a queue, if there is no event handler registered. Then
 	 * it will be possible to add interceptors as early as possible.
 	 */
-	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After, char* EvName);
-	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+	lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName);
+	lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+	lb_I_String* LB_STDCALL getInterceptorDefinitions();
+	lbErrCodes LB_STDCALL setInterceptorDefinitions(lb_I_String* s);
+	
+	lb_I_EvHandler* LB_STDCALL hasDefinedInterceptor(lb_I_String* event);
+	lbErrCodes LB_STDCALL activateInterceptor(lb_I_String* EvName, lb_I_EvHandler* ev);
 #endif
 	
+	/// \brief The events that must be intercepted.
+	UAP(lb_I_Container, interceptorevents)
 	UAP(lb_I_Container, dispatcher)
 	UAP(lb_I_EventManager, evManager)
 };
@@ -644,11 +654,26 @@ public:
 	virtual lbEvHandler LB_STDCALL getHandler();
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
 
-	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult);
+	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult, bool hasDefinedInterceptor = false);
 
 #ifdef IMPLEMENT_NEWSTUFF
+	
+	virtual lb_I_DispatchInterceptor* getInterceptor();
+	virtual lbInterceptor LB_STDCALL getBeforeInterceptor();
+	virtual lbInterceptor LB_STDCALL getAfterInterceptor();
+
+	/** \brief The handler may require an interceptor.
+	 * Use this function to define if the handler needs an interceptor.
+	 */
+	virtual void LB_STDCALL setInterceptorRequired(bool _required);
+	/** \brief Check if this handler needs an interceptor.
+	 * This is used to auto cancel events that have a defined interceptor, but the interceptor plugin is missing.
+	 * The check would enable determining missing plugins and thus tricking out permissions will fail this way.
+	 */
+	virtual bool LB_STDCALL getInterceptorRequired();
+	
 	// Forwarded functions.
-	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler_Before, lbEvHandler evHandler_After);
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After);
 	virtual lbErrCodes LB_STDCALL delInterceptor();
 
 	/** \brief Implements execution of hook functions.
@@ -671,9 +696,11 @@ public:
 	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 #endif	
 	
-	lb_I_EventHandler* _evHandlerInstance_interceptor;
-	lbEvHandler ev_interceptor_Before;
-	lbEvHandler ev_interceptor_After;
+	bool interceptorRequired;
+	
+	lb_I_DispatchInterceptor* _evHandlerInstance_interceptor;
+	lbInterceptor ev_interceptor_Before;
+	lbInterceptor ev_interceptor_After;
 
 	lb_I_EventHandler* _evHandlerInstance;
 	lbEvHandler ev;
