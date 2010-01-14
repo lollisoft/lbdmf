@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
 
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -467,6 +467,7 @@ public:
 		DECLARE_LB_UNKNOWN()
 
 		lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+		lb_I_Unknown* LB_STDCALL getUnknown();
 		lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
 
 		wxWizard *wizard;
@@ -481,6 +482,13 @@ lbErrCodes LB_STDCALL lbLoginHandler::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbLoginHandler::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
+}
+
+lb_I_Unknown* LB_STDCALL lbLoginHandler::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
 }
 
 lbErrCodes LB_STDCALL lbLoginHandler::registerEventHandler(lb_I_Dispatcher* disp) {

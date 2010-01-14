@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.72 2009/12/07 11:33:08 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.73 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.73  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.72  2009/12/07 11:33:08  lollisoft
  * Restored lost code.
  *
@@ -394,6 +397,8 @@ public:
 	virtual ~lbPluginManager();
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
+
 
 	DECLARE_LB_UNKNOWN()
 
@@ -465,6 +470,13 @@ BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginManager, lbPluginManager)
+
+lb_I_Unknown* LB_STDCALL lbPluginManager::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
 
 
 lbPluginManager::lbPluginManager() {

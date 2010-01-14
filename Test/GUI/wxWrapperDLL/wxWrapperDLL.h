@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.37 2009/07/05 00:57:31 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.38 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.38  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.37  2009/07/05 00:57:31  lollisoft
  * Added new tableview dialog class and enabled switching
  * between table view and form view. This does not interfer
@@ -322,6 +325,7 @@ public:
 	 */
 		
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
 	
 	/// Show or hide left panel.
 	void LB_STDCALL showLeftPanel(bool show);
@@ -518,6 +522,7 @@ public:
          */
         virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
         
+		lb_I_Unknown* LB_STDCALL getUnknown();
         /**
          * To be able to recieve any events, it is neccesary to provide the dispatcher.
          * An other way may be registrering a direct callback, without dispatching it.

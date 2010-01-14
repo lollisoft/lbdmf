@@ -106,6 +106,8 @@ public:
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 
+	lb_I_Unknown* LB_STDCALL getUnknown();
+	
 	/**
 	 * \brief The main handler to create dynamic forms
 	 */
@@ -315,6 +317,11 @@ lbDynamicApplication::~lbDynamicApplication() {
 	_CL_LOG << "lbDynamicApplication::~lbDynamicApplication() called." LOG_
 }
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL lbDynamicApplication::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+}
 
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher* disp) {

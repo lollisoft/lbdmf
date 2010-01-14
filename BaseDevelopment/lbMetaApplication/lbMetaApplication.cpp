@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.166 $
+ * $Revision: 1.167 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.166 2010/01/12 19:45:41 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.167 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.167  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.166  2010/01/12 19:45:41  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *
@@ -753,6 +756,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
 	return ERR_NONE;
+}
+
+lb_I_Unknown* LB_STDCALL lb_MetaApplication::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
 }
 
 /*...sregister event handlers:0:*/
@@ -3914,14 +3924,15 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 	while (interceptorevents->hasMoreElements() != 0) {
 		UAP(lb_I_String, part)
 		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
 		uk = interceptorevents->nextElement();
-		QI(uk, lb_I_String, part)
+		key = interceptorevents->currentKey();
 		
 		if (*s == "") {
-			*s = part->charrep();
+			*s = key->charrep();
 		} else {
 			*s += ",";
-			*s += part->charrep();
+			*s += key->charrep();
 		}
 	}
 	
@@ -3966,8 +3977,9 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EvHandler::lb_EvHandler() {
-	ev = NULL;
 	ref = STARTREF;
+	_evHandlerInstance = NULL;
+	ev = NULL;
 	_evHandlerInstance_interceptor = NULL;
 	ev_interceptor_Before = NULL;
 	ev_interceptor_After = NULL;
@@ -4030,6 +4042,18 @@ lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evH
 	_evHandlerInstance_interceptor = evHandlerInstance;
 	ev_interceptor_Before = evHandler_Before;
 	ev_interceptor_After = evHandler_After;
+	
+	if (_evHandlerInstance_interceptor != NULL) {
+		if (_evHandlerInstance != NULL) {
+			_LOG << "lb_EvHandler::setInterceptor(): Pass intercepted handler to interceptor." LOG_
+			UAP(lb_I_Unknown, uk)
+			
+			uk = _evHandlerInstance->getUnknown();
+			_evHandlerInstance_interceptor->addInterceptedInstance(*&uk);
+		} else {
+			_LOG << "Error: Could not add intercepted instance to interceptor. Handler must be passed first by setHandler method." LOG_
+		}
+	}
 	
 	return err;
 }

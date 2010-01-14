@@ -95,6 +95,8 @@ public:
 	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
+	
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 
@@ -176,6 +178,12 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 	return ERR_NONE;
 }
 
+lb_I_Unknown* LB_STDCALL UIWrapper::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
 
 /*...slbErrCodes LB_STDCALL lbApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL UIWrapper::setData(lb_I_Unknown* uk) {

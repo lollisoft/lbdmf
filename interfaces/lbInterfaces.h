@@ -2495,6 +2495,11 @@ public:
 	 * Register all the handlers by this class to the given dispatcher.
 	 */
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp) = 0;
+	/**
+	 * This function is added to avoid diamond shaped class hirachies.
+	 */
+	
+	virtual lb_I_Unknown* LB_STDCALL getUnknown() = 0;
 };
 /*...e*/
 
@@ -2640,6 +2645,14 @@ public:
 	 * \note If this is done in the designer and the plugin later is not deployed, then the dispatcher will cancel related events.
 	 */
 	virtual lbErrCodes LB_STDCALL initialize() = 0;
+	
+	/** \brief Enables access to the intercepted object.
+	 * Due to the possibility to register multiple instances for one event (with a prefix of the instance pointer to lb_I_EventHandler type as string),
+	 * the correct intercepted instance must be looked up by the instance pointer as string (key).
+	 *
+	 * The interceptor must cope with the correct type conversion to what the interceptor should act.
+	 */
+	virtual lbErrCodes LB_STDCALL addInterceptedInstance(lb_I_Unknown* intercepted) = 0;
 };
 
 class lb_I_DatabaseForm;

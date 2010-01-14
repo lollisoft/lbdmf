@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.60 2009/09/09 17:49:21 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.61 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.61  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.60  2009/09/09 17:49:21  lollisoft
  * Added code to replace placeholder by configured parameters in addition to passed SourceFieldName.
  *
@@ -321,7 +324,8 @@ public:
 	 * your registered event handlers.
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-
+	lb_I_Unknown* LB_STDCALL getUnknown();
+		
 	void OnDispatch(wxCommandEvent& event);
 
 	DECLARE_LB_UNKNOWN()
@@ -968,6 +972,8 @@ public:
 	 * your registered event handlers.
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+		
+	lb_I_Unknown* LB_STDCALL getUnknown();
 /*...e*/
 
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
@@ -1266,7 +1272,8 @@ public:
 	 * your registered event handlers.
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-/*...e*/
+	lb_I_Unknown* LB_STDCALL getUnknown();
+		/*...e*/
 
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
 
@@ -1605,6 +1612,7 @@ public:
 	 * your registered event handlers.
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+	lb_I_Unknown* LB_STDCALL getUnknown();
 /*...e*/
 
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);
@@ -1794,6 +1802,7 @@ public:
 	 * your registered event handlers.
 	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+	lb_I_Unknown* LB_STDCALL getUnknown();
 	/*...e*/
 	
 	void LB_STDCALL windowIsClosing(lb_I_Window* w);

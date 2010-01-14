@@ -190,6 +190,13 @@ void LB_STDCALL lbDatabaseTableViewDialog::create(int parentId) {
 	_created = true;
 }
 
+lb_I_Unknown* LB_STDCALL lbDatabaseTableViewDialog::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 

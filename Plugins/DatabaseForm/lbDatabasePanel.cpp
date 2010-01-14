@@ -266,6 +266,12 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 
 /*...e*/
 
+lb_I_Unknown* LB_STDCALL lbDatabasePanel::getUnknown() {
+	lb_I_Unknown* ukp;
+	queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
+	return ukp;
+}
+
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dispatcher) {

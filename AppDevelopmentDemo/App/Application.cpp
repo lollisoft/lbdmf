@@ -63,6 +63,7 @@ public:
 	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
 
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
 
@@ -94,6 +95,11 @@ lbApplication::~lbApplication() {
 	_LOG << "Instance of lb_I_Application destroyed" LOG_
 }
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL lbApplication::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+}
 
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lbApplication::registerEventHandler(lb_I_Dispatcher* disp) {

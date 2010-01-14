@@ -424,6 +424,13 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I
 	return err;
 }
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL lbConfigure_FK_PK_MappingDialog::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+}
+
+
 /*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Query\42\ query\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass) {
 	lbErrCodes err = ERR_NONE;

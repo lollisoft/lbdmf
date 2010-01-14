@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.68 2010/01/12 19:45:41 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.69 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.69  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.68  2010/01/12 19:45:41  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *
@@ -341,6 +344,7 @@ public:
 	
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	lb_I_Unknown* LB_STDCALL getUnknown();
 	
 	lbErrCodes LB_STDCALL loadSubModules();
 	

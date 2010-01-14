@@ -681,6 +681,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         return ERR_NONE;
 }
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL lb_wxFrame::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
+
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
         _LOG << "lb_wxFrame::setData(...) not implemented yet" LOG_
@@ -718,6 +726,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
         return ERR_NONE;
 }
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL lb_wxGUI::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+}
 
 
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/

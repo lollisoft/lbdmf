@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.169 2009/12/06 19:21:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.170 2010/01/14 17:31:25 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.169 $
+ * $Revision: 1.170 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.169 2009/12/06 19:21:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.170 2010/01/14 17:31:25 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.170  2010/01/14 17:31:25  lollisoft
+ * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
+ *
  * Revision 1.169  2009/12/06 19:21:21  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -876,7 +879,7 @@ public:
 
 /*...e*/
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-
+	
 	wxString LB_STDCALL getSelectedApp() { return app; }
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
@@ -2026,6 +2029,7 @@ public wxApp
 	 * Create event handler, that this application would provide to the lbDMF user.
 	 */
         virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
 
 	// I provide some eventhandlers
 
@@ -2501,6 +2505,13 @@ lbErrCodes LB_STDCALL MyApp::setData(lb_I_Unknown* uk) {
 }
 
 /*...e*/
+
+lb_I_Unknown* LB_STDCALL MyApp::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
 
 /*...sMyApp\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
