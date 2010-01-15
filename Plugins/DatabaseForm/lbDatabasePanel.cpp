@@ -196,14 +196,14 @@ lbDatabasePanel::lbDatabasePanel()
 /*...e*/
 /*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
 lbDatabasePanel::~lbDatabasePanel() {
-	_CL_VERBOSE << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
+	_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
 	if (fa != NULL) delete fa;
 	if (FFI != NULL) delete FFI;
 	free (formName);
 	free (base_formName);
 	free (untranslated_formName);
-	_CL_VERBOSE << "lbDatabasePanel::~lbDatabasePanel() ready." LOG_
+	_LOG << "lbDatabasePanel::~lbDatabasePanel() ready." LOG_
 }
 /*...e*/
 
@@ -267,7 +267,13 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 /*...e*/
 
 lb_I_Unknown* LB_STDCALL lbDatabasePanel::getUnknown() {
+	char eventName[100] = "";
 	lb_I_Unknown* ukp;
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+
+	sprintf(eventName, "%p , and this is %p.", evHandler, this);
+	_LOG << "lbDatabasePanel::getUnknown() called. Instance of lb_I_EventHandler* is " << eventName LOG_
+
 	queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
 	return ukp;
 }
@@ -302,29 +308,49 @@ lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dis
 	 *     the database could be ignored and a change will fail, or
 	 *     the user could get the new values immediatly.
 	 */
-
+	
+	setDebug(1); // Trace all releases
+	
+	int references = getRefCount();
 	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+	sprintf(eventName, "%p , and this is %p.", evHandler, this);
+	_LOG << "lbDatabasePanel::registerEventHandler() called. Instance of lb_I_EventHandler* is " << eventName LOG_
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseFirst", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBFirst, eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseNext", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBNext,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabasePrev", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBPrev,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseLast", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBLast,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseAdd", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBAdd,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseDelete", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBDelete,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
+	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseRefresh", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBRefresh,  eventName);
+	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
 
 	return ERR_NONE;
 }

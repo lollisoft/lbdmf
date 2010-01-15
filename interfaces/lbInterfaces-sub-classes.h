@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.87 $
+ * $Revision: 1.88 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.87 2010/01/12 19:45:41 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.88 2010/01/15 18:48:48 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.88  2010/01/15 18:48:48  lollisoft
+ * Interceptor logic works as long as one database form is
+ * not closed when another is opened and then the
+ * interceptor walks through the list of intercepted event
+ * handlers.
+ *
+ * This is due to the fact that wxWidgets deletes the instance, but the container with a reference is not notified to remove the instance (without deletion).
+ *
+ * This is tricky.
+ *
  * Revision 1.87  2010/01/12 19:45:41  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *
@@ -1022,7 +1032,6 @@ classname::~classname() { \
 	sprintf(ptr, "%p", this); \
         sprintf(ptr1, "%p", data); \
         if (key != NULL) { \
-            key->setDebug(1); \
             if (key->getRefCount() > 1) { \
             	_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
             } \

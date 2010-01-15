@@ -833,11 +833,11 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbEvHandler)(lb_I_Unknown* uk);
 				l = 0;
 			}
 
-			miniLong(long _l) {
-				l = _l;
-			}
-
-			miniLong(const miniLong& _l) {
+		miniLong(long _l) {
+			l = _l;
+		}
+		
+		miniLong(const miniLong& _l) {
 				l = _l.l;
 			}
 
@@ -846,12 +846,41 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbEvHandler)(lb_I_Unknown* uk);
 
 			operator long() { return l; }
 
-			miniLong& LB_STDCALL operator = (const long _l) {
-				l = _l;
-				return *this;
-			}
+		miniLong& LB_STDCALL operator = (const long _l) {
+			l = _l;
+			return *this;
+		}
+		
+		miniLong& LB_STDCALL operator = (const int _l) {
+			l = (long)_l;
+			return *this;
+		}
 
-			long get() { return l; }
+		bool LB_STDCALL operator == (const miniLong& _l) const {
+			return l == _l.get();
+		}
+		
+		bool LB_STDCALL operator == (const int _l) const {
+			return l == (long)_l;
+		}
+		
+		bool LB_STDCALL operator == (const long _l) const {
+			return l == _l;
+		}
+		
+		bool LB_STDCALL operator >= (const miniLong& _l) const {
+			return l >= _l.get();
+		}
+		
+		bool LB_STDCALL operator >= (const int _l) const {
+			return l >= (long)_l;
+		}
+		
+		bool LB_STDCALL operator >= (const long _l) const {
+			return l >= _l;
+		}
+		
+		long get() const { return l; }
 			void set(long _l) { l = _l; }
 			long l;
 	};
@@ -942,7 +971,7 @@ public:
 	/**
 	 * Activate or deactivate debug informations.
 	 */
-	virtual void LB_STDCALL setDebug(int i) = 0;
+	virtual void LB_STDCALL setDebug(long i) = 0;
 
 	/**
 	 * Returns the number of references to this instance.
@@ -1075,11 +1104,11 @@ public:
 		public: \
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
-	        	_line = -1; \
-	        	_file = NULL; \
+	        	_line = __LINE__; \
+	        	_file = strdup(__FILE__); \
 	        	attachedClassName = NULL; \
 	        	allowDelete = 1; \
-			locked = false; \
+				locked = false; \
 	        	initialized = false; \
 		} \
 		\
@@ -1094,20 +1123,17 @@ public:
 			if (_file != NULL) free(_file); \
 			_file = NULL; \
 			if (_ref._file != NULL) { \
-				_file = (char*) malloc(strlen(_ref._file) + 1); \
-				strcpy(_file, _ref._file); \
+				_file = (char*) strdup(_ref._file); \
 			} \
 			_line = _ref._line; \
 			_autoPtr = NULL; \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
 			char const* empty = ""; \
-			if (_file != NULL) { \
-				free(_file); \
-				if (_ref._file) { \
-					_file = (char*) malloc(strlen(_ref._file) + 1); \
-					strcpy(_file, _ref._file); \
-				} \
+			if (_file != NULL) free(_file); \
+			_file = NULL; \
+			if (_ref._file != NULL) { \
+				_file = (char*) strdup(_ref._file); \
 			} \
 			if (attachedClassName) { \
 				free(attachedClassName); \
@@ -1116,13 +1142,12 @@ public:
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
 			        attachedClassName = strdup(_ref->getClassName()); \
 		        else \
-		                attachedClassName = strdup(empty); \
+	                attachedClassName = strdup(empty); \
 			_line = _ref._line; \
 			_autoPtr = _ref._autoPtr; \
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			if (_file) free(_file); \
 			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
 				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer") \
@@ -1134,6 +1159,7 @@ public:
 				if (_line == -1) { \
 				} \
 				_autoPtr->release(_file, _line); \
+				if (_file) free(_file); \
 				_autoPtr = NULL; \
 			} \
 		} \
@@ -1142,12 +1168,19 @@ public:
 				free(_file); \
 			} \
 			if (__file != NULL) { \
-				_file = (char*) malloc(strlen(__file) + 1); \
-				strcpy(_file, __file); \
+				_file = (char*) strdup(__file); \
+			} else { \
+				_CL_LOG << "Error: Setting file parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_ \
+				_file = strdup(__FILE__); \
 			} \
 		} \
 		void LB_STDCALL setLine(int __line) { \
-			_line = __line; \
+			if (__line == -1) { \
+				_CL_LOG << "Error: Setting line parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_ \
+				_line = __LINE__; \
+			} else { \
+				_line = __line; \
+			} \
 		} \
 		\
 		interface* LB_STDCALL getPtr() const { \
@@ -1360,7 +1393,7 @@ protected: \
 	UAP(lb_I_Module, manager) \
 	mutable int ref; \
 	lb_I_Unknown* data; \
-	int debug_macro; \
+	mutable miniLong debug_macro; \
 	mutable int further_lock; \
 	mutable miniLong instance_counted; \
 	mutable miniString lastQIFile; \
@@ -1374,7 +1407,7 @@ public: \
 	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line); \
 	lb_I_Module*    LB_STDCALL getModuleManager(); \
 	void 		LB_STDCALL resetRefcount(); \
-	void 		LB_STDCALL setDebug(int i = 1) { debug_macro = i; } \
+	void 		LB_STDCALL setDebug(long i) { debug_macro = i; } \
 	lbErrCodes 	LB_STDCALL release(char const* file, int line); \
 	char const*	LB_STDCALL getClassName(); \
 	char*           LB_STDCALL getCreationLoc() const; \
@@ -1468,7 +1501,11 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 } \
 lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 	if (_TRMemValidate(this)) { \
-	_CL_VERBOSE << #classname << "::release(" << __FILE__ << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	if (debug_macro == 1) { \
+		_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} else { \
+		_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} \
 	ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
@@ -1518,8 +1555,13 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 \
 lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
+	if (debug_macro == 1) { \
+		_LOG << #classname << "::clone(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} else { \
+		_CL_VERBOSE << #classname << "::clone(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} \
 	classname* cloned = new classname(); \
-	cloned->setDebug(0); \
+	cloned->setDebug(debug_macro); \
 	lb_I_Unknown* uk_this; \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
@@ -1542,7 +1584,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	        manager->notify_add(that, cloned->getClassName(), file, line); \
 	} \
         else \
-		if (debug_macro == 1) { \
+		if (debug_macro >= 1) { \
                 	_CL_LOG << "Module manager was not set!" LOG_ \
 		} \
 	\
@@ -1552,19 +1594,25 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	} \
 \
 	if (uk->getRefCount() > 1) { \
-		_CL_LOG << "Cloned object of type " << uk->getClassName() << " has " << uk->getRefCount() << " references" LOG_ \
+		if (debug_macro == 1) { \
+			_LOG << "Cloned object of type " << uk->getClassName() << " has " << uk->getRefCount() << " references" LOG_ \
+		} else { \
+			_CL_LOG << "Cloned object of type " << uk->getClassName() << " has " << uk->getRefCount() << " references" LOG_ \
+		} \
 	} \
 	return uk; \
 \
 } \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
-	char* buf = (char*) malloc(1000); \
-	buf[0] = 0; \
 	char _classname[100] = #classname; \
 	lastQIFile.set(file); \
 	lastQILine = line; \
-	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	if (debug_macro == 1) { \
+		_LOG << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} else { \
+		_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	} \
 	\
 	if (instance_counted.get() != 112233) { \
 		instance_counted.set(112233); \
@@ -1573,7 +1621,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
 	\
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
-		free(buf); \
 		return ERR_STATE_FURTHER_LOCK; \
 	} else { \
 	} \
@@ -1600,12 +1647,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
 		else { \
 	        	setFurtherLock(1); \
 	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
-	        	free(buf); \
 	        	return ERR_STATE_FURTHER_LOCK; \
 		} \
-		free(buf); \
                 return ERR_NONE; \
-        }
+}
 
 /*...e*/
 /*...sBEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN:0:*/
@@ -1715,7 +1760,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 	classname* cloned = new classname(); \
-	cloned->setDebug(0); \
+	cloned->setDebug(debug_macro); \
 	lb_I_Unknown* uk_this; \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
@@ -1736,7 +1781,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	        manager->notify_add(that, cloned->getClassName(), file, line); \
 	} \
         else \
-		if (debug_macro == 1) { \
+		if (debug_macro >= 1) { \
                 	_CL_LOG << "Module manager was not set!" LOG_ \
 		} \
 	\
@@ -1753,12 +1798,9 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 } \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
-	char* buf = (char*) malloc(1000); \
-	buf[0] = 0; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
-		free(buf); \
 		return ERR_STATE_FURTHER_LOCK; \
 	} \
 	if (unknown == NULL) { \
@@ -1782,10 +1824,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
 		else { \
 	        	setFurtherLock(1); \
 	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
-	        	free(buf); \
 	        	return ERR_STATE_FURTHER_LOCK; \
 		} \
-		free(buf); \
                 return ERR_NONE; \
         }
 
@@ -1795,8 +1835,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
  *  This could be used multiple times for having more than one interface.
  */
 #define ADD_INTERFACE(interfaceName) \
-	buf[0] = 0; \
-\
         if (strcmp(name, #interfaceName) == 0) { \
                 ref++; \
                 *unknown = (interfaceName*) this; \
@@ -1811,16 +1849,13 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
 					setFurtherLock(1); \
 					_CL_LOG << "Error: QueryInterface can't add a reference. No manager. File: " << \
 					file << ", Line: " << line LOG_ \
-					free(buf); \
 					return ERR_STATE_FURTHER_LOCK; \
 				} \
-				free(buf); \
                 return ERR_NONE; \
         }
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
 	_CL_VERBOSE << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
-	free(buf); \
 	return ERR_NO_INTERFACE; \
 }
 
@@ -2608,7 +2643,7 @@ public:
 	// Using the interceptor pattern at this place as it is simple to intercept all dynamic fnctionality.
 	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName) = 0;
 	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName) = 0;
-	
+
 	//virtual lbErrCodes LB_STDCALL activateInterceptor(char* EvName, lb_I_EvHandler* ev) = 0;
 	
 	

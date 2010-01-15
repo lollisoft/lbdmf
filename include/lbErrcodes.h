@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.38 2010/01/12 19:45:41 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.39 2010/01/15 18:48:48 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.39  2010/01/15 18:48:48  lollisoft
+ * Interceptor logic works as long as one database form is
+ * not closed when another is opened and then the
+ * interceptor walks through the list of intercepted event
+ * handlers.
+ *
+ * This is due to the fact that wxWidgets deletes the instance, but the container with a reference is not notified to remove the instance (without deletion).
+ *
+ * This is tricky.
+ *
  * Revision 1.38  2010/01/12 19:45:41  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *
@@ -318,6 +328,7 @@ enum lbErrCodes {
 	ERR_DELETE_INTERCEPTOR_FAILS,
 	ERR_INTERCEPTOR_MISSING,
 	ERR_INTERCEPTOR_BEFORE_CANCEL,
+	ERR_INVALID_INTERCEPTED_INSTANCE,
 	
 /* Errorcodes for form validation */	
 	ERR_FORM_VALIDATION

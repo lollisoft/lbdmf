@@ -31,11 +31,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.167 $
+ * $Revision: 1.168 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.167 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.168 2010/01/15 18:48:48 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.168  2010/01/15 18:48:48  lollisoft
+ * Interceptor logic works as long as one database form is
+ * not closed when another is opened and then the
+ * interceptor walks through the list of intercepted event
+ * handlers.
+ *
+ * This is due to the fact that wxWidgets deletes the instance, but the container with a reference is not notified to remove the instance (without deletion).
+ *
+ * This is tricky.
+ *
  * Revision 1.167  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *
@@ -4038,14 +4048,16 @@ lbInterceptor LB_STDCALL lb_EvHandler::getAfterInterceptor() {
 
 lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) {
 	lbErrCodes err = ERR_NONE;
-	
+	_LOG << "lb_EvHandler::setInterceptor() called." LOG_
 	_evHandlerInstance_interceptor = evHandlerInstance;
 	ev_interceptor_Before = evHandler_Before;
 	ev_interceptor_After = evHandler_After;
 	
 	if (_evHandlerInstance_interceptor != NULL) {
 		if (_evHandlerInstance != NULL) {
-			_LOG << "lb_EvHandler::setInterceptor(): Pass intercepted handler to interceptor." LOG_
+			char ptr[100] = "";
+			sprintf(ptr, "%p", _evHandlerInstance);
+			_LOG << "lb_EvHandler::setInterceptor(): Pass intercepted handler " << ptr << " to interceptor." LOG_
 			UAP(lb_I_Unknown, uk)
 			
 			uk = _evHandlerInstance->getUnknown();
@@ -4054,7 +4066,7 @@ lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evH
 			_LOG << "Error: Could not add intercepted instance to interceptor. Handler must be passed first by setHandler method." LOG_
 		}
 	}
-	
+	_LOG << "lb_EvHandler::setInterceptor() leaving." LOG_
 	return err;
 }
 
