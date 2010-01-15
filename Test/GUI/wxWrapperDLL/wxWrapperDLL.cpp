@@ -683,10 +683,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 /*...e*/
 
 lb_I_Unknown* LB_STDCALL lb_wxFrame::getUnknown() {
-	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
-	uk++;
-	return uk.getPtr();
+        lb_I_Unknown* ukp;
+        queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
+        return ukp;
 }
 
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -728,8 +727,9 @@ lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
 /*...e*/
 
 lb_I_Unknown* LB_STDCALL lb_wxGUI::getUnknown() {
-	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+        lb_I_Unknown* ukp;
+        queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
+        return ukp;
 }
 
 
@@ -1877,7 +1877,7 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
         _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
-    	//SetMinSize(event.GetSize());
+        //SetMinSize(event.GetSize());
 
 #ifdef SOLARIS
 #ifdef bla

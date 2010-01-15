@@ -95,31 +95,31 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog()
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	ref = STARTREF;
-	pass = 0;
-	_FoimularID = -1; 
-	_DBUser = NULL;
-	_DBPass = NULL;
-	_DBName = NULL;
+        ref = STARTREF;
+        pass = 0;
+        _FoimularID = -1; 
+        _DBUser = NULL;
+        _DBPass = NULL;
+        _DBName = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(long FormularID) 
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	ref = STARTREF;
-	pass = 0;
-	_FoimularID = FormularID; 
-	_DBUser = NULL;
-	_DBPass = NULL;
-	_DBName = NULL;
+        ref = STARTREF;
+        pass = 0;
+        _FoimularID = FormularID; 
+        _DBUser = NULL;
+        _DBPass = NULL;
+        _DBName = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
-	if (_DBUser != NULL) free(_DBUser);
-	if (_DBPass != NULL) free(_DBPass);
-	if (_DBName != NULL) free(_DBName);
-	sourceQuery.resetPtr(); // Propably a reference count problem 
+        if (_DBUser != NULL) free(_DBUser);
+        if (_DBPass != NULL) free(_DBPass);
+        if (_DBName != NULL) free(_DBName);
+        sourceQuery.resetPtr(); // Propably a reference count problem 
 }
 
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
@@ -129,232 +129,232 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk)
 }
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
-	lbErrCodes err = ERR_NONE;
-	wxString s = cBoxFKNames->GetStringSelection();
-	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+        lbErrCodes err = ERR_NONE;
+        wxString s = cBoxFKNames->GetStringSelection();
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-	cBoxFKNames->Disable();
-	
-	UAP(lb_I_String, PKTable)
-	
-	PKTable = sourceQuery->getPKTable(s.c_str());
-	
-	char buf[] = "select * from \"%s\"";
-	char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
-	sprintf(buffer, buf, PKTable->charrep());
-	
-	UAP(lb_I_Database, queryDB)
-	char* dbbackend = meta->getApplicationDatabaseBackend();
+        cBoxFKNames->Disable();
+        
+        UAP(lb_I_String, PKTable)
+        
+        PKTable = sourceQuery->getPKTable(s.c_str());
+        
+        char buf[] = "select * from \"%s\"";
+        char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
+        sprintf(buffer, buf, PKTable->charrep());
+        
+        UAP(lb_I_Database, queryDB)
+        char* dbbackend = meta->getApplicationDatabaseBackend();
 
-	if (strcmp(_DBName, "lbDMF") == 0) {
-		dbbackend = meta->getSystemDatabaseBackend();
-	}
-	
-	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, queryDB, "'database plugin'")
-		_LOG << "Using plugin database backend for UML import operation..." LOG_
-	} else {
-		// Use built in
-		REQUEST(getModuleInstance(), lb_I_Database, queryDB)
-		_LOG << "Using built in database backend for UML import operation..." LOG_
-	}
+        if (strcmp(_DBName, "lbDMF") == 0) {
+                dbbackend = meta->getSystemDatabaseBackend();
+        }
+        
+        if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+                UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+                AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, queryDB, "'database plugin'")
+                _LOG << "Using plugin database backend for UML import operation..." LOG_
+        } else {
+                // Use built in
+                REQUEST(getModuleInstance(), lb_I_Database, queryDB)
+                _LOG << "Using built in database backend for UML import operation..." LOG_
+        }
 
-	if (queryDB == NULL) {
-		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return;
-	}
-	
-	queryDB->init();
-	
-	queryDB->connect(_DBName, _DBName, _DBUser, _DBPass);
-	
-	UAP(lb_I_Query, sampleQuery)
-	
-	sampleQuery = queryDB->getQuery(_DBName, 0);
+        if (queryDB == NULL) {
+                _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+                return;
+        }
+        
+        queryDB->init();
+        
+        queryDB->connect(_DBName, _DBName, _DBUser, _DBPass);
+        
+        UAP(lb_I_Query, sampleQuery)
+        
+        sampleQuery = queryDB->getQuery(_DBName, 0);
 
-	sampleQuery->query(buffer);
-	
-	for (int i = 1; i <= sampleQuery->getColumns(); i++) {
-		UAP(lb_I_String, name)
-		name = sampleQuery->getColumnName(i);
-		cBoxPKNames->Append(wxString(name->charrep()));
-	}
-	
-	if (sampleQuery->getColumns() == 0) {
-		_LOG << "Error: Should have got some columns from the query: " << buffer LOG_
-	}
-	
-	sampleQuery->close();
-	
-	free(buffer);
-	
-	cBoxPKNames->Enable();
-	cBoxPKNames->SetSelection(-1);
+        sampleQuery->query(buffer);
+        
+        for (int i = 1; i <= sampleQuery->getColumns(); i++) {
+                UAP(lb_I_String, name)
+                name = sampleQuery->getColumnName(i);
+                cBoxPKNames->Append(wxString(name->charrep()));
+        }
+        
+        if (sampleQuery->getColumns() == 0) {
+                _LOG << "Error: Should have got some columns from the query: " << buffer LOG_
+        }
+        
+        sampleQuery->close();
+        
+        free(buffer);
+        
+        cBoxPKNames->Enable();
+        cBoxPKNames->SetSelection(-1);
 }
 /*...e*/
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
-	lbErrCodes err = ERR_NONE;
-	wxString PKName = cBoxPKNames->GetStringSelection();
-	wxString FKName = cBoxFKNames->GetStringSelection();
+        lbErrCodes err = ERR_NONE;
+        wxString PKName = cBoxPKNames->GetStringSelection();
+        wxString FKName = cBoxFKNames->GetStringSelection();
 
-	UAP(lb_I_Formular_Fields, formularfields)
-	UAP(lb_I_Unknown, uk)
+        UAP(lb_I_Formular_Fields, formularfields)
+        UAP(lb_I_Unknown, uk)
 
-	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
-	
-	UAP(lb_I_Unknown, ukDoc)
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        
+        UAP(lb_I_Unknown, ukDoc)
+        UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
 
-	UAP(lb_I_Unknown, ukParams)
-	UAP(lb_I_Parameter, params)
+        UAP(lb_I_Unknown, ukParams)
+        UAP(lb_I_Parameter, params)
 
-	ukParams = meta->getActiveDocument();
-	QI(ukParams, lb_I_Parameter, params)
+        ukParams = meta->getActiveDocument();
+        QI(ukParams, lb_I_Parameter, params)
 
-	*param = "ApplicationData";
-	document->setCloning(false);
-	params->getUAPContainer(*&param, *&document);	
+        *param = "ApplicationData";
+        document->setCloning(false);
+        params->getUAPContainer(*&param, *&document);   
 
-	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
-	UAP(lb_I_KeyBase, key)
-	QI(name, lb_I_KeyBase, key)
-			
-			
-	*name = "FormularFields";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_Formular_Fields, formularfields)
+        UAP(lb_I_KeyBase, key)
+        QI(name, lb_I_KeyBase, key)
+                        
+                        
+        *name = "FormularFields";
+        uk = document->getElement(&key);
+        QI(uk, lb_I_Formular_Fields, formularfields)
 
 
-	if (formularfields != NULL) {
-		UAP(lb_I_String, PKTable)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, PKN)
+        if (formularfields != NULL) {
+                UAP(lb_I_String, PKTable)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, PKN)
 
-		*fkName = FKName.c_str();
-		*PKN = PKName.c_str();
-		*fkTable = sourceQuery->getTableName((char*) FKName.c_str());
+                *fkName = FKName.c_str();
+                *PKN = PKName.c_str();
+                *fkTable = sourceQuery->getTableName((char*) FKName.c_str());
 
-		lb_I_Query::lbDBColumnTypes coltype = sourceQuery->getColumnType(fkName->charrep());
+                lb_I_Query::lbDBColumnTypes coltype = sourceQuery->getColumnType(fkName->charrep());
 
-		
-		char* p = strdup(FKName.c_str());
-		PKTable = sourceQuery->getPKTable(p);
-		free(p);
+                
+                char* p = strdup(FKName.c_str());
+                PKTable = sourceQuery->getPKTable(p);
+                free(p);
 
-		switch (coltype) {
-			case lb_I_Query::lbDBColumnBit:																									  // Force replace
-				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
-				break;
-			case lb_I_Query::lbDBColumnFloat:
-				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
-				break;
-			case lb_I_Query::lbDBColumnChar:
-				formularfields->addField(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
-				break;
-			case lb_I_Query::lbDBColumnBinary:
-				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
-				break;
-				
-			case lb_I_Query::lbDBColumnBigInteger:
-			case lb_I_Query::lbDBColumnInteger:
-				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
-				break;
-			case lb_I_Query::lbDBColumnUnknown:
-				_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
-				break;
-		}
-		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
-	}
-	
-	// Always add the field to the database. The datamodel didn't put it back to the database yet.
-	char* dbbackend = meta->getSystemDatabaseBackend();
-	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-		_LOG << "Using plugin database backend for UML import operation..." LOG_
-	} else {
-		// Use built in
-		REQUEST(getModuleInstance(), lb_I_Database, database)
-		_LOG << "Using built in database backend for UML import operation..." LOG_
-	}
+                switch (coltype) {
+                        case lb_I_Query::lbDBColumnBit:                                                                                                                                                                                                   // Force replace
+                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                break;
+                        case lb_I_Query::lbDBColumnFloat:
+                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                break;
+                        case lb_I_Query::lbDBColumnChar:
+                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                break;
+                        case lb_I_Query::lbDBColumnBinary:
+                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                break;
+                                
+                        case lb_I_Query::lbDBColumnBigInteger:
+                        case lb_I_Query::lbDBColumnInteger:
+                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                break;
+                        case lb_I_Query::lbDBColumnUnknown:
+                                _CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+                                break;
+                }
+                cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+        }
+        
+        // Always add the field to the database. The datamodel didn't put it back to the database yet.
+        char* dbbackend = meta->getSystemDatabaseBackend();
+        if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+                UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+                AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+                _LOG << "Using plugin database backend for UML import operation..." LOG_
+        } else {
+                // Use built in
+                REQUEST(getModuleInstance(), lb_I_Database, database)
+                _LOG << "Using built in database backend for UML import operation..." LOG_
+        }
 
-	if (database == NULL) {
-		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return;
-	}
-	
-	database->init();
-	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-	
-	UAP(lb_I_String, PKTable)
-	UAP(lb_I_String, T)
-		
-	T = sourceQuery->getTableName((char*) FKName.c_str());
-	char* fkTable = strdup(T->charrep());
-	
-	char* p = strdup(FKName.c_str());
-	
-	PKTable = sourceQuery->getPKTable(p);
-	
-	free(p);
-	
-	// Delete the entry, we now will put into the configuration
-	
-	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
-	
-	UAP(lb_I_Query, query)
-		
-	char* buf;
-	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-		buf = "--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('%s','%s', '%s', '%s')";
-	} else {
-		buf = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
-	}
-	
-	int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
-	
-	char* buffer = (char*) malloc(size);
-	
-	buffer[0] = 0;
-	
-	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
-	
-	sourceQuery->close();
-	database->close();
+        if (database == NULL) {
+                _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+                return;
+        }
+        
+        database->init();
+        
+        char* lbDMFPasswd = getenv("lbDMFPasswd");
+        char* lbDMFUser   = getenv("lbDMFUser");
+        
+        if (!lbDMFUser) lbDMFUser = "dba";
+        if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+        
+        database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+        
+        UAP(lb_I_String, PKTable)
+        UAP(lb_I_String, T)
+                
+        T = sourceQuery->getTableName((char*) FKName.c_str());
+        char* fkTable = strdup(T->charrep());
+        
+        char* p = strdup(FKName.c_str());
+        
+        PKTable = sourceQuery->getPKTable(p);
+        
+        free(p);
+        
+        // Delete the entry, we now will put into the configuration
+        
+        cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+        
+        UAP(lb_I_Query, query)
+                
+        char* buf;
+        if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+                buf = "--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('%s','%s', '%s', '%s')";
+        } else {
+                buf = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+        }
+        
+        int size = strlen(buf)+ PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
+        
+        char* buffer = (char*) malloc(size);
+        
+        buffer[0] = 0;
+        
+        sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+        
+        sourceQuery->close();
+        database->close();
 
-	query = database->getQuery("lbDMF", 0);
-	
-	query->skipFKCollecting();
-	query->query(buffer);
-	query->enableFKCollecting();
-	query->close();
+        query = database->getQuery("lbDMF", 0);
+        
+        query->skipFKCollecting();
+        query->query(buffer);
+        query->enableFKCollecting();
+        query->close();
 
-	database->close();
-	
-	
-	if (cBoxFKNames->GetCount() > 0) {
-		cBoxFKNames->SetSelection(-1);
-		cBoxFKNames->Enable();
-		cBoxPKNames->Clear();
-		cBoxPKNames->Disable();
-	} else {
-		cBoxPKNames->Disable();
-		cBoxFKNames->Disable();
-		
-		firstButton->Enable();		
-	}
+        database->close();
+        
+        
+        if (cBoxFKNames->GetCount() > 0) {
+                cBoxFKNames->SetSelection(-1);
+                cBoxFKNames->Enable();
+                cBoxPKNames->Clear();
+                cBoxPKNames->Disable();
+        } else {
+                cBoxPKNames->Disable();
+                cBoxFKNames->Disable();
+                
+                firstButton->Enable();          
+        }
 }
 /*...e*/
 
@@ -362,145 +362,146 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::windowIsClosing(lb_I_Window* w)
 }
 
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unknown* uk) {
-	EndModal(wxID_OK);
+        EndModal(wxID_OK);
 
-	return ERR_NONE;
+        return ERR_NONE;
 }
 
 /*...sint lbConfigure_FK_PK_MappingDialog\58\\58\prepareDialogHandler\40\\41\:0:*/
 int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
-	int SelectedColumn;
-	int cbFKSel;
-	int cbPKSel;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+        int SelectedColumn;
+        int cbFKSel;
+        int cbPKSel;
+        
+        UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+        UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
 
-	char eventName[100] = "";
-		
-	sprintf(eventName, "%pSelectedColumn", this);
-	eman->registerEvent(eventName, SelectedColumn);
+        char eventName[100] = "";
+                
+        sprintf(eventName, "%pSelectedColumn", this);
+        eman->registerEvent(eventName, SelectedColumn);
 
-	dispatcher->setEventManager(eman.getPtr());
+        dispatcher->setEventManager(eman.getPtr());
 
-	// Register lbDMF dispatched event handler
+        // Register lbDMF dispatched event handler
 
-	registerEventHandler(dispatcher.getPtr());
+        registerEventHandler(dispatcher.getPtr());
 
-	this->Connect( SelectedColumn,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-			&lbConfigure_FK_PK_MappingDialog::OnDispatch);
+        this->Connect( SelectedColumn,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+                        &lbConfigure_FK_PK_MappingDialog::OnDispatch);
 
-	// Register normal wxWidgets event handler
+        // Register normal wxWidgets event handler
 
-	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
+        this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+                        &lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
 
-	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
+        this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+                        &lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
 /*
-	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
+        this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+                        &lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
 
-	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
+        this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+                        &lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
 */
-	return SelectedColumn;
+        return SelectedColumn;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-	lbErrCodes err = ERR_NONE;
+        lbErrCodes err = ERR_NONE;
 
-	char eventName[100] = "";
+        char eventName[100] = "";
 
-	sprintf(eventName, "%pSelectedColumn", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbConfigure_FK_PK_MappingDialog::selectedColumn, eventName);
+        sprintf(eventName, "%pSelectedColumn", this);
+        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbConfigure_FK_PK_MappingDialog::selectedColumn, eventName);
 
-	return err;
+        return err;
 }
 /*...e*/
 
 lb_I_Unknown* LB_STDCALL lbConfigure_FK_PK_MappingDialog::getUnknown() {
-	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+        lb_I_Unknown* ukp;
+        queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
+        return ukp;
 }
 
 
 /*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Query\42\ query\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass) {
-	lbErrCodes err = ERR_NONE;
-	char prefix[100] = "";
-	sprintf(prefix, "%p", this);
+        lbErrCodes err = ERR_NONE;
+        char prefix[100] = "";
+        sprintf(prefix, "%p", this);
 
-	_DBName = strdup(DBName);
-	_DBUser = strdup(DBUser);
-	_DBPass = strdup(DBPass);
+        _DBName = strdup(DBName);
+        _DBUser = strdup(DBUser);
+        _DBPass = strdup(DBPass);
 
-	QI(query, lb_I_Query, sourceQuery)
-	
-	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
-	
-	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
-	
-	wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
+        QI(query, lb_I_Query, sourceQuery)
+        
+        wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+        
+        wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+        
+        wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
+        wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
 
-	wxBoxSizer* sizerActions = new wxBoxSizer(wxHORIZONTAL);
-	
-	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
-	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* sizerActions = new wxBoxSizer(wxHORIZONTAL);
+        
+        wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);    
+        wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 
-	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
-	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+        sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+        sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
-	label = new wxStaticText(this, -1, "Dropdown Element:", wxPoint());
-	sizerLeft->Add(label, 1, wxALL, 5);
+        label = new wxStaticText(this, -1, "Dropdown Element:", wxPoint());
+        sizerLeft->Add(label, 1, wxALL, 5);
 
-	cBoxFKNames = new wxChoice(this, -1);
-	sizerLeft->Add(cBoxFKNames, 1, wxALL, 5);
+        cBoxFKNames = new wxChoice(this, -1);
+        sizerLeft->Add(cBoxFKNames, 1, wxALL, 5);
 
-	labelF = new wxStaticText(this, -1, "Feld anzuzeigen:", wxPoint());
-	sizerRight->Add(labelF, 1, wxALL, 5);
-	
-	cBoxPKNames = new wxChoice(this, -1);
-	sizerRight->Add(cBoxPKNames, 1, wxALL, 5);
+        labelF = new wxStaticText(this, -1, "Feld anzuzeigen:", wxPoint());
+        sizerRight->Add(labelF, 1, wxALL, 5);
+        
+        cBoxPKNames = new wxChoice(this, -1);
+        sizerRight->Add(cBoxPKNames, 1, wxALL, 5);
 
-	int SelectedColumn = prepareDialogHandler();
+        int SelectedColumn = prepareDialogHandler();
 
-	cBoxPKNames->Disable();
+        cBoxPKNames->Disable();
 
-	for (int i = 1; i <= query->getColumns(); i++) {
-		UAP(lb_I_String, name)
-		name = query->getColumnName(i);
-		
-		if (query->hasFKColumn(name->charrep()) == 1) {
-			cBoxFKNames->Append(wxString(name->charrep()));
-		}
-	}
+        for (int i = 1; i <= query->getColumns(); i++) {
+                UAP(lb_I_String, name)
+                name = query->getColumnName(i);
+                
+                if (query->hasFKColumn(name->charrep()) == 1) {
+                        cBoxFKNames->Append(wxString(name->charrep()));
+                }
+        }
 
-	cBoxFKNames->SetSelection(-1);
+        cBoxFKNames->SetSelection(-1);
 
-	firstButton = new wxButton(this, SelectedColumn, "Ready", wxPoint(), wxSize(100,20));
-	firstButton->Disable();
+        firstButton = new wxButton(this, SelectedColumn, "Ready", wxPoint(), wxSize(100,20));
+        firstButton->Disable();
 
-	sizerNavi->Add(firstButton, 1, wxALL, 5);
+        sizerNavi->Add(firstButton, 1, wxALL, 5);
 
-	SetAutoLayout(TRUE);
-	
-	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
-	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
-	
-	SetSizer(sizerMain);
+        SetAutoLayout(TRUE);
+        
+        sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+        sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
+        
+        SetSizer(sizerMain);
 
-	sizerMain->SetSizeHints(this);
-	sizerMain->Fit(this);
-	
-	Centre();
+        sizerMain->SetSizeHints(this);
+        sizerMain->Fit(this);
+        
+        Centre();
 
 }
 /*...e*/
@@ -510,26 +511,26 @@ void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
         default:
                 // Delegate all other events
                 {
-                	lbErrCodes err = ERR_NONE;
-			lb_I_Module* m = getModuleInstance();
-			
-			UAP_REQUEST(m, lb_I_EventManager, eman)
-		
-			UAP_REQUEST(m, lb_I_Dispatcher, dispatcher)
-			dispatcher->setEventManager(eman.getPtr());
+                        lbErrCodes err = ERR_NONE;
+                        lb_I_Module* m = getModuleInstance();
+                        
+                        UAP_REQUEST(m, lb_I_EventManager, eman)
+                
+                        UAP_REQUEST(m, lb_I_Dispatcher, dispatcher)
+                        dispatcher->setEventManager(eman.getPtr());
 
-			UAP_REQUEST(m, lb_I_Integer, param)
-			
-			param->setData(event.GetId());
-			
-			UAP(lb_I_Unknown, uk)
-			QI(param, lb_I_Unknown, uk)
-		
-			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result)
-			QI(result, lb_I_Unknown, uk_result)
-		
-			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
+                        UAP_REQUEST(m, lb_I_Integer, param)
+                        
+                        param->setData(event.GetId());
+                        
+                        UAP(lb_I_Unknown, uk)
+                        QI(param, lb_I_Unknown, uk)
+                
+                        UAP_REQUEST(m, lb_I_String, result)
+                        UAP(lb_I_Unknown, uk_result)
+                        QI(result, lb_I_Unknown, uk_result)
+                
+                        dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }
                 break;
         }
