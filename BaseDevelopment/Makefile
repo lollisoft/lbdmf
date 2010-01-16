@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.211 $
+# * $Revision: 1.212 $
 # * $Name:  $
-# * $Id: Makefile,v 1.211 2010/01/12 19:45:41 lollisoft Exp $
+# * $Id: Makefile,v 1.212 2010/01/16 00:04:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.212  2010/01/16 00:04:27  lollisoft
+# * Deactivated cryptstrm. Not yet ready to compile on all platforms.
+# *
 # * Revision 1.211  2010/01/12 19:45:41  lollisoft
 # * Mostly completed plugin based interceptor functionality for events.
 # *
@@ -928,7 +931,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbDB \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
@@ -946,6 +948,7 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapper
 
 #	../vendor/wxARG/src \
+#	../vendor/cryptostream/src/crypstrm \
 #	../vendor/wxShapeFramework/src \
 #	../vendor/wxShapeFramework/example \
 #	../vendor/databaselayer/tests \
@@ -960,7 +963,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
@@ -974,6 +976,7 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
 
+#	../vendor/cryptostream/src/crypstrm \
 
 endif
 
@@ -1003,7 +1006,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
@@ -1014,6 +1016,10 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
+
+#	../vendor/cryptostream/src/crypstrm \
+
+
 endif
 
 ifndef RPMBUILD
@@ -1026,7 +1032,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1039,6 +1044,10 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
+
+#	../vendor/cryptostream/src/crypstrm \
+
+
 endif
 
 ALLTARGETS = \
@@ -1075,7 +1084,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
@@ -1086,6 +1094,10 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
+
+#	../vendor/cryptostream/src/crypstrm \
+
+
 endif
 
 ifndef RPMBUILD
@@ -1098,7 +1110,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1111,6 +1122,9 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
+
+#	../vendor/cryptostream/src/crypstrm \
+
 endif
 
 ALLTARGETS = \
@@ -1147,7 +1161,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -1161,6 +1174,7 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
 
+#	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols
 endif
 
@@ -1174,7 +1188,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -1189,6 +1202,9 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	$(BASEDIRECTORIES)
+
+#	../vendor/cryptostream/src/crypstrm \
+
 endif
 
 ALLTARGETS = \
@@ -1230,7 +1246,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -1249,6 +1264,7 @@ ALLTARGETS = \
 	../Doc/html \
 	$(BASEDIRECTORIES)
 
+#	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
 # When including this target, the include path for sql.h must pount to ./sqlite/src
@@ -1261,7 +1277,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
@@ -1275,6 +1290,7 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 
+#	../vendor/cryptostream/src/crypstrm \
 #$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 #tvision: ../vendor/tvision
 #	Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2 \
@@ -1312,7 +1328,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -1331,6 +1346,7 @@ ALLTARGETS = \
 	../Doc/html \
 	$(BASEDIRECTORIES)
 
+#	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
 # When including this target, the include path for sql.h must pount to ./sqlite/src
@@ -1343,7 +1359,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/cryptostream/src/crypstrm \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
@@ -1357,6 +1372,7 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 
+#	../vendor/cryptostream/src/crypstrm \
 #$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 #tvision: ../vendor/tvision
 #	Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2 \
@@ -1674,8 +1690,8 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@
 
 ../vendor/cryptostream/src/crypstrm: dummy
-#	$(MAKE) -s -C $@ -e MODULE=wxCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
-#	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e MODULE=wxCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
 ifeq ($(OSNAME), Panther)
