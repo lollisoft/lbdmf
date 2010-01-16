@@ -198,6 +198,12 @@ lbDatabasePanel::lbDatabasePanel()
 lbDatabasePanel::~lbDatabasePanel() {
 	_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
+	lb_I_Unknown* evHandler = (lb_I_Unknown*) this;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, eventName)
+	*eventName = "DatabaseFirst";
+	
+	if (dispatcher != NULL) dispatcher->removeInterceptedInstance(*&eventName, evHandler);
+	
 	if (fa != NULL) delete fa;
 	if (FFI != NULL) delete FFI;
 	free (formName);
