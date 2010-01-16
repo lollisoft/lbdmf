@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.168 $
+ * $Revision: 1.169 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.168 2010/01/15 18:48:48 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.169 2010/01/16 16:22:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.169  2010/01/16 16:22:41  lollisoft
+ * Added methods to cleanup intercepted instances that otherwise will crash the application due to dangling pointers.
+ *
  * Revision 1.168  2010/01/15 18:48:48  lollisoft
  * Interceptor logic works as long as one database form is
  * not closed when another is opened and then the
@@ -3888,6 +3891,14 @@ lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(char* EvName) {
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lb_Dispatcher::removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_EvHandler, evInterceptor)
+	evInterceptor = hasDefinedInterceptor(*&EvName);
+	
+	evInterceptor->removeInterceptedInstance(interceptedInstance);
+}
+
 lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -4045,6 +4056,12 @@ lbInterceptor LB_STDCALL lb_EvHandler::getAfterInterceptor() {
 	return ev_interceptor_After;
 }
 
+lbErrCodes LB_STDCALL lb_EvHandler::removeInterceptedInstance(lb_I_Unknown* interceptedInstance) {
+	if (_evHandlerInstance_interceptor != NULL) {
+		_evHandlerInstance_interceptor->removeInterceptedInstance(interceptedInstance);
+	}
+	return ERR_NONE;
+}
 
 lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) {
 	lbErrCodes err = ERR_NONE;

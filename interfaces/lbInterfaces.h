@@ -2492,6 +2492,8 @@ public:
 	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) = 0;
 	virtual lbErrCodes LB_STDCALL delInterceptor() = 0;
 	
+	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance) = 0;
+	
 	/** \brief Implements execution of hook functions.
 	 *
 	 * Hooks, that are executed before could cancel the call to the dispatched function.
@@ -2646,6 +2648,11 @@ public:
 
 	//virtual lbErrCodes LB_STDCALL activateInterceptor(char* EvName, lb_I_EvHandler* ev) = 0;
 	
+	/** \brief Remove an intercepted instance.
+	 * This is needed when a window is closed. The window has to call this function to remove the instance from the list of intercepted instances.
+	 * Otherwise - at least on wxWidgets - the instance pointer gets dangling and leads to crashes.
+	 */
+	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance) = 0;
 	
 	/** \brief Get the list of interceptors to store anywhere.
 	 * This function is used to store the information of to be used interceptors.
@@ -2688,6 +2695,8 @@ public:
 	 * The interceptor must cope with the correct type conversion to what the interceptor should act.
 	 */
 	virtual lbErrCodes LB_STDCALL addInterceptedInstance(lb_I_Unknown* intercepted) = 0;
+	
+	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance) = 0;
 };
 
 class lb_I_DatabaseForm;

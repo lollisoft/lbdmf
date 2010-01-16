@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.69 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.70 2010/01/16 16:22:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.70  2010/01/16 16:22:41  lollisoft
+ * Added methods to cleanup intercepted instances that otherwise will crash the application due to dangling pointers.
+ *
  * Revision 1.69  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *
@@ -608,6 +611,8 @@ public:
 	
 	lb_I_EvHandler* LB_STDCALL hasDefinedInterceptor(lb_I_String* event);
 	lbErrCodes LB_STDCALL activateInterceptor(lb_I_String* EvName, lb_I_EvHandler* ev);
+	
+	lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance);
 #endif
 	
 	/// \brief The events that must be intercepted.
@@ -679,6 +684,8 @@ public:
 	// Forwarded functions.
 	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After);
 	virtual lbErrCodes LB_STDCALL delInterceptor();
+	
+	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance);
 
 	/** \brief Implements execution of hook functions.
 	 *
