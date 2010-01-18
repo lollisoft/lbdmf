@@ -1,0 +1,4 @@
+Hi,
+
+this library uses json 1.2 with some changes to compile on Mac OS X 10.5.8 for powerpc.
+At the time of adding the json files the changes were not applied and tagged as JSON_1_2.
