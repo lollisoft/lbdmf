@@ -102,7 +102,9 @@ END_IMPLEMENT_TESTFIXTURE()
 void LB_STDCALL lbTest::setUp() {
 	_LOG << "lbTest::setUp() called." LOG_
 	
-	if (PM == NULL) REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	if (PM == NULL) {
+		REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	}
 }
 
 void LB_STDCALL lbTest::tearDown() {
@@ -111,9 +113,42 @@ void LB_STDCALL lbTest::tearDown() {
 
 void LB_STDCALL lbTest::Test_JSONWriteFile() {
 	_LOG << "lbTest::Test_JSONWriteFile() called." LOG_
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_FileOperation, fOp)
 	
-	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "JSONOutputStreamVisitor", lbDMF_DB, "'database plugin'")
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "JSONOutputStreamVisitor", fOp, "'database plugin'")
 	
+	if (fOp == NULL) {
+		_LOG << "lbTest::Test_JSONWriteFile() Test failed." LOG_
+		return;
+	}
+	
+	if (!fOp->begin("JSONTest.json")) {
+		_LOG << "lbTest::Test_JSONWriteFile() Test failed." LOG_
+		return;
+	}
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, valueString)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, valueLong)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, valueInteger)
+	
+	*name = "string";
+	valueString->setData("Test");
+	param->setUAPString(*&name, *&valueString);
+	
+	*name = "long";
+	valueLong->setData(10L);
+	param->setUAPLong(*&name, *&valueLong);
+	
+	*name = "integer";
+	valueInteger->setData(100);
+	param->setUAPInteger(*&name, *&valueInteger);
+	
+	param->accept(*&fOp);
+	
+	fOp->end();
 }
 
 void LB_STDCALL lbTest::Test_JSONReadFile() {
