@@ -154,7 +154,7 @@ DatabaseReport: dummy
 	$(MAKE) -C $@
 	
 VisitorOperations: dummy
-	$(MAKE) -C $@ -e MODULE=lbVisitorOperations -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbVisitorOperations -e TARGET=$(TARGETPLUGIN) -e CUSTOM_FILES='*.c' -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 clean:

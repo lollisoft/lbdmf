@@ -96,8 +96,10 @@ BEGIN_PLUGINS(lbPluginModuleVisitors)
 	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
 	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
 	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
-//	ADD_PLUGIN(lbPluginXMLInputStream, XMLInputStreamVisitor)
-	ADD_PLUGIN(lbPluginXMLOutputStream, XMLOutputStreamVisitor)
+//	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
 END_PLUGINS()
 
 

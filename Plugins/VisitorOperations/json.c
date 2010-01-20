@@ -62,14 +62,14 @@ rcstring *
 rcs_create (size_t length)
 {
 	rcstring *rcs;
-	rcs = malloc (sizeof (rcstring));	/* allocates memory for a struct rcstring */
+	rcs = (rcstring*) malloc (sizeof (rcstring));	/* allocates memory for a struct rcstring */
 	if (rcs == NULL)
 		return NULL;
 
 	rcs->max = length;
 	rcs->length = 0;
 
-	rcs->text = malloc ((rcs->max + 1) * sizeof (char));
+	rcs->text = (char*) malloc ((rcs->max + 1) * sizeof (char));
 	if (rcs->text == NULL)
 	{
 		free (rcs);
@@ -105,7 +105,7 @@ rcs_resize (rcstring * rcs, size_t length)
 	char *temp;
 	assert (rcs != NULL);
 
-	temp = realloc (rcs->text, sizeof (char) * (length + 1));	/* length plus '\0' */
+	temp = (char*) realloc (rcs->text, sizeof (char) * (length + 1));	/* length plus '\0' */
 	if (temp == NULL)
 	{
 		free (rcs);
@@ -163,7 +163,7 @@ rcs_unwrap (rcstring * rcs)
 		out = NULL;
 	else
 	{
-		out = realloc (rcs->text, sizeof (char) * (strlen (rcs->text) + 1));
+		out = (char*) realloc (rcs->text, sizeof (char) * (strlen (rcs->text) + 1));
 	}
 
 	free (rcs);
@@ -188,7 +188,7 @@ enum json_error
 json_stream_parse (FILE * file, json_t ** document)
 {
 	char buffer[1024];	/* hard-coded value */
-	unsigned int error = JSON_INCOMPLETE_DOCUMENT;
+	json_error error = JSON_INCOMPLETE_DOCUMENT;
 
 	struct json_parsing_info state;
 
@@ -241,7 +241,7 @@ json_new_value (const enum json_value_type type)
 {
 	json_t *new_object;
 	/* allocate memory to the new object */
-	new_object = malloc (sizeof (json_t));
+	new_object = (json_t *) malloc (sizeof (json_t));
 	if (new_object == NULL)
 		return NULL;
 
@@ -266,13 +266,13 @@ json_new_string (const char *text)
 	assert (text != NULL);
 
 	/* allocate memory for the new object */
-	new_object = malloc (sizeof (json_t));
+	new_object = (json_t*) malloc (sizeof (json_t));
 	if (new_object == NULL)
 		return NULL;
 
 	/* initialize members */
 	length = strlen (text) + 1;
-	new_object->text = malloc (length * sizeof (char));
+	new_object->text = (char*) malloc (length * sizeof (char));
 	if (new_object->text == NULL)
 	{
 		free (new_object);
@@ -298,13 +298,13 @@ json_new_number (const char *text)
 	assert (text != NULL);
 
 	/* allocate memory for the new object */
-	new_object = malloc (sizeof (json_t));
+	new_object = (json_t*) malloc (sizeof (json_t));
 	if (new_object == NULL)
 		return NULL;
 
 	/* initialize members */
 	length = strlen (text) + 1;
-	new_object->text = malloc (length * sizeof (char));
+	new_object->text = (char*) malloc (length * sizeof (char));
 	if (new_object->text == NULL)
 	{
 		free (new_object);
@@ -1202,7 +1202,7 @@ json_escape (char *text)
 char *
 json_unescape (char *text)
 {
-	char *result = malloc (strlen (text) + 1);
+	char *result = (char*) malloc (strlen (text) + 1);
 	size_t r;		/* read cursor */
 	size_t w;		/* write cursor */
 
@@ -2777,7 +2777,7 @@ json_parse_document (json_t ** root, char *text)
 	assert (text != NULL);
 
 	/* initialize the parsing structure */
-	jpi = malloc (sizeof (struct json_parsing_info));
+	jpi = (struct json_parsing_info *) malloc (sizeof (struct json_parsing_info));
 	if (jpi == NULL)
 	{
 		return JSON_MEMORY;

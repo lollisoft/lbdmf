@@ -81,8 +81,10 @@ public:
 	DECLARE_LB_UNKNOWN()
 	DECLARE_TESTFIXTURE()
 		
-	TEST_CASE(Test1)
-	TEST_CASE(Test2)
+	TEST_CASE(Test_JSONWriteFile)
+	TEST_CASE(Test_JSONReadFile)
+		
+	UAP(lb_I_PluginManager, PM)
 };
 
 
@@ -93,24 +95,29 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOflbTest, lbTest)
 
 BEGIN_IMPLEMENT_TESTFIXTURE(lbTest)
-	ADD_TEST(Test1)
-	ADD_TEST(Test2)
+	ADD_TEST(Test_JSONWriteFile)
+	ADD_TEST(Test_JSONReadFile)
 END_IMPLEMENT_TESTFIXTURE()
 
 void LB_STDCALL lbTest::setUp() {
 	_LOG << "lbTest::setUp() called." LOG_
+	
+	if (PM == NULL) REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 }
 
 void LB_STDCALL lbTest::tearDown() {
 	_LOG << "lbTest::tearDown() called." LOG_
 }
 
-void LB_STDCALL lbTest::Test1() {
-	_LOG << "lbTest::Test1() called." LOG_
+void LB_STDCALL lbTest::Test_JSONWriteFile() {
+	_LOG << "lbTest::Test_JSONWriteFile() called." LOG_
+	
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "JSONOutputStreamVisitor", lbDMF_DB, "'database plugin'")
+	
 }
 
-void LB_STDCALL lbTest::Test2() {
-	_LOG << "lbTest::Test2() called." LOG_
+void LB_STDCALL lbTest::Test_JSONReadFile() {
+	_LOG << "lbTest::Test_JSONReadFile() called." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lbTest\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/

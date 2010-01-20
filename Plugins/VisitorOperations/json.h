@@ -38,6 +38,10 @@ extern "C"
 {
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX 512
+#endif
+	
 #define JSON_MAX_STRING_LENGTH SIZE_MAX-1
 
 /**
