@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.38 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.39 2010/01/22 22:19:13 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.39  2010/01/22 22:19:13  lollisoft
+ * Added empty function for new tree view panels.
+ *
  * Revision 1.38  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *
@@ -357,11 +360,18 @@ public:
 	
 	// Event handlers        
 	
+	// Tree view support
+	lbErrCodes LB_STDCALL showLeftTreeView(lb_I_Unknown* uk);
+	
+	/// \brief Show the property panel.
 	lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
+	/// \brief Switch view mode to panels or dialogs for new forms.
 	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+	/// \brief Switch view mode to table or field based layout for new forms.
 	lbErrCodes LB_STDCALL switchTableUse(lb_I_Unknown* uk);
 	
 	lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
+	/// \brief Show a message box to the user.
 	lbErrCodes LB_STDCALL showMsgBox(lb_I_Unknown* uk);
 	
 	// Statusbar handlers

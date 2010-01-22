@@ -2934,6 +2934,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
         return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lb_wxFrame::showLeftTreeView(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	return err;
+}
+
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
