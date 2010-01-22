@@ -88,7 +88,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleCryptoStream)
 
 BEGIN_PLUGINS(lbPluginModuleCryptoStream)
-	ADD_PLUGIN(lbCryptoStream, cryptostream)
+	ADD_PLUGIN(lbPluginCryptoStream, cryptostream)
 END_PLUGINS()
 
 lbPluginModuleCryptoStream::lbPluginModuleCryptoStream() {
@@ -132,16 +132,10 @@ public:
 };
 
 
-#ifdef __cplusplus
-extern "C" {       
-#endif            
-	
-IMPLEMENT_FUNCTOR(instanceOfCryptoStream, lbCryptoStream)
-	
-#ifdef __cplusplus
-}
-#endif            
+/// \todo A wrong name in plugin list may interfere other plugins.
 
+IMPLEMENT_FUNCTOR(instanceOflbCryptoStream, lbCryptoStream)
+	
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbCryptoStream)
 ADD_INTERFACE(lb_I_CryptoStream)
 END_IMPLEMENT_LB_UNKNOWN()
