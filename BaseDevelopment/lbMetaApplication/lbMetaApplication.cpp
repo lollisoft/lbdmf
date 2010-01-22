@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.169 $
+ * $Revision: 1.170 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.169 2010/01/16 16:22:41 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.170 2010/01/22 12:24:52 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.170  2010/01/22 12:24:52  lollisoft
+ * Bugfix for a null pointer crash.
+ *
  * Revision 1.169  2010/01/16 16:22:41  lollisoft
  * Added methods to cleanup intercepted instances that otherwise will crash the application due to dangling pointers.
  *
@@ -3896,7 +3899,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::removeInterceptedInstance(lb_I_String* EvNa
 	UAP(lb_I_EvHandler, evInterceptor)
 	evInterceptor = hasDefinedInterceptor(*&EvName);
 	
-	evInterceptor->removeInterceptedInstance(interceptedInstance);
+	if (evInterceptor != NULL) evInterceptor->removeInterceptedInstance(interceptedInstance);
 }
 
 lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
