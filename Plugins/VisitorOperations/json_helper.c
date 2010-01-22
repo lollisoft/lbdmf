@@ -10,8 +10,16 @@
 *
 */
 
-#include "json_helper.h"
-
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <json_helper.h>
+#ifdef __cplusplus
+}
+#endif
+		
+	
 #include <stdio.h>
 #include <assert.h>
 
