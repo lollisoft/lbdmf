@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.73 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.74 2010/01/22 22:14:54 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.74  2010/01/22 22:14:54  lollisoft
+ * Fixed a null pointer bug.
+ *
  * Revision 1.73  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *
@@ -1947,10 +1950,10 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 		
 		if (isPreInitialized) {
 			QI(implementation, lb_I_PluginImpl, impl)
-			
-			UAP(lb_I_PluginImpl, impl)
-			QI(implementation, lb_I_PluginImpl, impl)
-			
+			if(impl == NULL) {
+				_LOG << "Error: Could not get interface lb_I_PluginImpl for implementation." LOG_
+				return ERR_NONE;
+			}
 			return impl->autorun();
 		}
 		
