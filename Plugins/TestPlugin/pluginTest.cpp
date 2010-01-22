@@ -116,7 +116,7 @@ void LB_STDCALL lbTest::Test_JSONWriteFile() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_FileOperation, fOp)
 	
-	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "JSONOutputStreamVisitor", fOp, "'database plugin'")
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_FileOperation, "JSONOutputStreamVisitor", fOp, "'database plugin'")
 	
 	if (fOp == NULL) {
 		_LOG << "lbTest::Test_JSONWriteFile() Test failed." LOG_
