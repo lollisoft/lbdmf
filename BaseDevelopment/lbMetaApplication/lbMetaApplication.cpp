@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.170 $
+ * $Revision: 1.171 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.170 2010/01/22 12:24:52 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.171 2010/01/24 22:54:27 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.171  2010/01/24 22:54:27  lollisoft
+ * Removed two log messages that makes problems when timer event works in one second interval.
+ *
  * Revision 1.170  2010/01/22 12:24:52  lollisoft
  * Bugfix for a null pointer crash.
  *
@@ -3809,11 +3812,9 @@ lb_I_EvHandler* LB_STDCALL lb_Dispatcher::hasDefinedInterceptor(lb_I_String* eve
 		uk = interceptorevents->getElement(&key);
 		QI(uk, lb_I_EvHandler, ev)
 		ev++;
-		_LOG << "lb_Dispatcher::hasDefinedInterceptor('" << event->charrep() << "') returns true." LOG_
 		return ev.getPtr();
 	}		
 	
-	_LOG << "lb_Dispatcher::hasDefinedInterceptor('" << event->charrep() << "') returns false." LOG_
 	return NULL;
 }
 
