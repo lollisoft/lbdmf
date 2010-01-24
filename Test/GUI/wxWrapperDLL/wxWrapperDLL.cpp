@@ -157,8 +157,12 @@ public:
         virtual bool TransferDataFromWindow();
 
         void OnWizardPageChanging(wxWizardEvent& event);
+	
 
 private:
+		void OnIdle(wxIdleEvent& WXUNUSED(event));
+	
+	
         wxCheckBox *m_checkbox;
         char* userid;
         bool  loggingin;
@@ -548,7 +552,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lb_wxFrame::lb_wxFrame() //:
+lb_wxFrame::lb_wxFrame() :
+	m_timer(this)
 //      wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
 {
         OnQuitAccepted = false;
@@ -561,6 +566,7 @@ lb_wxFrame::lb_wxFrame() //:
         m_splitter = NULL;
         m_replacewindow = NULL;
         stb_areas = 1;
+		timerrunning = false;
 
 #ifdef SOLARIS
         skipfirstResizeEvent = true;
@@ -571,6 +577,7 @@ lb_wxFrame::lb_wxFrame() //:
         // Use lbDatabasePanel
         panelUsage = true;
         tableUsage = false;
+
 }
 
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
@@ -1728,6 +1735,7 @@ void LB_STDCALL lb_wxGUI::showPendingMessages() {
 // My frame constructor
 lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
   wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
+, m_timer(this)
 {
         OnQuitAccepted = false;
         menu_bar = NULL;
@@ -1737,6 +1745,8 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
         m_left = m_right = NULL;
         m_splitter = NULL;
         m_replacewindow = NULL;
+		gelangweilt = false;
+		timerrunning = false;
 
 #ifdef SOLARIS
         skipfirstResizeEvent = true;
@@ -1769,6 +1779,23 @@ lb_wxFrame::~lb_wxFrame() {
                 if (gui) gui->cleanup();
                 guiCleanedUp = 1;
         }
+}
+
+void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	meta->setStatusText("Info", _trans("Timer ..."));
+}
+
+void lb_wxFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
+{
+	if (!timerrunning) {
+		timerrunning = true;
+		m_timer.Start(10000);
+	}
+	if (!gelangweilt) {
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		meta->setStatusText("Info", _trans("Gelangweilt ..."));
+	}
 }
 
 /*...svoid lb_wxFrame\58\\58\OnRunLogonWizard\40\wxCommandEvent\38\ WXUNUSED\40\event\41\\41\:0:*/
@@ -1862,7 +1889,9 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 //IMPLEMENT_CLASS(lb_wxFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
-    EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
+	EVT_TIMER(wxID_ANY, lb_wxFrame::OnTimer)
+	EVT_IDLE(lb_wxFrame::OnIdle)
+	EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
     EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
     EVT_SIZE(lb_wxFrame::OnSize)
 END_EVENT_TABLE()
@@ -2867,7 +2896,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
                 if (sb != NULL) {
                     sb->SetStatusText(value->charrep(), index->getData() - 1);
                     sb->Update();
-                        wxYield();
+                    wxYield();
+					if (*value == _trans("Gelangweilt ...")) {
+						gelangweilt = true;
+					} else {
+						gelangweilt = false;
+					}
                 }
 
                 err = ERR_NONE;

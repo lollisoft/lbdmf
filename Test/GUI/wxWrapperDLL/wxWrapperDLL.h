@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.39 2010/01/22 22:19:13 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.40 2010/01/24 22:51:23 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.40  2010/01/24 22:51:23  lollisoft
+ * Added timer and idle functionality.
+ *
  * Revision 1.39  2010/01/22 22:19:13  lollisoft
  * Added empty function for new tree view panels.
  *
@@ -274,6 +277,8 @@ public:
 		void setGUI(lb_wxGUI* _gui) { gui = _gui; }
 	
 public:
+	void OnTimer(wxTimerEvent& event);
+	void OnIdle(wxIdleEvent& event);
 	void OnQuit(wxCommandEvent& event);
 	void OnVerbose(wxCommandEvent& event);
 	void OnCloseCurrentPage(wxCommandEvent& event);
@@ -431,6 +436,9 @@ public:
 	wxSplitterWindow* m_splitter;
 	wxWindow *m_replacewindow;
 	
+	wxTimer m_timer;
+	bool timerrunning;
+
 	bool _isSplitted;            
 	bool panelUsage;
 	bool tableUsage;
@@ -453,6 +461,7 @@ public:
 	int on_table_usage;
 	int _showLeftPropertyBar;
 
+	bool gelangweilt;
 
 	ToolCountList myToolCountList;
 	
