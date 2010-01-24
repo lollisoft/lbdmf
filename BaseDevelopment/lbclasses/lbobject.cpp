@@ -1003,7 +1003,6 @@ lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* wit
 
 	*rep = str_replace(stringdata, toReplace, with, nocase);
 	if (rep->charrep() != NULL) {
-		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
 		setData(rep->charrep());
 	} else {
 		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
