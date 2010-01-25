@@ -1260,6 +1260,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	}
 
 	uk = meta->getActiveDocument();
+	
+	if (uk == NULL) {
+		_LOG << "Error: Have got a null pointer for the active document. This should not happen." LOG_
+		meta->msgBox("Error", "Failed to get active document. There is a software error.");
+		return;
+	}
+		
 	QI(uk, lb_I_Parameter, params)
 
 	if (params != NULL) {
