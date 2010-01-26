@@ -197,7 +197,10 @@ protected:
         lb_I_GUI* gui;
         UAP(lb_I_EventManager, eman)
         UAP(lb_I_Dispatcher, dispatcher)
-        UAP(lb_I_Database, database)
+	
+		
+		UAP(lb_I_Database, systemdatabase)
+		UAP(lb_I_Database, applicationdatabase)
 
         UAP(lb_I_String, LogonUser)
         UAP(lb_I_String, LogonApplication)
@@ -357,8 +360,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
 
         UAP(lb_I_Query, sampleQuery)
         UAP(lb_I_Database, sqldb)
-        if (database == NULL) {
-                char* dbbackend = metaapp->getApplicationDatabaseBackend();
+
+		char* dbbackend = metaapp->getApplicationDatabaseBackend();
                 if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
                         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
                         AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, sqldb, "'database plugin'")
@@ -369,12 +372,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
                         _LOG << "lbDynamicApplication::initialize(): Using built in database backend ..." LOG_
                 }
 
-                if (database == NULL) {
+                if (sqldb == NULL) {
                         _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
                         return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
                 }
-                database->init();
-        }
+                sqldb->init();
 
         char* DBName = strdup(appParams->getParameter("DBName", metaapp->getApplicationID())); 
         char* DBPass = strdup(appParams->getParameter("DBPass", metaapp->getApplicationID())); 
@@ -791,33 +793,53 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
         UAP(lb_I_Query, sampleQuery)
 
-        if (database == NULL) {
-                char* dbbackend = metaapp->getSystemDatabaseBackend();
-                if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-                        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-                        _LOG << "Using plugin database backend for UML import operation..." LOG_
-                } else {
-                        // Use built in
-                        REQUEST(getModuleInstance(), lb_I_Database, database)
-                        _LOG << "Using built in database backend for UML import operation..." LOG_
-                }
-
-                if (database == NULL) {
-                        _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-                        return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
-                }
-
-                database->init();
-        }
-
-        char* lbDMFPasswd = getenv("lbDMFPasswd");
+	if (systemdatabase == NULL) {
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, systemdatabase, "'database plugin'")
+			_LOG << "Using plugin database backend for system database..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, systemdatabase)
+			_LOG << "Using built in database backend for system database..." LOG_
+		}
+		
+		if (systemdatabase == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		
+		systemdatabase->init();
+	}
+	
+	if (applicationdatabase == NULL) {
+		char* dbbackend = metaapp->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, applicationdatabase, "'database plugin'")
+			_LOG << "Using plugin database backend for system database..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, applicationdatabase)
+			_LOG << "Using built in database backend for system database..." LOG_
+		}
+		
+		if (applicationdatabase == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		
+		applicationdatabase->init();
+	}
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
         char* lbDMFUser   = getenv("lbDMFUser");
 
         if (!lbDMFUser) lbDMFUser = "dba";
         if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-        if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+        if ((systemdatabase != NULL) && (systemdatabase->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
                 _LOG << "Warning: No system database available." LOG_
 /// \todo Implement fallback to Sqlite3.
                 metaapp->msgBox("Warning", "No system database available.");
@@ -825,7 +847,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                 pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
                 if (pl != NULL) ukPl = pl->getImplementation();
                 if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
-                        isDBAvailable = fOpDB->begin("lbDMF", database.getPtr());
+                        isDBAvailable = fOpDB->begin("lbDMF", systemdatabase.getPtr());
         }
 
         _CL_LOG << "Load database schema from target database ..." LOG_
@@ -1527,7 +1549,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                 UAP(lb_I_Query, q)
                         UAP_REQUEST(getModuleInstance(), lb_I_Long, typ)
                         UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
-                        q = database->getQuery("lbDMF", 0);
+                        q = systemdatabase->getQuery("lbDMF", 0);
 
                 if (forms == NULL) {
                         metaapp->msgBox("Error", "Forms object not loaded.");
@@ -1601,24 +1623,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
-        if(database == NULL) {
+        if(systemdatabase == NULL) {
                 char* dbbackend = metaapp->getSystemDatabaseBackend();
                 if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
                         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, systemdatabase, "'database plugin'")
                         _LOG << "Using plugin database backend for UML import operation..." LOG_
                 } else {
                         // Use built in
-                        REQUEST(getModuleInstance(), lb_I_Database, database)
+                        REQUEST(getModuleInstance(), lb_I_Database, systemdatabase)
                         _LOG << "Using built in database backend for UML import operation..." LOG_
                 }
 
-                if (database == NULL) {
+                if (systemdatabase == NULL) {
                         _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
                         return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
                 }
 
-                database->init();
+                systemdatabase->init();
 
                 char* lbDMFPasswd = getenv("lbDMFPasswd");
                 char* lbDMFUser   = getenv("lbDMFUser");
@@ -1626,7 +1648,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
                 if (!lbDMFUser) lbDMFUser = "dba";
                 if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-                if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+                if (systemdatabase->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 /// \todo Implement fallback to Sqlite3.
                         metaapp->msgBox("Warning", "No system database available.");
                         return ERR_DB_CONNECT;
@@ -1634,7 +1656,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
         }
 
         UAP(lb_I_Query, sampleQuery)
-        sampleQuery = database->getQuery("lbDMF", 0);
+        sampleQuery = systemdatabase->getQuery("lbDMF", 0);
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, q)
         UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
@@ -1749,24 +1771,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                 } else {
                         // Use old version with direct database queries. This could happen, if no plugin was found, no file was found and couldn't created.
 
-                        if(database == NULL) {
+                        if(systemdatabase == NULL) {
                                 char* dbbackend = metaapp->getSystemDatabaseBackend();
                                 if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
                                         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+                                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, systemdatabase, "'database plugin'")
                                         _LOG << "Using plugin database backend for UML import operation..." LOG_
                                 } else {
                                         // Use built in
-                                        REQUEST(getModuleInstance(), lb_I_Database, database)
+                                        REQUEST(getModuleInstance(), lb_I_Database, systemdatabase)
                                         _LOG << "Using built in database backend for UML import operation..." LOG_
                                 }
 
-                                if (database == NULL) {
+                                if (systemdatabase == NULL) {
                                         _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
                                         return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
                                 }
 
-                                database->init();
+                                systemdatabase->init();
 
                                 char* lbDMFPasswd = getenv("lbDMFPasswd");
                                 char* lbDMFUser   = getenv("lbDMFUser");
@@ -1774,14 +1796,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                                 if (!lbDMFUser) lbDMFUser = "dba";
                                 if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-                                if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+                                if (systemdatabase->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 /// \todo Implement fallback to Sqlite3.
                                         metaapp->msgBox("Warning", "No system database available.");
                                         return ERR_DB_CONNECT;
                                 }
                         }
 
-                        sampleQuery = database->getQuery("lbDMF", 0);
+                        sampleQuery = systemdatabase->getQuery("lbDMF", 0);
 
                         char* b =
                                 "select Formulare.id, Formulare.name from Formulare "
@@ -1829,7 +1851,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         UAP(lb_I_Query, formularQuery)
 
-                        formularQuery = database->getQuery("lbDMF", 0);
+                        formularQuery = systemdatabase->getQuery("lbDMF", 0);
 
                         // It is an internal formular and I don't distinguish between
                         // different formular implementations yet
@@ -1867,7 +1889,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         UAP(lb_I_Query, DBConnQuery)
 
-                        DBConnQuery = database->getQuery("lbDMF", 0);
+                        DBConnQuery = systemdatabase->getQuery("lbDMF", 0);
 
                         DBConnQuery->query(buffer);
 
@@ -2123,27 +2145,42 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
                 }
         }
 
-        if (database == NULL) {
-                char* dbbackend = metaapp->getSystemDatabaseBackend();
-                if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-                        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-                        _LOG << "Using plugin database backend for UML import operation..." LOG_
-                } else {
-                        // Use built in
-                        REQUEST(getModuleInstance(), lb_I_Database, database)
-                        _LOG << "Using built in database backend for UML import operation..." LOG_
-                }
-
-                if (database == NULL) {
-                        _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-                        return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
-                }
-
-        }
-
-        database->close();
-
+	if (systemdatabase == NULL) {
+		char* dbbackend = metaapp->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, systemdatabase, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, systemdatabase)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+	}
+	
+	if (systemdatabase != NULL) systemdatabase->close();
+	
+	if (applicationdatabase == NULL) {
+		char* dbbackend = metaapp->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, applicationdatabase, "'database plugin'")
+			_LOG << "Using plugin database backend for UML import operation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, applicationdatabase)
+			_LOG << "Using built in database backend for UML import operation..." LOG_
+		}
+		
+		if (applicationdatabase == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		
+	}
+	
+	applicationdatabase->close();
+	
         _CL_LOG << "lbDynamicApplication::uninitialize() leaving." LOG_
 
         return ERR_NONE;
@@ -2213,26 +2250,45 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
         }
 
         UAP(lb_I_Query, sampleQuery)
-        if (database == NULL) {
+        if (systemdatabase == NULL) {
                 char* dbbackend = metaapp->getSystemDatabaseBackend();
                 if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
                         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+                        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, systemdatabase, "'database plugin'")
                         _LOG << "lbDynamicApplication::initialize(): Using plugin database backend ..." LOG_
                 } else {
                         // Use built in
-                        REQUEST(getModuleInstance(), lb_I_Database, database)
+                        REQUEST(getModuleInstance(), lb_I_Database, systemdatabase)
                         _LOG << "lbDynamicApplication::initialize(): Using built in database backend ..." LOG_
                 }
 
-                if (database == NULL) {
+                if (systemdatabase == NULL) {
                         _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
                         return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
                 }
-                database->init();
+                systemdatabase->init();
         }
 
-        char* lbDMFPasswd = getenv("lbDMFPasswd");
+	if (applicationdatabase == NULL) {
+		char* dbbackend = metaapp->getApplicationDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, applicationdatabase, "'database plugin'")
+			_LOG << "lbDynamicApplication::initialize(): Using plugin database backend ..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, applicationdatabase)
+			_LOG << "lbDynamicApplication::initialize(): Using built in database backend ..." LOG_
+		}
+		
+		if (applicationdatabase == NULL) {
+			_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+			return ERR_DYNAMIC_APP_LOAD_DBSCHEMA;
+		}
+		applicationdatabase->init();
+	}
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
         char* lbDMFUser   = getenv("lbDMFUser");
 
         if (!lbDMFUser) lbDMFUser = "dba";
@@ -2247,7 +2303,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                 metaapp->setLoadFromDatabase(b);
                 metaapp->setApplicationName(LogonApplication->charrep());
 
-                if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+                if ((systemdatabase != NULL) && (systemdatabase->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
                         metaapp->msgBox("Error", "No system database available!");
 
@@ -2271,7 +2327,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                 UAP(lb_I_ApplicationParameter, appParams)
                                 AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 
-                                if (fOpDB->begin("lbDMF", database.getPtr())) {
+                                if (fOpDB->begin("lbDMF", systemdatabase.getPtr())) {
                                         _LOG << "System database is available. Read database connection parameters from there." LOG_
                                         appParams->accept(*&fOpDB);
                                         fOpDB->end();
@@ -2383,7 +2439,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                         *DBUser = appParams->getParameter("DBUser", metaapp->getApplicationID());
                                         *DBPass = appParams->getParameter("DBPass", metaapp->getApplicationID());
 
-                                        if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
+                                        if ((applicationdatabase != NULL) && (applicationdatabase->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
                                                 _LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
                                                 // This can lock the application in Mac OS X
@@ -2401,7 +2457,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                 }
 
                                 // Pass the applications ODBC database name.
-                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), database.getPtr());
+                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), applicationdatabase.getPtr());
                                 DBOperation = true;
                         }
                 }
@@ -3239,13 +3295,13 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 
                 _LOG << "Load the formulars by database access (fallback) ..." LOG_
 
-                if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+                if (systemdatabase->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
                         meta->msgBox("Error", "Failed to connect to required system database. (No local file available)");
                         _LOG << "Error: Failed to get a connection to the system database." LOG_
                         return;
                 }
 
-                sampleQuery = database->getQuery("lbDMF", 0);
+                sampleQuery = systemdatabase->getQuery("lbDMF", 0);
 
                 char* b =
                         "select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "
