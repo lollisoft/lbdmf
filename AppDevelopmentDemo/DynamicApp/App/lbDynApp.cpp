@@ -2456,8 +2456,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                         }
                                 }
 
-                                // Pass the applications ODBC database name.
-                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), applicationdatabase.getPtr());
+                                // Pass the applications ODBC database name, but the system database!
+                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), systemdatabase.getPtr());
                                 DBOperation = true;
                         }
                 }
