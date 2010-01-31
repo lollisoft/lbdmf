@@ -137,6 +137,11 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
 	UAP(lb_I_Database, database)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 
+	if (stream == NULL) {
+		_LOG << "Error: Stream object is a NULL pointer." LOG_
+		return false;
+	}
+	
 	if (database == NULL) {
 		char* dbbackend = metaapp->getSystemDatabaseBackend();
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -175,22 +180,23 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
 
 	if (query->query(q) == ERR_NONE) {
 		UAP(lb_I_String, what)
-
-		what = query->getAsString(1);
-		if (stream == NULL) {
-			return false;
+		lbErrCodes cursorErr = ERR_NONE;
+		cursorErr = query->first();
+		
+		if ((cursorErr == ERR_NONE) || (cursorErr == WARN_DB_NODATA)) {
+			what = query->getAsString(1);
+			if (what == NULL) {
+				return false;
+			}
+			if (what->charrep() == NULL) {
+				return false;
+			}
+			if (strcmp(what->charrep(), "") == 0) {
+				return false;
+			}
+			stream->setFileName(what->charrep());
+			return true;
 		}
-		if (what == NULL) {
-			return false;
-		}
-		if (what->charrep() == NULL) {
-			return false;
-		}
-		if (strcmp(what->charrep(), "") == 0) {
-			return false;
-		}
-		stream->setFileName(what->charrep());
-		return true;
 	}
 
 	return false;
@@ -473,10 +479,14 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	if (metaapp->askYesNo("You prepare to generate other output format from XML data model.\n\nNext step ist to select the XSLT template to be used.\n\nDo you want to proceed ?")) {
 		UAP(lb_I_String, styledoc)
 		UAP(lb_I_InputStream, input)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input_action_configuration)
 
-		if (!fileFromAction(*&input)) {
+		if (!fileFromAction(*&input_action_configuration)) {
 			// Get this file name later from action parameters for this action step
 			input = metaapp->askOpenFileReadStream("xsl|*.xsl");
+		} else {
+			input = input_action_configuration.getPtr();
+			input++;
 		}
 
 		if ((input != NULL) && (input->open())) {
