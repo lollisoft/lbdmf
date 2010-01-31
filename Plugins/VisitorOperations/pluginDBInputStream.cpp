@@ -1367,6 +1367,8 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) 
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
 	lbErrCodes err = ERR_NONE;
+	bool showMessage = false;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, messageText)
 	UAP(lb_I_Query, q)
 
 	UAP(lb_I_ApplicationParameter, appParams)
@@ -1511,7 +1513,13 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
 						/// \todo Implement fallback to Sqlite3.
-						metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
 
 						// A fallback to the old code, that may not produce a result.
 						form_query = db->getQuery(ConnectionName->charrep(), 0);
@@ -1522,8 +1530,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
 						/// \todo Implement fallback to Sqlite3.
-						metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
-
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
 						// A fallback to the old code, that may not produce a result.
 						form_query = db->getQuery(ConnectionName->charrep(), 0);
 					} else {
@@ -1673,12 +1687,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 	if (err == WARN_DB_NODATA) {
 		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
 		UAP(lb_I_Query, query_query)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 
 		query_query = db->getQuery("lbDMF", 0);
 
 		FormularID = q->getAsLong(1);
+		AnwendungID = q->getAsLong(2);
 
 		*query = "select parametervalue from formular_parameters where formularid = ";
 		*query += FormularID->charrep();
@@ -1694,8 +1710,111 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
 				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
-				form_query = db->getQuery(ConnectionName->charrep(), 0);
-
+				//form_query = db->getQuery(ConnectionName->charrep(), 0);
+				/*
+				 UAP_REQUEST(getModuleInstance(), lb_I_String, tempformularquery)
+				 *tempformularquery = formularquery->charrep();
+				 char* t = tempformularquery->stristr(formularquery->charrep(), "WHERE");
+				 t[0] = 0;
+				 *formularquery = tempformularquery;
+				 *formularquery += " LIMIT 1";
+				 */
+				
+				UAP(lb_I_Database, customDB)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+				
+				*dbname = "";
+				*dbuser = "";
+				*dbpass = "";
+				
+				char* dbbackend = metaapp->getApplicationDatabaseBackend();
+				char* sysdbbackend = metaapp->getSystemDatabaseBackend();
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
+				} else {
+					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
+				}
+				
+				*dbname = appParams->getParameter("DBName", AnwendungID->getData());
+				*dbuser = appParams->getParameter("DBUser", AnwendungID->getData());
+				*dbpass = appParams->getParameter("DBPass", AnwendungID->getData());
+				
+				metaapp->setStatusText("Info", "Target database is application database ...");
+				
+				/************/
+				
+				if (strcmp(dbname->charrep(), "lbDMF") == 0) {
+					// It is the system database
+					if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				} else {
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				}
+				
+				
+				
+				if (customDB == NULL) {
+					_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+					return;
+				}
+				
+				customDB->init();
+				/************/
+				
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					// It is the plugin that currently only supports local Sqlite
+					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0); // Use retrieved database name
+					}
+				} else {
+					if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0);
+					}
+				}
+				
 				form_query->enableFKCollecting();
 
 				lbErrCodes errQuery = form_query->query(formularquery->charrep());
@@ -1801,6 +1920,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		} else {
 			_LOG << "Error: Query '" << query->charrep() << "' failed!" LOG_
 		}
+	}
+	if (showMessage) {
+		metaapp->msgBox("Error", messageText->charrep());
 	}
 }
 
