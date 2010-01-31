@@ -476,7 +476,11 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 
 	// Get the question from action parameters for this action step
 
-	if (metaapp->askYesNo("You prepare to generate other output format from XML data model.\n\nNext step ist to select the XSLT template to be used.\n\nDo you want to proceed ?")) {
+	bool doGenerate = true;
+	
+	doGenerate = metaapp->askYesNo("You prepare to generate other output format from XML data model.\n\nNext step ist to select the XSLT template to be used.\n\nDo you want to proceed ?");
+	
+	if (doGenerate) {
 		UAP(lb_I_String, styledoc)
 		UAP(lb_I_InputStream, input)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input_action_configuration)
