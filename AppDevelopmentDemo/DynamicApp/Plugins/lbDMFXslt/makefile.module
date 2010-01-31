@@ -51,7 +51,7 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
 MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
 OBJDEP=
-LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
+LIBS=$(OSX_ARCH) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
 VENDORLIBS=
 endif    
 
