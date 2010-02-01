@@ -33,6 +33,7 @@
 <xsl:import href="importUMLClassAsDMFForm.xsl"/>
 <xsl:import href="importUMLApplicationTables.xsl"/>
 <xsl:import href="createDefaultStoredProcs.xsl"/>
+<xsl:import href="importUMLReports.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -85,6 +86,46 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 
 -- Activate this on a fresh database
 --CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
+
+-- createReportTable()
+--
+-- This function drops a table, if it exists.
+
+CREATE OR REPLACE FUNCTION "createReportTable"()
+  RETURNS void AS
+'
+declare
+tres text;
+begin
+  select tablename into tres from pg_tables where tablename = ''report'';
+  if tres is null then
+    execute ''
+CREATE TABLE report
+(
+  report_id SERIAL,
+  report_name text,
+  report_sys boolean,
+  report_source text,
+  report_descrip text,
+  report_grade integer NOT NULL,
+  report_loaddate timestamp without time zone,
+  CONSTRAINT report_pkey PRIMARY KEY (report_id)
+)
+WITH (OIDS=TRUE);
+
+CREATE UNIQUE INDEX report_name_grade_idx
+  ON report
+  USING btree
+  (report_name, report_grade);
+	'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
+
 
 -- dropTable("varchar")
 --
@@ -304,6 +345,26 @@ SET SESSION AUTHORIZATION 'dba';
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
 			</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFReport">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFReport">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
+					</xsl:call-template>
+				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
 				</xsl:when>

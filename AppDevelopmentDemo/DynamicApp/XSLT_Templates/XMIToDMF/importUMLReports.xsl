@@ -244,6 +244,9 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 	</xsl:call-template>
 </xsl:if>
 </xsl:for-each>
+
+select "createReportTable"();
+
 delete from report where report_name = 'Report<xsl:value-of select="$tablename"/>';
 insert into report (report_name, report_grade, report_source) values('Report<xsl:value-of select="$tablename"/>', 0, '&lt;!DOCTYPE openRPTDef&gt;
 &lt;report&gt;
