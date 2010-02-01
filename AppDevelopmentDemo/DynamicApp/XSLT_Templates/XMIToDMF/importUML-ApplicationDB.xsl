@@ -320,12 +320,15 @@ SET SESSION AUTHORIZATION 'dba';
 			</xsl:when>
 			<xsl:otherwise>
 -- Unknown stereotype '<xsl:value-of select="./xmi:Extension/stereotype/@name"/>' for class <xsl:value-of select="@name"/>.
+-- Create table via importApplicationTableAutoID
+<!--
 		<xsl:call-template name="importApplicationTableAutoID">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="ApplicationName" select="../@name"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
+-->
 </xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
