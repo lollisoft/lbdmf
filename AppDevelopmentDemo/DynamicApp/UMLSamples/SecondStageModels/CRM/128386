@@ -1,6 +1,6 @@
 format 63
 "CRM" // DMFToUML::CRM
-  revision 6
+  revision 7
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -464,6 +464,16 @@ ${inlines}
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "Name"
       end
+
+      attribute 141954 "Preis"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 128642 "Angebot"
@@ -616,6 +626,25 @@ ${inlines}
 	  b parent class_ref 129026 // Rechnungspositionen
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "Rechnungsnummer"
+      end
+
+      attribute 142082 "Gedruckt"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 137858 // (Rechnungsnummer)
+	relation 135682 ---> name "Rechnungsnummer"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 137858 // (Rechnungsnummer)
+	  b parent class_ref 133250 // Rechnung
       end
     end
 

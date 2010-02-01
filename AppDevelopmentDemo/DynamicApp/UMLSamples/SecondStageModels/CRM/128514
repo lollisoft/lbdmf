@@ -1,6 +1,6 @@
 format 63
 "CRM_Entities" // DMFToUML::CRM_Entities
-  revision 2
+  revision 3
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -468,6 +468,16 @@ ${inlines}
 	key "lbDMF:relationship:sourcecolumn" value "ID"
 	key "lbDMF:relationship:table" value "Lieferant"
 	key "lbDMF:relationship:order" value "-1"
+      end
+
+      attribute 141826 "Preis"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 
@@ -1205,6 +1215,16 @@ ${inlines}
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
+      end
+
+      attribute 142466 "Gedruckt"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 

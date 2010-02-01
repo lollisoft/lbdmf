@@ -1,6 +1,6 @@
 format 63
 "DMFToUML" // DMFToUML
-  revision 1
+  revision 2
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -29,6 +29,8 @@ format 63
   package_ref 128386 // CRM
 
   package_ref 128514 // CRM_Entities
+
+  package_ref 129794 // Reports
 
   package_ref 128642 // lbDMF
 end
