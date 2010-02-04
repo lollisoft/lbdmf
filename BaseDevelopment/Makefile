@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.212 $
+# * $Revision: 1.213 $
 # * $Name:  $
-# * $Id: Makefile,v 1.212 2010/01/16 00:04:27 lollisoft Exp $
+# * $Id: Makefile,v 1.213 2010/02/04 21:10:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.213  2010/02/04 21:10:51  lollisoft
+# * Added support for Mac OSX 10.2.0.
+# *
 # * Revision 1.212  2010/01/16 00:04:27  lollisoft
 # * Deactivated cryptstrm. Not yet ready to compile on all platforms.
 # *
@@ -759,6 +762,10 @@ ifeq ($(OSVERSION_), 10.0.0)
 OSNAME=Leopard
 endif
 
+ifeq ($(OSVERSION_), 10.2.0)
+OSNAME=Leopard
+endif
+
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -942,7 +949,6 @@ ALLTARGETS = \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
-	../vendor/dbwrapcontrols \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper
@@ -950,6 +956,7 @@ ALLTARGETS = \
 #	../vendor/wxARG/src \
 #	../vendor/cryptostream/src/crypstrm \
 #	../vendor/wxShapeFramework/src \
+#	../vendor/dbwrapcontrols \
 #	../vendor/wxShapeFramework/example \
 #	../vendor/databaselayer/tests \
 

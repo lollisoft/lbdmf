@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.135 $
+# * $Revision: 1.136 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.135 2010/01/12 19:45:41 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.136 2010/02/04 21:10:51 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.136  2010/02/04 21:10:51  lollisoft
+# * Added support for Mac OSX 10.2.0.
+# *
 # * Revision 1.135  2010/01/12 19:45:41  lollisoft
 # * Mostly completed plugin based interceptor functionality for events.
 # *
@@ -1304,6 +1307,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.0.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.2.0)
 OSNAME=Leopard
 endif
 
