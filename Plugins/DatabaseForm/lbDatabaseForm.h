@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.61 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.62 2010/02/06 18:34:10 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.62  2010/02/06 18:34:10  lollisoft
+ * Prepared functions for handling focus and keyboard events.
+ *
  * Revision 1.61  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *
@@ -994,6 +997,11 @@ public:
 	void OnImageButtonClick(wxCommandEvent& event);
 	void OnMouseMove(wxMouseEvent& evt);
 
+	void OnKeyDown(wxKeyEvent* event);
+	void OnKeyUp(wxKeyEvent* event);
+	void OnKeyPressed(wxKeyEvent* event);
+	void OnSetFocus(wxFocusEvent& event);	
+		
 	/** \brief Paint the control.
 	 *
 	 * This handler should be used to paint an 'ownerdrawn' control.

@@ -153,7 +153,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabasePanel, lbDatabasePanel)
 
-
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -926,21 +925,30 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 }
 
 void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-						UAP(lb_I_String, s)
-						//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
-						int i = lookupColumnIndex(name);
-						s = sampleQuery->getAsString(i);
-
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
-						text->SetName(name);
-
-						addLabel(name, sizerLabel, hideThisColumn);
-						sizerControl->Add(text, 1, wxALL, GAP);
-						sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
-
-						if (FFI->isReadonly(name)) {
-							text->Disable();
-						}
+	UAP(lb_I_String, s)
+	//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
+	int i = lookupColumnIndex(name);
+	s = sampleQuery->getAsString(i);
+	
+	wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
+	text->SetName(name);
+	
+	text->Connect( wxID_ANY , -1, wxEVT_SET_FOCUS,
+				  (wxObjectEventFunction) (wxEventFunction) (wxFocusEventFunction) &lbDatabasePanel::OnSetFocus, NULL, this);
+	text->Connect( wxID_ANY , -1, wxEVT_KEY_DOWN,
+				  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction) &lbDatabasePanel::OnKeyDown, NULL, this);
+	text->Connect( wxID_ANY , -1, wxEVT_KEY_UP,
+				  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction) &lbDatabasePanel::OnKeyUp, NULL, this);
+	text->Connect( wxID_ANY , -1, wxEVT_CHAR,
+				  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction) &lbDatabasePanel::OnKeyPressed, NULL, this);
+	
+	addLabel(name, sizerLabel, hideThisColumn);
+	sizerControl->Add(text, 1, wxALL, GAP);
+	sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
+	
+	if (FFI->isReadonly(name)) {
+		text->Disable();
+	}
 }
 
 void LB_STDCALL lbDatabasePanel::addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
@@ -1834,7 +1842,7 @@ _CL_LOG << "Connect event handlers" LOG_
 	CONNECTOR->Connect( DatabaseRefresh, -1, wxEVT_COMMAND_BUTTON_CLICKED,
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 /*...e*/
-
+	
 
 	/*
 	 * Connect the 'ownerdrawn' controls to the OnPaint handler.
@@ -5361,6 +5369,25 @@ void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
+
+void lbDatabasePanel::OnSetFocus(wxFocusEvent& event) {
+	_LOG << "lbDatabasePanel::OnSetFocus(wxFocusEvent& event) called." LOG_
+}
+void lbDatabasePanel::OnKeyDown(wxKeyEvent* event) {
+	_LOG << "lbDatabasePanel::OnKeyDown(wxFocusEvent& event) called." LOG_
+	event.Skip();
+}
+
+void lbDatabasePanel::OnKeyUp(wxKeyEvent* event) {
+	_LOG << "lbDatabasePanel::OnKeyUp(wxFocusEvent& event) called." LOG_
+	event.Skip();
+}
+
+void lbDatabasePanel::OnKeyPressed(wxKeyEvent* event) {
+	_LOG << "lbDatabasePanel::OnKeyPressed(wxFocusEvent& event) called." LOG_
+	event.Skip();
+}
+
 
 void lbDatabasePanel::OnMouseMove(wxMouseEvent& evt)
 {
