@@ -3010,7 +3010,7 @@ public:
 
 	virtual void LB_STDCALL addStatusBar_TextArea(char* name) = 0;
 
-	virtual void LB_STDCALL setStatusText(char* name, const char* value) = 0;
+	virtual void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true) = 0;
 
 	// Hack to avoid crash when the window close button is pressed. Used in OnExit in dynamic.cpp.
 	virtual void LB_STDCALL disableStatusbar() = 0;

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.171 $
+ * $Revision: 1.172 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.171 2010/01/24 22:54:27 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.172 2010/02/17 13:47:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.172  2010/02/17 13:47:26  lollisoft
+ * Added default parameter to enable skipping yielding.
+ *
  * Revision 1.171  2010/01/24 22:54:27  lollisoft
  * Removed two log messages that makes problems when timer event works in one second interval.
  *
@@ -2419,7 +2422,7 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
-void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value) {
+void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value, bool call_yield) {
 	lbErrCodes err = ERR_NONE;
 
 	if (!isStatusbarActive) return;
@@ -2433,6 +2436,9 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value)
 	param->setUAPString(*&parameter, *&Value);
 	*parameter = "Value";
 	*Value = value;
+	param->setUAPString(*&parameter, *&Value);
+	*parameter = "CallYield";
+	*Value = (call_yield) ? "true" : "false";
 	param->setUAPString(*&parameter, *&Value);
 
 	UAP(lb_I_Unknown, uk)

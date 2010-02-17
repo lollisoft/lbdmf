@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.70 2010/01/16 16:22:41 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.71 2010/02/17 13:47:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.71  2010/02/17 13:47:26  lollisoft
+ * Added default parameter to enable skipping yielding.
+ *
  * Revision 1.70  2010/01/16 16:22:41  lollisoft
  * Added methods to cleanup intercepted instances that otherwise will crash the application due to dangling pointers.
  *
@@ -404,7 +407,7 @@ public:
 	
 	void LB_STDCALL addStatusBar_TextArea(char* name);
 	
-	void LB_STDCALL setStatusText(char* name, const char* value);
+	void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true);
 	void LB_STDCALL disableStatusbar();
 	
 	lbErrCodes LB_STDCALL enableEvent(char* name);
