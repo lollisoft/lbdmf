@@ -1783,14 +1783,22 @@ lb_wxFrame::~lb_wxFrame() {
 
 void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	meta->setStatusText("Info", _trans("Timer ..."));
+	meta->setStatusText("Info", _trans("Timer ..."), false);
+	m_timer.Stop();
+	// Do timer stuff
+
+	
+	
+	
+	// Let OnIdle restart the timer...
+	timerrunning = false;
 }
 
 void lb_wxFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
 {
 	if (!timerrunning) {
 		timerrunning = true;
-		m_timer.Start(10000);
+		m_timer.Start(500);
 	}
 	if (!gelangweilt) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -2877,13 +2885,16 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
         if (params != NULL) {
                 UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
                 UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, CallYield)
 
                 *parameter = "Name";
                 params->getUAPString(*&parameter, *&name);
                 *parameter = "Value";
                 params->getUAPString(*&parameter, *&value);
-
+				*parameter = "CallYield";
+				params->getUAPString(*&parameter, *&CallYield);
+			
                 UAP(lb_I_KeyBase, key)
                 QI(name, lb_I_KeyBase, key)
 
@@ -2896,7 +2907,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
                 if (sb != NULL) {
                     sb->SetStatusText(value->charrep(), index->getData() - 1);
                     sb->Update();
-                    wxYield();
+					if (*CallYield == "true") wxYield();
 					if (*value == _trans("Gelangweilt ...")) {
 						gelangweilt = true;
 					} else {
