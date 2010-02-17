@@ -5375,17 +5375,17 @@ void lbDatabasePanel::OnSetFocus(wxFocusEvent& event) {
 }
 void lbDatabasePanel::OnKeyDown(wxKeyEvent* event) {
 	_LOG << "lbDatabasePanel::OnKeyDown(wxFocusEvent& event) called." LOG_
-	event.Skip();
+	event->Skip();
 }
 
 void lbDatabasePanel::OnKeyUp(wxKeyEvent* event) {
 	_LOG << "lbDatabasePanel::OnKeyUp(wxFocusEvent& event) called." LOG_
-	event.Skip();
+	event->Skip();
 }
 
 void lbDatabasePanel::OnKeyPressed(wxKeyEvent* event) {
 	_LOG << "lbDatabasePanel::OnKeyPressed(wxFocusEvent& event) called." LOG_
-	event.Skip();
+	event->Skip();
 }
 
 
