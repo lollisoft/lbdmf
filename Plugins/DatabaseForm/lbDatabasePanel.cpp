@@ -100,6 +100,10 @@ extern "C" {
 #include <wx/file.h>
 /*...e*/
 
+#include "wx/textbox.h"
+#include "childwnd.h"
+
+
 #include <lbDatabaseForm.h>
 
 /*...sdoc:0:*/
@@ -185,6 +189,7 @@ lbDatabasePanel::lbDatabasePanel()
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
+	m_resizecanvas = NULL;
 	skipValidation = false;
 	fa = NULL;
 	FFI = NULL;
@@ -924,13 +929,27 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 			free(buffer);
 }
 
+//#define USE_NEW_RESIZEABLE
+
 void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 	UAP(lb_I_String, s)
 	//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
 	int i = lookupColumnIndex(name);
 	s = sampleQuery->getAsString(i);
 	
+
+#ifdef USE_NEW_RESIZEABLE
+	if (!m_resizecanvas) m_resizecanvas = new wxResizeableControlCanvas(this,-1);
+
+    ParentControl *parent = new ParentControl((wxResizeableControlCanvas *)m_resizecanvas,0,wxDefaultPosition, wxDefaultSize,wxCLIP_SIBLINGS);
+	wxResizeableChildTextCtrl *text = new wxResizeableChildTextCtrl(parent, -1, s->charrep(), wxDefaultPosition, wxDefaultSize);
+	parent->SetManagedChild(text);
+#endif
+	
+#ifndef USE_NEW_RESIZEABLE
 	wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
+#endif
+	
 	text->SetName(name);
 	
 	text->Connect( wxID_ANY , -1, wxEVT_SET_FOCUS,
@@ -943,7 +962,18 @@ void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wx
 				  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction) &lbDatabasePanel::OnKeyPressed, NULL, this);
 	
 	addLabel(name, sizerLabel, hideThisColumn);
+	
+	
+#ifndef USE_NEW_RESIZEABLE
 	sizerControl->Add(text, 1, wxALL, GAP);
+#endif
+#ifdef USE_NEW_RESIZEABLE
+	sizerControl->Add(parent, 1, wxALL, GAP);
+#endif
+	
+	
+	
+	
 	sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 	
 	if (FFI->isReadonly(name)) {

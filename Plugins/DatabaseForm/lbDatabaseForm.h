@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.62 2010/02/06 18:34:10 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.63 2010/02/21 22:29:55 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.63  2010/02/21 22:29:55  lollisoft
+ * Adde first try of resizeable controls, but deactivated because it doesn't work as expected on Mac.
+ *
  * Revision 1.62  2010/02/06 18:34:10  lollisoft
  * Prepared functions for handling focus and keyboard events.
  *
@@ -276,6 +279,7 @@
 
 #include <iostream>
 #include "wx/grid.h"
+#include <wx/resizec.h>
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
@@ -1098,6 +1102,8 @@ public:
 	wxWindow* deleteButton;
 	wxWindow* addingButton;
 
+	wxResizeableControlCanvas* m_resizecanvas;	
+		
 	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;
