@@ -2907,7 +2907,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
                 if (sb != NULL) {
                     sb->SetStatusText(value->charrep(), index->getData() - 1);
                     sb->Update();
-					if (*CallYield == "true") wxYield();
+					if ((CallYield->charrep() != NULL) && (*CallYield == "true")) wxYield();
 					if (*value == _trans("Gelangweilt ...")) {
 						gelangweilt = true;
 					} else {
