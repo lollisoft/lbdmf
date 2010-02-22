@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.172 $
+ * $Revision: 1.173 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.172 2010/02/17 13:47:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.173 2010/02/22 09:28:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.173  2010/02/22 09:28:22  lollisoft
+ * Missing return value.
+ *
  * Revision 1.172  2010/02/17 13:47:26  lollisoft
  * Added default parameter to enable skipping yielding.
  *
@@ -3907,6 +3910,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::removeInterceptedInstance(lb_I_String* EvNa
 	evInterceptor = hasDefinedInterceptor(*&EvName);
 	
 	if (evInterceptor != NULL) evInterceptor->removeInterceptedInstance(interceptedInstance);
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
