@@ -51,19 +51,30 @@ endif
 # ../lbHook/conio.o
 endif
 
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
-
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 VENDORLIBS=
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+LIBS=$(OSX_ARCH) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
@@ -77,3 +88,4 @@ VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
 
 endif
+

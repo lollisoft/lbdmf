@@ -58,6 +58,11 @@ extern "C" {
 
 #include <lbthread.h>
 
+IMPLEMENT_FUNCTOR(instanceOflbCritSect, lbCritSect)
+IMPLEMENT_FUNCTOR(instanceOflbLock, lbLock)
+IMPLEMENT_FUNCTOR(instanceOflbThread, lbThread)
+
+
 int lbThread::threadCount = 0;
 
 #ifdef __WXGTK__
@@ -82,7 +87,6 @@ extern void deletesem(int id);
 /*...e*/
 /*...sPV code:0:*/
 int sem_anfordid, sem_antwortid;
-
 
 int helper(int name)
 {
@@ -145,14 +149,24 @@ void initsem(int client)
 /*...e*/
 #endif
 
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbMutex)
+ADD_INTERFACE(lb_I_Mutex)
+END_IMPLEMENT_LB_UNKNOWN()
+
 /*...slbMutex:0:*/
 lbMutex::lbMutex()
 {
+	ref = STARTREF;
 }
 
 lbMutex::~lbMutex()
 {
 	deleteMutex(MyMutexNumber);	
+}
+
+lbErrCodes lbMutex::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 /*...sdeleteMutex:0:*/
@@ -238,86 +252,52 @@ void lbMutex::release()
 /*...e*/
 /*...e*/
 
-#ifdef WINDOWS
-
 /*...slbCritSect:0:*/
 //#define USE_CRITICAL_SECTION
 
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbCritSect)
+ADD_INTERFACE(lb_I_CriticalSection)
+END_IMPLEMENT_LB_UNKNOWN()
+
+///\todo Implement
 lbCritSect::lbCritSect() {
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbCritSect::lbCritSect() called" LOG_
-//COUT << "lbCritSect::lbCritSect() called" << ENDL;
-#endif
-/*...e*/
-	critsect = new CRITICAL_SECTION;
-	InitializeCriticalSection((CRITICAL_SECTION*)critsect);
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-//COUT << "lbCritSect::lbCritSect() leave" << ENDL;
-_CL_VERBOSE << "lbCritSect::lbCritSect() leave" LOG_
-#endif
-/*...e*/
+	ref = STARTREF;
 }
 
 lbCritSect::~lbCritSect() {
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-//COUT << "lbCritSect::~lbCritSect() called" << ENDL << flush;
-_CL_VERBOSE << "lbCritSect::~lbCritSect() called" LOG_
-#endif
-/*...e*/
-	DeleteCriticalSection((CRITICAL_SECTION*)critsect);
-	delete critsect;
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-//COUT << "lbCritSect::~lbCritSect() leave" << ENDL;
-_CL_VERBOSE << "lbCritSect::~lbCritSect() leave" LOG_
-#endif
-/*...e*/
+}
+
+lbErrCodes lbCritSect::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 lbErrCodes lbCritSect::enter() {
-#ifdef USE_CRITICAL_SECTION
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbCritSect::enter() called" LOG_
-//COUT << "lbCritSect::enter() called" << ENDL;
-#endif
-/*...e*/
-	EnterCriticalSection((CRITICAL_SECTION*)critsect);
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-//COUT << "lbCritSect::enter() leave" << ENDL;	
-_CL_VERBOSE << "lbCritSect::enter() leave" LOG_
-#endif
-/*...e*/
-#endif
 	return ERR_NONE;
 }
 
 lbErrCodes lbCritSect::leave() {
-#ifdef USE_CRITICAL_SECTION
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbCritSect::leave() called" LOG_
-//COUT << "lbCritSect::leave() called" << ENDL;
-#endif
-/*...e*/
-	LeaveCriticalSection((CRITICAL_SECTION*)critsect);
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbCritSect::leave() leave" LOG_
-//COUT << "lbCritSect::leave() leave" << ENDL;
-#endif
-/*...e*/
-#endif
 	return ERR_NONE;
 }
 /*...e*/
 
 /*...slbLock:0:*/
-lbLock::lbLock(lbCritSect& _cso, char* _name) {
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLock)
+ADD_INTERFACE(lb_I_Lock)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbLock::lbLock() {
+	ref = STARTREF;
+	cso = NULL;
+}
+
+lbErrCodes lbLock::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void lbLock::with(lb_I_CriticalSection* _cso, char* _name) {
 #ifdef USE_CRITICAL_SECTION
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
@@ -325,8 +305,8 @@ lbLock::lbLock(lbCritSect& _cso, char* _name) {
 _CL_VERBOSE << "lbLock::lbLock(...) enter critical section" LOG_
 #endif
 /*...e*/
-	_cso.enter();
-	cso = &_cso;
+	_cso->enter();
+	cso = _cso;
 	name = strdup(_name);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
@@ -345,8 +325,8 @@ lbLock::~lbLock() {
 _CL_VERBOSE << "lbLock::~lbLock(...) leave critical section" LOG_
 #endif
 /*...e*/
-	cso->leave();
-	free(name);
+	if (cso) cso->leave();
+	if (name) free(name);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbLock::~lbLock(...) leaved" << ENDL;
@@ -362,6 +342,10 @@ _CL_VERBOSE << "lbLock::~lbLock(...) leaved" LOG_
 // TLS index of the slot where we store the pointer to the current thread
 static DWORD s_tlsThisThread = 0xFFFFFFFF;
 static DWORD s_idMainThread = 0;
+
+#ifdef OSX
+#define HANDLE int
+#endif
 
 /*...sclass lbThreadInternal:0:*/
 class lbThreadInternal {
@@ -409,84 +393,18 @@ private:
 
 /*...slbThreadInternal\58\\58\Create\40\lbThread \42\thread\41\:0:*/
 lbErrCodes lbThreadInternal::Create(lbThread *thread) {
-/*...sTHREAD_VERBOSE:0:*/
-	#ifdef THREAD_VERBOSE
-	_CL_VERBOSE << "lbThreadInternal::Create called" LOG_
-	if (thread == NULL) {
-		printf("lbThreadInternal::Create: Got a null pointer.\n");
-	}
-	#endif
-/*...e*/
-    lb_hThread = ::CreateThread
-                  (
-                    NULL,                               // default security
-                    0,                                  // default stack size
-                    (LPTHREAD_START_ROUTINE)            // thread entry point
-                    lbThreadInternal::WinThreadStart,   //
-                    (LPVOID)thread,                     // parameter
-                    CREATE_SUSPENDED,                   // flags
-                    &lb_ThreadId                        // [out] thread id
-                  );
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-    _LOG << "Thread with id " << lb_ThreadId << " created" LOG_
-#endif
-/*...e*/
-
-    if ( lb_hThread == NULL )
-    {
-    	// Do some logging
-    	_CL_VERBOSE << "lbThreadInternal: Could not create a thread" LOG_
-
-        return LB_THREAD_ERROR;
-    }
-
-    // lb_ThreadId must be associated with the current clt
-    
-    if ( ::SetThreadPriority(lb_hThread, THREAD_PRIORITY_NORMAL) == 0 )
-    {
-    	_CL_VERBOSE << "lbThreadInternal: Could not set ThreadPriority" LOG_
-    	return LB_THREAD_ERROR;
-    }
-    
     return ERR_NONE;
 }
 /*...e*/
 
 /*...slbThreadInternal\58\\58\suspend\40\\41\:0:*/
 lbErrCodes lbThreadInternal::suspend() {
-    DWORD nSuspendCount = ::SuspendThread(lb_hThread);
-    if ( nSuspendCount == (DWORD)-1 )
-    {
-        _LOG << "lbThreadInternal: Can not suspend thread" LOG_
-
-        return LB_THREAD_ERROR;
-    }
-
-//    m_state = STATE_PAUSED;
-
     return ERR_NONE;
 }
 /*...e*/
 
 /*...slbThreadInternal\58\\58\resume\40\\41\:0:*/
 lbErrCodes lbThreadInternal::resume() {
-    DWORD nSuspendCount = ::ResumeThread(lb_hThread);
-    if ( nSuspendCount == (DWORD)-1 )
-    {
-        _LOG << "lbThreadInternal: Can not resume thread" LOG_
-
-        return LB_THREAD_ERROR;
-    }
-
-/*...sVERBOSE:0:*/
-#ifdef NOVERBOSE
-    printf("lbThreadInternal::resume, thread resumed\n");
-#endif
-/*...e*/
-
-//    m_state = STATE_RUNNING;
-
     return ERR_NONE;
 }
 /*...e*/
@@ -494,72 +412,17 @@ lbErrCodes lbThreadInternal::resume() {
 /*...slbThreadInternal\58\\58\WinThreadStart\40\lbThread \42\thread\41\:0:*/
 DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
 {
-    // store the thread object in the TLS
-/*...sTHREAD_VERBOSE:0:*/
-    #ifdef THREAD_VERBOSE
-    _LOG << "lbThreadInternal::WinThreadStart: Do NOT store thread in tls" LOG_
-    #endif    
-/*...e*/
-#define bla    
-/*...sbla:0:*/
-#ifdef bla
-    _LOG << "lbThreadInternal::WinThreadStart called" LOG_
-    if ( !::TlsSetValue(s_tlsThisThread, thread) )
-    {
-        _LOG << "lbThreadInternal::WinThreadStart, Can not start thread: error writing TLS." LOG_
-
-        return (DWORD)-1;
-    }
-#endif
-/*...e*/
-#undef bla
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Calling (DWORD)thread->Entry()" LOG_
-#endif
-/*...e*/
-
-    if (thread == NULL) {
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
-#endif
-/*...e*/
-    }
-
-// Did I have to release the impl instance on leave scope ?
-
-    lb_I_ThreadImplementation* impl = thread->getThreadImplementation();
-    
-    (impl->*(lbThreadFunction) impl->getThreadFunction()) (thread);
-    
-    //DWORD ret = (DWORD)thread->Entry();
-
-    DWORD ret = 0;
-
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\n" LOG_
-#endif
-/*...e*/
-
-    //thread->p_ThreadImpl->SetState(STATE_EXITED);
-/*...sTHREAD_VERBOSE:0:*/
-#ifdef THREAD_VERBOSE
-    _LOG << "lbThreadInternal: Do not call OnExit()" LOG_
-#endif
-/*...e*/
-    //thread->OnExit();
-
-    delete thread;
-
+	DWORD ret = 0;
     return ret;
 }
 /*...e*/
 /*...e*/
 
-#endif
-#ifdef WINDOWS
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbThread)
+ADD_INTERFACE(lb_I_Thread)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
 /*...slbThread:0:*/
 lbThread::lbThread() {
 /*...sTHREAD_VERBOSE:0:*/
@@ -593,6 +456,11 @@ lbThread::~lbThread() {
 		_CL_VERBOSE << "lbThread::~lbThread() called OnExit()" LOG_
 	}
 	if (pThreadImpl != NULL) delete pThreadImpl;
+}
+
+lbErrCodes lbThread::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 lb_I_ThreadImplementation* LB_STDCALL lbThread::getThreadImplementation() {
@@ -668,41 +536,6 @@ lbErrCodes LB_STDCALL lbThread::resume() {
 /*...sint lbThread\58\\58\OnInit\40\\41\:0:*/
 int lbThread::OnInit()
 {
-    // allocate TLS index for storing the pointer to the current thread
-    s_tlsThisThread = ::TlsAlloc();
-    if ( s_tlsThisThread == 0xFFFFFFFF )
-    {
-        // in normal circumstances it will only happen if all other
-        // TLS_MINIMUM_AVAILABLE (>= 64) indices are already taken - in other
-        // words, this should never happen
-        _LOG << "Thread module initialization failed: impossible to allocate index in thread local storage" LOG_
-
-        return 0;
-    }
-    // main thread doesn't have associated wxThread object, so store 0 in the
-    // TLS instead
-    if ( !::TlsSetValue(s_tlsThisThread, (LPVOID)0) )
-    {
-        ::TlsFree(s_tlsThisThread);
-        s_tlsThisThread = 0xFFFFFFFF;
-
-        _LOG << "Thread module initialization failed: can not store value in thread local storage" LOG_
-
-        return 0;
-    }
-
-/*...sbla:0:*/
-#ifdef bla
-    s_critsectWaitingForGui = new wxCriticalSection();
-
-    s_critsectGui = new wxCriticalSection();
-    s_critsectGui->Enter();
-#endif
-/*...e*/
-
-    // no error return for GetCurrentThreadId()
-    s_idMainThread = ::GetCurrentThreadId();
-
     return 1;
 }
 /*...e*/
@@ -710,75 +543,6 @@ int lbThread::OnInit()
 /*...svoid lbThread\58\\58\OnExit\40\\41\:0:*/
 void lbThread::OnExit()
 {
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbThread::OnExit() called" LOG_
-#endif
-    if ( !::TlsFree(s_tlsThisThread) )
-    {
-        _LOG << "lbThreadModule::OnExit: TlsFree failed." LOG_
-    }
-#ifdef THREAD_VERBOSE
-_CL_VERBOSE << "lbThread::OnExit() leave" LOG_
-#endif
-/*...sbla:0:*/
-#ifdef bla
-    if ( s_critsectGui )
-    {
-        s_critsectGui->Leave();
-        delete s_critsectGui;
-        s_critsectGui = NULL;
-    }
-    wxDELETE(s_critsectWaitingForGui);
-#endif
-/*...e*/
 }
 /*...e*/
 /*...e*/
-
-#endif
-
-#ifdef bla
-
-/*...sextern C begin:0:*/
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*...e*/
-
-DWORD 
-#ifdef LINUX
-DLLEXPORT 
-#endif
-#ifdef WINDOWS
-LB_DLLEXPORT
-#endif
-LB_STDCALL lbGetCurrentThreadId() {
-#ifdef WINDOWS
-	return ::GetCurrentThreadId();
-#else
-//#error "Only Windows target is supported"
-#endif
-}
-
-DWORD
-#ifdef LINUX
-DLLEXPORT 
-#endif
-#ifdef WINDOWS
-LB_DLLEXPORT
-#endif
-LB_STDCALL lbGetCurrentProcessId() {
-#ifdef WINDOWS
-	return ::GetCurrentProcessId();
-#else
-//#error "Only Windows target is supported"
-#endif
-}
-
-/*...sextern C end:0:*/
-#ifdef __cplusplus
-}
-#endif
-/*...e*/
-
-#endif

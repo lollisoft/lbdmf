@@ -38,10 +38,14 @@
 #ifndef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
-#include <lbInclude.h>
+#include <lbinclude.h>
 #include <signal.h>
 
+#include <lbInterfaces.h>
+
 #include <socket.h>
+
+
 #include <transfer.h>
 
 
@@ -55,14 +59,11 @@ IMPLEMENT_FUNCTOR(instanceOflb_Transfer_Data, lb_Transfer_Data)
 	
 #ifdef __cplusplus
 }
-#endif            
-
-lbCritSect transferSection;
+#endif
 
 
 void handler(int sig) {
-        COUT << "Oops" << flush << ENDL;
-        
+	_CL_LOG << "Oops" LOG_;
 }
 
 /*...sclass lbTransferModule:0:*/
@@ -70,7 +71,9 @@ class lbTransferModule {
 public:
         lbTransferModule() {
                 signal(SIGINT, handler);
+#ifndef OSX
                 signal(SIGBREAK, handler);
+#endif
                 signal(SIGABRT, handler);
                 signal(SIGSEGV, handler);
                 signal(SIGTERM, handler);
@@ -124,7 +127,7 @@ void lbTransferDataObject::setType() {
 }
 #ifdef USE_CLONE
 lbObject* lbTransferDataObject::clone() const {
-        lbLock lock(transferSection, "transferSection");
+        lbLock lock(*transferSection, "transferSection");
         
         char msg[100] = "";
         lbTransferDataObject* o = new lbTransferDataObject();
@@ -179,8 +182,8 @@ lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Socket, s)
 
         *clientHost = s->gethostname();
-        clientPid = lbTransferGetCurrentProcessId();
-        clientTid = lbTransferGetCurrentThreadId();
+        clientPid = lbGetCurrentProcessId();
+        clientTid = lbGetCurrentThreadId();
 }
 
 /*...e*/
@@ -608,7 +611,8 @@ lbErrCodes LB_STDCALL lb_Transfer_Data::get(unsigned short & us) {
 
 void lb_Transfer_Data::add(const void* buf, int len, LB_PACKET_TYPE type) {
 	lbErrCodes err = ERR_NONE;
-        lbLock lock(transferSection, "transferSection");
+	
+        lbLock lock(*transferSection, "transferSection");
 //#define TRANSFER_VERBOSE      
         char msg[100];
         pLB_TRANSFER_DATA data;

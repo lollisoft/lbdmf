@@ -33,20 +33,25 @@
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
-
-#ifdef MODULE_EXPORT
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef MODULE_EXPORT
+#ifdef LB_SOCKET_DLL
 
 #ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
+#define DLLEXPORT LB_DLLEXPORT
 #endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
+
+#endif
+
+#ifndef LB_SOCKET_DLL
+
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLIMPORT
+#endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
 
 #endif
 /*...e*/
@@ -196,6 +201,8 @@ public:
 	DWORD clientPid;
 	DWORD clientTid;
 	int serverside;
+	
+	lbCritSect* transferSection;
 };
 /*...e*/
 /*...slbTransfer:0:*/

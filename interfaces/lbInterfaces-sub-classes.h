@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.88 $
+ * $Revision: 1.89 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.88 2010/01/15 18:48:48 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.89 2010/02/24 17:07:12 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.89  2010/02/24 17:07:12  lollisoft
+ * Partly reactivated socket and threading classes. But functionality is not ready to use.
+ *
  * Revision 1.88  2010/01/15 18:48:48  lollisoft
  * Interceptor logic works as long as one database form is
  * not closed when another is opened and then the
@@ -1816,11 +1819,7 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_Mutex:0:*/
-class lb_I_Mutex {
-protected:
-        lb_I_Mutex() {}
-        virtual ~lb_I_Mutex() {}
-
+class lb_I_Mutex : public lb_I_Unknown {
 public:
         virtual void createMutex(int name) = 0;
         virtual void deleteMutex(int name) = 0;
@@ -1832,11 +1831,7 @@ public:
 
 class lb_I_Lock;
 /*...sclass lb_I_CriticalSection:0:*/
-class lb_I_CriticalSection {
-protected:
-        lb_I_CriticalSection() {}
-        virtual ~lb_I_CriticalSection() {}
-
+class lb_I_CriticalSection : public lb_I_Unknown {
 protected:
         virtual lbErrCodes enter() = 0;
         virtual lbErrCodes leave() = 0;
@@ -1845,13 +1840,9 @@ protected:
 };
 /*...e*/
 /*...sclass lb_I_Lock:0:*/
-class lb_I_Lock {
-protected:
-        lb_I_Lock(lb_I_CriticalSection*& _cso, char* _name) {}
-        virtual ~lb_I_Lock() {}
-
-        lb_I_Lock() {}
-        lb_I_Lock(const lb_I_Lock&) {}
+class lb_I_Lock : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL with(lb_I_CriticalSection* _cso, char* _name) = 0;
 };
 /*...e*/
 
@@ -1861,7 +1852,7 @@ protected:
 /*...sclass lb_I_Mutex:0:*/
 /*...e*/
 
-class DLLEXPORT lbCritSect {
+class DLLEXPORT lbCritSect : public lb_I_Unknown {
 public:
         lbCritSect();
         virtual ~lbCritSect();

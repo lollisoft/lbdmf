@@ -60,22 +60,27 @@ typedef enum
 class lbMutex : public lb_I_Mutex
 {
 public:
-        lbMutex();
-        virtual ~lbMutex();
-
-        virtual void createMutex(int name);
-        virtual void deleteMutex(int name);
-        virtual void enter();
-        virtual void release();
+	lbMutex();
+	virtual ~lbMutex();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void createMutex(int name);
+	virtual void deleteMutex(int name);
+	virtual void enter();
+	virtual void release();
 private:
-
-        int    MyMutexNumber;
-
+	
+	int    MyMutexNumber;
+	
 #ifdef WINDOWS
-        HANDLE mutex;
+	HANDLE mutex;
 #endif
 #ifdef __WXGTK__
-        int    mutex;
+	int    mutex;
+#endif
+#ifdef OSX
+	int    mutex;
 #endif
 };
 /*...e*/
@@ -88,8 +93,7 @@ public:
 	lbCritSect();
 	virtual ~lbCritSect();
 
-private:
-	//lbCritSect(const lbCritSect&) {}
+	DECLARE_LB_UNKNOWN()
 
 protected:
 	lbErrCodes enter();
@@ -102,14 +106,18 @@ protected:
 
 class lbLock : public lb_I_Lock {
 public:
-	lbLock(lbCritSect& _cso, char* _name);
+	lbLock();
 	virtual ~lbLock();
+
+	DECLARE_LB_UNKNOWN()
+
+	void LB_STDCALL with(lb_I_CriticalSection* _cso, char* _name);
+
 protected:
-	lbLock() {}
 	lbLock(const lbLock&) {}
 
 	char* name;
-	lbCritSect* cso;
+	lb_I_CriticalSection* cso;
 };
 /*...e*/
 
@@ -122,6 +130,8 @@ public:
 	lbThread();
 	virtual ~lbThread();
 
+	DECLARE_LB_UNKNOWN()
+	
 	lb_I_ThreadImplementation* LB_STDCALL getThreadImplementation();	
 	lbErrCodes LB_STDCALL setThreadImplementation(lb_I_ThreadImplementation* impl);
 
@@ -167,6 +177,9 @@ private:
 };
 
 
+DECLARE_FUNCTOR(instanceOflbCritSect)
+DECLARE_FUNCTOR(instanceOflbLock)
+DECLARE_FUNCTOR(instanceOflbThread)
 
 /*...e*/
 

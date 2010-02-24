@@ -185,6 +185,11 @@ private:
 	
 	lbMutex* mutex;
 
+	lbCritSect* socketSection;
+	
+	lbMutex* sendMutex;
+	lbMutex* recvMutex;
+	
 	static int sockUse;
 
 #ifdef WINDOWS
@@ -217,6 +222,7 @@ private:
 #ifdef OSX
 	int serverSocket;
 	int clientSocket;
+	int clBackup;
 	struct sockaddr_in serverSockAddr;
 	struct sockaddr_in clientSockAddr;
 	int status;

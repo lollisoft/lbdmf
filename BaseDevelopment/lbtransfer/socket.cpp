@@ -65,12 +65,17 @@ extern "C" {
 #endif            
 #include <lbinclude.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <netdb.h>
 //#include <curses.h>
 	
-#include <fcntl.h>
+	
 	
 #ifdef __cplusplus
 }      
@@ -84,11 +89,6 @@ extern "C" {
 
 
 IMPLEMENT_FUNCTOR(instanceOflbSocket, lbSocket)
-
-lbCritSect socketSection;
-
-lbMutex sendMutex;
-lbMutex recvMutex;
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbSocket)
 	ADD_INTERFACE(lb_I_Socket)
@@ -104,8 +104,9 @@ lbErrCodes LB_STDCALL lbSocket::setData(lb_I_Unknown* uk) {
 class lbSocketModule {
 public:
 	lbSocketModule() {
-		sendMutex.createMutex(LB_SEND_MUTEX);
-		recvMutex.createMutex(LB_RECV_MUTEX);
+		
+		sendMutex->createMutex(LB_SEND_MUTEX);
+		recvMutex->createMutex(LB_RECV_MUTEX);
 	}
 	virtual ~lbSocketModule() {
 		COUT << "Deinit socket module" << ENDL;
@@ -250,12 +251,13 @@ return 1;
 #endif
 		
 #ifdef OSX
-		numread = fcntl (clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+		numread = ::ioctl (clientSocket, FIONREAD, &pendingBytes);
 #endif
 		
 //		numread = ::recv(clientSocket, buf, MAXBUFLEN, MSG_PEEK);
-		if (numread == SOCKET_ERROR) {
-			LogWSAError("lbSocket::isValid() Failed by server");
+		
+		if (numread == -1) {
+			_LOG << "lbSocket::isValid() Failed by server" LOG_
 			return 0;
 		}
 /*...sSOCKET_VERBOSE:0:*/
@@ -269,10 +271,22 @@ return 1;
 		_LOG << "lbSocket::isValid() called on client" LOG_
 		#endif
 /*...e*/
+#ifdef WINDOWS		
 		numread = ::ioctlsocket(serverSocket, FIONREAD, (u_long FAR*)&pendingBytes);
-//		numread = ::recv(serverSocket, buf, MAXBUFLEN, MSG_PEEK);
-		if (numread == SOCKET_ERROR) {
-			LogWSAError("lbSocket::isValid() Failed by client");
+#endif
+		
+#ifdef LINUX
+#ifndef OSX
+		numread = ::ioctl (serverSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+#endif
+#endif
+		
+#ifdef OSX
+		numread = ::ioctl (serverSocket, FIONREAD, &pendingBytes);
+#endif
+		//		numread = ::recv(serverSocket, buf, MAXBUFLEN, MSG_PEEK);
+		if (numread == -1) {
+			_LOG << "lbSocket::isValid() Failed by client" LOG_
 			return 0;
 		}
 /*...sSOCKET_VERBOSE:0:*/
@@ -443,7 +457,7 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
 
     if (neagleOff(clientSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 
-    if (clientSocket == INVALID_SOCKET) {
+    if (clientSocket == -1) {
     	_LOG << "lbSocket::accept(lbSocket** s): Created clientSocket is invalid" LOG_
     	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;
     }
@@ -457,7 +471,7 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
     
     // Be secure clientSocket of this instance is INVALID_SOCKET
     
-    clientSocket = INVALID_SOCKET;
+    clientSocket = -1;
     
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
@@ -829,7 +843,7 @@ _LOG << "lbSocket::init( unsigned long mysockaddr, u_short port): Initializing a
 lbErrCodes lbSocket::sendInteger(int i) {
 	lbErrCodes err = ERR_NONE;
 	char buf[MAXBUFLEN];
-	itoa(i, buf, 10);
+	sprintf(buf, "%d", i);
 
 	if ((err = send_charbuf(buf, strlen(buf))) == ERR_NONE)
 	{

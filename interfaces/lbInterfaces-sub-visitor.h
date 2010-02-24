@@ -113,6 +113,11 @@ virtual void LB_STDCALL visit(lb_I_Transfer*) = 0;
 virtual void LB_STDCALL visit(lb_I_Transfer_Data*) = 0;
 virtual void LB_STDCALL visit(lb_I_Transfer_DataObject*) = 0;
 virtual void LB_STDCALL visit(lb_I_Thread*) = 0;
+	virtual void LB_STDCALL visit(lb_I_Lock*) = 0;
+	virtual void LB_STDCALL visit(lb_I_Mutex*) = 0;
+	virtual void LB_STDCALL visit(lb_I_CriticalSection*) = 0;
+	
+	
 virtual void LB_STDCALL visit(lb_I_ThreadImplementation*) = 0;
 virtual void LB_STDCALL visit(lb_I_DispatchProtocol*) = 0;
 virtual void LB_STDCALL visit(lb_I_ProtocolTarget*) = 0;

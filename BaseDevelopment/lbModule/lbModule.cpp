@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.125 $
+ * $Revision: 1.126 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.125 2009/12/29 12:33:59 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.126 2010/02/24 17:07:11 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.126  2010/02/24 17:07:11  lollisoft
+ * Partly reactivated socket and threading classes. But functionality is not ready to use.
+ *
  * Revision 1.125  2009/12/29 12:33:59  lollisoft
  * Bugfix for Tracker ID 2921178
  *
@@ -2209,6 +2212,25 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 #define PREFIX ""
 #endif
 
+	if (strcmp(searchArgument, "lb_I_CriticalSection") == 0) {
+	 	functor = PREFIX "instanceOflbCritSect";
+		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Lock") == 0) {
+	 	functor = PREFIX "instanceOflbLock";
+		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Thread") == 0) {
+	 	functor = PREFIX "instanceOflbThread";
+		module = "lbClasses";
+		found = true;
+	}
+	
+	
 	if (strcmp(searchArgument, "lb_I_Container") == 0) {
 	 	functor = PREFIX "instanceOfSkipList";
 		module = "lbClasses";
