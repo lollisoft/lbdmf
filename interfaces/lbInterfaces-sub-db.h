@@ -1149,6 +1149,7 @@ public:
 /*...e*/
 };
 /*...e*/
+/*...sclass lb_I_FixedDatabaseForm:0:*/
 /**
  * \brief An attempt for a fixed database form interface.
  */
@@ -1246,7 +1247,9 @@ public:
 	virtual lbErrCodes LB_STDCALL open() = 0;
 /*...e*/
 };
+/*...e*/
 
+/*...sclass lb_I_DBReportTextblock:0:*/
 class lb_I_DBReportTextblock : public lb_I_Unknown {
 	virtual void LB_STDCALL getPosition(long& x, long& y, long& w, long& h) = 0;
 	virtual void LB_STDCALL setPosition(long x, long y, long w, long h) = 0;
@@ -1255,7 +1258,9 @@ class lb_I_DBReportTextblock : public lb_I_Unknown {
 	virtual bool LB_STDCALL hasMoreLines() = 0;
 	virtual lb_I_String* LB_STDCALL getNextLine() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_DBReportProperties:0:*/
 class lb_I_DBReportProperties : public lb_I_Unknown {
 	/** \brief Add a named parameter.
 	 */
@@ -1285,6 +1290,7 @@ class lb_I_DBReportProperties : public lb_I_Unknown {
 	lb_I_String* getParameterName();
 	lb_I_String* getParameterValue();
 };
+/*...e*/
 
 /*...sclass lb_I_DatabaseReport:0:*/
 /**
