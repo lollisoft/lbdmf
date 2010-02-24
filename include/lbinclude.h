@@ -57,7 +57,7 @@
 //#include <lb_misc.h> // Helpers collected here
 
 //#include <lbObject.h>
-#include <lbKey.h>
+#include <lbkey.h>
 
 
 /**

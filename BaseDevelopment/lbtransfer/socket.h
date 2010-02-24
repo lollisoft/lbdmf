@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Heinrich-Scheufelen-Platz 2
+ 
+			73252 Lenningen (germany)
+ */
 /*...e*/
 /*****************************************************************************
  (C)opyright 1999,      Lothar Behrens
@@ -46,16 +46,22 @@
 #ifdef LB_SOCKET_DLL
 
 #ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
+#define DLLEXPORT LB_DLLEXPORT
 #endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
 
 #endif
 
 #ifndef LB_SOCKET_DLL
 
 #ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
+#define DLLEXPORT LB_DLLIMPORT
 #endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
 
 #endif
 /*...e*/
@@ -76,6 +82,22 @@
 #define NO_FLAGS_SET 0
 #define PORT (u_short) 44965
 #endif //__WXGTK__
+
+#ifdef OSX
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#define MAXBUFLEN 256
+#define NO_FLAGS_SET 0
+#define PORT (u_short) 44965
+
+// Mac is missing the definition
+typedef u_int   SOCKET;
+
+#endif //OSX
+
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -102,11 +124,11 @@ class lb_Transfer_Data;
 class lbSocket : public lb_I_Socket {
 public:
         lbSocket();
-	lbSocket(const lbSocket& s);
+		lbSocket(const lbSocket& s);
         virtual ~lbSocket();
 
 
-	DECLARE_LB_UNKNOWN()
+		DECLARE_LB_UNKNOWN()
         
 	/**
 	 * Is this object valid ?
@@ -182,33 +204,32 @@ private:
 
 #endif //WINDOWS        
 #ifdef __WXGTK__
-  int serverSocket;
-  int clientSocket;
-  struct sockaddr_in serverSockAddr;
-  struct sockaddr_in clientSockAddr;
-  int status;
-  int addrLen; //=sizeof(SOCKADDR_IN);
-  int numrcv;
-  
-  unsigned long destAddr; // for client init
+	int serverSocket;
+	int clientSocket;
+	struct sockaddr_in serverSockAddr;
+	struct sockaddr_in clientSockAddr;
+	int status;
+	int addrLen; //=sizeof(SOCKADDR_IN);
+	int numrcv;
+	
+	unsigned long destAddr; // for client init
 #endif
-  int _isServer;
+#ifdef OSX
+	int serverSocket;
+	int clientSocket;
+	struct sockaddr_in serverSockAddr;
+	struct sockaddr_in clientSockAddr;
+	int status;
+	int addrLen; //=sizeof(SOCKADDR_IN);
+	int numrcv;
+	
+	unsigned long destAddr; // for client init
+#endif
+	int _isServer;
   LB_SOCK_STATE lbSockState;
 };
 
 
-/*...sifdef __cplusplus:0:*/
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*...e*/
-
 DECLARE_FUNCTOR(instanceOflbSocket)
-
-/*...sendif __cplusplus:0:*/
-#ifdef __cplusplus
-}
-#endif
-/*...e*/
 
 #endif // _LB_SOCKET_

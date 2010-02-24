@@ -53,10 +53,10 @@ extern "C" {
 
 //#include <lbInterfaces.h>
 
-#include <lbthread.h>
 #ifndef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
+#include <lbthread.h>
 
 int lbThread::threadCount = 0;
 

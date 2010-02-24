@@ -1787,7 +1787,11 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	m_timer.Stop();
 	// Do timer stuff
 
-	
+	if (dispatcher == NULL) {
+		// Create, but check if application didn't shutdown.
+		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Timer will stop." LOG_
+		return;
+	}
 	
 	
 	// Let OnIdle restart the timer...
@@ -1795,7 +1799,7 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 }
 
 void lb_wxFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
-{
+{	
 	if (!timerrunning) {
 		timerrunning = true;
 		m_timer.Start(500);

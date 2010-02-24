@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-            
-            73252 Lenningen (germany)
+			Heinrich-Scheufelen-Platz 2
+
+			73252 Lenningen (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.32 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.33 2010/02/24 12:14:56 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.33  2010/02/24 12:14:56  lollisoft
+ * Changes on Mac.
+ *
  * Revision 1.32  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.

@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Heinrich-Scheufelen-Platz 2
+ 
+			73252 Lenningen (germany)
+ */
 /*...e*/
 #ifdef LBDMF_PREC
 #include <lbConfigHook.h>
@@ -46,12 +46,10 @@
 #ifndef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
-#include <lbInclude.h>
-
-#include <socket.h>
 
 /*...s\35\ifdef __WXGTK__:0:*/
 #ifdef __WXGTK__
+#include <lbinclude.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -59,18 +57,33 @@
 #include <curses.h>
 #endif // __WXGTK__
 /*...e*/
+
+/*...s\35\ifdef __WXGTK__:0:*/
+#ifdef OSX
+#ifdef __cplusplus
+extern "C" {      
+#endif            
+#include <lbinclude.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <string.h>
+//#include <curses.h>
+	
+#include <fcntl.h>
+	
+#ifdef __cplusplus
+}      
+#endif            
+#endif // OSX
+/*...e*/
+
+#include <lbInterfaces.h>
+#include <socket.h>
 /*...e*/
 
 
-#ifdef __cplusplus
-extern "C" {       
-#endif            
-
 IMPLEMENT_FUNCTOR(instanceOflbSocket, lbSocket)
-
-#ifdef __cplusplus
-}
-#endif            
 
 lbCritSect socketSection;
 
@@ -121,6 +134,7 @@ public:
 /*...e*/
 
 /*...sLogWSAError\40\char\42\ msg\41\:0:*/
+#ifdef WINDOWS
 int LogWSAError(char* msg) {
 	lbLock lock(socketSection, "Socket");
 	char buf[100] = "";
@@ -143,6 +157,7 @@ int LogWSAError(char* msg) {
 	
 	return lastError;
 }
+#endif
 /*...e*/
 
 lbErrCodes mapWSAErrcode(int lastError, int isServer) {
@@ -159,7 +174,9 @@ LOGENABLE("lbSocket::lbSocket()");
 #endif
 /*...e*/
 
+#ifdef WINDOWS
 	startupflag = 0;
+#endif
 	sockUse++;
 }
 
@@ -171,7 +188,10 @@ lbSocket::lbSocket(const lbSocket& s) {
 	_LOG << "lbSocket::lbSocket(const lbSocket& s) called" LOG_
 #endif
 /*...e*/
+#ifdef WINDOWS	
 	/*WSADATA*/ 	Data = s.Data;
+	/*int*/		startupflag = s.startupflag;
+#endif
 	/*SOCKADDR_IN*/ serverSockAddr = s.serverSockAddr;
 	/*SOCKADDR_IN*/ clientSockAddr = s.clientSockAddr;
 	/*SOCKET*/ 	serverSocket = s.serverSocket;
@@ -182,7 +202,6 @@ lbSocket::lbSocket(const lbSocket& s) {
 	/*unsigned long*/ 
 			destAddr = s.destAddr; // for client init
 
-	/*int*/		startupflag = s.startupflag;
 }
 /*...e*/
 
@@ -192,13 +211,14 @@ lbSocket::~lbSocket() {
 	
 	if (lbSockState == LB_SOCK_CONNECTED) close();
 	sockUse--;
-	
+#ifdef WINDOWS	
 	if (sockUse == 0) {
 		if (WSACleanup() == SOCKET_ERROR) {
 			_LOG << "Winsock library could not be unloaded - how ever?" LOG_
 			COUT << "Winsock library could not be unloaded - how ever?" << ENDL;
 		}
 	}
+#endif
 }
 
 /*...slbSocket\58\\58\isValid\40\\41\:0:*/
@@ -219,7 +239,19 @@ return 1;
 /*...e*/
 		// Let the server blocking
 		//pendingBytes++;
+#ifdef WINDOWS		
 		numread = ::ioctlsocket(clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+#endif
+		
+#ifdef LINUX
+#ifndef OSX
+		numread = ::ioctl (clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+#endif
+#endif
+		
+#ifdef OSX
+		numread = fcntl (clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+#endif
 		
 //		numread = ::recv(clientSocket, buf, MAXBUFLEN, MSG_PEEK);
 		if (numread == SOCKET_ERROR) {
