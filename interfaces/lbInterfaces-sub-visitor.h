@@ -1,9 +1,4 @@
-/** \brief Visitor base for all my interfaces.
- *
- * Implement a new class for a new operation such as save/load to/from file.
- *
- */
-/*...sLicence:0:*/
+/*...sLicense:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -31,7 +26,14 @@
             
             73252 Lenningen (germany)
 */
+/*...e*/
 
+/*...sclass lb_I_Aspect:0:*/
+/** \brief Visitor base for all my interfaces.
+ *
+ * Implement a new class for a new operation such as save/load to/from file.
+ *
+ */
 class lb_I_Aspect :
 public lb_I_Unknown
 { // abstract interface for visitors 
@@ -143,7 +145,9 @@ virtual void LB_STDCALL visit(lb_I_DispatchInterceptor*) = 0;
 
 //virtual ~Aspect(){} 
 };   
+/*...e*/
 
+/*...sclass lb_I_FileOperation:0:*/
 /** \brief Base for any file operation.
  *
  * To be capable to operate on files, You need to open that file and close it.
@@ -152,76 +156,79 @@ class lb_I_FileOperation :
 public lb_I_Aspect
 {
 protected:
-	lb_I_FileOperation() {}
-	virtual ~lb_I_FileOperation() {}
-	
+        lb_I_FileOperation() {}
+        virtual ~lb_I_FileOperation() {}
+        
 public:
-	/** \brief Start the operation.
-	 *
-	 * Starts a file operation by means of implementation. See lbInputStreanOpr or
-	 * lbOutputStreamOpr. They internally use lbInputStream and lbOutputStream.
-	 *
-	 * If a file operation is not started by calling begin. It can not be used, or
-	 * it should do nothing. 
-	 *
-	 * \param file	Provide a filename to internally create a file based stream.
-	 */
-	virtual bool LB_STDCALL begin(char* file) = 0;
-	
-	/** \brief Start the operation.
-	 *
-	 * Starts a file operation by means of implementation. See lbInputStreanOpr or
-	 * lbOutputStreamOpr. They internally use lbInputStream and lbOutputStream.
-	 *
-	 * If a file operation is not started by calling begin. It can not be used, or
-	 * it should do nothing. 
-	 *
-	 * \param stream	Provide an exsisting stream. To be used for cascaded operations.
-	 */
-	virtual bool LB_STDCALL begin(lb_I_Stream* stream) = 0;
-	
-	/** \brief End the operation.
-	 *
-	 * This closes the file and disables the operation.
-	 */
-	virtual void LB_STDCALL end() = 0;
-	
-	/** \brief Get access to stream.
-	 *
-	 * This allows storage handling for private data.
-	 */
-	virtual lb_I_Stream* LB_STDCALL getStream() = 0;
+        /** \brief Start the operation.
+         *
+         * Starts a file operation by means of implementation. See lbInputStreanOpr or
+         * lbOutputStreamOpr. They internally use lbInputStream and lbOutputStream.
+         *
+         * If a file operation is not started by calling begin. It can not be used, or
+         * it should do nothing. 
+         *
+         * \param file  Provide a filename to internally create a file based stream.
+         */
+        virtual bool LB_STDCALL begin(char* file) = 0;
+        
+        /** \brief Start the operation.
+         *
+         * Starts a file operation by means of implementation. See lbInputStreanOpr or
+         * lbOutputStreamOpr. They internally use lbInputStream and lbOutputStream.
+         *
+         * If a file operation is not started by calling begin. It can not be used, or
+         * it should do nothing. 
+         *
+         * \param stream        Provide an exsisting stream. To be used for cascaded operations.
+         */
+        virtual bool LB_STDCALL begin(lb_I_Stream* stream) = 0;
+        
+        /** \brief End the operation.
+         *
+         * This closes the file and disables the operation.
+         */
+        virtual void LB_STDCALL end() = 0;
+        
+        /** \brief Get access to stream.
+         *
+         * This allows storage handling for private data.
+         */
+        virtual lb_I_Stream* LB_STDCALL getStream() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_DatabaseOperation:0:*/
 class lb_I_DatabaseOperation :
 public lb_I_Aspect
 {
 protected:
-	lb_I_DatabaseOperation() {}
-	virtual ~lb_I_DatabaseOperation() {}
-	
+        lb_I_DatabaseOperation() {}
+        virtual ~lb_I_DatabaseOperation() {}
+        
 public:
-	/** \brief Start the operation.
-	 *
-	 * Start the database operation with the given parameters.
-	 */
-	virtual bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass) = 0;
-	
-	/** \brief Start the operation.
-	 *
-	 * Start the database operation with the given database instance.
-	 */
-	virtual bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db) = 0;
-	
-	/** \brief End the operation.
-	 *
-	 * This closes the file and disables the operation.
-	 */
-	virtual void LB_STDCALL end() = 0;
-	
-	/** \brief Get access to stream.
-	 *
-	 * This allows storage handling for private data.
-	 */
-	//virtual lb_I_Stream* LB_STDCALL getStream() = 0;
+        /** \brief Start the operation.
+         *
+         * Start the database operation with the given parameters.
+         */
+        virtual bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass) = 0;
+        
+        /** \brief Start the operation.
+         *
+         * Start the database operation with the given database instance.
+         */
+        virtual bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db) = 0;
+        
+        /** \brief End the operation.
+         *
+         * This closes the file and disables the operation.
+         */
+        virtual void LB_STDCALL end() = 0;
+        
+        /** \brief Get access to stream.
+         *
+         * This allows storage handling for private data.
+         */
+        //virtual lb_I_Stream* LB_STDCALL getStream() = 0;
 };
+/*...e*/
