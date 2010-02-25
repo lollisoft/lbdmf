@@ -86,6 +86,8 @@ rem set CVSBIN=%DEVROOT%\Tools\cvs
 set WATBIN=%DEVLW%\%BASE%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
 set DEVBIN=%DEVLW%\%BASE%\bin
 
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin
+
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
@@ -94,6 +96,8 @@ set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DL
 set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
 set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU
 set Path=%path%;G:\FPC\2.0.4\bin\i386-win32
+
+set Path=%Path%;%MINGWBIN%
 
 rem Enable my Power++ IDE
 set Path=%Path%;"E:\Program Files\Powersoft\Power21\System"
