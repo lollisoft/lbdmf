@@ -1789,8 +1789,8 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 
 	if (dispatcher == NULL) {
 		// Create, but check if application didn't shutdown.
-		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Timer will stop." LOG_
-		return;
+		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Initialize it now." LOG_
+		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	}
 	
 	
