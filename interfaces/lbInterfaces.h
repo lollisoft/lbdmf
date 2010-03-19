@@ -788,7 +788,7 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 typedef lbErrCodes (LB_STDCALL lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk);
 #endif
 #ifdef TVISION
-typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbEvHandler)(lb_I_Unknown* uk);
+typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk);
 #endif
 
 	typedef void (LB_STDCALL lb_I_TestFixture::*TestMethod)();
