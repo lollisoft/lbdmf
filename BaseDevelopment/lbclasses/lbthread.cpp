@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -337,15 +337,12 @@ _CL_VERBOSE << "lbLock::~lbLock(...) leaved" LOG_
 }
 /*...e*/
 
+#ifdef WINDOWS
 /*...slbThreadInternal:0:*/
 
 // TLS index of the slot where we store the pointer to the current thread
 static DWORD s_tlsThisThread = 0xFFFFFFFF;
 static DWORD s_idMainThread = 0;
-
-#ifdef OSX
-#define HANDLE int
-#endif
 
 /*...sclass lbThreadInternal:0:*/
 class lbThreadInternal {
@@ -417,6 +414,7 @@ DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
 }
 /*...e*/
 /*...e*/
+#endif //WINDOWS
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbThread)
 ADD_INTERFACE(lb_I_Thread)
