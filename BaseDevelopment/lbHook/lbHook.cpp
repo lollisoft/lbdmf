@@ -73,6 +73,7 @@
 #include <lbhook-module.h>
 /*...e*/
 
+/*...smore includes:0:*/
 #ifndef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
@@ -87,6 +88,13 @@
 extern "C" {
 #include <objc/malloc.h>
 }
+#endif
+/*...e*/
+
+#if !defined(LB_STDCALL)
+#ifdef WINDOWS
+#error LB_STDCALL is not defined !
+#endif
 #endif
 
 /*...sDefines:0:*/
@@ -151,13 +159,53 @@ typedef struct Module {
 /*...e*/
 
 _Modules* loadedModules = NULL;
-static bool _isSetTRMemTrackBreak = false;
+static bool b_isSetTRMemTrackBreak = false;
 static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 char* translated = NULL;
 /*...e*/
 
 
-DLLEXPORT void createLogInstance() {
+#ifdef __MINGW32__
+extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose() { return isVerbose(); }
+extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) { return lbLoadModule(name, hinst, skipAutoUnload); }
+extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance() { return getModuleInstance(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track) { set_trackObject(track); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject() { return get_trackObject(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg) { track_Object( o, msg); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what) { setVerbose(what); }
+extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak() { lbBreak(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level) { logMessage(msg, f, level); }
+extern "C" DLLEXPORT void 		LB_STDCALL _createDirectory(const char* name) { createDirectory(name); }
+extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getModuleHandle() { return getModuleHandle(); }
+extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getLBModuleHandle() { return getLBModuleHandle(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setModuleHandle(HINSTANCE h) { setModuleHandle(h); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setLBModuleHandle(HINSTANCE h) { setLBModuleHandle(h); }
+extern "C" DLLEXPORT int 		LB_STDCALL _isInitializing() { return isInitializing(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setInitializing(int i) { setInitializing(i); }
+extern "C" DLLEXPORT lb_I_Log* 		LB_STDCALL _getLoggerInstance() {return getLoggerInstance(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setLoggerInstance(lb_I_Log* l) { setLoggerInstance(l); }
+extern "C" DLLEXPORT void 		LB_STDCALL _createLogInstance() { return createLogInstance(); }
+extern "C" DLLEXPORT bool 		LB_STDCALL _isSetTRMemTrackBreak() { return isSetTRMemTrackBreak(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setTRMemTrackBreak(char* brk, int count) { setTRMemTrackBreak(brk, count); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _getTRMemTrackBreak() { return getTRMemTrackBreak(); }
+extern "C" DLLEXPORT void 		LB_STDCALL _InstanceCount(int inst) { InstanceCount(inst); }
+extern "C" DLLEXPORT void 		LB_STDCALL _Instances() { Instances(); }
+extern "C" DLLEXPORT lbErrCodes		LB_STDCALL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) { return lbGetFunctionPtr(name, hinst, pfn); }
+extern "C" DLLEXPORT lbStringKey*	LB_STDCALL _getStringKey(char* buf) { return getStringKey(buf); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _getLogDirectory() { return getLogDirectory(); }
+extern "C" DLLEXPORT bool 		LB_STDCALL _FileExists(char *filename) { return FileExists(filename);}
+extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentProcessId() { return lbGetCurrentProcessId(); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ptoa(void* ptr) { return lb_ptoa(ptr); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr) { return lb_itoa(ptr); }
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr) { return lb_ltoa(ptr); }
+extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId() { return lbGetCurrentThreadId(); }
+#endif
+
+extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf) { return new lbStringKey(buf); }
+
+
+/*...sDLLEXPORT void createLogInstance\40\\41\:0:*/
+extern "C" DLLEXPORT void LB_STDCALL createLogInstance() {
 			if (getLoggerInstance() == NULL) {
 				setInitializing(1);
 				lb_I_Module* modMan = getModuleInstance();
@@ -186,7 +234,7 @@ DLLEXPORT void createLogInstance() {
 			}
 			setInitializing(0);
 }
-
+/*...e*/
 
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, char *f, int level) {
@@ -229,8 +277,8 @@ void logMessage(const char *msg) {
 	logMessage(msg, lbLogFile, 0);
 }
 /*...e*/
-/*...sDLLEXPORT char\42\ getLogDirectory\40\\41\:0:*/
-DLLEXPORT char* getLogDirectory() {
+/*...sDLLEXPORT char\42\ LB_STDCALL getLogDirectory\40\\41\:0:*/
+DLLEXPORT char* LB_STDCALL getLogDirectory() {
 	if (lbLogDirectory == NULL) {
 		char* home =
 		#if defined(WINDOWS)
@@ -259,6 +307,7 @@ DLLEXPORT char* getLogDirectory() {
 }
 /*...e*/
 
+/*...sDLLEXPORT void LB_STDCALL createDirectory\40\const char\42\ name\41\:0:*/
 DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
 		#ifdef __WATCOMC__
 		mkdir(name);
@@ -267,6 +316,7 @@ DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
         mkdir(name, S_IRWXU);
 		#endif
 }
+/*...e*/
 
 /*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
 DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
@@ -284,7 +334,7 @@ DLLEXPORT void LB_STDCALL setVerbose(bool what) {
 }
 /*...e*/
 /*...sDLLEXPORT bool LB_STDCALL isVerbose\40\\41\:0:*/
-DLLEXPORT bool LB_STDCALL isVerbose() {
+extern "C" DLLEXPORT bool LB_STDCALL isVerbose() {
 	return lbVerbose;
 }
 /*...e*/
@@ -309,19 +359,19 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l) {
 
 char* trackObject = NULL;
 
-DLLEXPORT char* LB_STDCALL itoa(int ptr) {
+DLLEXPORT char* LB_STDCALL lb_itoa(int ptr) {
         static char buf[20] = "";
         sprintf(buf, "%d", ptr);
         return buf;
 }
 
-DLLEXPORT char* LB_STDCALL ltoa(const long ptr) {
+DLLEXPORT char* LB_STDCALL lb_ltoa(const long ptr) {
         static char buf[20] = "";
         sprintf(buf, "%ld", ptr);
         return buf;
 }
 
-DLLEXPORT char* LB_STDCALL ptoa(void* ptr) {
+DLLEXPORT char* LB_STDCALL lb_ptoa(void* ptr) {
         static char buf[20] = "";
 	sprintf(buf, "%p", ptr);
         return buf;
@@ -365,12 +415,6 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 	LB_Module_Handle = h;
 }
 /*...e*/
-
-#if !defined(LB_STDCALL)
-#ifdef WINDOWS
-#error LB_STDCALL is not defined !
-#endif
-#endif
 
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
@@ -421,6 +465,7 @@ _Modules *findModule(const char* name) {
 }
 /*...e*/
 
+/*...svoid destroyModuleStructure\40\_Modules\42\ m\41\:0:*/
 void destroyModuleStructure(_Modules* m) {
 	if (m->next) {
 		destroyModuleStructure(m->next);
@@ -428,7 +473,9 @@ void destroyModuleStructure(_Modules* m) {
 	free(m->name);
 	delete m;
 }
+/*...e*/
 
+/*...sDLLEXPORT void LB_STDCALL lbBreak\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL lbBreak() {
 
 #ifdef LINUX
@@ -444,7 +491,9 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 #endif
 
 }
+/*...e*/
 
+/*...sDLLEXPORT bool LB_STDCALL lbPtrValidate\40\void\42\ ptr\41\:0:*/
 DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr) {
 	if (ptr != NULL) {
 		return true;
@@ -452,7 +501,9 @@ DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr) {
 		return false;
 	}
 }
+/*...e*/
 
+/*...sbool LB_STDCALL OSXMemValidate\40\void\42\ ptr\41\:0:*/
 #ifdef OSX
 bool LB_STDCALL OSXMemValidate(void* ptr) {
 #ifdef DEBUG_MALLOC
@@ -467,7 +518,9 @@ bool LB_STDCALL OSXMemValidate(void* ptr) {
 #endif
 }
 #endif
+/*...e*/
 
+/*...sDLLEXPORT bool LB_STDCALL FileExists\40\char \42\filename\41\:0:*/
 #ifdef WINDOWS
 DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 {
@@ -491,6 +544,7 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 	return stat(filename, &sb) != -1;
 }
 #endif
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
@@ -852,7 +906,7 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 	char breakPoint[100] = "";
 	int count = 0;
 
-	if (!_isSetTRMemTrackBreak) {
+	if (!b_isSetTRMemTrackBreak) {
 		COUT << "Please enter any memory address to be break at: ";
 		CIN >> breakPoint ;
 
@@ -862,14 +916,14 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 		setTRMemTrackBreak(breakPoint, count);
 	}
 #endif
-	return _isSetTRMemTrackBreak;
+	return b_isSetTRMemTrackBreak;
 }
 /*...e*/
 /*...sDLLEXPORT void LB_STDCALL setTRMemTrackBreak\40\char\42\ brk\44\ int count\41\:0:*/
 DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
 #ifdef WINDOWS
 	if ((brk != NULL) && (strlen(brk) != 0)) {
-		_isSetTRMemTrackBreak = true;
+		b_isSetTRMemTrackBreak = true;
 		strncpy(TRMemTrackBreakAddr, brk, 20);
 
 		// Call TRMemSetAdrBreakPoint for lbHook it self.
@@ -877,7 +931,7 @@ DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
 		TRMemSetAdrBreakPoint(TRMemTrackBreakAddr, count);
 		TRMemSetModuleName(__FILE__);
 	} else {
-		_isSetTRMemTrackBreak = false;
+		b_isSetTRMemTrackBreak = false;
 		// Using any string other than a pointer string let all strcmp fail.
 		strncpy(TRMemTrackBreakAddr, "unset", 20);
 		TRMemSetAdrBreakPoint("unset", count);
@@ -1252,13 +1306,7 @@ int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
 
 char* LB_STDCALL lbKey::charrep() const {
     char buf[100];
-#ifdef WINDOWS
-    itoa(key, buf, 10);
-#endif
-#ifdef LINUX
     sprintf(buf, "%d", key);
-#endif
-    _CL_VERBOSE << "lbKey::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
 /*...e*/
@@ -1323,13 +1371,7 @@ int LB_STDCALL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
 
 char* LB_STDCALL lbKey_::charrep() const {
     char buf[100];
-#ifdef WINDOWS
-    itoa(key, buf, 10);
-#endif
-#ifdef LINUX
     sprintf(buf, "%d", key);
-#endif
-    _CL_VERBOSE << "lbKey_::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
 /*...e*/
@@ -1507,3 +1549,4 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 }
 /*...e*/
 #endif
+

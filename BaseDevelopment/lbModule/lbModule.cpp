@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.126 $
+ * $Revision: 1.127 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.126 2010/02/24 17:07:11 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.127 2010/03/20 22:48:09 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.127  2010/03/20 22:48:09  lollisoft
+ * Added support for mingw mixed mode (with Open Watcom).
+ * This is tested with the Basetypes sample application that uses
+ * lbHook.dll (mingw), lbModule.dll (OW) and lbclasses.dll (OW).
+ *
  * Revision 1.126  2010/02/24 17:07:11  lollisoft
  * Partly reactivated socket and threading classes. But functionality is not ready to use.
  *
@@ -1230,7 +1235,7 @@ void LB_STDCALL lbInstance::addReference(char* classname, char* file, int line) 
 	
 	sprintf(buf, "%s_%s_%d", classname, file, line);
 	
-	lbStringKey* key = new lbStringKey(buf);
+	lbStringKey* key = getStringKey(buf);
 
 	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -1262,7 +1267,7 @@ void LB_STDCALL lbInstance::delReference(char* classname, char* file, int line) 
 	
 	sprintf(buf, "%s_%s_%d", classname, file, line);
 	
-	lbStringKey* key = new lbStringKey(buf);
+	lbStringKey* key = getStringKey(buf);
 
 	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -1557,7 +1562,7 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 /*...e*/
 	
 /*...sprepare key:16:*/
-		lbStringKey *key = new lbStringKey(addr);
+		lbStringKey *key = getStringKey(addr);
 
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);
@@ -1572,7 +1577,7 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 /*...scheck inserted element:16:*/
 		{
 		lbErrCodes err = ERR_NONE;
-		lbStringKey *key = new lbStringKey(addr);
+		lbStringKey *key = getStringKey(addr);
 		
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);
@@ -1644,7 +1649,7 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 	
 	if (strcmp(classname, "lbModule") == 0) return;
 	if (loadedContainer == 1) {
-		lbStringKey *key = new lbStringKey(addr);
+		lbStringKey *key = getStringKey(addr);
 		
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);
@@ -1714,7 +1719,7 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 
 	if (strcmp(classname, "lbStringKey") == 0) return;
         if (loadedContainer == 1) {
-                lbStringKey *key = new lbStringKey(addr);
+                lbStringKey *key = getStringKey(addr);
 
                 if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
                 key->setModuleManager(manager, __FILE__, __LINE__);
@@ -1818,7 +1823,7 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 
 	if (loadedContainer == 1) {
 /*...sprepare key:16:*/
-		lbStringKey *key = new lbStringKey(addr);
+		lbStringKey *key = getStringKey(addr);
 
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);

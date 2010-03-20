@@ -37,10 +37,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.25 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.26 2010/03/20 22:47:41 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.26  2010/03/20 22:47:41  lollisoft
+ * Added support for mingw mixed mode (with Open Watcom).
+ * This is tested with the Basetypes sample application that uses
+ * lbHook.dll (mingw), lbModule.dll (OW) and lbclasses.dll (OW).
+ *
  * Revision 1.25  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -236,12 +241,7 @@ char* lbKey_::charrep() const {
 	static char buf[100];
 	buf[0] = 0;
 
-#ifndef UNIX
-	itoa(key, buf, 10);
-#endif
-#ifdef UNIX
 	sprintf(buf, "%d", key);
-#endif
     
 	return buf;
 }
@@ -301,12 +301,7 @@ char* lbKeyUL::charrep() const {
 	static char buf[100];
 	buf[0] = 0;
 
-#ifndef UNIX
-	itoa(key, buf, 10);
-#endif
-#ifdef UNIX
 	sprintf(buf, "%d", key);
-#endif
     
 	return buf;
 }

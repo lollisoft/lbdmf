@@ -1418,12 +1418,7 @@ void lbInteger::setData(int p) {
 	if (key == NULL) {
 		key = (char*) malloc(20);
 	}
-#ifndef UNIX
-	itoa(p, key, 10);
-#endif
-#ifdef UNIX
 	sprintf(key, "%d", p);
-#endif
 
 	integerdata = p;
 }
@@ -1631,12 +1626,7 @@ void lbLong::setData(long p) {
 		key = (char*) malloc(30);
 	}
 
-#ifndef UNIX
-	itoa(longdata, key, 10);
-#endif
-#ifdef UNIX
 	sprintf(key, "%d", longdata);
-#endif
 }
 
 long lbLong::getData() const {
@@ -1683,82 +1673,3 @@ char* LB_STDCALL lbLong::charrep() const {
 }
 /*...e*/
 /*...e*/
-#ifdef bla
-/*...slbStringList:0:*/
-lbStringList::lbStringList() {
-	ref = STARTREF;
-	list = NULL;
-	count = 0;
-}
-
-lbStringList::~lbStringList() {
-	list->deleteAll();
-	RELEASE(list);
-}
-
-void lbStringList::setType() {
-	OTyp = LB_STRINGLIST;
-}
-
-lb_I_Unknown* lbStringList::clone() const {
-	lbStringList* cloned = new lbStringList();
-
-	lb_I_Unknown* uk_stringlist = list->clone();
-
-	uk_stringlist->queryInterface("lb_I_Container", (void**) &cloned->list);
-	cloned->count = count;
-
-	lb_I_Unknown* uk_cloned = NULL;
-
-	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		_CL_VERBOSE << "Error: query interface failed" LOG_
-	}
-
-	return uk_cloned;
-}
-
-void lbStringList::insert(lb_I_String* s) {
-	count++;
-	/**
-	 * It should be passed a lb_I_Unknown pointer. Internally the needed interface should be
-	 * queried.
-	 */
-
-	list->insert(s, &lbKey(count));
-}
-
-int lbStringList::remove(const lb_I_String* s) {
-	if (exists(s)) {
-		list->remove(&lbKey(count));
-		count--;
-		return 1;
-	} else return 0;
-}
-
-int lbStringList::exists(const lb_I_String* s) {
-	int result = 0;
-	while (hasMoreElements()) {
-		if (strcmp(s->getData(), ((lbString*) nextElement())->getData()) == 0) result = 1;
-	}
-	return result;
-}
-
-int lbStringList::hasMoreElements() {
-	return list->hasMoreElements();
-}
-
-lb_I_String* lbStringList::nextElement() {
-	lb_I_Unknown* uk_object = NULL;
-	lb_I_String* s = NULL;
-
-	uk_object = list->nextElement();
-
-	if (uk_object->queryInterface("lb_I_String", (void**) &s) != ERR_NONE) {
-		_CL_VERBOSE << "Error: query interface failed" LOG_
-	}
-
-	return s;
-}
-
-/*...e*/
-#endif

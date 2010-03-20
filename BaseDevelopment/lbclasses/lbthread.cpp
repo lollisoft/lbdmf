@@ -191,7 +191,7 @@ void lbMutex::createMutex(int name)
 
         char number[10];
         char _name[80] = "lbMutex";
-        itoa(name, number, 10);
+        sprintf(number, "%d", name);
         strcat(_name, number);
         
         mutex = ::CreateMutex(0, FALSE, _name);
