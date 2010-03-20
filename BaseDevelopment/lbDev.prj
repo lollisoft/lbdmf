@@ -64,6 +64,14 @@
 /*...e*/
 
 /*...slbDMF project:0:*/
+/*...stestmingw:0:*/
+/*...v\46\\46\\47\Test\47\Console\47\testmingw\47\minimaltest\47\makefile:0:*/
+
+/*...v\46\\46\\47\Test\47\Console\47\testmingw\47\minimaltest\47\testdll\46\h:0:*/
+/*...v\46\\46\\47\Test\47\Console\47\testmingw\47\minimaltest\47\testdll\46\cpp:0:*/
+/*...v\46\\46\\47\Test\47\Console\47\testmingw\47\minimaltest\47\test\46\cpp:0:*/
+/*...e*/
+
 /*...svendor stuff:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\cpp:0:*/
@@ -335,6 +343,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginInputStream\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginDBInputStream\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginXMLOutputStream\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginJSONOutputStream\46\cpp:0:*/
 /*...e*/
 
 /*...slbDMF datamodel plugin:0:*/
@@ -389,6 +398,7 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...v\46\\46\\47\ServerPlugins\47\makefile:0:*/
 
+/*...v\46\\46\\47\ClientPlugins\47\makefile:0:*/
 /*...e*/
 /*...sTest:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\wxwrapper\46\lnk:0:*/
