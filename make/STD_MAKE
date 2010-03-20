@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.136 $
+# * $Revision: 1.137 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.136 2010/02/04 21:10:51 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.137 2010/03/20 22:38:41 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.137  2010/03/20 22:38:41  lollisoft
+# * Added new mingw compiler.support.
+# *
 # * Revision 1.136  2010/02/04 21:10:51  lollisoft
 # * Added support for Mac OSX 10.2.0.
 # *
@@ -619,6 +622,8 @@ ifeq ($(DEBUG_MEMORY), yes)
   endif	
 endif
 
+MINGWLIBS = -L$(DEVROOT_MAKE)/projects/dll
+
 ifeq ($(DEBUG_MEMORY), no)
 BASE_LIBS =
 endif
@@ -721,6 +726,44 @@ CPP =wpp386
 RM =del
 LEX=flex
 YACC=bison
+
+# Compiler settings for mingw
+
+DEVROOT_MINGW=q:/develop
+
+STD_INCL_MINGW =-I. -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)mingw$(WATCOM_SLASH_CC)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)interfaces \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
+			
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
+  STD_INCL_MINGW += -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_MINGW += -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
+endif			
+
+STD_INCL_MINGW_CPP =-I. -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)mingw$(WATCOM_SLASH)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)interfaces \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
+  STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
+endif  
+
+
+CCMINGW=gcc
+CPPMINGW=g++
+
+C_MINGW_DLLOPS=-DWINDOWS
+CPP_MINGW_DLLOPS=-DWINDOWS
 
 # Microsoft
 OUTDIR=.
