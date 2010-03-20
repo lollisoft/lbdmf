@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.213 $
+# * $Revision: 1.214 $
 # * $Name:  $
-# * $Id: Makefile,v 1.213 2010/02/04 21:10:51 lollisoft Exp $
+# * $Id: Makefile,v 1.214 2010/03/20 22:33:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.214  2010/03/20 22:33:38  lollisoft
+# * Added support for mingw mixed mode (with Open Watcom).
+# * This is tested with the Basetypes sample application that uses
+# * lbHook.dll (mingw), lbModule.dll (OW) and lbclasses.dll (OW).
+# *
 # * Revision 1.213  2010/02/04 21:10:51  lollisoft
 # * Added support for Mac OSX 10.2.0.
 # *
@@ -1225,10 +1230,14 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
+TARGETDLLMINGW=dll_target_mingw
 TARGETXSLTDLL=xsltdll
 TARGETFRAMEWORK=dll
 TARGETSHARED=dll
 TARGETWXSHARED=dll
+TARGETFRAMEWORKMINGW=dll_target_mingw
+TARGETSHAREDMINGW=dll_target_mingw
+TARGETWXSHAREDMINGW=dll_target_mingw
 TARGETEXE=exe
 TARGETWXEXE=exe
 TARGETPLUGIN=plugin
@@ -1924,7 +1933,11 @@ else
 ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+ifeq ($(OSTYPE), Windows_NT)
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORKMINGW) -f $(MAKE_CONFIG_FILE)
+else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+endif
 endif
 endif
 endif
