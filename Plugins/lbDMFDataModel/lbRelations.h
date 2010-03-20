@@ -28,6 +28,7 @@
 */
 /*...e*/
 
+/*...sclass lbUserApplicationRelationModel:0:*/
 class lbUserApplicationRelationModel : public lb_I_User_Applications {
 public:
 	lbUserApplicationRelationModel();
@@ -64,7 +65,9 @@ public:
 
 	UAP(lb_I_Long, marked)
 };
+/*...e*/
 
+/*...sclass lbApplicationFormularsRelationModel:0:*/
 class lbApplicationFormularsRelationModel : public lb_I_Applications_Formulars {
 public:
 	lbApplicationFormularsRelationModel();
@@ -102,6 +105,7 @@ public:
 
 	UAP(lb_I_Long, marked)
 };
+/*...e*/
 
 
 DECLARE_FUNCTOR(instanceOflbApplicationFormularsRelationModel)

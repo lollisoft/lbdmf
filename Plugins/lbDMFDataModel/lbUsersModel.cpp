@@ -28,6 +28,7 @@
 */
 /*...e*/
 
+/*...sIncludes:0:*/
 #ifdef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
@@ -39,6 +40,7 @@
 #endif
 #ifdef UNIX
 #endif
+/*...e*/
 
 #ifndef LBDMF_PREC
 #include <lbConfigHook.h>
@@ -51,6 +53,7 @@
 
 #include <lbUsersModel.h>
 
+/*...sclass lbUsersModel implementation:0:*/
 IMPLEMENT_FUNCTOR(instanceOflbUsersModel, lbUsersModel)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbUsersModel)
@@ -247,6 +250,7 @@ long  LB_STDCALL lbUsersModel::getUserID() {
 char* LB_STDCALL lbUsersModel::getUserPassword() {
 	return currentUserPassword->charrep();
 }
+/*...e*/
 
 /*...sclass lbPluginUsersModel implementation:0:*/
 /*...slbPluginUsersModel:0:*/
