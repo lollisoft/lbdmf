@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.107 $
+ * $Revision: 1.108 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.107 2009/11/22 16:38:36 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.108 2010/03/20 22:58:07 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.108  2010/03/20 22:58:07  lollisoft
+ * Added support for mingw mixed mode (with Open Watcom).
+ * This is tested with the Basetypes sample application that uses
+ * lbHook.dll (mingw), lbModule.dll (OW) and lbclasses.dll (OW).
+ *
  * Revision 1.107  2009/11/22 16:38:36  lollisoft
  * Compile Mac OS X on Snow Leopard only for i386. Add ppc on demand to the OSX_ARCH flag in make/STD_MAKE. Probgrid seems to not correctly initialize a variable that causes a division with zero (hack).
  *
@@ -453,6 +458,14 @@
 #define DLL_TARGET_CROSS 201
 #define LIB_TARGET_CROSS 202
 
+
+// Using mingw as a compiler
+#define EXE_TARGET_MINGW      400
+#define DLL_TARGET_MINGW      401
+#define LIB_TARGET_MINGW      402
+#define PLUGIN_TARGET_MINGW   403
+#define WXPLUGIN_TARGET_MINGW 404
+
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -672,8 +685,8 @@ void TIncludeParser::AddInclude(char *IncName)
                 strcpy(realfile, IncName);
                 fclose(f);
         } else {
-			//fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName);
-		}
+                        //fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName);
+                }
   }
 /*...e*/
 
@@ -755,28 +768,28 @@ void TIncludeParser::ParseCLine(char *s)
     }
     p1=strchr(t,'<');
     if (p1)
-	  {
-		  p1++;
-		  p2=strchr(p1,'>');
-		  if (p2)
-		  {
-			  *p2=0;
-			  /*...sVERBOSE:0:*/
+          {
+                  p1++;
+                  p2=strchr(p1,'>');
+                  if (p2)
+                  {
+                          *p2=0;
+                          /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-			  fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
+                          fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
 #endif
-			  /*...e*/
-			  /// \todo Find a better way to skip wrong include detections.
-			  if (strcmp(p1, "") != 0) {
-				  AddInclude(p1);
-			  }
-			  /*...sVERBOSE:0:*/
+                          /*...e*/
+                          /// \todo Find a better way to skip wrong include detections.
+                          if (strcmp(p1, "") != 0) {
+                                  AddInclude(p1);
+                          }
+                          /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-			  printf("Added\n");
+                          printf("Added\n");
 #endif
-			  /*...e*/
-		  }
-	  }
+                          /*...e*/
+                  }
+          }
   }
 }
 /*...e*/
@@ -868,7 +881,7 @@ bool TIncludeParser::Parse(char *FileName, bool CPP)
     //fprintf(stderr,"TIncludeParser::Parser() WARNING: %s could not be opened\n",FileName);
     return false;
   } else {
-	  return true;
+          return true;
   }
 }
 /*...e*/
@@ -1083,6 +1096,7 @@ void writeExeTarget(char* modulename) {
 #endif
 }
 /*...e*/
+/*...svoid writeLexTarget\40\char\42\ modulename\41\:0:*/
 void writeLexTarget(char* modulename) {
 #ifdef UNIX
   //printf("\n%s.yy.c: $(OBJS)\n", modulename);
@@ -1099,6 +1113,8 @@ void writeLexTarget(char* modulename) {
   printf("\n", modulename);
 #endif
 }
+/*...e*/
+/*...svoid writeYaccTarget\40\char\42\ modulename\41\:0:*/
 void writeYaccTarget(char* modulename) {
 #ifdef UNIX
   //printf("\n%s.output: $(OBJS)\n", modulename);
@@ -1115,6 +1131,147 @@ void writeYaccTarget(char* modulename) {
   printf("\n", modulename);
 #endif
 }
+/*...e*/
+
+/*...swriteMinGWDllTarget\40\char\42\ modulename\41\:0:*/
+void writeMinGWDllTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(MINGWCC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(OBJLIST)\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@%s.lnk\n", targetname);
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+
+  printf("\n%s.dll: $(OBJS) %s.dll.lnk\n", ModName, ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+
+  printf("\t\t@cmd /C if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $@.lnk\n");
+  
+  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
+
+/*
+  printf("\t\t\n");
+
+  printf("%s.dll.lnk: makefile\n", ModName);
+
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo FIL { $(OBJS) } >> $@\n");
+
+  printf("\t\t@cmd /C \"doit >> %s.lnk\"\n", targetname);
+  printf("\t\t@cmd /C \"rm doit.bat\"\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+*/
+
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+// Hack for copy not found ??  
+  printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
+  printf("endif\n");
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\t\t$(INSTALL_PROGRAM) %s $(libdir)\n", modulename);
+
+  printf("install-strip:\n");
+  printf("\t\t$(STRIP) $(PROGRAM)\n");
+  printf("\t\t$(INSTALL_PROGRAM) %s $(libdir)\n", modulename);
+#endif
+
+}
+/*...e*/
+/*...swriteMinGWPluginTarget\40\char\42\ modulename\41\:0:*/
+void writeMinGWPluginTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+//  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("FILE += $(OBJLIST)\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@$(LNK)\n");
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) >> $(LNK)\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+
+  printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+  printf("\t\trm doit.bat\n");
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+// Hack for copy not found ??  
+  printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("endif\n");
+#endif
+}
+/*...e*/
+
+
 /*...swriteDllTarget\40\char\42\ modulename\41\:0:*/
 void writeDllTarget(char* modulename) {
 #ifdef UNIX
@@ -1293,6 +1450,7 @@ void writeLibTarget(char* modulename, TDepList* l) {
 #endif
 }
 /*...e*/
+/*...svoid write_lex_clean\40\char\42\ modulename \61\ NULL\41\:0:*/
 /// \todo Implement cleanup routine
 void write_lex_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
@@ -1310,7 +1468,8 @@ void write_lex_clean(char* modulename = NULL) {
     printf("distclean:\n");
 #endif //UNIX
 }
-
+/*...e*/
+/*...svoid write_yacc_clean\40\char\42\ modulename \61\ NULL\41\:0:*/
 /// \todo Implement cleanup routine
 void write_yacc_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
@@ -1328,6 +1487,7 @@ void write_yacc_clean(char* modulename = NULL) {
     printf("distclean:\n");
 #endif //UNIX
 }
+/*...e*/
 
 /*...swrite_clean\40\char\42\ modulename \61\ NULL\41\:0:*/
 void write_clean(char* modulename = NULL) {
@@ -1560,6 +1720,7 @@ void write_wx_shared_Target(char* modulename) {
 #endif
 }
 /*...e*/
+/*...svoid write_wx_framework_Target\40\char\42\ modulename\41\:0:*/
 void write_wx_framework_Target(char* modulename) {
 #ifdef UNIX
   printf("PROGRAM=%s\n", modulename);
@@ -1644,7 +1805,9 @@ void write_wx_framework_Target(char* modulename) {
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
 #endif
 }
+/*...e*/
 
+/*...svoid write_framework_Target\40\char\42\ modulename\41\:0:*/
 void write_framework_Target(char* modulename) {
 #ifdef UNIX
   printf("PROGRAM=%s\n", modulename);
@@ -1729,6 +1892,7 @@ void write_framework_Target(char* modulename) {
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
 #endif
 }
+/*...e*/
 
 /*...swrite_soPlugin_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_soPlugin_Target(char* modulename) {
@@ -1814,7 +1978,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.107 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.108 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1951,6 +2115,7 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
 int depCount = 0;
 
+/*...svoid replace\40\char\42\ to\44\ char\42\ match\44\ char\42\ replace\41\:0:*/
 void replace(char* to, char* match, char* replace) {
         char rep[800] = "";
         char repl[800] = "";
@@ -1972,6 +2137,7 @@ void replace(char* to, char* match, char* replace) {
         
         strcpy(to, repl);
 }
+/*...e*/
 
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
@@ -2035,7 +2201,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 sprintf(Line, "lex.yy.c: %s",Name);
         } else if (targettype == IDL_TARGET) {
                 sprintf(Line, "%s.hh: %s",ObjName,Name);
-	  } else {
+          } else {
                 sprintf(Line, "%s.output: %s",ObjName,Name);
         }
   } else {
@@ -2055,15 +2221,15 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   
   switch (targettype) {
         case IDL_TARGET:
-		    printf("\t\t@(dir=omniORB4; $(CreateDir))\n", Compiler, Name);
-	          printf("\t\t$(OMNIORB_IDL) -v -ComniORB4 $<\n", Compiler, Name);
-                                break;
-                case LEX_TARGET:
+                printf("\t\t@(dir=omniORB4; $(CreateDir))\n", Compiler, Name);
+                printf("\t\t$(OMNIORB_IDL) -v -ComniORB4 $<\n", Compiler, Name);
+                break;
+        case LEX_TARGET:
                 printf("\t\t@%s -i %s\n\n", Compiler, Name);
-                                break;
-                case YACC_TARGET:
+                break;
+        case YACC_TARGET:
                 printf("\t\t@%s -d -v %s\n\n", Compiler, Name);
-                                break;
+                break;
         case LIB_TARGET:
                 printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
@@ -2076,58 +2242,79 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 
                 if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
                 if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
-/*
-                if (depCount == 0) {
-                        printf("\t\t@echo NAME %s > %s.lnk\n", targetname, targetname);
-                }
-                printf("\t\t@echo FIL %s >> %s.lnk\n", ObjName, targetname);
-                depCount++;
-*/
                 break;
-        case EXE_TARGET:
-                                len = strlen(ObjName);
+        case EXE_TARGET_MINGW:
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-/*                              len = strlen(ObjNameC);
+
+                printf("\t\t@echo Build %s\n", NameC);
+                if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
+                break;
+        case DLL_TARGET_MINGW:
+        case PLUGIN_TARGET_MINGW:
+        case WXPLUGIN_TARGET_MINGW:
+
+                if (strcmp(SExt, ".C") == 0) {
+                      CPPFlag = 0;
+                      strcpy(Compiler, "$(CCMINGW)");
+                }
+  
+                if (strcmp(SExt, ".CPP") == 0) {
+                      CPPFlag = 1;
+                      strcpy(Compiler, "$(CPPMINGW)");
+                }
+  
+                if (strcmp(SExt, ".CC") == 0) {
+                      CPPFlag = 1;
+                      strcpy(Compiler, "$(CPPMINGW)");
+                }
+
+        
+                printf("\t\t@echo Build %s\n", NameC);
+                
+                if (CPPFlag == 0) printf("\t\t%s -c $(C_MINGW_DLLOPS) $(STD_INCL_MINGW) -o%s %s\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s  -c $(CPP_MINGW_DLLOPS) $(STD_INCL_MINGW_CPP) -o%s %s\n", Compiler, ObjName, Name);
+                break;
+        case EXE_TARGET:
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
-                    if (ObjNameC[i] == '.') {
-                        ObjNameC[i] = 0;
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
                         break;
                     }
                 }
-*/
 
-                                printf("\t\t@echo Build %s\n", NameC);
-                                if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
-                                if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
-//                if (CPPFlag == 0) printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
-//                if (CPPFlag == 1) printf("\t\t@%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, Name, ObjName);
+                printf("\t\t@echo Build %s\n", NameC);
+                if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
                 break;
         case ELF_TARGET:
         case ELF_BUNDLE_TARGET:
-                                len = strlen(ObjName);
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-                                printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 break;
         case SO_BUNDLE_TARGET:
-                                len = strlen(ObjName);
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-                                printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 break;
         case SO_TARGET:
@@ -2140,40 +2327,40 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
-                                printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         case WXSO_TARGET:
         case WXSHARED_TARGET:
-    case WXSOPLUGIN_TARGET:
+        case WXSOPLUGIN_TARGET:
                 {
-                                len = strlen(ObjName);
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-                                printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
     case FRAMEWORK_TARGET:
     case WXFRAMEWORK_TARGET:
                 {
-                                len = strlen(ObjName);
+                len = strlen(ObjName);
                 for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-                                printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
-        default:
+    default:
                 break;
   }
 }
@@ -2247,6 +2434,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
         case DLL_TARGET:
         case DLL_TARGET_CROSS:
                 writeDllTarget(ModuleName);
+                write_clean();
+                break;
+        case DLL_TARGET_MINGW:
+                writeMinGWDllTarget(ModuleName);
+                write_clean();
+                break;
+        case PLUGIN_TARGET_MINGW:
+                writeMinGWPluginTarget(ModuleName);
                 write_clean();
                 break;
         case TVISION_DLL:
@@ -2495,7 +2690,28 @@ int main(int argc, char *argv[])
         target_ext = strdup(".dll");
   }
 
-  
+// The new support for mingw compiler
+
+  if (strcmp(target, "EXE_TARGET_MINGW") == 0) {
+        targettype = EXE_TARGET_MINGW;
+        target_ext = strdup(".exe");
+  }
+
+  if (strcmp(target, "DLL_TARGET_MINGW") == 0) {
+        targettype = DLL_TARGET_MINGW;
+        target_ext = strdup(".dll");
+  }
+
+  if (strcmp(target, "PLUGIN_TARGET_MINGW") == 0) {
+        targettype = PLUGIN_TARGET_MINGW;
+        target_ext = strdup(".dll");
+  }
+
+  if (strcmp(target, "WXPLUGIN_TARGET_MINGW") == 0) {
+        targettype = WXPLUGIN_TARGET_MINGW;
+        target_ext = strdup(".dll");
+  }
+
 
 
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
@@ -2547,6 +2763,10 @@ int main(int argc, char *argv[])
 
 
   switch (targettype) {
+    case EXE_TARGET_MINGW:
+    case DLL_TARGET_MINGW:
+    case PLUGIN_TARGET_MINGW:
+    case WXPLUGIN_TARGET_MINGW:
     case DLL_TARGET:
     case DLL_TARGET_CROSS:
     case LIB_TARGET:

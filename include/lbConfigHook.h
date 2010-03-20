@@ -68,6 +68,11 @@
 #endif
 //#endif
 
+#if defined(__MINGW32__)
+#include <string.h>
+#endif
+
+
 #include <stdio.h>
 #ifdef WINDOWS
 
@@ -106,6 +111,11 @@
 #include <malloc.h>
 #endif
 #endif
+
+
+#define itoa lb_itoa
+#define ltoa lb_ltoa
+#define ptoa lb_ptoa
 
 #include <lbInterfaces.h>
 
@@ -198,33 +208,33 @@
 
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
-			if (getLoggerInstance() == NULL) { \
-				setInitializing(1); \
-				lb_I_Module* modMan = getModuleInstance(); \
-				\
-				if (modMan != NULL) { \
-					lb_I_Unknown *Unknown = NULL; \
-					modMan->initialize(); \
-					lbErrCodes err = modMan->request("lb_I_Log", &Unknown); \
-					\
-					if (Unknown != NULL) { \
-						lb_I_Log* log; \
-						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
-						setLoggerInstance(log); \
-						Unknown->release(__FILE__, __LINE__); \
-						if (log == NULL) { \
-							exit (1); \
-						} else { \
-						} \
-					} else { \
-						exit(1); \
-					} \
-					modMan->release(__FILE__, __LINE__); \
-				} else { \
-					exit(1); \
-				} \
-			} \
-			setInitializing(0);
+                        if (getLoggerInstance() == NULL) { \
+                                setInitializing(1); \
+                                lb_I_Module* modMan = getModuleInstance(); \
+                                \
+                                if (modMan != NULL) { \
+                                        lb_I_Unknown *Unknown = NULL; \
+                                        modMan->initialize(); \
+                                        lbErrCodes err = modMan->request("lb_I_Log", &Unknown); \
+                                        \
+                                        if (Unknown != NULL) { \
+                                                lb_I_Log* log; \
+                                                Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
+                                                setLoggerInstance(log); \
+                                                Unknown->release(__FILE__, __LINE__); \
+                                                if (log == NULL) { \
+                                                        exit (1); \
+                                                } else { \
+                                                } \
+                                        } else { \
+                                                exit(1); \
+                                        } \
+                                        modMan->release(__FILE__, __LINE__); \
+                                } else { \
+                                        exit(1); \
+                                } \
+                        } \
+                        setInitializing(0);
 /*...e*/
 
 /*...s_LOG:0:*/
@@ -232,32 +242,32 @@
 #ifdef LOG_IMPROVED
 
 #define _LOG \
-	if (isInitializing() != 0) { \
-	} else { \
-		time_t Zeitstempel; \
-			tm *nun; \
-			Zeitstempel = time(0); \
-			nun = localtime(&Zeitstempel); \
-	                createLogInstance(); \
+        if (isInitializing() != 0) { \
+        } else { \
+                time_t Zeitstempel; \
+                        tm *nun; \
+                        Zeitstempel = time(0); \
+                        nun = localtime(&Zeitstempel); \
+                        createLogInstance(); \
                         char tmstring[100] = ""; \
                         sprintf(tmstring, "%4d.%2d.2%d - %2d:%2d:%2d", \
                         nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
-			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+                        *(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 #endif
-                                             		
+                                                        
 
-#ifndef LOG_IMPROVED										                                                                		
+#ifndef LOG_IMPROVED                                                                                                                                                            
 #define _LOG \
-	if (isInitializing() != 0) { \
-	} else { \
-		time_t Zeitstempel; \
-		tm *nun; \
-		Zeitstempel = time(0); \
-		nun = localtime(&Zeitstempel); \
-		LOG_INSTANCE \
-		*(getLoggerInstance()) << nun->tm_year+1900 << '.' << nun->tm_mon+1 << '.' << nun->tm_mday \
-		<< " - " << nun->tm_hour << ':' << nun->tm_min << ':' << nun->tm_sec << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+        if (isInitializing() != 0) { \
+        } else { \
+                time_t Zeitstempel; \
+                tm *nun; \
+                Zeitstempel = time(0); \
+                nun = localtime(&Zeitstempel); \
+                LOG_INSTANCE \
+                *(getLoggerInstance()) << nun->tm_year+1900 << '.' << nun->tm_mon+1 << '.' << nun->tm_mday \
+                << " - " << nun->tm_hour << ':' << nun->tm_min << ':' << nun->tm_sec << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 
 #endif
@@ -284,59 +294,59 @@
 
 
 /*...sLOG\40\msg\41\:0:*/
-#define LOG(msg)	\
-			if (isInitializing() != 0) { \
-				COUT << "Tried to log while initializing the logger." << \
-				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->log(msg, __LINE__, __FILE__); \
-			}
+#define LOG(msg)        \
+                        if (isInitializing() != 0) { \
+                                COUT << "Tried to log while initializing the logger." << \
+                                "Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->log(msg, __LINE__, __FILE__); \
+                        }
 /*...e*/
 /*...sLOGENABLE:0:*/
 #define LOGENABLE       \
-			if (isInitializing() != 0) { \
-				COUT << "Tried to log while initializing the logger." << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->enable(); \
-			}
+                        if (isInitializing() != 0) { \
+                                COUT << "Tried to log while initializing the logger." << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->enable(); \
+                        }
 /*...e*/
 /*...sLOGDISABLE:0:*/
 #define LOGDISABLE      \
-			if (isInitializing() != 0) { \
-				COUT << "Tried to log while initializing the logger." << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->disable(); \
-			}
+                        if (isInitializing() != 0) { \
+                                COUT << "Tried to log while initializing the logger." << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->disable(); \
+                        }
 /*...e*/
 /*...sLOGSTART:0:*/
 #define LOGSTART        \
-			if (isInitializing != 0) { \
-				COUT << "Tried to log while initializing the logger." << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->event_begin(); \
-			}
+                        if (isInitializing != 0) { \
+                                COUT << "Tried to log while initializing the logger." << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->event_begin(); \
+                        }
 /*...e*/
 /*...sLOGEND:0:*/
 #define LOGEND          \
-			if (isInitializing() != 0) { \
-				COUT << "Tried to log while initializing the logger." << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->event_end(); \
-			}
+                        if (isInitializing() != 0) { \
+                                COUT << "Tried to log while initializing the logger." << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->event_end(); \
+                        }
 /*...e*/
 /*...sLOGPREFIX:0:*/
 #define LOGPREFIX(a)    \
-			if (isInitializing() != 0) { \
-				COUT << "Tried to log while initializing the logger." << ENDL; \
-			} else { \
-				LOG_INSTANCE \
-				getLoggerInstance()->setPrefix(a); \
-			}
+                        if (isInitializing() != 0) { \
+                                COUT << "Tried to log while initializing the logger." << ENDL; \
+                        } else { \
+                                LOG_INSTANCE \
+                                getLoggerInstance()->setPrefix(a); \
+                        }
 /*...e*/
 /*...e*/
 
@@ -349,28 +359,75 @@
 #define HINSTANCE void*
 #endif
 
+
+// MINGW wrapper functions
+
+class lbStringKey;
+
+#ifdef __MINGW32__
+extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose();
+extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
+extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance();
+extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track);
+extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject();
+extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what);
+extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak();
+extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT char* 		LB_STDCALL _getLogDirectory();
+extern "C" DLLEXPORT void 		LB_STDCALL _createDirectory(const char* name);
+extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getModuleHandle();
+extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getLBModuleHandle();
+extern "C" DLLEXPORT void 		LB_STDCALL _setModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void 		LB_STDCALL _setLBModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT int 		LB_STDCALL _isInitializing();
+extern "C" DLLEXPORT void 		LB_STDCALL _setInitializing(int i);
+extern "C" DLLEXPORT lb_I_Log* 		LB_STDCALL _getLoggerInstance();
+extern "C" DLLEXPORT void 		LB_STDCALL _setLoggerInstance(lb_I_Log* l);
+extern "C" DLLEXPORT void 		LB_STDCALL _createLogInstance();
+extern "C" DLLEXPORT bool 		LB_STDCALL _isSetTRMemTrackBreak();
+extern "C" DLLEXPORT void 		LB_STDCALL _setTRMemTrackBreak(char* brk, int count);
+extern "C" DLLEXPORT char* 		LB_STDCALL _getTRMemTrackBreak();
+extern "C" DLLEXPORT void 		LB_STDCALL _InstanceCount(int inst);
+extern "C" DLLEXPORT void 		LB_STDCALL _Instances();
+extern "C" DLLEXPORT lbErrCodes		LB_STDCALL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+extern "C" DLLEXPORT lbStringKey*	LB_STDCALL _getStringKey(char* buf);
+extern "C" DLLEXPORT bool 		LB_STDCALL _FileExists(char *filename);
+extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentProcessId();
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ptoa(void* ptr);
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr);
+extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr);
+extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId();
+#endif
+
+extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf);
+
+
+
+
+
 // Object tracking
-DLLEXPORT void LB_STDCALL set_trackObject(char* track);
-DLLEXPORT char* LB_STDCALL get_trackObject();
-DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void LB_STDCALL set_trackObject(char* track);
+extern "C" DLLEXPORT char* LB_STDCALL get_trackObject();
+extern "C" DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
 
 /*...sMEMTRACKER:0:*/
 
 /** \brief Checks wether if a memory track breakpoint is set.
  */
-DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
+extern "C" DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
 
 /** \brief Set the break address.
  *
  * This sets the memory breakpoint address and flags isSetTRMemTrackBreak() to true.
  */
-DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count);
+extern "C" DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count);
 
 /** \brief Get the break address.
  *
  * This is used in all DLL modules to get the same address, if it is set.
  */
-DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
+extern "C" DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 
 #ifndef TRACKER
 #define TRMemTrackOpen isSetTRMemTrackBreak
@@ -379,13 +436,13 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 /*...e*/
 
 /** \brief Activate or deactivate verbose messages. */
-DLLEXPORT void LB_STDCALL setVerbose(bool what);
-DLLEXPORT bool LB_STDCALL isVerbose();
-DLLEXPORT void LB_STDCALL lbBreak();
+extern "C" DLLEXPORT void LB_STDCALL setVerbose(bool what);
+extern "C" DLLEXPORT bool LB_STDCALL isVerbose();
+extern "C" DLLEXPORT void LB_STDCALL lbBreak();
 #define LOGFILE "lbDMF.log"
 
 /** \brief Log a message to the given file. */
-DLLEXPORT void logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT void LB_STDCALL logMessage(const char *msg, char *f, int level = 0);
 
 /** \brief Get the log directory.
  * Returns the log directory.
@@ -393,47 +450,48 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level = 0);
  * The directory is user based and so, located in the home directory of the user.
  * Value is based on $(HOME)/log.
  */
-DLLEXPORT char* getLogDirectory();
+extern "C" DLLEXPORT char* LB_STDCALL getLogDirectory();
 
-DLLEXPORT void LB_STDCALL createDirectory(const char* name);
+extern "C" DLLEXPORT void LB_STDCALL createDirectory(const char* name);
 
-DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
-DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
+extern "C" DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
+extern "C" DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
 
-DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
-DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
 
 
-DLLEXPORT int LB_STDCALL isInitializing();
-DLLEXPORT void LB_STDCALL setInitializing(int i);
-DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
-DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
-DLLEXPORT void createLogInstance();
+extern "C" DLLEXPORT int LB_STDCALL isInitializing();
+extern "C" DLLEXPORT void LB_STDCALL setInitializing(int i);
+extern "C" DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
+extern "C" DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
+extern "C" DLLEXPORT void LB_STDCALL createLogInstance();
 
 
 #ifdef OSX
 bool LB_STDCALL OSXMemValidate(void* ptr);
 #endif
 
-DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr);
+extern "C" DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr);
 
-DLLEXPORT char* LB_STDCALL translateText(char* text);
-DLLEXPORT void LB_STDCALL uninitLocale();
+extern "C" DLLEXPORT char* LB_STDCALL translateText(char* text);
+extern "C" DLLEXPORT void LB_STDCALL uninitLocale();
 
 
-DLLEXPORT bool LB_STDCALL FileExists(char *filename);
+extern "C" DLLEXPORT bool LB_STDCALL FileExists(char *filename);
 
-DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
+extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
 /*...sDLLEXPORT lbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/
 /**
  * \fn Platform independend module loader. This function is used to load a DLL or so module.
  * \param name The name of the module to be load.
  * \param hinst The instance handle of the module would be stored here.
  */
-DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
+extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
+
 /*...e*/
 /*...sDLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
 
@@ -443,30 +501,30 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
  */
 
 /*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
+extern "C" DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
 /*...e*/
 /*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
+extern "C" DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-DLLEXPORT void LB_STDCALL unHookAll();
+extern "C" DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
-DLLEXPORT void LB_STDCALL lb_sleep(int ms);
+extern "C" DLLEXPORT void LB_STDCALL lb_sleep(int ms);
 
 
-DLLEXPORT char* LB_STDCALL ptoa(void* ptr);
-DLLEXPORT char* LB_STDCALL itoa(int ptr);
-DLLEXPORT char* LB_STDCALL itoa(const long ptr);
+extern "C" DLLEXPORT char* LB_STDCALL lb_ptoa(void* ptr);
+extern "C" DLLEXPORT char* LB_STDCALL lb_itoa(int ptr);
+extern "C" DLLEXPORT char* LB_STDCALL lb_ltoa(const long ptr);
 
-DLLEXPORT DWORD LB_STDCALL lbGetCurrentThreadId();
-DLLEXPORT DWORD LB_STDCALL lbGetCurrentProcessId();
+extern "C" DLLEXPORT DWORD LB_STDCALL lbGetCurrentThreadId();
+extern "C" DLLEXPORT DWORD LB_STDCALL lbGetCurrentProcessId();
 
-DLLEXPORT void LB_STDCALL InstanceCount(int inst);
-DLLEXPORT void LB_STDCALL Instances();
+extern "C" DLLEXPORT void LB_STDCALL InstanceCount(int inst);
+extern "C" DLLEXPORT void LB_STDCALL Instances();
 
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
-class DLLEXPORT
+extern "C" class DLLEXPORT
 lbStringKey : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
@@ -488,29 +546,29 @@ private:
 };
 /*...e*/
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
-class DLLEXPORT lbKey_ : public lb_I_KeyBase {
+extern "C" class DLLEXPORT lbKey_ : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-	lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
+        lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
 #endif
 
-	lbKey_();
-	lbKey_(int _key);
-	lbKey_(const lb_I_KeyBase* k);
-	virtual ~lbKey_();
+        lbKey_();
+        lbKey_(int _key);
+        lbKey_(const lb_I_KeyBase* k);
+        virtual ~lbKey_();
 
-	DECLARE_LB_UNKNOWN()
+        DECLARE_LB_UNKNOWN()
 
-	DECLARE_LB_KEYBASE()
-	
+        DECLARE_LB_KEYBASE()
+        
 private:
 
-	char keyType[10];
-	int key;
+        char keyType[10];
+        int key;
 };
 /*...e*/
 
-DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);
+extern "C" DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);
 
 #ifdef LINUX
 #ifndef INCLUDED_BY_LBDMF 

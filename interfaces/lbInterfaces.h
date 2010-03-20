@@ -652,8 +652,10 @@ PRIMARY KEY (id),
 #ifndef __WATCOMC__
 #ifndef _MSC_VER
 #ifndef TVISION
+#ifndef __MINGW32__
 	typedef unsigned short byte;
 	typedef unsigned short u_short;
+#endif
 #endif
 #endif
 #endif
