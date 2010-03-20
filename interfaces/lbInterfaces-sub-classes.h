@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.89 $
+ * $Revision: 1.90 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.89 2010/02/24 17:07:12 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.90 2010/03/20 22:56:30 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.90  2010/03/20 22:56:30  lollisoft
+ * Corrected folding.
+ *
  * Revision 1.89  2010/02/24 17:07:12  lollisoft
  * Partly reactivated socket and threading classes. But functionality is not ready to use.
  *
@@ -348,12 +351,14 @@
  *
  **************************************************************/
 /*...e*/
+/*...sDocumentation for file:0:*/
 /**
  *  \file lbInterfaces-sub-classes.h
  *  \brief Some basic interfaces.
  *
  *  This file contains interfaces like lb_I_String, lb_I_Parameter and so on.
  */
+/*...e*/
 
 #ifndef __LB_INTERFACES_SUB_CLASSES__
 #define __LB_INTERFACES_SUB_CLASSES__
@@ -419,6 +424,7 @@ public: \
     virtual char* LB_STDCALL charrep() const;
 /*...e*/
 
+/*...sSome comments:0:*/
 /*
         Must have a type information of the key, because a string could not be compared
         with an integer (directly). For a key, it is simply one type of interface, that
@@ -432,6 +438,7 @@ public: \
         I tent to use a type check in the lb_I_KeyBase interface. So it is not neccesary
         to implement a typecheck for each equals/greater function.
 */
+/*...e*/
 /*...sclass lb_I_Object:0:*/
 /*...sdefinition of object types may cange:0:*/
     enum ObjectTyp { LB_OBJECT, 
@@ -545,6 +552,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_BinaryData:0:*/
 class lb_I_BinaryData : public lb_I_Unknown {
 public:
 	/** \brief Append data chunk.
@@ -564,6 +572,7 @@ public:
 	 */
 	virtual long LB_STDCALL getSize() const = 0;
 };
+/*...e*/
 
 // Keyable interfaces
 /*...sclass lb_I_String:0:*/
@@ -1787,6 +1796,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_ApplicationServerThread:0:*/
 class lb_I_ApplicationServerThread :
 	public lb_I_ThreadImplementation,
 	public lb_I_ProtocolManager,
@@ -1795,12 +1805,15 @@ public:
 	virtual bool LB_STDCALL isConnected(lb_I_Transfer_Data* request) = 0;
 	virtual lbErrCodes LB_STDCALL init(lb_I_Transfer* _clt, lb_I_ApplicationServer* _server) = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_ProtocolThread:0:*/
 class lb_I_ProtocolThread :
 	public lb_I_ThreadImplementation {
 public:
 	virtual lbErrCodes LB_STDCALL init(lb_I_Transfer* _clt, lb_I_ApplicationServerThread* _parentthread) = 0;
 };
+/*...e*/
 
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
