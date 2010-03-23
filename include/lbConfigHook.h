@@ -524,7 +524,7 @@ extern "C" DLLEXPORT void LB_STDCALL InstanceCount(int inst);
 extern "C" DLLEXPORT void LB_STDCALL Instances();
 
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
-extern "C" class DLLEXPORT
+class DLLEXPORT
 lbStringKey : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
@@ -546,7 +546,7 @@ private:
 };
 /*...e*/
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
-extern "C" class DLLEXPORT lbKey_ : public lb_I_KeyBase {
+class DLLEXPORT lbKey_ : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
         lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
