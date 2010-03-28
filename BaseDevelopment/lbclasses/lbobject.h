@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbobject.h,v 1.48 2010/01/12 19:45:41 lollisoft Exp $
+ * $Id: lbobject.h,v 1.49 2010/03/28 19:23:51 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.49  2010/03/28 19:23:51  lollisoft
+ * Fixed some bug due to new unit tests showed them up.
+ *
  * Revision 1.48  2010/01/12 19:45:41  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *
@@ -403,6 +406,7 @@ public:
 public:	
 
 	char* LB_STDCALL stristr(const char *String, const char *Pattern);
+	char* LB_STDCALL strristr(const char *String, const char *Pattern);
 
 	void LB_STDCALL trim();
 	void LB_STDCALL toLower();
@@ -423,6 +427,8 @@ public:
 	lb_I_String* LB_STDCALL left(int until);
 	lb_I_String* LB_STDCALL right(int from);
 	int LB_STDCALL strpos(const char* with);
+	int LB_STDCALL rstrpos(const char* with);
+
 	lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params);
 	lb_I_Container* LB_STDCALL split(const char split_char);
 	

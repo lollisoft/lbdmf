@@ -142,7 +142,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "Using plugin database backend for translation..." LOG_
+			_LOG << "Using plugin (" << dbbackend << ") database backend for translation..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
@@ -768,6 +768,13 @@ lbString::lbString() {
 	stringdata = NULL;
 	buffersize = stringsize = 0L;
 	allocationsize = 1; // Memory management may be do more.
+
+	buffersize = 25; // An initial size (to be optimized per platform
+	stringdata = (char*) malloc(buffersize);
+	stringdata[0] = 0;
+	strcpy(stringdata, "");
+	stringsize = buffersize;
+    allocationsize = 1;
 }
 
 lbString::~lbString() {
@@ -870,6 +877,14 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 
 int LB_STDCALL lbString::strpos(const char* with) {
 	char* st = stristr(charrep(), with);
+	if (st != NULL) {
+		return st - stringdata;
+	}
+	return -1;
+}
+
+int LB_STDCALL lbString::rstrpos(const char* with) {
+	char* st = strristr(charrep(), with);
 	if (st != NULL) {
 		return st - stringdata;
 	}
@@ -1058,8 +1073,11 @@ void LB_STDCALL lbString::setData(char const * p) {
 	stringdata = NULL;
 	stringsize = buffersize = 0L;
 
-	if (p == NULL) return;
-
+	if (p == NULL) {
+		setData("");
+		return;
+	}
+	
 	buffersize = strlen(p)+1;
 	stringdata = (char*) malloc(buffersize);
 	stringdata[0] = 0;
@@ -1148,13 +1166,54 @@ char* LB_STDCALL lbString::stristr(const char *String, const char *Pattern)
       return NULL;
 }
 
+char* LB_STDCALL lbString::strristr(const char *String, const char *Pattern)
+{
+	char *pptr, *sptr, *start;
+	int len = 0;
+	
+	if (String == NULL) return NULL;
+	
+	len = strlen(String);
+	
+	for (start = (char *)String+len; *start != NUL; start--)
+	{
+		/* find start of pattern in string */
+		for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start--)
+			;
+		if (NUL == *start)
+			return NULL;
+		
+		pptr = (char *)Pattern;
+		sptr = (char *)start;
+		
+		while (toupper(*sptr) == toupper(*pptr))
+		{
+			sptr--;
+			pptr--;
+			
+			/* if end of pattern then pattern was found */
+			
+			if (NUL == *pptr)
+				return (start);
+		}
+	}
+	return NULL;
+}
+
+
 void LB_STDCALL lbString::trim() {
-	while (stringdata[strlen(stringdata)-1] == ' ')
-		stringdata[strlen(stringdata)-1] = 0;
+	size_t pos; 
+	if (stringdata == NULL) return;
+
+	for (pos=strlen(stringdata); pos--;    ) { 
+		if (isspace( stringdata[pos] )) stringdata[pos] = '\0' ; 
+		else break; 
+    } 
 }
 
 void LB_STDCALL lbString::toLower() {
-	for (int i = 0; i < strlen(stringdata); i++) {
+	size_t pos = strlen(stringdata);
+	for (int i = 0; i < pos; i++) {
 		stringdata[i] = tolower(stringdata[i]);
 	}
 }
@@ -1170,6 +1229,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+	
+	if (uk == NULL) return err;
 
 	UAP(lb_I_String, string)
 
