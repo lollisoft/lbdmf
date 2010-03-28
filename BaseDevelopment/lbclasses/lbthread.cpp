@@ -58,6 +58,7 @@ extern "C" {
 
 #include <lbthread.h>
 
+#ifdef UseThis_NoMore
 IMPLEMENT_FUNCTOR(instanceOflbCritSect, lbCritSect)
 IMPLEMENT_FUNCTOR(instanceOflbLock, lbLock)
 IMPLEMENT_FUNCTOR(instanceOflbThread, lbThread)
@@ -148,6 +149,8 @@ void initsem(int client)
 }
 /*...e*/
 #endif
+
+#endif //UseThis_NoMore
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbMutex)
 ADD_INTERFACE(lb_I_Mutex)
@@ -251,6 +254,8 @@ void lbMutex::release()
 } 
 /*...e*/
 /*...e*/
+
+#ifdef UseThis_NoMore
 
 /*...slbCritSect:0:*/
 //#define USE_CRITICAL_SECTION
@@ -544,3 +549,5 @@ void lbThread::OnExit()
 }
 /*...e*/
 /*...e*/
+
+#endif //UseThis_NoMore
