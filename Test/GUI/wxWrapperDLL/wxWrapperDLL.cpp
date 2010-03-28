@@ -89,6 +89,7 @@
 #include <wx/notebook.h>
 #include <wx/file.h>
 #include <wx/splash.h>
+#include <wx/treebase.h>
 
 #ifdef USE_PROPGRID
 // Necessary header file
@@ -607,7 +608,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         eman->registerEvent("removeTool_From_ToolBar", temp);
         eman->registerEvent("toggleTool_From_ToolBar", temp);
 
-        eman->registerEvent("removeToolBar", temp);
+		eman->registerEvent("removeToolBar", temp);
+		eman->registerEvent("showLeftTreeView", _showLeftTreeView);
+	
 
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
@@ -625,11 +628,18 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
 
-        Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
-                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                         &lb_wxFrame::OnDispatch );
+		disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftTreeView, "showLeftTreeView");
 
-        Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	
+		Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
+						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+						&lb_wxFrame::OnDispatch );
+	
+		Connect( _showLeftTreeView,  -1, wxEVT_COMMAND_MENU_SELECTED,
+						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+						&lb_wxFrame::OnDispatch );
+	
+		Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
 
@@ -678,7 +688,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
         file_menu->Append(on_panel_usage, _trans("&switch Panel usage"));
         file_menu->Append(on_table_usage , _trans("&switch Table usage"));
-        file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-R"));
+		file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-R"));
+		file_menu->Append(_showLeftTreeView, _trans("Show &left tree panel"));
 
         menu_bar = new wxMenuBar;
         menu_bar->Append(file_menu, _trans("&File"));
@@ -2983,8 +2994,105 @@ lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
         return ERR_NONE;
 }
 
+wxTreeItemId* lb_wxFrame::lookupTreeItemId(lb_I_String* name) {
+	wxTreeItemId* item = NULL;
+	
+	return NULL;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::addTreeViewNode(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, value)
+	
+	QI(uk, lb_I_Parameter, param)
+	QI(index, lb_I_Unknown, value)
+	
+	*parameter = "TreePath";
+	param->getUAPString(*&parameter, *&name);
+	QI(name, lb_I_KeyBase, key)
+	
+	if (key != NULL) {
+		wxTreeItemId* tid = lookupTreeItemId(*&name);
+		
+		if (tid == NULL) {
+			UAP(lb_I_String, left)
+			left = name->left(name->rstrpos("/"));
+			tid = lookupTreeItemId(*&left);
+			
+			if (tid == NULL) {
+				_LOG << "Error: Parent tree item not found. (" << left->charrep() << ")" LOG_
+				return err;
+			}
+			err = ERR_NONE;
+		}
+	}
+	
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::delTreeViewNode(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::replaceTreeViewNode(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftTreeView(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+
+#ifdef USE_WXAUI
+	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("TreeView").window;
+	
+	if (oldpg != NULL) {
+		_LOG << "Replace old property values..." LOG_
+		
+		UAP(lb_I_Container, parameter)
+		parameter = currentProperties->getParameterList();
+		populateProperties(oldpg, *&parameter);
+		
+		m_mgr.GetPane("TreeView").Show();
+		
+		m_mgr.Update();
+		
+		return ERR_NONE;
+	}
+#endif
+	
+	
+#ifdef USE_WXAUI
+	wxWindow* leftPanel = NULL;
+#ifdef IN_PANEL
+	wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
+#endif
+	
+	
+#ifdef IN_PANEL
+	wxTreeCtrl* tv = new wxTreeCtrl(panel, -1, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS, wxDefaultValidator, "treeCtrl");
+	leftPanel = panel;
+#endif
+#ifndef IN_PANEL
+	wxTreeCtrl* tv = new wxTreeCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS, wxDefaultValidator, "treeCtrl");
+	leftPanel = tv;
+#endif
+	
+	leftPanel->SetAutoLayout(TRUE);
+	tv->SetAutoLayout(TRUE);
+	
+	m_mgr.AddPane(tv, wxAuiPaneInfo().
+				  Name(wxT("TreeView")).Caption(wxT("TreeView")).
+				  Left().
+				  FloatingSize(wxSize(300,200)));
+	
+	m_mgr.Update();
+#endif
 	
 	return err;
 }

@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.40 2010/01/24 22:51:23 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.41 2010/03/28 19:21:38 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.41  2010/03/28 19:21:38  lollisoft
+ * New TreView code added to initially let open a tree view panel.
+ *
  * Revision 1.40  2010/01/24 22:51:23  lollisoft
  * Added timer and idle functionality.
  *
@@ -366,7 +369,12 @@ public:
 	// Event handlers        
 	
 	// Tree view support
+	wxTreeItemId* lookupTreeItemId(lb_I_String* name);
 	lbErrCodes LB_STDCALL showLeftTreeView(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL addTreeViewNode(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL delTreeViewNode(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL replaceTreeViewNode(lb_I_Unknown* uk);
+	
 	
 	/// \brief Show the property panel.
 	lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
@@ -460,6 +468,7 @@ public:
 	/// \brief Using a table or a field based layout
 	int on_table_usage;
 	int _showLeftPropertyBar;
+	int _showLeftTreeView;
 
 	bool gelangweilt;
 
