@@ -1155,7 +1155,7 @@ public:
 				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer") \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
-						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
+						if (isLogActivated()) printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
 					} \
 				} \
 				if (_line == -1) { \
@@ -1534,7 +1534,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         			return ERR_RELEASED; \
         		} \
         		else { \
-        			printf("Error: Instance %s has been deleted prior!\n", #classname); \
+        			if (isLogActivated()) printf("Error: Instance %s has been deleted prior!\n", #classname); \
         			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
         		} \
         	} \
@@ -1740,7 +1740,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, (char*) #classname) == 1)	{ \
         			manager->notify_destroy(this, (char*) #classname, file, line); \
-        			printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", STARTREF); \
+        			if (isLogActivated()) printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", STARTREF); \
         			ref++; \
         			return ERR_RELEASED; \
         		} \
@@ -1750,11 +1750,11 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, STARTREF, ref); \
+        	if (isLogActivated()) printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, STARTREF, ref); \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \
-        	printf("Error: Instance %p of object type %s was deleted prior !!!", this, #classname); \
+        	if (isLogActivated()) printf("Error: Instance %p of object type %s was deleted prior !!!", this, #classname); \
         } \
         return ERR_INSTANCE_STILL_USED; \
 } \
@@ -1944,9 +1944,9 @@ public: \
 			if (_TRMemValidate(singleton)) \
 				delete singleton; \
 			else \
-				printf("ERROR: Sinleton object has been deleted prior!\n"); \
+				if (isLogActivated()) printf("ERROR: Sinleton object has been deleted prior!\n"); \
 		} else { \
-			printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
+			if (isLogActivated()) printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
 		} \
 		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
 	} \
@@ -2119,9 +2119,10 @@ void LB_STDCALL TF::registerTests() { \
 #define END_IMPLEMENT_TESTFIXTURE() }
 
 #define ADD_TEST(TestName) addTestMethod((TestMethod) &lbTest::TestName, #TestName);
-
+// Hack to avoid mixing two test implementations
+#ifndef TEST_FIXTURE
 #define TEST_CASE(testcase) void LB_STDCALL testcase();
-
+#endif
 
 /*...sclass lb_I_Reference:0:*/
 /**
