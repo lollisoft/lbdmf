@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.90 $
+ * $Revision: 1.91 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.90 2010/03/20 22:56:30 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.91 2010/03/28 19:21:02 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.91  2010/03/28 19:21:02  lollisoft
+ * Added a function to find substring from right.
+ *
  * Revision 1.90  2010/03/20 22:56:30  lollisoft
  * Corrected folding.
  *
@@ -658,6 +661,7 @@ public:
 	virtual lb_I_String* LB_STDCALL left(int until) = 0;
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
 	virtual int LB_STDCALL strpos(const char* with) = 0;
+	virtual int LB_STDCALL rstrpos(const char* with) = 0;
 	
 	virtual lb_I_Container* LB_STDCALL split(const char split_char) = 0;
 };
