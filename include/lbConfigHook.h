@@ -277,18 +277,18 @@
 /*...e*/
 
 #define _CL_VERBOSE \
-    if (isVerbose()) { \
+    if (isLogActivated() && isVerbose()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "
         
 #ifndef SOLARIS
 #define _CL_LOG \
-{ \
+	if (isLogActivated()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "        
 #endif
 
 #ifdef SOLARIS
 #define _CL_LOG \
-    if (isVerbose()) { \
+    if (isLogActivated() && isVerbose()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
@@ -366,6 +366,7 @@ class lbStringKey;
 
 #ifdef __MINGW32__
 extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose();
+extern "C" DLLEXPORT bool 		LB_STDCALL _isLogActivated();
 extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
 extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance();
 extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track);
@@ -438,6 +439,7 @@ extern "C" DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 /** \brief Activate or deactivate verbose messages. */
 extern "C" DLLEXPORT void LB_STDCALL setVerbose(bool what);
 extern "C" DLLEXPORT bool LB_STDCALL isVerbose();
+extern "C" DLLEXPORT bool LB_STDCALL isLogActivated();
 extern "C" DLLEXPORT void LB_STDCALL lbBreak();
 #define LOGFILE "lbDMF.log"
 

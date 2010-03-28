@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.127 $
+ * $Revision: 1.128 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.127 2010/03/20 22:48:09 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.128 2010/03/28 19:11:30 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.128  2010/03/28 19:11:30  lollisoft
+ * Reduced log messages to console to zero.
+ *
  * Revision 1.127  2010/03/20 22:48:09  lollisoft
  * Added support for mingw mixed mode (with Open Watcom).
  * This is tested with the Basetypes sample application that uses
@@ -2851,7 +2854,7 @@ lbModule::lbModule() {
 }
         
 lbModule::~lbModule() {
-                if (ref != STARTREF) COUT << "Error: Reference count mismatch" << ENDL;
+                if (ref != STARTREF && isLogActivated()) COUT << "Error: Reference count mismatch" << ENDL;
 
                 if (moduleList != NULL) moduleList->release(__FILE__, __LINE__);
 /*...sVERBOSE:0:*/

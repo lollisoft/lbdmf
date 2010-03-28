@@ -127,6 +127,7 @@ extern int lb_isInitializing;
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
 bool lbVerbose = FALSE;
+bool lbLogActivated = FALSE;
 int instances = 0;
 char* lbLogDirectory = NULL;
 char* lbLogFile = NULL;
@@ -167,12 +168,14 @@ char* translated = NULL;
 
 #ifdef __MINGW32__
 extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose() { return isVerbose(); }
+extern "C" DLLEXPORT bool 		LB_STDCALL _isLogActivated() { return isLogActivated(); }
 extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) { return lbLoadModule(name, hinst, skipAutoUnload); }
 extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance() { return getModuleInstance(); }
 extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track) { set_trackObject(track); }
 extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject() { return get_trackObject(); }
 extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg) { track_Object( o, msg); }
 extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what) { setVerbose(what); }
+extern "C" DLLEXPORT void 		LB_STDCALL _setLogActivated(bool what) { setLogActivated(what); }
 extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak() { lbBreak(); }
 extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level) { logMessage(msg, f, level); }
 extern "C" DLLEXPORT void 		LB_STDCALL _createDirectory(const char* name) { createDirectory(name); }
@@ -333,9 +336,19 @@ DLLEXPORT void LB_STDCALL setVerbose(bool what) {
     lbVerbose = what;
 }
 /*...e*/
+/*...sDLLEXPORT void LB_STDCALL setVerbose\40\bool what\41\:0:*/
+DLLEXPORT void LB_STDCALL setLogActivated(bool what) {
+    lbLogActivated = what;
+}
+/*...e*/
 /*...sDLLEXPORT bool LB_STDCALL isVerbose\40\\41\:0:*/
 extern "C" DLLEXPORT bool LB_STDCALL isVerbose() {
 	return lbVerbose;
+}
+/*...e*/
+/*...sDLLEXPORT bool LB_STDCALL isLogActivated\40\\41\:0:*/
+extern "C" DLLEXPORT bool LB_STDCALL isLogActivated() {
+	return lbLogActivated;
 }
 /*...e*/
 
