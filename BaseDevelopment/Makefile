@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.214 $
+# * $Revision: 1.215 $
 # * $Name:  $
-# * $Id: Makefile,v 1.214 2010/03/20 22:33:38 lollisoft Exp $
+# * $Id: Makefile,v 1.215 2010/03/28 19:23:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.215  2010/03/28 19:23:02  lollisoft
+# * Added new subdirectory target UnitTests.
+# *
 # * Revision 1.214  2010/03/20 22:33:38  lollisoft
 # * Added support for mingw mixed mode (with Open Watcom).
 # * This is tested with the Basetypes sample application that uses
@@ -908,7 +911,8 @@ BASEDIRECTORIES= \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
 	../ServerPlugins \
-	../ClientPlugins
+	../ClientPlugins \
+	../UnitTests
 
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF
@@ -1896,6 +1900,9 @@ endif
 	-$(MAKE) -s -C $@
 
 ../ClientPlugins: dummy
+	-$(MAKE) -s -C $@
+
+../UnitTests: dummy
 	-$(MAKE) -s -C $@
 
 ../AppDevelopmentDemo/DynamicApp/Plugins: dummy
