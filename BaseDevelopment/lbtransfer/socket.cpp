@@ -84,6 +84,10 @@ extern "C" {
 /*...e*/
 
 #include <lbInterfaces.h>
+
+#define LB_TRANSFER_DLL
+#include <lbtransfer-module.h>
+#include <lbthread.h>
 #include <socket.h>
 /*...e*/
 
@@ -99,18 +103,29 @@ lbErrCodes LB_STDCALL lbSocket::setData(lb_I_Unknown* uk) {
         return ERR_NOT_IMPLEMENTED;
 }
 
+#define LB_SEND_MUTEX 1001
+#define LB_RECV_MUTEX 1002
+#define socketSection 1003
+
+
 
 /*...sclass lbSocketModule:0:*/
 class lbSocketModule {
 public:
 	lbSocketModule() {
-		
+		sendMutex = new lbMutex();
+		recvMutex = new lbMutex();
 		sendMutex->createMutex(LB_SEND_MUTEX);
 		recvMutex->createMutex(LB_RECV_MUTEX);
 	}
 	virtual ~lbSocketModule() {
 		COUT << "Deinit socket module" << ENDL;
 	}
+private:
+	
+	lbMutex* sendMutex;
+	lbMutex* recvMutex;
+
 };
 /*...e*/
 
@@ -137,7 +152,8 @@ public:
 /*...sLogWSAError\40\char\42\ msg\41\:0:*/
 #ifdef WINDOWS
 int LogWSAError(char* msg) {
-	lbLock lock(socketSection, "Socket");
+/// \todo Implement lock
+	//lbLock lock(socketSection, "Socket");
 	char buf[100] = "";
 	char _buf[100] = "Socket error (%d) at '%s'";
 	int lastError = WSAGetLastError();
@@ -168,7 +184,8 @@ lbErrCodes mapWSAErrcode(int lastError, int isServer) {
 
 
 lbSocket::lbSocket() {
-	lbLock lock(socketSection, "socketSection");
+/// \todo Implement lock
+	//lbLock lock(socketSection, "socketSection");
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 LOGENABLE("lbSocket::lbSocket()");
@@ -183,7 +200,8 @@ LOGENABLE("lbSocket::lbSocket()");
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
 lbSocket::lbSocket(const lbSocket& s) {
-	lbLock lock(socketSection, "socketSection");	
+/// \todo Implement lock
+	//lbLock lock(socketSection, "socketSection");
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	_LOG << "lbSocket::lbSocket(const lbSocket& s) called" LOG_

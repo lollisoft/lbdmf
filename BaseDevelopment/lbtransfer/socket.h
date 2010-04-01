@@ -187,8 +187,6 @@ private:
 
 	lbCritSect* socketSection;
 	
-	lbMutex* sendMutex;
-	lbMutex* recvMutex;
 	
 	static int sockUse;
 

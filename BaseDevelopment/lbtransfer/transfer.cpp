@@ -45,7 +45,8 @@
 
 #include <socket.h>
 
-
+#define LB_TRANSFER_DLL
+#include <lbtransfer-module.h>
 #include <transfer.h>
 
 
@@ -612,7 +613,8 @@ lbErrCodes LB_STDCALL lb_Transfer_Data::get(unsigned short & us) {
 void lb_Transfer_Data::add(const void* buf, int len, LB_PACKET_TYPE type) {
 	lbErrCodes err = ERR_NONE;
 	
-        lbLock lock(*transferSection, "transferSection");
+/// \todo Implement lock
+	//lbLock lock(*transferSection, "transferSection");
 //#define TRANSFER_VERBOSE      
         char msg[100];
         pLB_TRANSFER_DATA data;

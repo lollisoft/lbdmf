@@ -400,6 +400,7 @@ extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ptoa(void* ptr);
 extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr);
 extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr);
 extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId();
+extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms);
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf);
