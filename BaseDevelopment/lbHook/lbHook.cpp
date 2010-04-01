@@ -205,6 +205,7 @@ extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId() { return lbGetCu
 extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms) { lb_sleep(ms); }
 extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
 extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text) { return translateText(text); }
+extern "C" DLLEXPORT void		LB_STDCALL _uninitLocale() { uninitLocale(); }
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf) { return new lbStringKey(buf); }
