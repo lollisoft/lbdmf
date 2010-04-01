@@ -30,32 +30,6 @@
 #ifndef LB_TRANSFER
 #define LB_TRANSFER
 
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_SOCKET_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLEXPORT
-#endif
-#ifdef LINUX     
-#define DLLEXPORT
-#endif           
-
-#endif
-
-#ifndef LB_SOCKET_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLIMPORT
-#endif
-#ifdef LINUX     
-#define DLLEXPORT
-#endif           
-
-#endif
-/*...e*/
-
 #include <lbInterfaces-sub-transfer.h>
 
 //class lbComponentDictionary;
