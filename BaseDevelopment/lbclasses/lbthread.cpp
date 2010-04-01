@@ -254,7 +254,7 @@ void lbMutex::release()
 } 
 /*...e*/
 /*...e*/
-
+#define UseThis_NoMore
 #ifdef UseThis_NoMore
 
 /*...slbCritSect:0:*/
@@ -425,7 +425,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbThread)
 ADD_INTERFACE(lb_I_Thread)
 END_IMPLEMENT_LB_UNKNOWN()
 
-
+static int lbThread::threadCount;
 /*...slbThread:0:*/
 lbThread::lbThread() {
 /*...sTHREAD_VERBOSE:0:*/
