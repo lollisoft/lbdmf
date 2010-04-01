@@ -373,6 +373,7 @@ extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track);
 extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject();
 extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg);
 extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what);
+extern "C" DLLEXPORT void 		LB_STDCALL _setLogActivated(bool what);
 extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak();
 extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level = 0);
 extern "C" DLLEXPORT char* 		LB_STDCALL _getLogDirectory();
@@ -438,6 +439,7 @@ extern "C" DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 
 /** \brief Activate or deactivate verbose messages. */
 extern "C" DLLEXPORT void LB_STDCALL setVerbose(bool what);
+extern "C" DLLEXPORT void LB_STDCALL setLogActivated(bool what);
 extern "C" DLLEXPORT bool LB_STDCALL isVerbose();
 extern "C" DLLEXPORT bool LB_STDCALL isLogActivated();
 extern "C" DLLEXPORT void LB_STDCALL lbBreak();
