@@ -188,7 +188,7 @@ enum json_error
 json_stream_parse (FILE * file, json_t ** document)
 {
 	char buffer[1024];	/* hard-coded value */
-	json_error error = JSON_INCOMPLETE_DOCUMENT;
+	enum json_error error = JSON_INCOMPLETE_DOCUMENT;
 
 	struct json_parsing_info state;
 
