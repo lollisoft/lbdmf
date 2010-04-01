@@ -63,6 +63,8 @@ public:
         lbMutex();
         virtual ~lbMutex();
 
+	DECLARE_LB_UNKNOWN()
+
         virtual void createMutex(int name);
         virtual void deleteMutex(int name);
         virtual void enter();
