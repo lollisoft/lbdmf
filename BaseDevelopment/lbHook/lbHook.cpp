@@ -203,6 +203,8 @@ extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr) { return lb_itoa(ptr);
 extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr) { return lb_ltoa(ptr); }
 extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId() { return lbGetCurrentThreadId(); }
 extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms) { lb_sleep(ms); }
+extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
+extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text) { return translateText(text); }
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf) { return new lbStringKey(buf); }
