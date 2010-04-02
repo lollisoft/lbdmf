@@ -5,6 +5,9 @@
 #define DONT_USE_LBDMF_EXCEPTIONS
 
 void sig_handler(int signr) {
+#ifdef __MINGW__
+#endif
+#ifdef LINUX
 	switch (signr) {
 		case SIGSEGV:
 			FAIL("SIGSEGV happened.");
@@ -15,6 +18,7 @@ void sig_handler(int signr) {
 		default:
 			break;
 	}
+#endif
 }
 
 class BaseDevelopment : public TestFixture<BaseDevelopment>
@@ -38,9 +42,13 @@ class BaseDevelopment : public TestFixture<BaseDevelopment>
   public:
       void setUp()
       {
+#ifdef __MINGW__
+#endif
+#ifdef LINUX
 		  signal(SIGSEGV, sig_handler);
 		  signal(SIGBUS, sig_handler);
-      }
+#endif
+	  }
 
       void tearDown()
 	  {

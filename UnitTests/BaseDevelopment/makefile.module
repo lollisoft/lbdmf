@@ -36,6 +36,8 @@ MOD_INCL=$(STD_INCL)
 MOD_INCL_CPP=$(STD_INCL_CPP)
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
 
+MINGWLIBS= -L$(DEVROOT_MAKE)/projects/dll/ -llbHook -lMiniCppUnit
+
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
