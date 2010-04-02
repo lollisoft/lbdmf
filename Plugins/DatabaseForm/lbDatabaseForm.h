@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.63 2010/02/21 22:29:55 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.64 2010/04/02 08:12:29 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.64  2010/04/02 08:12:29  lollisoft
+ * Deactivated styled text control support due to DLL export mismatch issues.
+ *
  * Revision 1.63  2010/02/21 22:29:55  lollisoft
  * Adde first try of resizeable controls, but deactivated because it doesn't work as expected on Mac.
  *
@@ -279,7 +282,20 @@
 
 #include <iostream>
 #include "wx/grid.h"
-#include <wx/resizec.h>
+
+// Having remaining undefined symbols
+// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CREATED is an undefined reference
+// Error! E2028: int const near wxEVT_COMMAND_SIBLING_MOVED is an undefined reference
+// Error! E2028: int const near wxEVT_COMMAND_SIBLING_RESIZED is an undefined reference
+// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CLOSED is an undefined reference
+// Error! E2028: int const near wxEVT_COMMAND_HIDE_SIZERS is an undefined reference
+// Error! E2028: int const near wxEVT_COMMAND_SHOW_SIZERS is an undefined reference
+#define USE_STYLED_TEXT
+
+#ifdef USE_STYLED_TEXT
+#define WXMAKINGDLL_WXRESIZEABLECONTROL
+#include "wx/resizec.h"
+#endif
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
@@ -1102,8 +1118,10 @@ public:
 	wxWindow* deleteButton;
 	wxWindow* addingButton;
 
+#ifdef USE_STYLED_TEXT
 	wxResizeableControlCanvas* m_resizecanvas;	
-		
+#endif
+
 	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;

@@ -3,11 +3,12 @@
 // Purpose:     wxTextStyle, wxTextSpan, wxTextSpanArray
 // Author:      Francesco Montorsi
 // Created:     2005/8/19
-// RCS-ID:      $Id: textspan.cpp,v 1.1 2010/02/21 22:29:55 lollisoft Exp $
+// RCS-ID:      $Id: textspan.cpp,v 1.2 2010/04/02 08:12:29 lollisoft Exp $
 // Copyright:   (c) 2005 Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef USE_STYLED_TEXT
 
 #ifdef __GNUG__
 #pragma implementation "textspan.h"
@@ -1441,3 +1442,4 @@ wxXmlDocument wxTextSpanArray::ExportXHTMLDoc() const
 	return doc;
 }
 
+#endif

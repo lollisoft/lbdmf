@@ -4,7 +4,7 @@
 // Author:      Markus Greither
 // Modified by:
 // Created:     11/11/02
-// RCS-ID:      $Id: resizec.cpp,v 1.1 2010/02/21 22:29:55 lollisoft Exp $
+// RCS-ID:      $Id: resizec.cpp,v 1.2 2010/04/02 08:12:29 lollisoft Exp $
 // Copyright:   (c) Markus Greither
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@
 #include "wx/image.h"
 #include "wx/metafile.h"
 #include "wx/clipbrd.h"
+
+#define WXMAKINGDLL_WXRESIZEABLECONTROL
 #include "wx/resizec.h"
 
 #ifdef __WXMSW__

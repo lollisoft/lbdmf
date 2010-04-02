@@ -189,7 +189,9 @@ lbDatabasePanel::lbDatabasePanel()
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
+#ifdef USE_STYLED_TEXT
 	m_resizecanvas = NULL;
+#endif
 	skipValidation = false;
 	fa = NULL;
 	FFI = NULL;
