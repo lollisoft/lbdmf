@@ -125,8 +125,9 @@ ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
 TARGETEXE=exe
-TARGETPLUGIN=soplugin
+TARGETPLUGIN=dll_target_mingw
 TARGETFRAMEWORK=dll
+TARGETDLLMINGW=dll_target_mingw
 
 ALLTARGETS = \
 	MiniCppUnit \
@@ -153,9 +154,21 @@ mkrelease:
 
 dummy:
 
+ifeq ($(OSTYPE), Windows_NT)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+endif
+
+ifeq ($(OSTYPE), osx)
+
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+endif
 
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
