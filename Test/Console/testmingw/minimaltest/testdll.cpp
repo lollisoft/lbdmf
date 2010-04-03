@@ -15,10 +15,11 @@ public:
 	Test();
 	virtual ~Test();
         
-        bool API getbool();
-        void API test(char* text, char* p2);
+	lbErrCodes		API getInt();
+    bool			API getbool();
+    void			API test(char* text, char* p2);
         
-        virtual void API release();
+    virtual void	API release();
 };
 
 Test::Test() {
@@ -30,7 +31,11 @@ Test::~Test() {
 }
 
 bool API Test::getbool() {
+	return true;
+}
 
+lbErrCodes API Test::getInt() {
+	return ERR_FAIL;
 }
 
 void API Test::test(char* text, char* p2) {

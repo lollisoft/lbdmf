@@ -10,6 +10,9 @@ int main() {
     
     if (getbool()) printf("Have true.\n");
     
+	if (t->getInt() != ERR_FAIL) printf("Error: ITest->getInt() doesn't return %d\n", ERR_FAIL);
+	if (t->getInt() == ERR_FAIL) printf("Success: ITest->getInt() returns %d\n", ERR_FAIL);
+
     t->release();
     
     return 0;
