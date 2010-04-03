@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.108 $
+ * $Revision: 1.109 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.108 2010/03/20 22:58:07 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.109 2010/04/03 00:13:17 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.109  2010/04/03 00:13:17  lollisoft
+ * Added more MinGW support. The UnitTests now are working properly.
+ *
  * Revision 1.108  2010/03/20 22:58:07  lollisoft
  * Added support for mingw mixed mode (with Open Watcom).
  * This is tested with the Basetypes sample application that uses
@@ -1096,6 +1099,58 @@ void writeExeTarget(char* modulename) {
 #endif
 }
 /*...e*/
+/*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
+void writeMinGWExeTarget(char* modulename) {
+#ifdef OSX
+#undef UNIX
+  fprintf(stderr, "Writing osx executable target\n");
+  printf("PROGRAM=%s\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+#endif
+
+#ifdef UNIX
+  fprintf(stderr, "Writing linux executable target\n");
+  printf("PROGRAM=%s\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CP) $(PROGRAM) $(prefix)/bin\n");
+#endif
+
+
+
+#ifdef OSX
+#define UNIX
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\t\t$(CP) $(PROGRAM) $(bindir)\n");
+
+  printf("install-strip:\n");
+  printf("\t\t$(STRIP) $(PROGRAM)\n");
+  printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM) $(bindir)\n");
+#endif
+
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+#ifdef muster
+testmingw.exe: test.o
+                rm testdll.lib
+                g++ -o testmingw.exe test.o -L. -ltestdll
+#endif
+
+  printf("PROGRAM=%s\n", ModName);
+
+  printf("\n%s.exe: $(OBJS)\n", ModName);
+  
+  printf("\t\t@g++ -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+#endif
+}
+/*...e*/
 /*...svoid writeLexTarget\40\char\42\ modulename\41\:0:*/
 void writeLexTarget(char* modulename) {
 #ifdef UNIX
@@ -1237,13 +1292,14 @@ void writeMinGWPluginTarget(char* modulename) {
   
   printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("\n%s.dll: $(OBJS)\n", ModName);
-  printf("\t\t@echo Link %s.dll\n", ModName);
-  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
-  printf("\t\t@echo $(FILE) >> $(LNK)\n");
 
-  printf("\t\t@echo @rem Nothing > doit.bat\n");
-  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n\n");
 
+/*
   printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
   printf("\t\trm doit.bat\n");
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
@@ -1253,6 +1309,8 @@ void writeMinGWPluginTarget(char* modulename) {
   printf("\t\t@$(CP) $(PROGRAM).sym $(PLUGINDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+*/
+
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -1978,7 +2036,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.108 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.109 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -2252,9 +2310,24 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                     }
                 }
 
-                printf("\t\t@echo Build %s\n", NameC);
-                if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
-                if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
+                if (strcmp(SExt, ".C") == 0) {
+                      CPPFlag = 0;
+                      strcpy(Compiler, "$(CCMINGW)");
+                }
+  
+                if (strcmp(SExt, ".CPP") == 0) {
+                      CPPFlag = 1;
+                      strcpy(Compiler, "$(CPPMINGW)");
+                }
+  
+                if (strcmp(SExt, ".CC") == 0) {
+                      CPPFlag = 1;
+                      strcpy(Compiler, "$(CPPMINGW)");
+                }
+
+                                printf("\t\t@echo Build %s\n", NameC);
+                if (CPPFlag == 0) printf("\t\t%s -c $(C_MINGW_EXEOPS) $(MOD_INCL_MINGW) -o%s %s\n\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s -c $(CPP_MINGW_EXEOPS) $(MOD_INCL_MINGW_CPP) -o%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
                 break;
         case DLL_TARGET_MINGW:
         case PLUGIN_TARGET_MINGW:
@@ -2467,6 +2540,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
         case EXE_TARGET:
                 writeExeTarget(ModuleName);
                 write_clean(ModuleName);
+                break;
+        case EXE_TARGET_MINGW:
+                writeMinGWExeTarget(ModuleName);
+                write_clean();
                 break;
         case WXELF_TARGET:
                 writeExeTarget(ModuleName);
