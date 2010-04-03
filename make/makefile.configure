@@ -109,6 +109,23 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	>> makefile
 endif
 
+ifeq ($(TARGET), plugin_target_mingw)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo OBJ =o >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(_MODULE).bak
+	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+
+endif
+
 ifeq ($(TARGET), plugin)
 
 makefile: makefile.module \
@@ -421,6 +438,23 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) .,../h,../../include,../../interfaces *.cpp *.c $(CUSTOM_FILES)  >> makefile
+
+endif
+
+ifeq ($(TARGET), exe_target_mingw)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
+	@echo OBJ =o >> makefile
+	@echo all: $(_MODULE).exe >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) .,../h,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 

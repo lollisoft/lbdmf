@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.215 $
+# * $Revision: 1.216 $
 # * $Name:  $
-# * $Id: Makefile,v 1.215 2010/03/28 19:23:02 lollisoft Exp $
+# * $Id: Makefile,v 1.216 2010/04/03 00:15:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.216  2010/04/03 00:15:56  lollisoft
+# * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
+# *
 # * Revision 1.215  2010/03/28 19:23:02  lollisoft
 # * Added new subdirectory target UnitTests.
 # *
@@ -877,7 +880,8 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
-	../AppDevelopment
+	../AppDevelopment \
+	../UnitTests
 
 # Don't compile these every time.
 #	../vendor/propgrid \

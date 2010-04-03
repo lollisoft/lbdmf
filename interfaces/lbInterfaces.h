@@ -934,19 +934,6 @@ class miniString {
  */
 class lb_I_Unknown {
 
-	private:
-		/**
-		 * Hide this operator to prevent usage. Effect ??
-		 *
-		 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
-		 */
-		//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
-
-	/**
-	 * Hide this operator to prevent usage. Effect ??
-	 */
-	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
-
 public:
 	/**
 	 * Call this, when you no longer use an instance of any classes, that have
@@ -1054,6 +1041,18 @@ public:
 	virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
 
 //friend class lb_I_gcManager;
+	private:
+		/**
+		 * Hide this operator to prevent usage. Effect ??
+		 *
+		 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
+		 */
+		//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+
+	/**
+	 * Hide this operator to prevent usage. Effect ??
+	 */
+	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
 };
 /*...e*/
 

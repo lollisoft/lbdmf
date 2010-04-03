@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.91 $
+ * $Revision: 1.92 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.91 2010/03/28 19:21:02 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.92 2010/04/03 00:15:56 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.92  2010/04/03 00:15:56  lollisoft
+ * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
+ *
  * Revision 1.91  2010/03/28 19:21:02  lollisoft
  * Added a function to find substring from right.
  *
@@ -373,15 +376,6 @@
  * Implement this interface to let your classes containable.
  */
 class lb_I_KeyBase : public lb_I_Unknown {
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        lb_I_KeyBase() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        virtual ~lb_I_KeyBase() {}
 public:
 
 	virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const = 0;
@@ -401,6 +395,22 @@ public:
 	 * Char representation of the key.
 	 */
 	virtual char* LB_STDCALL charrep() const = 0;
+
+// Mixing MINGW and Open Watcom code (MINGW Executable - unittest, Opwn Watcom SUT - lbclasses - lbString) will fail.
+// This is due to implementation in header, I think.
+
+//#define USE_PRIVATE_INTERFACE_CTOR_DTOR
+#ifdef USE_PRIVATE_INTERFACE_CTOR_DTOR
+protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        lb_I_KeyBase() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        virtual ~lb_I_KeyBase() {}
+#endif
 };
 
 
@@ -585,16 +595,6 @@ public:
  * This is a set of base interfaces that are compatible to the lb_I_Container interface.
  */
 class lb_I_String : public lb_I_KeyBase {
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        lb_I_String() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        virtual ~lb_I_String() {}
-
 public:
 	/** \brief Trim trailing spaces.
 	 *
@@ -612,6 +612,8 @@ public:
 	 */
 	virtual char* LB_STDCALL stristr(const char *String, const char *Pattern) = 0;
 
+	virtual char* LB_STDCALL strristr(const char *String, const char *Pattern) = 0;
+
         /**
          * \brief Set the string data from char*
          * 
@@ -625,14 +627,7 @@ public:
          * \return char* value.
          */
         virtual char* LB_STDCALL getData() const = 0;
-        
-        /**
-         * \brief Set data from other lb_I_String instance.
-         *
-         * This member is used in lb_I_Container implementation via clone.
-         */
-        virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
-        
+
 	/** \brief Adds the given char* array.
 	 *
 	 */
@@ -640,30 +635,48 @@ public:
 	
 	virtual lb_I_String& LB_STDCALL operator = (const char* toAppend) = 0;
 
+	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
+		
+	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
+
 	virtual int LB_STDCALL operator == (const char* toCompare) const = 0;
 
 	virtual int LB_STDCALL operator == (const lb_I_String* toCompare) const = 0;
 
-	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
-		
-	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
-	
 	/** \brief Replace a substring.
 	 * This function changes the content of this instance.
 	 */
 	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false) = 0;
-	
-	/** \brief Replace all occurences of placeholders with their values from params.
-	 * This function changes the content of this instance on success.
-	 */
-	virtual lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params) = 0;
 	
 	virtual lb_I_String* LB_STDCALL left(int until) = 0;
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
 	virtual int LB_STDCALL strpos(const char* with) = 0;
 	virtual int LB_STDCALL rstrpos(const char* with) = 0;
 	
+	/** \brief Replace all occurences of placeholders with their values from params.
+	 * This function changes the content of this instance on success.
+	 */
+	virtual lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params) = 0;
+
 	virtual lb_I_Container* LB_STDCALL split(const char split_char) = 0;
+
+        /**
+         * \brief Set data from other lb_I_String instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
+    virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
+
+protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        lb_I_String() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        virtual ~lb_I_String() {}
+
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/
@@ -737,16 +750,6 @@ public:
  * This is a set of base interfaces that are compatible to the lb_I_Container interface.
  */
 class lb_I_Integer : public lb_I_KeyBase {
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        lb_I_Integer() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        virtual ~lb_I_Integer() {}
-
 public:
 	/** 
 	 * \brief Set p as the int value.

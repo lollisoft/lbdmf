@@ -404,6 +404,7 @@ extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms);
 extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name);
 extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text);
 extern "C" DLLEXPORT void		LB_STDCALL _uninitLocale();
+extern "C" DLLEXPORT void		LB_STDCALL _unHookAll();
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf);

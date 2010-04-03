@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbobject.h,v 1.49 2010/03/28 19:23:51 lollisoft Exp $
+ * $Id: lbobject.h,v 1.50 2010/04/03 00:15:57 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.50  2010/04/03 00:15:57  lollisoft
+ * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
+ *
  * Revision 1.49  2010/03/28 19:23:51  lollisoft
  * Fixed some bug due to new unit tests showed them up.
  *
@@ -314,10 +317,6 @@ protected:
 class lbLocale : public lb_I_Locale
 {
 public:
-        lbLocale();
-        virtual ~lbLocale();
-
-        DECLARE_LB_UNKNOWN()
 
         void LB_STDCALL setLanguage(char const * lang);
 
@@ -327,6 +326,13 @@ public:
         UAP(lb_I_Translations, translations)
         char* _lang;
 		bool  dbAvailable;
+
+		DECLARE_LB_UNKNOWN()
+
+public:
+        lbLocale();
+        virtual ~lbLocale();
+
 };
 /*...e*/
 
@@ -397,27 +403,32 @@ protected:
 /*...sclass lbString:0:*/
 class lbString : public lb_I_String
 {
-public:
-	lbString();
-	virtual ~lbString();
-
-	DECLARE_LB_UNKNOWN()
-
 public:	
+
+	void LB_STDCALL trim();
+	void LB_STDCALL toLower();
 
 	char* LB_STDCALL stristr(const char *String, const char *Pattern);
 	char* LB_STDCALL strristr(const char *String, const char *Pattern);
 
-	void LB_STDCALL trim();
-	void LB_STDCALL toLower();
 	void LB_STDCALL setData(char const * p);
 	char* LB_STDCALL getData() const;
-	
+
+// Interface definition (the order) must be equal to the deriving implementations declataion.
+//#define BREAK_MIXING_COMPILERS
+#ifdef BREAK_MIXING_COMPILERS
+	lb_I_String& LB_STDCALL operator += (const char* toAppend);
+	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
+	lb_I_String& LB_STDCALL operator = (const char* toAppend);
+	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
+#endif
+
+#ifndef BREAK_MIXING_COMPILERS
 	lb_I_String& LB_STDCALL operator += (const char* toAppend);
 	lb_I_String& LB_STDCALL operator = (const char* toAppend);
-
 	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
 	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
+#endif
 
 	int LB_STDCALL operator == (const char* toCompare) const;
 	int LB_STDCALL operator == (const lb_I_String* toCompare) const;
@@ -433,6 +444,13 @@ public:
 	lb_I_Container* LB_STDCALL split(const char split_char);
 	
 	DECLARE_LB_KEYBASE()
+
+	DECLARE_LB_UNKNOWN()
+
+// Constructor and destructor must be after the functions defined in interfaces.
+public:
+	lbString();
+	virtual ~lbString();
 
 private:
 

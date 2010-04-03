@@ -764,6 +764,7 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 /*...e*/
 /*...slbString:0:*/
 lbString::lbString() {
+	if (isVerbose() == true) printf("lbString::lbString()\n");
 	ref = STARTREF;
 	stringdata = NULL;
 	buffersize = stringsize = 0L;
@@ -832,10 +833,12 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 }
 
 int LB_STDCALL lbString::operator == (const char* toCompare) const {
+	if (isVerbose() == true) printf("int LB_STDCALL lbString::operator == (const char* toCompare) const\n");
 	return strcmp(charrep(), toCompare) == 0;
 }
 
 int LB_STDCALL lbString::operator == (const lb_I_String* toCompare) const {
+	if (isVerbose() == true) printf("int LB_STDCALL lbString::operator == (const lb_I_String* toCompare) const\n");
 	return strcmp(charrep(), toCompare->charrep()) == 0;
 }
 
@@ -844,6 +847,7 @@ lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
 }
 
 lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
+	if (isVerbose() == true) printf("lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend)\n");
 	if (toAppend == NULL) {
 		setData("");
 		return *this;
@@ -876,6 +880,7 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 }
 
 int LB_STDCALL lbString::strpos(const char* with) {
+	if (isVerbose() == true) printf("int LB_STDCALL lbString::strpos(const char* with)\n");
 	char* st = stristr(charrep(), with);
 	if (st != NULL) {
 		return st - stringdata;
@@ -884,6 +889,7 @@ int LB_STDCALL lbString::strpos(const char* with) {
 }
 
 int LB_STDCALL lbString::rstrpos(const char* with) {
+	if (isVerbose() == true) printf("int LB_STDCALL lbString::rstrpos(const char* with)\n");
 	char* st = strristr(charrep(), with);
 	if (st != NULL) {
 		return st - stringdata;
@@ -892,6 +898,7 @@ int LB_STDCALL lbString::rstrpos(const char* with) {
 }
 
 lb_I_String* LB_STDCALL lbString::left(int until) {
+	if (isVerbose() == true) printf("lb_I_String* LB_STDCALL lbString::left(int until)\n");
 	UAP_REQUEST(getModuleInstance(), lb_I_String, part)
 	char* temp = strdup(stringdata);
 	temp[until] = 0;
@@ -901,6 +908,7 @@ lb_I_String* LB_STDCALL lbString::left(int until) {
 }
 
 lb_I_String* LB_STDCALL lbString::right(int from) {
+	if (isVerbose() == true) printf("lb_I_String* LB_STDCALL lbString::right(int from)\n");
 	UAP_REQUEST(getModuleInstance(), lb_I_String, part)
 	char* temp = stringdata+from;
 	*part = temp;

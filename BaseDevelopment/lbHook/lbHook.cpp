@@ -112,11 +112,11 @@ extern "C" {
 /*...sGlobal variables:0:*/
 #ifdef WINDOWS
 #ifndef LB_CLASSES_DLL
-DLLEXPORT lb_I_Log *lb_log;
-DLLEXPORT int lb_isInitializing;
+DLLEXPORT lb_I_Log *lb_log = NULL;
+DLLEXPORT int lb_isInitializing = 0;
 #endif
 #ifdef LB_CLASSES_DLL
-LB_DLLIMPORT lb_I_Log *lb_log;
+LB_DLLIMPORT lb_I_Log *lb_log = NULL;
 LB_DLLIMPORT int lb_isInitializing;
 #endif
 #endif
@@ -206,6 +206,7 @@ extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms) { lb_sleep(ms); }
 extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
 extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text) { return translateText(text); }
 extern "C" DLLEXPORT void		LB_STDCALL _uninitLocale() { uninitLocale(); }
+extern "C" DLLEXPORT void		LB_STDCALL _unHookAll() { unHookAll(); }
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf) { return new lbStringKey(buf); }
@@ -326,7 +327,7 @@ DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
 /*...e*/
 
 /*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
-DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
+extern "C" DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
 	instances += inst;
 }
 /*...e*/
@@ -842,6 +843,9 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		#ifdef LINUX
 			libname = "lbModule.so";
 		#endif
+		#ifdef WINDOWS
+			libname = "lbModule.dll";
+		#endif
 	}
 
 	if (functor == NULL) {
@@ -849,6 +853,9 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 			functor = "getlb_ModuleInstance";
 		#endif
 		#ifdef LINUX
+			functor = "getlb_ModuleInstance";
+		#endif
+		#ifdef WINDOWS
 			functor = "getlb_ModuleInstance";
 		#endif
 	}
@@ -1129,7 +1136,9 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 	_Modules* temp_skipped = NULL;
 
 	if (lb_log) {
+#ifndef __MINGW32__
 		_LOG << "unHookAll() releases log instance. This should be the last entry for this process." LOG_
+#endif
 		//lb_log->release(__FILE__, __LINE__);
 	}
 
@@ -1243,6 +1252,10 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 /*...e*/
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class DLLEXPORT lbKey : public lb_I_KeyBase {
+
+public:
+	DECLARE_LB_KEYBASE()
+
 public:
 #ifdef _MSC_VER
 	lbKey(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
@@ -1254,10 +1267,6 @@ public:
 	virtual ~lbKey();
 
 	DECLARE_LB_UNKNOWN()
-
-	DECLARE_LB_KEYBASE()
-
-private:
 
 	char keyType[10];
 	int key;

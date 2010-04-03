@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.137 $
+# * $Revision: 1.138 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.137 2010/03/20 22:38:41 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.138 2010/04/03 00:15:56 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.138  2010/04/03 00:15:56  lollisoft
+# * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
+# *
 # * Revision 1.137  2010/03/20 22:38:41  lollisoft
 # * Added new mingw compiler.support.
 # *
@@ -555,8 +558,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
@@ -758,12 +761,23 @@ ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
 endif  
 
-
 CCMINGW=gcc
 CPPMINGW=g++
 
-C_MINGW_DLLOPS=-DWINDOWS
-CPP_MINGW_DLLOPS=-DWINDOWS
+ifeq ($(MODE), _DEBUG)
+MINGW_DEBUG= -g
+endif
+
+ifneq ($(MODE), _DEBUG)
+MINGW_DEBUG=
+endif
+
+
+C_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG)
+CPP_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG)
+
+C_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG)
+CPP_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG)
 
 # Microsoft
 OUTDIR=.
