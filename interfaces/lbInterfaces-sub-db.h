@@ -938,15 +938,6 @@ public:
  */
 class lb_I_Database : public lb_I_Unknown
 {
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-	lb_I_Database() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-	virtual ~lb_I_Database() {}
 public:
 	/**
 	 * \brief Initializion of the database backend.
