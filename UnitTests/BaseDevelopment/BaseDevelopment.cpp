@@ -26,10 +26,15 @@ class BaseDevelopmentString : public TestFixture<BaseDevelopmentString>
   public:
       void setUp()
       {
-#ifdef __MINGW__
-#endif
-#ifdef LINUX
+#ifdef __MINGW32__
 		  signal(SIGSEGV, sig_handler);
+		  signal(SIGABRT, sig_handler);
+#endif
+#ifdef OSX
+		  signal(SIGABRT, sig_handler);
+		  signal(SIGTRAP, sig_handler);
+		  signal(SIGSEGV, sig_handler);
+		  signal(SIGTERM, sig_handler);
 		  signal(SIGBUS, sig_handler);
 #endif
 	  }
@@ -181,7 +186,10 @@ class BaseDevelopmentDatabase : public TestFixture<BaseDevelopmentDatabase>
 		  signal(SIGABRT, sig_handler);
 #endif
 #ifdef LINUX
+		  signal(SIGABRT, sig_handler);
+		  signal(SIGTRAP, sig_handler);
 		  signal(SIGSEGV, sig_handler);
+		  signal(SIGTERM, sig_handler);
 		  signal(SIGBUS, sig_handler);
 #endif
 	  }
