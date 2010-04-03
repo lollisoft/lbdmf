@@ -167,8 +167,9 @@ public:
 	virtual std::string name() const = 0;
 };
 
+#ifdef __MINGW32__
 typedef BOOL (WINAPI *TdoSetConsoleTextAttribute)(HANDLE hConsoleOutput, WORD attr);
-
+#endif
 
 /**
  * This class is just a placeholder for all assert functions --as static methods.
@@ -473,9 +474,13 @@ public:
 	void addFixtureCreator(FixtureCreator creator);
 };
 
-	/** Accessor to the (static) singleton instance */
+/** Accessor to the (static) singleton instance */
+#ifdef __MINGW32__
 TestFixtureFactory& __cdecl theInstance();
-
+#endif
+#ifdef LINUX
+TestFixtureFactory& theInstance();
+#endif
 
 /**
  * Macro a usar després de cada classe de test
@@ -516,10 +521,19 @@ static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
 
 	//TestsListener::theInstance().testHasThrown();
 
+#define THROWN_SIG( why ) \
+	printf("%s%s%s%s", "Exception catched by MiniCppUnit: \n", "what() : ", Assert::yellow(), #why); \
+	printf("%s\n", Assert::normal());
+
 #define THROWN( why ) \
 	printf("%s%s%s%s", "Exception catched by MiniCppUnit: \n", "what() : ", Assert::yellow(), #why); \
 	printf("%s\n", Assert::normal()); \
-	throw new std::exception();
+	throw TestFailedException();
+
+#define TERM( why ) \
+	printf("%s%s%s%s", "Exception catched by MiniCppUnit: \n", "what() : ", Assert::yellow(), #why); \
+	printf("%s\n", Assert::normal()); \
+	exit(1);
 
 /**
  * Macros that allows to write the  constructor of the concrete TestFixture.

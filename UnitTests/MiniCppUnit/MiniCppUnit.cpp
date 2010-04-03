@@ -57,13 +57,22 @@ void sig_handler(int signr) {
 			break;
 	}
 #endif
-#ifdef LINUX
+#ifdef OSX
 	switch (signr) {
+		case SIGTRAP:
+			TERM("SIGTRAP happened.");
+			break;
+		case SIGABRT:
+			TERM("SIGABRT happened.");
+			break;
 		case SIGSEGV:
-			THROWN("SIGSEGV happened.");
+			TERM("SIGSEGV happened.");
 			break;
 		case SIGBUS:
-			THROWN("SIGBUS happened.");
+			TERM("SIGBUS happened.");
+			break;
+		case SIGTERM:
+			TERM("SIGTERM happened.");
 			break;
 		default:
 			break;
@@ -299,7 +308,12 @@ TestFixtureFactory::TestFixtureFactory() {
 
 }
 
+#ifdef __MINGW32__
 TestFixtureFactory& __cdecl theInstance()
+#endif
+#ifdef LINUX
+TestFixtureFactory& theInstance()
+#endif
 {
 	static TestFixtureFactory theFactory;
 	return theFactory;
