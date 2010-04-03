@@ -1,302 +1,302 @@
-		This file describes some things that should be done in the next time.
+This file describes some things that should be done in the next time.
+	
+I also will discuss some problems while the development stages.
+
+22.09.2008	There are some remaining problems with sqlite based databases when opening
+		the 4th detailform over a master detail action. The problem is that there
+		are unexplainable database lock I was not yet capable of fixing by holding
+		the database statements as short as possible open.
+
+		The problem currently only occurs on Windows, but not on Mac. Other platforms
+		are not tested yet.
+
+		To avoid this behaviour, the form that could not be filled with data, should
+		be filled with a dummy entry if only that form is open. 
+
+07.07.2008	Instance messaging tested with tcpdump tracing on port 5222 and 5223. There
+		was some communication, but it didn't came to me.
+		Try to record the raw communication. Another test.
+
+		There was a logfile I have overseen :-)
+		Also there was an authentication error. Retry.
+
+		At all it was the authentication problem. Again got a message.
+
+01.06.2008	Improve Cruise Control integration.
 		
-		I also will discuss some problems while the development stages.
+		Instant messaging works from now on.
 
-		22.09.2008	There are some remaining problems with sqlite based databases when opening
-				the 4th detailform over a master detail action. The problem is that there
-				are unexplainable database lock I was not yet capable of fixing by holding
-				the database statements as short as possible open.
+16.04.2008	Creating Sqlite Database script in usual way fails due to unsupported ALTER TABLE ADD CONSTRAINT.
+		Solution could be parsing these statements and separate the step of creating foreign keys to an
+		internal subsequent statement. While parsing them the statements could be rewritten to be triggers.
+		Additional metadata could be created to enable logical extraction of foreign key information.
 
-				The problem currently only occurs on Windows, but not on Mac. Other platforms
-				are not tested yet.
+14.04.2008	Importing XMI 2.1 formatted files are working, but complete application logic transfer
+		to a new database does not work. There are missing three steps:
 
-				To avoid this behaviour, the form that could not be filled with data, should
-				be filled with a dummy entry if only that form is open. 
+		1. In the table column_types is missing ro boolean column.
+		2. No user account has been created.
+		3. Type of dynamic database formular must be created in table formulartypen.
 
-		07.07.2008	Instance messaging tested with tcpdump tracing on port 5222 and 5223. There
-				was some communication, but it didn't came to me.
-				Try to record the raw communication. Another test.
+		ODBC library path settings should be taken from odbc_config.
 
-				There was a logfile I have overseen :-)
-				Also there was an authentication error. Retry.
+		Shell scripts for setting um environment under Mac OS X does still not work.
 
-				At all it was the authentication problem. Again got a message.
-
-		01.06.2008	Improve Cruise Control integration.
+01.04.2008	Testing package on a newly installed Mac OS X.
 				
-				Instant messaging works from now on.
-
-		16.04.2008	Creating Sqlite Database script in usual way fails due to unsupported ALTER TABLE ADD CONSTRAINT.
-				Solution could be parsing these statements and separate the step of creating foreign keys to an
-				internal subsequent statement. While parsing them the statements could be rewritten to be triggers.
-				Additional metadata could be created to enable logical extraction of foreign key information.
-
-		14.04.2008	Importing XMI 2.1 formatted files are working, but complete application logic transfer
-				to a new database does not work. There are missing three steps:
-
-				1. In the table column_types is missing ro boolean column.
- 				2. No user account has been created.
-				3. Type of dynamic database formular must be created in table formulartypen.
-
-				ODBC library path settings should be taken from odbc_config.
-
-				Shell scripts for setting um environment under Mac OS X does still not work.
-
-		01.04.2008	Testing package on a newly installed Mac OS X.
+		There are any things that are not working without manual steps:
 				
-				There are any things that are not working without manual steps:
+		Must call environment-osx.sh to get OSTYPE and some other environment
+		variables.
+
+		Download unixODBC and do the following steps:
+
+		./configure --enable-gui=no     (If no Qt libraries are installed)
+		make
+		make install
+
+		The configure script does set the prefix to /usr/local, so I may change my
+		prefix for the required libodbc.dylib file.
+
+		CVS source code version needs to get wxWidgets from anywhere.
+		On Mac it is still the wxMac 2.6.2 version.
+
+		Build the wxWidgets library with the following options:
+
+		./configure --enable-monolithic=yes --enable-shared=yes
+		make
+		make install
+
+		After installing the library, you need to remove the created dylib files in
+		output directory of the wxWidgets library. Do not make clean.
+
+		Add /usr/local/bin to the path variable to enable access to wx-config, if
+		the prefix has not been changed.
+
+		The environment-osx.sh script does not really work. Do a cat and copy paste
+		the commands.
+
+		The documentation for the Mac OS X system must be written in the API doc.
+
+		The Sqlite library didn't get cleaned and installed nor build. It is propably
+		not in the target list.
+
+		Sample.r in vendor/wxaui-0.9.1/sample is missing.
+
+03.12.2005	DatabaseForms lack to handle proper adding of data in an empty table.
+		The form does not update the entered data after 'Add' has been pressed.
+		There must be added a second row. Then manipulating rows will work.
+
+18.10.2005	DatabaseReport is missing a function to get the value of a replacement.
+		The replacement for example is a customer number that will be shown in
+		the form, that calls the database report. In the case of custom where
+		clauses, the column of the where clause may contain a foreign key and it
+		should be shown the representative value of it.
 				
-				Must call environment-osx.sh to get OSTYPE and some other environment
-				variables.
-
-				Download unixODBC and do the following steps:
-
-					./configure --enable-gui=no     (If no Qt libraries are installed)
-					make
-					make install
-
-				The configure script does set the prefix to /usr/local, so I may change my
-				prefix for the required libodbc.dylib file.
-
-				CVS source code version needs to get wxWidgets from anywhere.
-				On Mac it is still the wxMac 2.6.2 version.
-
-				Build the wxWidgets library with the following options:
-
-					./configure --enable-monolithic=yes --enable-shared=yes
-					make
-					make install
-
-				After installing the library, you need to remove the created dylib files in
-				output directory of the wxWidgets library. Do not make clean.
-
-				Add /usr/local/bin to the path variable to enable access to wx-config, if
-				the prefix has not been changed.
-
-				The environment-osx.sh script does not really work. Do a cat and copy paste
-				the commands.
-
-				The documentation for the Mac OS X system must be written in the API doc.
-
-				The Sqlite library didn't get cleaned and installed nor build. It is propably
-				not in the target list.
-
-				Sample.r in vendor/wxaui-0.9.1/sample is missing.
-
-		03.12.2005	DatabaseForms lack to handle proper adding of data in an empty table.
-				The form does not update the entered data after 'Add' has been pressed.
-				There must be added a second row. Then manipulating rows will work.
-
-		18.10.2005	DatabaseReport is missing a function to get the value of a replacement.
-				The replacement for example is a customer number that will be shown in
-				the form, that calls the database report. In the case of custom where
-				clauses, the column of the where clause may contain a foreign key and it
-				should be shown the representative value of it.
+		It this case the customer number should be shown. If the database report
+		has been called from inside a database form, the form could pass it self
+		to the database report as a parent. Given this, the form could ask the
+		database form for the correct value, since it has it.
 				
-				It this case the customer number should be shown. If the database report
-				has been called from inside a database form, the form could pass it self
-				to the database report as a parent. Given this, the form could ask the
-				database form for the correct value, since it has it.
+		But there will be another case of calling a database report. The application
+		could be configured to have a menu entry. In this case there is no form as a
+		base.
 				
-				But there will be another case of calling a database report. The application
-				could be configured to have a menu entry. In this case there is no form as a
-				base.
+		The best enhancement then would be the extraction of that code, who is
+		responsible for getting the values inside the foreign key drop down boxes.
 				
-				The best enhancement then would be the extraction of that code, who is
-				responsible for getting the values inside the foreign key drop down boxes.
-				
-				This also could be used inside the database report.
+		This also could be used inside the database report.
 
-		30.09.2005	Database type int8 from postgreSQL is currently not supported.
+30.09.2005	Database type int8 from postgreSQL is currently not supported.
 
-			01.10.2005: Added the support. Also detect redadonly columns such
-				as aggregated columns (count, avg, ...)
+		01.10.2005: Added the support. Also detect redadonly columns such
+		as aggregated columns (count, avg, ...)
 
-		24.09.2005	If the binary samples downloaded and no database configuration
-				has been set up (ODBC setup), the application crashes with a
-				NULL pointer exeption.
+24.09.2005	If the binary samples downloaded and no database configuration
+		has been set up (ODBC setup), the application crashes with a
+		NULL pointer exeption.
 				
-			24.09.2005: 
-					Need to create an assistant for ODBC setup,
-					need to extend the database classes to support
-					with ODBC setup API.
+24.09.2005
+		Need to create an assistant for ODBC setup,
+		need to extend the database classes to support
+		with ODBC setup API.
 					
-			24.09.2005:
-					Fallback to a file based configuration. This is in
-					work, but no decision has been made.
+24.09.2005
+		Fallback to a file based configuration. This is in
+		work, but no decision has been made.
 					
-					A first step would be streaming, then syncing with
-					the database.
+		A first step would be streaming, then syncing with
+		the database.
 
-			24.09.2005:
-					There may be a bug in the current ODBC driver. Uninstalling
-					it and reinstalling the 7.03.0200 driver fails, because the
-					old driver isn't uninstalled properly.
+24.09.2005
+		There may be a bug in the current ODBC driver. Uninstalling
+		it and reinstalling the 7.03.0200 driver fails, because the
+		old driver isn't uninstalled properly.
 					
-					This may have to do with the database installer's optional
-					ODBC driver installing step. 
+		This may have to do with the database installer's optional
+		ODBC driver installing step. 
 
-		28.08.2005	There is a design problem or a visual problem with foreign key
-				values, when they should show names that could appear multiple
-				times. In this case it is unclear what the user should select.
+28.08.2005	There is a design problem or a visual problem with foreign key
+		values, when they should show names that could appear multiple
+		times. In this case it is unclear what the user should select.
 
-				As a sample, the formular_parameters form points to it's formular
-				table, in which case the additional information about the application
-				is missing.
+		As a sample, the formular_parameters form points to it's formular
+		table, in which case the additional information about the application
+		is missing.
 
-				There were two solutions for that:
+		There were two solutions for that:
 
-				Show the application at the second name in the drop down list.
+		Show the application at the second name in the drop down list.
 
-				Let the list depent it's values on another dropdown's selected value.
-				In that case the selected application. If the application for the current
-				entry has been changed, the form value becomes invalid, because the containing
-				list of forms has been chaned too.
+		Let the list depent it's values on another dropdown's selected value.
+		In that case the selected application. If the application for the current
+		entry has been changed, the form value becomes invalid, because the containing
+		list of forms has been chaned too.
 
-		26.08.2005	There is a problem with queries, that don't result in data.
-				The form then has no result set and probably could not add
-				new data.
-				
-			28.08.2005: Adding works, but the app crashes after adding
-				by navigating to any other data. This must be tested a little
-				more.
+26.08.2005	There is a problem with queries, that don't result in data.
+		The form then has no result set and probably could not add
+		new data.
 
-		14.08.2005	Mac OS X:
+28.08.2005	Adding works, but the app crashes after adding
+		by navigating to any other data. This must be tested a little
+		more.
+
+14.08.2005	Mac OS X:
 		
-				Debug Malloc functionality should be integrated, if there is anything
-				to integrate.
-				http://developer.apple.com/releasenotes/DeveloperTools/MallocOptions.html
+		Debug Malloc functionality should be integrated, if there is anything
+		to integrate.
+		http://developer.apple.com/releasenotes/DeveloperTools/MallocOptions.html
 
-				There still is a problem with check boxes.
-				
-				Database scripts:
-				
-				There is still a bad thing with database model scripts for different
-				database systems. Isn't there a solution for it in one file of any
-				format ?
+		There still is a problem with check boxes.
 		
-		09.08.2005	Master -> detail and detail -> master dialogs have been implemented.
+		Database scripts:
 				
-				Missing functionality are direct update events, if an user select a
-				different row in the master dialog (customers for example). The update
-				could be fired by pressing the action button after the data has been
-				displayed.
+		There is still a bad thing with database model scripts for different
+		database systems. Isn't there a solution for it in one file of any
+		format ?
 		
-		27.04.2005	There is a problem in the new configuration dialog, that let the user select
-				the correct column to show for a foreign key.
-				
-				If the table is only, say, a connection table for other entries, the real data
-				to be shown would be in the master table of the referred entry.
-				
-				Slave table
-				    Master table to be referrenced by entries of slave table.
-				A-> location A
-				|
-				B-> location B
-				|
-				C-> location C
-				
-		19.04.2005	There was a problem with readonly columns and the bound column for it.
-				
-			19.04.2004 Solution was to shortly unbind the column. -> API enhancement.
-
-		01.02.2005	Problems to port the framework to Mac OS X 10 and hints for solutions found.
-
-			?	Any solution has been found.
-		
-				--------------------------------------------------------------------------
-				Try to compile code under Mac OS X 10 makes some problems. Try with lbHook
-				--------------------------------------------------------------------------
-
-				copy lbkey.h from lbclasses directory to the include directory in CPP
-	
-				export path=$(path):~/bin geht unter MAC OS X 10 nicht ???
-				=> makefile.configure: Change @mkmk to ~/bin/mkmk
-	
-				lbHook.cpp:45: dlfcn.h: No such file or directory ???
-				=> found one in /sw/include
-	
-				lbConfigHook.h:72: malloc.h: No such file or directory ???
-				=> found one in /usr/include/sys
-				=> Makes this problems with wxWidgets include path ???
-	
-				cc: cannot specify -o with -c or -S and multiple compilations ???
-				=> removed the -o (Possible only in OS X and not in Linux)
+09.08.2005	Master -> detail and detail -> master dialogs have been implemented.
 			
-				/usr/bin/ld: Undefined symbols: ???
-				_main
-				__._8ofstream
-				___8ofstreami
-				___builtin_delete
-				___builtin_new
-				___builtin_vec_delete
-				___builtin_vec_new
-				___ls__7ostreamPCc
-				___ls__7ostreamc
-				___ls__7ostreami
-				___pure_virtual
-				___rtti_si
-				___rtti_user
-				___throw
-				_dlclose
-				_dlopen
-				_dlsym
-				_open__8ofstreamPCcii
-				_terminate__Fv
+		Missing functionality are direct update events, if an user select a
+		different row in the master dialog (customers for example). The update
+		could be fired by pressing the action button after the data has been
+		displayed.
 		
-		29.01.2005	Database problems and other things
-				Found some unimplemented features in the MYSQL database
-				engine, or the workaround dows not work.
+27.04.2005	There is a problem in the new configuration dialog, that let the user select
+		the correct column to show for a foreign key.
 				
-				The database does not support foreign keys in tables not of
-				type InnoDB. But I have changed it to these types and while
-				creating the tables again, I run into an error message like this:
-				
-				
-				Error
-				
-				SQL-query : 
-				
-				CREATE TABLE Formulare(
-				id INTEGER NOT NULL AUTO_INCREMENT ,
-				Name VARCHAR( 30 ) ,
-				MenuName VARCHAR( 30 ) ,
-				EventName VARCHAR( 30 ) ,
-				MenuHilfe VARCHAR( 100 ) ,
-				AnwendungID INTEGER,
-				Typ INTEGER NOT NULL ,
-				PRIMARY KEY ( id ) ,
-				FOREIGN KEY FK_AnwendungID( AnwendungID ) REFERENCES Anwendungen( id )
-				) TYPE = INNODB
-				
-				MySQL said:
-				
-				Can't create table '.\lbdmf\formulare.frm' (errno: 150)
-				
-				
-				Solutions:
-				
-				I would create the referencing logic at application level, but I haven't
-				yet created a general class structure to hide this from normal application
-				code.
-				
-				I still have a table that documents the foreign key column at a specific
-				table. It hints to the primary table, wich would be a great help for me to
-				only make minor changes in my code.
-				
-				
-				
-				TODO: Deactivate the part of reading out foreign keys by SQLForeignKeys.
-				Directly use the table from lbdmf. Getting the primary key via SQLPrimaryKeys
-				would be working.
-				
-				Table: ForeignKey_VisibleData_Mapping having these columns:
+		If the table is only, say, a connection table for other entries, the real data
+		to be shown would be in the master table of the referred entry.
 
-					(FKName, FKTable, PKName, PKTable)
+		Slave table
+		Master table to be referrenced by entries of slave table.
+		A-> location A
+		|
+		B-> location B
+		|
+		C-> location C
 				
-				To handle the additional refferential from one table to primary table, I would still
-				have a column PKName, but I store another field to hint to a column to show instead
-				the primary key.
+19.04.2005	There was a problem with readonly columns and the bound column for it.
+		
+		Solution was to shortly unbind the column. -> API enhancement.
+
+01.02.2005	Problems to port the framework to Mac OS X 10 and hints for solutions found.
+
+		?	Any solution has been found.
+		
+		--------------------------------------------------------------------------
+		Try to compile code under Mac OS X 10 makes some problems. Try with lbHook
+		--------------------------------------------------------------------------
+
+		copy lbkey.h from lbclasses directory to the include directory in CPP
+	
+		export path=$(path):~/bin geht unter MAC OS X 10 nicht ???
+		=> makefile.configure: Change @mkmk to ~/bin/mkmk
+	
+		lbHook.cpp:45: dlfcn.h: No such file or directory ???
+		=> found one in /sw/include
+
+		lbConfigHook.h:72: malloc.h: No such file or directory ???
+		=> found one in /usr/include/sys
+		=> Makes this problems with wxWidgets include path ???
+	
+		cc: cannot specify -o with -c or -S and multiple compilations ???
+		=> removed the -o (Possible only in OS X and not in Linux)
+			
+		/usr/bin/ld: Undefined symbols: ???
+		_main
+		__._8ofstream
+		___8ofstreami
+		___builtin_delete
+		___builtin_new
+		___builtin_vec_delete
+		___builtin_vec_new
+		___ls__7ostreamPCc
+		___ls__7ostreamc
+		___ls__7ostreami
+		___pure_virtual
+		___rtti_si
+		___rtti_user
+		___throw
+		_dlclose
+		_dlopen
+		_dlsym
+		_open__8ofstreamPCcii
+		_terminate__Fv
+		
+29.01.2005	Database problems and other things
+		Found some unimplemented features in the MYSQL database
+		engine, or the workaround dows not work.
+				
+		The database does not support foreign keys in tables not of
+		type InnoDB. But I have changed it to these types and while
+		creating the tables again, I run into an error message like this:
+				
+				
+		Error
+				
+		SQL-query : 
+				
+		CREATE TABLE Formulare(
+		id INTEGER NOT NULL AUTO_INCREMENT ,
+		Name VARCHAR( 30 ) ,
+		MenuName VARCHAR( 30 ) ,
+		EventName VARCHAR( 30 ) ,
+		MenuHilfe VARCHAR( 100 ) ,
+		AnwendungID INTEGER,
+		Typ INTEGER NOT NULL ,
+		PRIMARY KEY ( id ) ,
+		FOREIGN KEY FK_AnwendungID( AnwendungID ) REFERENCES Anwendungen( id )
+		) TYPE = INNODB
+		
+		MySQL said:
+				
+		Can't create table '.\lbdmf\formulare.frm' (errno: 150)
+				
+		
+		Solutions:
+				
+		I would create the referencing logic at application level, but I haven't
+		yet created a general class structure to hide this from normal application
+		code.
+				
+		I still have a table that documents the foreign key column at a specific
+		table. It hints to the primary table, wich would be a great help for me to
+		only make minor changes in my code.
+				
+				
+			
+		TODO: Deactivate the part of reading out foreign keys by SQLForeignKeys.
+		Directly use the table from lbdmf. Getting the primary key via SQLPrimaryKeys
+		would be working.
+				
+		Table: ForeignKey_VisibleData_Mapping having these columns:
+
+			(FKName, FKTable, PKName, PKTable)
+			
+		To handle the additional refferential from one table to primary table, I would still
+		have a column PKName, but I store another field to hint to a column to show instead
+		the primary key.
 				
 				
 				
