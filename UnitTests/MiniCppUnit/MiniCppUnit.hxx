@@ -89,6 +89,11 @@
 #include <sstream>
 #include <list>
 
+#ifdef __MINGW32__
+#include <windows.h>
+#include <stdio.h>
+#endif
+
 #ifdef _MSC_VER
 #if _MSC_VER < 1300
 /** necesary for Visual 6 which don't define std::min */
@@ -99,6 +104,8 @@ namespace std
 }
 #endif
 #endif
+
+void sig_handler(int signr);
 
 /**
  * A singleton class.
@@ -160,6 +167,8 @@ public:
 	virtual std::string name() const = 0;
 };
 
+typedef BOOL (WINAPI *TdoSetConsoleTextAttribute)(HANDLE hConsoleOutput, WORD attr);
+
 
 /**
  * This class is just a placeholder for all assert functions --as static methods.
@@ -182,12 +191,77 @@ public:
 	static const char * bold() { return ""; }
 	static const char * yellow() { return ""; }
 #else
-	static const char * blue() { return "\033[36;1m"; }
-	static const char * green() { return "\033[32;1m"; }
-	static const char * red() { return "\033[31;1m"; }
-	static const char * normal() { return "\033[0m"; }
-	static const char * bold() { return "\033[" "1m"; }
-	static const char * yellow() { return "\033[93;1m"; }
+	#ifdef __MINGW32__
+
+	static const WORD    ForeColorWhite = 15;
+	static const WORD    ForeColorGreen = 0xA;
+	static const WORD    ForeColorYellow = 6;
+	static const WORD    ForeColorBlue = 1;
+	static const WORD    ForeColorRed = 4;
+	static const WORD    BackColor = 0;
+	static WORD    wAttributesOld;
+	static CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	
+	static void *getConsoleFunction(char *name) {
+		static HMODULE kernel32=(HMODULE)0xffffffff;
+		if(kernel32==0)
+			return NULL;
+		if(kernel32==(HMODULE)0xffffffff) {
+			kernel32=LoadLibrary("kernel32.dll");
+			if(kernel32==0) return 0;
+        }
+		return (void*) GetProcAddress(kernel32,name);
+	}
+
+	static void SetColor(WORD attr) {
+		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+		TdoSetConsoleTextAttribute doSetConsoleTextAttribute = (TdoSetConsoleTextAttribute) getConsoleFunction("SetConsoleTextAttribute");
+		if (doSetConsoleTextAttribute) {
+			(*doSetConsoleTextAttribute)(h,attr);
+		}
+	}
+
+	static void whitecolor()
+	{
+		SetColor(15);
+	}
+
+	static void redcolor()
+	{
+		SetColor(12);
+	}
+
+	static void bluecolor()
+	{
+		SetColor(9);
+	}
+
+	static void greencolor()
+	{
+		SetColor(10);
+	}
+
+	static void yellowcolor()
+	{
+		SetColor(14);
+	}
+
+
+	static const char * blue() { bluecolor(); return ""; }
+		static const char * green() { greencolor(); return ""; }
+		static const char * red() { redcolor(); return ""; }
+		static const char * normal() { whitecolor(); return ""; }
+		static const char * bold() { return ""; }
+		static const char * yellow() { yellowcolor(); return ""; }
+	#else
+		static const char * blue() { return "\033[36;1m"; }
+		static const char * green() { return "\033[32;1m"; }
+		static const char * red() { return "\033[31;1m"; }
+		static const char * normal() { return "\033[0m"; }
+		static const char * bold() { return "\033[" "1m"; }
+		static const char * yellow() { return "\033[93;1m"; }
+	#endif
 #endif
 	template<typename AType>
 	static void assertEquals( const AType& expected, const AType& result,
@@ -388,43 +462,20 @@ public:
  */
 class TestFixtureFactory
 {
-private:
+public:
 	/** Well behaved singleton:
 	 *  Don't allow instantiation apart from theInstance(), so private ctr.*/
-	TestFixtureFactory()
-	{
-	}
-	typedef Test* (*FixtureCreator)();
-	std::list<FixtureCreator> _creators;
+	TestFixtureFactory();
 public:
-	/** Accessor to the (static) singleton instance */
-	static TestFixtureFactory& theInstance()
-	{
-		static TestFixtureFactory theFactory;
-		return theFactory;
-	}
-	bool runTests()
-	{
-		std::list<FixtureCreator>::iterator it;
-		for(it=_creators.begin(); it!=_creators.end(); it++)
-		{
-			FixtureCreator creator = *it;
-			Test* test = creator();
-			test->runTest();
-			delete test;
-		}
-		std::string errors =  TestsListener::theInstance().logString();
-		if (errors!="") std::cout << "\n\nError Details:\n" << errors;
-		std::cout << TestsListener::theInstance().summary();
+	typedef Test* (*FixtureCreator)();
 
-		return TestsListener::theInstance().allTestsPassed();
-	}
-	void addFixtureCreator(FixtureCreator creator)
-	{
-		_creators.push_back( creator );
-	}
-
+	bool runTests();
+	void addFixtureCreator(FixtureCreator creator);
 };
+
+	/** Accessor to the (static) singleton instance */
+TestFixtureFactory& __cdecl theInstance();
+
 
 /**
  * Macro a usar després de cada classe de test
@@ -438,8 +489,7 @@ class Registrador##ConcreteTestFixture \
 public: \
 	Registrador##ConcreteTestFixture() \
 	{ \
-		TestFixtureFactory::theInstance().addFixtureCreator( \
-				Creador##ConcreteTestFixture); \
+		theInstance().addFixtureCreator(Creador##ConcreteTestFixture); \
 	} \
 }; \
 static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
@@ -463,6 +513,13 @@ static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
 
 #define FAIL( why ) \
 	Assert::fail(#why, __FILE__, __LINE__);
+
+	//TestsListener::theInstance().testHasThrown();
+
+#define THROWN( why ) \
+	printf("%s%s%s%s", "Exception catched by MiniCppUnit: \n", "what() : ", Assert::yellow(), #why); \
+	printf("%s\n", Assert::normal()); \
+	throw new std::exception();
 
 /**
  * Macros that allows to write the  constructor of the concrete TestFixture.

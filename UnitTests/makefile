@@ -124,8 +124,8 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
-TARGETEXE=exe
-TARGETPLUGIN=dll_target_mingw
+TARGETEXE=exe_target_mingw
+TARGETPLUGIN=plugin_target_mingw
 TARGETFRAMEWORK=dll
 TARGETDLLMINGW=dll_target_mingw
 

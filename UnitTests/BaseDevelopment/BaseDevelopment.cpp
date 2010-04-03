@@ -1,30 +1,14 @@
 #include "../MiniCppUnit/MiniCppUnit.hxx"
 
 #include <lbConfigHook.h>
+#include <signal.h>
 
 #define DONT_USE_LBDMF_EXCEPTIONS
 
-void sig_handler(int signr) {
-#ifdef __MINGW__
-#endif
-#ifdef LINUX
-	switch (signr) {
-		case SIGSEGV:
-			FAIL("SIGSEGV happened.");
-			break;
-		case SIGBUS:
-			FAIL("SIGBUS happened.");
-			break;
-		default:
-			break;
-	}
-#endif
-}
-
-class BaseDevelopment : public TestFixture<BaseDevelopment>
+class BaseDevelopmentString : public TestFixture<BaseDevelopmentString>
   {
   public:
-      TEST_FIXTURE( BaseDevelopment )
+      TEST_FIXTURE( BaseDevelopmentString )
       {
 		  TEST_CASE(test_Instanciate_lbString)
 		  TEST_CASE(test_lbString_Initialized_properly)
@@ -36,7 +20,7 @@ class BaseDevelopment : public TestFixture<BaseDevelopment>
 		  TEST_CASE(test_lbString_getData)
 		  TEST_CASE(test_lbString_setDataWithUnknownLong)
 		  TEST_CASE(test_lbString_setDataWithUnknownNULL)
-      }
+	 }
 
 	  
   public:
@@ -176,5 +160,73 @@ class BaseDevelopment : public TestFixture<BaseDevelopment>
       }
   };
 
-REGISTER_FIXTURE( BaseDevelopment );
+
+ 
+class BaseDevelopmentDatabase : public TestFixture<BaseDevelopmentDatabase>
+  {
+  public:
+      TEST_FIXTURE( BaseDevelopmentDatabase )
+      {
+		  TEST_CASE(test_Instanciate_lbDatabase)
+		  TEST_CASE(test_Instanciate_lbDatabase_setUser)
+		  TEST_CASE(test_Instanciate_lbDatabase_setDB)
+	 }
+
+	  
+  public:
+      void setUp()
+      {
+#ifdef __MINGW32__
+		  signal(SIGSEGV, sig_handler);
+		  signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		  signal(SIGSEGV, sig_handler);
+		  signal(SIGBUS, sig_handler);
+#endif
+	  }
+
+      void tearDown()
+	  {
+	  }
+
+	  void test_Instanciate_lbDatabase( void )
+	  {
+		  puts("test_Instanciate_lbDatabase");
+		  UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		  
+		  ASSERT_EQUALS( true, db.getPtr() != NULL );
+	  }
+	  
+	  
+	  void test_Instanciate_lbDatabase_setUser( void )
+	  {
+		  puts("test_Instanciate_lbDatabase_setUser");
+		  UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		  
+		  ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		  ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
+	  }
+
+	  void test_Instanciate_lbDatabase_setDB( void )
+	  {
+		  puts("test_Instanciate_lbDatabase_setDB");
+		  UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		  
+		  ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		  ASSERT_EQUALS( true, db->setDB(NULL) == ERR_ILLEGAL_PARAMETER);
+	  }
+
+      bool LoadSettings()
+      {
+        return true;
+      }
+  };
+
+
+
+REGISTER_FIXTURE( BaseDevelopmentString );
+REGISTER_FIXTURE( BaseDevelopmentDatabase );
 

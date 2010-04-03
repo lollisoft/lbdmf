@@ -41,6 +41,37 @@ namespace std
 #include <math.h>
 #endif
 
+#include <signal.h>
+
+
+void sig_handler(int signr) {
+#ifdef __MINGW32__
+	switch (signr) {
+		case SIGSEGV:
+			THROWN("SIGSEGV happened.");
+			break;
+		case SIGABRT:
+			THROWN("SIGABRT happened.");
+			break;
+		default:
+			break;
+	}
+#endif
+#ifdef LINUX
+	switch (signr) {
+		case SIGSEGV:
+			THROWN("SIGSEGV happened.");
+			break;
+		case SIGBUS:
+			THROWN("SIGBUS happened.");
+			break;
+		default:
+			break;
+	}
+#endif
+}
+
+
 TestsListener& TestsListener::theInstance()
 {
 	static TestsListener instancia;
@@ -71,36 +102,41 @@ void TestsListener::testHasRun()
 }
 void TestsListener::testHasFailed()
 {
-  std::cout << "F" << std::endl;
+	printf("%s", Assert::blue());
+	printf("%s", "F");
+	printf("%s\n", Assert::normal());
+
 	theInstance()._failed++;
 	throw TestFailedException();
 }
 void TestsListener::testHasThrown()
 {
-  std::cout << "E" << std::endl;
+	printf("%s", Assert::yellow());
+	printf("%s", "E");
+	printf("%s\n", Assert::normal());
 	theInstance()._exceptions++;
 }
 std::string TestsListener::summary()
 {
-	std::ostringstream os;
-	os	<< "\nSummary:\n"
-		<< Assert::bold() << "\tExecuted Tests:         " 
-		<< _executed << Assert::normal() << std::endl
-		<< Assert::green() << "\tPassed Tests:           " 
-		<< (_executed-_failed-_exceptions) 
-		<< Assert::normal() << std::endl;
+	
+	printf("\nSummary:\n");
+	printf("%s%s%d%s\n", Assert::bold(), "\tExecuted Tests:\t", _executed, Assert::normal());
+	printf("%s%s%d%s\n", Assert::green(), "\tPassed Tests:\t", (_executed-_failed-_exceptions), Assert::normal());
+
 	if (_failed > 0)
 	{
-		os 	<< Assert::red() << "\tFailed Tests:           " 
-			<< _failed << Assert::normal() << std::endl;
+		printf("%s%s%d%s\n", Assert::red(), "\tFailed Tests:\t", _failed, Assert::normal());
 	}
 	if (_exceptions > 0)
 	{
-		os 	<< Assert::yellow() << "\tUnexpected exceptions:  " 
-			<< _exceptions << Assert::normal() << std::endl;
+		printf("%s%s%d%s\n", Assert::yellow(), "\tUnexpected exceptions:\t", _exceptions, Assert::normal());
 	}
-	os << std::endl;
-	return os.str();
+
+	printf("%s", Assert::normal());
+
+	std::string s = "";
+
+	return s;
 }
 bool TestsListener::allTestsPassed()
 {
@@ -257,4 +293,36 @@ void Assert::fail(const char* motiu, const char* file, int linia)
 	TestsListener::theInstance().testHasFailed();
 }
 
+std::list<TestFixtureFactory::FixtureCreator> _creators;
 
+TestFixtureFactory::TestFixtureFactory() {
+
+}
+
+TestFixtureFactory& __cdecl theInstance()
+{
+	static TestFixtureFactory theFactory;
+	return theFactory;
+}
+
+bool TestFixtureFactory::runTests()
+{
+	std::list<FixtureCreator>::iterator it;
+	for(it=_creators.begin(); it!=_creators.end(); it++)
+	{
+		FixtureCreator creator = *it;
+		Test* test = creator();
+		test->runTest();
+		delete test;
+	}
+	std::string errors =  TestsListener::theInstance().logString();
+	if (errors!="") std::cout << "\n\nError Details:\n" << errors;
+	std::cout << TestsListener::theInstance().summary();
+
+	return TestsListener::theInstance().allTestsPassed();
+}
+
+void TestFixtureFactory::addFixtureCreator(FixtureCreator creator)
+{
+	_creators.push_back( creator );
+}
