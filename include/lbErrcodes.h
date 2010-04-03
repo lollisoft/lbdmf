@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.39 2010/01/15 18:48:48 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.40 2010/04/03 10:28:09 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.40  2010/04/03 10:28:09  lollisoft
+ * Added an error code when parameters are illegal.
+ * For sample, passing a NULL pointer mostly will be
+ * illegal.
+ *
  * Revision 1.39  2010/01/15 18:48:48  lollisoft
  * Interceptor logic works as long as one database form is
  * not closed when another is opened and then the
@@ -180,6 +185,7 @@
 /*...slbErrCodes:0:*/
 enum lbErrCodes { 
 	ERR_NONE = 0,
+	ERR_ILLEGAL_PARAMETER,
 
 /* A yet not specified err code */
 	
