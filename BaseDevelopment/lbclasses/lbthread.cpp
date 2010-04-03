@@ -421,11 +421,91 @@ DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
 /*...e*/
 #endif //WINDOWS
 
+#ifdef LINUX
+/*...slbThreadInternal:0:*/
+
+// TLS index of the slot where we store the pointer to the current thread
+static DWORD s_tlsThisThread = 0xFFFFFFFF;
+static DWORD s_idMainThread = 0;
+
+/*...sclass lbThreadInternal:0:*/
+class lbThreadInternal {
+public:
+    lbThreadInternal()
+    {
+        lb_hThread = 0;
+    }
+	
+    // create a new (suspended) thread (for the given thread object)
+    lbErrCodes Create(lbThread *thread);
+	
+    // suspend/resume/terminate
+    lbErrCodes suspend();
+    lbErrCodes resume();
+    // thread state
+	
+    // thread handle and id
+    int getHandle() const { 
+		/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+        
+        _LOG << "lbThreadInternal::getHandle returns " << (lb_hThread == NULL) ? "NULL" : "Not NULL" LOG_
+#endif
+		/*...e*/
+    	return lb_hThread; 
+    }
+    int  getId() const { 
+		/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+    	_CL_VERBOSE << "lbThreadInternal::getId called" LOG_
+#endif
+		/*...e*/
+    	return lb_ThreadId; 
+    }
+	
+    // thread function
+    static DWORD WinThreadStart(lbThread *thread);
+	
+private:
+    int        lb_hThread;    // handle of the thread
+    int        lb_ThreadId;  // thread id
+};
+/*...e*/
+
+/*...slbThreadInternal\58\\58\Create\40\lbThread \42\thread\41\:0:*/
+lbErrCodes lbThreadInternal::Create(lbThread *thread) {
+    return ERR_NONE;
+}
+/*...e*/
+
+/*...slbThreadInternal\58\\58\suspend\40\\41\:0:*/
+lbErrCodes lbThreadInternal::suspend() {
+    return ERR_NONE;
+}
+/*...e*/
+
+/*...slbThreadInternal\58\\58\resume\40\\41\:0:*/
+lbErrCodes lbThreadInternal::resume() {
+    return ERR_NONE;
+}
+/*...e*/
+
+/*...slbThreadInternal\58\\58\WinThreadStart\40\lbThread \42\thread\41\:0:*/
+DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
+{
+	DWORD ret = 0;
+    return ret;
+}
+/*...e*/
+/*...e*/
+#endif //LINUX
+
+
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbThread)
 ADD_INTERFACE(lb_I_Thread)
 END_IMPLEMENT_LB_UNKNOWN()
 
-static int lbThread::threadCount;
+int lbThread::threadCount = 0;
 /*...slbThread:0:*/
 lbThread::lbThread() {
 /*...sTHREAD_VERBOSE:0:*/
