@@ -5462,17 +5462,13 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 class lbDatabase :
 public lb_I_Database
 {
-private:
-
-	DECLARE_LB_UNKNOWN()
-
 public:
-        lbDatabase();
-        virtual ~lbDatabase();
-
 	lbErrCodes	LB_STDCALL init();
 	void	LB_STDCALL close();
 	void	LB_STDCALL open(char* connectionname);
+
+	lbErrCodes	LB_STDCALL setUser(char* _user);
+	lbErrCodes	LB_STDCALL setDB(char* _db);
 
 	bool		LB_STDCALL isConnected();
 
@@ -5485,12 +5481,10 @@ public:
 	 *		passwd	database password
 	 */
 	lbErrCodes	LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd);
-	lb_I_Query*	LB_STDCALL getQuery(char* connectionname, int readonly = 1);
-
 	lbErrCodes	LB_STDCALL connect(char* connectionname, char* pass);
 
-	lbErrCodes	LB_STDCALL setUser(char* _user);
-	lbErrCodes	LB_STDCALL setDB(char* _db);
+	lb_I_Query*	LB_STDCALL getQuery(char* connectionname, int readonly = 1);
+
 
 	lb_I_Container* LB_STDCALL getTables(char* connectionname);
 	lb_I_Container* LB_STDCALL getColumns(char* connectionname);
@@ -5505,6 +5499,13 @@ public:
 	lb_I_String*	LB_STDCALL getDBMSVersion();
 
 
+private:
+
+	DECLARE_LB_UNKNOWN()
+
+public:
+        lbDatabase();
+        virtual ~lbDatabase();
 
 
 private:
@@ -5653,6 +5654,7 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
+	if (_user == NULL) return ERR_ILLEGAL_PARAMETER;
 	if (user != NULL) free(user);
 	user = (char*) malloc(strlen(_user)+1);
 	user[0] = 0;
