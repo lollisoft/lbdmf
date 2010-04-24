@@ -1,6 +1,6 @@
 all: testdllow.dll testdll.dll testdllmingw.dll testow.exe testmingw.exe
 
-CALL=-5r
+CALL=-5s
 
 testdll.o: testdll.cpp testdll.h
 		g++ -c testdll.cpp
