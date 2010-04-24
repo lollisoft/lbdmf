@@ -1,3 +1,4 @@
+#undef DLLEXPORT
 #ifdef DLL
 #define DLLEXPORT __declspec(dllexport)
 #endif
@@ -5,32 +6,6 @@
 #ifndef DLL
 #define DLLEXPORT __declspec(dllimport)
 #endif
-
-#define API __stdcall
-
-#include <stdio.h>
-
-enum lbErrCodes {
-	ERR_NONE = 0,
-	ERR_FAIL,
-	ERR_SOWISO
-};
-
-class ITest {
-public:
-	virtual void API release() = 0;
-
-	virtual lbErrCodes API getInt() = 0;
-	virtual bool API getbool() = 0;
-	virtual void API test(char* text, char* p2) = 0;
-
-protected:
-	virtual ~ITest() = 0;  
-};
-
-
-
-
 
 #ifdef __WATCOMC__
 extern "C" void DLLEXPORT API test(char* text);
@@ -51,6 +26,7 @@ extern "C" bool DLLEXPORT API getbool();
 #ifdef __WATCOMC__
 extern "C" DLLEXPORT ITest* API gettest();
 #endif
+
 #ifdef __MINGW32__
 extern "C" DLLEXPORT ITest* API _gettest();
 extern "C" DLLEXPORT ITest* API gettest();

@@ -1,12 +1,10 @@
 #define DLL
+#include "itest.h"
 #include "testdll.h"
 #include <stdio.h>
 
 void test_impl(char* text) {
     printf("Hello from test DLL. Text is '%s'.\n", text);
-}
-
-ITest::~ITest() {
 }
 
 /*...sclass Test:0:*/
@@ -15,7 +13,7 @@ public:
 	Test();
 	virtual ~Test();
         
-	lbErrCodes		API getInt();
+	lbErrCodes		API getInt(char* _int);
     bool			API getbool();
     void			API test(char* text, char* p2);
         
@@ -34,8 +32,9 @@ bool API Test::getbool() {
 	return true;
 }
 
-lbErrCodes API Test::getInt() {
-	return ERR_FAIL;
+lbErrCodes API Test::getInt(char* _int) {
+	if (_int == NULL) return ERR_FAIL;
+	return ERR_NONE;
 }
 
 void API Test::test(char* text, char* p2) {
@@ -49,27 +48,27 @@ void API Test::release() {
 }
 /*...e*/
 
-extern "C" void DLLEXPORT API _test(char* text) {
+DLLEXPORT void API _test(char* text) {
 	test_impl(text);
 }
 
-extern "C" bool DLLEXPORT API _getbool() {
+DLLEXPORT bool API _getbool() {
     return true;
 }
 
-extern "C" DLLEXPORT ITest* API _gettest() {
+DLLEXPORT ITest* API _gettest() {
     return new Test();
 }
 
-extern "C" void DLLEXPORT API test(char* text) {
+DLLEXPORT void API test(char* text) {
 	test_impl(text);
 }
 
-extern "C" bool DLLEXPORT API getbool() {
+DLLEXPORT bool API getbool() {
     return _getbool();
 }
 
-extern "C" DLLEXPORT ITest* API gettest() {
+DLLEXPORT ITest* API gettest() {
     return _gettest();
 }
 
