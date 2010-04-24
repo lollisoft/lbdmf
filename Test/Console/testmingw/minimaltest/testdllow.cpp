@@ -1,30 +1,27 @@
-#include "itest.h"
 #define OWDLL
+#include "itest.h"
 #include "owtestdll.h"
 #include <stdio.h>
 
 class Test : public ITest {
+public:        
+	lbErrCodes		API getInt(char* _int, bool showmsg);
+    bool			API getbool();
+    void			API test(char* text, char* p2);
+    void			API release();
+
 public:
 	Test();
 	virtual ~Test();
-        
-	lbErrCodes		API getInt(char* _int);
-    bool			API getbool();
-    void			API test(char* text, char* p2);
-        
-    virtual void	API release();
 };
 
-
-
 extern "C" DLLEXPORT ITest* API _gettestow() {
-	//printf("Test instance from OW DLL created.\n");
-	Test* t = new Test();
-	return t;
+	printf("Test instance from OW DLL created via _gettestow.\n");
+	return new Test();
 }
 
 extern "C" DLLEXPORT ITest* API gettestow() {
-	//printf("Test instance from OW DLL created.\n");
+	printf("Test instance from OW DLL created via gettestow.\n");
     return _gettestow();
 }
 
@@ -45,7 +42,8 @@ bool API Test::getbool() {
 	return true;
 }
 
-lbErrCodes API Test::getInt(char* _int) {
+lbErrCodes API Test::getInt(char* _int, bool showmsg) {
+	if (showmsg) printf("Test if value is not NULL.\n");
 	if (_int == NULL) return ERR_FAIL;
 	return ERR_NONE;
 }

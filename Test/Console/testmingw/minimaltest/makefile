@@ -1,14 +1,24 @@
-all: testdllow.dll testdll.dll testow.exe testmingw.exe
+all: testdllow.dll testdll.dll testdllmingw.dll testow.exe testmingw.exe
 
+CALL=-5r
 
 testdll.o: testdll.cpp testdll.h
 		g++ -c testdll.cpp
 
 test.obj: test.cpp testdll.h
-		wpp386 -DWINDOWS -w3 -e25 -zq -otexan -5r -of+ -xr /DLBDMF_PRE test.cpp
+		wpp386 -DWINDOWS -w3 -e25 -zq -otexan $(CALL) -of+ -xr /DLBDMF_PRE test.cpp
+
+testdllmingw.o: testdll.cpp testdll.h
+		g++ -c testdll.cpp -o testdllmingw.o
+
+testdllmingw.dll: testdllmingw.o
+		g++ -shared -o testdllmingw.dll testdllmingw.o
+		wlib -q -n -b testdllmingw.lib +testdllmingw.dll
+		wlib -m testdllmingw.dll > exportsmingw.txt
+
 
 testdllow.obj: testdllow.cpp testdll.h
-		wpp386 -DWINDOWS -bd -hd -w3 -e25 -zq -otexan -5r -of+ -xr /DLBDMF_PRE testdllow.cpp
+		wpp386 -DWINDOWS -bd -hd -w3 -e25 -zq -otexan $(CALL) -of+ -xr /DLBDMF_PRE testdllow.cpp
 
 testdllow.dll.lnk: makefile testdllow.obj
 		echo NAME testdllow.dll > $@
@@ -42,4 +52,4 @@ testmingw.exe: test.o
 
 
 clean:
-		rm *.exe *.obj *.o *.dll *.bak *.sym *.lnk *.map *.lib exports.txt
+		rm *.exe *.obj *.o *.dll *.bak *.sym *.lnk *.map *.lib exports.txt exportsmingw.txt
