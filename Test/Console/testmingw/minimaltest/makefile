@@ -52,4 +52,5 @@ testmingw.exe: test.o
 
 
 clean:
-		rm *.exe *.obj *.o *.dll *.bak *.sym *.lnk *.map *.lib exports.txt exportsmingw.txt
+		-del *.err *.exe *.obj *.o *.dll *.bak *.sym *.lnk *.map *.lib exports.txt exportsmingw.txt
+		-rm *.err *.exe *.obj *.o *.dll *.bak *.sym *.lnk *.map *.lib exports.txt exportsmingw.txt
