@@ -31,10 +31,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: misc.cpp,v 1.49 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: misc.cpp,v 1.50 2010/04/25 21:37:09 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.50  2010/04/25 21:37:09  lollisoft
+ * Successfully ported lbHook to MINGW compiler. There were only two issues
+ * I have identified: The enum problem as reported from Michal Necasek having
+ * different sizes and the interface ordering to be equal to implementing class
+ * declaration. But this only belongs to my UnitTest code yet.
+ *
+ * Aim of this is the ability to mix in MINGW modules for features Open Watcom
+ * didn't support yet and let me do this with minimal effort.
+ *
  * Revision 1.49  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -284,6 +293,25 @@ extern "C" {
 /*...sclass lbLog:0:*/
 /// \brief Logging implementation. \todo Separate file to a base class.
 class lbLog : public lb_I_Log {
+public:
+    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level);
+
+/*...slb_I_Log:0:*/
+    virtual void LB_STDCALL log(const char *msg, long line, char* file);
+    virtual void LB_STDCALL log(int log);
+    virtual void LB_STDCALL enable(char *where);
+    virtual void LB_STDCALL disable(char *where);
+    virtual void LB_STDCALL event_begin(char *event);
+    virtual void LB_STDCALL event_end(char *event);
+    virtual void LB_STDCALL setPrefix(char* p);
+    virtual lb_I_Log& LB_STDCALL operator<< (const int i);
+    virtual lb_I_Log& LB_STDCALL operator<< (const long i);
+    virtual lb_I_Log& LB_STDCALL operator<< (const char c);
+    virtual lb_I_Log& LB_STDCALL operator<< (const char* string);
+	virtual void LB_STDCALL setCustomLogFile(char* name);
+/*...e*/
+
+    DECLARE_LB_UNKNOWN()
 
 /*...spublic:0:*/
 public:
@@ -301,33 +329,6 @@ public:
     		delete mutex;
     	}
     }
-/*...e*/
-
-
-    DECLARE_LB_UNKNOWN()
-
-/*...slb_I_Log:0:*/
-    virtual void LB_STDCALL log(const char *msg, long line, char* file);
-
-    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level);
-    
-    virtual void LB_STDCALL log(int log);
-
-    virtual void LB_STDCALL enable(char *where);
-    
-    virtual void LB_STDCALL disable(char *where);
-    
-    virtual void LB_STDCALL event_begin(char *event);
-
-    virtual void LB_STDCALL event_end(char *event);
-
-    virtual void LB_STDCALL setPrefix(char* p);
-    
-    
-    virtual lb_I_Log& LB_STDCALL operator<< (const int i);
-    virtual lb_I_Log& LB_STDCALL operator<< (const long i);
-    virtual lb_I_Log& LB_STDCALL operator<< (const char c);
-    virtual lb_I_Log& LB_STDCALL operator<< (const char* string);
 /*...e*/
 
 /*...sprivate:0:*/
@@ -475,6 +476,10 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
 	logMessage(msg, f, level);
 }
 /*...e*/
+void LB_STDCALL lbLog::setCustomLogFile(char* name) {
+	f[0] = 0;
+	strcat(f, name);
+}
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");

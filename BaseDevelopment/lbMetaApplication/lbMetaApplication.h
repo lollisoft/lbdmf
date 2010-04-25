@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.71 2010/02/17 13:47:26 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.72 2010/04/25 21:37:09 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.72  2010/04/25 21:37:09  lollisoft
+ * Successfully ported lbHook to MINGW compiler. There were only two issues
+ * I have identified: The enum problem as reported from Michal Necasek having
+ * different sizes and the interface ordering to be equal to implementing class
+ * declaration. But this only belongs to my UnitTest code yet.
+ *
+ * Aim of this is the ability to mix in MINGW modules for features Open Watcom
+ * didn't support yet and let me do this with minimal effort.
+ *
  * Revision 1.71  2010/02/17 13:47:26  lollisoft
  * Added default parameter to enable skipping yielding.
  *
@@ -307,16 +316,21 @@ public lb_I_MetaApplication,
 public lb_I_EventHandler
 {
 public:
-	lb_MetaApplication();
-	virtual ~lb_MetaApplication();
-
-	DECLARE_LB_UNKNOWN()
-
-	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	
 	lbErrCodes LB_STDCALL save();
 	lbErrCodes LB_STDCALL load();
-	
+	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
+	lbErrCodes LB_STDCALL setUserName(char* user);
+	lbErrCodes LB_STDCALL setApplicationName(char* app);
+	void	   LB_STDCALL setAutorefreshData(bool b);
+	void	   LB_STDCALL setGUIMaximized(bool b);
+	bool	   LB_STDCALL getGUIMaximized();
+	void	   LB_STDCALL setAutoload(bool b);
+	void	   LB_STDCALL setAutoselect(bool b);
+	bool	   LB_STDCALL getAutorefreshData();
+	bool	   LB_STDCALL getAutoload();
+	bool	   LB_STDCALL getAutoselect();
+	char*	   LB_STDCALL getDirLocation();
+	void	   LB_STDCALL setDirLocation(char* dirloc);
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
@@ -328,56 +342,25 @@ public:
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
 	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
-
-	lbErrCodes LB_STDCALL setUserName(char* user);
-	lbErrCodes LB_STDCALL setApplicationName(char* app);
-
-	void	   LB_STDCALL setDirLocation(char* dirloc);
-	void	   LB_STDCALL setAutoload(bool b);
-	void	   LB_STDCALL setAutorefreshData(bool b);
-	void	   LB_STDCALL setAutoselect(bool b);
-	bool	   LB_STDCALL getAutorefreshData();
-	char*	   LB_STDCALL getDirLocation();
-	bool	   LB_STDCALL getAutoload();
-	bool	   LB_STDCALL getAutoselect();
-	void	   LB_STDCALL setGUIMaximized(bool b);
-	bool	   LB_STDCALL getGUIMaximized();
-
-
 	lb_I_EventManager * getEVManager( void );
-
-	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
-	
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
-	lb_I_Unknown* LB_STDCALL getUnknown();
-	
-	lbErrCodes LB_STDCALL loadSubModules();
-	
 	/**
 	 * Load the real application.
 	 */
 	lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
 	lbErrCodes LB_STDCALL unloadApplication();
-
-	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
-
-	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
-
-/*...sWrapper for some usual GUI functions:8:*/
-
+	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
+	lbErrCodes LB_STDCALL removeToolBar(char* toolbarName);
+	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL);
+	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
+	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
 	lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
-
 	/**
 	 * Add a menu behind the last.
 	 */
 	lbErrCodes LB_STDCALL addMenu(char* name);
-	
 	/**
 	 * Add a menu entry in the named menu after given entry,
 	 * if provided. The handler must be registered.
@@ -390,79 +373,41 @@ public:
 	 */
 	lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
 	lbErrCodes LB_STDCALL addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
-	
-	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
-	lbErrCodes LB_STDCALL removeToolBar(char* toolbarName);
-	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL);
-	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
-	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);
-
-	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry);
-		
-	
-	void LB_STDCALL addStatusBar();
-	
-	void LB_STDCALL addStatusBar_TextArea(char* name);
-	
-	void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true);
-	void LB_STDCALL disableStatusbar();
-	
 	lbErrCodes LB_STDCALL enableEvent(char* name);
 	lbErrCodes LB_STDCALL disableEvent(char* name);
 	lbErrCodes LB_STDCALL toggleEvent(char* name);
-	
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
 	bool			  LB_STDCALL askYesNo(char* msg);
 	void			  LB_STDCALL msgBox(char* title, char* msg);
-	
+	void LB_STDCALL addStatusBar();
+	void LB_STDCALL addStatusBar_TextArea(char* name);
+	void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true);
+	void LB_STDCALL disableStatusbar();
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
 	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false);
-	
-/*...e*/
-
-	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
-
 	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
-
 	lb_I_Parameter* LB_STDCALL getParameter();
-
-	/// \brief My handler for changed properties.
-	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);
-
-	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
-	
 	bool LB_STDCALL login(const char* user, const char* pass);
 	lb_I_Container* LB_STDCALL getApplications();
 	long LB_STDCALL getApplicationID();
-
 	void		LB_STDCALL setActiveApplication(const char* name);
-	
 	lb_I_Unknown*	LB_STDCALL getActiveDocument();
 	void		LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
-
 	void                    LB_STDCALL setPropertyPaneLayoutFloating();
 	void                    LB_STDCALL setPropertyPaneLayoutLeft();
-	bool                    LB_STDCALL isPropertyPaneLayoutFloating();
-	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
-
 	void                    LB_STDCALL showPropertyPanel();
-	
 	lb_I_Applications*		LB_STDCALL getApplicationModel();
 	void                    LB_STDCALL setLoadFromDatabase(bool b);
 	bool                    LB_STDCALL getLoadFromDatabase();
-	
-	void					LB_STDCALL delPropertySet(char* setname);
 	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname);
+	void					LB_STDCALL delPropertySet(char* setname);
 	lb_I_Parameter*			LB_STDCALL getPropertySet(char* setname, bool copy = false);
 	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
-	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
-	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
-	void					LB_STDCALL fireEvent(char* name);
 	char*					LB_STDCALL getSystemDatabaseBackend();
 	char*					LB_STDCALL getApplicationDatabaseBackend();
 	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
@@ -471,11 +416,42 @@ public:
 	void					LB_STDCALL useApplicationDatabaseBackend(bool backend);
 	bool					LB_STDCALL usingSystemDatabaseBackend();
 	bool					LB_STDCALL usingApplicationDatabaseBackend();
-
-	
+	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
+	void					LB_STDCALL fireEvent(char* name);
 	void					LB_STDCALL setProcessName(const char* name);
 	lb_I_String*			LB_STDCALL getProcessName();
+
+	DECLARE_LB_UNKNOWN()
+	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry);
 	
+
+	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	lb_I_Unknown* LB_STDCALL getUnknown();
+	lbErrCodes LB_STDCALL loadSubModules();
+	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
+/*...sWrapper for some usual GUI functions:8:*/
+/*...e*/
+
+	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+	/// \brief My handler for changed properties.
+	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL doLog(lb_I_Unknown* uk);
+	bool                    LB_STDCALL isPropertyPaneLayoutFloating();
+	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
+	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
+
+	
+	
+
+public:
+	lb_MetaApplication();
+	virtual ~lb_MetaApplication();
 
 protected:
 	lb_I_GUI* gui;

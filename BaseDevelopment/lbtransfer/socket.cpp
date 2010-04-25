@@ -85,10 +85,11 @@ extern "C" {
 
 #include <lbInterfaces.h>
 
-#define LB_TRANSFER_DLL
-#include <lbtransfer-module.h>
 #include <lbthread.h>
 #include <socket.h>
+
+#define LB_TRANSFER_DLL
+#include <lbtransfer-module.h>
 /*...e*/
 
 

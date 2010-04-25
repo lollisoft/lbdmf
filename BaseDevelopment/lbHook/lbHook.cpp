@@ -67,7 +67,7 @@
 #endif
 /*...e*/
 
-/*...sLB_HOOK_DLL scope:0:*/
+	/*...sLB_HOOK_DLL scope:0:*/
 #define HOOK_DLL
 #define LB_HOOK_DLL
 #include <lbhook-module.h>
@@ -84,6 +84,10 @@
 #include <direct.h>
 #endif
 
+#ifdef __MINGW32__
+#include <direct.h>
+#endif
+
 #ifdef OSX
 extern "C" {
 #include <objc/malloc.h>
@@ -91,9 +95,10 @@ extern "C" {
 #endif
 /*...e*/
 
-#if !defined(LB_STDCALL)
+
+#if !defined(LB_CDECL)
 #ifdef WINDOWS
-#error LB_STDCALL is not defined !
+#error LB_CDECL is not defined !
 #endif
 #endif
 
@@ -117,12 +122,12 @@ DLLEXPORT int lb_isInitializing = 0;
 #endif
 #ifdef LB_CLASSES_DLL
 LB_DLLIMPORT lb_I_Log *lb_log = NULL;
-LB_DLLIMPORT int lb_isInitializing;
+LB_DLLIMPORT int lb_isInitializing = 0;
 #endif
 #endif
 #ifdef LINUX
-extern lb_I_Log *lb_log;
-extern int lb_isInitializing;
+extern lb_I_Log *lb_log = NULL;
+extern int lb_isInitializing = 0;
 #endif
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
@@ -165,55 +170,57 @@ static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 char* translated = NULL;
 /*...e*/
 
-
 #ifdef __MINGW32__
-extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose() { return isVerbose(); }
-extern "C" DLLEXPORT bool 		LB_STDCALL _isLogActivated() { return isLogActivated(); }
-extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) { return lbLoadModule(name, hinst, skipAutoUnload); }
-extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance() { return getModuleInstance(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track) { set_trackObject(track); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject() { return get_trackObject(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg) { track_Object( o, msg); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what) { setVerbose(what); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setLogActivated(bool what) { setLogActivated(what); }
-extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak() { lbBreak(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level) { logMessage(msg, f, level); }
-extern "C" DLLEXPORT void 		LB_STDCALL _createDirectory(const char* name) { createDirectory(name); }
-extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getModuleHandle() { return getModuleHandle(); }
-extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getLBModuleHandle() { return getLBModuleHandle(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setModuleHandle(HINSTANCE h) { setModuleHandle(h); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setLBModuleHandle(HINSTANCE h) { setLBModuleHandle(h); }
-extern "C" DLLEXPORT int 		LB_STDCALL _isInitializing() { return isInitializing(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setInitializing(int i) { setInitializing(i); }
-extern "C" DLLEXPORT lb_I_Log* 		LB_STDCALL _getLoggerInstance() {return getLoggerInstance(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setLoggerInstance(lb_I_Log* l) { setLoggerInstance(l); }
-extern "C" DLLEXPORT void 		LB_STDCALL _createLogInstance() { return createLogInstance(); }
-extern "C" DLLEXPORT bool 		LB_STDCALL _isSetTRMemTrackBreak() { return isSetTRMemTrackBreak(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _setTRMemTrackBreak(char* brk, int count) { setTRMemTrackBreak(brk, count); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _getTRMemTrackBreak() { return getTRMemTrackBreak(); }
-extern "C" DLLEXPORT void 		LB_STDCALL _InstanceCount(int inst) { InstanceCount(inst); }
-extern "C" DLLEXPORT void 		LB_STDCALL _Instances() { Instances(); }
-extern "C" DLLEXPORT lbErrCodes		LB_STDCALL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) { return lbGetFunctionPtr(name, hinst, pfn); }
-extern "C" DLLEXPORT lbStringKey*	LB_STDCALL _getStringKey(char* buf) { return getStringKey(buf); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _getLogDirectory() { return getLogDirectory(); }
-extern "C" DLLEXPORT bool 		LB_STDCALL _FileExists(char *filename) { return FileExists(filename);}
-extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentProcessId() { return lbGetCurrentProcessId(); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ptoa(void* ptr) { return lb_ptoa(ptr); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr) { return lb_itoa(ptr); }
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr) { return lb_ltoa(ptr); }
-extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId() { return lbGetCurrentThreadId(); }
-extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms) { lb_sleep(ms); }
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
-extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text) { return translateText(text); }
-extern "C" DLLEXPORT void		LB_STDCALL _uninitLocale() { uninitLocale(); }
-extern "C" DLLEXPORT void		LB_STDCALL _unHookAll() { unHookAll(); }
+extern "C" DLLEXPORT bool 		LB_CDECL _isVerbose() { return isVerbose(); }
+extern "C" DLLEXPORT bool 		LB_CDECL _isLogActivated() { return isLogActivated(); }
+extern "C" DLLEXPORT lbErrCodes 	LB_CDECL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) { return lbLoadModule(name, hinst, skipAutoUnload); }
+extern "C" DLLEXPORT lb_I_Module* 	LB_CDECL _getModuleInstance() { return getModuleInstance(); }
+extern "C" DLLEXPORT void 		LB_CDECL _set_trackObject(char* track) { set_trackObject(track); }
+extern "C" DLLEXPORT char* 		LB_CDECL _get_trackObject() { return get_trackObject(); }
+extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, char* msg) { track_Object( o, msg); }
+extern "C" DLLEXPORT void 		LB_CDECL _setVerbose(bool what) { setVerbose(what); }
+extern "C" DLLEXPORT void 		LB_CDECL _setLogActivated(bool what) { setLogActivated(what); }
+extern "C" DLLEXPORT void 		LB_CDECL _lbBreak() { lbBreak(); }
+extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, char *f, int level) { logMessage(msg, f, level); }
+extern "C" DLLEXPORT void 		LB_CDECL _createDirectory(const char* name) { createDirectory(name); }
+extern "C" DLLEXPORT void 		LB_CDECL _deleteDirectory(const char* name) { deleteDirectory(name); }
+extern "C" DLLEXPORT HINSTANCE 		LB_CDECL _getModuleHandle() { return getModuleHandle(); }
+extern "C" DLLEXPORT HINSTANCE 		LB_CDECL _getLBModuleHandle() { return getLBModuleHandle(); }
+extern "C" DLLEXPORT void 		LB_CDECL _setModuleHandle(HINSTANCE h) { setModuleHandle(h); }
+extern "C" DLLEXPORT void 		LB_CDECL _setLBModuleHandle(HINSTANCE h) { setLBModuleHandle(h); }
+extern "C" DLLEXPORT int 		LB_CDECL _isInitializing() { return isInitializing(); }
+extern "C" DLLEXPORT void 		LB_CDECL _setInitializing(int i) { setInitializing(i); }
+extern "C" DLLEXPORT lb_I_Log* 		LB_CDECL _getLoggerInstance() {return getLoggerInstance(); }
+extern "C" DLLEXPORT void 		LB_CDECL _setLoggerInstance(lb_I_Log* l) { setLoggerInstance(l); }
+extern "C" DLLEXPORT void 		LB_CDECL _createLogInstance() { return createLogInstance(); }
+extern "C" DLLEXPORT bool 		LB_CDECL _isSetTRMemTrackBreak() { return isSetTRMemTrackBreak(); }
+extern "C" DLLEXPORT void 		LB_CDECL _setTRMemTrackBreak(char* brk, int count) { setTRMemTrackBreak(brk, count); }
+extern "C" DLLEXPORT char* 		LB_CDECL _getTRMemTrackBreak() { return getTRMemTrackBreak(); }
+extern "C" DLLEXPORT void 		LB_CDECL _InstanceCount(int inst) { InstanceCount(inst); }
+extern "C" DLLEXPORT void 		LB_CDECL _Instances() { Instances(); }
+extern "C" DLLEXPORT lbErrCodes		LB_CDECL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) { return lbGetFunctionPtr(name, hinst, pfn); }
+extern "C" DLLEXPORT lbStringKey*	LB_CDECL _getStringKey(char* buf) { return getStringKey(buf); }
+extern "C" DLLEXPORT char* 		LB_CDECL _getLogDirectory() { return getLogDirectory(); }
+extern "C" DLLEXPORT char* 		LB_CDECL _setLogDirectory(char* name) { return setLogDirectory(name); }
+extern "C" DLLEXPORT bool 		LB_CDECL _FileExists(char *filename) { return FileExists(filename);}
+extern "C" DLLEXPORT bool 		LB_CDECL _DirectoryExists(char *filename) { return DirectoryExists(filename);}
+extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentProcessId() { return lbGetCurrentProcessId(); }
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_ptoa(void* ptr) { return lb_ptoa(ptr); }
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_itoa(int ptr) { return lb_itoa(ptr); }
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_ltoa(const long ptr) { return lb_ltoa(ptr); }
+extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentThreadId() { return lbGetCurrentThreadId(); }
+extern "C" DLLEXPORT void		LB_CDECL _lb_sleep(int ms) { lb_sleep(ms); }
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
+extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text) { return translateText(text); }
+extern "C" DLLEXPORT void		LB_CDECL _uninitLocale() { uninitLocale(); }
+extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 #endif
 
-extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf) { return new lbStringKey(buf); }
+extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf) { return new lbStringKey(buf); }
 
 
 /*...sDLLEXPORT void createLogInstance\40\\41\:0:*/
-extern "C" DLLEXPORT void LB_STDCALL createLogInstance() {
+extern "C" DLLEXPORT void LB_CDECL createLogInstance() {
 			if (getLoggerInstance() == NULL) {
 				setInitializing(1);
 				lb_I_Module* modMan = getModuleInstance();
@@ -247,6 +254,8 @@ extern "C" DLLEXPORT void LB_STDCALL createLogInstance() {
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, char *f, int level) {
                 FILE *fp;
+				if (!isLogActivated()) return;
+				if (!DirectoryExists(getLogDirectory())) createDirectory(getLogDirectory());
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
                         char* buf = (char*) malloc(strlen(msg)+100);
@@ -285,8 +294,14 @@ void logMessage(const char *msg) {
 	logMessage(msg, lbLogFile, 0);
 }
 /*...e*/
-/*...sDLLEXPORT char\42\ LB_STDCALL getLogDirectory\40\\41\:0:*/
-DLLEXPORT char* LB_STDCALL getLogDirectory() {
+
+DLLEXPORT char* LB_CDECL setLogDirectory(char* name) {
+	if (lbLogDirectory != NULL) free(lbLogDirectory);
+	lbLogDirectory = strdup(name);
+}
+
+/*...sDLLEXPORT char\42\ LB_CDECL getLogDirectory\40\\41\:0:*/
+DLLEXPORT char* LB_CDECL getLogDirectory() {
 	if (lbLogDirectory == NULL) {
 		char* home =
 		#if defined(WINDOWS)
@@ -315,8 +330,24 @@ DLLEXPORT char* LB_STDCALL getLogDirectory() {
 }
 /*...e*/
 
-/*...sDLLEXPORT void LB_STDCALL createDirectory\40\const char\42\ name\41\:0:*/
-DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
+DLLEXPORT void LB_CDECL deleteDirectory(const char* name) {
+		#ifdef __MINGW32__
+		rmdir(name);
+		#endif
+		#ifdef __WATCOMC__
+		rmdir(name);
+		#endif
+		#if defined(OSX) || defined(LINUX) || defined(UNIX)
+        rmdir(name, S_IRWXU);
+		#endif
+}
+
+
+/*...sDLLEXPORT void LB_CDECL createDirectory\40\const char\42\ name\41\:0:*/
+DLLEXPORT void LB_CDECL createDirectory(const char* name) {
+		#ifdef __MINGW32__
+		mkdir(name);
+		#endif
 		#ifdef __WATCOMC__
 		mkdir(name);
 		#endif
@@ -326,76 +357,76 @@ DLLEXPORT void LB_STDCALL createDirectory(const char* name) {
 }
 /*...e*/
 
-/*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
-extern "C" DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
+/*...sDLLEXPORT void LB_CDECL InstanceCount\40\int inst\41\:0:*/
+extern "C" DLLEXPORT void LB_CDECL InstanceCount(int inst) {
 	instances += inst;
 }
 /*...e*/
-/*...sDLLEXPORT void LB_STDCALL Instances\40\\41\:0:*/
-DLLEXPORT void LB_STDCALL Instances() {
+/*...sDLLEXPORT void LB_CDECL Instances\40\\41\:0:*/
+DLLEXPORT void LB_CDECL Instances() {
 	printf("Current instances are %d.\n", instances);
 }
 /*...e*/
-/*...sDLLEXPORT void LB_STDCALL setVerbose\40\bool what\41\:0:*/
-DLLEXPORT void LB_STDCALL setVerbose(bool what) {
+/*...sDLLEXPORT void LB_CDECL setVerbose\40\bool what\41\:0:*/
+DLLEXPORT void LB_CDECL setVerbose(bool what) {
     lbVerbose = what;
 }
 /*...e*/
-/*...sDLLEXPORT void LB_STDCALL setVerbose\40\bool what\41\:0:*/
-DLLEXPORT void LB_STDCALL setLogActivated(bool what) {
+/*...sDLLEXPORT void LB_CDECL setVerbose\40\bool what\41\:0:*/
+DLLEXPORT void LB_CDECL setLogActivated(bool what) {
     lbLogActivated = what;
 }
 /*...e*/
-/*...sDLLEXPORT bool LB_STDCALL isVerbose\40\\41\:0:*/
-extern "C" DLLEXPORT bool LB_STDCALL isVerbose() {
+/*...sDLLEXPORT bool LB_CDECL isVerbose\40\\41\:0:*/
+extern "C" DLLEXPORT bool LB_CDECL isVerbose() {
 	return lbVerbose;
 }
 /*...e*/
-/*...sDLLEXPORT bool LB_STDCALL isLogActivated\40\\41\:0:*/
-extern "C" DLLEXPORT bool LB_STDCALL isLogActivated() {
+/*...sDLLEXPORT bool LB_CDECL isLogActivated\40\\41\:0:*/
+extern "C" DLLEXPORT bool LB_CDECL isLogActivated() {
 	return lbLogActivated;
 }
 /*...e*/
 
 /*...sHelpers:0:*/
-DLLEXPORT int LB_STDCALL isInitializing() {
+DLLEXPORT int LB_CDECL isInitializing() {
 	return lb_isInitializing;
 }
 
-DLLEXPORT void LB_STDCALL setInitializing(int i) {
+DLLEXPORT void LB_CDECL setInitializing(int i) {
 	lb_isInitializing = i;
 }
 
-DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance() {
+DLLEXPORT lb_I_Log* LB_CDECL getLoggerInstance() {
 	return lb_log;
 }
 
-DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l) {
+DLLEXPORT void LB_CDECL setLoggerInstance(lb_I_Log* l) {
 	lb_log = l;
 }
 
 
 char* trackObject = NULL;
 
-DLLEXPORT char* LB_STDCALL lb_itoa(int ptr) {
+DLLEXPORT char* LB_CDECL lb_itoa(int ptr) {
         static char buf[20] = "";
         sprintf(buf, "%d", ptr);
         return buf;
 }
 
-DLLEXPORT char* LB_STDCALL lb_ltoa(const long ptr) {
+DLLEXPORT char* LB_CDECL lb_ltoa(const long ptr) {
         static char buf[20] = "";
         sprintf(buf, "%ld", ptr);
         return buf;
 }
 
-DLLEXPORT char* LB_STDCALL lb_ptoa(void* ptr) {
+DLLEXPORT char* LB_CDECL lb_ptoa(void* ptr) {
         static char buf[20] = "";
 	sprintf(buf, "%p", ptr);
         return buf;
 }
 
-DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
+DLLEXPORT void LB_CDECL CL_doLog(char* f, char* msg) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
@@ -404,32 +435,32 @@ DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
                 fclose( fp );
 }
 
-DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
+DLLEXPORT void LB_CDECL set_trackObject(char* track) {
 	trackObject = track;
 	printf("Have a tracking address: %s\n", trackObject);
 }
 
-DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg) {
+DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, char* msg) {
 }
 
-DLLEXPORT char* LB_STDCALL get_trackObject() {
+DLLEXPORT char* LB_CDECL get_trackObject() {
 	if (trackObject == NULL) return getenv("TRACKOBJECT");
 	return trackObject;
 }
 
-DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle() {
+DLLEXPORT HINSTANCE LB_CDECL getModuleHandle() {
 	return ModuleHandle;
 }
 
-DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle() {
+DLLEXPORT HINSTANCE LB_CDECL getLBModuleHandle() {
 	return LB_Module_Handle;
 }
 
-DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
+DLLEXPORT void LB_CDECL setModuleHandle(HINSTANCE h) {
 	ModuleHandle = h;
 }
 
-DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
+DLLEXPORT void LB_CDECL setLBModuleHandle(HINSTANCE h) {
 	LB_Module_Handle = h;
 }
 /*...e*/
@@ -493,8 +524,8 @@ void destroyModuleStructure(_Modules* m) {
 }
 /*...e*/
 
-/*...sDLLEXPORT void LB_STDCALL lbBreak\40\\41\:0:*/
-DLLEXPORT void LB_STDCALL lbBreak() {
+/*...sDLLEXPORT void LB_CDECL lbBreak\40\\41\:0:*/
+DLLEXPORT void LB_CDECL lbBreak() {
 
 #ifdef LINUX
 #ifndef OSX
@@ -511,8 +542,8 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 }
 /*...e*/
 
-/*...sDLLEXPORT bool LB_STDCALL lbPtrValidate\40\void\42\ ptr\41\:0:*/
-DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr) {
+/*...sDLLEXPORT bool LB_CDECL lbPtrValidate\40\void\42\ ptr\41\:0:*/
+DLLEXPORT bool LB_CDECL lbPtrValidate(void* ptr) {
 	if (ptr != NULL) {
 		return true;
 	} else {
@@ -521,9 +552,9 @@ DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr) {
 }
 /*...e*/
 
-/*...sbool LB_STDCALL OSXMemValidate\40\void\42\ ptr\41\:0:*/
+/*...sbool LB_CDECL OSXMemValidate\40\void\42\ ptr\41\:0:*/
 #ifdef OSX
-bool LB_STDCALL OSXMemValidate(void* ptr) {
+bool LB_CDECL OSXMemValidate(void* ptr) {
 #ifdef DEBUG_MALLOC
 	if (malloc_zone_check(0) == 1) {
 			return true;
@@ -538,9 +569,17 @@ bool LB_STDCALL OSXMemValidate(void* ptr) {
 #endif
 /*...e*/
 
-/*...sDLLEXPORT bool LB_STDCALL FileExists\40\char \42\filename\41\:0:*/
+extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
+{
+	if (FileExists(filename)) return true;
+	if (_mkdir(filename) == -1) return true;
+	rmdir(filename);
+	return false;
+}
+
+/*...sDLLEXPORT bool LB_CDECL FileExists\40\char \42\filename\41\:0:*/
 #ifdef WINDOWS
-DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+DLLEXPORT bool LB_CDECL FileExists(char *filename)
 {
 	OFSTRUCT ofs;
 	return OpenFile(filename, &ofs, OF_EXIST) != HFILE_ERROR;
@@ -548,7 +587,7 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 #endif
 #ifndef OSX
 #ifdef LINUX
-DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+DLLEXPORT bool LB_CDECL FileExists(char *filename)
 {
 	struct stat sb;
 	return stat(filename, &sb) != -1;
@@ -556,7 +595,7 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 #endif
 #endif
 #ifdef OSX
-DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+DLLEXPORT bool LB_CDECL FileExists(char *filename)
 {
 	struct stat sb;
 	return stat(filename, &sb) != -1;
@@ -564,8 +603,8 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 #endif
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
+/*...slbErrCodes LB_CDECL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
+DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
 	if (name == NULL) {
 		_LOG << "Erro: lbLoadModule() called with an invalid parameter!" LOG_
 		return ERR_MODULE_INVALID_PARAMETER;
@@ -793,8 +832,8 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
+/*...slbErrCodes LB_CDECL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
+DLLEXPORT lbErrCodes LB_CDECL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
 		if (name == NULL) {
 			_LOG << "Erro: lbGetFunctionPtr() called with an invalid parameter!" LOG_
 			return ERR_MODULE_INVALID_PARAMETER;
@@ -817,9 +856,9 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
         return ERR_NONE;
 }
 /*...e*/
-/*...sDLLEXPORT lb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
-typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
+/*...sDLLEXPORT lb_I_Module\42\ LB_CDECL getModuleInstance\40\\41\:0:*/
+DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance() {
+typedef lbErrCodes (LB_CDECL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Module, module)
@@ -910,9 +949,9 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	return inst.getPtr();
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
-	typedef lbErrCodes (LB_STDCALL *T_p_releaseInstance) (lb_I_Unknown*);
+/*...slbErrCodes LB_CDECL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
+lbErrCodes LB_CDECL releaseInstance(lb_I_Unknown* inst) {
+	typedef lbErrCodes (LB_CDECL *T_p_releaseInstance) (lb_I_Unknown*);
 	T_p_releaseInstance DLL_RELEASEINSTANCE;
 
 	if (lbGetFunctionPtr("_lb_releaseInstance", LB_Module_Handle, (void**) &DLL_RELEASEINSTANCE) != ERR_NONE) {
@@ -924,8 +963,8 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...sDLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak\40\\41\:0:*/
-DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
+/*...sDLLEXPORT bool LB_CDECL isSetTRMemTrackBreak\40\\41\:0:*/
+DLLEXPORT bool LB_CDECL isSetTRMemTrackBreak() {
 #ifdef MEMTRACK
 	char breakPoint[100] = "";
 	int count = 0;
@@ -943,8 +982,8 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 	return b_isSetTRMemTrackBreak;
 }
 /*...e*/
-/*...sDLLEXPORT void LB_STDCALL setTRMemTrackBreak\40\char\42\ brk\44\ int count\41\:0:*/
-DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
+/*...sDLLEXPORT void LB_CDECL setTRMemTrackBreak\40\char\42\ brk\44\ int count\41\:0:*/
+DLLEXPORT void LB_CDECL setTRMemTrackBreak(char* brk, int count) {
 #ifdef WINDOWS
 	if ((brk != NULL) && (strlen(brk) != 0)) {
 		b_isSetTRMemTrackBreak = true;
@@ -963,24 +1002,24 @@ DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
 #endif
 }
 /*...e*/
-/*...sDLLEXPORT char\42\ LB_STDCALL getTRMemTrackBreak\40\\41\:0:*/
-DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
+/*...sDLLEXPORT char\42\ LB_CDECL getTRMemTrackBreak\40\\41\:0:*/
+DLLEXPORT char* LB_CDECL getTRMemTrackBreak() {
 	return TRMemTrackBreakAddr;
 }
 /*...e*/
-/*...sDLLEXPORT char\42\ LB_STDCALL translateText\40\char\42\ text\41\:0:*/
+/*...sDLLEXPORT char\42\ LB_CDECL translateText\40\char\42\ text\41\:0:*/
 
 UAP(lb_I_Locale, locale)
 
 
-DLLEXPORT void LB_STDCALL uninitLocale() {
+DLLEXPORT void LB_CDECL uninitLocale() {
 	if (locale != NULL) {
 		locale--;
 		locale.resetPtr();
 	}
 }
 
-DLLEXPORT char* LB_STDCALL translateText(char* text) {
+DLLEXPORT char* LB_CDECL translateText(char* text) {
 	lbErrCodes err = ERR_NONE;
 
 	if (locale == NULL) {
@@ -1046,8 +1085,8 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	return translated;
 }
 /*...e*/
-/*...sDLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule\40\const char\42\ name\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
+/*...sDLLEXPORT lbErrCodes LB_CDECL lbUnloadModule\40\const char\42\ name\41\:0:*/
+DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 
 #ifdef WINDOWS
 		_Modules* temp = loadedModules;
@@ -1130,8 +1169,8 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-DLLEXPORT void LB_STDCALL unHookAll() {
+/*...svoid LB_CDECL unHookAll\40\\41\:0:*/
+DLLEXPORT void LB_CDECL unHookAll() {
 	_Modules* skipped = NULL;
 	_Modules* temp_skipped = NULL;
 
@@ -1309,28 +1348,28 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_CDECL lbKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
 
-char const* LB_STDCALL lbKey::getKeyType() const {
+char const* LB_CDECL lbKey::getKeyType() const {
     return "int";
 }
 
-int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKey*) _key)->key;
 }
 
-int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKey*) _key)->key;
 }
 
-int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey::lessthan(const lb_I_KeyBase* _key) const {
     return key < ((lbKey*) _key)->key;
 }
 
-char* LB_STDCALL lbKey::charrep() const {
+char* LB_CDECL lbKey::charrep() const {
     char buf[100];
     sprintf(buf, "%d", key);
     return strdup(buf);
@@ -1374,28 +1413,28 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey_)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_CDECL lbKey_::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
 
-char const* LB_STDCALL lbKey_::getKeyType() const {
+char const* LB_CDECL lbKey_::getKeyType() const {
     return "int";
 }
 
-int LB_STDCALL lbKey_::equals(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey_::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKey_*) _key)->key;
 }
 
-int LB_STDCALL lbKey_::greater(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey_::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKey_*) _key)->key;
 }
 
-int LB_STDCALL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
     return key < ((lbKey_*) _key)->key;
 }
 
-char* LB_STDCALL lbKey_::charrep() const {
+char* LB_CDECL lbKey_::charrep() const {
     char buf[100];
     sprintf(buf, "%d", key);
     return strdup(buf);
@@ -1429,7 +1468,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
 	ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_CDECL lbStringKey::setData(lb_I_Unknown* uk) {
 
 	lb_I_KeyBase* string = NULL;
 
@@ -1445,23 +1484,23 @@ lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-char const * LB_STDCALL lbStringKey::getKeyType() const {
+char const * LB_CDECL lbStringKey::getKeyType() const {
     return "string";
 }
 
-int LB_STDCALL lbStringKey::equals(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbStringKey::equals(const lb_I_KeyBase* _key) const {
     return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
 }
 
-int LB_STDCALL lbStringKey::greater(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbStringKey::greater(const lb_I_KeyBase* _key) const {
     return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
 }
 
-int LB_STDCALL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
+int LB_CDECL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
     return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
 }
 
-char* LB_STDCALL lbStringKey::charrep() const {
+char* LB_CDECL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
@@ -1475,7 +1514,7 @@ DLLEXPORT
 #ifdef WINDOWS
 LB_DLLEXPORT
 #endif
-LB_STDCALL lbGetCurrentThreadId() {
+LB_CDECL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
 #else
@@ -1490,7 +1529,7 @@ DLLEXPORT
 #ifdef WINDOWS
 LB_DLLEXPORT
 #endif
-LB_STDCALL lbGetCurrentProcessId() {
+LB_CDECL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
 #else
@@ -1513,7 +1552,7 @@ void delay(long mikrosek)
 #endif
 
 
-DLLEXPORT void LB_STDCALL lb_sleep(int ms)
+DLLEXPORT void LB_CDECL lb_sleep(int ms)
 {
 #ifdef WINDOWS
         ::Sleep(ms);

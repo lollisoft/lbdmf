@@ -31,11 +31,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.173 $
+ * $Revision: 1.174 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.173 2010/02/22 09:28:22 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.174 2010/04/25 21:37:09 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.174  2010/04/25 21:37:09  lollisoft
+ * Successfully ported lbHook to MINGW compiler. There were only two issues
+ * I have identified: The enum problem as reported from Michal Necasek having
+ * different sizes and the interface ordering to be equal to implementing class
+ * declaration. But this only belongs to my UnitTest code yet.
+ *
+ * Aim of this is the ability to mix in MINGW modules for features Open Watcom
+ * didn't support yet and let me do this with minimal effort.
+ *
  * Revision 1.173  2010/02/22 09:28:22  lollisoft
  * Missing return value.
  *
@@ -794,6 +803,7 @@ lb_I_Unknown* LB_STDCALL lb_MetaApplication::getUnknown() {
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::doAutoload, "doAutoload");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::doLog, "doLog");
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::enterDebugger, "enterDebugger");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
@@ -867,6 +877,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
 	_autoload = !_autoload;
+
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::doLog(lb_I_Unknown* uk) {
+	setLogActivated(!isLogActivated());
 
 	return ERR_NONE;
 }
@@ -1287,6 +1303,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	int enterDebugger;
 	int getLoginData;
 	int doAutoload;
+	int doLog;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -1300,6 +1317,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
 	eman->registerEvent("doAutoload", doAutoload);
+	eman->registerEvent("doLog", doLog);
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
@@ -1347,15 +1365,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 	addMenuBar(_trans("&Edit"));
 
-	char* temp1 = _trans("&Autoload application");
+	UAP_REQUEST(getModuleInstance(), lb_I_String, translated)
 
-	char* mm1 = (char*) malloc(strlen(temp1)+1);
-	mm1[0] = 0;
-	strcpy(mm1, temp1);
-
-	addMenuEntryCheckable(_trans("&Edit"), mm1, "doAutoload", "");
-
-	free(mm1);
+	*translated = _trans("&Autoload application");
+	addMenuEntryCheckable(_trans("&Edit"), translated->charrep(), "doAutoload", "");
+	*translated = _trans("Log to logfile");
+	addMenuEntryCheckable(_trans("&File"), translated->charrep(), "doLog", "");
 
 	if (getenv("TARGET_APPLICATION") != NULL) {
 		loadApplication("", "");
@@ -1465,6 +1480,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 	if (getAutoload())
 		toggleEvent("doAutoload");
+
+	if (isLogActivated())
+		toggleEvent("doLog");
 
 	_loading_object_data = false;
 

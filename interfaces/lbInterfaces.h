@@ -579,7 +579,8 @@ PRIMARY KEY (id),
 #ifdef TVISION
 #ifndef LB_STDCALL
 #ifdef WINDOWS
-#define LB_STDCALL __cdecl
+#define LB_STDCALL __stdcall
+#define LB_CDECL __cdecl
 	//__attribute__((cdecl))
 #endif
 #ifndef WINDOWS
@@ -589,38 +590,46 @@ PRIMARY KEY (id),
 #endif
 
 #ifndef _MSC_VER
-#ifndef LB_STDCALL
-#ifdef WINDOWS
-#define LB_STDCALL __cdecl
-#endif
-#ifndef WINDOWS
-#define LB_STDCALL
-#endif
+ #ifndef LB_STDCALL
+  #ifdef WINDOWS
+   // LB_STDCALL should be used for all member functions
+   #define LB_STDCALL __stdcall
+   // LB_CDECL should be used for all functions
+   #define LB_CDECL __cdecl
+  #endif
+  #ifndef WINDOWS
+   #define LB_STDCALL
+   #define LB_CDECL
+  #endif
+ #endif
 #endif
 
 #ifndef LB_FUNCTORCALL
-#ifdef WINDOWS
-#define LB_FUNCTORCALL __cdecl
+ #ifdef WINDOWS
+  // As LB_CDECL for functions, this should also __cdecl
+  #define LB_FUNCTORCALL __cdecl
+ #endif
+ #ifndef WINDOWS
+  #define LB_FUNCTORCALL
+ #endif
 #endif
-#ifndef WINDOWS
-#define LB_FUNCTORCALL
-#endif
-#endif
-#endif
+
 
 #ifdef _MSC_VER
 #ifndef LB_STDCALL
 #ifdef WINDOWS
-#define LB_STDCALL __cdecl
+#define LB_STDCALL __stdcall
+#define LB_CDECL __cdecl
 #endif
 #ifndef WINDOWS
 #define LB_STDCALL
+#define LB_CDECL
 #endif
 #endif
 
 #ifndef LB_FUNCTORCALL
 #ifdef WINDOWS
-#define LB_FUNCTORCALL __cdecl
+#define LB_FUNCTORCALL __stdcall
 #endif
 #ifndef WINDOWS
 #define LB_FUNCTORCALL

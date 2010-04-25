@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.40 2010/04/03 10:28:09 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.41 2010/04/25 21:37:10 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.41  2010/04/25 21:37:10  lollisoft
+ * Successfully ported lbHook to MINGW compiler. There were only two issues
+ * I have identified: The enum problem as reported from Michal Necasek having
+ * different sizes and the interface ordering to be equal to implementing class
+ * declaration. But this only belongs to my UnitTest code yet.
+ *
+ * Aim of this is the ability to mix in MINGW modules for features Open Watcom
+ * didn't support yet and let me do this with minimal effort.
+ *
  * Revision 1.40  2010/04/03 10:28:09  lollisoft
  * Added an error code when parameters are illegal.
  * For sample, passing a NULL pointer mostly will be
@@ -185,7 +194,7 @@
 /*...slbErrCodes:0:*/
 enum lbErrCodes { 
 	ERR_NONE = 0,
-	ERR_ILLEGAL_PARAMETER,
+	ERR_ILLEGAL_PARAMETER = 1,
 
 /* A yet not specified err code */
 	
@@ -337,7 +346,14 @@ enum lbErrCodes {
 	ERR_INVALID_INTERCEPTED_INSTANCE,
 	
 /* Errorcodes for form validation */	
-	ERR_FORM_VALIDATION
+	ERR_FORM_VALIDATION,
+
+
+
+
+
+/* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
+	ERR_LAST_ENUM = 0x7fffffff
 };
 /*...e*/
 

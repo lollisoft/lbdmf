@@ -365,76 +365,79 @@
 class lbStringKey;
 
 #ifdef __MINGW32__
-extern "C" DLLEXPORT bool 		LB_STDCALL _isVerbose();
-extern "C" DLLEXPORT bool 		LB_STDCALL _isLogActivated();
-extern "C" DLLEXPORT lbErrCodes 	LB_STDCALL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
-extern "C" DLLEXPORT lb_I_Module* 	LB_STDCALL _getModuleInstance();
-extern "C" DLLEXPORT void 		LB_STDCALL _set_trackObject(char* track);
-extern "C" DLLEXPORT char* 		LB_STDCALL _get_trackObject();
-extern "C" DLLEXPORT void 		LB_STDCALL _track_Object(lb_I_Unknown* o, char* msg);
-extern "C" DLLEXPORT void 		LB_STDCALL _setVerbose(bool what);
-extern "C" DLLEXPORT void 		LB_STDCALL _setLogActivated(bool what);
-extern "C" DLLEXPORT void 		LB_STDCALL _lbBreak();
-extern "C" DLLEXPORT void 		LB_STDCALL _logMessage(const char *msg, char *f, int level = 0);
-extern "C" DLLEXPORT char* 		LB_STDCALL _getLogDirectory();
-extern "C" DLLEXPORT void 		LB_STDCALL _createDirectory(const char* name);
-extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getModuleHandle();
-extern "C" DLLEXPORT HINSTANCE 		LB_STDCALL _getLBModuleHandle();
-extern "C" DLLEXPORT void 		LB_STDCALL _setModuleHandle(HINSTANCE h);
-extern "C" DLLEXPORT void 		LB_STDCALL _setLBModuleHandle(HINSTANCE h);
-extern "C" DLLEXPORT int 		LB_STDCALL _isInitializing();
-extern "C" DLLEXPORT void 		LB_STDCALL _setInitializing(int i);
-extern "C" DLLEXPORT lb_I_Log* 		LB_STDCALL _getLoggerInstance();
-extern "C" DLLEXPORT void 		LB_STDCALL _setLoggerInstance(lb_I_Log* l);
-extern "C" DLLEXPORT void 		LB_STDCALL _createLogInstance();
-extern "C" DLLEXPORT bool 		LB_STDCALL _isSetTRMemTrackBreak();
-extern "C" DLLEXPORT void 		LB_STDCALL _setTRMemTrackBreak(char* brk, int count);
-extern "C" DLLEXPORT char* 		LB_STDCALL _getTRMemTrackBreak();
-extern "C" DLLEXPORT void 		LB_STDCALL _InstanceCount(int inst);
-extern "C" DLLEXPORT void 		LB_STDCALL _Instances();
-extern "C" DLLEXPORT lbErrCodes		LB_STDCALL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
-extern "C" DLLEXPORT lbStringKey*	LB_STDCALL _getStringKey(char* buf);
-extern "C" DLLEXPORT bool 		LB_STDCALL _FileExists(char *filename);
-extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentProcessId();
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ptoa(void* ptr);
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_itoa(int ptr);
-extern "C" DLLEXPORT char* 		LB_STDCALL _lb_ltoa(const long ptr);
-extern "C" DLLEXPORT DWORD 		LB_STDCALL _lbGetCurrentThreadId();
-extern "C" DLLEXPORT void		LB_STDCALL _lb_sleep(int ms);
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL _lbUnloadModule(const char* name);
-extern "C" DLLEXPORT char*		LB_STDCALL _translateText(char* text);
-extern "C" DLLEXPORT void		LB_STDCALL _uninitLocale();
-extern "C" DLLEXPORT void		LB_STDCALL _unHookAll();
+extern "C" DLLEXPORT bool 		LB_CDECL _isVerbose();
+extern "C" DLLEXPORT bool 		LB_CDECL _isLogActivated();
+extern "C" DLLEXPORT lbErrCodes 	LB_CDECL _lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
+extern "C" DLLEXPORT lb_I_Module* 	LB_CDECL _getModuleInstance();
+extern "C" DLLEXPORT void 		LB_CDECL _set_trackObject(char* track);
+extern "C" DLLEXPORT char* 		LB_CDECL _get_trackObject();
+extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void 		LB_CDECL _setVerbose(bool what);
+extern "C" DLLEXPORT void 		LB_CDECL _setLogActivated(bool what);
+extern "C" DLLEXPORT void 		LB_CDECL _lbBreak();
+extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT char* 		LB_CDECL _getLogDirectory();
+extern "C" DLLEXPORT char* 		LB_CDECL _setLogDirectory(char* name);
+extern "C" DLLEXPORT void 		LB_CDECL _createDirectory(const char* name);
+extern "C" DLLEXPORT void 		LB_CDECL _deleteDirectory(const char* name);
+extern "C" DLLEXPORT HINSTANCE 		LB_CDECL _getModuleHandle();
+extern "C" DLLEXPORT HINSTANCE 		LB_CDECL _getLBModuleHandle();
+extern "C" DLLEXPORT void 		LB_CDECL _setModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void 		LB_CDECL _setLBModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT int 		LB_CDECL _isInitializing();
+extern "C" DLLEXPORT void 		LB_CDECL _setInitializing(int i);
+extern "C" DLLEXPORT lb_I_Log* 		LB_CDECL _getLoggerInstance();
+extern "C" DLLEXPORT void 		LB_CDECL _setLoggerInstance(lb_I_Log* l);
+extern "C" DLLEXPORT void 		LB_CDECL _createLogInstance();
+extern "C" DLLEXPORT bool 		LB_CDECL _isSetTRMemTrackBreak();
+extern "C" DLLEXPORT void 		LB_CDECL _setTRMemTrackBreak(char* brk, int count);
+extern "C" DLLEXPORT char* 		LB_CDECL _getTRMemTrackBreak();
+extern "C" DLLEXPORT void 		LB_CDECL _InstanceCount(int inst);
+extern "C" DLLEXPORT void 		LB_CDECL _Instances();
+extern "C" DLLEXPORT lbErrCodes		LB_CDECL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+extern "C" DLLEXPORT lbStringKey*	LB_CDECL _getStringKey(char* buf);
+extern "C" DLLEXPORT bool		LB_CDECL _DirectoryExists(char *filename);
+extern "C" DLLEXPORT bool 		LB_CDECL _FileExists(char *filename);
+extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentProcessId();
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_ptoa(void* ptr);
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_itoa(int ptr);
+extern "C" DLLEXPORT char* 		LB_CDECL _lb_ltoa(const long ptr);
+extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentThreadId();
+extern "C" DLLEXPORT void		LB_CDECL _lb_sleep(int ms);
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name);
+extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text);
+extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
+extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 #endif
 
-extern "C" DLLEXPORT lbStringKey*	LB_STDCALL getStringKey(char* buf);
+extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
 
 
 
 
 
 // Object tracking
-extern "C" DLLEXPORT void LB_STDCALL set_trackObject(char* track);
-extern "C" DLLEXPORT char* LB_STDCALL get_trackObject();
-extern "C" DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void LB_CDECL set_trackObject(char* track);
+extern "C" DLLEXPORT char* LB_CDECL get_trackObject();
+extern "C" DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, char* msg);
 
 /*...sMEMTRACKER:0:*/
 
 /** \brief Checks wether if a memory track breakpoint is set.
  */
-extern "C" DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
+extern "C" DLLEXPORT bool LB_CDECL isSetTRMemTrackBreak();
 
 /** \brief Set the break address.
  *
  * This sets the memory breakpoint address and flags isSetTRMemTrackBreak() to true.
  */
-extern "C" DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count);
+extern "C" DLLEXPORT void LB_CDECL setTRMemTrackBreak(char* brk, int count);
 
 /** \brief Get the break address.
  *
  * This is used in all DLL modules to get the same address, if it is set.
  */
-extern "C" DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
+extern "C" DLLEXPORT char* LB_CDECL getTRMemTrackBreak();
 
 #ifndef TRACKER
 #define TRMemTrackOpen isSetTRMemTrackBreak
@@ -443,15 +446,15 @@ extern "C" DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 /*...e*/
 
 /** \brief Activate or deactivate verbose messages. */
-extern "C" DLLEXPORT void LB_STDCALL setVerbose(bool what);
-extern "C" DLLEXPORT void LB_STDCALL setLogActivated(bool what);
-extern "C" DLLEXPORT bool LB_STDCALL isVerbose();
-extern "C" DLLEXPORT bool LB_STDCALL isLogActivated();
-extern "C" DLLEXPORT void LB_STDCALL lbBreak();
+extern "C" DLLEXPORT void LB_CDECL setVerbose(bool what);
+extern "C" DLLEXPORT void LB_CDECL setLogActivated(bool what);
+extern "C" DLLEXPORT bool LB_CDECL isVerbose();
+extern "C" DLLEXPORT bool LB_CDECL isLogActivated();
+extern "C" DLLEXPORT void LB_CDECL lbBreak();
 #define LOGFILE "lbDMF.log"
 
 /** \brief Log a message to the given file. */
-extern "C" DLLEXPORT void LB_STDCALL logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT void LB_CDECL logMessage(const char *msg, char *f, int level = 0);
 
 /** \brief Get the log directory.
  * Returns the log directory.
@@ -459,48 +462,51 @@ extern "C" DLLEXPORT void LB_STDCALL logMessage(const char *msg, char *f, int le
  * The directory is user based and so, located in the home directory of the user.
  * Value is based on $(HOME)/log.
  */
-extern "C" DLLEXPORT char* LB_STDCALL getLogDirectory();
+extern "C" DLLEXPORT char* LB_CDECL getLogDirectory();
+extern "C" DLLEXPORT char* LB_CDECL setLogDirectory(char* name);
 
-extern "C" DLLEXPORT void LB_STDCALL createDirectory(const char* name);
+extern "C" DLLEXPORT void LB_CDECL createDirectory(const char* name);
+extern "C" DLLEXPORT void LB_CDECL deleteDirectory(const char* name);
 
-extern "C" DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
-extern "C" DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
+extern "C" DLLEXPORT HINSTANCE LB_CDECL getModuleHandle();
+extern "C" DLLEXPORT HINSTANCE LB_CDECL getLBModuleHandle();
 
-extern "C" DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
-extern "C" DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void LB_CDECL setModuleHandle(HINSTANCE h);
+extern "C" DLLEXPORT void LB_CDECL setLBModuleHandle(HINSTANCE h);
 
 
-extern "C" DLLEXPORT int LB_STDCALL isInitializing();
-extern "C" DLLEXPORT void LB_STDCALL setInitializing(int i);
-extern "C" DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
-extern "C" DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
-extern "C" DLLEXPORT void LB_STDCALL createLogInstance();
+extern "C" DLLEXPORT int LB_CDECL isInitializing();
+extern "C" DLLEXPORT void LB_CDECL setInitializing(int i);
+extern "C" DLLEXPORT lb_I_Log* LB_CDECL getLoggerInstance();
+extern "C" DLLEXPORT void LB_CDECL setLoggerInstance(lb_I_Log* l);
+extern "C" DLLEXPORT void LB_CDECL createLogInstance();
 
 
 #ifdef OSX
-bool LB_STDCALL OSXMemValidate(void* ptr);
+bool LB_CDECL OSXMemValidate(void* ptr);
 #endif
 
-extern "C" DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr);
+extern "C" DLLEXPORT bool LB_CDECL lbPtrValidate(void* ptr);
 
-extern "C" DLLEXPORT char* LB_STDCALL translateText(char* text);
-extern "C" DLLEXPORT void LB_STDCALL uninitLocale();
+extern "C" DLLEXPORT char* LB_CDECL translateText(char* text);
+extern "C" DLLEXPORT void LB_CDECL uninitLocale();
 
 
-extern "C" DLLEXPORT bool LB_STDCALL FileExists(char *filename);
+extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename);
+extern "C" DLLEXPORT bool LB_CDECL FileExists(char *filename);
 
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
-/*...sDLLEXPORT lbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name);
+/*...sDLLEXPORT lbErrCodes LB_CDECL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/
 /**
  * \fn Platform independend module loader. This function is used to load a DLL or so module.
  * \param name The name of the module to be load.
  * \param hinst The instance handle of the module would be stored here.
  */
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
 
 /*...e*/
-/*...sDLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+/*...sDLLEXPORT lbErrCodes LB_CDECL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
 
@@ -509,28 +515,28 @@ extern "C" DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HI
  * of registered modules.
  */
 
-/*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-extern "C" DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
+/*...slb_I_Module\42\ LB_CDECL getModuleInstance\40\\41\:0:*/
+extern "C" DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance();
 /*...e*/
-/*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-extern "C" DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
+/*...slbErrCodes LB_CDECL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
+extern "C" DLLEXPORT lbErrCodes LB_CDECL releaseInstance(lb_I_Unknown* inst);
 /*...e*/
-/*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-extern "C" DLLEXPORT void LB_STDCALL unHookAll();
+/*...svoid LB_CDECL unHookAll\40\\41\:0:*/
+extern "C" DLLEXPORT void LB_CDECL unHookAll();
 /*...e*/
 
-extern "C" DLLEXPORT void LB_STDCALL lb_sleep(int ms);
+extern "C" DLLEXPORT void LB_CDECL lb_sleep(int ms);
 
 
-extern "C" DLLEXPORT char* LB_STDCALL lb_ptoa(void* ptr);
-extern "C" DLLEXPORT char* LB_STDCALL lb_itoa(int ptr);
-extern "C" DLLEXPORT char* LB_STDCALL lb_ltoa(const long ptr);
+extern "C" DLLEXPORT char* LB_CDECL lb_ptoa(void* ptr);
+extern "C" DLLEXPORT char* LB_CDECL lb_itoa(int ptr);
+extern "C" DLLEXPORT char* LB_CDECL lb_ltoa(const long ptr);
 
-extern "C" DLLEXPORT DWORD LB_STDCALL lbGetCurrentThreadId();
-extern "C" DLLEXPORT DWORD LB_STDCALL lbGetCurrentProcessId();
+extern "C" DLLEXPORT DWORD LB_CDECL lbGetCurrentThreadId();
+extern "C" DLLEXPORT DWORD LB_CDECL lbGetCurrentProcessId();
 
-extern "C" DLLEXPORT void LB_STDCALL InstanceCount(int inst);
-extern "C" DLLEXPORT void LB_STDCALL Instances();
+extern "C" DLLEXPORT void LB_CDECL InstanceCount(int inst);
+extern "C" DLLEXPORT void LB_CDECL Instances();
 
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
 class DLLEXPORT
@@ -577,7 +583,7 @@ private:
 };
 /*...e*/
 
-extern "C" DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);
+extern "C" DLLEXPORT void LB_CDECL CL_doLog(char* f, char* msg);
 
 #ifdef LINUX
 #ifndef INCLUDED_BY_LBDMF 

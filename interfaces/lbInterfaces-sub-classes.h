@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.92 $
+ * $Revision: 1.93 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.92 2010/04/03 00:15:56 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.93 2010/04/25 21:37:10 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.93  2010/04/25 21:37:10  lollisoft
+ * Successfully ported lbHook to MINGW compiler. There were only two issues
+ * I have identified: The enum problem as reported from Michal Necasek having
+ * different sizes and the interface ordering to be equal to implementing class
+ * declaration. But this only belongs to my UnitTest code yet.
+ *
+ * Aim of this is the ability to mix in MINGW modules for features Open Watcom
+ * didn't support yet and let me do this with minimal effort.
+ *
  * Revision 1.92  2010/04/03 00:15:56  lollisoft
  * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
  *
@@ -1711,35 +1720,26 @@ public:
 /*...e*/
 /*...sclass lb_I_Log:0:*/
 class lb_I_Log : public lb_I_Unknown {
-
-/*...sprotected:0:*/
-protected:
-
-    lb_I_Log() {}
-    virtual ~lb_I_Log() {}
-
-/*...e*/
-
 public:
 
 // This order does not work with visual C++ !!??
 //    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;
-    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
+    virtual void		LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
 // Take it here...    
-    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;
-    virtual void LB_STDCALL log(int log) = 0;
-    virtual void LB_STDCALL enable(char *where) = 0;
-    virtual void LB_STDCALL disable(char *where) = 0;
-    virtual void LB_STDCALL event_begin(char *event) = 0;
-    virtual void LB_STDCALL event_end(char *event) = 0;
-    virtual void LB_STDCALL setPrefix(char* p) = 0;
+    virtual void		LB_STDCALL log(const char *msg, long line, char* file) = 0;
+    virtual void		LB_STDCALL log(int log) = 0;
+    virtual void		LB_STDCALL enable(char *where) = 0;
+    virtual void		LB_STDCALL disable(char *where) = 0;
+    virtual void		LB_STDCALL event_begin(char *event) = 0;
+    virtual void		LB_STDCALL event_end(char *event) = 0;
+    virtual void		LB_STDCALL setPrefix(char* p) = 0;
     
     
-    virtual lb_I_Log& LB_STDCALL operator<< (const int i) = 0;
-    virtual lb_I_Log& LB_STDCALL operator<< (const long i) = 0;
-    virtual lb_I_Log& LB_STDCALL operator<< (const char c) = 0;
-    virtual lb_I_Log& LB_STDCALL operator<< (const char* string) = 0;
-    
+    virtual lb_I_Log&	LB_STDCALL operator<< (const int i) = 0;
+    virtual lb_I_Log&	LB_STDCALL operator<< (const long i) = 0;
+    virtual lb_I_Log&	LB_STDCALL operator<< (const char c) = 0;
+    virtual lb_I_Log&	LB_STDCALL operator<< (const char* string) = 0;
+    virtual void		LB_STDCALL setCustomLogFile(char* name) = 0;
 };
 /*...e*/
 /*...sZThread interfaces:0:*/

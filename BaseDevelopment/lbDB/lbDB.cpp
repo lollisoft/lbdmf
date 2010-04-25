@@ -5654,6 +5654,8 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
+	// Strange: This log line, even not active would pass the corresponding unit test for passing NULL value.
+	_CL_VERBOSE << "lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) called.\n" LOG_
 	if (_user == NULL) return ERR_ILLEGAL_PARAMETER;
 	if (user != NULL) free(user);
 	user = (char*) malloc(strlen(_user)+1);
@@ -5664,6 +5666,8 @@ lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
 }
 
 lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
+	_CL_VERBOSE << "lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) called.\n" LOG_
+	if (_db == NULL) return ERR_ILLEGAL_PARAMETER;
 	if (db != NULL) free(db);
 	db = (char*) malloc(strlen(_db)+1);
 	db[0] = 0;
@@ -5950,9 +5954,11 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	UAP(lb_I_Parameter, SomeBaseSettings)
 	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+
 	if (SomeBaseSettings != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
 
 		*name = "GeneralDBSchemaname";
 		SomeBaseSettings->getUAPString(*&name, *&schema);
@@ -5970,11 +5976,25 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	QI(index, lb_I_KeyBase, key)
 
 	long i = 0;
+	bool test_once = false;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 
 	while(retcode == SQL_SUCCESS) {
 		retcode = SQLFetch(hstmt);
+
+		if (!test_once) {
+			test_once = true;
+			if (retcode == SQL_NO_DATA) {
+				if (meta->askYesNo(_trans("Keine Tabellen gefunden. Soll ohne schemaeinschränkung gesucht werden?"))) {
+					SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+					retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+					retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+					retcode = SQLFetch(hstmt);
+				}
+			}
+		}
+
 		if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 			_LOG << "Error: Some error happened while fetching tables." LOG_
 			tables->deleteAll();

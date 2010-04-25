@@ -1238,7 +1238,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	if (uk == NULL) return err;
+	if (uk == NULL) return ERR_NONE;
 
 	UAP(lb_I_String, string)
 
@@ -1246,6 +1246,8 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 
 	if (string != NULL) {
 		setData(string->charrep());
+	} else {
+		return ERR_ILLEGAL_PARAMETER;
 	}
 
 	return ERR_NONE;
