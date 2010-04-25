@@ -1,6 +1,6 @@
-format 63
+format 67
 "CRM_Entities" // DMFToUML::CRM_Entities
-  revision 3
+  revision 4
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1217,15 +1217,6 @@ ${inlines}
 	key "lbDMF:relationship:order" value ""
       end
 
-      attribute 142466 "Gedruckt"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
     end
 
     class 130946 "Rechnungspositionen"

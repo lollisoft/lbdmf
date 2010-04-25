@@ -1,6 +1,6 @@
-format 63
+format 67
 "CRM" // DMFToUML::CRM
-  revision 7
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -626,16 +626,6 @@ ${inlines}
 	  b parent class_ref 129026 // Rechnungspositionen
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "Rechnungsnummer"
-      end
-
-      attribute 142082 "Gedruckt"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
       end
 
       classrelation 137858 // (Rechnungsnummer)

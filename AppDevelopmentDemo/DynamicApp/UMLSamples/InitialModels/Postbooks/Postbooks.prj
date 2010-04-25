@@ -1,6 +1,6 @@
-format 63
+format 67
 "Postbooks"
-  revision 81
+  revision 82
   modified_by 2 "lothar"
 
 
@@ -37,7 +37,7 @@ format 63
   mark_for_import
   
   ncouples 12
-  key "gxmi path" value "/Users/lothar/Desktop/postbooks.sql.xmi"
+  key "gxmi path" value "/Users/lothar/Desktop/postbooks.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi uml2.0" value "no"
