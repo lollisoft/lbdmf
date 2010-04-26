@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.216 $
+# * $Revision: 1.217 $
 # * $Name:  $
-# * $Id: Makefile,v 1.216 2010/04/03 00:15:56 lollisoft Exp $
+# * $Id: Makefile,v 1.217 2010/04/26 06:49:01 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.217  2010/04/26 06:49:01  lollisoft
+# * Moved lbCryptoStream plugin to activate building it on Windows.
+# *
 # * Revision 1.216  2010/04/03 00:15:56  lollisoft
 # * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
 # *
@@ -1658,6 +1661,10 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+../Test/GUI/wxPlugins/lbCryptoStream: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 ifeq ($(OSTYPE), solaris)
 ../vendor/dosdir: dummy
 	$@/make.sh $@
@@ -1707,10 +1714,6 @@ ifeq ($(OSTYPE), osx)
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
-
-../Test/GUI/wxPlugins/lbCryptoStream: dummy
-	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/cryptostream/src/crypstrm: dummy
