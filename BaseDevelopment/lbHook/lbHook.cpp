@@ -125,10 +125,6 @@ LB_DLLIMPORT lb_I_Log *lb_log = NULL;
 LB_DLLIMPORT int lb_isInitializing = 0;
 #endif
 #endif
-#ifdef LINUX
-extern lb_I_Log *lb_log = NULL;
-extern int lb_isInitializing = 0;
-#endif
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
 bool lbVerbose = FALSE;
@@ -338,7 +334,7 @@ DLLEXPORT void LB_CDECL deleteDirectory(const char* name) {
 		rmdir(name);
 		#endif
 		#if defined(OSX) || defined(LINUX) || defined(UNIX)
-        rmdir(name, S_IRWXU);
+        rmdir(name);
 		#endif
 }
 
@@ -572,7 +568,12 @@ bool LB_CDECL OSXMemValidate(void* ptr) {
 extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
 {
 	if (FileExists(filename)) return true;
+#ifdef WINDOWS
 	if (_mkdir(filename) == -1) return true;
+#endif
+#ifdef LINUX
+	if (mkdir(filename, 0777) == -1) return true;
+#endif
 	rmdir(filename);
 	return false;
 }

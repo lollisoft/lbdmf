@@ -5,6 +5,14 @@
 
 #define DONT_USE_LBDMF_EXCEPTIONS
 
+#ifdef WINDOWS
+#define LOGFILE "\\myLog.log"
+#endif
+
+#ifdef LINUX
+#define LOGFILE "/myLog.log"
+#endif
+
 class BaseDevelopmentLogger : public TestFixture<BaseDevelopmentLogger>
 {
 public:
@@ -23,7 +31,7 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
 		*s = getLogDirectory();
-		*s += "\\myLog.log";
+		*s += LOGFILE;
 
 		remove(s->charrep());
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
@@ -39,7 +47,7 @@ public:
 
 		_LOG << "Log a line." LOG_
 		*s = getLogDirectory();
-		*s += "\\myLog.log";
+		*s += LOGFILE;
 		ASSERT_EQUALS(true, FileExists(s->charrep()))
 		remove(s->charrep());
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
@@ -57,13 +65,16 @@ public:
 		puts("test_Log_creating_logdirectory");
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
-
+#ifdef WINDOWS
 		setLogDirectory(".\\custom_logdir");
-
+#endif
+#ifdef LINUX
+		setLogDirectory("./custom_logdir");
+#endif
 		*s = getLogDirectory();
 		*file = getLogDirectory();
 
-		*file += "\\myLog.log";
+		*file += LOGFILE;
 		remove(file->charrep());
 
 		deleteDirectory(s->charrep());
@@ -81,7 +92,7 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 		UAP_REQUEST(getModuleInstance(), lb_I_Log, log)
 		*s = getLogDirectory();
-		*s += "\\myLog.log";
+		*s += LOGFILE;
 
 		log->setCustomLogFile(s->charrep());
 		ASSERT_EQUALS( true, log.getPtr() != NULL );
@@ -95,7 +106,7 @@ public:
 		setLogActivated(true);
 		_LOG << "Log a line." LOG_
 		*s = getLogDirectory();
-		*s += "\\myLog.log";
+		*s += LOGFILE;
 
 		ASSERT_EQUALS(true, FileExists(s->charrep()))
 		//remove(s->charrep());
@@ -372,7 +383,6 @@ public:
 		return true;
 	}
 };
-
 
 
 
