@@ -119,7 +119,7 @@ public:
 		
 	DECLARE_LB_UNKNOWN()
 	
-	bool setAlgorythm(char* name);
+	bool LB_STDCALL setAlgorythm(char* name);
 	lb_I_CryptoStream& LB_STDCALL operator>> (lb_I_String* string);
 	lb_I_CryptoStream& LB_STDCALL operator<< (lb_I_String* string);
 		

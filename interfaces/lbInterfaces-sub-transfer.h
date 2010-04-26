@@ -256,7 +256,7 @@ public:
 class lb_I_CryptoStream : 
 	public lb_I_Unknown {
 	public:
-		virtual bool setAlgorythm(char* name) = 0;
+		virtual bool LB_STDCALL setAlgorythm(char* name) = 0;
 		virtual lb_I_CryptoStream& LB_STDCALL operator<< (lb_I_String* string) = 0;
 		virtual lb_I_CryptoStream& LB_STDCALL operator>> (lb_I_String* string) = 0;
 };
