@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.93 $
+ * $Revision: 1.94 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.93 2010/04/25 21:37:10 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.94 2010/04/29 06:56:05 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.94  2010/04/29 06:56:05  lollisoft
+ * Removed ctor and dtor.
+ *
  * Revision 1.93  2010/04/25 21:37:10  lollisoft
  * Successfully ported lbHook to MINGW compiler. There were only two issues
  * I have identified: The enum problem as reported from Michal Necasek having
@@ -845,10 +848,6 @@ public:
  * event handlers (lb_I_EventHandler, lb_I_EvHandler).
  */
 class lb_I_Parameter : public lb_I_Unknown {
-protected:
-        lb_I_Parameter() {}
-        virtual ~lb_I_Parameter() {}
-
 public:
 #ifdef bla        
         /**
