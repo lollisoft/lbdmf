@@ -375,12 +375,19 @@ public:
 	TEST_FIXTURE( BaseDevelopmentDatabase )
 	{
 		TEST_CASE(test_Instanciate_lbDatabase)
-		TEST_CASE(test_Instanciate_lbDatabase_setUser)
-		TEST_CASE(test_Instanciate_lbDatabase_setDB)
-		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure)
-		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_listTables)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_setUser)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_setDB)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_listTables)
+
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_setUser)
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_setDB)
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure)
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_listTables)
 	}
 
 
@@ -404,36 +411,74 @@ public:
 	{
 	}
 
-	void test_Instanciate_lbDatabase_listTables( void )
+	void test_Instanciate_lbDatabase_PostgreSQL_setUser( void )
 	{
-		puts("test_Instanciate_lbDatabase_listTables");
+		puts("test_Instanciate_lbDatabase_PostgreSQL_setUser");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 
-		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
+	}
+
+	void test_Instanciate_lbDatabase_PostgreSQL_setDB( void )
+	{
+		puts("test_Instanciate_lbDatabase_PostgreSQL_setDB");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setDB(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
+	}
+
+	void test_Instanciate_lbDatabase_PostgreSQL_listTables( void )
+	{
+		puts("test_Instanciate_lbDatabase_PostgreSQL_listTables");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
 
 		UAP(lb_I_Query, query)
 
-		query = db->getQuery("UnitTestSQLSERVER", 0);
+		query = db->getQuery("UnitTestPostgreSQL", 0);
 
 		ASSERT_EQUALS( true, query != NULL);
 
 		ASSERT_EQUALS( ERR_NONE, query->query(
-			"CREATE TABLE [dbo].[test] ("
-			"	id int identity(1,1) NOT NULL,"
-			"	Name nchar(100)"
+			"CREATE TABLE test ("
+			"	id serial,"
+			"	Name char(100)"
 			")"
 			, false));
 
 		UAP(lb_I_Container, tables)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+		SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
 
-		tables = db->getTables("UnitTestSQLSERVER");
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+
+		if (SomeBaseSettings != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+			*name = "GeneralDBSchemaname";
+			*schema = "public";
+			SomeBaseSettings->setUAPString(*&name, *&schema);
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		}
+
+
+		tables = db->getTables("UnitTestPostgreSQL");
 
 		int count = tables->Count();
 
 		ASSERT_EQUALS( ERR_NONE, query->query(
-			"DROP TABLE [dbo].[test]"
+			"DROP TABLE test"
 			, false));
 
 		ASSERT_EQUALS( 1, count);
@@ -441,9 +486,152 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest( void )
+	void test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest");
+		puts("test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestPostgreSQL", 0);
+
+		ASSERT_EQUALS( true, query != NULL);
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"CREATE TABLE test ("
+			"	id serial,"
+			"	Name char(100)"
+			")"
+			, false));
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"DROP TABLE test"
+			, false));
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure( void )
+	{
+		puts("test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trallala"));
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest( void )
+	{
+		puts("test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
+
+		db->close();
+	}
+
+
+	void test_Instanciate_lbDatabase_SQLSERVER_setUser( void )
+	{
+		puts("test_Instanciate_lbDatabase_SQLSERVER_setUser");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
+	}
+
+	void test_Instanciate_lbDatabase_SQLSERVER_setDB( void )
+	{
+		puts("test_Instanciate_lbDatabase_SQLSERVER_setDB");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setDB(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
+	}
+
+	void test_Instanciate_lbDatabase_SQLSERVER_listTables( void )
+	{
+		puts("test_Instanciate_lbDatabase_SQLSERVER_listTables");
+		lbErrCodes err = ERR_NONE;
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestSQLSERVER", 0);
+
+		query->query(
+			"CREATE TABLE [dbo].[test] ("
+			"	id int identity(1,1) NOT NULL,"
+			"	Name nchar(100)"
+			")");
+
+		UAP(lb_I_Container, tables)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+		SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+
+		if (SomeBaseSettings != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+			*name = "GeneralDBSchemaname";
+			*schema = "dbo";
+			SomeBaseSettings->setUAPString(*&name, *&schema);
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+			*name = "GeneralDBSchemaname";
+			*schema = "dbo";
+			SomeBaseSettings->setUAPString(*&name, *&schema);
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		}
+
+		tables = db->getTables("UnitTestSQLSERVER");
+
+		int count = tables->Count();
+
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Unknown, uk)
+		uk = tables->getElementAt(1);
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "TableName";
+		param->getUAPString(*&name, *&tableName);
+
+		query->query("DROP TABLE [dbo].[test]");
+
+		ASSERT_EQUALS( 1, count);
+		ASSERT_EQUALS( "test", tableName->charrep());
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest( void )
+	{
+		puts("test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -470,9 +658,9 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure( void )
+	void test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure( void )
 	{
-		puts("test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure");
+		puts("test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -482,9 +670,9 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest( void )
+	void test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest");
+		puts("test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -502,28 +690,6 @@ public:
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 	}
 
-
-	void test_Instanciate_lbDatabase_setUser( void )
-	{
-		puts("test_Instanciate_lbDatabase_setUser");
-		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
-
-		ASSERT_EQUALS( true, db.getPtr() != NULL );
-
-		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
-		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
-	}
-
-	void test_Instanciate_lbDatabase_setDB( void )
-	{
-		puts("test_Instanciate_lbDatabase_setDB");
-		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
-
-		ASSERT_EQUALS( true, db.getPtr() != NULL );
-
-		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setDB(NULL));
-		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
-	}
 
 	bool LoadSettings()
 	{
