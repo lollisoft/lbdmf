@@ -5934,8 +5934,15 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 		*name = "GeneralDBSchemaname";
 		SomeBaseSettings->getUAPString(*&name, *&schema);
 
-		retcode = SQLTables(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);
+		if (*schema == "") {
+			_LOG << "lbDatabase::getTables(" << connectionname << ") works with empty namespace." LOG_
+			retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+		} else {
+			_LOG << "lbDatabase::getTables(" << connectionname << ") works with namespace '" << schema->charrep() << "'." LOG_
+			retcode = SQLTables(hstmt, NULL, 0, (unsigned char*) schema->charrep(), strlen(schema->charrep()), NULL, 0, NULL, 0);
+		}
 	} else {
+		_LOG << "lbDatabase::getTables(" << connectionname << ") works with default empty namespace." LOG_
 		retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
 	}
 
