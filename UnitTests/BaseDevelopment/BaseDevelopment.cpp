@@ -316,6 +316,59 @@ public:
 
 
 
+class BaseDevelopmentMetaApplication : public TestFixture<BaseDevelopmentMetaApplication>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentMetaApplication )
+	{
+		TEST_CASE(test_Instanciate_lbMetaApplication)
+	}
+
+
+public:
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGSEGV, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+#ifdef OSX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+
+	void tearDown()
+	{
+	}
+
+	void test_Instanciate_lbMetaApplication( void )
+	{
+		puts("test_Instanciate_lbMetaApplication");
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
+
+		ASSERT_EQUALS( true, m != NULL );
+	}
+
+	bool LoadSettings()
+	{
+		return true;
+	}
+};
+
+
+
+
+
 class BaseDevelopmentDatabase : public TestFixture<BaseDevelopmentDatabase>
 {
 public:
@@ -327,6 +380,7 @@ public:
 		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure)
 		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest)
 		TEST_CASE(test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_listTables)
 	}
 
 
@@ -350,14 +404,51 @@ public:
 	{
 	}
 
-		void test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest( void )
+	void test_Instanciate_lbDatabase_listTables( void )
+	{
+		puts("test_Instanciate_lbDatabase_listTables");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestSQLSERVER", 0);
+
+		ASSERT_EQUALS( true, query != NULL);
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"CREATE TABLE [dbo].[test] ("
+			"	id int identity(1,1) NOT NULL,"
+			"	Name nchar(100)"
+			")"
+			, false));
+
+		UAP(lb_I_Container, tables)
+
+		tables = db->getTables("UnitTestSQLSERVER");
+
+		int count = tables->Count();
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"DROP TABLE [dbo].[test]"
+			, false));
+
+		ASSERT_EQUALS( 1, count);
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest( void )
 	{
 		puts("test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 
-		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "einerlei"));
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
 
 		UAP(lb_I_Query, query)
 
@@ -398,7 +489,7 @@ public:
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 
-		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "einerlei"));
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
 
 		db->close();
 	}
@@ -449,4 +540,5 @@ public:
 
 REGISTER_FIXTURE( BaseDevelopmentLogger );
 REGISTER_FIXTURE( BaseDevelopmentString );
+REGISTER_FIXTURE( BaseDevelopmentMetaApplication );
 REGISTER_FIXTURE( BaseDevelopmentDatabase );
