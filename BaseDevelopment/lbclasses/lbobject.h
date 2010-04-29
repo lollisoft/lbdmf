@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbobject.h,v 1.50 2010/04/03 00:15:57 lollisoft Exp $
+ * $Id: lbobject.h,v 1.51 2010/04/29 06:52:37 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.51  2010/04/29 06:52:37  lollisoft
+ * Reordered interface for lb_I_Parameter implementation.
+ *
  * Revision 1.50  2010/04/03 00:15:57  lollisoft
  * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
  *
@@ -340,13 +343,6 @@ public:
 /*...sclass lbParameter:0:*/
 class lbParameter : public lb_I_Parameter {
 public:
-	lbParameter() {
-		cloning = true;
-		ref = STARTREF;
-	}
-	virtual ~lbParameter() {}
-
-	DECLARE_LB_UNKNOWN()
 	
 	virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p);
 	virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p);
@@ -354,14 +350,17 @@ public:
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	
-	virtual void LB_STDCALL setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);
-	virtual lbErrCodes LB_STDCALL getUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);
-	
 	virtual void LB_STDCALL setUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p);
 	virtual lbErrCodes LB_STDCALL getUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p);
+
+	virtual void LB_STDCALL setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);
+	virtual lbErrCodes LB_STDCALL getUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);	
 	
 	virtual void LB_STDCALL setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
 	virtual lbErrCodes LB_STDCALL getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
+	
+	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
+	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
 	
 	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
@@ -369,15 +368,22 @@ public:
 	virtual void LB_STDCALL setUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
 	virtual lbErrCodes LB_STDCALL getUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
 	
-	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
-	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
-	
 	virtual int LB_STDCALL Count();
 	virtual lb_I_Container* LB_STDCALL getParameterList();
 
 	void LB_STDCALL setCloning(bool doClone=true);
 	
 	void LB_STDCALL delParameter(lb_I_String*& parameter);
+
+	DECLARE_LB_UNKNOWN()
+
+public:
+	lbParameter() {
+		cloning = true;
+		ref = STARTREF;
+	}
+	virtual ~lbParameter() {}
+
 protected:
 	bool cloning;
 	UAP(lb_I_Container, parameters)
