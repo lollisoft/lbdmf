@@ -44,16 +44,27 @@ class lb_I_MVC_View;
  */
 class lb_I_Query : public lb_I_Unknown
 {
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        lb_I_Query() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        virtual ~lb_I_Query() {}
 public:
+	enum lbDBCaseSensity {
+		lbDBCaseLower,
+		lbDBCaseUpper,
+		lbDBCaseMixed,
+		lbDBCaseSensibility = 0x7FFFFFFF
+	};
+	/**
+	 * \brief Supported column types
+	 */
+	enum lbDBColumnTypes {
+		lbDBColumnBit,
+		lbDBColumnChar,
+		lbDBColumnInteger,
+		lbDBColumnBigInteger,
+		lbDBColumnBinary,
+		lbDBColumnDate,
+		lbDBColumnFloat,
+		lbDBColumnUnknown = 0x7FFFFFFF
+	};
+
 	/**
 	 * \brief Column binding mode.
 	 * 
@@ -303,20 +314,6 @@ public:
 	virtual bool	LB_STDCALL dataFetched() = 0;
 
 	/**
-	 * \brief Supported column types
-	 */
-	enum lbDBColumnTypes {
-		lbDBColumnBit,
-		lbDBColumnChar,
-		lbDBColumnInteger,
-		lbDBColumnBigInteger,
-		lbDBColumnBinary,
-		lbDBColumnDate,
-		lbDBColumnFloat,
-		lbDBColumnUnknown
-	};
-
-	/**
 	 * \brief Gets the type of the column.
 	 *
 	 */
@@ -329,12 +326,6 @@ public:
 	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(char* name) = 0;
 
 
-	enum lbDBCaseSensity {
-		lbDBCaseLower,
-		lbDBCaseUpper,
-		lbDBCaseMixed,
-		lbDBCaseSensibility
-	};
 
 	virtual lbDBCaseSensity    LB_STDCALL getCaseSensity() = 0;
 
@@ -480,6 +471,7 @@ public:
 		 */
 		virtual lbErrCodes LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value) = 0;
 #endif
+
 };
 /*...e*/
 /*...sclass lb_I_BoundColumn:0:*/
