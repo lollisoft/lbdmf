@@ -235,6 +235,137 @@ class lbQuery :
 public lb_I_Query
 {
 public:
+	/* Column binding mode */
+        virtual lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb);
+
+/*...svirtual lbErrCodes LB_STDCALL \40\un\41\registerView\40\lb_I_MVC_View\42\ view\41\\59\:8:*/
+	/* MVC View mode */
+	/*
+	 * As a sample may be a graphical view for the result of the interpreted
+	 * graphics and the textual view. The controller then might use one button
+	 * for updating the model and the model then informs its views.
+	 *
+	 * For the future porting of FRS I would have a graphical view of the reserved
+	 * places. It will show reserved as red and free as green.
+	 *
+	 * The source code for that object will call - maybe -
+	 * getColor("Reserved-Status", me).
+	 *
+	 * The dialog to reserve a place will update the data and therefore the model
+	 * will inform also the graphical view.
+	 */
+	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
+	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
+/*...e*/
+	void LB_STDCALL PrintData(bool reverse);
+	void LB_STDCALL PrintCurrent();
+	void LB_STDCALL PrintHeader();
+	void LB_STDCALL PrintFooter();
+	void LB_STDCALL skipPeeking() { peeking = false; }
+	/* Set the SQL query */
+	lbErrCodes LB_STDCALL query(char* q, bool bind);
+	lbErrCodes LB_STDCALL bind();
+	void LB_STDCALL unbind();
+	lbErrCodes LB_STDCALL add();
+	int LB_STDCALL isAdding() { return mode; }
+	bool		LB_STDCALL isFirst();
+	bool		LB_STDCALL isLast();
+	/**
+	 * Deletes the current entry.
+	 */
+	lbErrCodes LB_STDCALL remove();
+	/**
+	 * Updates the modified data or stores new data (added via add())
+	 */
+	lbErrCodes LB_STDCALL update();
+	/*
+	 * General information based on the given query.
+	 */
+	int			LB_STDCALL getColumns();
+	bool			LB_STDCALL hasColumnName(char* name);
+	lb_I_String*	LB_STDCALL getColumnName(int col);
+	lb_I_String* LB_STDCALL getTableName(char* columnName = NULL);
+	void LB_STDCALL skipFKCollecting();
+	void LB_STDCALL enableFKCollecting();
+	int			LB_STDCALL hasFKColumn(char* FKName);
+	int			LB_STDCALL getFKColumns();
+	lb_I_String*    	LB_STDCALL getFKColumn(int pos);
+	lb_I_String*		LB_STDCALL getFKColumn(char* table, char* primary);
+	lb_I_String*		LB_STDCALL getPKTable(char const * FKName);
+	lb_I_String*    	LB_STDCALL getPKColumn(char const * FKName);
+	int 			LB_STDCALL getPKColumns();
+	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
+	bool		LB_STDCALL isNull(int pos);
+	bool		LB_STDCALL isNull(char const * name);
+	bool		LB_STDCALL hasDefaultValue(char* columnname);
+	bool		LB_STDCALL isNullable(int pos);
+	bool		LB_STDCALL isNullable(char const * name);
+	bool		LB_STDCALL setNull(int pos, bool b = true);
+	bool		LB_STDCALL setNull(char const * name, bool b = true);
+	bool LB_STDCALL dataFetched();
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+	lbDBCaseSensity    LB_STDCALL getCaseSensity();
+	void			LB_STDCALL setReadonly(char* column, bool updateable = true);
+	bool			LB_STDCALL getReadonly(char* column);
+    int             LB_STDCALL getPosition() { return cursor; }
+    lbErrCodes      LB_STDCALL absolute(int pos);
+    lbErrCodes		LB_STDCALL first();
+    lbErrCodes		LB_STDCALL next();
+    lbErrCodes		LB_STDCALL previous();
+	lbErrCodes		LB_STDCALL last();
+	lbErrCodes	LB_STDCALL reopen();
+	void		LB_STDCALL close();
+	lbErrCodes	LB_STDCALL open();
+	char* 		LB_STDCALL setWhereClause(const char* query, char* where);
+	char* 		LB_STDCALL addWhereClause(const char* query, char* where);
+	void		LB_STDCALL setAutoRefresh(bool b);
+#ifdef UNBOUND
+        virtual char* 		LB_STDCALL getChar(int column);
+#endif
+#ifndef UNBOUND
+        lb_I_String*	LB_STDCALL getAsString(int column);
+        lb_I_String*	LB_STDCALL getAsString(const char* column);
+		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
+		lb_I_Long*		LB_STDCALL getAsLong(int column);
+
+		lb_I_BinaryData* LB_STDCALL getBinaryData(int column);
+		lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column);
+		lbErrCodes LB_STDCALL setBinaryData(int column, lb_I_BinaryData* value);
+		lbErrCodes LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
+#endif
+
+
+	void LB_STDCALL prepareFKList();
+	void LB_STDCALL dbError(char* lp, HSTMT hstmt);
+
+
+		lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
+
+		lbErrCodes LB_STDCALL executeDirect(char* SQL);
+
+	/**
+	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
+	 * This function is public in class level, not on interface level.
+	 */
+	HSTMT LB_STDCALL getCurrentStatement() {
+		return hstmt;
+	}
+
+	int LB_STDCALL isReadonly() {
+		return _readonly;
+	}
+
+#ifndef UNBOUND
+	lb_I_ColumnBinding* getBoundColumns() {
+		return boundColumns.getPtr();
+	}
+#endif
+
+	DECLARE_LB_UNKNOWN()
+
+
+public:
 	lbQuery(int readonly = 1) {
 		peeking = true;
 		ref = STARTREF;
@@ -279,166 +410,6 @@ public:
 		}
 		if (cursorname != NULL) free (cursorname);
 	}
-
-	DECLARE_LB_UNKNOWN()
-
-	/* Column binding mode */
-        virtual lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb);
-
-/*...svirtual lbErrCodes LB_STDCALL \40\un\41\registerView\40\lb_I_MVC_View\42\ view\41\\59\:8:*/
-	/* MVC View mode */
-	/*
-	 * As a sample may be a graphical view for the result of the interpreted
-	 * graphics and the textual view. The controller then might use one button
-	 * for updating the model and the model then informs its views.
-	 *
-	 * For the future porting of FRS I would have a graphical view of the reserved
-	 * places. It will show reserved as red and free as green.
-	 *
-	 * The source code for that object will call - maybe -
-	 * getColor("Reserved-Status", me).
-	 *
-	 * The dialog to reserve a place will update the data and therefore the model
-	 * will inform also the graphical view.
-	 */
-	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
-	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
-/*...e*/
-
-	void LB_STDCALL skipFKCollecting();
-	void LB_STDCALL enableFKCollecting();
-	void LB_STDCALL prepareFKList();
-
-	lb_I_String* LB_STDCALL getTableName(char* columnName = NULL);
-
-	void LB_STDCALL dbError(char* lp, HSTMT hstmt);
-
-	void LB_STDCALL PrintData(bool reverse);
-	void LB_STDCALL PrintCurrent();
-	void LB_STDCALL PrintHeader();
-	void LB_STDCALL PrintFooter();
-
-	void LB_STDCALL skipPeeking() { peeking = false; }
-
-	/* Set the SQL query */
-	lbErrCodes LB_STDCALL query(char* q, bool bind);
-
-	lbErrCodes LB_STDCALL bind();
-	void LB_STDCALL unbind();
-
-	bool LB_STDCALL dataFetched();
-
-	lbErrCodes LB_STDCALL add();
-	int LB_STDCALL isAdding() { return mode; }
-
-	/**
-	 * Deletes the current entry.
-	 */
-	lbErrCodes LB_STDCALL remove();
-
-	/**
-	 * Updates the modified data or stores new data (added via add())
-	 */
-	lbErrCodes LB_STDCALL update();
-
-
-	/*
-	 * General information based on the given query.
-	 */
-
-	int			LB_STDCALL getColumns();
-	bool			LB_STDCALL hasColumnName(char* name);
-
-	lb_I_String*	LB_STDCALL getColumnName(int col);
-
-	int			LB_STDCALL hasFKColumn(char* FKName);
-
-	int			LB_STDCALL getFKColumns();
-
-	lb_I_String*    	LB_STDCALL getFKColumn(int pos);
-
-	lb_I_String*		LB_STDCALL getFKColumn(char* table, char* primary);
-
-	lb_I_String*		LB_STDCALL getPKTable(char const * FKName);
-	lb_I_String*    	LB_STDCALL getPKColumn(char const * FKName);
-
-	int 			LB_STDCALL getPKColumns();
-	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
-
-	bool		LB_STDCALL isFirst();
-	bool		LB_STDCALL isLast();
-
-	bool		LB_STDCALL hasDefaultValue(char* columnname);
-	bool		LB_STDCALL isNullable(int pos);
-	bool		LB_STDCALL isNullable(char const * name);
-	bool		LB_STDCALL isNull(int pos);
-	bool		LB_STDCALL isNull(char const * name);
-	bool		LB_STDCALL setNull(int pos, bool b = true);
-	bool		LB_STDCALL setNull(char const * name, bool b = true);
-
-	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
-	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
-
-	lbDBCaseSensity    LB_STDCALL getCaseSensity();
-
-	void			LB_STDCALL setReadonly(char* column, bool updateable = true);
-	bool			LB_STDCALL getReadonly(char* column);
-
-        /* Navigation */
-
-        int             LB_STDCALL getPosition() { return cursor; }
-        lbErrCodes      LB_STDCALL absolute(int pos);
-
-        lbErrCodes	LB_STDCALL first();
-        lbErrCodes	LB_STDCALL next();
-        lbErrCodes	LB_STDCALL previous();
-	lbErrCodes	LB_STDCALL last();
-	char* 		LB_STDCALL setWhereClause(const char* query, char* where);
-
-	char* 		LB_STDCALL addWhereClause(const char* query, char* where);
-
-	void		LB_STDCALL setAutoRefresh(bool b);
-
-	lbErrCodes	LB_STDCALL reopen();
-	void		LB_STDCALL close();
-	lbErrCodes	LB_STDCALL open();
-
-#ifdef UNBOUND
-        virtual char* 		LB_STDCALL getChar(int column);
-#endif
-#ifndef UNBOUND
-        lb_I_String*	LB_STDCALL getAsString(int column);
-        lb_I_String*	LB_STDCALL getAsString(const char* column);
-		lb_I_Long*		LB_STDCALL getAsLong(int column);
-		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
-
-		lb_I_BinaryData* LB_STDCALL getBinaryData(int column);
-		lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column);
-		lbErrCodes LB_STDCALL setBinaryData(int column, lb_I_BinaryData* value);
-		lbErrCodes LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
-#endif
-
-		lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
-
-		lbErrCodes LB_STDCALL executeDirect(char* SQL);
-
-	/**
-	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
-	 * This function is public in class level, not on interface level.
-	 */
-	HSTMT LB_STDCALL getCurrentStatement() {
-		return hstmt;
-	}
-
-	int LB_STDCALL isReadonly() {
-		return _readonly;
-	}
-
-#ifndef UNBOUND
-	lb_I_ColumnBinding* getBoundColumns() {
-		return boundColumns.getPtr();
-	}
-#endif
 
 private:
 	int		cursor;
@@ -5799,7 +5770,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 			UAP(lb_I_Unknown, ukConn)
 			QI(ConnectionName, lb_I_Unknown, ukConn)
 
-			brokenConnections->insert(&ukConn, &key);
+			//brokenConnections->insert(&ukConn, &key);
 
 			return ERR_DB_CONNECT;
 		}
