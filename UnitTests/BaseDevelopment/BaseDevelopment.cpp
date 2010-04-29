@@ -324,6 +324,9 @@ public:
 		TEST_CASE(test_Instanciate_lbDatabase)
 		TEST_CASE(test_Instanciate_lbDatabase_setUser)
 		TEST_CASE(test_Instanciate_lbDatabase_setDB)
+		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure)
+		TEST_CASE(test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest)
+		TEST_CASE(test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest)
 	}
 
 
@@ -345,6 +348,59 @@ public:
 
 	void tearDown()
 	{
+	}
+
+		void test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest( void )
+	{
+		puts("test_Instanciate_lbDatabase_createTable_SQLSERVER_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "einerlei"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestSQLSERVER", 0);
+
+		ASSERT_EQUALS( true, query != NULL);
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"CREATE TABLE [dbo].[test] ("
+			"	id int identity(1,1) NOT NULL,"
+			"	Name nchar(100)"
+			")"
+			, false));
+
+		ASSERT_EQUALS( ERR_NONE, query->query(
+			"DROP TABLE [dbo].[test]"
+			, false));
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure( void )
+	{
+		puts("test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest_failure");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trallala"));
+
+		db->close();
+	}
+
+	void test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest( void )
+	{
+		puts("test_Instanciate_lbDatabase_login_SQLSERVER_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "einerlei"));
+
+		db->close();
 	}
 
 	void test_Instanciate_lbDatabase( void )
