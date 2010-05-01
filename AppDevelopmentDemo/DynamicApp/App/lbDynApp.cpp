@@ -491,11 +491,23 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 parameter->setData("Application Database settings");
                 //--------------------------------------
 
-                parameterGeneral->setData("Use plugin");
-                boolGeneral->setData(UsePlugin->getData());
-                paramGeneral->setUAPBoolean(*&parameterGeneral, *&boolGeneral);
+                parameterGeneral->setData("DB Name");
+                valueGeneral->setData(UMLImportTargetDBName->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB plugin namespace");
+                parameterGeneral->setData("DB User");
+                valueGeneral->setData(UMLImportTargetDBUser->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("DB Password");
+                valueGeneral->setData(UMLImportTargetDBPass->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("DB Schemaname");
+                valueGeneral->setData(GeneralDBSchemaname->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("Sqlite plugin namespace");
                 valueGeneral->setData(DatabaseSettingNamespace->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
@@ -503,32 +515,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                                                                                                         this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
 
                 param->setUAPParameter(*&parameter, *&paramGeneral);
-
-                parameter->setData("lbDMF Manager Import Definitions");
-                //--------------------------------------------------------
-
-                parameterProject->setData("DB Name");
-                valueProject->setData(UMLImportTargetDBName->charrep());
-                paramProject->setUAPString(*&parameterProject, *&valueProject);
-
-                parameterProject->setData("DB User");
-                valueProject->setData(UMLImportTargetDBUser->charrep());
-                paramProject->setUAPString(*&parameterProject, *&valueProject);
-
-                parameterProject->setData("DB Password");
-                valueProject->setData(UMLImportTargetDBPass->charrep());
-                paramProject->setUAPString(*&parameterProject, *&valueProject);
-
-                parameterProject->setData("DB Schemaname");
-                valueProject->setData(GeneralDBSchemaname->charrep());
-                paramProject->setUAPString(*&parameterProject, *&valueProject);
-
-                metaapp->registerPropertyChangeEventGroup(      parameter->charrep(), *&paramProject,
-                                                                                                        this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
-
-                param->setUAPParameter(*&parameter, *&paramProject);
-
-
 
                 metaapp->showPropertyPanel(*&param);
         } else {
@@ -558,12 +544,25 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 
                 parameter->setData("Application Database settings");
+                //--------------------------------------
 
-                parameterGeneral->setData("Use plugin");
-                boolGeneral->setData(UsePlugin->getData());
-                paramGeneral->setUAPBoolean(*&parameterGeneral, *&boolGeneral);
+                parameterGeneral->setData("DB Name");
+                valueGeneral->setData(UMLImportTargetDBName->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB plugin namespace");
+                parameterGeneral->setData("DB User");
+                valueGeneral->setData(UMLImportTargetDBUser->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("DB Password");
+                valueGeneral->setData(UMLImportTargetDBPass->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("DB Schemaname");
+                valueGeneral->setData(GeneralDBSchemaname->charrep());
+                paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+
+                parameterGeneral->setData("Sqlite plugin namespace");
                 valueGeneral->setData(DatabaseSettingNamespace->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
@@ -630,15 +629,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 
                 QI(parameterName, lb_I_KeyBase, key)
 
-                if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Name") == 0) {
+                if (strcmp(key->charrep(), "Application Database settingsDB Name") == 0) {
                                         *UMLImportTargetDBName = value->charrep();
                 }
 
-                if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB User") == 0) {
+                if (strcmp(key->charrep(), "Application Database settingsDB User") == 0) {
                                         *UMLImportTargetDBUser = value->charrep();
                 }
 
-                if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Password") == 0) {
+                if (strcmp(key->charrep(), "Application Database settingsDB Password") == 0) {
                                         *UMLImportTargetDBPass = value->charrep();
                 }
                 
@@ -664,13 +663,33 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                                         }
                 }
 
-                if (strcmp(key->charrep(), "Application Database settingsDB plugin namespace") == 0) {
+                if (strcmp(key->charrep(), "Application Database settingsSqlite plugin namespace") == 0) {
                                         *DatabaseSettingNamespace = value->charrep();
                 }
                 //------------------------------------------------------------------------------------
 
-                if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Schemaname") == 0) {
+                if (strcmp(key->charrep(), "Application Database settingsDB Schemaname") == 0) {
                                         *GeneralDBSchemaname = value->charrep();
+										//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+										UAP(lb_I_Parameter, SomeBaseSettings)
+										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+										UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+										if (SomeBaseSettings != NULL) {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+											*name = "GeneralDBSchemaname";
+											SomeBaseSettings->setUAPString(*&name, *&GeneralDBSchemaname);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										} else {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+											REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+											*name = "GeneralDBSchemaname";
+											SomeBaseSettings->setUAPString(*&name, *&GeneralDBSchemaname);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										}
                 }
 /*
                 if (strcmp(key->charrep(), "UML import settingsAsk for other XSL files") == 0) {
