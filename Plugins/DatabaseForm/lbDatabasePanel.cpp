@@ -4591,9 +4591,34 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	if (database == NULL) return ERR_NONE; // Form has not been initialized correctly or database backend was not loaded. Simply ignore it.
 	refreshButton->SetLabel(_trans("Refresh"));
 	addingButton->SetLabel(_trans("Add"));
-	close();
 
-	open();
+	bool isLast = false;
+	bool isFirst = false;
+
+	isFirst = sampleQuery->isFirst();
+	isLast = sampleQuery->isLast();
+
+	if (isFirst || isLast) {
+		lbDBClear();
+		close();
+		open();
+		if (isFirst) {
+			sampleQuery->first();
+			lbDBRead();
+			DISABLE_BOF()
+		} else {
+			sampleQuery->last();
+			lbDBRead();
+			DISABLE_EOF()
+		}
+	} else {
+		int position = sampleQuery->getPosition();
+		lbDBClear();
+		close();
+		open();
+		sampleQuery->absolute(position);
+		lbDBRead();
+	}
 
 	return ERR_NONE;
 }
