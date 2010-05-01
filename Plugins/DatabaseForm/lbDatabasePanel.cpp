@@ -4590,6 +4590,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	if (database == NULL) return ERR_NONE; // Form has not been initialized correctly or database backend was not loaded. Simply ignore it.
 	refreshButton->SetLabel(_trans("Refresh"));
+	addingButton->SetLabel(_trans("Add"));
 	close();
 
 	open();
@@ -4630,10 +4631,54 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		_CL_LOG << "Query is in add mode." LOG_
 		lbErrCodes err = ERR_NONE;
 		if ((err = DoValidation(NULL)) != ERR_NONE) return err;
-		if (lbDBUpdate() == ERR_NONE) {
-			refreshButton->SetLabel(_trans("Refresh"));
-			addingButton->SetLabel(_trans("Add"));
+
+		refreshButton->SetLabel(_trans("Refresh"));
+		addingButton->SetLabel(_trans("Add"));
+
+//lbDBFirst
+		if ((err = DoValidation(NULL)) != ERR_NONE) return err;
+		if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
+
+		lbDBClear();
+
+		err = sampleQuery->first();
+
+		while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
+
+		if (err == ERR_DB_NODATA) {
+			sampleQuery->reopen();
+
+			err = sampleQuery->first();
+
+			if (err == ERR_DB_NODATA) {
+				DISABLE_FOR_NO_DATA()
+
+				return ERR_DB_NODATA;
+			} else {
+				DISABLE_BOF()
+			}
 		}
+// lbDBLast
+		lbDBClear();
+
+		err = sampleQuery->last();
+
+		while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
+
+		if (err == ERR_DB_NODATA) {
+			sampleQuery->reopen();
+			err = sampleQuery->last();
+
+			if (err == ERR_DB_NODATA) {
+				DISABLE_FOR_NO_DATA()
+
+				return ERR_DB_NODATA;
+			}
+		}
+
+		lbDBRead();
+
+		DISABLE_EOF()
 		return err;
 	}
 
@@ -4852,8 +4897,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 					lbDBClear();
 					addingButton->SetLabel(_trans("Save"));
 					refreshButton->SetLabel(_trans("Cancel"));
-					refreshButton->Enable();
 					DISABLE_FOR_NO_DATA()
+					refreshButton->Enable();
 				}
 			} else {
 				if (foreignkey != NULL) {
@@ -4875,9 +4920,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				lbDBUpdate();
 
 				if (sampleQuery->update() == ERR_NONE) {
-					if (sampleQuery->last() == ERR_NONE)
+					if (sampleQuery->last() == ERR_NONE) {
 						lbDBRead();
-					else
+						DISABLE_FOR_NO_DATA()
+						refreshButton->Enable();
+					} else
 						_LOG << "Error: Moving to new record failed." LOG_
 				} else {
 					if (meta->askYesNo("Error: Adding new record failed!\n\nDo you want to retry ?")) {
