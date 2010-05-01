@@ -1,6 +1,8 @@
 
 all: makefile
 
+STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces
+
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
@@ -122,7 +124,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -138,7 +140,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -154,7 +156,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -170,7 +172,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile.yacc
 	@echo all: $(_MODULE).output >> makefile.yacc
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces $(CUSTOM_FILES) >> makefile.yacc
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.yacc
 
 endif
 
@@ -186,7 +188,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile.lex
 	@echo all: $(_MODULE).yy.c >> makefile.lex
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces $(CUSTOM_FILES) >> makefile.lex
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.lex
 
 endif
 
@@ -202,7 +204,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -217,7 +219,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -232,7 +234,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -248,7 +250,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -265,7 +267,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@rm -f $(_MODULE).bak
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -281,7 +283,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -297,7 +299,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
-	@$(MKMK) dll $(_MODULE) .,../dosdir,../../include,../../interfaces ../libexslt/*.c *.c *.cpp >> makefile
+	@$(MKMK) dll $(_MODULE) $(STDDEP) ../libexslt/*.c *.c *.cpp >> makefile
 
 endif
 
@@ -315,7 +317,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	$(MKMK) $(TARGET) $(_MODULE) .,../../include,../../interfaces *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 endif
 
 ifeq ($(TARGET), elf)
@@ -331,7 +333,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	$(MKMK) $(TARGET) $(_MODULE) .,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -346,7 +348,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp *.c $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp *.c $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -361,7 +363,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir,../../include,../../interfaces  *.cpp >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 
 endif
 
@@ -376,7 +378,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	$(MKMK) $(TARGET) $(_MODULE) ../dosdir,../../include,../../interfaces *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 
 endif
 
@@ -391,7 +393,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -406,7 +408,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -421,7 +423,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../dosdir,../../include,../../interfaces *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -437,7 +439,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../h,../../include,../../interfaces *.cpp *.c $(CUSTOM_FILES)  >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp *.c $(CUSTOM_FILES)  >> makefile
 
 endif
 
@@ -454,7 +456,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@rm -f $(_MODULE).bak
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).exe >> makefile
-	@$(MKMK) $(TARGET) $(_MODULE) .,../h,../../include,../../interfaces *.c *.cpp $(CUSTOM_FILES) >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -470,7 +472,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@$(MKMK) exe $(_MODULE) .,../h,../../include,../../interfaces c/*.cpp c/*.c >> makefile
+	@$(MKMK) exe $(_MODULE) .,../h,$(STDDEP) c/*.cpp c/*.c >> makefile
 
 endif
 
