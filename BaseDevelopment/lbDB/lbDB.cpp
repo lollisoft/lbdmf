@@ -5918,7 +5918,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	SQLBindCol(hstmt, 2, SQL_C_CHAR, szTableSchema, TAB_LEN, &cbTableSchema);
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, TAB_LEN, &cbTableName);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szTableType, TAB_LEN, &cbTableType);
-	SQLBindCol(hstmt, 5, SQL_C_CHAR, szTableRemarks, REM_LEN, &cbTableRemarks);
+	//SQLBindCol(hstmt, 5, SQL_C_CHAR, szTableRemarks, REM_LEN, &cbTableRemarks);
 
 	meta->setStatusText("Info", "Get tables ...");
 
@@ -5996,7 +5996,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 			*value = (const char*) szTableType;
 			*name = "TableTyp";
 			param->setUAPString(*&name, *&value);
-			*value = (const char*) szTableRemarks;
+			*value = "Not supported"; //(const char*) szTableRemarks;
 			*name = "TableRemarks";
 			param->setUAPString(*&name, *&value);
 
@@ -6007,8 +6007,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 
 			*msg = "Get table ";
 			*msg += (const char*) szTableName;
-			*msg += ", remarks: ";
-			*msg += (const char*) szTableRemarks;
+			//*msg += ", remarks: ";
+			//*msg += (const char*) szTableRemarks;
 			*msg += " ...";
 
 			_LOG << msg->charrep() LOG_
@@ -6136,7 +6136,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		 //SQLBindCol(hstmt, 9, SQL_C_SSHORT, &DecimalDigits, 0, &cbDecimalDigits);
 		 //SQLBindCol(hstmt, 10, SQL_C_SSHORT, &NumPrecRadix, 0, &cbNumPrecRadix);
 		 SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable); //SQL_NO_NULLS = 0, SQL_NULLABLE = 1, SQL_NULLABLE_UNKNOWN = 2
-		 SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
+		 //SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
 		 //SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
 		 //SQLBindCol(hstmt, 14, SQL_C_SSHORT, &SQLDataType, 0, &cbSQLDataType);
 		 //SQLBindCol(hstmt, 15, SQL_C_SSHORT, &DatetimeSubtypeCode, 0, &cbDatetimeSubtypeCode);
@@ -6326,7 +6326,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 //				 number->setData((long)Nullable);
 //				 param->setUAPLong(*&nameNullable, *&number);
 
-				 *value = (const char*) szRemarks;
+				 *value = "Not supported";//(const char*) szRemarks;
 				 param->setUAPString(*&nameRemarks, *&value);
 
 //				 *value = (const char*) szColumnDefault;
