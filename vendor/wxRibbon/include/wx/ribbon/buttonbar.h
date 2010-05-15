@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-01
-// RCS-ID:      $Id: buttonbar.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: buttonbar.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -165,18 +165,8 @@ private:
 
 #ifndef SWIG
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBUTTON_CLICKED, wxRibbonButtonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED, wxRibbonButtonBarEvent);
+#include "eventtypes_buttonbar.h"
 
-typedef void (wxEvtHandler::*wxRibbonButtonBarEventFunction)(wxRibbonButtonBarEvent&);
-
-#define wxRibbonButtonBarEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxRibbonButtonBarEventFunction, func)
-
-#define EVT_RIBBONBUTTONBAR_CLICKED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBUTTON_CLICKED, winid, wxRibbonButtonBarEventHandler(fn))
-#define EVT_RIBBONBUTTONBAR_DROPDOWN_CLICKED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED, winid, wxRibbonButtonBarEventHandler(fn))
 #else
 
 // wxpython/swig event work

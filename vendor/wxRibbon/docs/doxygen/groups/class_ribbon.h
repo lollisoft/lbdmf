@@ -2,7 +2,7 @@
 // Name:        class_ribbon.h
 // Purpose:     Ribbon classes group docs
 // Author:      wxWidgets team
-// RCS-ID:      $Id: class_ribbon.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: class_ribbon.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 

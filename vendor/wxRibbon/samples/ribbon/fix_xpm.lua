@@ -5,7 +5,7 @@
 -- Author:      Peter Cawley
 -- Modified by:
 -- Created:     2009-07-06
--- RCS-ID:      $Id: fix_xpm.lua,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+-- RCS-ID:      $Id: fix_xpm.lua,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 -- Copyright:   (C) Copyright 2009, Peter Cawley
 -- Licence:     wxWindows Library Licence
 -------------------------------------------------------------------------------

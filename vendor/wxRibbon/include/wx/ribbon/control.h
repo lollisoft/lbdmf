@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-06-05
-// RCS-ID:      $Id: control.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: control.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

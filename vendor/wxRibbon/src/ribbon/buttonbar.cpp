@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-01
-// RCS-ID:      $Id: buttonbar.cpp,v 1.1 2010/05/15 17:22:16 lollisoft Exp $
+// RCS-ID:      $Id: buttonbar.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,8 @@
 #include "wx/msw/private.h"
 #endif
 
-wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONBUTTON_CLICKED, wxRibbonButtonBarEvent);
-wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED, wxRibbonButtonBarEvent);
+wxDEFINE_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBUTTON_CLICKED, wxRibbonButtonBarEvent);
+wxDEFINE_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED, wxRibbonButtonBarEvent);
 
 IMPLEMENT_DYNAMIC_CLASS(wxRibbonButtonBarEvent, wxCommandEvent)
 IMPLEMENT_CLASS(wxRibbonButtonBar, wxRibbonControl)
@@ -275,7 +275,8 @@ wxRibbonButtonBarButtonBase* wxRibbonButtonBar::AddButton(
     {
         if(bitmap.IsOk())
         {
-            m_bitmap_size_large = bitmap.GetSize();
+			wxSize s = wxSize(bitmap.GetWidth(), bitmap.GetHeight());
+            m_bitmap_size_large = s;
             if(!bitmap_small.IsOk())
             {
                 m_bitmap_size_small = m_bitmap_size_large;
@@ -284,7 +285,8 @@ wxRibbonButtonBarButtonBase* wxRibbonButtonBar::AddButton(
         }
         if(bitmap_small.IsOk())
         {
-            m_bitmap_size_small = bitmap_small.GetSize();
+			wxSize s = wxSize(bitmap_small.GetWidth(), bitmap_small.GetHeight());
+            m_bitmap_size_small = s;
             if(!bitmap.IsOk())
             {
                 m_bitmap_size_large = m_bitmap_size_small;
@@ -297,12 +299,16 @@ wxRibbonButtonBarButtonBase* wxRibbonButtonBar::AddButton(
     base->id = button_id;
     base->label = label;
     base->bitmap_large = bitmap;
-    if(!base->bitmap_large.IsOk())
+
+	wxSize s = wxSize(base->bitmap_large.GetWidth(), base->bitmap_large.GetHeight());
+	wxSize s_small = wxSize(base->bitmap_small.GetWidth(), base->bitmap_small.GetHeight());
+
+	if(!base->bitmap_large.IsOk())
     {
         base->bitmap_large = MakeResizedBitmap(base->bitmap_small,
             m_bitmap_size_large);
     }
-    else if(base->bitmap_large.GetSize() != m_bitmap_size_large)
+    else if(s != m_bitmap_size_large)
     {
         base->bitmap_large = MakeResizedBitmap(base->bitmap_large,
             m_bitmap_size_large);
@@ -313,7 +319,7 @@ wxRibbonButtonBarButtonBase* wxRibbonButtonBar::AddButton(
         base->bitmap_small = MakeResizedBitmap(base->bitmap_large,
             m_bitmap_size_small);
     }
-    else if(base->bitmap_small.GetSize() != m_bitmap_size_small)
+    else if(s_small != m_bitmap_size_small)
     {
         base->bitmap_small = MakeResizedBitmap(base->bitmap_small,
             m_bitmap_size_small);
@@ -910,6 +916,9 @@ void wxRibbonButtonBar::OnMouseDown(wxMouseEvent& evt)
         }
     }
 }
+
+#define ProcessWindowEvent(event) \
+        m_eventHandler->ProcessEvent(event)
 
 void wxRibbonButtonBar::OnMouseUp(wxMouseEvent& evt)
 {

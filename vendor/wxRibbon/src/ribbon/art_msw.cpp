@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: art_msw.cpp,v 1.1 2010/05/15 17:22:16 lollisoft Exp $
+// RCS-ID:      $Id: art_msw.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1076,7 +1076,10 @@ void wxRibbonMSWArtProvider::DrawTabSeparator(
     // The tab separator is relatively expensive to draw (for its size), and is
     // usually drawn multiple times sequentially (in different positions), so it
     // makes sense to draw it once and cache it.
-    if(!m_cached_tab_separator.IsOk() || m_cached_tab_separator.GetSize() != rect.GetSize() || visibility != m_cached_tab_separator_visibility)
+
+	wxSize s = wxSize(m_cached_tab_separator.GetWidth(), m_cached_tab_separator.GetHeight());
+
+    if(!m_cached_tab_separator.IsOk() || s != rect.GetSize() || visibility != m_cached_tab_separator_visibility)
     {
         wxRect size(rect.GetSize());
         ReallyDrawTabSeparator(wnd, size, visibility);
@@ -1086,9 +1089,10 @@ void wxRibbonMSWArtProvider::DrawTabSeparator(
 
 void wxRibbonMSWArtProvider::ReallyDrawTabSeparator(wxWindow* wnd, const wxRect& rect, double visibility)
 {
-    if(!m_cached_tab_separator.IsOk() || m_cached_tab_separator.GetSize() != rect.GetSize())
+	wxSize s = wxSize(m_cached_tab_separator.GetWidth(), m_cached_tab_separator.GetHeight());
+    if(!m_cached_tab_separator.IsOk() || s != rect.GetSize())
     {
-        m_cached_tab_separator = wxBitmap(rect.GetSize());
+        m_cached_tab_separator = wxBitmap(rect.GetWidth(), rect.GetHeight());
     }
 
     wxMemoryDC dc(m_cached_tab_separator);

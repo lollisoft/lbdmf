@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-22
-// RCS-ID:      $Id: gallery.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: gallery.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,18 +157,8 @@ private:
 
 #ifndef SWIG
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED, wxRibbonGalleryEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONGALLERY_SELECTED, wxRibbonGalleryEvent);
+#include "eventtypes_gallery.h"
 
-typedef void (wxEvtHandler::*wxRibbonGalleryEventFunction)(wxRibbonGalleryEvent&);
-
-#define wxRibbonGalleryEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxRibbonGalleryEventFunction, func)
-
-#define EVT_RIBBONGALLERY_HOVER_CHANGED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED, winid, wxRibbonGalleryEventHandler(fn))
-#define EVT_RIBBONGALLERY_SELECTED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONGALLERY_SELECTED, winid, wxRibbonGalleryEventHandler(fn))
 #else
 
 // wxpython/swig event work

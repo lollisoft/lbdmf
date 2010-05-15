@@ -1,7 +1,7 @@
 #
 # Helper functions for wxWidgets bakefiles
 #
-# $Id: wxwin.py,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+# $Id: wxwin.py,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 #
 
 

@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-22
-// RCS-ID:      $Id: gallery.cpp,v 1.1 2010/05/15 17:22:16 lollisoft Exp $
+// RCS-ID:      $Id: gallery.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,11 @@
 #include "wx/msw/private.h"
 #endif
 
-wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED, wxRibbonGalleryEvent);
-wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONGALLERY_SELECTED, wxRibbonGalleryEvent);
+#define ProcessWindowEvent(event) \
+        m_eventHandler->ProcessEvent(event)
+
+wxDEFINE_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED, wxRibbonGalleryEvent);
+wxDEFINE_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONGALLERY_SELECTED, wxRibbonGalleryEvent);
 
 IMPLEMENT_DYNAMIC_CLASS(wxRibbonGalleryEvent, wxCommandEvent)
 IMPLEMENT_CLASS(wxRibbonGallery, wxRibbonControl)
@@ -499,14 +502,15 @@ void wxRibbonGallery::OnSize(wxSizeEvent& WXUNUSED(evt))
 wxRibbonGalleryItem* wxRibbonGallery::Append(const wxBitmap& bitmap, int id)
 {
     wxASSERT(bitmap.IsOk());
+	wxSize s = wxSize(bitmap.GetWidth(), bitmap.GetHeight());
     if(m_items.IsEmpty())
     {
-        m_bitmap_size = bitmap.GetSize();
+        m_bitmap_size = s;
         CalculateMinSize();
     }
     else
     {
-        wxASSERT(bitmap.GetSize() == m_bitmap_size);
+        wxASSERT(s == m_bitmap_size);
     }
 
     wxRibbonGalleryItem *item = new wxRibbonGalleryItem;

@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-23
-// RCS-ID:      $Id: bar.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: bar.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -174,30 +174,8 @@ protected:
 
 #ifndef SWIG
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGED, wxRibbonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGING, wxRibbonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_DOWN, wxRibbonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_UP, wxRibbonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_DOWN, wxRibbonBarEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_RIBBON, wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_UP, wxRibbonBarEvent);
+#include "eventtypes_bar.h"
 
-typedef void (wxEvtHandler::*wxRibbonBarEventFunction)(wxRibbonBarEvent&);
-
-#define wxRibbonBarEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxRibbonBarEventFunction, func)
-
-#define EVT_RIBBONBAR_PAGE_CHANGED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGED, winid, wxRibbonBarEventHandler(fn))
-#define EVT_RIBBONBAR_PAGE_CHANGING(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_PAGE_CHANGING, winid, wxRibbonBarEventHandler(fn))
-#define EVT_RIBBONBAR_TAB_MIDDLE_DOWN(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_DOWN, winid, wxRibbonBarEventHandler(fn))
-#define EVT_RIBBONBAR_TAB_MIDDLE_UP(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_TAB_MIDDLE_UP, winid, wxRibbonBarEventHandler(fn))
-#define EVT_RIBBONBAR_TAB_RIGHT_DOWN(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_DOWN, winid, wxRibbonBarEventHandler(fn))
-#define EVT_RIBBONBAR_TAB_RIGHT_UP(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBAR_TAB_RIGHT_UP, winid, wxRibbonBarEventHandler(fn))
 #else
 
 // wxpython/swig event work

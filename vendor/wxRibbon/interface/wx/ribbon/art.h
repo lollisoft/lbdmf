@@ -2,7 +2,7 @@
 // Name:        ribbon/art.h
 // Purpose:     interface of wxRibbonArtProvider
 // Author:      Peter Cawley
-// RCS-ID:      $Id: art.h,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: art.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 

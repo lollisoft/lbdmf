@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: panel.cpp,v 1.1 2010/05/15 17:22:16 lollisoft Exp $
+// RCS-ID:      $Id: panel.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -530,7 +530,10 @@ bool wxRibbonPanel::Realize()
         wxSize panel_min_size = GetMinNotMinimisedSize();
         m_minimised_size = m_art->GetMinimisedPanelMinimumSize(temp_dc, this,
             &bitmap_size, &m_preferred_expand_direction);
-        if(m_minimised_icon.IsOk() && m_minimised_icon.GetSize() != bitmap_size)
+
+		wxSize s = wxSize(m_minimised_icon.GetWidth(), m_minimised_icon.GetHeight());
+
+		if(m_minimised_icon.IsOk() && s != bitmap_size)
         {
             wxImage img(m_minimised_icon.ConvertToImage());
             img.Rescale(bitmap_size.GetWidth(), bitmap_size.GetHeight(), wxIMAGE_QUALITY_HIGH);
@@ -685,7 +688,7 @@ bool wxRibbonPanel::TryAfter(wxEvent& evt)
     }
     else
     {
-        return wxRibbonControl::TryAfter(evt);
+        return false; //wxRibbonControl::TryAfter(evt);
     }
 }
 

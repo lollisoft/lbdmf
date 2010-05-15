@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-06
-// RCS-ID:      $Id: toolbar.cpp,v 1.1 2010/05/15 17:22:16 lollisoft Exp $
+// RCS-ID:      $Id: toolbar.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,6 +57,11 @@ public:
     wxPoint position;
     wxSize size;
 };
+#define ProcessWindowEvent(event) \
+        m_eventHandler->ProcessEvent(event)
+
+#define wxDEFINE_EVENT( name, type ) \
+        const wxEventType name( wxNewEventType() )
 
 wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONTOOL_CLICKED, wxRibbonToolBarEvent);
 wxDEFINE_EVENT(wxEVT_COMMAND_RIBBONTOOL_DROPDOWN_CLICKED, wxRibbonToolBarEvent);
@@ -177,7 +182,9 @@ wxRibbonToolBarToolBase* wxRibbonToolBar::AddTool(
     tool->bitmap = bitmap;
     if(bitmap_disabled.IsOk())
     {
-        wxASSERT(bitmap.GetSize() == bitmap_disabled.GetSize());
+		wxSize s = wxSize(bitmap.GetWidth(), bitmap.GetHeight());
+		wxSize s_disabled = wxSize(bitmap_disabled.GetWidth(), bitmap_disabled.GetHeight());
+        wxASSERT(s == s_disabled);
         tool->bitmap_disabled = bitmap_disabled;
     }
     else
@@ -361,8 +368,9 @@ bool wxRibbonToolBar::Realize()
         for(t = 0; t < tool_count; ++t)
         {
             wxRibbonToolBarToolBase* tool = group->tools.Item(t);
+			wxSize s = wxSize(tool->bitmap.GetWidth(), tool->bitmap.GetHeight());
             tool->size = m_art->GetToolSize(temp_dc, this,
-                tool->bitmap.GetSize(), tool->kind, t == 0,
+                s, tool->kind, t == 0,
                 t == (tool_count - 1), &tool->dropdown);
             tool->state = tool->state & ~wxRIBBON_TOOLBAR_TOOL_DISABLED;
             if(t == 0)

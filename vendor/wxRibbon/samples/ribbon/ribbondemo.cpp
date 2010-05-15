@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: ribbondemo.cpp,v 1.1 2010/05/15 17:22:08 lollisoft Exp $
+// RCS-ID:      $Id: ribbondemo.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
 // Copyright:   (C) Copyright 2009, Peter Cawley
 // Licence:     wxWindows Library Licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,16 +19,21 @@
 #include "wx/frame.h"
 #include "wx/textctrl.h"
 #include "wx/ribbon/bar.h"
-#include "wx/ribbon/buttonbar.h"
 #include "wx/ribbon/gallery.h"
+#include "wx/ribbon/buttonbar.h"
 #include "wx/ribbon/toolbar.h"
 #include "wx/sizer.h"
 #include "wx/menu.h"
+#include "wx/event.h"
 #include "wx/dcbuffer.h"
 #include "wx/colordlg.h"
 #include "wx/artprov.h"
 
 // -- application --
+
+#define ProcessWindowEvent(event) \
+        m_eventHandler->ProcessEvent(event)
+
 
 class MyApp : public wxApp
 {
@@ -143,9 +148,21 @@ bool MyApp::OnInit()
     return true;
 }
 
+#ifdef bla
+#define wx__DECLARE_EVT2(evt, id1, id2, fn) \
+    DECLARE_EVENT_TABLE_ENTRY(evt, id1, id2, fn, NULL),
+#define wx__DECLARE_EVT1(evt, id, fn) \
+    wx__DECLARE_EVT2(evt, id, wxID_ANY, fn)
+
+#define EVT_RIBBONBUTTONBAR_CLICKED(winid, fn) \
+    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBUTTON_CLICKED, winid, wxRibbonButtonBarEventHandler(fn))
+#define EVT_RIBBONBUTTONBAR_DROPDOWN_CLICKED(winid, fn) \
+    wx__DECLARE_EVT1(wxEVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED, winid, wxRibbonButtonBarEventHandler(fn))
+#endif
+
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-EVT_RIBBONBUTTONBAR_CLICKED(ID_DEFAULT_PROVIDER, MyFrame::OnDefaultProvider)
 EVT_RIBBONBUTTONBAR_CLICKED(ID_AUI_PROVIDER, MyFrame::OnAUIProvider)
+EVT_RIBBONBUTTONBAR_CLICKED(ID_DEFAULT_PROVIDER, MyFrame::OnDefaultProvider)
 EVT_RIBBONBUTTONBAR_CLICKED(ID_MSW_PROVIDER, MyFrame::OnMSWProvider)
 EVT_RIBBONBUTTONBAR_CLICKED(ID_SELECTION_EXPAND_H, MyFrame::OnSelectionExpandHButton)
 EVT_RIBBONBUTTONBAR_CLICKED(ID_SELECTION_EXPAND_V, MyFrame::OnSelectionExpandVButton)
