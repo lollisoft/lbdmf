@@ -26,7 +26,6 @@ Debug
 *.dbr
 *.err
 *.so.*
-makefile
 Copy-of-tvision-set
 dlcompat.tgz
 psqlODBC
