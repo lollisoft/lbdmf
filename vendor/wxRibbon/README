@@ -1,0 +1,20 @@
+Contained herein are the files created and/or modified by Peter Cawley (email
+corsix@corsix.org) for the Google Summer of Code 2009 "wxWidgets Ribbon"
+project (see http://socghop.appspot.com/org/home/google/gsoc2009/wx). Work
+happened in the wxWidgets SOC2009_RIBBON SVN branch, which was branched from
+trunk at r60293, and will probably be merged back into trunk in due course.
+
+The bulk of the new files can be found in the following directories:
+src/ribbon
+include/wx/ribbon
+interface/wx/ribbon
+samples/ribbon
+
+Files outside of these directories are more likely modified files rather than
+new files.
+
+See also:
+http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk
+http://svn.wxwidgets.org/svn/wx/wxWidgets/branches/SOC2009_RIBBON
+http://www.wxwidgets.org/
+http://www.corsix.org/content/ribbon-summer-code
