@@ -1,7 +1,7 @@
 
 all: makefile
 
-STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces
+STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
 
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
