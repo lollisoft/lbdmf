@@ -13,6 +13,226 @@
 #define LOGFILE "/myLog.log"
 #endif
 
+class UIWrapper : public lb_I_Application,
+public lb_I_EventHandler
+{
+public:
+	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
+	lbErrCodes LB_STDCALL setUserName(char* user);
+	lbErrCodes LB_STDCALL setApplicationName(char* app);
+    lbErrCodes LB_STDCALL save();
+    lbErrCodes LB_STDCALL load();
+	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL uninitialize();
+	lbErrCodes LB_STDCALL run();
+	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	lb_I_EventManager* LB_STDCALL getEVManager( void );
+
+
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+	lb_I_Unknown* LB_STDCALL getUnknown();
+	
+
+	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
+
+public:
+	UIWrapper();
+	virtual ~UIWrapper();
+
+	DECLARE_LB_UNKNOWN()
+
+protected:
+	lb_I_GUI* gui;
+	UAP(lb_I_EventManager, eman)
+	UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_String, LogonUser)
+	UAP(lb_I_String, LogonApplication)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(UIWrapper)
+	ADD_INTERFACE(lb_I_Application)
+END_IMPLEMENT_LB_UNKNOWN()
+
+//IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
+
+UIWrapper::UIWrapper() {
+	ref = STARTREF;
+	gui = NULL;
+	printf("Instance of lb_I_Application created\n");
+	_LOG << "Instance of lb_I_Application created" LOG_
+}
+
+UIWrapper::~UIWrapper() {
+	_LOG << "Instance of lb_I_Application destroyed" LOG_
+}
+
+
+lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	printf("lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) called.\n");
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+
+	UAP(lb_I_Parameter, param)
+
+	if (manager == NULL) {
+		printf("manager is NULL.\n");
+	}
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("msg");
+	param->getUAPString(*&parameter, *&msg);
+
+	printf("%s\n", msg->charrep());
+
+	char c = ' ';
+
+    setvbuf(stdin, &c, _IONBF, 1);
+    while ( c != 'y' &&
+            c != 'Y' &&
+            c != 'n' &&
+            c != 'N') {
+        fread(&c, 1, 1, stdin);
+    }
+
+
+    switch (c) {
+        case 'y':
+        case 'Y':
+            parameter->setData("result");
+            result->setData("yes");
+            param->setUAPString(*&parameter, *&result);
+            break;
+        default:
+            parameter->setData("result");
+            result->setData("no");
+            param->setUAPString(*&parameter, *&result);
+    }
+
+    COUT << ENDL;
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
+	char* evName = strdup("askYesNo"); // Otherwise Open Watcom gets a pointer of 0xFFFFFFFF
+
+	lb_I_EventHandler* eh = (lb_I_EventHandler*) this;
+
+	setVerbose(true);
+	setLogActivated(true);
+	lbErrCodes err = disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, 12003);
+	setVerbose(false);
+	setLogActivated(false);
+	free(evName);
+	return ERR_NONE;
+}
+
+lb_I_Unknown* LB_STDCALL UIWrapper::getUnknown() {
+	UAP(lb_I_Unknown, uk)
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	uk++;
+	return uk.getPtr();
+}
+
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL UIWrapper::setData(lb_I_Unknown* uk) {
+	_LOG << "lbApplication::setData() has not been implemented" LOG_
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\setGUI\40\lb_I_GUI\42\ _gui\41\:0:*/
+lbErrCodes LB_STDCALL UIWrapper::setGUI(lb_I_GUI* _gui) {
+	gui = _gui;
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\getGUI\40\lb_I_GUI\42\\42\ _gui\41\:0:*/
+lbErrCodes LB_STDCALL UIWrapper::getGUI(lb_I_GUI** _gui) {
+	*_gui = gui;
+	return ERR_NONE;
+}
+/*...e*/
+/*...slb_I_EventManager\42\ LB_STDCALL lbApplication\58\\58\getEVManager\40\ void \41\:0:*/
+lb_I_EventManager* LB_STDCALL UIWrapper::getEVManager( void ) {
+	return NULL;
+}
+/*...e*/
+
+lbErrCodes LB_STDCALL UIWrapper::save() {
+    return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::load() {
+    return ERR_NONE;
+}
+
+
+lbErrCodes LB_STDCALL UIWrapper::uninitialize() {
+	return ERR_NONE;
+}
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
+lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
+
+	// To be implemented in a separate application module
+
+	int askYesNo;
+
+	// Get the event manager
+
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	eman->registerEvent("askYesNo", askYesNo);
+	printf("Registered event ID=%d for askYesNo.\n", askYesNo);
+
+	dispatcher->setEventManager(eman.getPtr());
+	registerEventHandler(dispatcher.getPtr());
+	return ERR_NONE;
+}
+/*...e*/
+lbErrCodes LB_STDCALL UIWrapper::getUserName(lb_I_String** user) {
+	(*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
+	(*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+}
+lbErrCodes LB_STDCALL UIWrapper::setUserName(char* user) {
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::setApplicationName(char* app) {
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+}
+
+
+lbErrCodes LB_STDCALL UIWrapper::run() {
+#ifdef bla
+	lb_I_Unknown* result;
+
+	dispatcher->dispatch("AddMenu", NULL, &result);
+#endif
+	return ERR_NONE;
+}
+
+
 class BaseDevelopmentLogger : public TestFixture<BaseDevelopmentLogger>
 {
 public:
@@ -316,14 +536,107 @@ public:
 
 
 
-class BaseDevelopmentMetaApplication : public TestFixture<BaseDevelopmentMetaApplication>
+class BaseDevelopmentContainer : public TestFixture<BaseDevelopmentContainer>
 {
 public:
-	TEST_FIXTURE( BaseDevelopmentMetaApplication )
+	TEST_FIXTURE( BaseDevelopmentContainer )
 	{
-		TEST_CASE(test_Instanciate_lbMetaApplication)
+		TEST_CASE(test_Instanciate_lbContainer)
+		TEST_CASE(test_lbContainer_InsertString_with_Integer_Key)
+		TEST_CASE(test_lbContainer_lookup_byKey)
 	}
 
+	void test_Instanciate_lbContainer( void )
+	{
+		puts("test_Instanciate_lbContainer");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+	}
+
+	void test_lbContainer_lookup_byKey( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_lookup_byKey");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+
+
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(i, lb_I_KeyBase, key)
+		
+		*s = "Testvalue1";
+		i->setData(1);
+		c->insert(&uk, &key);
+		*s = "Testvalue2";
+		i->setData(2);
+		c->insert(&uk, &key);
+		*s = "Testvalue3";
+		i->setData(3);
+		c->insert(&uk, &key);
+		*s = "Testvalue4";
+		i->setData(4);
+		c->insert(&uk, &key);
+		*s = "Testvalue5";
+		i->setData(5);
+		c->insert(&uk, &key);
+
+		ASSERT_EQUALS( 5, c->Count() );
+
+		UAP(lb_I_Unknown, uk1)
+
+		uk1 = c->getElement(&key);
+
+		ASSERT_EQUALS( true, uk1 != NULL );
+
+		i->setData(0);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 == NULL );
+		i->setData(5);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 != NULL );
+		i->setData(4);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 != NULL );
+		i->setData(3);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 != NULL );
+		i->setData(2);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 != NULL );
+		i->setData(1);
+		uk1 = c->getElement(&key);
+		ASSERT_EQUALS( true, uk1 != NULL );
+	}
+
+	void test_lbContainer_InsertString_with_Integer_Key( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_InsertString_with_Integer_Key");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+
+
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(i, lb_I_KeyBase, key)
+		
+		*s = "Testvalue";
+		i->setData(20);
+
+		c->insert(&uk, &key);
+
+		ASSERT_EQUALS( 1, c->Count() );
+	}
 
 public:
 	void setUp()
@@ -349,6 +662,198 @@ public:
 	{
 	}
 
+
+
+	bool LoadSettings()
+	{
+		return true;
+	}
+};
+
+class BaseDevelopmentEventManager : public TestFixture<BaseDevelopmentEventManager>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentEventManager )
+	{
+		TEST_CASE(test_Instanciate_lbEventmanager)
+		TEST_CASE(test_lbEventmanager_Register_Event)
+		TEST_CASE(test_lbEventmanager_Resolve_Event)
+		TEST_CASE(test_UIWrapper_Initializing)
+	}
+
+	void test_UIWrapper_Initializing( void )
+	{
+		puts("test_UIWrapper_Initializing");
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		myUIWrapper->initialize();
+		
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+
+		parameter->setData("msg");
+		value->setData("Hallo UnitTests");
+		param->setUAPString(*&parameter, *&value);
+
+		UAP(lb_I_Unknown, uk)
+		QI(param, lb_I_Unknown, uk)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		UAP(lb_I_Unknown, uk_result)
+		QI(result, lb_I_Unknown, uk_result)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		dispatcher->setEventManager(eman.getPtr());
+
+		int evId = 0;
+
+		eman->resolveEvent("askYesNo", evId);
+
+		ASSERT_EQUALS( false, evId == 0 );
+		ASSERT_EQUALS( true, evId == 12003 );
+		//setVerbose(true);
+		//setLogActivated(true);
+		err = dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
+		//setVerbose(false);
+		//setLogActivated(false);
+
+		ASSERT_EQUALS( ERR_NONE, err );
+
+		// Got a name of the file. Create an input stream.
+
+		parameter->setData("result");
+		param->getUAPString(*&parameter, *&value);
+
+		ASSERT_EQUALS( 0,  strcmp(value->charrep(), "yes") );
+	}
+
+	void test_Instanciate_lbEventmanager( void )
+	{
+		puts("test_Instanciate_lbEventmanager");
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, em)
+
+		ASSERT_EQUALS( true, em.getPtr() != NULL );
+	}
+
+	void test_lbEventmanager_Register_Event( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbEventmanager_Register_Event");
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, em)
+
+		int id;
+		int id_resolve;
+		char* eventName = "TestEvent";
+
+		ASSERT_EQUALS( true, em.getPtr() != NULL );
+
+		em->registerEvent(eventName, id);
+		em->resolveEvent(eventName, id_resolve);
+
+		ASSERT_EQUALS( id, id_resolve );
+	}
+
+	void test_lbEventmanager_Resolve_Event( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbEventmanager_Resolve_Event");
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, em)
+
+		int id;
+		int id_resolve;
+		char* eventName = "TestEvent";
+
+		ASSERT_EQUALS( true, em.getPtr() != NULL );
+
+		em->registerEvent(eventName, id);
+		em->resolveEvent(eventName, id_resolve);
+		ASSERT_EQUALS( id, id_resolve );
+
+		id_resolve = 0;
+
+		em->resolveEvent("lala", id_resolve);
+		ASSERT_EQUALS( true, id_resolve != id);
+		ASSERT_EQUALS( true, id_resolve == 0);
+
+		char* resolved = em->reverseEvent(id);
+
+		ASSERT_EQUALS( 0, strcmp("TestEvent", resolved) );
+	}
+
+public:
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGSEGV, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+#ifdef OSX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+
+	void tearDown()
+	{
+	}
+
+
+
+	bool LoadSettings()
+	{
+		return true;
+	}
+};
+
+
+class BaseDevelopmentMetaApplication : public TestFixture<BaseDevelopmentMetaApplication>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentMetaApplication )
+	{
+		TEST_CASE(test_Instanciate_lbMetaApplication)
+		TEST_CASE(test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in)
+		TEST_CASE(test_lbMetaApplication_login_failure_because_not_initialized)
+	}
+
+	void test_lbMetaApplication_login_failure_because_not_initialized( void )
+	{
+		puts("test_lbMetaApplication_login_failure_because_not_initialized");
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
+
+		ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
+	}
+
+	void test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in( void )
+	{
+		puts("test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in");
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
+		UAP(lb_I_Unknown, uk)
+
+		uk = m->getActiveDocument();
+
+		ASSERT_EQUALS( true, uk == NULL );
+	}
+
 	void test_Instanciate_lbMetaApplication( void )
 	{
 		puts("test_Instanciate_lbMetaApplication");
@@ -357,6 +862,30 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
 
 		ASSERT_EQUALS( true, m != NULL );
+	}
+
+public:
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGSEGV, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+#ifdef OSX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+
+	void tearDown()
+	{
 	}
 
 	bool LoadSettings()
@@ -501,16 +1030,20 @@ public:
 
 		ASSERT_EQUALS( true, query != NULL);
 
-		ASSERT_EQUALS( ERR_NONE, query->query(
+		lbErrCodes err1 = query->query(
 			"CREATE TABLE test ("
 			"	id serial,"
 			"	Name char(100)"
 			")"
-			, false));
+			, false);
 
-		ASSERT_EQUALS( ERR_NONE, query->query(
+		lbErrCodes err2 = query->query(
 			"DROP TABLE test"
-			, false));
+			, false);
+
+		ASSERT_EQUALS( ERR_NONE, err1);
+
+		ASSERT_EQUALS( ERR_NONE, err1);
 
 		db->close();
 	}
@@ -706,5 +1239,7 @@ public:
 
 REGISTER_FIXTURE( BaseDevelopmentLogger );
 REGISTER_FIXTURE( BaseDevelopmentString );
+REGISTER_FIXTURE( BaseDevelopmentContainer );
 REGISTER_FIXTURE( BaseDevelopmentMetaApplication );
 REGISTER_FIXTURE( BaseDevelopmentDatabase );
+REGISTER_FIXTURE( BaseDevelopmentEventManager );
