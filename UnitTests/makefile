@@ -89,6 +89,7 @@ TARGETFRAMEWORK=so
 ALLTARGETS = \
 	MiniCppUnit \
 	BaseDevelopment \
+	Actions \
 	TestRunner
 
 endif
@@ -102,6 +103,7 @@ TARGETFRAMEWORK=so
 ALLTARGETS = \
 	MiniCppUnit \
 	BaseDevelopment \
+	Actions \
 	TestRunner
 
 endif
@@ -117,6 +119,7 @@ TARGETFRAMEWORK=framework
 ALLTARGETS = \
 	MiniCppUnit \
 	BaseDevelopment \
+	Actions \
 	TestRunner
 
 endif
@@ -132,6 +135,7 @@ TARGETDLLMINGW=dll_target_mingw
 ALLTARGETS = \
 	MiniCppUnit \
 	BaseDevelopment \
+	Actions \
 	TestRunner
 
 endif
@@ -172,6 +176,10 @@ endif
 
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 TestRunner: dummy
