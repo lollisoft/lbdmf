@@ -32,6 +32,37 @@ ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+OSVERSION_=$(OSVERSION)
+OSPLATFORM_=$(OSPLATFORM)
+
+#OSVERSION=9.0.0
+#OSPLATFORM=ppc
+
+OSNAME=Panther
+
+ifeq ($(OSVERSION_), 9.0.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 9.1.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 9.6.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 9.8.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.0.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.2.0)
+OSNAME=Leopard
+endif
 
 Path=$(PATH)
 
@@ -80,11 +111,12 @@ endif
 ifeq ($(OSTYPE), osx)
 
 TARGETDLL=so
-TARGETWXDLL=so
+TARGETWXDLL=wxframework
 TARGETEXE=elf
-TARGETWXEXE=elf
+TARGETWXEXE=bundle
 TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
+TARGETWXFRAMEWORK=wxframework
 
 ALLTARGETS = \
 	wxRibbon \

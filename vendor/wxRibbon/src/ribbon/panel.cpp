@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: panel.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
+// RCS-ID:      $Id: panel.cpp,v 1.3 2010/05/17 05:50:42 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,9 @@
 #ifdef __WXMSW__
 #include "wx/msw/private.h"
 #endif
+
+#include <wx/image.h>
+#include <wx/frame.h>
 
 IMPLEMENT_CLASS(wxRibbonPanel, wxRibbonControl)
 

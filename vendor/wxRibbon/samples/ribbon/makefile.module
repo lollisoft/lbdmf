@@ -28,15 +28,14 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
-MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxRibbon.lib, \
-	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
@@ -56,7 +55,7 @@ LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
-MOD_INCL = $(STD_INCL_MICROSOFT) /I $(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL = $(STD_INCL_MICROSOFT) /I ../../../../../wxwin/wx/include
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
 CC=Cl
 C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
@@ -72,31 +71,35 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 /out:"$(OUTDIR)\$(MODULE).exe" \
 /INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
 endif
+
 ifeq ($(COMPILER), WATCOM)
-MOD_INCL = $(STD_INCL) -i=..\\..\\include -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=../../include -i=$(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\Projects\\CPP\\vendor\\wxaui-0.9.1\\include  -i=..\\wxWrapperDLL  -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include  -i=../wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
 
-C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
+		/DUSE_WXWRAPPER_DLL \
+		/DWXUSINGDLL \
+		/D__WIN32__ \
+		/DWINVER=0x0400 \
+		/D__WINDOWS95__ \
+		/D__WINDOWS__ \
+		/D__WXMSW__ \
+		/DLB_I_EXTENTIONS /DwxUSE_RIBBON /DWXUSINGDLL_RIBBON
 		
-C_DLLOPS= $(C_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
-
-CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /DwxUSE_RIBBON /DWXUSINGDLL /DWXUSINGDLL_RIBBON
-		
-CPP_DLLOPS= $(CPP_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL /DwxUSE_RIBBON /DWXUSINGDLL /DWXUSINGDLL_RIBBON
+CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
+		/DUSE_WXWRAPPER_DLL \
+		/DWXUSINGDLL \
+		/D__WIN32__ \
+		/DWINVER=0x0400 \
+		/D__WINDOWS95__ \
+		/D__WINDOWS__ \
+		/D__WXMSW__ \
+		/DLB_I_EXTENTIONS /DwxUSE_RIBBON /DWXUSINGDLL_RIBBON
 
 ifeq ($(MODE), _DEBUG)
 C_EXEOPS+= /D__WXDEBUG__
-C_DLLOPS+= /D__WXDEBUG__
 CPP_EXEOPS+= /D__WXDEBUG__
-CPP_DLLOPS+= /D__WXDEBUG__
 endif
-
-CPP_DLLOPS+= /DWXMAKINGDLL_WXRESIZEABLECONTROL
-
 		
 LINKFLAGS = $(L_EXEOPS)
 endif
@@ -104,54 +107,74 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
-C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+
+C_ELFOPS += $(C_OPS) `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
-C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
-C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL -I ../../include
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
-L_OPS=$(OSX_ARCH) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` 
-endif    
+C_ELFOPS += `wx-config --inplace --cxxflags` -DWXUSINGDLL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -DwxUSE_RIBBON
+
+ifeq ($(OSNAME), Panther)
+AUIFRAMEWORK=-framework wxAUI
+else
+AUIFRAMEWORK=
+endif
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS +=  -D__WXDEBUG__
+L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load -o
+endif
+
+ifeq ($(DEBUG), no)
+L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon  `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+endif
+VENDORLIBS=
+endif
 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
-C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
-endif    
+C_ELFOPS += -L. `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS +=  -D__WXDEBUG__
+endif
+
+L_OPS = -lstdc++ -L. `wx-config --inplace --libs` -o
+VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so $(HOME)/lib/wxAUI.so 
+endif
 
 endif

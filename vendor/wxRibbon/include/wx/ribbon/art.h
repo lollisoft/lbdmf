@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: art.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
+// RCS-ID:      $Id: art.h,v 1.3 2010/05/17 05:50:42 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,8 @@
 
 #include <wx/brush.h>
 #include <wx/pen.h>
+#include <wx/window.h>
+#include <wx/settings.h>
 
 enum wxRibbonArtSetting
 {

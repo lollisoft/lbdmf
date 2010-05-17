@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-08-04
-// RCS-ID:      $Id: art_internal.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
+// RCS-ID:      $Id: art_internal.cpp,v 1.3 2010/05/17 05:50:42 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,8 @@
 #ifdef __WXMSW__
 #include "wx/msw/private.h"
 #endif
+
+#include <wx/image.h>
 
 wxRibbonArtProvider::wxRibbonArtProvider() {}
 wxRibbonArtProvider::~wxRibbonArtProvider() {}

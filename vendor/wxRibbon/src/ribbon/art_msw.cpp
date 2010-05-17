@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-05-25
-// RCS-ID:      $Id: art_msw.cpp,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
+// RCS-ID:      $Id: art_msw.cpp,v 1.3 2010/05/17 05:50:42 lollisoft Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,12 @@
 
 #ifdef __WXMSW__
 #include "wx/msw/private.h"
-#endif
+#endif // __WXMSW__
+
+#ifdef __WXMAC__
+#include "wx/dc.h"
+#include "wx/dcmemory.h"
+#endif // __WXMSW__
 
 static const char* const gallery_up_xpm[] = {
   "5 5 2 1",
@@ -2763,3 +2768,4 @@ wxSize wxRibbonMSWArtProvider::GetToolSize(
 }
 
 #endif // wxUSE_RIBBON
+
