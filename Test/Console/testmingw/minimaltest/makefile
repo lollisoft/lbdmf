@@ -1,15 +1,19 @@
 all: testdllow.dll testdll.dll testdllmingw.dll testow.exe testmingw.exe
 
 CALL=-5s
+OPTIMIZE=-otexan 
+#-zp1
+STACK=-of+
+RTTI=-xr
 
 testdll.o: testdll.cpp testdll.h
-		g++ -c testdll.cpp
+		g++ -c -mms-bitfields -shared testdll.cpp
 
 test.obj: test.cpp testdll.h
-		wpp386 -DWINDOWS -w3 -e25 -zq -otexan $(CALL) -of+ -xr /DLBDMF_PRE test.cpp
+		wpp386 -DWINDOWS -w3 -e25 -zq $(OPTIMIZE) $(CALL) $(STACK) $(RTTI) /DLBDMF_PRE test.cpp
 
 testdllmingw.o: testdll.cpp testdll.h
-		g++ -c testdll.cpp -o testdllmingw.o
+		g++ -c -mms-bitfields testdll.cpp -o testdllmingw.o
 
 testdllmingw.dll: testdllmingw.o
 		g++ -shared -o testdllmingw.dll testdllmingw.o
@@ -18,7 +22,7 @@ testdllmingw.dll: testdllmingw.o
 
 
 testdllow.obj: testdllow.cpp testdll.h
-		wpp386 -DWINDOWS -bd -hd -w3 -e25 -zq -otexan $(CALL) -of+ -xr /DLBDMF_PRE testdllow.cpp
+		wpp386 -DWINDOWS -bd -hd -w3 -e25 -zq $(OPTIMIZE) $(CALL) $(STACK) $(RTTI) /DLBDMF_PRE testdllow.cpp
 
 testdllow.dll.lnk: makefile testdllow.obj
 		echo NAME testdllow.dll > $@
@@ -32,7 +36,7 @@ testdllow.dll: testdllow.obj testdllow.dll.lnk
 
 
 test.o: test.cpp testdll.h
-		g++ -c test.cpp
+		g++ -c -mms-bitfields test.cpp
 
 testdll.dll: testdll.o
 		g++ -shared -o testdll.dll testdll.o

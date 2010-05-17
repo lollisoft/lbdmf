@@ -67,10 +67,10 @@
 #endif
 
 #ifdef __WATCOMC__
-extern "C" DLLEXPORT ITest* API gettestow();
+extern "C" DLLEXPORT lb_I_Unknown* API gettestow();
 #endif
 
 #ifdef __MINGW32__
-extern "C" DLLEXPORT ITest* API _gettestow();
-extern "C" DLLEXPORT ITest* API gettestow();
+extern "C" DLLEXPORT lb_I_Unknown* API _gettestow();
+extern "C" DLLEXPORT lb_I_Unknown* API gettestow();
 #endif

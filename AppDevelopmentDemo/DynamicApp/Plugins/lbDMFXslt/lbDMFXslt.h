@@ -35,23 +35,21 @@
 class lbDMFXslt :
     public lb_I_DelegatedAction {
 public:
-	lbDMFXslt();
-	virtual ~lbDMFXslt();
-
-	void LB_STDCALL setActionID(long id);
 	long LB_STDCALL execute(lb_I_Parameter* params);	
-
-	void LB_STDCALL setDatabase(lb_I_Database* _db);
-		
+	void LB_STDCALL setActionID(long id);
 	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
 	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
-		
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
 	bool LB_STDCALL fileFromAction(lb_I_InputStream* stream);
 	
 	DECLARE_LB_UNKNOWN()
 	
-protected:
+public:
+	lbDMFXslt();
+	virtual ~lbDMFXslt();
 
+protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, app)	

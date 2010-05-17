@@ -82,10 +82,10 @@ extern "C" bool DLLEXPORT API getbool();
 #endif
 
 #ifdef __WATCOMC__
-extern "C" DLLEXPORT ITest* API gettest();
+extern "C" DLLEXPORT lb_I_Unknown* API gettest();
 #endif
 
 #ifdef __MINGW32__
-extern "C" DLLEXPORT ITest* API _gettest();
-extern "C" DLLEXPORT ITest* API gettest();
+extern "C" DLLEXPORT lb_I_Unknown* API _gettest();
+extern "C" DLLEXPORT lb_I_Unknown* API gettest();
 #endif

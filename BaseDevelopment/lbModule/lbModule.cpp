@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.128 $
+ * $Revision: 1.129 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.128 2010/03/28 19:11:30 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.129 2010/05/17 05:44:43 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.129  2010/05/17 05:44:43  lollisoft
+ * Many changes related to support mixing MinGW with Open Watcom.
+ *
  * Revision 1.128  2010/03/28 19:11:30  lollisoft
  * Reduced log messages to console to zero.
  *
@@ -2481,33 +2484,38 @@ class lbModule :
                 public lb_I_Module
 {
 public:
+	virtual char* LB_STDCALL getCreationLoc(char const* addr);
+    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
+    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line);
+    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line);
+    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line);
+
+    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
+	virtual lbErrCodes LB_STDCALL load(char* name);
+	virtual lbErrCodes LB_STDCALL preload(char* name);
+	virtual void LB_STDCALL printReferences(char* addr);        
+    virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+    virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+    virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst);
+    virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
+
+
+
+	virtual lbErrCodes LB_STDCALL initialize();
+    virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown** result);
+    virtual lbErrCodes LB_STDCALL uninitialize();
+        
+
+        
+
+    virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
+        
+public:
 	lbModule();
 	virtual ~lbModule();
 	
-        DECLARE_LB_UNKNOWN()
+    DECLARE_LB_UNKNOWN()
 
-        virtual lbErrCodes LB_STDCALL initialize();
-        virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown** result);
-        virtual lbErrCodes LB_STDCALL uninitialize();
-        
-	virtual void LB_STDCALL printReferences(char* addr);        
-
-	virtual char* LB_STDCALL getCreationLoc(char const* addr);
-        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
-        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line);
-        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line);
-        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line);
-        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
-        
-        virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst);
-
-        virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
-        virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
-        virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
-	virtual lbErrCodes LB_STDCALL load(char* name);
-	virtual lbErrCodes LB_STDCALL preload(char* name);
-        virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
-        
 protected:
 
 #ifndef USE_INTERFACE_REPOSITORY

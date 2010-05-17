@@ -63,7 +63,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-typedef ITest* (API *Functor)();
+typedef lb_I_Unknown* (API *Functor)();
 
 Functor getFunctor(char* name, char* dll) {
 	HINSTANCE hinst;
@@ -115,15 +115,34 @@ void testDynamicLoading(char* dll) {
 #ifdef __WATCOMC__
 		printf("Loading %s DLL dynamically from Open Watcom EXE:\n", dll);
 #endif
-		ITest* d = functor();
-		if (d == NULL) {
+		lb_I_Unknown* uk = functor();
+
+		if (uk == NULL) {
 			printf("Couldn't load object.\n");
 			return;
 		}
+
+		ITest* d = NULL;
+
+		uk->queryInterface("ITest", (void**) &d);
+
+		if (d == NULL) {
+			printf("Couldn't query interface.\n");
+			return;
+		}
+
 		if (d->getInt(NULL, false) != ERR_FAIL) printf("Error: ITest->getInt() doesn't return %d\n", ERR_FAIL);
-		if (d->getInt(NULL, false) == ERR_FAIL) printf("Success: ITest->getInt() returns %d\n", ERR_FAIL);
 		if (d->getInt(NULL, true) != ERR_FAIL) printf("Error: ITest->getInt() doesn't return %d\n", ERR_FAIL);
-		if (d->getInt(NULL, true) == ERR_FAIL) printf("Success: ITest->getInt() returns %d\n", ERR_FAIL);
+
+		printf("Size of integer is %d\n", d->IntegerSize());
+
+		int lala = 12003;
+		//if (d->registerHandler(NULL, NULL, "lala") == ERR_NONE) ;
+		if (d->registerHandler(NULL, NULL, lala) == ERR_NONE) ;
+		if (d->Foo(12003, 12004, 12005) == ERR_NONE) ;
+
+		if (uk->getBase() != 123) 
+			printf("Have INCORRECT getBase().\n");
 	} else {
 		printf("Error: Couln't find functor.\n");
 	}
@@ -131,14 +150,24 @@ void testDynamicLoading(char* dll) {
 
 int main() {
 	test("From text.exe");
-	ITest* t = gettest();
+	lb_I_Unknown* uk = gettest();
+
+	ITest* t = NULL;
+
+	uk->queryInterface("ITest", (void**) &t);
+
+	if (t == NULL) {
+		printf("Couldn't query interface.\n");
+		return 1;
+	}
 
 	t->test("From object out of test.exe", "p2");
 
 	if (getbool()) printf("Have true.\n");
+	if (t->getBase() != 123)
+		printf("Have INCORRECT getBase().\n");
 
 	if (t->getInt(NULL, false) != ERR_FAIL) printf("Error: ITest->getInt() doesn't return %d\n", ERR_FAIL);
-	if (t->getInt(NULL, false) == ERR_FAIL) printf("Success: ITest->getInt() returns %d\n", ERR_FAIL);
 
 	t->release();
 

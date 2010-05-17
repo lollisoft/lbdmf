@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.59 2009/12/06 19:20:16 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.60 2010/05/17 05:44:44 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.60  2010/05/17 05:44:44  lollisoft
+ * Many changes related to support mixing MinGW with Open Watcom.
+ *
  * Revision 1.59  2009/12/06 19:20:16  lollisoft
  * Modified build process to use precompiled files.
  * Corrected the long build time problem. It is located in the _LOG macro.
@@ -663,6 +666,7 @@ lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) {
     
     if (e == NULL) {
 	_CL_VERBOSE << "SkipList::getElement(...) returns a NULL pointer!" LOG_
+	_CL_VERBOSE << "SkipList::getElement(...) has " << count << " elements." LOG_
 	_CL_VERBOSE << "SkipList::getElement(...) searched for '" << (*key)->charrep() << "'" LOG_
     }
     
@@ -737,8 +741,10 @@ int randomLevel(void) { // Pick a level on exponential distribution
 lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
 
-  if (head == NULL) return NULL;
-  
+  if (head == NULL) {
+	  _CL_VERBOSE << "lb_I_Unknown* SkipList::search(...) Error: head is NULL!" LOG_
+	  return NULL;
+  }
   if (x == NULL) _LOG << "Error: NULL pointer while searching in skiplist" LOG_
   
   for (int i=level; i>=0; i--) {

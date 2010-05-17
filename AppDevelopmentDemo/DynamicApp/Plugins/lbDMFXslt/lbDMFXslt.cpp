@@ -216,7 +216,7 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
  *
  * target directory: The directory where the transformation will be performed. If not stored, the current directory will be used.
  */
-long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
+long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	lbErrCodes err = ERR_NONE;
 	xsltStylesheetPtr cur = NULL;
 	xmlDocPtr doc, res;
@@ -245,13 +245,21 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 
 	
 	*name = "source value";
-	_params->getUAPString(*&name, *&ApplicationName);
+	execution_params->getUAPString(*&name, *&ApplicationName);
 
 
 	UAP(lb_I_Unknown, ukDoc)
-	UAP(lb_I_Parameter, params)
+	UAP(lb_I_Parameter, activeDocument)
 	ukDoc = metaapp->getActiveDocument();
-	QI(ukDoc, lb_I_Parameter, params)
+	if (ukDoc == NULL) {
+		_LOG << "Error: MetaApplication does not have an active document. See log entry, why this happens." LOG_
+		*paramName = "result";
+		*paramValue = "0";
+		
+		execution_params->setUAPString(*&paramName, *&paramValue);
+		return 0;
+	}
+	QI(ukDoc, lb_I_Parameter, activeDocument)
 
 
 #ifndef __WATCOMC__
@@ -265,13 +273,13 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 
     _CL_LOG << "Storing old CWD: " << oldcwd LOG_
 
-	if (params != NULL) {
+	if (activeDocument != NULL) {
 		*name = "UMLImportDBName";
-		params->getUAPString(*&name, *&DBName);
+		activeDocument->getUAPString(*&name, *&DBName);
 		*name = "UMLImportDBUser";
-		params->getUAPString(*&name, *&DBUser);
+		activeDocument->getUAPString(*&name, *&DBUser);
 		*name = "UMLImportDBPass";
-		params->getUAPString(*&name, *&DBPass);
+		activeDocument->getUAPString(*&name, *&DBPass);
 	} else {
 		_LOG << "lbDMFXslt::execute(): Error, did not have parameters" LOG_
 		chdir(oldcwd);
@@ -279,7 +287,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		*paramName = "result";
 		*paramValue = "0";
 		
-		params->setUAPString(*&paramName, *&paramValue);
+		execution_params->setUAPString(*&paramName, *&paramValue);
 		
 		return 0;
 	}
@@ -295,13 +303,13 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	applications = metaapp->getApplicationModel();
 	applications->selectApplication(ApplicationName->charrep());
 	
-	if (params != NULL) {
+	if (activeDocument != NULL) {
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
 		// Get the parameters of the application to be translated.
 		document->setCloning(false);
 		*name = "ApplicationData";
-		params->getUAPContainer(*&name, *&document);
+		activeDocument->getUAPContainer(*&name, *&document);
 		*name = "AppParams";
 		QI(name, lb_I_KeyBase, key)
 		uk = document->getElement(&key);
@@ -338,7 +346,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 						*paramName = "result";
 						*paramValue = "0";
 						
-						params->setUAPString(*&paramName, *&paramValue);
+						execution_params->setUAPString(*&paramName, *&paramValue);
 
 						return 0;
 					}
@@ -354,7 +362,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 					*paramName = "result";
 					*paramValue = "0";
 					
-					params->setUAPString(*&paramName, *&paramValue);
+					execution_params->setUAPString(*&paramName, *&paramValue);
 					
 					return 0;
 				}
@@ -385,7 +393,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	// The unique application ID should be retrieved from database
 	// This is a bit too much. A better way would be providing the integer value in the 2. parameter as an entry (lb_I_Parameter instance)
 	*name = "SaveApplicationID";
-	params->setUAPInteger(*&name, *&AppID);
+	activeDocument->setUAPInteger(*&name, *&AppID);
 	_LOG << "lbDMFXslt::execute(): Save application ID = " << AppID->charrep() << " with name = " << ApplicationName->charrep() << "." LOG_
 
 	// Dispatch the function call, or better let the meta application provide a direct call
@@ -412,7 +420,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		*paramName = "result";
 		*paramValue = "0";
 		
-		params->setUAPString(*&paramName, *&paramValue);
+		execution_params->setUAPString(*&paramName, *&paramValue);
 
 		return 0;
 	}
@@ -445,13 +453,14 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	xmlChar* URL = (xmlChar*) filename->charrep();
 
 	if (value->charrep() == NULL) {
+		_CL_LOG << "Translate XML data failed." LOG_
 		metaapp->setStatusText("Info", "Translate XML data failed!");
 		chdir(oldcwd);
 		
 		*paramName = "result";
 		*paramValue = "0";
 		
-		params->setUAPString(*&paramName, *&paramValue);
+		execution_params->setUAPString(*&paramName, *&paramValue);
 		
 		return 0;
 	}
@@ -466,7 +475,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 		*paramName = "result";
 		*paramValue = "0";
 		
-		params->setUAPString(*&paramName, *&paramValue);
+		execution_params->setUAPString(*&paramName, *&paramValue);
 
 		return 0;
 	}
@@ -477,7 +486,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	// Get the question from action parameters for this action step
 
 	bool doGenerate = true;
-	
+
 	doGenerate = metaapp->askYesNo("You prepare to generate other output format from XML data model.\n\nNext step ist to select the XSLT template to be used.\n\nDo you want to proceed ?");
 	
 	if (doGenerate) {
@@ -508,7 +517,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 				*paramName = "result";
 				*paramValue = "0";
 				
-				params->setUAPString(*&paramName, *&paramValue);
+				execution_params->setUAPString(*&paramName, *&paramValue);
 
 				return 0;
 			}
@@ -542,7 +551,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 			*paramName = "result";
 			*paramValue = "0";
 			
-			params->setUAPString(*&paramName, *&paramValue);
+			execution_params->setUAPString(*&paramName, *&paramValue);
 
 			return 0;
 		}
@@ -559,46 +568,11 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* _params) {
 	
 	/// \todo This could be a macro and wxString is not known.
 	long first_dst_actionid = -1;
-#ifdef bla	
-	if (transitions != NULL) {
-		transitions->finishActionStepTransitionIteration();
-		while (transitions->hasMoreActionStepTransitions()) {
-			transitions->setNextActionStepTransition();
-			// First use a simple expression without any Lex & Yacc parser
-			UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
-			UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
-			long dst_actionid;
-			wxString expression;
-			expression = transitions->getActionStepTransitionDecision();
-			dst_actionid = transitions->getActionStepTransitionDstActionID();
-			
-			if (expression.find("==") != -1) {
-				// equal operator
-				_LOG << "Error: Boolean expression not allowed!" LOG_
-			}
-			if (expression.find("!=") != -1) {
-				// equal operator
-				_LOG << "Error: Boolean expression not allowed!" LOG_
-			}
-			if (expression.find("=") != -1) {
-				// assignment (typically adding a parameter to params
-				wxString left = expression.substr(0, expression.find("=")-1);
-				wxString right = expression.substr(expression.find("=")+1);
-				right.Trim();
-				left.Trim();
-				
-				*paramValue = right.c_str();
-				params->setUAPString(*&paramName, *&paramValue);
-				first_dst_actionid = dst_actionid;
-			}
-		}
-	}
-#endif
 	
 	*paramName = "result";
 	*paramValue = "1";
 	
-	params->setUAPString(*&paramName, *&paramValue);
+	execution_params->setUAPString(*&paramName, *&paramValue);
 	
 	return first_dst_actionid;
 }

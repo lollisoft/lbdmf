@@ -62,13 +62,33 @@
 enum lbErrCodes {
 	ERR_NONE = 0,
 	ERR_FAIL = 1,
-	ERR_SOWISO = 2
+	ERR_SOWISO = 2,
+	ERR_LAST = 0x7FFFFFFF
 };
 
-class ITest {
+class lb_I_Unknown;
+class ITest;
+
+// Test the registration of a member function callback
+typedef lbErrCodes (API ITest::*lbEvHandler)(lb_I_Unknown* uk);
+
+class lb_I_Unknown {
 public:
-	virtual lbErrCodes API getInt(char* _int, bool showmsg) = 0;
-	virtual bool API getbool() = 0;
-	virtual void API test(char* text, char* p2) = 0;
-	virtual void API release() = 0;
+	virtual lbErrCodes	API		queryInterface(char const* name, void** unknown) = 0;
+	virtual int			API		getBase() = 0;
+	virtual int			API		getBase1() = 0;
+private:
+	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
+};
+
+class ITest : public lb_I_Unknown {
+public:
+	virtual lbErrCodes	API		getInt(char* _int, bool showmsg) = 0;
+	virtual int			API		IntegerSize() = 0;
+	virtual bool		API		getbool() = 0;
+	virtual void		API		test(char* text, char* p2) = 0;
+	virtual void		API		release() = 0;
+	virtual lbErrCodes	API		registerHandler(ITest* instance, lbEvHandler handler, char* name) = 0;
+	virtual lbErrCodes	API		registerHandler(ITest* instance, lbEvHandler handler, int number) = 0;
+	virtual lbErrCodes	API		Foo(int param1, int param2, int param3) = 0;
 };

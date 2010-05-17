@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.72 2010/04/25 21:37:09 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.73 2010/05/17 05:44:43 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.73  2010/05/17 05:44:43  lollisoft
+ * Many changes related to support mixing MinGW with Open Watcom.
+ *
  * Revision 1.72  2010/04/25 21:37:09  lollisoft
  * Successfully ported lbHook to MINGW compiler. There were only two issues
  * I have identified: The enum problem as reported from Michal Necasek having
@@ -516,11 +519,6 @@ class lb_EventMapper :
 public lb_I_EventMapper
 {
 public:
-        lb_EventMapper();
-        virtual ~lb_EventMapper();
-
-        DECLARE_LB_UNKNOWN()
-
         /**
          * If handler is NULL, then the event manager knows, that the requesting
          * instance has a dispatcher and therefore handles it self. You must register
@@ -532,6 +530,12 @@ public:
          */
         virtual int LB_STDCALL getID();	
         
+public:
+        lb_EventMapper();
+        virtual ~lb_EventMapper();
+
+        DECLARE_LB_UNKNOWN()
+
 protected:
 	virtual char* LB_STDCALL getName();
         virtual void LB_STDCALL setID(int id);
@@ -546,17 +550,13 @@ protected:
 /*...sclass lb_Dispatcher:0:*/
 class lb_Dispatcher : public lb_I_Dispatcher {
 public:
-	lb_Dispatcher();
-	virtual ~lb_Dispatcher();
-
-	DECLARE_LB_UNKNOWN()
-
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager);
-	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
-	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp);
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
 	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr);
+
+	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
+	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp);
 	
 	/**
 	 * ID variant
@@ -585,15 +585,23 @@ public:
 	 */
 	lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName);
 	lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+	lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance);
+
 	lb_I_String* LB_STDCALL getInterceptorDefinitions();
 	lbErrCodes LB_STDCALL setInterceptorDefinitions(lb_I_String* s);
 	
 	lb_I_EvHandler* LB_STDCALL hasDefinedInterceptor(lb_I_String* event);
 	lbErrCodes LB_STDCALL activateInterceptor(lb_I_String* EvName, lb_I_EvHandler* ev);
 	
-	lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance);
 #endif
 	
+public:
+	lb_Dispatcher();
+	virtual ~lb_Dispatcher();
+
+	DECLARE_LB_UNKNOWN()
+
+
 	/// \brief The events that must be intercepted.
 	UAP(lb_I_Container, interceptorevents)
 	UAP(lb_I_Container, dispatcher)
@@ -603,15 +611,16 @@ public:
 /*...sclass lb_EventManager:0:*/
 class lb_EventManager : public lb_I_EventManager {
 public:
+	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
+	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr);
+	virtual char* LB_STDCALL reverseEvent(int evNr);
+
+public:
 	lb_EventManager();
 	virtual ~lb_EventManager();
 	
 	DECLARE_LB_UNKNOWN()
 	
-	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
-	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr);
-	virtual char* LB_STDCALL reverseEvent(int evNr);
-
 protected:
 
 
@@ -632,12 +641,7 @@ protected:
 
 /*...sclass lb_EvHandler:0:*/
 class lb_EvHandler : public lb_I_EvHandler {
-public:
-	lb_EvHandler();
-	virtual ~lb_EvHandler();
-
-	DECLARE_LB_UNKNOWN()
-        
+public:        
 	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler);
 	virtual lbEvHandler LB_STDCALL getHandler();
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
@@ -649,17 +653,6 @@ public:
 	virtual lb_I_DispatchInterceptor* getInterceptor();
 	virtual lbInterceptor LB_STDCALL getBeforeInterceptor();
 	virtual lbInterceptor LB_STDCALL getAfterInterceptor();
-
-	/** \brief The handler may require an interceptor.
-	 * Use this function to define if the handler needs an interceptor.
-	 */
-	virtual void LB_STDCALL setInterceptorRequired(bool _required);
-	/** \brief Check if this handler needs an interceptor.
-	 * This is used to auto cancel events that have a defined interceptor, but the interceptor plugin is missing.
-	 * The check would enable determining missing plugins and thus tricking out permissions will fail this way.
-	 */
-	virtual bool LB_STDCALL getInterceptorRequired();
-	
 	// Forwarded functions.
 	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After);
 	virtual lbErrCodes LB_STDCALL delInterceptor();
@@ -675,7 +668,7 @@ public:
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
 	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
-	
+
 	/** \brief Implements execution of hook functions.
 	 *
 	 * Hooks, that are executed before could cancel the call to the dispatched function.
@@ -684,8 +677,29 @@ public:
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
 	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+
+	/** \brief The handler may require an interceptor.
+	 * Use this function to define if the handler needs an interceptor.
+	 */
+	virtual void LB_STDCALL setInterceptorRequired(bool _required);
+
+	/** \brief Check if this handler needs an interceptor.
+	 * This is used to auto cancel events that have a defined interceptor, but the interceptor plugin is missing.
+	 * The check would enable determining missing plugins and thus tricking out permissions will fail this way.
+	 */
+	virtual bool LB_STDCALL getInterceptorRequired();
+	
+
+
+	
 #endif	
 	
+public:
+	lb_EvHandler();
+	virtual ~lb_EvHandler();
+
+	DECLARE_LB_UNKNOWN()
+
 	bool interceptorRequired;
 	
 	lb_I_DispatchInterceptor* _evHandlerInstance_interceptor;

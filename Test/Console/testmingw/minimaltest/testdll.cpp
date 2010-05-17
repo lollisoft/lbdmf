@@ -60,29 +60,49 @@
 #include "itest.h"
 #include "testdll.h"
 #include <stdio.h>
+#include <string.h>
 
 class Test : public ITest {
 public:
+	Test();
+	virtual ~Test();
+
+public:
 	lbErrCodes		API getInt(char* _int, bool showmsg);
+	int				API	IntegerSize();
     bool			API getbool();
     void			API test(char* text, char* p2);
     void			API release();
+	lbErrCodes		API	registerHandler(ITest* instance, lbEvHandler handler, char* name);
+	lbErrCodes		API	registerHandler(ITest* instance, lbEvHandler handler, int number);
+	lbErrCodes		API	Foo(int param1, int param2, int param3);
 
 public:
-	Test();
-	virtual ~Test();
+	lbErrCodes		API	queryInterface(char const* name, void** unknown);
+	int				API getBase1();
+	int				API getBase();
 };
 
-extern "C" DLLEXPORT ITest* API gettest() {
+extern "C" DLLEXPORT lb_I_Unknown* API gettest() {
     return _gettest();
 }
 
-extern "C" DLLEXPORT ITest* API _gettest() {
+extern "C" DLLEXPORT lb_I_Unknown* API _gettest() {
     return new Test();
 }
 
 void test_impl(char* text) {
     printf("Hello from test DLL. Text is '%s'.\n", text);
+}
+
+lbErrCodes	API	Test::queryInterface(char const* name, void** unknown) {
+	if (strcmp(name, "lb_I_Unknown") == 0) {
+		*unknown = (lb_I_Unknown*) this;
+	}
+	if (strcmp(name, "ITest") == 0) {
+		*unknown = (ITest*) this;
+	}
+	return ERR_NONE;
 }
 
 Test::Test() {
@@ -91,6 +111,14 @@ Test::Test() {
 
 Test::~Test() {
 	printf("Instance of Test deleted.\n");
+}
+
+int API Test::getBase() {
+	return 123;
+}
+
+int API Test::getBase1() {
+	return 1234;
 }
 
 bool API Test::getbool() {
@@ -103,6 +131,10 @@ lbErrCodes API Test::getInt(char* _int, bool showmsg) {
 	return ERR_NONE;
 }
 
+int API Test::IntegerSize() {
+	return sizeof(int);
+}
+
 void API Test::test(char* text, char* p2) {
 	test_impl(text);
 	test_impl(p2);
@@ -111,6 +143,21 @@ void API Test::test(char* text, char* p2) {
 void API Test::release() {
 	printf("Test::release() called.\n");
 	delete this;
+}
+
+lbErrCodes API Test::registerHandler(ITest* instance, lbEvHandler handler, char* name) {
+	printf("Handler gets registered with the number %s\n", name);
+	return ERR_NONE;
+}
+
+lbErrCodes API Test::registerHandler(ITest* instance, lbEvHandler handler, int number) {
+	if (number != 12003) printf("Handler gets registered with the number %d\n", number);
+	return ERR_NONE;
+}
+
+lbErrCodes	API Test::Foo(int param1, int param2, int param3) {
+	printf("Foo %d, %d, %d\n", param1, param2, param3);
+	return ERR_NONE;
 }
 
 DLLEXPORT void API _test(char* text) {

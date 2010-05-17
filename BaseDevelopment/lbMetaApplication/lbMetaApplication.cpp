@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174 $
+ * $Revision: 1.175 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.174 2010/04/25 21:37:09 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.175 2010/05/17 05:44:40 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.175  2010/05/17 05:44:40  lollisoft
+ * Many changes related to support mixing MinGW with Open Watcom.
+ *
  * Revision 1.174  2010/04/25 21:37:09  lollisoft
  * Successfully ported lbHook to MINGW compiler. There were only two issues
  * I have identified: The enum problem as reported from Michal Necasek having
@@ -789,6 +792,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (User_Applications != NULL) User_Applications--;
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
+	if (LogonApplication != NULL) LogonApplication--;
 	return ERR_NONE;
 }
 
@@ -898,7 +902,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
 	UAP(lb_I_Plugin, pl1)
 	UAP(lb_I_Unknown, ukPl1)
@@ -1029,7 +1033,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 
 	// Get the plugin to read a standard stream based file
 
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
@@ -1236,7 +1240,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
 	}
 
 	if (LogonUser == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
 	LogonUser->setData(user);
@@ -1248,7 +1252,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(char* app) {
 	if ((app == NULL) || strcmp(app, "") == 0) return ERR_NONE;
 
 	if (LogonApplication == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
        	LogonApplication->setData(app);
@@ -1279,7 +1283,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
 		if (LogonUser == NULL && _logged_in) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+			REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 			LogonUser->setData(user);
 		}
 
@@ -1287,7 +1291,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		_CL_LOG << "lb_MetaApplication::Initialize() appName is NULL" LOG_
 	} else
 		if (LogonApplication == NULL) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 			LogonApplication->setData(appName);
 		}
 
@@ -1399,7 +1403,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 
 	_CL_LOG << "Load properties from file..." LOG_
 
-	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
+	REQUEST(getModuleInstance(), lb_I_Parameter, myProperties)
 
 
 	if (!_loaded) {
@@ -1511,13 +1515,13 @@ bool                    LB_STDCALL lb_MetaApplication::isPropertyPaneLayoutLeft(
 void                    LB_STDCALL lb_MetaApplication::showPropertyPanel() {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
 
 	UAP(lb_I_Unknown, uk)
 	QI(s, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -1634,9 +1638,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 	QI(uk, lb_I_Parameter, param)
 
 	if (param != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameterName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 		UAP(lb_I_KeyBase, key)
 
@@ -1725,17 +1729,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 /*...slb_I_Parameter\42\ LB_STDCALL lb_MetaApplication\58\\58\getParameter\40\\41\:0:*/
 lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	// Build up a preferences object and pass it to the property view
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 	// General parameters for this application
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramGeneral)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameterGeneral)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, valueGeneral)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_DirLocation, dirloc)
-	UAP_REQUEST(manager.getPtr(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dirloc)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
 
 
 	parameter->setData("General");
@@ -1837,7 +1841,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
 		if (LogonUser == NULL) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+			REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 		}
 
 	LogonUser->setData(user);
@@ -1846,7 +1850,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
         if (LogonApplication == NULL) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
 	LogonApplication->setData(application);
@@ -1866,8 +1870,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 */
 
 		if (Applications->getApplicationCount() != 0) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, ModuleName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, Functor)
 
 			Users->selectAccount(LogonUser->charrep());
 			Applications->selectApplication(LogonApplication->charrep());
@@ -1938,7 +1942,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
 
-					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					a->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 					QI(a, lb_I_Application, app)
 
@@ -2004,8 +2008,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 
 				// Fill up the available applications for that user.
-				UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, ModuleName)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, Functor)
 
 					lbErrCodes DBerr = sampleQuery->first();
 
@@ -2061,7 +2065,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
 
-					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					a->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 					QI(a, lb_I_Application, app)
 
@@ -2136,9 +2140,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("toolbarName");
 	value->setData(toolbarName);
@@ -2147,7 +2151,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2160,9 +2164,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("toolbarName");
 	value->setData(toolbarName);
@@ -2171,7 +2175,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2189,9 +2193,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, ch
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("toolbarName");
 	value->setData(toolbarName);
@@ -2222,7 +2226,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2235,9 +2239,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName, char* entry) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("toolbarName");
 	value->setData(toolbarName);
@@ -2250,7 +2254,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName,
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2263,9 +2267,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName,
 lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName, char* entry) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("toolbarName");
 	value->setData(toolbarName);
@@ -2278,7 +2282,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName,
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2292,9 +2296,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName,
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	parameter->setData("name");
 	value->setData(name);
@@ -2311,7 +2315,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2329,10 +2333,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
         parameter->setData("text");
         value->setData(name);
@@ -2357,7 +2361,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
         UAP(lb_I_Unknown, uk)
         QI(param, lb_I_Unknown, uk)
 
-        UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, result)
         UAP(lb_I_Unknown, uk_result)
         QI(result, lb_I_Unknown, uk_result)
 
@@ -2370,10 +2374,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
 bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
 	parameter->setData("msg");
@@ -2383,7 +2387,7 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2392,6 +2396,8 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 		dispatcher->setEventManager(eman.getPtr());
 	}
+
+	printf("AskYesNo gets called. Handler data is: %p\n", uk.getPtr());
 
 	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
 
@@ -2409,11 +2415,11 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 void LB_STDCALL lb_MetaApplication::addStatusBar() {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2424,9 +2430,9 @@ void LB_STDCALL lb_MetaApplication::addStatusBar() {
 void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
 
 	*parameter = "Name";
 	*Value = name;
@@ -2435,7 +2441,7 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2448,9 +2454,9 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value,
 
 	if (!isStatusbarActive) return;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
 
 	*parameter = "Name";
 	*Value = name;
@@ -2465,7 +2471,7 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value,
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2477,10 +2483,10 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value,
 void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 	parameter->setData("msg");
 	value->setData(msg);
@@ -2492,7 +2498,7 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2504,10 +2510,10 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extensions) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 	parameter->setData("extension");
 	value->setData(extensions);
@@ -2516,7 +2522,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2531,7 +2537,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 
 	_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_InputStream, s)
 	s++;
 	s->setFileName(value->charrep());
 
@@ -2544,10 +2550,10 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
 	parameter->setData("labeltext");
@@ -2573,7 +2579,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2587,10 +2593,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
 	parameter->setData("buttontext");
@@ -2620,7 +2626,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2634,9 +2640,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
 	parameter->setData("handlername");
@@ -2646,7 +2652,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2659,9 +2665,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
 	parameter->setData("handlername");
@@ -2671,7 +2677,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2684,9 +2690,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
 	parameter->setData("handlername");
@@ -2696,7 +2702,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2841,7 +2847,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 	UAP(lb_I_Unknown, uk)
 	QI(params, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2871,7 +2877,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char*
 
 	for (int i = 1; i <= properties->Count(); i++) {
 		UAP(lb_I_KeyBase, key)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, eventName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, eventName)
 
 		key = properties->getKeyAt(i);
 
@@ -2891,9 +2897,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char*
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 
 	parameter->setData("menubar");
@@ -2917,7 +2923,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2931,9 +2937,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 
 	parameter->setData("menubar");
@@ -2961,7 +2967,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -2995,6 +3001,8 @@ void			LB_STDCALL lb_MetaApplication::setActiveApplication(const char* name) {
 lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
+	
+	if (LogonApplication == NULL) return NULL;
 
 	QI(LogonApplication, lb_I_KeyBase, key)
 
@@ -3086,7 +3094,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			return apps.getPtr();
 		}
 
-		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
@@ -3173,7 +3181,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 /*...sLoop through:40:*/
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 
-				UAP_REQUEST(manager.getPtr(), lb_I_String, S1)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, S1)
 				UAP(lb_I_KeyBase, key)
 				UAP(lb_I_Unknown, uk_S1)
 
@@ -3223,7 +3231,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 							UID << " = " << User_Applications->getUserID() LOG_
 
 				if (User_Applications->getUserID() == UID) {
-					UAP_REQUEST(manager.getPtr(), lb_I_String, S1)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, S1)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk_S1)
 
@@ -3295,15 +3303,15 @@ lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, boo
 bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -3326,6 +3334,11 @@ bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
+
+	if (Users == NULL) {
+		_LOG << "Error: Can not login. Have no Users list. Probably first call initialize();" LOG_
+		return false;
+	}
 
 	if (Users->getUserCount() == 0) {
 		// Fallback to database use. This should be moved to a 'service', that would
@@ -3360,7 +3373,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			return FALSE;
 		}
 
-		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
@@ -3515,18 +3528,18 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...sInit containers:8:*/
 	if (events == NULL) {
 		// Create the instance, that holds the events mapping
-		REQUEST(manager.getPtr(), lb_I_Container, events)
+		REQUEST(getModuleInstance(), lb_I_Container, events)
 
 		// For housekeeping
-		REQUEST(manager.getPtr(), lb_I_Container, freeIds)
+		REQUEST(getModuleInstance(), lb_I_Container, freeIds)
 
 		// The reverse
-		REQUEST(manager.getPtr(), lb_I_Container, reverse_events)
+		REQUEST(getModuleInstance(), lb_I_Container, reverse_events)
 	}
 /*...e*/
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
-	UAP_REQUEST(manager.getPtr(), lb_I_String, stringData)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, stringData)
 	stringData->setData(EvName);
 
 	UAP(lb_I_KeyBase, sk)
@@ -3561,7 +3574,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	}
 /*...e*/
 /*...sinsert new event:8:*/
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerData)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerData)
 	integerData->setData(maxEvId);
 
 	UAP(lb_I_Unknown, idata)
@@ -3593,8 +3606,8 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	lbErrCodes err = ERR_NONE;
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
-	UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
-	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
+	stringKey->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	stringKey->setData(EvName);
 
 	UAP(lb_I_KeyBase, kk)
@@ -3621,8 +3634,8 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, ID)
-	//ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, ID)
+	//ID->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	ID->setData(evNr);
 
 	UAP(lb_I_KeyBase, kk)
@@ -3671,7 +3684,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setEventManager\40\lb_I_EventManager\42\ EvManager\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManager) {
-
 	evManager = EvManager;
 	evManager++;
 
@@ -3685,6 +3697,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	 */
 
 	int id = 0;
+	_CL_LOG << "lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) called with " << EvName LOG_
 	evManager->resolveEvent(EvName, id);
 	addEventHandlerFn(evHandlerInstance, evHandler, id);
 	return ERR_NONE;
@@ -3705,17 +3718,19 @@ lbErrCodes LB_STDCALL lb_Dispatcher::delEventHandlerFn(lb_I_EventHandler* evHand
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ int EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_EvHandler, evH)
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_EvHandler, evH)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	UAP(lb_I_KeyBase, k)
 	UAP(lb_I_Unknown, e)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_EvHandler, ev)
+	_CL_LOG << "lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) called with " << EvNr LOG_
+
 
 	if (dispatcher == NULL) {
 		// Create the instance, that holds the events mapping
-		REQUEST(manager.getPtr(), lb_I_Container, dispatcher)
-		dispatcher->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		REQUEST(getModuleInstance(), lb_I_Container, dispatcher)
+		dispatcher->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	}
 
 	evH->setHandler(evHandlerInstance, evHandler);
@@ -3774,7 +3789,7 @@ lb_I_DispatchResponse* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	i->setData(EvNr);
 
 	UAP(lb_I_KeyBase, ik)
@@ -3878,7 +3893,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 		QI(uk, lb_I_EvHandler, evH)
 	} else {
 		_LOG << "Adding a new interceptor." LOG_
-		REQUEST(manager.getPtr(), lb_I_EvHandler, evH)
+		REQUEST(getModuleInstance(), lb_I_EvHandler, evH)
 		QI(evH, lb_I_Unknown, uk)
 		interceptorevents->insert(&uk, &key);
 		uk = interceptorevents->getElement(&key);
@@ -3894,7 +3909,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(char* EvName) {
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	evManager->resolveEvent(EvName, id);
 	i->setData(id);
 	
@@ -3934,7 +3949,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::removeInterceptedInstance(lb_I_String* EvNa
 lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
 	
@@ -3989,7 +4004,7 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 		}
 	}
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
 	
@@ -4170,7 +4185,7 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 		return ERR_INTERCEPTOR_BEFORE_CANCEL;
 	}
 #endif
-	
+	printf("Address of event handler instance is: %p. Handlerfunction is: %p. Handler data is: %p\n", _evHandlerInstance, ev, evData);
 	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
 
 #ifdef IMPLEMENT_NEWSTUFF
