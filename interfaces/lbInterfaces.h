@@ -1047,21 +1047,7 @@ public:
          */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
-	virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
-
-//friend class lb_I_gcManager;
-	private:
-		/**
-		 * Hide this operator to prevent usage. Effect ??
-		 *
-		 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
-		 */
-		//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
-
-	/**
-	 * Hide this operator to prevent usage. Effect ??
-	 */
-	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
+		virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
 };
 /*...e*/
 
@@ -1395,10 +1381,30 @@ public:
 /** \def DECLARE_LB_UNKNOWN() To be used in any interface implementation.
  *  This has to be used for each class definition, when deriving from lb_I_Unknown.
  */
-
-
-
 #define DECLARE_LB_UNKNOWN() \
+public: \
+	lbErrCodes 	LB_STDCALL release(char const* file, int line); \
+	char*           LB_STDCALL getCreationLoc() const; \
+	int 		LB_STDCALL deleteState(); \
+	void 		LB_STDCALL setDebug(long i) { debug_macro = i; } \
+	int 		LB_STDCALL getRefCount() { return ref; } \
+	char const*	LB_STDCALL getClassName(); \
+	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line); \
+	lb_I_Module*    LB_STDCALL getModuleManager(); \
+	lbErrCodes 	LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const; \
+	char const*	LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line); \
+	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
+	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
+	void		LB_STDCALL accept(lb_I_Aspect* v) { \
+	    if (v == NULL) {\
+		_LOG << "Error: Accept method couldn't forward with a NULL pointer." LOG_\
+	    }\
+	    v->visit(this);\
+	} \
+	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
+	    further_lock = state; \
+	} \
+	void 		LB_STDCALL resetRefcount(); \
 protected: \
 	UAP(lb_I_Module, manager) \
 	mutable int ref; \
@@ -1410,29 +1416,7 @@ protected: \
 	mutable miniLong   lastQILine; \
 	mutable miniString lastSMFile; \
 	mutable miniLong   lastSMLine; \
-public: \
-	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
-	    further_lock = state; \
-	} \
-	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line); \
-	lb_I_Module*    LB_STDCALL getModuleManager(); \
-	void 		LB_STDCALL resetRefcount(); \
-	void 		LB_STDCALL setDebug(long i) { debug_macro = i; } \
-	lbErrCodes 	LB_STDCALL release(char const* file, int line); \
-	char const*	LB_STDCALL getClassName(); \
-	char*           LB_STDCALL getCreationLoc() const; \
-	int 		LB_STDCALL deleteState(); \
-	char const*	LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line); \
-	lbErrCodes 	LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const; \
-	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
-	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
-	int 		LB_STDCALL getRefCount() { return ref; } \
-	void		LB_STDCALL accept(lb_I_Aspect* v) { \
-	    if (v == NULL) {\
-		_LOG << "Error: Accept method couldn't forward with a NULL pointer." LOG_\
-	    }\
-	    v->visit(this);\
-	}
+public:
 
 /*...e*/
 

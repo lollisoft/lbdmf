@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.94 $
+ * $Revision: 1.95 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.94 2010/04/29 06:56:05 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.95 2010/05/17 05:41:46 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.95  2010/05/17 05:41:46  lollisoft
+ * More method or constructor reordering.
+ *
  * Revision 1.94  2010/04/29 06:56:05  lollisoft
  * Removed ctor and dtor.
  *
@@ -1045,6 +1048,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
+	_CL_LOG << "Added an element with key value of " << key->charrep() LOG_ \
     if (key != NULL) { \
     	if (key->getRefCount() > 1) { \
     	        _CL_VERBOSE << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_ \
@@ -1100,7 +1104,7 @@ lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
         lb_I_KeyBase* kbase = NULL; \
         if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_ \
         key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__); \
-        _CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references." LOG_ \
+        _CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references. Value is " << kbase->charrep() LOG_ \
         key->release(__FILE__, __LINE__); \
         return kbase; \
 } \
@@ -1614,18 +1618,15 @@ class lb_I_Module :
                 public lb_I_Unknown,
                 public lb_I_Requestable 
 {
-protected:
-        lb_I_Module() {}
-        virtual ~lb_I_Module() {}
 public:
 
 	virtual char* LB_STDCALL getCreationLoc(char const* addr) = 0;
-        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
-        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
-        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
-        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
+    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
 
-        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
+    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
 
         /**
          * This function loads a module and stores the modulehandle in an array
