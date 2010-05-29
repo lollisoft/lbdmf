@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.41 2010/04/25 21:37:10 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.42 2010/05/29 21:55:53 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.42  2010/05/29 21:55:53  lollisoft
+ * Added an error code when a document element is missed.
+ *
  * Revision 1.41  2010/04/25 21:37:10  lollisoft
  * Successfully ported lbHook to MINGW compiler. There were only two issues
  * I have identified: The enum problem as reported from Michal Necasek having
@@ -349,7 +352,8 @@ enum lbErrCodes {
 	ERR_FORM_VALIDATION,
 
 
-
+/* Dynamic app storage */
+	ERR_DOCUMENTELEMENT_MISSING,
 
 
 /* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
