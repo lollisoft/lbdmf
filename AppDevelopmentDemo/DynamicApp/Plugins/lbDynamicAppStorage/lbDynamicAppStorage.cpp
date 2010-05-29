@@ -273,18 +273,34 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 			
 	*name = "DBPrimaryKeys";
 	uk = document->getElement(&key);
+	if (uk == NULL) {
+		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
+		//return ERR_DOCUMENTELEMENT_MISSING;
+	}
 	QI(uk, lb_I_DBPrimaryKeys, dbPrimaryKeys)
 			
 	*name = "DBForeignKeys";
 	uk = document->getElement(&key);
+	if (uk == NULL) {
+		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
+		//return ERR_DOCUMENTELEMENT_MISSING;
+	}
 	QI(uk, lb_I_DBForeignKeys, dbForeignKeys)
 			
 	*name = "DBTables";
 	uk = document->getElement(&key);
+	if (uk == NULL) {
+		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
+		//return ERR_DOCUMENTELEMENT_MISSING;
+	}
 	QI(uk, lb_I_DBTables, dbTables)
 			
 	*name = "DBColumns";
 	uk = document->getElement(&key);
+	if (uk == NULL) {
+		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
+		//return ERR_DOCUMENTELEMENT_MISSING;
+	}
 	QI(uk, lb_I_DBColumns, dbColumns)
 
 	*name = "FormularFields";
@@ -1087,6 +1103,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_ReportElementTypes, reportelementtypes)
 	UAP(lb_I_ReportTexts, reporttextblocks)
 
+	AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database report'")
+	AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database report'")
+	AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'database report'")
+	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'database report'")
+
 	AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
 	AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
 	AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
@@ -1106,6 +1127,18 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
 	AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 	
+	if (dbTables == NULL)  {
+		_LOG << "lb_I_DBTables instance is NULL." LOG_
+	}
+	if (dbColumns == NULL)  {
+		_LOG << "lb_I_DBColumns instance is NULL." LOG_
+	}
+	if (dbPrimaryKeys == NULL)  {
+		_LOG << "lb_I_DBPrimaryKeys instance is NULL." LOG_
+	}
+	if (dbForeignKeys == NULL)  {
+		_LOG << "lb_I_DBForeignKeys instance is NULL." LOG_
+	}
 	if (reports == NULL)  {
 		_LOG << "lb_I_Reports instance is NULL." LOG_
 	}
@@ -1161,6 +1194,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		_LOG << "lb_I_ActionStep_Parameters instance is NULL." LOG_
 	}
 	
+	meta->setStatusText("Info", "Load database configuration (dbTables) ...");
+	dbTables->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (dbColumns) ...");
+	dbColumns->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (dbPrimaryKeys) ...");
+	dbPrimaryKeys->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (dbForeignKeys) ...");
+	dbForeignKeys->accept(*&aspect);
+
 	meta->setStatusText("Info", "Load database configuration (reports) ...");
 	reports->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (reportparams) ...");
@@ -1295,6 +1337,23 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		 *name = "XSLFileExportSettings";
 		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileExportSettings);
 	} 
+
+	*name = "DBTables";
+	QI(dbTables, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "DBColumns";
+	QI(dbColumns, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "DBPrimaryKeys";
+	QI(dbPrimaryKeys, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "DBForeignKeys";
+	QI(dbForeignKeys, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
 
 	*name = "UMLImportTargetDBName";
 	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
