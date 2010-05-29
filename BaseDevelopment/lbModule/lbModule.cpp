@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.129 $
+ * $Revision: 1.130 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.129 2010/05/17 05:44:43 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.130 2010/05/29 07:46:39 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.130  2010/05/29 07:46:39  lollisoft
+ * Compiles with mingw.
+ *
  * Revision 1.129  2010/05/17 05:44:43  lollisoft
  * Many changes related to support mixing MinGW with Open Watcom.
  *
@@ -2215,6 +2218,9 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	#ifdef __WATCOMC__
 	#define PREFIX "_"
 	#endif
+	#ifdef __MINGW32__
+	#define PREFIX ""
+	#endif
 	#ifdef _MSC_VER
 	#define PREFIX ""
 	#endif
@@ -2562,6 +2568,9 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 #ifndef LINUX
 	#ifdef __WATCOMC__
 	#define PREFIX "_"
+	#endif
+	#ifdef __MINGW32__
+	#define PREFIX ""
 	#endif
 	#ifdef _MSC_VER
 	#define PREFIX ""
