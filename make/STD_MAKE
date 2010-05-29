@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.138 $
+# * $Revision: 1.139 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.138 2010/04/03 00:15:56 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.139 2010/05/29 08:02:44 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.139  2010/05/29 08:02:44  lollisoft
+# * Added MINGW standard library lbHook.
+# *
 # * Revision 1.138  2010/04/03 00:15:56  lollisoft
 # * Changes to properly mix up compilers (OW and MinGW). Tested in UnitTests with is actually testing some functions of the lbString class.
 # *
@@ -625,7 +628,7 @@ ifeq ($(DEBUG_MEMORY), yes)
   endif	
 endif
 
-MINGWLIBS = -L$(DEVROOT_MAKE)/projects/dll
+MINGWLIBS = -L$(DEVROOT_MAKE)/projects/dll -llbHook
 
 ifeq ($(DEBUG_MEMORY), no)
 BASE_LIBS =
