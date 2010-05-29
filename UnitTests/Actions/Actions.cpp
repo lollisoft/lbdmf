@@ -36,6 +36,11 @@ public:
 	
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL setStatusText(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
+	
+	void LB_STDCALL setAnswer(char* what);
+	void LB_STDCALL setFileAnswer(char* what);
 
 public:
 	UIWrapper();
@@ -49,6 +54,9 @@ protected:
 	UAP(lb_I_Dispatcher, dispatcher)
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_String, LogonApplication)
+
+	UAP(lb_I_String, answer)
+	UAP(lb_I_String, fileanswer)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(UIWrapper)
@@ -60,6 +68,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 UIWrapper::UIWrapper() {
 	ref = STARTREF;
 	gui = NULL;
+	REQUEST(getModuleInstance(), lb_I_String, answer)
+	REQUEST(getModuleInstance(), lb_I_String, fileanswer)
 	printf("Instance of lb_I_Application created\n");
 	_LOG << "Instance of lb_I_Application created" LOG_
 }
@@ -68,6 +78,68 @@ UIWrapper::~UIWrapper() {
 	_LOG << "Instance of lb_I_Application destroyed" LOG_
 }
 
+void LB_STDCALL UIWrapper::setFileAnswer(char* what) {
+	*fileanswer = what;
+}
+
+void LB_STDCALL UIWrapper::setAnswer(char* what) {
+	*answer = what;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::askOpenFileReadStream(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filepath)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("extension");
+	param->getUAPString(*&parameter, *&name);
+
+	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
+
+	printf("Choose a file. Default directory: %s, Name: %s\n", defaultdir->charrep(), name->charrep());
+
+	parameter->setData("result");
+	filepath->setData(fileanswer->charrep());
+	param->setUAPString(*&parameter, *&filepath);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL UIWrapper::setStatusText(lb_I_Unknown* uk) {
+        lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+        UAP(lb_I_Parameter, params)
+
+        QI(uk, lb_I_Parameter, params)
+
+        if (params != NULL) {
+                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, CallYield)
+
+                *parameter = "Name";
+                params->getUAPString(*&parameter, *&name);
+                *parameter = "Value";
+                params->getUAPString(*&parameter, *&value);
+				*parameter = "CallYield";
+				params->getUAPString(*&parameter, *&CallYield);
+			
+				printf("Status: %s\n", value->charrep());
+
+                err = ERR_NONE;
+        }
+
+        return err;
+}
 
 lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -87,31 +159,11 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
 
-	COUT << msg->charrep();
+	printf("Question: %s\n", msg->charrep());
 
-	char c = ' ';
-
-    setvbuf(stdin, &c, _IONBF, 1);
-    while ( c != 'y' &&
-            c != 'Y' &&
-            c != 'n' &&
-            c != 'N') {
-        fread(&c, 1, 1, stdin);
-    }
-
-
-    switch (c) {
-        case 'y':
-        case 'Y':
-            parameter->setData("result");
-            result->setData("yes");
-            param->setUAPString(*&parameter, *&result);
-            break;
-        default:
-            parameter->setData("result");
-            result->setData("no");
-            param->setUAPString(*&parameter, *&result);
-    }
+    parameter->setData("result");
+    result->setData(answer->charrep());
+    param->setUAPString(*&parameter, *&result);
 
     COUT << ENDL;
 
@@ -119,12 +171,13 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
-	char* evName = strdup("askYesNo"); // Otherwise Open Watcom gets a pointer of 0xFFFFFFFF
-
 	lb_I_EventHandler* eh = (lb_I_EventHandler*) this;
 
-	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, evName);
-	free(evName);
+	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, "askYesNo");
+	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::setStatusText, "setStatusText");
+	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askOpenFileReadStream, "askOpenFileReadStream");
+
+
 	return ERR_NONE;
 }
 
@@ -178,6 +231,8 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
 	// To be implemented in a separate application module
 
 	int askYesNo;
+	int setStatusText;
+	int askOpenFileReadStream;
 
 	// Get the event manager
 
@@ -185,6 +240,10 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	eman->registerEvent("askYesNo", askYesNo);
 	printf("Registered event ID=%d for askYesNo.\n", askYesNo);
+	eman->registerEvent("setStatusText", setStatusText);
+	printf("Registered event ID=%d for setStatusText.\n", setStatusText);
+	eman->registerEvent("askOpenFileReadStream", askOpenFileReadStream);
+	printf("Registered event ID=%d for askOpenFileReadStream.\n", askOpenFileReadStream);
 
 	dispatcher->setEventManager(eman.getPtr());
 	registerEventHandler(dispatcher.getPtr());
@@ -237,6 +296,7 @@ public:
 	{
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 	}
 
 	void makePluginName(char* path, char* module, char*& result) {
@@ -302,7 +362,7 @@ public:
 #define PREFIX ""
 #endif
 #ifdef __MINGW32__
-#define PREFIX "_"
+#define PREFIX ""
 #endif
 #endif
 #ifdef LINUX
@@ -348,6 +408,7 @@ public:
 		return action.getPtr();
 	}
 
+
 	void test_Delegated_Action_lbDMFXslt_selfexporting( void )
 	{
 		puts("test_Delegated_Action_lbDMFXslt_selfexporting");
@@ -361,11 +422,7 @@ public:
 		action = getActionDelegate("lbDMFXslt.dll", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
-
-
 		setLogActivated(false);
-
-
 		PM->initialize();
 
 		// Use an UI wrapper to fake answers.
@@ -414,17 +471,86 @@ public:
 		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
 		#endif
 
-		//action->setParameter(*&parameter);
-		setLogActivated(true);
-		setVerbose(true);
-		int nextStep = action->execute(*&params);
-		setLogActivated(false);
-		setVerbose(false);
+		myUIWrapper->setAnswer("yes");
+		myUIWrapper->setFileAnswer("template-good.xsl");
+		int nextStep1 = action->execute(*&params);
 
 		meta->uninitialize();
 
 		// Test for a 'linear action'
-		ASSERT_EQUALS(-1, nextStep)
+		ASSERT_EQUALS(-1, nextStep1)
+	}
+
+	void test_Delegated_Action_lbDMFXslt_selfexporting_failure( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_selfexporting_failure");
+		// Preload lbClasses DLL with this line !
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_DelegatedAction, action)
+
+		action = getActionDelegate("lbDMFXslt.dll", "instanceOflbDMFXslt");
+
+		ASSERT_EQUALS(true, action != NULL)
+		setLogActivated(false);
+		PM->initialize();
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+        myUIWrapper->initialize();
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		UAP(lb_I_Container, applications)
+
+		applications = meta->getApplications();
+
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+
+		// Setup the configuration that is needed for this test
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, path)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, File)
+
+		*path = ".";
+
+		#ifdef WINDOWS
+		*File = path->charrep();
+		*File += "\\";
+		*File += "XMISettings.xsl";
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", File->charrep());
+		*File = path->charrep();
+		*File += "\\";
+		*File += "template.xsl";
+		meta->firePropertyChangeEvent("UML export settingsXSL file for UML export", File->charrep());
+		*File = path->charrep();
+		*File += "\\lbDMFManager.xmi";
+		meta->firePropertyChangeEvent("UML export settingsXMI UML export file", File->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl");
+		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+
+		myUIWrapper->setAnswer("yes");
+		myUIWrapper->setFileAnswer("template-fail.xsl");
+		int nextStep1 = action->execute(*&params);
+
+		meta->uninitialize();
+
+		// Test for a 'linear action'
+		ASSERT_EQUALS(0, nextStep1)
 	}
 
 	void test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn( void )
