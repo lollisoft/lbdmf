@@ -225,6 +225,8 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	xsltStylesheetPtr cur = NULL;
 	xmlDocPtr doc, res;
 	xmlDocPtr stylesheetdoc;
+	// Linear action
+	long next_action = -1;
 
 	long id = 0;
 	const char *p[16 + 1];
@@ -261,6 +263,9 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		*paramValue = "0";
 		
 		execution_params->setUAPString(*&paramName, *&paramValue);
+
+		// The active document contains parameters that are required as input parameters for the action.
+		///\todo Are the parameters always mandatory or can sometimes these parameters provided by user input.
 		return 0;
 	}
 	QI(ukDoc, lb_I_Parameter, activeDocument)
@@ -293,7 +298,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		
 		execution_params->setUAPString(*&paramName, *&paramValue);
 		
-		return 0;
+		return next_action;
 	}
 
 	// Be sure to have the actual data, but save the last changes in settings before.
@@ -352,7 +357,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 						
 						execution_params->setUAPString(*&paramName, *&paramValue);
 
-						return 0;
+						return next_action;
 					}
 				}
 				
@@ -368,7 +373,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 					
 					execution_params->setUAPString(*&paramName, *&paramValue);
 					
-					return 0;
+					return next_action;
 				}
 				
 				UAP(lb_I_Query, q)
@@ -426,7 +431,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		
 		execution_params->setUAPString(*&paramName, *&paramValue);
 
-		return 0;
+		return next_action;
 	}
 
 	parameter->setData("memorybuffer");
@@ -466,7 +471,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		
 		execution_params->setUAPString(*&paramName, *&paramValue);
 		
-		return 0;
+		return next_action;
 	}
 
 	doc = xmlReadMemory((char const*) value->charrep(), strlen(value->charrep()), (char const*) URL, NULL, 0);
@@ -481,7 +486,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		
 		execution_params->setUAPString(*&paramName, *&paramValue);
 
-		return 0;
+		return next_action;
 	}
 
 	// Read the stylesheet document to get SQL script for database creation
@@ -523,7 +528,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 				
 				execution_params->setUAPString(*&paramName, *&paramValue);
 
-				return 0;
+				return next_action;
 			}
 			_LOG << "lbDMFXslt::execute(): Parse xml document as stylesheet." LOG_
 			cur = xsltParseStylesheetDoc(stylesheetdoc);
@@ -557,7 +562,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 			
 			execution_params->setUAPString(*&paramName, *&paramValue);
 
-			return 0;
+			return next_action;
 		}
 	}
 
@@ -569,16 +574,13 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
     chdir(oldcwd);
 
 	metaapp->setStatusText("Info", "Finished Translating XML data.");
-	
-	/// \todo This could be a macro and wxString is not known.
-	long first_dst_actionid = -1;
-	
+		
 	*paramName = "result";
 	*paramValue = "1";
 	
 	execution_params->setUAPString(*&paramName, *&paramValue);
 	
-	return first_dst_actionid;
+	return next_action;
 }
 
 /*...sclass lbPluginDMFXslt implementation:0:*/
