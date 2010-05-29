@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.74 2010/01/22 22:14:54 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.75 2010/05/29 07:48:40 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.75  2010/05/29 07:48:40  lollisoft
+ * Compiles with mingw. Found a bug with not initialized variable.
+ *
  * Revision 1.74  2010/01/22 22:14:54  lollisoft
  * Fixed a null pointer bug.
  *
@@ -485,7 +488,8 @@ lb_I_Unknown* LB_STDCALL lbPluginManager::getUnknown() {
 lbPluginManager::lbPluginManager() {
 	ref = STARTREF;
 	begunEnumerate = firstEnumerate = begunUnitTestEnumerate = false;
-	begunServerEnumerate = firstServerEnumerate = firstUnitTestPlugin = false;
+	begunServerEnumerate = firstServerEnumerate = firstUnitTestEnumerate = false;
+	firstUnitTestPlugin = false;
 	firstPlugin = true;
 	lastPlugin = false;
 	lastServerPlugin = false;
@@ -609,6 +613,9 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 #ifdef __WATCOMC__
 #define PREFIX "_"
 #endif
+#ifdef __MINGW32__
+#define PREFIX ""
+#endif
 #ifdef _MSC_VER
 #define PREFIX ""
 #endif
@@ -724,6 +731,9 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 #ifdef _MSC_VER
 #define PREFIX ""
 #endif
+#ifdef __MINGW32__
+#define PREFIX ""
+#endif
 #endif
 #ifdef LINUX
 #define PREFIX ""
@@ -833,6 +843,9 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path)
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
+#endif
+#ifdef __MINGW32__
+#define PREFIX ""
 #endif
 #ifdef _MSC_VER
 #define PREFIX ""
@@ -1102,6 +1115,9 @@ void LB_STDCALL lbPluginManager::initialize() {
         #ifdef __WATCOMC__
         #define PREFIX "_"
         #endif
+		#ifdef __MINGW32__
+		#define PREFIX ""
+		#endif
         #ifdef _MSC_VER
         #define PREFIX ""
         #endif
