@@ -902,11 +902,13 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 #ifdef WINDOWS
 #ifndef _MSC_VER
+#ifndef __MINGW32__
 	char* temp = (char*) malloc(strlen(functor)+2);
 	temp[0] = 0;
 	strcat(temp, "_");
 	strcat(temp, functor);
 	functor = temp;
+#endif
 #endif
 #endif
 
@@ -935,8 +937,10 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 #ifdef WINDOWS
 #ifndef _MSC_VER
+#ifndef __MINGW32__
 	if (temp) free((void*)temp);
 	functor = NULL;
+#endif
 #endif
 #endif
 
