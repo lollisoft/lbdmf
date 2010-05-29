@@ -87,7 +87,17 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
 
-	printf("%s\n", msg->charrep());
+
+	printf("Console dialog:\n\n%s\n\n", msg->charrep());
+
+	if (strcmp(msg->charrep(), "Hallo UnitTests") == 0) {
+		printf("y");
+	    parameter->setData("result");
+		result->setData("yes");
+		param->setUAPString(*&parameter, *&result);
+		COUT << ENDL;
+		return err;
+	}
 
 	char c = ' ';
 
@@ -123,11 +133,7 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	lb_I_EventHandler* eh = (lb_I_EventHandler*) this;
 
-	setVerbose(true);
-	setLogActivated(true);
-	lbErrCodes err = disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, 12003);
-	setVerbose(false);
-	setLogActivated(false);
+	lbErrCodes err = disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, evName);
 	free(evName);
 	return ERR_NONE;
 }
@@ -718,12 +724,7 @@ public:
 		eman->resolveEvent("askYesNo", evId);
 
 		ASSERT_EQUALS( false, evId == 0 );
-		ASSERT_EQUALS( true, evId == 12003 );
-		//setVerbose(true);
-		//setLogActivated(true);
 		err = dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
-		//setVerbose(false);
-		//setLogActivated(false);
 
 		ASSERT_EQUALS( ERR_NONE, err );
 
@@ -903,20 +904,20 @@ class BaseDevelopmentDatabase : public TestFixture<BaseDevelopmentDatabase>
 public:
 	TEST_FIXTURE( BaseDevelopmentDatabase )
 	{
-		TEST_CASE(test_Instanciate_lbDatabase)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_setUser)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_setDB)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_SQLSERVER_listTables)
+		TEST_CASE(test_Instantiate)
+		TEST_CASE(test_SQLSERVER_setUser)
+		TEST_CASE(test_SQLSERVER_setDB)
+		TEST_CASE(test_login_SQLSERVER_UnitTest_failure)
+		TEST_CASE(test_login_SQLSERVER_UnitTest)
+		TEST_CASE(test_createTable_SQLSERVER_UnitTest)
+		TEST_CASE(test_SQLSERVER_listTables)
 
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_setUser)
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_setDB)
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure)
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest)
-		TEST_CASE(test_Instanciate_lbDatabase_PostgreSQL_listTables)
+		TEST_CASE(test_PostgreSQL_setUser)
+		TEST_CASE(test_PostgreSQL_setDB)
+		TEST_CASE(test_login_PostgreSQL_UnitTest_failure)
+		TEST_CASE(test_login_PostgreSQL_UnitTest)
+		TEST_CASE(test_PostgreSQL_createTable_PostgreSQL_UnitTest)
+		TEST_CASE(test_PostgreSQL_listTables)
 	}
 
 
@@ -940,9 +941,9 @@ public:
 	{
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_setUser( void )
+	void test_PostgreSQL_setUser( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_setUser");
+		puts("test_PostgreSQL_setUser");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -951,9 +952,9 @@ public:
 		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_setDB( void )
+	void test_PostgreSQL_setDB( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_setDB");
+		puts("test_PostgreSQL_setDB");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -962,9 +963,9 @@ public:
 		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_listTables( void )
+	void test_PostgreSQL_listTables( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_listTables");
+		puts("test_PostgreSQL_listTables");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1015,9 +1016,9 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest( void )
+	void test_PostgreSQL_createTable_PostgreSQL_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_createTable_PostgreSQL_UnitTest");
+		puts("test_PostgreSQL_createTable_PostgreSQL_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1048,9 +1049,9 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure( void )
+	void test_login_PostgreSQL_UnitTest_failure( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest_failure");
+		puts("test_PostgreSQL_login_PostgreSQL_UnitTest_failure");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1060,9 +1061,9 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest( void )
+	void test_login_PostgreSQL_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_PostgreSQL_login_PostgreSQL_UnitTest");
+		puts("test_PostgreSQL_login_PostgreSQL_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1073,9 +1074,9 @@ public:
 	}
 
 
-	void test_Instanciate_lbDatabase_SQLSERVER_setUser( void )
+	void test_SQLSERVER_setUser( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_setUser");
+		puts("test_SQLSERVER_setUser");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1084,9 +1085,9 @@ public:
 		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
 	}
 
-	void test_Instanciate_lbDatabase_SQLSERVER_setDB( void )
+	void test_SQLSERVER_setDB( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_setDB");
+		puts("test_SQLSERVER_setDB");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1095,9 +1096,9 @@ public:
 		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
 	}
 
-	void test_Instanciate_lbDatabase_SQLSERVER_listTables( void )
+	void test_SQLSERVER_listTables( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_listTables");
+		puts("test_SQLSERVER_listTables");
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
@@ -1109,11 +1110,16 @@ public:
 
 		query = db->getQuery("UnitTestSQLSERVER", 0);
 
+		ASSERT_EQUALS( true, query != NULL)
+
+		// Drop the table in case it exists.
+		query->query("DROP TABLE [dbo].[test]", false);
+
 		query->query(
 			"CREATE TABLE [dbo].[test] ("
 			"	id int identity(1,1) NOT NULL,"
 			"	Name nchar(100)"
-			")");
+			")", false);
 
 		UAP(lb_I_Container, tables)
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -1121,7 +1127,6 @@ public:
 		SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
-
 
 		if (SomeBaseSettings != NULL) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -1144,6 +1149,8 @@ public:
 
 		int count = tables->Count();
 
+		ASSERT_EQUALS( 1, count);
+
 		UAP(lb_I_Parameter, param)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -1154,17 +1161,16 @@ public:
 		*name = "TableName";
 		param->getUAPString(*&name, *&tableName);
 
-		query->query("DROP TABLE [dbo].[test]");
+		query->query("DROP TABLE [dbo].[test]", false);
 
-		ASSERT_EQUALS( 1, count);
 		ASSERT_EQUALS( "test", tableName->charrep());
 
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest( void )
+	void test_createTable_SQLSERVER_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_createTable_SQLSERVER_UnitTest");
+		puts("test_createTable_SQLSERVER_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1177,35 +1183,38 @@ public:
 
 		ASSERT_EQUALS( true, query != NULL);
 
-		ASSERT_EQUALS( ERR_NONE, query->query(
+		lbErrCodes err1 = query->query(
 			"CREATE TABLE [dbo].[test] ("
 			"	id int identity(1,1) NOT NULL,"
 			"	Name nchar(100)"
 			")"
-			, false));
+			, false);
 
-		ASSERT_EQUALS( ERR_NONE, query->query(
+		lbErrCodes err2 = query->query(
 			"DROP TABLE [dbo].[test]"
-			, false));
+			, false);
+
+		ASSERT_EQUALS( ERR_NONE, err1);
+
+		ASSERT_EQUALS( ERR_NONE, err2);
 
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure( void )
+	void test_login_SQLSERVER_UnitTest_failure( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest_failure");
+		puts("test_login_SQLSERVER_UnitTest_failure");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
-
 		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trallala"));
-
+		
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest( void )
+	void test_login_SQLSERVER_UnitTest( void )
 	{
-		puts("test_Instanciate_lbDatabase_SQLSERVER_login_SQLSERVER_UnitTest");
+		puts("test_login_SQLSERVER_UnitTest");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
@@ -1215,12 +1224,13 @@ public:
 		db->close();
 	}
 
-	void test_Instanciate_lbDatabase( void )
+	void test_Instantiate( void )
 	{
-		puts("test_Instanciate_lbDatabase");
+		puts("test_Instantiate");
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		db->init();
 	}
 
 
