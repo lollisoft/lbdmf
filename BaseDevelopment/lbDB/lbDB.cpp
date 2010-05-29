@@ -5649,6 +5649,10 @@ lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
 
 lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* pass) {
 	_CL_VERBOSE << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
+	if (henv == 0) {
+		_LOG << "Error: Cannot connect if database has not been initialized." LOG_
+		return ERR_DB_INIT;
+	}
 	return connect(connectionname, db, user, pass);
 }
 
@@ -5662,6 +5666,11 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 
 	// Put me to unconnected state, if anything goes wrong...
 	connected = false;
+
+	if (henv == 0) {
+		_LOG << "Error: Cannot connect if database has not been initialized." LOG_
+		return ERR_DB_INIT;
+	}
 
 	if (connPooling == NULL) {
 	    REQUEST(manager.getPtr(), lb_I_Container, connPooling)
@@ -5713,7 +5722,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	    if (retcode != SQL_SUCCESS)
 	    {
 			_LOG << "SQLAllocConnect(henv, &hdbc) failed." LOG_
-    		_dbError_ENV("SQLAllocConnect()", henv);
+    		//_dbError_ENV("SQLAllocConnect()", henv);
         	SQLFreeEnv(henv);
     		return ERR_DB_CONNECT;
 		}
