@@ -53,6 +53,10 @@
 #include <direct.h>
 #endif
 
+#ifdef __MINGW32__
+#include <direct.h>
+#endif
+
 #include <lbDMFXslt.h>
 
 // Includes for the libxml / libxslt libraries

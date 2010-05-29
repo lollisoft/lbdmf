@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.217 $
+# * $Revision: 1.218 $
 # * $Name:  $
-# * $Id: Makefile,v 1.217 2010/04/26 06:49:01 lollisoft Exp $
+# * $Id: Makefile,v 1.218 2010/05/29 18:07:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.218  2010/05/29 18:07:18  lollisoft
+# * Changes to compile code with MinGW.
+# *
 # * Revision 1.217  2010/04/26 06:49:01  lollisoft
 # * Moved lbCryptoStream plugin to activate building it on Windows.
 # *
@@ -1240,15 +1243,16 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 
-TARGETDLL=dll
-TARGETDLLMINGW=dll_target_mingw
-TARGETXSLTDLL=xsltdll
-TARGETFRAMEWORK=dll
-TARGETSHARED=dll
-TARGETWXSHARED=dll
-TARGETFRAMEWORKMINGW=dll_target_mingw
-TARGETSHAREDMINGW=dll_target_mingw
-TARGETWXSHAREDMINGW=dll_target_mingw
+
+TARGET_SELECTOR=_target_mingw
+#TARGET_SELECTOR=
+
+TARGETDLL=dll$(TARGET_SELECTOR)
+TARGETFRAMEWORK=dll$(TARGET_SELECTOR)
+TARGETSHARED=dll$(TARGET_SELECTOR)
+TARGETWXSHARED=dll$(TARGET_SELECTOR)
+TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
+
 TARGETEXE=exe
 TARGETWXEXE=exe
 TARGETPLUGIN=plugin
@@ -1267,12 +1271,12 @@ ALLTARGETS = \
 	../../plugins/libs \
 	lbHook \
 	lbtransfer \
-	lbcs \
 	lbDB \
 	lbModule \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
+	$(BASEDIRECTORIES) \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -1288,9 +1292,9 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
-	../Doc/html \
-	$(BASEDIRECTORIES)
+	../Doc/html
 
+#	lbcs \
 #	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
@@ -1710,7 +1714,7 @@ ifeq ($(OSTYPE), osx)
 
 ../vendor/propgrid: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
@@ -1948,7 +1952,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 ifeq ($(OSTYPE), Windows_NT)
-	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORKMINGW) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 endif

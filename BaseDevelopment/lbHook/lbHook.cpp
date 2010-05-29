@@ -270,8 +270,13 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
 #if defined (OSX) || defined (LINUX) || defined(UNIX)
                         fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
 #endif
-			fclose( fp );
-			free(buf);
+
+						if (isVerbose()) {
+							// Also copy the log entry to console.
+							_CL_VERBOSE << msg LOG_
+						}
+						fclose( fp );
+						free(buf);
                 }
 }
 /*...e*/

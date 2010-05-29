@@ -824,11 +824,10 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 
 	/*...e*/
 	/*...sdefine QI\40\source\44\ interface\44\ target\41\:0:*/
-#define QI(source, interface, target) \
+#define QI(source, interface, target) { \
 		target.setFile(__FILE__); \
-	target.setLine(__LINE__); \
-{ \
-	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
+		target.setLine(__LINE__); \
+		err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
 }
 	/*...e*/
 	/*...e*/

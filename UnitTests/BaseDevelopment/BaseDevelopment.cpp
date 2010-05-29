@@ -90,10 +90,19 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 
 	printf("Console dialog:\n\n%s\n\n", msg->charrep());
 
-	if (strcmp(msg->charrep(), "Hallo UnitTests") == 0) {
+	if (strcmp(msg->charrep(), "Expect yes") == 0) {
 		printf("y");
 	    parameter->setData("result");
 		result->setData("yes");
+		param->setUAPString(*&parameter, *&result);
+		COUT << ENDL;
+		return err;
+	}
+
+	if (strcmp(msg->charrep(), "Expect no") == 0) {
+		printf("n");
+	    parameter->setData("result");
+		result->setData("no");
 		param->setUAPString(*&parameter, *&result);
 		COUT << ENDL;
 		return err;
@@ -684,12 +693,13 @@ public:
 		TEST_CASE(test_Instanciate_lbEventmanager)
 		TEST_CASE(test_lbEventmanager_Register_Event)
 		TEST_CASE(test_lbEventmanager_Resolve_Event)
-		TEST_CASE(test_UIWrapper_Initializing)
+		TEST_CASE(test_UIWrapper_askYesNo_expext_yes)
+		TEST_CASE(test_UIWrapper_askYesNo_expext_no)
 	}
 
-	void test_UIWrapper_Initializing( void )
+	void test_UIWrapper_askYesNo_expext_yes( void )
 	{
-		puts("test_UIWrapper_Initializing");
+		puts("test_UIWrapper_askYesNo_expext_yes");
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
@@ -705,7 +715,7 @@ public:
 
 
 		parameter->setData("msg");
-		value->setData("Hallo UnitTests");
+		value->setData("Expect yes");
 		param->setUAPString(*&parameter, *&value);
 
 		UAP(lb_I_Unknown, uk)
@@ -734,6 +744,55 @@ public:
 		param->getUAPString(*&parameter, *&value);
 
 		ASSERT_EQUALS( 0,  strcmp(value->charrep(), "yes") );
+	}
+
+	void test_UIWrapper_askYesNo_expext_no( void )
+	{
+		puts("test_UIWrapper_askYesNo_expext_no");
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		myUIWrapper->initialize();
+		
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+
+		parameter->setData("msg");
+		value->setData("Expect no");
+		param->setUAPString(*&parameter, *&value);
+
+		UAP(lb_I_Unknown, uk)
+		QI(param, lb_I_Unknown, uk)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		UAP(lb_I_Unknown, uk_result)
+		QI(result, lb_I_Unknown, uk_result)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		dispatcher->setEventManager(eman.getPtr());
+
+		int evId = 0;
+
+		eman->resolveEvent("askYesNo", evId);
+
+		ASSERT_EQUALS( false, evId == 0 );
+		err = dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
+
+		ASSERT_EQUALS( ERR_NONE, err );
+
+		// Got a name of the file. Create an input stream.
+
+		parameter->setData("result");
+		param->getUAPString(*&parameter, *&value);
+
+		ASSERT_EQUALS( 0,  strcmp(value->charrep(), "no") );
 	}
 
 	void test_Instanciate_lbEventmanager( void )
@@ -838,7 +897,7 @@ public:
 		lbErrCodes err = ERR_NONE;
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
-
+		m->uninitialize();
 		ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
 	}
 
@@ -849,7 +908,7 @@ public:
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
 		UAP(lb_I_Unknown, uk)
-
+		m->uninitialize();
 		uk = m->getActiveDocument();
 
 		ASSERT_EQUALS( true, uk == NULL );

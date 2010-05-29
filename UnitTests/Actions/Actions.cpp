@@ -416,8 +416,10 @@ public:
 
 		//action->setParameter(*&parameter);
 		setLogActivated(true);
+		setVerbose(true);
 		int nextStep = action->execute(*&params);
 		setLogActivated(false);
+		setVerbose(false);
 
 		meta->uninitialize();
 
@@ -478,4 +480,4 @@ public:
 
 
 
-//REGISTER_FIXTURE( TestActions );
+REGISTER_FIXTURE( TestActions );

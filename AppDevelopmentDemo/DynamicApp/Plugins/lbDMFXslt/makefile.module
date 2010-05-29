@@ -5,6 +5,11 @@ MOD_INCL = $(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces 
 MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxslt-1.1.21 -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxml2-2.6.29/include
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,$(DEVROOT_MAKE)/projects/dll/libs/lbxslt.lib
 
+MINGWLIBS+= -llibxml2 -llbxslt
+STD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+STD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+
+
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)

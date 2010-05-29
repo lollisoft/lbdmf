@@ -303,6 +303,22 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 
 endif
 
+ifeq ($(TARGET), xsltdll_target_mingw)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
+	@echo all: $(_MODULE).dll >> makefile
+	@$(MKMK) dll_target_mingw $(_MODULE) $(STDDEP) ../libexslt/*.c *.c *.cpp >> makefile
+
+endif
+
 ifeq ($(TARGET), bundle)
 
 DIRECTORIES = $(foreach s, $(DIRECTORY), "$s"/*.cpp)

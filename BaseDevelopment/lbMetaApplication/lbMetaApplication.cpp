@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.176 $
+ * $Revision: 1.177 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.176 2010/05/29 07:45:24 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.177 2010/05/29 18:07:18 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.177  2010/05/29 18:07:18  lollisoft
+ * Changes to compile code with MinGW.
+ *
  * Revision 1.176  2010/05/29 07:45:24  lollisoft
  * Some trouble when other modules compiled with mingw. Fixed.
  * Bug in resolveEvent fixed. Used a container without checking against NULL.
@@ -797,6 +800,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
 	if (LogonApplication != NULL) LogonApplication--;
+	if (activeDocuments != NULL) activeDocuments--;
+
+	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
+
 	return ERR_NONE;
 }
 
@@ -911,6 +918,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	UAP(lb_I_Plugin, pl1)
 	UAP(lb_I_Unknown, ukPl1)
 	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+
+	if (pl1 == NULL) {
+		_LOG << "Error: Need a plugin with an implementation of interface lb_I_FileOperation in namespace OutputStreamVisitor. Cannot save meta application data." LOG_
+			return ERR_FILE_WRITE_DEFAULT;
+	}
+
 	ukPl1 = pl1->getImplementation();
 	UAP(lb_I_FileOperation, fOp1)
 	QI(ukPl1, lb_I_FileOperation, fOp1)
@@ -1907,7 +1920,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #define PREFIX "_"
 #endif
 #ifdef __MINGW32__
-#define PREFIX "_"
+#define PREFIX ""
 #endif
 #ifdef _MSC_VER
 #define PREFIX ""
