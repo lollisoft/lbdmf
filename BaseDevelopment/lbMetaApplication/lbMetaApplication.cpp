@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.175 $
+ * $Revision: 1.176 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.175 2010/05/17 05:44:40 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.176 2010/05/29 07:45:24 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.176  2010/05/29 07:45:24  lollisoft
+ * Some trouble when other modules compiled with mingw. Fixed.
+ * Bug in resolveEvent fixed. Used a container without checking against NULL.
+ *
  * Revision 1.175  2010/05/17 05:44:40  lollisoft
  * Many changes related to support mixing MinGW with Open Watcom.
  *
@@ -1902,6 +1906,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #ifdef __WATCOMC__
 #define PREFIX "_"
 #endif
+#ifdef __MINGW32__
+#define PREFIX "_"
+#endif
 #ifdef _MSC_VER
 #define PREFIX ""
 #endif
@@ -3614,6 +3621,11 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	QI(stringKey, lb_I_Unknown, kk)
 /*...e*/
 
+	if (events == NULL) {
+		_CL_VERBOSE << "Error: No events registered yet, thus event name not found: " << EvName LOG_
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
 /*...sresolve event:8:*/
 	if (events->exists(&kk) == 1) {
 		UAP(lb_I_Unknown, object)
@@ -4185,7 +4197,6 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 		return ERR_INTERCEPTOR_BEFORE_CANCEL;
 	}
 #endif
-	printf("Address of event handler instance is: %p. Handlerfunction is: %p. Handler data is: %p\n", _evHandlerInstance, ev, evData);
 	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
 
 #ifdef IMPLEMENT_NEWSTUFF
