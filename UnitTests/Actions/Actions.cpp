@@ -547,10 +547,20 @@ public:
 		myUIWrapper->setFileAnswer("template-fail.xsl");
 		int nextStep1 = action->execute(*&params);
 
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+
+		*name = "result";
+		params->getUAPString(*&name, *&result);
+
 		meta->uninitialize();
 
-		// Test for a 'linear action'
-		ASSERT_EQUALS(0, nextStep1)
+		// No hard failure
+		ASSERT_EQUALS(-1, nextStep1)
+
+		// Success = 1, Failure = 0
+		//ASSERT_EQUALS("1", result->charrep())
+		ASSERT_EQUALS("0", result->charrep())
 	}
 
 	void test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn( void )
