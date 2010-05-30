@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.177 $
+ * $Revision: 1.178 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.177 2010/05/29 18:07:18 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.178 2010/05/30 08:28:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.178  2010/05/30 08:28:26  lollisoft
+ * Fixed crashes on Mac OS X while running unit tests.
+ *
  * Revision 1.177  2010/05/29 18:07:18  lollisoft
  * Changes to compile code with MinGW.
  *
@@ -801,6 +804,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (Applications != NULL) Applications--;
 	if (LogonApplication != NULL) LogonApplication--;
 	if (activeDocuments != NULL) activeDocuments--;
+	if (app != NULL) {
+		app--;
+		app.resetPtr();
+	}
 
 	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
 

@@ -964,13 +964,14 @@ public:
 	TEST_FIXTURE( BaseDevelopmentDatabase )
 	{
 		TEST_CASE(test_Instantiate)
+#ifdef WINDOWS		
 		TEST_CASE(test_SQLSERVER_setUser)
 		TEST_CASE(test_SQLSERVER_setDB)
 		TEST_CASE(test_login_SQLSERVER_UnitTest_failure)
 		TEST_CASE(test_login_SQLSERVER_UnitTest)
 		TEST_CASE(test_createTable_SQLSERVER_UnitTest)
 		TEST_CASE(test_SQLSERVER_listTables)
-
+#endif
 		TEST_CASE(test_PostgreSQL_setUser)
 		TEST_CASE(test_PostgreSQL_setDB)
 		TEST_CASE(test_login_PostgreSQL_UnitTest_failure)
@@ -1052,16 +1053,18 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
 
 
-		if (SomeBaseSettings != NULL) {
-			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-
-			*name = "GeneralDBSchemaname";
-			*schema = "public";
-			SomeBaseSettings->setUAPString(*&name, *&schema);
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
 			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
 		}
 
-
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		
+		*name = "GeneralDBSchemaname";
+		*schema = "public";
+		SomeBaseSettings->setUAPString(*&name, *&schema);
+		meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		
 		tables = db->getTables("UnitTestPostgreSQL");
 
 		int count = tables->Count();
@@ -1070,6 +1073,8 @@ public:
 			"DROP TABLE test"
 			, false));
 
+		ASSERT_EQUALS( true, SomeBaseSettings != NULL )
+		
 		ASSERT_EQUALS( 1, count);
 
 		db->close();

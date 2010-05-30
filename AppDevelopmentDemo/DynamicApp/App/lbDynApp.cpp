@@ -409,32 +409,32 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
         // Guard, if this function is called accidently, but unintented.
         if (*appname == "lbDMF Manager") {
                 // Build up a preferences object and pass it to the property view
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
                 // General parameters for this application
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolGeneral)
 
                 // Project manager parameters
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolProject)
 
                 // XSL import definitions
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramUMLExport)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramUMLExport)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-                UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
                 parameter->setData("UML import settings");
                 //--------------------------------------------
@@ -519,29 +519,29 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 metaapp->showPropertyPanel(*&param);
         } else {
                 // XSL import definitions
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramUMLExport)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramUMLExport)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
 
                 // Build up a preferences object and pass it to the property view
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
                 // General parameters for this application
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueGeneral)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolGeneral)
 
                 // Project manager parameters
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueProject)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueProject)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolProject)
 
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-                UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
                 parameter->setData("Application Database settings");
                 //--------------------------------------
@@ -615,9 +615,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
         QI(uk, lb_I_Parameter, param)
 
         if (param != NULL) {
-                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterName)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
                 UAP(lb_I_KeyBase, key)
 
@@ -882,9 +882,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                 AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 
                 UAP(lb_I_Parameter, param)
-                UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
                 UAP(lb_I_KeyBase, key)
                 QI(name, lb_I_KeyBase, key)
 
@@ -1091,14 +1091,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
         UAP(lb_I_Unknown, ukPl)
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         metaapp->setStatusText("Info", "Exporting to UML (XMI) file ...");
 
         // Need to ask for the XMI file to be exported from XML
 
-        UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
         UAP(lb_I_InputStream, exportfile)
 
         if (XMIFileUMLProjectExport->charrep() == NULL) {
@@ -1114,15 +1114,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
                 exportfile = metaapp->askOpenFileReadStream("xmi");
                 XMIFileUMLProject->setData((char*) exportfile->getFileName());
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-                UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
                 parameter->setData("UML export settings");
                 //--------------------------------------------
@@ -1139,11 +1139,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
         }
 
         // Get the active document and set temporary a different storage handler (xmi import)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
 
         UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 
@@ -1209,13 +1209,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
         UAP(lb_I_Unknown, ukPl)
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         metaapp->setStatusText("Info", "Importing from UML (XMI) file ...");
 
         // Need to ask for the XMI file exported from BoUML
-        UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
         UAP(lb_I_InputStream, importfile)
 
         if (XMIFileUMLProject->charrep() == NULL) {
@@ -1231,15 +1231,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
                 importfile = metaapp->askOpenFileReadStream("xmi");
                 XMIFileUMLProject->setData((char*) importfile->getFileName());
-                UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-                UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+                UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-                UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
                 parameter->setData("lbDMF Manager Import Definitions");
                 //--------------------------------------------
@@ -1257,11 +1257,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 
 
         // Get the active document and set temporary a different storage handler (xmi import)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
         UAP(lb_I_Unknown, ukDoc)
         UAP(lb_I_Parameter, document)
         ukDoc = metaapp->getActiveDocument();
@@ -1324,7 +1324,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
         UAP(lb_I_Unknown, ukPl)
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -1365,9 +1365,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 
         metaapp->setStatusText("Info", "Exporting XML to memory buffer");
 
-        UAP_REQUEST(manager.getPtr(), lb_I_OutputStream, exportfile)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, exportfile)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
 
         // Get the active document and set temporary a different storage handler (dax)
 
@@ -1409,7 +1409,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
                                 bool success = false;
 
                                 // Need to derive filename from given application name
-                                UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+                                UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
                                 *filename = LogonApplication->charrep();
                                 *filename += ".dax"; // Dynamic application forms
 
@@ -1450,7 +1450,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
         lbErrCodes err = ERR_NONE;
 
         // Need to derive filename from given application name
-        UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
         *filename = LogonApplication->charrep();
         *filename += ".dax"; // Dynamic application forms
 
@@ -1459,15 +1459,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
         UAP(lb_I_Unknown, ukPl)
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         // Get the active document and set temporary a different storage handler (dax)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
         UAP(lb_I_Unknown, ukDoc)
         UAP(lb_I_Parameter, document)
         ukDoc = metaapp->getActiveDocument();
@@ -1535,7 +1535,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         if (gui == NULL) {
@@ -1718,14 +1718,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                 UAP(lb_I_Integer, eventID)
                 UAP(lb_I_Query, sampleQuery)
 
-                UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, query)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, formID)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, formName)
+                UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, formID)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, formName)
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
                 QI(uk, lb_I_Integer, eventID)
 
@@ -1914,7 +1914,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         err = DBConnQuery->first();
 
-                        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
                                 if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
                                         parameter = DBConnQuery->getAsString(1);
@@ -2026,11 +2026,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 
 
         // Get the active document and set temporary a different storage handler (daf)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
         UAP(lb_I_Unknown, ukDoc)
         UAP(lb_I_Parameter, document)
         ukDoc = metaapp->getActiveDocument();
@@ -2216,9 +2216,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
     lbErrCodes err = ERR_NONE;
     int unused = -1;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+        UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, value)
         /* Before the application is loaded, it should be checked, if any database system is available.
          * If not, at least a local Sqlite database should be setup with the use of the UML import feature.
          */
@@ -2230,7 +2230,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
         UAP(lb_I_Unknown, ukPl)
 
         // Need to derive filename from given application name
-        UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
         *filename = "";
@@ -2352,7 +2352,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                         fOpDB->end();
                                 } else {
 #ifndef USE_OLD_INITIALIZE
-                                        UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+                                        UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
 
                                         param->setCloning(false);
                                         document->setCloning(false);
@@ -2514,10 +2514,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
                 // Loading the application related data succeeded. Put these into a parameter object for reference.
 
-                //UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-                //UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-                //UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-                UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+                //UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+                //UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+                //UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+                UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
                 UAP(lb_I_KeyBase, key)
                 QI(name, lb_I_KeyBase, key)
 
@@ -2899,9 +2899,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         lbErrCodes err = ERR_NONE;
         int unused;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+        UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
         // Get the event manager
 
@@ -2913,7 +2913,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         dispatcher->setEventManager(eman.getPtr());
 
         if (metaapp == NULL) {
-                REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+                REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
         }
 
         // Save user and app internally
@@ -2922,7 +2922,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
         } else
                 if (LogonUser == NULL) {
-                        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+                        REQUEST(getModuleInstance(), lb_I_String, LogonUser)
                 }
         LogonUser->setData(user);
 
@@ -2930,7 +2930,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
         } else
                 if (LogonApplication == NULL) {
-                        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+                        REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
                 }
         LogonApplication->setData(app);
 
@@ -3461,7 +3461,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app
 }
 lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
         if (LogonUser == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+                REQUEST(getModuleInstance(), lb_I_String, LogonUser)
         }
 
         LogonUser->setData(user);
@@ -3470,7 +3470,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
 
 lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(char* app) {
         if (LogonApplication == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+                REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
         LogonApplication->setData(app);

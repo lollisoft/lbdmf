@@ -174,7 +174,7 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 	lb_I_EventHandler* eh = (lb_I_EventHandler*) this;
 
 	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, "askYesNo");
-	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::setStatusText, "setStatusText");
+//	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::setStatusText, "setStatusText");
 	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askOpenFileReadStream, "askOpenFileReadStream");
 
 
@@ -240,8 +240,8 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	eman->registerEvent("askYesNo", askYesNo);
 	printf("Registered event ID=%d for askYesNo.\n", askYesNo);
-	eman->registerEvent("setStatusText", setStatusText);
-	printf("Registered event ID=%d for setStatusText.\n", setStatusText);
+//	eman->registerEvent("setStatusText", setStatusText);
+//	printf("Registered event ID=%d for setStatusText.\n", setStatusText);
 	eman->registerEvent("askOpenFileReadStream", askOpenFileReadStream);
 	printf("Registered event ID=%d for askOpenFileReadStream.\n", askOpenFileReadStream);
 
@@ -320,23 +320,29 @@ public:
 		}
 		#endif
 
-		/*...sBuild up pluginModule:64:*/
-		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
+/*...sBuild up pluginModule:64:*/
+		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2+4);
 		pluginModule[0] = 0;
 		strcat(pluginModule, pluginDir);
 #ifdef WINDOWS
 		strcat(pluginModule, "\\");
+		strcat(pluginModule, module);
+		strcat(pluginModule, ".dll");
 #endif
 #ifdef LINUX
 		strcat(pluginModule, "/");
+		strcat(pluginModule, module);
+		strcat(pluginModule, ".so");
 #endif
 #ifndef LINUX
 #ifdef OSX
 		strcat(pluginModule, "/");
-#endif
-#endif
 		strcat(pluginModule, module);
-		/*...e*/
+		strcat(pluginModule, ".so");
+#endif
+#endif
+/*...e*/
+		
 		result = pluginModule;
 		free(pluginDir);
 	}
@@ -419,7 +425,7 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_DelegatedAction, action)
 
-		action = getActionDelegate("lbDMFXslt.dll", "instanceOflbDMFXslt");
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
 		setLogActivated(false);
@@ -491,7 +497,7 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_DelegatedAction, action)
 
-		action = getActionDelegate("lbDMFXslt.dll", "instanceOflbDMFXslt");
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
 		setLogActivated(false);
@@ -568,7 +574,7 @@ public:
 		puts("test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn");
 		UAP(lb_I_DelegatedAction, action)
 
-		action = getActionDelegate("lbDMFXslt.dll", "instanceOflbDMFXslt");
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
 
