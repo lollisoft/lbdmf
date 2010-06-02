@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.218 $
+# * $Revision: 1.219 $
 # * $Name:  $
-# * $Id: Makefile,v 1.218 2010/05/29 18:07:18 lollisoft Exp $
+# * $Id: Makefile,v 1.219 2010/06/02 07:11:29 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.219  2010/06/02 07:11:29  lollisoft
+# * Executable targets now compile with MinGW. Tested with wxWrapper yet.
+# *
 # * Revision 1.218  2010/05/29 18:07:18  lollisoft
 # * Changes to compile code with MinGW.
 # *
@@ -1247,14 +1250,14 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGET_SELECTOR=_target_mingw
 #TARGET_SELECTOR=
 
+TARGETEXE=exe$(TARGET_SELECTOR)
+TARGETWXEXE=exe$(TARGET_SELECTOR)
 TARGETDLL=dll$(TARGET_SELECTOR)
 TARGETFRAMEWORK=dll$(TARGET_SELECTOR)
 TARGETSHARED=dll$(TARGET_SELECTOR)
 TARGETWXSHARED=dll$(TARGET_SELECTOR)
 TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
 
-TARGETEXE=exe
-TARGETWXEXE=exe
 TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
 TARGET_TV_DLL=tvision_dll
