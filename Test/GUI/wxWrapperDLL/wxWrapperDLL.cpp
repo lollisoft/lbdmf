@@ -37,7 +37,7 @@
 #define USE_PROPGRID_1_2_2
 #endif
 #ifdef __MINGW32__
-#define USE_PROPGRID_1_2_2
+//#define USE_PROPGRID_1_2_2
 #endif
 
 #define USE_WXAUI
