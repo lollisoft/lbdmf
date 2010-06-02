@@ -36,6 +36,9 @@
 #ifdef __WATCOMC__
 #define USE_PROPGRID_1_2_2
 #endif
+#ifdef __MINGW32__
+#define USE_PROPGRID_1_2_2
+#endif
 
 #define USE_WXAUI
 
@@ -158,12 +161,12 @@ public:
         virtual bool TransferDataFromWindow();
 
         void OnWizardPageChanging(wxWizardEvent& event);
-	
+
 
 private:
 		void OnIdle(wxIdleEvent& WXUNUSED(event));
-	
-	
+
+
         wxCheckBox *m_checkbox;
         char* userid;
         bool  loggingin;
@@ -610,7 +613,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 		eman->registerEvent("removeToolBar", temp);
 		eman->registerEvent("showLeftTreeView", _showLeftTreeView);
-	
+
 
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
@@ -630,15 +633,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 		disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftTreeView, "showLeftTreeView");
 
-	
+
 		Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 						&lb_wxFrame::OnDispatch );
-	
+
 		Connect( _showLeftTreeView,  -1, wxEVT_COMMAND_MENU_SELECTED,
 						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 						&lb_wxFrame::OnDispatch );
-	
+
 		Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
@@ -1803,14 +1806,14 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Initialize it now." LOG_
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	}
-	
-	
+
+
 	// Let OnIdle restart the timer...
 	timerrunning = false;
 }
 
 void lb_wxFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
-{	
+{
 	if (!timerrunning) {
 		timerrunning = true;
 		m_timer.Start(500);
@@ -2251,7 +2254,7 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
         } else {
 #ifdef USE_PROPGRID_1_2_2
                 pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
-#else            
+#else
                 pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #endif
         }
@@ -2909,7 +2912,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
                 params->getUAPString(*&parameter, *&value);
 				*parameter = "CallYield";
 				params->getUAPString(*&parameter, *&CallYield);
-			
+
                 UAP(lb_I_KeyBase, key)
                 QI(name, lb_I_KeyBase, key)
 
@@ -2996,36 +2999,36 @@ lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
 
 wxTreeItemId* lb_wxFrame::lookupTreeItemId(lb_I_String* name) {
 	wxTreeItemId* item = NULL;
-	
+
 	return NULL;
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addTreeViewNode(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
-	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	
+
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, value)
-	
+
 	QI(uk, lb_I_Parameter, param)
 	QI(index, lb_I_Unknown, value)
-	
+
 	*parameter = "TreePath";
 	param->getUAPString(*&parameter, *&name);
 	QI(name, lb_I_KeyBase, key)
-	
+
 	if (key != NULL) {
 		wxTreeItemId* tid = lookupTreeItemId(*&name);
-		
+
 		if (tid == NULL) {
 			UAP(lb_I_String, left)
 			left = name->left(name->rstrpos("/"));
 			tid = lookupTreeItemId(*&left);
-			
+
 			if (tid == NULL) {
 				_LOG << "Error: Parent tree item not found. (" << left->charrep() << ")" LOG_
 				return err;
@@ -3033,7 +3036,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTreeViewNode(lb_I_Unknown* uk) {
 			err = ERR_NONE;
 		}
 	}
-	
+
 	return err;
 }
 
@@ -3050,30 +3053,30 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftTreeView(lb_I_Unknown* uk) {
 
 #ifdef USE_WXAUI
 	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("TreeView").window;
-	
+
 	if (oldpg != NULL) {
 		_LOG << "Replace old property values..." LOG_
-		
+
 		UAP(lb_I_Container, parameter)
 		parameter = currentProperties->getParameterList();
 		populateProperties(oldpg, *&parameter);
-		
+
 		m_mgr.GetPane("TreeView").Show();
-		
+
 		m_mgr.Update();
-		
+
 		return ERR_NONE;
 	}
 #endif
-	
-	
+
+
 #ifdef USE_WXAUI
 	wxWindow* leftPanel = NULL;
 #ifdef IN_PANEL
 	wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
 #endif
-	
-	
+
+
 #ifdef IN_PANEL
 	wxTreeCtrl* tv = new wxTreeCtrl(panel, -1, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS, wxDefaultValidator, "treeCtrl");
 	leftPanel = panel;
@@ -3082,18 +3085,18 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftTreeView(lb_I_Unknown* uk) {
 	wxTreeCtrl* tv = new wxTreeCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS, wxDefaultValidator, "treeCtrl");
 	leftPanel = tv;
 #endif
-	
+
 	leftPanel->SetAutoLayout(TRUE);
 	tv->SetAutoLayout(TRUE);
-	
+
 	m_mgr.AddPane(tv, wxAuiPaneInfo().
 				  Name(wxT("TreeView")).Caption(wxT("TreeView")).
 				  Left().
 				  FloatingSize(wxSize(300,200)));
-	
+
 	m_mgr.Update();
 #endif
-	
+
 	return err;
 }
 

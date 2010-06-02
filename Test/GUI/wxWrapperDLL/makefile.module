@@ -37,7 +37,12 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxPropgrid.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
-	
+
+MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -Wl,--subsystem,windows -mthreads -mwindows -lwxmsw$(WX_VERSION)$(WX_DEBUG) -lwxPropgrid -lwxAUI 
+
+STD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include -I $(DEVROOT_MAKE)/wxwin/wx/include -I $(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include
+CPP_MINGW_DLLOPS += #-D__WXMSW__
+
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
 	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
