@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.109 $
+ * $Revision: 1.110 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.109 2010/04/03 00:13:17 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.110 2010/06/02 07:05:19 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.110  2010/06/02 07:05:19  lollisoft
+ * Changes to get more targets compiled with MinGW.
+ *
  * Revision 1.109  2010/04/03 00:13:17  lollisoft
  * Added more MinGW support. The UnitTests now are working properly.
  *
@@ -501,16 +504,16 @@ int split(const char split_char, char *string, char ***array)
         /* allocate enough memory to hold pointers to copies of all items */
 
         *array = (char**) malloc(sizeof(char *) * count);
-        
+
         if ( *array == NULL )
         {
                 /* can't allocate memory, so fail */
                 return 0;
         }
-        
+
         /* find each item, copy, and insert pointer to item in array */
         index = 0;
-        for ( block = strtok(string, split_string); block != NULL; 
+        for ( block = strtok(string, split_string); block != NULL;
               block = strtok(NULL, split_string) )
               {
                 (*array)[index] = strdup(block);
@@ -659,18 +662,18 @@ void TIncludeParser::AddInclude(char *IncName)
   char* Found;
   char Path[PATH_MAX] = "";
   char realfile[1000] = "";
-  
+
 /*...sSearch the real place:0:*/
   // Search on std include path's (First occurence fits)
   int foundStdPath = 0;
-    
+
   for (int i = 0; i < count; i++) {
         FILE* f;
         strcpy(s, InclPathList[i]);
         strcat(s, IncName);
-        
+
         f = fopen(s, "rt");
-        
+
         if (f != NULL) {
                 strcpy(realfile, s);
                 fclose(f);
@@ -681,9 +684,9 @@ void TIncludeParser::AddInclude(char *IncName)
 
   if (foundStdPath == 0) {
         FILE* f;
-        
+
         f = fopen(IncName, "rt");
-        
+
         if (f != NULL) {
                 strcpy(realfile, IncName);
                 fclose(f);
@@ -702,7 +705,7 @@ void TIncludeParser::AddInclude(char *IncName)
     FSplit(realfile, Path, IncName);
     l.Insert(IncName,Path);
   }
-    
+
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
   printf("    '%s'\n",IncName);
@@ -711,7 +714,7 @@ void TIncludeParser::AddInclude(char *IncName)
 
   Found=BasicParse(IncName);
 /*...sbla:0:*/
-/*  
+/*
   if (Found) {
         FSplit(Found, Path, IncName);
         printf("Insert include file %s%s\n", Path, IncName);
@@ -726,7 +729,7 @@ void TIncludeParser::AddInclude(char *IncName)
     printf("Insert include file %s%s\n", Path, IncName);
     l.Insert(IncName,Path);
   }
-*/  
+*/
 /*...e*/
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -742,7 +745,7 @@ void TIncludeParser::ParseCLine(char *s)
   char *t,*p1,*p2;
 
   t=strstr(s,"#include");
-  
+
   if (t)
   {
     p1=strchr(t,'"');
@@ -854,12 +857,12 @@ void TIncludeParser::ParseComments(char *s)
         switch (s[i+1])
         {
           case '*': Comment=true; i++; break;
-          case '/': 
+          case '/':
        #ifdef VERBOSE
                 if (i >= 20) printf("Switch (/)\n");
        #endif
-                s[i]=0; 
-                i--; 
+                s[i]=0;
+                i--;
                 break;
         }
       }
@@ -909,13 +912,13 @@ char* TIncludeParser::BasicParse(char *FileName)
     }
   }
 /*...e*/
-  
+
   if (success == 0) {
         f=fopen(FileName, "rt");
         if (f == NULL) return NULL;
         strcpy(realfile, FileName);
   }
-  
+
   do {
     fgets(Line,sizeof(Line)-1,f);
     if (Line[0]!=0)
@@ -937,7 +940,7 @@ void ObjExt(char *s, char *ObjName, int Len)
         // Copy max Len characters
         ObjName[0] = 0;
         strcpy(ObjName, s);
-        
+
         // Strip extension.
         int len = strlen(ObjName);
         for (int i = len; i >= 0; i--) {
@@ -947,7 +950,7 @@ void ObjExt(char *s, char *ObjName, int Len)
                 }
         }
 
-        if ((targettype != IDL_TARGET) && (targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
+        if ((targettype != IDL_TARGET) && (targettype != LEX_TARGET) && (targettype != YACC_TARGET))
         strcat(ObjName,".$(OBJ)");
 }
 /*...e*/
@@ -971,9 +974,9 @@ void writeBundleTarget(char* modulename) {
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Frameworks\n", modulename);
-  
+
 /// \todo Create module specific framework list to be copied instead.
-  
+
   printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
   printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
 #ifdef OSNAME_Panther
@@ -1028,7 +1031,7 @@ void writeBundleTarget(char* modulename) {
   printf("COMPILERFLAGS=@$(LNK)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("\n%s.exe: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.exe\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
@@ -1087,7 +1090,7 @@ void writeExeTarget(char* modulename) {
   printf("COMPILERFLAGS=@$(LNK)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("\n%s.exe: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.exe\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
@@ -1145,8 +1148,8 @@ testmingw.exe: test.o
   printf("PROGRAM=%s\n", ModName);
 
   printf("\n%s.exe: $(OBJS)\n", ModName);
-  
-  printf("\t\t@g++ -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)\n");
+
+  printf("\t\t@g++ -Wl,--enable-auto-import -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)\n");
   printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
 #endif
 }
@@ -1209,18 +1212,19 @@ void writeMinGWDllTarget(char* modulename) {
   printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("ifeq ($(COMPILER), WATCOM)\n");
 
   printf("\n%s.dll: $(OBJS) %s.dll.lnk\n", ModName, ModName);
   printf("\t\t@echo Link %s.dll\n", ModName);
 
   printf("\t\t@cmd /C if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $@.lnk\n");
-  
-  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
-  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+
+  //printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CPPMINGW) -fPIC -shared -Wl,--enable-auto-import -Wl,--subsystem,windows -mthreads -mwindows -Wl,--out-implib=$(PROGRAM).a -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  //printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).a $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
 
 /*
@@ -1249,7 +1253,7 @@ void writeMinGWDllTarget(char* modulename) {
 // Don know, why this doesn't work now ??
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-// Hack for copy not found ??  
+// Hack for copy not found ??
   printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
@@ -1289,7 +1293,7 @@ void writeMinGWPluginTarget(char* modulename) {
   printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("\n%s.dll: $(OBJS)\n", ModName);
 
@@ -1321,7 +1325,7 @@ void writeMinGWPluginTarget(char* modulename) {
 // Don know, why this doesn't work now ??
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-// Hack for copy not found ??  
+// Hack for copy not found ??
   printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
   printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
@@ -1352,7 +1356,7 @@ void writeDllTarget(char* modulename) {
   printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("ifeq ($(COMPILER), WATCOM)\n");
 
   printf("\n%s.dll: $(OBJS) %s.dll.lnk\n", ModName, ModName);
@@ -1360,7 +1364,7 @@ void writeDllTarget(char* modulename) {
 //  printf("\t\t@echo $(FILE) >> $(LNK)\n");
 
   printf("\t\t@cmd /C if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $@.lnk\n");
-  
+
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
@@ -1394,7 +1398,7 @@ void writeDllTarget(char* modulename) {
 // Don know, why this doesn't work now ??
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-// Hack for copy not found ??  
+// Hack for copy not found ??
   printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
@@ -1434,7 +1438,7 @@ void writePluginTarget(char* modulename) {
   printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("\n%s.dll: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.dll\n", ModName);
@@ -1463,7 +1467,7 @@ void writePluginTarget(char* modulename) {
 // Don know, why this doesn't work now ??
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-// Hack for copy not found ??  
+// Hack for copy not found ??
   printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
   printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
@@ -1485,7 +1489,7 @@ void writeLibTarget(char* modulename, TDepList* l) {
   printf("FILE += $(foreach s, $(OBJS),$s, )\n");
   printf("LNK=%s.lnk\n", ModName);
   printf("PROGRAM=%s\n", ModName);
-  
+
   printf("\n%s.lib: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.lib\n", ModName);
 
@@ -1497,12 +1501,12 @@ void writeLibTarget(char* modulename, TDepList* l) {
   for (int i=0; i<l->Count; i++)
   {
     d=(TDepItem*)(*l)[i];
-    
+
     ObjExt(d->Name,FName,sizeof(FName));
 
     printf("\t\t@echo +%s >> $(LNK)\n", FName);
   }
-  
+
   printf("\t\t@wlib -b -c -n -q -p=512 $(PROGRAM).lib @$(LNK)\n");
   printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(LIBDIR) > null\"\n");
 #endif
@@ -1514,14 +1518,14 @@ void write_lex_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
     printf("clean:\n");
-    
+
     // Write the distclean rule
     printf("distclean:\n");
 #endif //__WATCOMC__
 #ifdef UNIX
     // Write the normal clean rule
     printf("clean:\n");
-    
+
     // Write the distclean rule
     printf("distclean:\n");
 #endif //UNIX
@@ -1533,14 +1537,14 @@ void write_yacc_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
     printf("clean:\n");
-    
+
     // Write the distclean rule
     printf("distclean:\n");
 #endif //__WATCOMC__
 #ifdef UNIX
     // Write the normal clean rule
     printf("clean:\n");
-    
+
     // Write the distclean rule
     printf("distclean:\n");
 #endif //UNIX
@@ -1569,13 +1573,13 @@ void write_clean(char* modulename = NULL) {
     printf("\t\t-@rm *.idb\n");
     printf("\t\t-@rm *.pch\n");
     printf("\t\t-@rm *.pdb\n");
-#endif    
+#endif
     if (modulename == NULL) {
         printf("\t\t-@rm *.dll\n");
     } else {
         printf("\t\t-@rm %s.exe\n", modulename);
     }
-    
+
     // Write the distclean rule
     printf("distclean:\n");
     printf("\t\t-@rm *.o\n");
@@ -1597,7 +1601,7 @@ void write_clean(char* modulename = NULL) {
     } else {
         printf("\t\t-rm %s\n", modulename);
     }
-    
+
     // Write the distclean rule
     printf("distclean:\n");
     printf("\t\t-rm *.o\n");
@@ -1624,7 +1628,7 @@ void write_so_Target(char* modulename) {
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
   printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(LIBS) $(VENDORLIBS)\n");
-#undef UNIX  
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1666,7 +1670,7 @@ void write_so_bundleTarget(char* modulename) {
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
   printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
-#undef UNIX  
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1688,7 +1692,7 @@ void write_so_bundleTarget(char* modulename) {
 
   printf("\n");
   printf("install-strip: install\n");
-  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n"); 
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1708,7 +1712,7 @@ void write_wx_so_Target(char* modulename) {
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
   printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
-#undef UNIX  
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1749,7 +1753,7 @@ void write_wx_shared_Target(char* modulename) {
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
   printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
-#undef UNIX  
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1770,8 +1774,8 @@ void write_wx_shared_Target(char* modulename) {
 
   printf("\n");
   printf("install-strip: install\n");
-  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n"); 
-  
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
+
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1791,7 +1795,7 @@ void write_wx_framework_Target(char* modulename) {
 
   printf("\t\t-rm -R %s.framework\n", modulename);
   printf("\t\tmkdir -p %s.framework/Versions/A/Resources\n", modulename);
-  
+
   printf("\t\techo \\<?xml version=\"1.0\" encoding=\"UTF-8\"?\\> > Info.plist\n");
   printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
   printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
@@ -1818,7 +1822,7 @@ void write_wx_framework_Target(char* modulename) {
   printf("\t\techo \\</plist\\> >> Info.plist\n");
 
   printf("\t\tcp Info.plist %s.framework/Versions/A/Resources\n", modulename);
-  
+
   printf("\t\tmkdir -p %s.framework/Versions/A/Resources/English.lproj\n", modulename);
 
 /* Localized versions of Info.plist keys */
@@ -1845,9 +1849,9 @@ void write_wx_framework_Target(char* modulename) {
   printf("\t\tchmod +x mkLinks.sh\n");
   printf("\t\t./mkLinks.sh");
   printf("\t\trm mkLinks.sh\n");
-  
 
-#undef UNIX  
+
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1878,7 +1882,7 @@ void write_framework_Target(char* modulename) {
 
   printf("\t\t-rm -R %s.framework\n", modulename);
   printf("\t\tmkdir -p %s.framework/Versions/A/Resources\n", modulename);
-  
+
   printf("\t\techo \\<?xml version=\"1.0\" encoding=\"UTF-8\"?\\> > Info.plist\n");
   printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
   printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
@@ -1905,7 +1909,7 @@ void write_framework_Target(char* modulename) {
   printf("\t\techo \\</plist\\> >> Info.plist\n");
 
   printf("\t\tcp Info.plist %s.framework/Versions/A/Resources\n", modulename);
-  
+
   printf("\t\tmkdir -p %s.framework/Versions/A/Resources/English.lproj\n", modulename);
 
 /* Localized versions of Info.plist keys */
@@ -1932,9 +1936,9 @@ void write_framework_Target(char* modulename) {
   printf("\t\tchmod +x mkLinks.sh\n");
   printf("\t\t./mkLinks.sh");
   printf("\t\trm mkLinks.sh\n");
-  
 
-#undef UNIX  
+
+#undef UNIX
 #endif
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
@@ -1961,7 +1965,7 @@ void write_soPlugin_Target(char* modulename) {
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
 
-#ifdef OSX  
+#ifdef OSX
   printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
@@ -1998,7 +2002,7 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
 
-#ifdef OSX  
+#ifdef OSX
   printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #endif
 
@@ -2015,7 +2019,7 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
-  
+
   printf("\n");
   printf("install-strip: install\n");
   printf("\t\t$(STRIP) $(plugindir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
@@ -2036,9 +2040,9 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.109 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.110 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
-  
+
   fprintf(stderr, "Your parameters are: ");
   for (int i = 0; i < argc-1; i++) fprintf(stderr, "%s ", argv[i]);
   fprintf(stderr, "%s\n", argv[argc-1]);
@@ -2075,13 +2079,13 @@ void WriteHeader(FILE *f, char *ExeName)
   printf("\t\tdel *.obj\n");
   printf("\t\tdel %s\n\n",ExeName);
   printf("#Compiler and linker definitions (suggestion):\n");
-#endif  
+#endif
 #ifdef WATCOM_MAKE
   printf("CC       = WPP386\n");
   printf("C_OPS    = $(STD_C_OPS) /Oneatx /zp4 /5 /fp5 /D1 /D3 /W1 /MF /SG /HW /ZQ\n");
 
 /*...sbla:0:*/
-#ifdef bla  
+#ifdef bla
   printf("STD_INCL = -i=.;Q:\\develop\\Tools\\WATCOM\\h;&\n");
   printf("Q:\\develop\\Tools\\WATCOM\\h\\nt;&\n");
   printf("Q:\\develop\\projects\\cpp\\interfaces;&\n");
@@ -2090,7 +2094,7 @@ void WriteHeader(FILE *f, char *ExeName)
   printf("Q:\\develop\\projects\\lib\\include\n");
 #endif
 /*...e*/
-  
+
   printf("LINK     = WLINK\n");
   printf("WLIB     = WLIB\n");
   printf("LIB_OPS  = -b -c -n -q -p=512\n");
@@ -2151,7 +2155,7 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
     if (IsObj) ObjExt(d->Name,FName,sizeof(FName));
     else strcpy(FName,d->Name);
     strcat(s,FName);
-    
+
     /* Append ',' if i is less than l->Count */
     /* Because of problems in watcom linking */
 
@@ -2181,18 +2185,18 @@ void replace(char* to, char* match, char* replace) {
         strcpy(rep, to);
 
         t = strtok(rep, match);
-        
+
         while (t != NULL) {
                 strcat(repl, t);
                 strcat(repl, replace);
-                
+
                 t = strtok(NULL, match);
         }
 
         repl[strlen(repl)-2] = 0;
 
         to[0] = 0;
-        
+
         strcpy(to, repl);
 }
 /*...e*/
@@ -2226,28 +2230,28 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   // Also usable would be setting new target types for these files.
   //
   // Either calling mkmk with a separate set of files for lex and yacc files specifying the correct tardet or implementing the suggested
-  // two pass mechanism are workable. I choose the first to get a solution for this earlier. 
+  // two pass mechanism are workable. I choose the first to get a solution for this earlier.
 
   if (strcmp(SExt, ".L") == 0) {
         CPPFlag = 0;
         strcpy(Compiler, "$(LEX)");
   }
-  
+
   if (strcmp(SExt, ".Y") == 0) {
         CPPFlag = 0;
         strcpy(Compiler, "$(YACC)");
   }
-  
+
   if (strcmp(SExt, ".C") == 0) {
         CPPFlag = 0;
         strcpy(Compiler, "$(CC)");
   }
-  
+
   if (strcmp(SExt, ".CPP") == 0) {
         CPPFlag = 1;
         strcpy(Compiler, "$(CPP)");
   }
-  
+
   if (strcmp(SExt, ".CC") == 0) {
         CPPFlag = 1;
         strcpy(Compiler, "$(CPP)");
@@ -2266,17 +2270,17 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
       ObjExt(Name,ObjName,sizeof(ObjName));
       sprintf(Line, "%s: makefile %s",ObjName,Name);
   }
-/*  
+/*
   fprintf(stderr, "Name is       '%s'.\n", Name);
   fprintf(stderr, "Objectname is '%s'.\n", ObjName);
-*/      
+*/
   strcpy(ObjNameC, ObjName);
-  
+
   replace(ObjNameC, "/", "\\\\");
-  
+
   ListFiles(f,Line,&p->l);
   int len;
-  
+
   switch (targettype) {
         case IDL_TARGET:
                 printf("\t\t@(dir=omniORB4; $(CreateDir))\n", Compiler, Name);
@@ -2297,7 +2301,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
                 printf("\t\t@echo Build %s\n", NameC);
-                
+
                 if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
                 if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
                 break;
@@ -2314,12 +2318,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                       CPPFlag = 0;
                       strcpy(Compiler, "$(CCMINGW)");
                 }
-  
+
                 if (strcmp(SExt, ".CPP") == 0) {
                       CPPFlag = 1;
                       strcpy(Compiler, "$(CPPMINGW)");
                 }
-  
+
                 if (strcmp(SExt, ".CC") == 0) {
                       CPPFlag = 1;
                       strcpy(Compiler, "$(CPPMINGW)");
@@ -2337,20 +2341,20 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                       CPPFlag = 0;
                       strcpy(Compiler, "$(CCMINGW)");
                 }
-  
+
                 if (strcmp(SExt, ".CPP") == 0) {
                       CPPFlag = 1;
                       strcpy(Compiler, "$(CPPMINGW)");
                 }
-  
+
                 if (strcmp(SExt, ".CC") == 0) {
                       CPPFlag = 1;
                       strcpy(Compiler, "$(CPPMINGW)");
                 }
 
-        
+
                 printf("\t\t@echo Build %s\n", NameC);
-                
+
                 if (CPPFlag == 0) printf("\t\t%s -c $(C_MINGW_DLLOPS) $(STD_INCL_MINGW) -o%s %s\n", Compiler, ObjNameC, NameC);
                 if (CPPFlag == 1) printf("\t\t%s  -c $(CPP_MINGW_DLLOPS) $(STD_INCL_MINGW_CPP) -o%s %s\n", Compiler, ObjName, Name);
                 break;
@@ -2445,10 +2449,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 
         if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) {
                 printf("OBJS =");
-                
+
                 ListFiles(f,Line,l,true);
                 Line[0] = 0;
-                
+
                 printf("OBJLIST =");
                 ListFilesWithComma(f,Line,l,true);
         }
@@ -2482,7 +2486,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
                 printf("\t\t*$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
                 printf("file {$(OBJS)} library {$(LIBS)}\n");
-                    
+
                 break;
         default:
                 break;
@@ -2592,7 +2596,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
         default:
                 break;
   }
-  
+
 #endif
 }
 /*...e*/
@@ -2606,11 +2610,11 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   strcat(FileName,d->Name);
 
   p.setIncludes(iPathList, count);
-  
+
   p.Parse(FileName);
-  
+
   char fullName[1000] = "";
-  
+
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
   WriteDep(f,fullName,&p);
@@ -2645,15 +2649,15 @@ int main(int argc, char *argv[])
           fputs("ERROR: could not create makefile",stderr);
     return;
   }
-*/  
+*/
 /*...e*/
 /*...sdetermine target type:0:*/
   char *target = strdup(argv[1]);
   targetname = strdup(argv[2]);
   char *target_ext = NULL;
-  
+
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
-  
+
   if (strcmp(target, "-") == 0) {
         targettype = ELF_TARGET;
         target_ext = strdup("");
@@ -2663,57 +2667,57 @@ int main(int argc, char *argv[])
         targettype = TVISION_DLL;
         target_ext = strdup(".dll");
   }
-  
+
   if (strcmp(target, "TVISION_USR_DLL") == 0) {
         targettype = TVISION_DLL;
         target_ext = strdup(".dll");
   }
-  
+
   if (strcmp(target, "TVISION_EXE") == 0) {
         targettype = TVISION_EXE;
         target_ext = strdup(".exe");
   }
-  
+
   if (strcmp(target, "ELF") == 0) {
         targettype = ELF_TARGET;
         target_ext = strdup("");
   }
-  
+
   if (strcmp(target, "BUNDLE") == 0) {
         targettype = ELF_BUNDLE_TARGET;
         target_ext = strdup("");
   }
-  
+
   if (strcmp(target, "SO") == 0) {
         targettype = SO_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "WXSO") == 0) {
         targettype = WXSO_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "WXSHARED") == 0) {
         targettype = WXSHARED_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "FRAMEWORK") == 0) {
         targettype = FRAMEWORK_TARGET;
         target_ext = strdup("");
   }
-  
+
   if (strcmp(target, "WXFRAMEWORK") == 0) {
         targettype = WXFRAMEWORK_TARGET;
         target_ext = strdup("");
   }
-  
+
   if (strcmp(target, "LIB") == 0) {
         targettype = LIB_TARGET;
         target_ext = strdup(".lib");
   }
-  
+
   if (strcmp(target, "DLL") == 0) {
         targettype = DLL_TARGET;
         target_ext = strdup(".dll");
@@ -2723,37 +2727,37 @@ int main(int argc, char *argv[])
         targettype = PLUGIN_TARGET;
         target_ext = strdup(".dll");
   }
-  
+
   if (strcmp(target, "WXPLUGIN") == 0) {
         targettype = WXPLUGIN_TARGET;
         target_ext = strdup(".dll");
   }
-  
+
   if (strcmp(target, "SOPLUGIN") == 0) {
         targettype = SOPLUGIN_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "SOBUNDLE") == 0) {
         targettype = SO_BUNDLE_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "WXSOPLUGIN") == 0) {
         targettype = WXSOPLUGIN_TARGET;
         target_ext = strdup(".so");
   }
-  
+
   if (strcmp(target, "EXE") == 0) {
         targettype = EXE_TARGET;
         target_ext = strdup(".exe");
   }
-  
+
   if (strcmp(target, "LEX") == 0) {
         targettype = LEX_TARGET;
         target_ext = strdup("");
   }
-  
+
   if (strcmp(target, "YACC") == 0) {
         targettype = YACC_TARGET;
         target_ext = strdup("");
@@ -2793,22 +2797,22 @@ int main(int argc, char *argv[])
 
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
 /*...e*/
-  
+
   //  WriteHeader(f,targetname);
   char *inclPaths = strdup(argv[3]);
 
   //const char split_char, char *string, char ***array
   int count = split(',', inclPaths, &IncPathList);
-  
+
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE  
+#ifdef VERBOSE
   for (i = 0; i < count; i++) {
         printf("Path: %s\n", IncPathList[i]);
   }
 #endif
 /*...e*/
   char** copyIPathList = NULL;
-  
+
   copyIPathList = new char*[count];
 
 
@@ -2816,10 +2820,10 @@ int main(int argc, char *argv[])
         char temp[1000] = "";
         char pc[2] = "";
         sprintf(pc, "%c", PathChar);
-        
+
         strcpy(temp, IncPathList[i]);
         if(temp[strlen(temp)] != PathChar) strcat(temp, pc);
-        
+
         //printf("Prepared include directory %s\n", temp);
         copyIPathList[i] = strdup(temp);
   }
@@ -2830,9 +2834,9 @@ int main(int argc, char *argv[])
   }
 #endif
 /*...e*/
-  
+
   for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
-  
+
   if (Sources.Count == 0) fprintf(stderr, "ERROR: No source files to write!\n");
 
   // Here the link information file should be created
@@ -2854,19 +2858,19 @@ int main(int argc, char *argv[])
     case TVISION_DLL:
       printf("%s.lnk: makefile $(OBJS)\n", targetname);
       printf("\t\techo NAME %s > $@\n", targetname);
-  
+
       for (i=0; i<Sources.Count; i++) {
 
         char FileName[256];
         char ObjName[256];
-        
+
         strcpy(FileName, ((TDepItem*)Sources[i])->Path);
         strcat(FileName, ((TDepItem*)Sources[i])->Name);
 
         ObjExt(FileName,ObjName,sizeof(ObjName));
-  
-        printf("\t\techo FIL %s >> $@\n", ObjName);     
-  
+
+        printf("\t\techo FIL %s >> $@\n", ObjName);
+
       }
       break;
     default:
