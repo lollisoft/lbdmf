@@ -11,6 +11,11 @@ extern char* yytext;
 extern List *schema;
 extern MemPool mempool;
 
+#ifdef __MINGW32__
+#define false FALSE
+#define true TRUE
+#endif
+
 %}
 
 %union

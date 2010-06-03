@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.219 $
+# * $Revision: 1.220 $
 # * $Name:  $
-# * $Id: Makefile,v 1.219 2010/06/02 07:11:29 lollisoft Exp $
+# * $Id: Makefile,v 1.220 2010/06/03 16:58:07 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.220  2010/06/03 16:58:07  lollisoft
+# * Most requriered modules are now compilable with MinGW and the main application runs.
+# * There are some problems with unit tests but they pass. Also the code generator seems to
+# * not work properly.
+# *
 # * Revision 1.219  2010/06/02 07:11:29  lollisoft
 # * Executable targets now compile with MinGW. Tested with wxWrapper yet.
 # *
@@ -1257,9 +1262,9 @@ TARGETFRAMEWORK=dll$(TARGET_SELECTOR)
 TARGETSHARED=dll$(TARGET_SELECTOR)
 TARGETWXSHARED=dll$(TARGET_SELECTOR)
 TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
+TARGETPLUGIN=plugin$(TARGET_SELECTOR)
+TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 
-TARGETPLUGIN=plugin
-TARGETWXPLUGIN=wxplugin
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_exe
 TARGETYACC=yacc

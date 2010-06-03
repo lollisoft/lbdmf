@@ -208,6 +208,22 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 
 endif
 
+ifeq ($(TARGET), wxplugin_target_mingw)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(_MODULE).bak
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
+
+endif
+
 ifeq ($(TARGET), soplugin)
 
 makefile: makefile.module \

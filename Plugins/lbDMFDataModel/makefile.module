@@ -27,6 +27,8 @@
 #            40235 Duesseldorf (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+
 MOD_INCL=$(STD_INCL)
 MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=

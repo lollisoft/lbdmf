@@ -39,7 +39,8 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 
 MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
 
-STD_INCL_MINGW_CPP += -I. -I./include -I $(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+MOD_INCL_MINGW_CPP += -I. -I./include -I $(DEVROOT_MAKE)/wxwin/wx/include
 CPP_MINGW_DLLOPS += -D__WINDOWS__ -D__WXMSW__
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \

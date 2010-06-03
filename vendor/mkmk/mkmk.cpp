@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.110 $
+ * $Revision: 1.111 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.110 2010/06/02 07:05:19 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.111 2010/06/03 16:58:07 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.111  2010/06/03 16:58:07  lollisoft
+ * Most requriered modules are now compilable with MinGW and the main application runs.
+ * There are some problems with unit tests but they pass. Also the code generator seems to
+ * not work properly.
+ *
  * Revision 1.110  2010/06/02 07:05:19  lollisoft
  * Changes to get more targets compiled with MinGW.
  *
@@ -1297,7 +1302,8 @@ void writeMinGWPluginTarget(char* modulename) {
   printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("\n%s.dll: $(OBJS)\n", ModName);
 
-  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+//  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CPPMINGW) -fPIC -shared -Wl,--enable-auto-import -Wl,--subsystem,windows -mthreads -mwindows -Wl,--out-implib=$(PROGRAM).a -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
@@ -2040,7 +2046,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.110 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.111 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2355,8 +2361,8 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
                 printf("\t\t@echo Build %s\n", NameC);
 
-                if (CPPFlag == 0) printf("\t\t%s -c $(C_MINGW_DLLOPS) $(STD_INCL_MINGW) -o%s %s\n", Compiler, ObjNameC, NameC);
-                if (CPPFlag == 1) printf("\t\t%s  -c $(CPP_MINGW_DLLOPS) $(STD_INCL_MINGW_CPP) -o%s %s\n", Compiler, ObjName, Name);
+                if (CPPFlag == 0) printf("\t\t%s -c $(C_MINGW_DLLOPS) $(MOD_INCL_MINGW) -o%s %s\n", Compiler, ObjNameC, NameC);
+                if (CPPFlag == 1) printf("\t\t%s  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o%s %s\n", Compiler, ObjName, Name);
                 break;
         case EXE_TARGET:
                 len = strlen(ObjName);
@@ -2518,6 +2524,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 write_clean();
                 break;
         case PLUGIN_TARGET_MINGW:
+        case WXPLUGIN_TARGET_MINGW:
                 writeMinGWPluginTarget(ModuleName);
                 write_clean();
                 break;

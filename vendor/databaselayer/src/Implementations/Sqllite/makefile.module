@@ -30,10 +30,21 @@
 ifeq ($(OSTYPE), Windows_NT)
 SLASH=/
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+
+MOD_INCL_MINGW = $(STD_INCL_MINGW) -I../.. -I$(DEVROOT_MAKE)/wxwin/wx/include -I./sqlitefk/src -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/vendor/sqlite
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I../.. -I$(DEVROOT_MAKE)/wxwin/wx/include -I./sqlitefk/src -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/vendor/sqlite
+
 MOD_INCL = -i=.\\sqlitefk\\src $(STD_INCL) -i=..\\.. -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)$(RELPATH)\\vendor\\sqlite
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=../.. -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=./sqlitefk/src -i=$(DEVROOT_MAKE)$(RELPATH_MAKE)/vendor/sqlite
+
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib, $(DEVROOT_MAKE)/projects/dll/libs/sqlite3.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+
+MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG) -lwxWrapperDLL -lsqlite3 -llbHook
+
+CPP_MINGW_DLLOPS += -DWXUSINGDLL -DSQLITE_ENABLE_COLUMN_METADATA -DBUILD_LIBRARY
+
 CPP_DLLOPS+= -xs /DWXUSINGDLL /DSQLITE_ENABLE_COLUMN_METADATA -DBUILD_LIBRARY
 C_DLLOPS+= -DBUILD_LIBRARY
 

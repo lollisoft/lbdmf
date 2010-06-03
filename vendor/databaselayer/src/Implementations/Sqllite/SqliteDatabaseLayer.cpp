@@ -12,7 +12,9 @@ extern "C" {
 #endif
 
 #ifndef __WATCOMC__
+extern "C" {
 #include <sqlitefk/src/sql.h>
+}
 #endif
 
 #include <wx/tokenzr.h>
@@ -69,15 +71,15 @@ bool SqliteDatabaseLayer::Open(const wxString& strDatabase)
     ThrowDatabaseException();
     return false;
   }
-  
+
 #ifdef SUPPORT_FOREIGN_KEYS
 
 #endif
-  
+
   return true;
 }
 
-// close database  
+// close database
 bool SqliteDatabaseLayer::Close()
 {
   ResetErrorCodes();
@@ -90,7 +92,7 @@ bool SqliteDatabaseLayer::Close()
 #ifdef SUPPORT_FOREIGN_KEYS
 
 #endif
-  
+
     int nReturn = sqlite3_close(m_pDatabase);
     if (nReturn != SQLITE_OK)
     {
@@ -129,7 +131,7 @@ bool SqliteDatabaseLayer::Close()
         SetErrorMessage(ConvertFromUnicodeStream(err_msg));
       }
 
-    
+
       ThrowDatabaseException();
       return false;
     }
@@ -171,7 +173,7 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
     return false;
 
   wxArrayString QueryArray;
-	
+
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
 	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
@@ -179,8 +181,8 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 		wxString rewrittenQuery;
 		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
 			wxString createSystemTables;
-			
-			createSystemTables = 
+
+			createSystemTables =
 			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
 			wxString("	\"PKTable\" BPCHAR,") +
 			wxString("	\"PKColumn\" BPCHAR,") +
@@ -203,8 +205,8 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 			return NULL;
 		}
 		return NULL;
-	}	
-	
+	}
+
   if (bParseQuery)
     QueryArray = ParseQueries(strQuery);
   else
@@ -219,11 +221,11 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
     wxString strErrorMessage = _("");
     wxCharBuffer sqlBuffer = ConvertToUnicodeStream(*start);
     int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer, 0, 0, &szErrorMessage);
-  
+
 	  if (nReturn == SQLITE_BUSY) {
 		  wxLogError(_("Error, busy condition.\n"));
 	  }
-	  
+
     if (szErrorMessage != NULL)
     {
       strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
@@ -261,8 +263,8 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 		wxString rewrittenQuery;
 		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
 			wxString createSystemTables;
-			
-			createSystemTables = 
+
+			createSystemTables =
 			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
 			wxString("	\"PKTable\" BPCHAR,") +
 			wxString("	\"PKColumn\" BPCHAR,") +
@@ -305,7 +307,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 		}
 		QueryArray = ParseQueries(strQuery);
     }
-	 
+
     for (unsigned int i=0; i<(QueryArray.size()-1); i++)
     {
       char* szErrorMessage = NULL;
@@ -313,7 +315,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       wxString sqlBuffer = ConvertToUnicodeStream(QueryArray[i]);
 
 	  int nReturn = sqlite3_exec(m_pDatabase, sqlBuffer.c_str(), 0, 0, &szErrorMessage);
-	    
+
       if (szErrorMessage != NULL)
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
@@ -337,7 +339,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
     if (pResultSet) {
       pResultSet->SetEncoding(GetEncoding());
 	}
-	
+
     LogResultSetForCleanup(pResultSet);
     return pResultSet;
   }
@@ -362,7 +364,7 @@ PreparedStatement* SqliteDatabaseLayer::PrepareStatement(const wxString& strQuer
     SqlitePreparedStatement* pReturnStatement = new SqlitePreparedStatement(m_pDatabase);
     if (pReturnStatement)
       pReturnStatement->SetEncoding(GetEncoding());
-    
+
     wxArrayString QueryArray = ParseQueries(strQuery);
 
     wxArrayString::iterator start = QueryArray.begin();
@@ -390,7 +392,7 @@ PreparedStatement* SqliteDatabaseLayer::PrepareStatement(const wxString& strQuer
 #else
         int nReturn = sqlite3_prepare(m_pDatabase, sqlBuffer, -1, &pStatement, &szTail);
 #endif
-   
+
         if (nReturn != SQLITE_OK)
         {
           SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(nReturn));
@@ -406,8 +408,8 @@ PreparedStatement* SqliteDatabaseLayer::PrepareStatement(const wxString& strQuer
       while (strlen(szTail) > 0);
 #else
       while (wxStrlen(szTail) > 0);
-#endif    
-      
+#endif
+
       start++;
     }
 
@@ -583,9 +585,9 @@ int SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
 
   arrPrimaryColumns.Clear();
   arrPrimarySequence.Clear();
-  
+
   wxArrayString columns = GetColumns(table);
-  
+
   for (int i = 0; i < columns.Count(); i++) {
 	sqlite3_table_column_metadata(
 		m_pDatabase,		/* Connection handle */
@@ -638,10 +640,10 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 			arrPKCols.Add(PKColumn);
 			arrPKTables.Add(PKTable);
 		}
-		
+
 		CloseResultSet(system_query);
 		system_query = NULL;
-		
+
 		return arrFKCols.Count();
 	}
 

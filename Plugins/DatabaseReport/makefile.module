@@ -72,12 +72,14 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 /INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
 endif
 ifeq ($(COMPILER), WATCOM)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapperDLL -I$(DEVROOT_MAKE)/wxwin/wx/include -I$(DEVROOT_MAKE)$(RELPATH)/vendor/propgrid/include 
+
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\projects\\CPP\\Test\\GUI\\wxWrapperDLL -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/propgrid/include 
 
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include -i=$(DEVROOT)\\wxwin\\wx\\contrib\\include
 
--i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/wxwin/wx/contrib/include
+#-i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/wxwin/wx/contrib/include
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
 		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS

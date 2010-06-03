@@ -32,6 +32,8 @@
 #C_OPS+= -DLB_CLASSES_DLL_INC
 
 ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+
 MOD_INCL=$(STD_INCL)
 MOD_INCL_CPP=$(STD_INCL_CPP)
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib

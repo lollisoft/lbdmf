@@ -4,7 +4,7 @@
  *
  * Author: Cody Pisto <cpisto@gmail.com>
  *
- * Parses sqlite sql schema, and generates triggers to 
+ * Parses sqlite sql schema, and generates triggers to
  * enforce foreign key constraints
  *
  */
@@ -19,6 +19,11 @@
 #include <string.h>
 #endif
 
+#ifdef __MINGW32__
+#define false FALSE
+#define true TRUE
+#endif
+
 #ifdef __WATCOMC__
 #define false FALSE
 #define true TRUE
@@ -29,11 +34,11 @@
 #define true TRUE
 #endif
 
-typedef struct yy_buffer_state *YY_BUFFER_STATE; 
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
-int             yylex( void ); 
-YY_BUFFER_STATE yy_scan_string( const char * ); 
-void            yy_delete_buffer( YY_BUFFER_STATE ); 
+int             yylex( void );
+YY_BUFFER_STATE yy_scan_string( const char * );
+void            yy_delete_buffer( YY_BUFFER_STATE );
 
 extern FILE* yyin;
 extern int yyparse(void);
@@ -50,7 +55,7 @@ int allocationsize = 0;
 
 char* strrealloccat(char* toAppend) {
 	char* temp = rewrittenSchemaDDL;
-	
+
 	if (temp == NULL) {
 		buffersize = strlen(toAppend)+1;
 		rewrittenSchemaDDL = (char*) malloc(buffersize);
@@ -64,23 +69,23 @@ char* strrealloccat(char* toAppend) {
             if (buffersize > 1000) allocationsize = 200;
             if (buffersize > 10000) allocationsize = 2000;
             if (buffersize > 100000) allocationsize = 20000;
-			
+
 			buffersize = s;
-			
+
 			if (allocationsize > 1) {
                 rewrittenSchemaDDL = (char*) malloc(s+allocationsize);
                 buffersize += allocationsize;
 			} else {
                 rewrittenSchemaDDL = (char*) malloc(s);
 			}
-			
+
             stringsize = s;
 			rewrittenSchemaDDL[0] = 0;
 			strcat(rewrittenSchemaDDL, temp);
 			free(temp);
 		}
 	}
-	
+
 	if (toAppend != NULL) strcat(rewrittenSchemaDDL, toAppend);
 	return rewrittenSchemaDDL;
 }
@@ -90,18 +95,18 @@ int WriteFirstColumnRule(Table* table, Column* column, int cols) {
 		char* templ = "CREATE TABLE \"%s\" (\n";
 		char* buffer = (char*) malloc(strlen(templ) + strlen(table->name)+1);
 		cols++;
-		
+
 		sprintf(buffer, templ, table->name);
 		strrealloccat(buffer);
-		
+
 		free(buffer);
 		templ = "\t\"%s\"\t%s";
 		buffer = (char*) malloc(strlen(templ) + strlen(column->col) + strlen(column->type)+1);
-		
+
 		sprintf(buffer, templ, column->col, column->type);
 		strrealloccat(buffer);
 		free(buffer);
-		
+
 		return cols;
 	}
 	return cols;
@@ -125,17 +130,17 @@ int WriteFirstPrimaryColumnRule(Table* table, PrimaryKey* column, int cols) {
 		char* _templ = "\nCREATE TABLE \"%s\" (\n";
 		char* buffer = (char*) malloc(strlen(_templ) + strlen(table->name)+1);
 		cols++;
-		
+
 		sprintf(buffer, _templ, table->name);
 		strrealloccat(buffer);
-		
+
 		free(buffer);
 		_templ = "\t\"%s\"\t%s PRIMARY KEY";
 		buffer = (char*) malloc(
-		strlen(_templ) + 
-		strlen(column->col) + 
+		strlen(_templ) +
+		strlen(column->col) +
 		strlen(column->type)+1);
-		
+
 		sprintf(buffer, _templ, column->col, column->type);
 		strrealloccat(buffer);
 		free(buffer);
@@ -176,7 +181,7 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 			sprintf(buffer, _templ, table->name, fk->col);
 			strrealloccat(buffer);
 		}
-		
+
 		/*
 		 * triggers that do have to check for null
 		 */
@@ -206,7 +211,7 @@ void WriteAlterTableRules(Table* table, Altertable* at) {
 
 void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
-	
+
 	if (at->type == ALTER_FK) {
 		char* _templ = NULL;
 		char* buffer = NULL;
@@ -227,7 +232,7 @@ void WriteForeignKeyMetaRules(Table* table, Altertable* at) {
 
 void WriteTriggerRules(Table* table, Altertable* at) {
 	ForeignKey* fk;
-	
+
 	if (at->type == ALTER_FK) {
 		fk = at->fk;
 		/*
@@ -261,7 +266,7 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				   "    END;\n"
 				   "END;\n";
 			free(buffer);
-			
+
 			buffer = (char*) malloc(	strlen(_templ)+
 							strlen(fk->tab)+strlen(fk->col)+strlen(fk->tab)+
 							strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+strlen(fk->col)+
@@ -290,14 +295,14 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
-			sprintf(buffer, _templ, 
-						fk->tab, fk->col, fk->ftab, 
-						fk->col, fk->tab, fk->col, fk->fcol, 
+			sprintf(buffer, _templ,
+						fk->tab, fk->col, fk->ftab,
+						fk->col, fk->tab, fk->col, fk->fcol,
 						fk->tab, fk->col, table->name, fk->col);
 			strrealloccat(buffer);
 			free(buffer);
 		}
-		
+
 		/*
 		 * triggers that do have to check for null
 		 */
@@ -317,9 +322,9 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 				printf("Fatal: Memory allocation failed!\n");
 				exit(1);
 			}
-			sprintf(buffer, _templ, 
-					table->name, fk->col, table->name, 
-					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, 
+			sprintf(buffer, _templ,
+					table->name, fk->col, table->name,
+					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col,
 					fk->tab, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
 
@@ -334,13 +339,13 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 					strlen(table->name)+strlen(fk->col)+strlen(table->name)+
 					strlen(fk->col)+strlen(fk->fcol)+strlen(fk->ftab)+strlen(fk->fcol)+strlen(fk->col)+
 					strlen(fk->tab)+strlen(fk->col)+strlen(fk->ftab)+strlen(fk->fcol)+100);
-			
-			sprintf(buffer, _templ, 
-					table->name, fk->col, table->name, 
-					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col, 
+
+			sprintf(buffer, _templ,
+					table->name, fk->col, table->name,
+					fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col,
 					fk->col, fk->col, fk->ftab, fk->fcol);
 			strrealloccat(buffer);
-			
+
 			_templ = "CREATE TRIGGER \"fk_nullable_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
 				   "BEGIN\n"
 				   "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
@@ -352,9 +357,9 @@ void WriteTriggerRules(Table* table, Altertable* at) {
 						strlen(table->name)+strlen(fk->col)+strlen(fk->ftab)+
 						strlen(fk->col)+strlen(table->name)+strlen(fk->col)+strlen(fk->fcol)+
 						strlen(fk->tab)+strlen(fk->col)+strlen(table->name)+strlen(fk->col)+100);
-			sprintf(buffer, _templ, 
-					table->name, fk->col, fk->ftab, 
-					fk->col, table->name, fk->col, fk->fcol, 
+			sprintf(buffer, _templ,
+					table->name, fk->col, fk->ftab,
+					fk->col, table->name, fk->col, fk->fcol,
 					fk->tab, fk->col, table->name, fk->col);
 			strrealloccat(buffer);
 			free(buffer);
@@ -425,7 +430,7 @@ next_column:
             colitem = list_next(colitem);
         }
 		if (wrotetable == 1) strrealloccat("\n);\n");
-		
+
         //list_destroy(table->columns);
 
         tabitem = list_next(tabitem);
@@ -527,14 +532,14 @@ char* rewriteSchemaOfDDL(char* sql_ddl) {
 		free(rewrittenSchemaDDL);
 		rewrittenSchemaDDL = NULL;
 	}
-	
+
     schema = list_new();
     MemPoolCreate(&mempool, 4096);
     /* yyparse will fill the schema with
      * tables
      */
-	 
-	 
+
+
 	if (sql_ddl == NULL) {
 		yyin = fopen("test.sql", "rb");
 		if (yyin == NULL) printf("Error: Can't open file.\n");
@@ -545,9 +550,9 @@ char* rewriteSchemaOfDDL(char* sql_ddl) {
 		mybuf = yy_scan_string(sql_ddl);
 		yyparse();
 		scanner_finish();
-		//yy_delete_buffer(mybuf); 
+		//yy_delete_buffer(mybuf);
 	}
-	
+
 	WriteTableSchema();
 	//WriteAlterTableSchema();
 	WriteTriggerSchema();
@@ -588,8 +593,8 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
     /* yyparse will fill the schema with
      * tables
      */
-	 
-	 
+
+
 	if (sql_ddl == NULL) {
 		yyin = fopen("test.sql", "rb");
 		if (yyin == NULL) printf("Error: Can't open file.\n");
@@ -600,24 +605,24 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 		mybuf = yy_scan_string(sql_ddl);
 		yyparse();
 		scanner_finish();
-		//yy_delete_buffer(mybuf); 
+		//yy_delete_buffer(mybuf);
 	}
-	
+
 
 #ifdef BUILD_LIBRARY
     tabitem = list_head(schema);
     while (tabitem != NULL)
     {
         table = (Table *)list_data(tabitem);
-		
+
 		if (table == NULL)
 			goto table_next;
-		
+
 		if (strcmp(table->name, _table) == 0) {
 			int x;
 			ForeignKey *fk;
 			foreign_keys = list_new();
-			
+
 			colitem = list_head(table->columns);
 			for (x = 0; colitem; x++)
 			{
@@ -626,24 +631,24 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 					fk = (ForeignKey *)list_data(colitem);
 					if (fk == NULL)
 						goto fk_next;
-					
+
 					copy_of_fk->col = strdup(fk->col);
 					copy_of_fk->ftab = strdup(fk->ftab);
 					copy_of_fk->fcol = strdup(fk->fcol);
-					
+
 					list_append(foreign_keys, copy_of_fk, TYPE_FOREIGNKEY);
 					haveItems = true;
-				}					
-fk_next:					
+				}
+fk_next:
 				colitem = list_next(colitem);
 			}
 		}
 
         list_destroy(table->columns);
-table_next:		
+table_next:
 		tabitem = list_next(tabitem);
 	}
-	
+
     list_destroy(schema);
     MemPoolDestroy(&mempool);
 	if (haveItems) return foreign_keys;
