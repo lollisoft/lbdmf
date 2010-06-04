@@ -12,9 +12,13 @@ extern "C" {
 #endif
 
 #ifndef __WATCOMC__
+#ifdef __MINGW32__
 extern "C" {
+#endif
 #include <sqlitefk/src/sql.h>
+#ifdef __MINGW32__
 }
+#endif
 #endif
 
 #include <wx/tokenzr.h>
