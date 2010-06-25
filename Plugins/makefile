@@ -139,15 +139,15 @@ dummy:
 
 TestPlugin: dummy
 	$(MAKE) -C $@ -e MODULE=TestPlugin -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	-$(MAKE) -C $@
+	$(MAKE) -C $@
 
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	-$(MAKE) -C $@
+	$(MAKE) -C $@
 	
 DatabaseLayerGateway: dummy
 	$(MAKE) -C $@ -e MODULE=DatabaseLayerGateway -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	-$(MAKE) -C $@
+	$(MAKE) -C $@
 	
 lbDMFDataModel: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
@@ -155,7 +155,7 @@ lbDMFDataModel: dummy
 	
 DatabaseReport: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	-$(MAKE) -C $@
+	$(MAKE) -C $@
 	
 VisitorOperations: dummy
 	$(MAKE) -C $@ -e MODULE=lbVisitorOperations -e TARGET=$(TARGETPLUGIN) -e CUSTOM_FILES='*.c' -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
