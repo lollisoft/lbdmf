@@ -33,7 +33,7 @@ public:
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	lb_I_Unknown* LB_STDCALL getUnknown();
-	
+
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 
@@ -149,7 +149,7 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 
 lb_I_Unknown* LB_STDCALL UIWrapper::getUnknown() {
 	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	uk++;
 	return uk.getPtr();
 }
@@ -584,7 +584,7 @@ public:
 		UAP(lb_I_Unknown, uk)
 		QI(s, lb_I_Unknown, uk)
 		QI(i, lb_I_KeyBase, key)
-		
+
 		*s = "Testvalue1";
 		i->setData(1);
 		c->insert(&uk, &key);
@@ -644,7 +644,7 @@ public:
 		UAP(lb_I_Unknown, uk)
 		QI(s, lb_I_Unknown, uk)
 		QI(i, lb_I_KeyBase, key)
-		
+
 		*s = "Testvalue";
 		i->setData(20);
 
@@ -705,7 +705,7 @@ public:
 		UIWrapper* myUIWrapper = new UIWrapper();
 		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 		myUIWrapper->initialize();
-		
+
 		lbErrCodes err = ERR_NONE;
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -754,7 +754,7 @@ public:
 		UIWrapper* myUIWrapper = new UIWrapper();
 		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 		myUIWrapper->initialize();
-		
+
 		lbErrCodes err = ERR_NONE;
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -964,7 +964,7 @@ public:
 	TEST_FIXTURE( BaseDevelopmentDatabase )
 	{
 		TEST_CASE(test_Instantiate)
-#ifdef WINDOWS		
+#ifdef WINDOWS
 		TEST_CASE(test_SQLSERVER_setUser)
 		TEST_CASE(test_SQLSERVER_setDB)
 		TEST_CASE(test_login_SQLSERVER_UnitTest_failure)
@@ -978,6 +978,9 @@ public:
 		TEST_CASE(test_login_PostgreSQL_UnitTest)
 		TEST_CASE(test_PostgreSQL_createTable_PostgreSQL_UnitTest)
 		TEST_CASE(test_PostgreSQL_listTables)
+
+
+		TEST_CASE(test_Sqlite_ForeignKey)
 	}
 
 
@@ -1000,6 +1003,111 @@ public:
 	void tearDown()
 	{
 	}
+
+    lb_I_String* createForeignKeyStatements(char* pTable, char* pColumn, char* fTable, char* fColumn) {
+            UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+
+            *sql =
+"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_ins' BEFORE INSERT ON {FTABLE} FOR EACH ROW\n"
+"BEGIN\n"
+"    SELECT CASE WHEN ((new.{FCOLUMN} IS NOT NULL) AND ((SELECT {PCOLUMN} FROM {PTABLE} WHERE {PCOLUMN} = new.{FCOLUMN}) IS NULL))\n"
+"                 THEN RAISE(ABORT, '{FCOLUMN} violates foreign key {PTABLE}({PCOLUMN})')\n"
+"    END;\n"
+"END;\n"
+"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_upd' BEFORE UPDATE ON {FTABLE} FOR EACH ROW\n"
+"BEGIN\n"
+"    SELECT CASE WHEN ((new.{FCOLUMN} IS NOT NULL) AND ((SELECT {PCOLUMN} FROM {PTABLE} WHERE {PCOLUMN} = new.{FCOLUMN}) IS NULL))\n"
+"                 THEN RAISE(ABORT, '{FCOLUMN} violates foreign key {PTABLE}({PCOLUMN})')\n"
+"    END;\n"
+"END;\n"
+"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_del' BEFORE DELETE ON {PTABLE} FOR EACH ROW\n"
+"BEGIN\n"
+"    SELECT CASE WHEN ((SELECT {FCOLUMN} FROM {FTABLE} WHERE {FCOLUMN} = old.{PCOLUMN}) IS NOT NULL)\n"
+"                 THEN RAISE(ABORT, '{PCOLUMN} violates foreign key {FTABLE}({FCOLUMN})')\n"
+"    END;\n"
+"END;\n"
+"INSERT INTO 'lbDMF_ForeignKeys' ('PKTable', 'PKColumn', 'FKTable', 'FKColumn') VALUES ('{PTABLE}', '{PCOLUMN}', '{FTABLE}', '{FCOLUMN}');";
+
+            sql->replace("{PTABLE}", pTable);
+            sql->replace("{PCOLUMN}", pColumn);
+            sql->replace("{FTABLE}",fTable);
+            sql->replace("{FCOLUMN}", fColumn);
+
+            sql++;
+            return sql.getPtr();
+    }
+
+    void test_Sqlite_ForeignKey( void )
+    {
+        lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_ForeignKey");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestSqlite", 0);
+
+		ASSERT_EQUALS( true, query != NULL);
+
+
+        lbErrCodes err1;
+        lbErrCodes err2;
+        lbErrCodes err3;
+        lbErrCodes err4;
+        lbErrCodes err5;
+        lbErrCodes err6;
+        lbErrCodes err7;
+        lbErrCodes err8;
+
+        err1 = query->query(
+			"CREATE TABLE test ("
+			"	id INTEGER PRIMARY KEY,"
+			"	Name BPCHAR"
+			")"
+			, false);
+
+        err2 = query->query(
+			"CREATE TABLE foreigntable ("
+			"	id INTEGER PRIMARY KEY,"
+			"	Name BPCHAR,"
+            "   foreignid INTEGER"
+			")"
+			, false);
+
+        UAP(lb_I_String, sql)
+        sql = createForeignKeyStatements("test", "id", "foreigntable", "foreignid");
+
+		ASSERT_EQUALS( ERR_NONE, query->query(sql->charrep(), false));
+
+        UAP(lb_I_Container, fKeys)
+
+        fKeys = db->getForeignKeys("UnitTestSqlite");
+
+        err3 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_ins", false);
+        err4 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_upd", false);
+        err5 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_del", false);
+
+        err6 = query->query("--SKIP REWRITE;\nDROP TABLE foreigntable", false);
+        err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+        err8 = query->query("--SKIP REWRITE;\nDELETE FROM \"lbDMF_ForeignKeys\"", false);
+
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
+		ASSERT_EQUALS( 1, fKeys->Count());
+    }
 
 	void test_PostgreSQL_setUser( void )
 	{
@@ -1059,12 +1167,12 @@ public:
 		}
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-		
+
 		*name = "GeneralDBSchemaname";
 		*schema = "public";
 		SomeBaseSettings->setUAPString(*&name, *&schema);
 		meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
-		
+
 		tables = db->getTables("UnitTestPostgreSQL");
 
 		int count = tables->Count();
@@ -1074,7 +1182,7 @@ public:
 			, false));
 
 		ASSERT_EQUALS( true, SomeBaseSettings != NULL )
-		
+
 		ASSERT_EQUALS( 1, count);
 
 		db->close();
@@ -1221,7 +1329,7 @@ public:
 		UAP(lb_I_Unknown, uk)
 		uk = tables->getElementAt(1);
 		QI(uk, lb_I_Parameter, param)
-		
+
 		*name = "TableName";
 		param->getUAPString(*&name, *&tableName);
 
@@ -1272,7 +1380,7 @@ public:
 
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trallala"));
-		
+
 		db->close();
 	}
 
