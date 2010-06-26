@@ -980,6 +980,7 @@ public:
 		TEST_CASE(test_PostgreSQL_listTables)
 
 
+		TEST_CASE(test_Sqlite_FailingQuery)
 		TEST_CASE(test_Sqlite_ForeignKey)
 	}
 
@@ -1037,6 +1038,44 @@ public:
             return sql.getPtr();
     }
 
+    void test_Sqlite_FailingQuery( void )
+    {
+        lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_ForeignKey");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery("UnitTestSqlite", 0);
+
+		ASSERT_EQUALS( true, query != NULL);
+
+        lbErrCodes err1;
+        lbErrCodes err2;
+        lbErrCodes err3;
+
+        err1 = query->query(
+			"CREATE TABLE test ("
+			"	id INTEGER PRIMARY KEY,"
+			"	Name BPCHAR"
+			")"
+			, false);
+
+		err2 = query->query("--SKIP REWRITE;\ninsert into test columns (Name) values ('Lala')", false);
+        err3 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_DB_QUERYFAILED, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+    }
+
     void test_Sqlite_ForeignKey( void )
     {
         lbErrCodes err = ERR_NONE;
@@ -1066,6 +1105,9 @@ public:
         lbErrCodes err6;
         lbErrCodes err7;
         lbErrCodes err8;
+        lbErrCodes err9;
+        lbErrCodes err10;
+        lbErrCodes err11;
 
         err1 = query->query(
 			"CREATE TABLE test ("
@@ -1085,28 +1127,43 @@ public:
         UAP(lb_I_String, sql)
         sql = createForeignKeyStatements("test", "id", "foreigntable", "foreignid");
 
-		ASSERT_EQUALS( ERR_NONE, query->query(sql->charrep(), false));
+		err3 = query->query(sql->charrep(), false);
+
+		err4 = query->query("--SKIP REWRITE;\ninsert into test (Name) values ('Lala')", false);
+		//err5 = query->query("--SKIP REWRITE;\ninsert into foreigntable (Name, foreignid) values ('Lala', 1)", false);
+		err5 = ERR_NONE;
+
+        lbErrCodes errSelect = query->query("select foreignid from foreigntable", true);
+
+        int hasFK = query->hasFKColumn("foreignid");
 
         UAP(lb_I_Container, fKeys)
 
         fKeys = db->getForeignKeys("UnitTestSqlite");
 
-        err3 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_ins", false);
-        err4 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_upd", false);
-        err5 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_del", false);
+        err6 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_ins", false);
+        err7 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_upd", false);
+        err8 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_del", false);
 
-        err6 = query->query("--SKIP REWRITE;\nDROP TABLE foreigntable", false);
-        err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
-        err8 = query->query("--SKIP REWRITE;\nDELETE FROM \"lbDMF_ForeignKeys\"", false);
+        err9 = query->query("--SKIP REWRITE;\nDROP TABLE foreigntable", false);
+        err10 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+        err11 = query->query("--SKIP REWRITE;\nDELETE FROM \"lbDMF_ForeignKeys\"", false);
 
 		ASSERT_EQUALS( ERR_NONE, err1);
 		ASSERT_EQUALS( ERR_NONE, err2);
 		ASSERT_EQUALS( ERR_NONE, err3);
 		ASSERT_EQUALS( ERR_NONE, err4);
 		ASSERT_EQUALS( ERR_NONE, err5);
+        ASSERT_EQUALS( ERR_DB_NODATA, errSelect );
+        //ASSERT_EQUALS( ERR_NONE, errSelect );
+		ASSERT_EQUALS( 1, fKeys->Count());
+        ASSERT_EQUALS( 1, hasFK );
 		ASSERT_EQUALS( ERR_NONE, err6);
 		ASSERT_EQUALS( ERR_NONE, err7);
-		ASSERT_EQUALS( 1, fKeys->Count());
+		ASSERT_EQUALS( ERR_NONE, err8);
+		ASSERT_EQUALS( ERR_NONE, err9);
+		ASSERT_EQUALS( ERR_NONE, err10);
+		ASSERT_EQUALS( ERR_NONE, err11);
     }
 
 	void test_PostgreSQL_setUser( void )
