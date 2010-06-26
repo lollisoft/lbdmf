@@ -290,6 +290,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 	printf(strErrorMessage);
 	printf("\nSQL: \n%s", rewrittenQuery.c_str());
         sqlite3_free(szErrorMessage);
+          ThrowDatabaseException();
         return NULL;
       }
 	  return NULL;
