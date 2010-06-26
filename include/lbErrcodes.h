@@ -23,18 +23,21 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.42 2010/05/29 21:55:53 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.43 2010/06/26 13:53:29 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.43  2010/06/26 13:53:29  lollisoft
+ * Made some counts but may be going out of sync.
+ *
  * Revision 1.42  2010/05/29 21:55:53  lollisoft
  * Added an error code when a document element is missed.
  *
@@ -195,12 +198,12 @@
 #define __LB_ERRCODES__
 
 /*...slbErrCodes:0:*/
-enum lbErrCodes { 
+enum lbErrCodes {
 	ERR_NONE = 0,
 	ERR_ILLEGAL_PARAMETER = 1,
 
 /* A yet not specified err code */
-	
+
 	ERR_UNSPECIFIED,
 	ERR_NOT_IMPLEMENTED,
 	ERR_NO_OBJECT,
@@ -214,7 +217,7 @@ enum lbErrCodes {
 	ERR_FUNCTION_SEQUENCE,
 
 /* Errcodes for reference counting */
-	
+
 	ERR_REFERENCE_COUNTING,
 	ERR_INSTANCE_STILL_USED,
 	// To see if the instance was deleted, not released
@@ -222,9 +225,9 @@ enum lbErrCodes {
 
 /* Errcodes for event manager */
 
-	ERR_EVENT_EXISTS,
+	ERR_EVENT_EXISTS, // 13
 	ERR_EVENT_NOTREGISTERED,
-	
+
 /* Errcodes for dispatcher */
 
 	ERR_DISP_HANDLER_EXSISTS,
@@ -234,7 +237,7 @@ enum lbErrCodes {
 
 /* Errcodes for appbus dispatcher in connected state */
 
-	ERR_APPBUS_DISPATCH, 		// Haeder found, but unknown identifer
+	ERR_APPBUS_DISPATCH, 		// 19 Haeder found, but unknown identifer
 	ERR_APPBUS_DISPATCH_HAEDER,	// No dispatch haeder found
 	ERR_APPBUS_ECHO,		// Test server for echo
 
@@ -243,7 +246,7 @@ enum lbErrCodes {
 
 /* Module error codes */
 
-	ERR_MODULE_INVALID_PARAMETER,
+	ERR_MODULE_INVALID_PARAMETER, // 23
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
 	ERR_MODULE_NO_INTERFACE,
@@ -251,10 +254,10 @@ enum lbErrCodes {
 					 * Object has increased refcount, but hasn't manager available.
 					 * Object is locked!
 					 */
-	
+
 /* Errcodes for dealing with XML */
 
-	ERR_XML_NOFILE,	
+	ERR_XML_NOFILE,	// 28
 	ERR_XML_INIT,
 	ERR_XML_GENERAL_PARSE_FAILED,
 
@@ -265,12 +268,12 @@ enum lbErrCodes {
 	ERR_CONFIG_EMPTY_CONTAINER,
 	ERR_CONFIG_CONTAINER_BOUND,
 	ERR_CONFIG_INTERNAL,
-	
+
 /* Errcodes for container */
-	ERR_CONTAINER_INSERT,
+	ERR_CONTAINER_INSERT, // 36
 	ERR_CONTAINER_REMOVE,
-	
-/* Errcodes for threads */	
+
+/* Errcodes for threads */
 	LB_THREAD_ERROR,
 
 	ERR_APP_SERVER_DISPATCH,	// Unknown protocol header
@@ -281,18 +284,18 @@ enum lbErrCodes {
 	ERR_APP_SERVER_WAIT_REQUEST,
 	ERR_APP_SERVER_SEND_REQUEST,
 	ERR_APP_SERVER_ADDHANDLER,
-	
+
 	ERR_APP_CLIENT_ADDHANDLER,
 
 	ERR_APPBUS_SERVER_ANOUNCECLIENT,
 
 	ERR_TRANSFER_DATA_INCORRECT_TYPE,
-	ERR_TRANSFER_FAILED,
+	ERR_TRANSFER_FAILED, // 50
 	ERR_TRANSFER_NULLPTR,
 	ERR_TRANSFER_ENDED,
 	ERR_TRANSFER_SEND_DATATYPE,
 	ERR_TRANSFER_PROTOCOL,
-	
+
 	ERR_SOCKET_UNKNOWN,
 	ERR_SOCKET_STATE,
 	ERR_SOCKET_CLOSE_CLIENT,
@@ -307,7 +310,7 @@ enum lbErrCodes {
 
 /* Errcodes for the database module */
 
-	ERR_DB_EXECDIRECT,	
+	ERR_DB_EXECDIRECT,	// 66
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
 	ERR_DB_QUERYFAILED,
@@ -315,7 +318,7 @@ enum lbErrCodes {
 	ERR_DB_CONNECT,
 	ERR_DB_FETCHFIRST,
 	ERR_DB_FETCHLAST,
-	ERR_DB_NODATA,
+	ERR_DB_NODATA, // 74
 	ERR_DB_READONLY,
 	ERR_DB_STILL_ADDING,
 	ERR_DB_ROWDELETED,
@@ -323,32 +326,32 @@ enum lbErrCodes {
 	WARN_DB_NODATA,
 	INFO_DB_REOPENED,
 	ERR_DB_COLUMN_NOT_FOUND,
-	
-/* Errcodes for parameter handling */	
-	
+
+/* Errcodes for parameter handling */
+
 	ERR_PARAM_NOT_FOUND,
-	
+
 	ERR_FILE_WRITE_DEFAULT,
 	ERR_FILE_READ_DEFAULT,
 	ERR_FILE_WRITE,
 	ERR_FILE_READ,
-	
+
 	ERR_PLUGIN_NOT_INITIALIZED,
-	
+
 	ERR_MEMORY_ALLOC,
-	
+
 	ERR_UML_IMPORT_LOADDATABASE_MODUL,
 	ERR_DYNAMIC_APP_LOAD_DBSCHEMA,
-	
-/* Error codes for interceptor stuff */	
-	
+
+/* Error codes for interceptor stuff */
+
 	ERR_ADD_INTERCEPTOR_FAILS,
 	ERR_DELETE_INTERCEPTOR_FAILS,
 	ERR_INTERCEPTOR_MISSING,
 	ERR_INTERCEPTOR_BEFORE_CANCEL,
 	ERR_INVALID_INTERCEPTED_INSTANCE,
-	
-/* Errorcodes for form validation */	
+
+/* Errorcodes for form validation */
 	ERR_FORM_VALIDATION,
 
 
