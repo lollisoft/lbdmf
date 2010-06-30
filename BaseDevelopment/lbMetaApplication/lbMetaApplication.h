@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.73 2010/05/17 05:44:43 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.74 2010/06/30 06:05:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.74  2010/06/30 06:05:57  lollisoft
+ * Added code to support unloading application module (detachInterface) and changed code to try correctly unloading modules.
+ *
  * Revision 1.73  2010/05/17 05:44:43  lollisoft
  * Many changes related to support mixing MinGW with Open Watcom.
  *
@@ -594,6 +597,8 @@ public:
 	lbErrCodes LB_STDCALL activateInterceptor(lb_I_String* EvName, lb_I_EvHandler* ev);
 	
 #endif
+	
+	void LB_STDCALL detachInstance(lb_I_EventHandler* evHandlerInstance);
 	
 public:
 	lb_Dispatcher();

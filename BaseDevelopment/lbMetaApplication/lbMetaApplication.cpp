@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.178 $
+ * $Revision: 1.179 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.178 2010/05/30 08:28:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.179 2010/06/30 06:05:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.179  2010/06/30 06:05:57  lollisoft
+ * Added code to support unloading application module (detachInterface) and changed code to try correctly unloading modules.
+ *
  * Revision 1.178  2010/05/30 08:28:26  lollisoft
  * Fixed crashes on Mac OS X while running unit tests.
  *
@@ -3798,6 +3801,41 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	return ERR_NONE;
 }
 /*...e*/
+
+void LB_STDCALL lb_Dispatcher::detachInstance(lb_I_EventHandler* evHandlerInstance) {
+	lbErrCodes err = ERR_NONE;
+	if (dispatcher != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, handlersToDelete)
+		
+		dispatcher->finishIteration();
+		while (dispatcher->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			uk = dispatcher->nextElement();
+			UAP(lb_I_EvHandler, ev)
+			QI(uk, lb_I_EvHandler, ev)
+			if (ev != NULL) {
+				lb_I_EventHandler* evH = ev->getHandlerInstance();
+				if (evH == evHandlerInstance) {
+					UAP(lb_I_KeyBase, key)
+					key = dispatcher->currentKey();
+					
+					handlersToDelete->insert(&uk, &key);
+				}
+			}
+		}
+		
+		while (handlersToDelete->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+			
+			uk = handlersToDelete->nextElement();
+			key = handlersToDelete->currentKey();
+			
+			dispatcher->finishIteration();
+			dispatcher->remove(&key);
+		}
+	}
+}
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addDispatcher(lb_I_Dispatcher* disp) {

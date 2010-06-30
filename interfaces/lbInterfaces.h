@@ -2660,6 +2660,12 @@ public:
 	virtual lbErrCodes LB_STDCALL setInterceptorDefinitions(lb_I_String* s) = 0;
 #endif
 	
+	/**
+	 * Removes all event handlers from a given instance. Use this function if you
+	 * want to reinstantiate a class that registers event handlers and the old gets
+	 * destroyed.
+	 */
+	virtual void LB_STDCALL detachInstance(lb_I_EventHandler* evHandlerInstance) = 0;
 /*...e*/
 };
 /*...e*/

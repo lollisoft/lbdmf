@@ -702,7 +702,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 }
 */
                 if (strcmp(key->charrep(), "UML import settingsXSL file for import settings") == 0) {
-                        XSLFileImportSettings->setData(value->charrep());
+                        if (XSLFileImportSettings != NULL) XSLFileImportSettings->setData(value->charrep());
                 }
 
                 if (strcmp(key->charrep(), "UML import settingsXSL file for system database") == 0) {
@@ -2199,6 +2199,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	}
 	
 	applicationdatabase->close();
+	
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	dispatcher->setEventManager(eman.getPtr());
+	
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+	
+	dispatcher->detachInstance(evHandler);
+	
 	
         _CL_LOG << "lbDynamicApplication::uninitialize() leaving." LOG_
 

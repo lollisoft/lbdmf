@@ -152,10 +152,13 @@ typedef struct Module {
 	~Module() {
 		countModules--;
 	}
+	// The number of the loaded module (count of loaded modules)
 	int number;
 	char* name;
 	Module* next;
 	HINSTANCE lib;
+	// The references I have made while loading the module
+	int libreferences;
 	bool skip;
 } _Modules;
 /*...e*/
@@ -1095,6 +1098,72 @@ DLLEXPORT char* LB_CDECL translateText(char* text) {
 	return translated;
 }
 /*...e*/
+
+#define NUL '\0'
+char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
+{
+	char *pptr, *sptr, *start;
+	
+	for (start = (char *)String; *start != NUL; start++)
+	{
+		/* find start of pattern in string */
+		for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start++)
+			;
+		if (NUL == *start)
+			return NULL;
+		
+		pptr = (char *)Pattern;
+		sptr = (char *)start;
+		
+		while (toupper(*sptr) == toupper(*pptr))
+		{
+			sptr++;
+			pptr++;
+			
+			/* if end of pattern then pattern was found */
+			
+			if (NUL == *pptr)
+				return (start);
+		}
+	}
+	return NULL;
+}
+
+char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
+{
+	char *pptr, *sptr, *start;
+	int len = 0;
+	
+	if (String == NULL) return NULL;
+	
+	len = strlen(String);
+	
+	for (start = (char *)String+len; *start != NUL; start--)
+	{
+		/* find start of pattern in string */
+		for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start--)
+			;
+		if (NUL == *start)
+			return NULL;
+		
+		pptr = (char *)Pattern;
+		sptr = (char *)start;
+		
+		while (toupper(*sptr) == toupper(*pptr))
+		{
+			sptr--;
+			pptr--;
+			
+			/* if end of pattern then pattern was found */
+			
+			if (NUL == *pptr)
+				return (start);
+		}
+	}
+	return NULL;
+}
+#undef NUL
+
 /*...sDLLEXPORT lbErrCodes LB_CDECL lbUnloadModule\40\const char\42\ name\41\:0:*/
 DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 
@@ -1150,7 +1219,8 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 			}
 
 			if (temp->name != NULL) {
-				if (strcmp(temp->name, name) == 0) {
+				if (isVerbose()) printf("Test if module %s is %s.\n", temp->name, name);
+				if (lbstristr(temp->name, name) != 0) {
 					_Modules* delMod = temp;
 					temp = temp->next;
 
@@ -1162,8 +1232,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 						loadedModules = delMod->next;
 					}
 
-					if (dlclose(delMod->lib) == 0) {
-						printf("ERROR: Library could not be unloaded!\n");
+					while (dlclose(delMod->lib) == 0) {
+						//if (isVerbose()) 
+							printf("Unloaded module %s.\n", name);
+//					} else {
+//						if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
 					}
 
 					free(delMod->name);

@@ -15,9 +15,15 @@ int main()
 		PM->initialize();
 		
 		result = theInstance().runTests() ? 0 : -1;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		
+		meta->uninitialize();
+		
+		lbUnloadModule("DatabaseLayerGateway.so");
+		lbUnloadModule("DatabaseLayerGateway.so");
 		
 		PM->unload();
-		
 	}
 
 	unHookAll();

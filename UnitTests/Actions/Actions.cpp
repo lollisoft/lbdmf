@@ -481,7 +481,8 @@ public:
 		myUIWrapper->setFileAnswer("template-good.xsl");
 		int nextStep1 = action->execute(*&params);
 
-		meta->uninitialize();
+		// Crashes in the next test as probably old event handlers get called.
+		//meta->uninitialize();
 
 		// Test for a 'linear action'
 		ASSERT_EQUALS(-1, nextStep1)
@@ -519,7 +520,8 @@ public:
 
 		applications = meta->getApplications();
 
-		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		// Must not logged in to load
+		if (!meta->getAutoload() && meta->getApplicationID() == 0) meta->loadApplication("user", "lbDMF Manager");
 
 		// Setup the configuration that is needed for this test
 
