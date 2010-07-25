@@ -204,7 +204,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::create(int parentId) {
 
 lb_I_Unknown* LB_STDCALL lbDatabaseTableViewPanel::getUnknown() {
 	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	uk++;
 	return uk.getPtr();
 }
@@ -1291,12 +1291,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::fillTable() {
 		//deleteButton->Disable();
 	}
     TableView->EndBatch();
-    //TableView->AutoSize();
+    TableView->AutoSize();
 	//TableView->AutoSizeColumns(false);
 }
 
 void lbDatabaseTableViewPanel::OnSelectCell( wxGridEvent& ev ) {
     _LOG << "lbDatabaseTableViewPanel::OnSelectCell(...) called." LOG_
+
+    int col = ev.GetCol();
+    int row = ev.GetRow();
+
     ev.Skip();
 }
 
@@ -4636,7 +4640,41 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 		reversedEvent = strdup(strtok(NULL, ")"));
 		meta->setStatusText("Info", "Lookup action source field ...");
 		*s = fa->getActionSourceDataField(reversedEvent);
-		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
+
+		//wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
+
+        int col = lookupColumnIndex(s->charrep());
+
+        wxString tableColumnName = TableView->GetColLabelValue(col);
+
+        if (tableColumnName != s->charrep()) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, err)
+			*err = "Expected column not at expected position (";
+			*err += s->charrep();
+			*err += ")\n\nCode handling this is not yet implemented.";
+			meta->msgBox("Error", err->charrep());
+			return ERR_NONE;
+        }
+
+        wxGrid::wxGridSelectionModes mode = TableView->GetSelectionMode();
+
+        if (mode == wxGrid::wxGridSelectCells) {
+            wxGridCellCoordsArray array = TableView->GetSelectedCells();
+
+        }
+
+        if (mode == wxGrid::wxGridSelectRows) {
+            wxArrayInt rows = TableView->GetSelectedRows();
+
+        }
+
+        return ERR_NONE;
+
+
+        int row = TableView->Get
+
+        GetCellValue(row, col
+
 		wxString value;
 		wxString errmsg;
 
