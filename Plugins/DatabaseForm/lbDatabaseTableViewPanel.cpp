@@ -4641,7 +4641,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 		meta->setStatusText("Info", "Lookup action source field ...");
 		*s = fa->getActionSourceDataField(reversedEvent);
 
-		//wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
+		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
 
         int col = lookupColumnIndex(s->charrep());
 
@@ -4656,6 +4656,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 			return ERR_NONE;
         }
 
+#ifdef NOT_READY
+		
         wxGrid::wxGridSelectionModes mode = TableView->GetSelectionMode();
 
         if (mode == wxGrid::wxGridSelectCells) {
@@ -4675,6 +4677,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 
         GetCellValue(row, col
 
+#endif
+					 
 		wxString value;
 		wxString errmsg;
 
