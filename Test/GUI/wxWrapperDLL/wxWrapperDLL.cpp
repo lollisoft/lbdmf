@@ -1797,7 +1797,8 @@ lb_wxFrame::~lb_wxFrame() {
 
 void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	meta->setStatusText("Info", _trans("Timer ..."), false);
+	// Don't tell too much useless stuff :-)
+	if (isVerbose()) meta->setStatusText("Info", _trans("Timer ..."), false);
 	m_timer.Stop();
 	// Do timer stuff
 
