@@ -100,8 +100,8 @@ extern "C" {
 #include <wx/file.h>
 /*...e*/
 
-#include "wx/textbox.h"
-#include "childwnd.h"
+//#include "wx/textbox.h"
+//#include "childwnd.h"
 
 
 #include <lbDatabaseForm.h>
