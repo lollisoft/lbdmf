@@ -203,7 +203,7 @@ public:
 	static WORD    wAttributesOld;
 	static CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-	
+
 	static void *getConsoleFunction(char *name) {
 		static HMODULE kernel32=(HMODULE)0xffffffff;
 		if(kernel32==0)
@@ -472,6 +472,7 @@ public:
 
 	bool runTests();
 	void addFixtureCreator(FixtureCreator creator);
+	void unregisterTests();
 };
 
 /** Accessor to the (static) singleton instance */

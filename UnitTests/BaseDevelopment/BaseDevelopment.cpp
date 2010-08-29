@@ -248,6 +248,43 @@ lbErrCodes LB_STDCALL UIWrapper::run() {
 }
 
 
+class BaseDevelopmentHook : public TestFixture<BaseDevelopmentHook>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentHook )
+	{
+		TEST_CASE(test_Hook_lbstrirstr_with_backslash)
+		TEST_CASE(test_Hook_lbstrirstr_with_uppercase_pattern)
+	}
+
+	void test_Hook_lbstrirstr_with_backslash( void )
+	{
+		puts("test_Hook_lbstrirstr_with_backslash");
+
+        setVerbose(true);
+        char* test = "Path\\To\\DLL\\Test.dll";
+        char* result = lbstrristr(test, "\\");
+        setVerbose(false);
+
+        ASSERT_EQUALS(false, result == NULL)
+        printf("Test for lbstrristr:%s == %s\n", result, "\\Test.dll");
+		ASSERT_EQUALS("\\Test.dll", result)
+	}
+
+	void test_Hook_lbstrirstr_with_uppercase_pattern( void )
+	{
+		puts("test_Hook_lbstrirstr_with_uppercase_pattern");
+
+        char* test = "Path\\To\\DLL\\Test.dll";
+        char* result = lbstrristr(test, "TEST");
+
+        ASSERT_EQUALS(false, result == NULL)
+        printf("Test for lbstrristr:%s == %s\n", result, "Test.dll");
+		ASSERT_EQUALS("Test.dll", result)
+	}
+
+};
+
 class BaseDevelopmentLogger : public TestFixture<BaseDevelopmentLogger>
 {
 public:
@@ -1475,7 +1512,7 @@ public:
 
 
 
-
+REGISTER_FIXTURE( BaseDevelopmentHook );
 REGISTER_FIXTURE( BaseDevelopmentLogger );
 REGISTER_FIXTURE( BaseDevelopmentString );
 REGISTER_FIXTURE( BaseDevelopmentContainer );

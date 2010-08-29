@@ -23,7 +23,7 @@
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
             Heinrich-Scheufelen-Platz 2
-            
+
             73252 Lenningen (germany)
 */
 /*...e*/
@@ -152,7 +152,7 @@
    #define TRMemOpen()
    #define TRMemStartLocalCount()
    #define TRMemStopLocalCount()
-   #define TRMemResetLocalCount()   
+   #define TRMemResetLocalCount()
    #define TRMemSetModuleName(name)
    #define TRMemSetAdrBreakPoint(ptr, c)
    #define TRMemStartLocalCount()
@@ -162,7 +162,7 @@
    #define TRMemSetPointerValid(p1, p2)
   #endif
 
-#ifdef SOLARIS  
+#ifdef SOLARIS
 #define _TRMemValidate(name) (TRMemValidate(name) == true)
 #endif
 #ifndef SOLARIS
@@ -176,7 +176,7 @@
   #define TRMemOpen()
   #define TRMemStartLocalCount()
   #define TRMemStopLocalCount()
-  #define TRMemResetLocalCount()   
+  #define TRMemResetLocalCount()
   #define TRMemSetModuleName(name)
   #define TRMemSetAdrBreakPoint(ptr, c)
   #define TRMemStartLocalCount()
@@ -255,9 +255,9 @@
                         *(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 #endif
-                                                        
 
-#ifndef LOG_IMPROVED                                                                                                                                                            
+
+#ifndef LOG_IMPROVED
 #define _LOG \
         if (isInitializing() != 0) { \
         } else { \
@@ -279,11 +279,11 @@
 #define _CL_VERBOSE \
     if (isLogActivated() && isVerbose()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "
-        
+
 #ifndef SOLARIS
 #define _CL_LOG \
 	if (isLogActivated()) { \
-        COUT << __FILE__ << ", " << __LINE__ << ": "        
+        COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
 #ifdef SOLARIS
@@ -413,6 +413,8 @@ extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
 
 
+extern "C" DLLEXPORT char* LB_CDECL lbstrristr(const char *String, const char *Pattern);
+extern "C" DLLEXPORT char* LB_CDECL lbstristr(const char *String, const char *Pattern);
 
 
 
@@ -441,7 +443,7 @@ extern "C" DLLEXPORT char* LB_CDECL getTRMemTrackBreak();
 
 #ifndef TRACKER
 #define TRMemTrackOpen isSetTRMemTrackBreak
-#endif 
+#endif
 
 /*...e*/
 
@@ -551,13 +553,13 @@ public:
     virtual ~lbStringKey();
 
     DECLARE_LB_UNKNOWN()
-  
+
     DECLARE_LB_KEYBASE()
 
 private:
 
     char keyType[10];
-    char* key;    
+    char* key;
 };
 /*...e*/
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
@@ -575,7 +577,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
         DECLARE_LB_KEYBASE()
-        
+
 private:
 
         char keyType[10];
@@ -586,7 +588,7 @@ private:
 extern "C" DLLEXPORT void LB_CDECL CL_doLog(char* f, char* msg);
 
 #ifdef LINUX
-#ifndef INCLUDED_BY_LBDMF 
+#ifndef INCLUDED_BY_LBDMF
 #undef HINSTANCE
 #endif
 #endif

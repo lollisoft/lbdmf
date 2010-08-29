@@ -213,9 +213,12 @@ extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name) { ret
 extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text) { return translateText(text); }
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale() { uninitLocale(); }
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
+extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
+extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf) { return new lbStringKey(buf); }
+
 
 
 /*...sDLLEXPORT void createLogInstance\40\\41\:0:*/
@@ -471,22 +474,35 @@ DLLEXPORT void LB_CDECL setLBModuleHandle(HINSTANCE h) {
 
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
+    const char* moduleName = NULL;
+
+    moduleName = lbstrristr(name, "\\");
+    if (moduleName == NULL) moduleName = lbstrristr(name, "/");
+    if (moduleName == NULL) moduleName = name;
+
+    char* cutoff = lbstristr(moduleName, ".");
+    if (cutoff != NULL) cutoff[0] = 0;
+
+    if (moduleName[0] == '\\') moduleName++;
+    if (moduleName[0] == '/') moduleName++;
+    if (isVerbose()) printf("Create a module entry: %s\n", moduleName);
+
 	countModules++;
 	_Modules* temp = NULL;
 	if (loadedModules == NULL) {
 		loadedModules = new _Modules;
 		loadedModules->number = 1;
-		loadedModules->name = (char*) malloc(strlen(name)+1);
+		loadedModules->name = (char*) malloc(strlen(moduleName)+1);
 		loadedModules->name[0] = 0;
 		loadedModules->next = NULL;
-		strcpy(loadedModules->name, name);
+		strcpy(loadedModules->name, moduleName);
 		return loadedModules;
 	} else {
 		temp = new _Modules;
 		temp->number = loadedModules->number+1;
-		temp->name = (char*) malloc(strlen(name)+1);
+		temp->name = (char*) malloc(strlen(moduleName)+1);
 		temp->name[0] = 0;
-		strcpy(temp->name, name);
+		strcpy(temp->name, moduleName);
 
 		temp->next = loadedModules;
 		loadedModules = temp;
@@ -502,9 +518,22 @@ _Modules *findModule(const char* name) {
 	int count = 0;
 
 
+    const char* moduleName = NULL;
+
+    moduleName = lbstrristr(name, "\\");
+    if (moduleName == NULL) moduleName = lbstrristr(name, "/");
+    if (moduleName == NULL) moduleName = name;
+
+    char* cutoff = lbstristr(moduleName, ".");
+    if (cutoff != NULL) cutoff[0] = 0;
+
+    if (moduleName[0] == '\\') moduleName++;
+    if (moduleName[0] == '/') moduleName++;
+
+
 	while (temp != NULL) {
 		count++;
-		if (strcmp(temp->name, name) == 0) {
+		if (strcmp(temp->name, moduleName) == 0) {
 			found = temp;
 		}
 		temp = temp->next;
@@ -689,12 +718,12 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		char* newname = NULL;
 
 		char* errmsg = dlerror();
-		
+
 		if (errmsg != NULL) {
 			printf("DLERROR: %s\n", errmsg);
 		}
-		
-		
+
+
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
 		home = ".";//getcwd(home, 100);
 
@@ -750,11 +779,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 				return ERR_NONE;
 			} else {
 				free(newname);
-				
+
 				newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
 				//newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("Resources")+strlen("lib")+strlen(name)+6);
 				newname[0] = 0;
-				
+
 				strcat(newname, ".");
 				strcat(newname, SLASH);
 				strcat(newname, "wxWrapper.app");
@@ -766,23 +795,23 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 				strcat(newname, "lib");
 				strcat(newname, SLASH);
 				strcat(newname, name);
-				
+
 				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 					m->lib = hinst;
 					m->skip = skipAutoUnload;
 					free(newname);
-					
+
 					return ERR_NONE;
-				}					
+				}
 				char* errmsg = dlerror();
-				
+
 				if (errmsg != NULL) {
 					printf("DLERROR: %s\n", errmsg);
 				}
 			}
 
 			free(newname);
-		
+
 			newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
 			newname[0] = 0;
 			strcat(newname, "..");
@@ -790,7 +819,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 			strcat(newname, "plugins");
 			strcat(newname, SLASH);
 			strcat(newname, name);
-			
+
 #ifndef __WATCOMC__
 		// Quick hack
 #define MAX_PATH 512
@@ -807,23 +836,23 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 			strcat(newcwd, "Contents");
 			strcat(newcwd, SLASH);
 			strcat(newcwd, "lib");
-		
+
 			chdir(newcwd);
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 				m->lib = hinst;
 				m->skip = skipAutoUnload;
 				free(newname);
-				
+
 				chdir(oldcwd);
 				return ERR_NONE;
 			}
 			chdir(oldcwd);
 			errmsg = dlerror();
-		
+
 			if (errmsg != NULL) {
 				printf("DLERROR: %s\n", errmsg);
 			}
-		
+
 			char *buffer = (char*) malloc(strlen(name)+strlen(__FILE__)+100);
 			buffer[0] = 0;
 
@@ -1103,7 +1132,7 @@ DLLEXPORT char* LB_CDECL translateText(char* text) {
 char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 {
 	char *pptr, *sptr, *start;
-	
+
 	for (start = (char *)String; *start != NUL; start++)
 	{
 		/* find start of pattern in string */
@@ -1111,17 +1140,17 @@ char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 			;
 		if (NUL == *start)
 			return NULL;
-		
+
 		pptr = (char *)Pattern;
 		sptr = (char *)start;
-		
+
 		while (toupper(*sptr) == toupper(*pptr))
 		{
 			sptr++;
 			pptr++;
-			
+
 			/* if end of pattern then pattern was found */
-			
+
 			if (NUL == *pptr)
 				return (start);
 		}
@@ -1131,36 +1160,17 @@ char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 
 char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
 {
-	char *pptr, *sptr, *start;
-	int len = 0;
-	
-	if (String == NULL) return NULL;
-	
-	len = strlen(String);
-	
-	for (start = (char *)String+len; *start != NUL; start--)
-	{
-		/* find start of pattern in string */
-		for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start--)
-			;
-		if (NUL == *start)
-			return NULL;
-		
-		pptr = (char *)Pattern;
-		sptr = (char *)start;
-		
-		while (toupper(*sptr) == toupper(*pptr))
-		{
-			sptr--;
-			pptr--;
-			
-			/* if end of pattern then pattern was found */
-			
-			if (NUL == *pptr)
-				return (start);
-		}
+	char *r = NULL;
+
+	if (!Pattern[0])
+		return (char*)String + strlen(String);
+	while (1) {
+		char *p = lbstristr(String, Pattern);
+		if (!p)
+			return r;
+		r = p;
+		String = p + 1;
 	}
-	return NULL;
 }
 #undef NUL
 
@@ -1191,6 +1201,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 						temp = temp->next;
 					}
 
+                    if (isVerbose()) printf("Unloading module %s\n", delMod->name);
 					if (FreeLibrary(delMod->lib) == 0) {
 						printf("ERROR: Library could not be unloaded!\n");
 					}
@@ -1233,7 +1244,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 					}
 
 					while (dlclose(delMod->lib) == 0) {
-						//if (isVerbose()) 
+						//if (isVerbose())
 							printf("Unloaded module %s.\n", name);
 //					} else {
 //						if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
@@ -1252,8 +1263,31 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 	return ERR_NONE;
 }
 /*...e*/
+
+void unloadModule(_Modules* m) {
+    while(loadedModules) {
+        if (strcmp(loadedModules->name, "lbModule") != 0) {
+            lbUnloadModule(loadedModules->name);
+        } else {
+            if (loadedModules->next != NULL) {
+                loadedModules = loadedModules->next;
+            } else {
+                if (strcmp(loadedModules->name, "lbModule") == 0) break;
+            }
+        }
+
+    }
+}
+
 /*...svoid LB_CDECL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_CDECL unHookAll() {
+    uninitLocale();
+
+    if (loadedModules)
+        unloadModule(loadedModules);
+}
+
+DLLEXPORT void LB_CDECL unHookAll_old() {
 	_Modules* skipped = NULL;
 	_Modules* temp_skipped = NULL;
 
@@ -1289,7 +1323,7 @@ DLLEXPORT void LB_CDECL unHookAll() {
 			if (temp->name != NULL) {
 				_Modules* delMod = temp;
 
-				if (strcmp(temp->name, "lbModule.so") == 0) {
+				if (strcmp(temp->name, "lbModule") == 0) {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
 					delete delMod;
@@ -1318,7 +1352,7 @@ DLLEXPORT void LB_CDECL unHookAll() {
 			if (temp->name != NULL) {
 				_Modules* delMod = temp;
 
-				if (strcmp(temp->name, "lbModule.so") == 0) {
+				if (strcmp(temp->name, "lbModule") == 0) {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
 					free(delMod->name);

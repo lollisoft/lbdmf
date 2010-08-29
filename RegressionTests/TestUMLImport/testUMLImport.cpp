@@ -96,7 +96,7 @@ public:
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	lb_I_Unknown* LB_STDCALL getUnknown();
-	
+
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 
@@ -112,7 +112,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(UIWrapper)
 	ADD_INTERFACE(lb_I_MetaApplication)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
+// Does import, but is executable
+//IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
 
 UIWrapper::UIWrapper() {
 	ref = STARTREF;
@@ -180,7 +181,7 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 
 lb_I_Unknown* LB_STDCALL UIWrapper::getUnknown() {
 	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	uk++;
 	return uk.getPtr();
 }

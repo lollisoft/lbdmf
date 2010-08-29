@@ -846,7 +846,7 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 		miniLong(long _l) {
 			l = _l;
 		}
-		
+
 		miniLong(const miniLong& _l) {
 				l = _l.l;
 			}
@@ -860,7 +860,7 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 			l = _l;
 			return *this;
 		}
-		
+
 		miniLong& LB_STDCALL operator = (const int _l) {
 			l = (long)_l;
 			return *this;
@@ -869,27 +869,27 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 		bool LB_STDCALL operator == (const miniLong& _l) const {
 			return l == _l.get();
 		}
-		
+
 		bool LB_STDCALL operator == (const int _l) const {
 			return l == (long)_l;
 		}
-		
+
 		bool LB_STDCALL operator == (const long _l) const {
 			return l == _l;
 		}
-		
+
 		bool LB_STDCALL operator >= (const miniLong& _l) const {
 			return l >= _l.get();
 		}
-		
+
 		bool LB_STDCALL operator >= (const int _l) const {
 			return l >= (long)_l;
 		}
-		
+
 		bool LB_STDCALL operator >= (const long _l) const {
 			return l >= _l;
 		}
-		
+
 		long get() const { return l; }
 			void set(long _l) { l = _l; }
 			long l;
@@ -2473,44 +2473,44 @@ public:
 	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance() = 0;
 
 	/** \brief Call the registered handler.
-	 * If the boolean flag hasDefinedInterceptor is true, the call will fail if no interceptor is registered. 
+	 * If the boolean flag hasDefinedInterceptor is true, the call will fail if no interceptor is registered.
 	 */
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult, bool hasDefinedInterceptor = false) = 0;
-	
+
 #ifdef IMPLEMENT_NEWSTUFF
 	virtual lb_I_DispatchInterceptor* getInterceptor() = 0;
 	virtual lbInterceptor LB_STDCALL getBeforeInterceptor() = 0;
 	virtual lbInterceptor LB_STDCALL getAfterInterceptor() = 0;
-	
+
 	// Forwarded functions.
 	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) = 0;
 	virtual lbErrCodes LB_STDCALL delInterceptor() = 0;
-	
+
 	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance) = 0;
-	
+
 	/** \brief Implements execution of hook functions.
 	 *
 	 * Hooks, that are executed before could cancel the call to the dispatched function.
 	 * The following error codes should be implemented:
-	 * 
+	 *
 	 * ERR_HOOK_BEFORE_CANCEL			Cancel the dispatch call and return.
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
 	virtual lbErrCodes LB_STDCALL executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
-	
+
 	/** \brief Implements execution of hook functions.
 	 *
 	 * Hooks, that are executed before could cancel the call to the dispatched function.
 	 * The following error codes should be implemented:
-	 * 
+	 *
 	 * ERR_HOOK_BEFORE_FAILURENOTICE	Returns a value in the result parameters with name 'failurenotice' and a value with name 'failurecode'.
 	 */
 	virtual lbErrCodes LB_STDCALL executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
-	
+
 	virtual void LB_STDCALL setInterceptorRequired(bool _required) = 0;
-#endif	
-	
-	
+#endif
+
+
 };
 /*...e*/
 /*...sclass lb_I_EventHandler:0:*/
@@ -2529,7 +2529,7 @@ public:
 	/**
 	 * This function is added to avoid diamond shaped class hirachies.
 	 */
-	
+
 	virtual lb_I_Unknown* LB_STDCALL getUnknown() = 0;
 };
 /*...e*/
@@ -2641,25 +2641,25 @@ public:
 	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName) = 0;
 
 	//virtual lbErrCodes LB_STDCALL activateInterceptor(char* EvName, lb_I_EvHandler* ev) = 0;
-	
+
 	/** \brief Remove an intercepted instance.
 	 * This is needed when a window is closed. The window has to call this function to remove the instance from the list of intercepted instances.
 	 * Otherwise - at least on wxWidgets - the instance pointer gets dangling and leads to crashes.
 	 */
 	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance) = 0;
-	
+
 	/** \brief Get the list of interceptors to store anywhere.
 	 * This function is used to store the information of to be used interceptors.
 	 * The list is a string representation and may be encrypted.
 	 */
 	virtual lb_I_String* LB_STDCALL getInterceptorDefinitions() = 0;
-	
+
 	/** \brief Set the list of interceptors to be used.
 	 * The list is a string representation and may be encrypted.
 	 */
 	virtual lbErrCodes LB_STDCALL setInterceptorDefinitions(lb_I_String* s) = 0;
 #endif
-	
+
 	/**
 	 * Removes all event handlers from a given instance. Use this function if you
 	 * want to reinstantiate a class that registers event handlers and the old gets
@@ -2680,14 +2680,14 @@ public:
 	 * Interceptors are typically vendor extensions to be hooked into basic functionalities such as permission handling.
 	 */
 	virtual lb_I_String* LB_STDCALL getVendorName() = 0;
-	
+
 	/** \brief Initialize and activate the interceptor.
 	 * Call this function to register the interceptor to the dispatcher.
 	 *
 	 * \note If this is done in the designer and the plugin later is not deployed, then the dispatcher will cancel related events.
 	 */
 	virtual lbErrCodes LB_STDCALL initialize() = 0;
-	
+
 	/** \brief Enables access to the intercepted object.
 	 * Due to the possibility to register multiple instances for one event (with a prefix of the instance pointer to lb_I_EventHandler type as string),
 	 * the correct intercepted instance must be looked up by the instance pointer as string (key).
@@ -2695,7 +2695,7 @@ public:
 	 * The interceptor must cope with the correct type conversion to what the interceptor should act.
 	 */
 	virtual lbErrCodes LB_STDCALL addInterceptedInstance(lb_I_Unknown* intercepted) = 0;
-	
+
 	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance) = 0;
 };
 
@@ -4620,7 +4620,7 @@ public:
 class lb_I_UnitTestModul : public lb_I_PluginModule {
 public:
 	virtual char* LB_STDCALL getTestFixture() = 0;
-	
+
 	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
 	//virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
 };

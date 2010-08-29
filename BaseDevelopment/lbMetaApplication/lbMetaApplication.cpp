@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.179 $
+ * $Revision: 1.180 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.179 2010/06/30 06:05:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.180 2010/08/29 21:09:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.180  2010/08/29 21:09:30  lollisoft
+ * Changes to get more modules compiled with MinGW.
+ * Also changed my adress in some files as I have a new
+ * home. Others will follow.
+ *
  * Revision 1.179  2010/06/30 06:05:57  lollisoft
  * Added code to support unloading application module (detachInterface) and changed code to try correctly unloading modules.
  *
@@ -705,14 +710,9 @@ IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
 /// \todo Check if these OS differences are really needed.
 
-#ifdef WINDOWS
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
-#endif
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
-#ifdef LINUX
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
-#endif
 
 /*...e*/
 
@@ -752,7 +752,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
-	
+
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
@@ -819,7 +819,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 
 lb_I_Unknown* LB_STDCALL lb_MetaApplication::getUnknown() {
 	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	uk++;
 	return uk.getPtr();
 }
@@ -970,8 +970,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 	disp->accept(*&fOp1);
-	
-	
+
+
 	if (propertySets != NULL) {
 		_LOG << "Save property sets..." LOG_
 		propertySets->accept(*&fOp1);
@@ -1121,11 +1121,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			 * functionality. The dispatcher should cancel all dispatching calls who have a registered
 			 * interceptor that is not fully loaded.
 			 */
-			
+
 			UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 			disp->accept(*&fOp);
 #endif
-			
+
 			_LOG << "Read property sets from metaapp file..." LOG_
 			REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
 			propertySets->accept(*&fOp);
@@ -3031,7 +3031,7 @@ void			LB_STDCALL lb_MetaApplication::setActiveApplication(const char* name) {
 lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
-	
+
 	if (LogonApplication == NULL) return NULL;
 
 	QI(LogonApplication, lb_I_KeyBase, key)
@@ -3780,12 +3780,12 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _CL_LOG << "Error: Inserting new container element failed" LOG_
 
 	uk = dispatcher->getElement(&k);
-	
+
 	if (uk == NULL) {
 		_LOG << "Error: Could not add an interceptor." LOG_
 		return ERR_REGISTER_HANDLER;
 	}
-	
+
 	QI(uk, lb_I_EvHandler, ev)
 
 	// Prepare the event name and eventually strip off the instance pointer part.
@@ -3797,7 +3797,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	Reversed->replace(ptr, "");
 	_LOG << "Adding an interceptor '" << Reversed->charrep() << "' for event '" << reversed << "'. Replace pattern '" << ptr << "'" LOG_
 	activateInterceptor(*&Reversed, *&ev);
-		
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -3806,7 +3806,7 @@ void LB_STDCALL lb_Dispatcher::detachInstance(lb_I_EventHandler* evHandlerInstan
 	lbErrCodes err = ERR_NONE;
 	if (dispatcher != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, handlersToDelete)
-		
+
 		dispatcher->finishIteration();
 		while (dispatcher->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
@@ -3818,19 +3818,19 @@ void LB_STDCALL lb_Dispatcher::detachInstance(lb_I_EventHandler* evHandlerInstan
 				if (evH == evHandlerInstance) {
 					UAP(lb_I_KeyBase, key)
 					key = dispatcher->currentKey();
-					
+
 					handlersToDelete->insert(&uk, &key);
 				}
 			}
 		}
-		
+
 		while (handlersToDelete->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_KeyBase, key)
-			
+
 			uk = handlersToDelete->nextElement();
 			key = handlersToDelete->currentKey();
-			
+
 			dispatcher->finishIteration();
 			dispatcher->remove(&key);
 		}
@@ -3889,10 +3889,10 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 		UAP_REQUEST(getModuleInstance(), lb_I_String, Reversed)
 		*Reversed = reversed;
 		Reversed->replace(ptr, "", true);
-		
+
 		UAP(lb_I_EvHandler, evH)
 		evH = hasDefinedInterceptor(*&Reversed);
-		
+
 		ev->setInterceptorRequired(evH != NULL);
 		ev->call(EvData, EvResult);
 	}
@@ -3917,7 +3917,7 @@ lb_I_EvHandler* LB_STDCALL lb_Dispatcher::hasDefinedInterceptor(lb_I_String* eve
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
 	QI(event, lb_I_KeyBase, key)
-	
+
 	if (interceptorevents->exists(&key) != 0) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_EvHandler, ev)
@@ -3925,8 +3925,8 @@ lb_I_EvHandler* LB_STDCALL lb_Dispatcher::hasDefinedInterceptor(lb_I_String* eve
 		QI(uk, lb_I_EvHandler, ev)
 		ev++;
 		return ev.getPtr();
-	}		
-	
+	}
+
 	return NULL;
 }
 
@@ -3948,7 +3948,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 	bool foundRegistered = false;
 
 	_LOG << "lb_Dispatcher::setInterceptor() for event name '" << EvName << "' called." LOG_
-	
+
 	UAP(lb_I_EvHandler, evH)
 	UAP(lb_I_Unknown, uk)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, new_interceptor)
@@ -3971,37 +3971,37 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 	}
 
 	evH->setInterceptor(evHandlerInstance, evHandler_Before, evHandler_After);
-	
+
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(char* EvName) {
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	evManager->resolveEvent(EvName, id);
 	i->setData(id);
-	
+
 	UAP(lb_I_KeyBase, ik)
 	QI(i, lb_I_KeyBase, ik)
-	
+
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_EvHandler, ev)
-	
+
 	if (dispatcher == NULL) {
 		_LOG << "Error: Have no dispatcher" LOG_
 		return ERR_DELETE_INTERCEPTOR_FAILS;
 	} else {
 		uk = dispatcher->getElement(&ik);
-		
+
 		if (uk == NULL) {
 			_LOG << "Error: Could not delete an interceptor." LOG_
 			return ERR_DELETE_INTERCEPTOR_FAILS;
 		}
-		
+
 		QI(uk, lb_I_EvHandler, ev)
-		
+
 		ev->delInterceptor();
 	}
 	return ERR_NONE;
@@ -4011,26 +4011,26 @@ lbErrCodes LB_STDCALL lb_Dispatcher::removeInterceptedInstance(lb_I_String* EvNa
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_EvHandler, evInterceptor)
 	evInterceptor = hasDefinedInterceptor(*&EvName);
-	
+
 	if (evInterceptor != NULL) evInterceptor->removeInterceptedInstance(interceptedInstance);
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
-	
+
 	pl = PM->getFirstMatchingPlugin("lb_I_CryptoStream", "cryptostream");
 	if (pl != NULL) {
 		ukPl = pl->getImplementation();
-		
+
 		if (ukPl != NULL) {
 			UAP(lb_I_CryptoStream, cs)
 			QI(ukPl, lb_I_CryptoStream, cs)
-			
+
 			if (cs != NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, decryptedString)
 				*decryptedString = "";
@@ -4045,11 +4045,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptorDefinitions(lb_I_String* s) {
 			}
 		}
 	}
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	meta->msgBox("Error", "The crypto plugin can't be used!\n\n Work without encryption.");
 	//interceptorevents = s->split(',');
-	
+
 	return err;
 }
 
@@ -4057,7 +4057,7 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 	*s = "";
-	
+
 	interceptorevents->finishIteration();
 	while (interceptorevents->hasMoreElements() != 0) {
 		UAP(lb_I_String, part)
@@ -4065,7 +4065,7 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 		UAP(lb_I_KeyBase, key)
 		uk = interceptorevents->nextElement();
 		key = interceptorevents->currentKey();
-		
+
 		if (*s == "") {
 			*s = key->charrep();
 		} else {
@@ -4073,19 +4073,19 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 			*s += key->charrep();
 		}
 	}
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
-	
+
 	pl = PM->getFirstMatchingPlugin("lb_I_CryptoStream", "cryptostream");
 	if (pl != NULL) {
 		ukPl = pl->getImplementation();
-		
+
 		if (ukPl != NULL) {
 			UAP(lb_I_CryptoStream, cs)
 			QI(ukPl, lb_I_CryptoStream, cs)
-			
+
 			if (cs != NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, encryptedString)
 				*encryptedString = "";
@@ -4093,7 +4093,7 @@ lb_I_String* LB_STDCALL lb_Dispatcher::getInterceptorDefinitions() {
 				*cs << *&s;
 				cs->setAlgorythm("");
 				*cs >> *&encryptedString; // No decryption
-				
+
 				encryptedString++;
 				return encryptedString.getPtr();
 			}
@@ -4186,14 +4186,14 @@ lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evH
 	_evHandlerInstance_interceptor = evHandlerInstance;
 	ev_interceptor_Before = evHandler_Before;
 	ev_interceptor_After = evHandler_After;
-	
+
 	if (_evHandlerInstance_interceptor != NULL) {
 		if (_evHandlerInstance != NULL) {
 			char ptr[100] = "";
 			sprintf(ptr, "%p", _evHandlerInstance);
 			_LOG << "lb_EvHandler::setInterceptor(): Pass intercepted handler " << ptr << " to interceptor." LOG_
 			UAP(lb_I_Unknown, uk)
-			
+
 			uk = _evHandlerInstance->getUnknown();
 			_evHandlerInstance_interceptor->addInterceptedInstance(*&uk);
 		} else {
@@ -4210,30 +4210,30 @@ lbErrCodes LB_STDCALL lb_EvHandler::delInterceptor() {
 	_evHandlerInstance_interceptor = NULL;
 	ev_interceptor_Before = NULL;
 	ev_interceptor_After = NULL;
-	
+
 	return err;
 }
 
 lbErrCodes LB_STDCALL lb_EvHandler::executeInterceptorBefore(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	// Check if the interceptor is required and not initialized (no plugin found with that interceptor).
 	if (interceptorRequired && !_evHandlerInstance_interceptor && !ev_interceptor_Before) return ERR_INTERCEPTOR_MISSING;
-	
+
 	if (_evHandlerInstance_interceptor && ev_interceptor_Before) {
 			err = (_evHandlerInstance_interceptor->*(lbInterceptor) ev_interceptor_Before) (EvData);
 	}
-		
+
 	return err;
 }
 
 lbErrCodes LB_STDCALL lb_EvHandler::executeInterceptorAfter(lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	if (_evHandlerInstance_interceptor && ev_interceptor_After) {
 		err = (_evHandlerInstance_interceptor->*(lbInterceptor) ev_interceptor_After) (EvData);
 	}
-	
+
 	return err;
 }
 
@@ -4241,9 +4241,9 @@ lbErrCodes LB_STDCALL lb_EvHandler::executeInterceptorAfter(lb_I_Unknown* EvData
 
 lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** evResult, bool hasDefinedInterceptor) {
 
-	// Assume the interceptor makes only sense if the real function is callable. Thus interceptor is here		
+	// Assume the interceptor makes only sense if the real function is callable. Thus interceptor is here
 #ifdef IMPLEMENT_NEWSTUFF
-	lbErrCodes err_interceptor_Before = executeInterceptorBefore(evData, evResult); 
+	lbErrCodes err_interceptor_Before = executeInterceptorBefore(evData, evResult);
 
 	if (err_interceptor_Before == ERR_INTERCEPTOR_MISSING) {
 		_LOG << "Error: Interceptor defined, but is missing." LOG_
@@ -4259,8 +4259,8 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 
 #ifdef IMPLEMENT_NEWSTUFF
 	lbErrCodes err_interceptor_After = executeInterceptorAfter(evData, evResult);
-#endif		
-	
+#endif
+
 	return ERR_NONE;
 }
 /*...e*/

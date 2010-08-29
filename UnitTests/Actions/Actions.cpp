@@ -33,12 +33,12 @@ public:
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	lb_I_Unknown* LB_STDCALL getUnknown();
-	
+
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL setStatusText(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
-	
+
 	void LB_STDCALL setAnswer(char* what);
 	void LB_STDCALL setFileAnswer(char* what);
 
@@ -132,7 +132,7 @@ lbErrCodes LB_STDCALL UIWrapper::setStatusText(lb_I_Unknown* uk) {
                 params->getUAPString(*&parameter, *&value);
 				*parameter = "CallYield";
 				params->getUAPString(*&parameter, *&CallYield);
-			
+
 				printf("Status: %s\n", value->charrep());
 
                 err = ERR_NONE;
@@ -183,7 +183,7 @@ lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 
 lb_I_Unknown* LB_STDCALL UIWrapper::getUnknown() {
 	UAP(lb_I_Unknown, uk)
-	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+	queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	uk++;
 	return uk.getPtr();
 }
@@ -342,7 +342,7 @@ public:
 #endif
 #endif
 /*...e*/
-		
+
 		result = pluginModule;
 		free(pluginDir);
 	}

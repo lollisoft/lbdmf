@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.111 $
+ * $Revision: 1.112 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.111 2010/06/03 16:58:07 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.112 2010/08/29 21:09:30 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.112  2010/08/29 21:09:30  lollisoft
+ * Changes to get more modules compiled with MinGW.
+ * Also changed my adress in some files as I have a new
+ * home. Others will follow.
+ *
  * Revision 1.111  2010/06/03 16:58:07  lollisoft
  * Most requriered modules are now compilable with MinGW and the main application runs.
  * There are some problems with unit tests but they pass. Also the code generator seems to
@@ -1304,9 +1309,9 @@ void writeMinGWPluginTarget(char* modulename) {
 
 //  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
   printf("\t\t@$(CPPMINGW) -fPIC -shared -Wl,--enable-auto-import -Wl,--subsystem,windows -mthreads -mwindows -Wl,--out-implib=$(PROGRAM).a -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
-  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  //printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).a $(PLUGINLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n\n");
 
 /*
@@ -2046,7 +2051,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.111 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.112 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

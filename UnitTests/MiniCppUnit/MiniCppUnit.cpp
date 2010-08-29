@@ -27,12 +27,12 @@
 namespace std
 {
   template <typename T>
-  inline bool isnan(T x) { 
-		return _isnan(x) != 0; 
+  inline bool isnan(T x) {
+		return _isnan(x) != 0;
 	}
 	template <typename T>
-	inline bool isinf(T x) { 
-		return _finite(x) == 0; 
+	inline bool isinf(T x) {
+		return _finite(x) == 0;
 	}
 }
 #endif
@@ -127,7 +127,7 @@ void TestsListener::testHasThrown()
 }
 std::string TestsListener::summary()
 {
-	
+
 	printf("\nSummary:\n");
 	printf("%s%s%d%s\n", Assert::bold(), "\tExecuted Tests:\t", _executed, Assert::normal());
 	printf("%s%s%d%s\n", Assert::green(), "\tPassed Tests:\t", (_executed-_failed-_exceptions), Assert::normal());
@@ -160,23 +160,23 @@ void Assert::assertTrue(char* strExpression, bool expression,
 	if (!expression)
 	{
 		TestsListener::theInstance().errorsLog() << "\n"
-			<< errmsgTag_testFailedIn() << file 
-			<< errmsgTag_inLine() << linia << "\n" 
-			<< errmsgTag_failedExpression() 
+			<< errmsgTag_testFailedIn() << file
+			<< errmsgTag_inLine() << linia << "\n"
+			<< errmsgTag_failedExpression()
 			<< bold() << strExpression << normal() << "\n";
 		TestsListener::theInstance().testHasFailed();
 	}
 }
 
-void Assert::assertTrueMissatge(char* strExpression, bool expression, 
+void Assert::assertTrueMissatge(char* strExpression, bool expression,
 		const char* missatge, const char* file, int linia)
 {
 	if (!expression)
 	{
 		TestsListener::theInstance().errorsLog() << "\n"
 			<< errmsgTag_testFailedIn() << file
-			<< errmsgTag_inLine() << linia << "\n" 
-			<< errmsgTag_failedExpression() 
+			<< errmsgTag_inLine() << linia << "\n"
+			<< errmsgTag_failedExpression()
 			<< bold() << strExpression << "\n"
 			<< missatge<< normal() << "\n";
 		TestsListener::theInstance().testHasFailed();
@@ -196,7 +196,7 @@ void Assert::assertEquals( const bool expected, const bool result,
 	const char* file, int linia )
 {
 	assertEquals(
-		(expected?"true":"false"), 
+		(expected?"true":"false"),
 		(result?"true":"false"),
 		file, linia);
 }
@@ -211,7 +211,7 @@ bool isNaN(double x)
 }
 
 double scaledEpsilon(const double& expected, const double& fuzzyEpsilon )
-{ 
+{
 	const double aa = fabs(expected)+1;
 #ifdef _MSC_VER
 	return (std::isinf(aa))? fuzzyEpsilon: fuzzyEpsilon * aa;
@@ -227,7 +227,7 @@ bool fuzzyEquals(double expected, double result, double fuzzyEpsilon)
 }
 void Assert::assertEquals( const double expected, const double result,
 		const char* file, int linia )
-{	
+{
 	const double fuzzyEpsilon = 0.000001;
 	assertEqualsEpsilon( expected, result, fuzzyEpsilon, file, linia );
 }
@@ -248,12 +248,12 @@ void Assert::assertEqualsEpsilon( const double expected, const double result, co
 	if (isNaN(expected) && isNaN(result) ) return;
 	if (!isNaN(expected) && !isNaN(result) && fuzzyEquals(expected, result, epsilon) ) return;
 
-	TestsListener::theInstance().errorsLog() 
+	TestsListener::theInstance().errorsLog()
 			<< errmsgTag_testFailedIn() << file
-			<< errmsgTag_inLine() << linia << "\n" 
+			<< errmsgTag_inLine() << linia << "\n"
 			<< errmsgTag_expected()
 			<< bold() << expected << normal() << " "
-			<< errmsgTag_butWas() 
+			<< errmsgTag_butWas()
 			<< bold() << result << normal() << "\n";
 	TestsListener::theInstance().testHasFailed();
 }
@@ -271,24 +271,24 @@ int Assert::notEqualIndex( const std::string & one, const std::string & other )
 /**
  * we overload the assert with string doing colored diffs
  *
- * MS Visual6 doesn't allow string by reference :-( 
+ * MS Visual6 doesn't allow string by reference :-(
  */
 void Assert::assertEquals( const std::string expected, const std::string result,
 	const char* file, int linia )
 {
 	if(expected == result)
 		return;
-	
+
 	int indexDiferent = notEqualIndex(expected, result);
 	TestsListener::theInstance().errorsLog()
 		<< file << ", line: " << linia << "\n"
-		<< errmsgTag_expected() << "\n" << blue() 
+		<< errmsgTag_expected() << "\n" << blue()
 		<< expected.substr(0,indexDiferent)
-		<< green() << expected.substr(indexDiferent) 
+		<< green() << expected.substr(indexDiferent)
 		<< normal() << "\n"
-		<< errmsgTag_butWas() << blue() << "\n" 
+		<< errmsgTag_butWas() << blue() << "\n"
 		<< result.substr(0,indexDiferent)
-		<< red() << result.substr(indexDiferent) 
+		<< red() << result.substr(indexDiferent)
 		<< normal() << std::endl;
 
 	TestsListener::theInstance().testHasFailed();
@@ -334,6 +334,10 @@ bool TestFixtureFactory::runTests()
 	std::cout << TestsListener::theInstance().summary();
 
 	return TestsListener::theInstance().allTestsPassed();
+}
+
+void TestFixtureFactory::unregisterTests() {
+    _creators.clear();
 }
 
 void TestFixtureFactory::addFixtureCreator(FixtureCreator creator)

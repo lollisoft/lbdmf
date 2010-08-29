@@ -111,8 +111,18 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 
-TARGETDLL=dll
-TARGETEXE=exe
+TARGET_SELECTOR=_target_mingw
+#TARGET_SELECTOR=
+
+TARGETEXE=exe$(TARGET_SELECTOR)
+TARGETWXEXE=exe$(TARGET_SELECTOR)
+TARGETDLL=dll$(TARGET_SELECTOR)
+TARGETFRAMEWORK=dll$(TARGET_SELECTOR)
+TARGETSHARED=dll$(TARGET_SELECTOR)
+TARGETWXSHARED=dll$(TARGET_SELECTOR)
+TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
+TARGETPLUGIN=plugin$(TARGET_SELECTOR)
+TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
 	Database/DatabaseLayerWrapperTest \
@@ -227,10 +237,10 @@ PluginByInterfaceAndNamespace: dummy
 	$(MAKE) -C $@
 
 clean:
-	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done
 
 install:
-	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done 
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done
 
 install-strip:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install-strip; done

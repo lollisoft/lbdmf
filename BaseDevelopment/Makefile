@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.220 $
+# * $Revision: 1.221 $
 # * $Name:  $
-# * $Id: Makefile,v 1.220 2010/06/03 16:58:07 lollisoft Exp $
+# * $Id: Makefile,v 1.221 2010/08/29 21:09:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.221  2010/08/29 21:09:30  lollisoft
+# * Changes to get more modules compiled with MinGW.
+# * Also changed my adress in some files as I have a new
+# * home. Others will follow.
+# *
 # * Revision 1.220  2010/06/03 16:58:07  lollisoft
 # * Most requriered modules are now compilable with MinGW and the main application runs.
 # * There are some problems with unit tests but they pass. Also the code generator seems to
@@ -813,7 +818,7 @@ Path=$(PATH)
 
 MAKE_CONFIG_FILE=$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 
-ifndef RPMBUILD 
+ifndef RPMBUILD
 ifeq ($(OSTYPE), linux-debian-ppc)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -824,7 +829,7 @@ BASEDIRECTORIES= \
 endif
 endif
 
-ifdef RPMBUILD 
+ifdef RPMBUILD
 ifeq ($(OSTYPE), linux-debian-ppc)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -833,7 +838,7 @@ endif
 endif
 
 
-ifndef RPMBUILD 
+ifndef RPMBUILD
 ifeq ($(OSTYPE), solaris)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -864,7 +869,7 @@ endif
 
 #	../ServerPlugins \
 #	../ClientPlugins
-#	
+#
 
 #	../vendor/tvision-set \
 #	../vendor/tvision-set/examples/lbDMF
@@ -872,7 +877,7 @@ endif
 endif
 endif
 
-ifdef RPMBUILD 
+ifdef RPMBUILD
 ifeq ($(OSTYPE), solaris)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -1284,22 +1289,22 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	$(BASEDIRECTORIES) \
 	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
-	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
+	$(BASEDIRECTORIES) \
 	../Doc/html
 
 #	lbcs \
@@ -1465,7 +1470,7 @@ install:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
-	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xml $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
@@ -1499,7 +1504,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
-	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xml $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
@@ -2018,8 +2023,8 @@ lbXMLConfig/lbDOMConfig: dummy
 	../RegressionTests/Basetypes/Basetypes.cpp \
 	../RegressionTests/Memory/memTest.cpp
 	-@doxygen ../doxygen.conf
-	
-	
+
+
 
 #	../RegressionTests/Database/dbTest.cpp \
 
