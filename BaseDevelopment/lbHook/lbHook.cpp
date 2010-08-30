@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
@@ -475,10 +475,13 @@ DLLEXPORT void LB_CDECL setLBModuleHandle(HINSTANCE h) {
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
     const char* moduleName = NULL;
+    const char* copyOfName = NULL;
 
-    moduleName = lbstrristr(name, "\\");
-    if (moduleName == NULL) moduleName = lbstrristr(name, "/");
-    if (moduleName == NULL) moduleName = name;
+	copyOfName = strdup(name);
+	
+    moduleName = lbstrristr(copyOfName, "\\");
+    if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
+    if (moduleName == NULL) moduleName = copyOfName;
 
     char* cutoff = lbstristr(moduleName, ".");
     if (cutoff != NULL) cutoff[0] = 0;
@@ -519,11 +522,14 @@ _Modules *findModule(const char* name) {
 
 
     const char* moduleName = NULL;
-
-    moduleName = lbstrristr(name, "\\");
-    if (moduleName == NULL) moduleName = lbstrristr(name, "/");
-    if (moduleName == NULL) moduleName = name;
-
+    const char* copyOfName = NULL;
+	
+	copyOfName = strdup(name);
+	
+    moduleName = lbstrristr(copyOfName, "\\");
+    if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
+    if (moduleName == NULL) moduleName = copyOfName;
+	
     char* cutoff = lbstristr(moduleName, ".");
     if (cutoff != NULL) cutoff[0] = 0;
 
