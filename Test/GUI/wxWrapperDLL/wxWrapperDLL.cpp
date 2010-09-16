@@ -3053,14 +3053,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftTreeView(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 #ifdef USE_WXAUI
-	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("TreeView").window;
+	wxTreeCtrl* oldpg = (wxTreeCtrl*) m_mgr.GetPane("TreeView").window;
 
 	if (oldpg != NULL) {
-		_LOG << "Replace old property values..." LOG_
+		_LOG << "Replace old treeview values..." LOG_
 
-		UAP(lb_I_Container, parameter)
-		parameter = currentProperties->getParameterList();
-		populateProperties(oldpg, *&parameter);
+		//UAP(lb_I_Container, parameter)
+		//parameter = currentProperties->getParameterList();
+		//populateProperties(oldpg, *&parameter);
 
 		m_mgr.GetPane("TreeView").Show();
 
