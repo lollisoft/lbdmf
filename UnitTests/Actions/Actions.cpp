@@ -347,7 +347,36 @@ public:
 		free(pluginDir);
 	}
 
-
+	void writeGoodXsl(char* filename) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+	
+	void writeBadXsl(char* filename) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << ".\n";
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+	
+	
 	lb_I_DelegatedAction* getActionDelegate(char* _module, char* name) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
