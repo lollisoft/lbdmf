@@ -1,31 +1,29 @@
 /*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
-    The author of this work will be reached by e-Mail or paper mail.
-    e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-            
-            73252 Lenningen (germany)
-*/
+ DMF Distributed Multiplatform Framework (the initial goal of this library)
+ This file is part of lbDMF.
+ Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+ 
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ 
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ 
+ The author of this work will be reached by e-Mail or paper mail.
+ e-Mail: lothar.behrens@lollisoft.de
+ p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
+ 
+ */
 /*...e*/
 /*...sincludes:0:*/
 #ifdef LBDMF_PREC
@@ -161,6 +159,7 @@ public:
 	void LB_STDCALL visit(lb_I_TestFixture*) { _CL_LOG << "visit(lb_I_TestFixture*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CryptoStream*) { _CL_LOG << "visit(lb_I_CryptoStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DispatchInterceptor*) { _CL_LOG << "visit(lb_I_DispatchInterceptor*)" LOG_ }
+	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
 /*...e*/
         
         void LB_STDCALL visit(lb_I_Streamable* pm);
@@ -453,9 +452,24 @@ json_t* LB_STDCALL lbJSONOutputStream::addArray(json_t* parent, char* name) {
                 _LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
         }
 
-        if (json_insert_child(parent, arrayname) != JSON_OK) {
-                _LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
-        }
+		if (parent->type == JSON_STRING) {
+			json_t* object = json_new_object();
+			if (json_insert_child(parent, object) != JSON_OK) {
+				_LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
+			}
+			if (json_insert_child(arrayname, array) != JSON_OK) {
+				_LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
+			}
+			if (json_insert_child(object, arrayname) != JSON_OK) {
+				_LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
+			}
+			return object;
+		} else {
+			if (json_insert_child(parent, arrayname) != JSON_OK) {
+				_LOG << "lbJSONOutputStream::addArray(" << name << ") Error: Failed inserting child." LOG_
+			}
+		}
+	
         
         return array;
 }
@@ -564,109 +578,113 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Applications_Formulars* applicati
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Parameter* params) {
-        json_t* params_array = addArray((currentnode != NULL) ? currentnode : root, "lb_I_Parameter"); // Array with parameters, or recursive arrays
-        
-        UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
-        UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-        UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
-        UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
-        UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
-        UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
-        
-        UAP(lb_I_Container, container)
-        
-        container = params->getParameterList();
-
-        container->finishIteration();
-
-        while (container->hasMoreElements()) {
-                UAP(lb_I_Unknown, uk)
-                UAP(lb_I_KeyBase, key)
-                uk = container->nextElement();
-                key = container->currentKey();
-                
-                currentnode = addObject(params_array, key->charrep());
-
-                if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
-                        p->setData(*&uk);
-                        visit(*&p); // Recursive call
-                }
-                if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
-                        f->setData(*&uk);
-                        visit(*&f);
-                }
-                if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
-                        s->setData(*&uk);
-                        visit(*&s);
-                }
-                if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
-                        l->setData(*&uk);
-                        visit(*&l);
-                }
-                if (strcmp(uk->getClassName(), i->getClassName()) == 0) {
-                        i->setData(*&uk);
-                        visit(*&l);
-                }
-                if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
-                        b ->setData(*&uk);
-                        visit(*&b);
-                }
-                
-        }
-        
-        
+    json_t* params_array = addArray((currentnode != NULL) ? currentnode : root, "lb_I_Parameter"); // Array with parameters, or recursive arrays
+	
+	if (params_array->type == JSON_OBJECT) {
+		params_array = params_array->child->child;
+	}
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	
+	UAP(lb_I_Container, container)
+	
+	container = params->getParameterList();
+	
+	container->finishIteration();
+	
+	while (container->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = container->nextElement();
+		key = container->currentKey();
+		
+		currentnode = addObject(params_array, key->charrep());
+		
+		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
+			p->setData(*&uk);
+			visit(*&p); // Recursive call
+		}
+		if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
+			f->setData(*&uk);
+			visit(*&f);
+		}
+		if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
+			s->setData(*&uk);
+			visit(*&s);
+		}
+		if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
+			l->setData(*&uk);
+			visit(*&l);
+		}
+		if (strcmp(uk->getClassName(), i->getClassName()) == 0) {
+			i->setData(*&uk);
+			visit(*&l);
+		}
+		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
+			b ->setData(*&uk);
+			visit(*&b);
+		}
+		
+	}
+	
+	
 #ifdef bla      
-        int count;
-
-        count = params->Count();
-        *oStream << count;
-
-        UAP(lb_I_Container, container)
-        
-        container = params->getParameterList();
-        
-        if (count == 0) return;
-        
-        container->finishIteration();
-
-        UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
-        UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-        UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
-        UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
-        UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
-        
-        while (container->hasMoreElements()) {
-                UAP(lb_I_Unknown, uk)
-                UAP(lb_I_KeyBase, key)
-                uk = container->nextElement();
-                key = container->currentKey();
-                
-                *oStream << key->charrep();
-                *oStream << uk->getClassName();
-
-                _LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
-
-                if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
-                        p->setData(*&uk);
-                        visit(*&p);
-                }
-                if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
-                        f->setData(*&uk);
-                        visit(*&f);
-                }
-                if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
-                        s->setData(*&uk);
-                        visit(*&s);
-                }
-                if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
-                        l->setData(*&uk);
-                        visit(*&l);
-                }
-                if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
-                        b ->setData(*&uk);
-                        visit(*&b);
-                }
-        }
+	int count;
+	
+	count = params->Count();
+	*oStream << count;
+	
+	UAP(lb_I_Container, container)
+	
+	container = params->getParameterList();
+	
+	if (count == 0) return;
+	
+	container->finishIteration();
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	
+	while (container->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = container->nextElement();
+		key = container->currentKey();
+		
+		*oStream << key->charrep();
+		*oStream << uk->getClassName();
+		
+		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
+		
+		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
+			p->setData(*&uk);
+			visit(*&p);
+		}
+		if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
+			f->setData(*&uk);
+			visit(*&f);
+		}
+		if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
+			s->setData(*&uk);
+			visit(*&s);
+		}
+		if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
+			l->setData(*&uk);
+			visit(*&l);
+		}
+		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
+			b ->setData(*&uk);
+			visit(*&b);
+		}
+	}
 #endif
 }
 
@@ -1284,3 +1302,116 @@ lb_I_Stream* LB_STDCALL lbJSONOutputStream::getStream() {
         
         return s.getPtr();
 }
+
+/*...sclass lbPluginJSONOutputStream implementation:0:*/
+/*...slbPluginJSONOutputStream:0:*/
+class lbPluginJSONOutputStream : public lb_I_PluginImpl {
+public:
+	lbPluginJSONOutputStream();
+	
+	virtual ~lbPluginJSONOutputStream();
+	
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+	/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+	
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+	/*...e*/
+	
+	DECLARE_LB_UNKNOWN()
+	
+private:
+	UAP(lb_I_Unknown, impl)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginJSONOutputStream)
+ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginJSONOutputStream, lbPluginJSONOutputStream)
+
+/*...slbErrCodes LB_STDCALL lbPluginJSONOutputStream\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginJSONOutputStream::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_VERBOSE << "lbPluginJSONOutputStream::setData(...) called.\n" LOG_
+	
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginJSONOutputStream::lbPluginJSONOutputStream() {
+	_CL_VERBOSE << "lbPluginJSONOutputStream::lbPluginJSONOutputStream() called.\n" LOG_
+	ref = STARTREF;
+}
+
+lbPluginJSONOutputStream::~lbPluginJSONOutputStream() {
+	_CL_VERBOSE << "lbPluginJSONOutputStream::~lbPluginJSONOutputStream() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginJSONOutputStream::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginJSONOutputStream::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginJSONOutputStream::initialize() {
+}
+
+bool LB_STDCALL lbPluginJSONOutputStream::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginJSONOutputStream\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (impl == NULL) {
+		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
+		OutputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
+		QI(OutputStream, lb_I_Unknown, impl)
+	} else {
+		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return impl.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginJSONOutputStream\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (impl == NULL) {
+		
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
+		
+		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
+		OutputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
+		QI(OutputStream, lb_I_Unknown, impl)
+	}
+	
+	lb_I_Unknown* r = impl.getPtr();
+	impl.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginJSONOutputStream::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (impl != NULL) {
+		impl->release(__FILE__, __LINE__);
+		impl.resetPtr();
+	}
+}
+/*...e*/
+/*...e*/

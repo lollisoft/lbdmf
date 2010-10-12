@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.43 2010/06/26 13:53:29 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.44 2010/10/12 07:04:22 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.44  2010/10/12 07:04:22  lollisoft
+ * Completed implementation to write to json file from within an interceptor for events.
+ *
+ * Sample code of interceptor has to be extracted, published  and documented.
+ *
  * Revision 1.43  2010/06/26 13:53:29  lollisoft
  * Made some counts but may be going out of sync.
  *
@@ -234,6 +239,7 @@ enum lbErrCodes {
 	ERR_REGISTER_HANDLER,
 	ERR_DISPATCH_FAILS,
 	ERR_DISPATCH_PARAMETER_WRONG,
+	ERR_PARAMETER_MISSING,
 
 /* Errcodes for appbus dispatcher in connected state */
 
@@ -330,6 +336,7 @@ enum lbErrCodes {
 /* Errcodes for parameter handling */
 
 	ERR_PARAM_NOT_FOUND,
+	ERR_PARAM_WRONG_TYPE,
 
 	ERR_FILE_WRITE_DEFAULT,
 	ERR_FILE_READ_DEFAULT,

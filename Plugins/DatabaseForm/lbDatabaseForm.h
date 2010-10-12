@@ -1,40 +1,43 @@
 /*...sLicense:0:*/
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
-    The author of this work will be reached by e-Mail or paper mail.
-    e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-
-            73252 Lenningen (germany)
-*/
+ DMF Distributed Multiplatform Framework (the initial goal of this library)
+ This file is part of lbDMF.
+ Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+ 
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ 
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ 
+ The author of this work will be reached by e-Mail or paper mail.
+ e-Mail: lothar.behrens@lollisoft.de
+ p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
+ 
+ */
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.64 2010/04/02 08:12:29 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.65 2010/10/12 07:04:22 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.65  2010/10/12 07:04:22  lollisoft
+ * Completed implementation to write to json file from within an interceptor for events.
+ *
+ * Sample code of interceptor has to be extracted, published  and documented.
+ *
  * Revision 1.64  2010/04/02 08:12:29  lollisoft
  * Deactivated styled text control support due to DLL export mismatch issues.
  *
@@ -840,23 +843,23 @@ public:
 	 */
 	virtual ~lbDatabasePanel();
 
-	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	lbErrCodes	LB_STDCALL setName(char const * name, char const * appention);
+	char*		LB_STDCALL getName() { return base_formName; }
+	char*		LB_STDCALL getFormName() { return formName; }
 
-	char*	   LB_STDCALL getFormName() { return formName; }
+	lbErrCodes	LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	void		LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
 
-	void LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
+	void		LB_STDCALL create(int parentId);
+	int			LB_STDCALL getId() { return GetId(); }
 
-	void LB_STDCALL create(int parentId);
-	int  LB_STDCALL getId() { return GetId(); }
-
-	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() {
+	void		LB_STDCALL show() { Show (TRUE); };
+	void		LB_STDCALL destroy() {
 		if (_created) Destroy();
 		_created = false;
 	};
@@ -961,6 +964,11 @@ public:
 	 */
 	lbErrCodes LB_STDCALL lbDBRefresh(lb_I_Unknown* uk);
 
+
+	/**
+	 * Handler that actually does nothing, but can be intercepted.
+	 */
+	lbErrCodes LB_STDCALL lbDBFormInitialized(lb_I_Unknown* uk);
 	/**
 	 * Database manipulation
 	 *
@@ -1158,6 +1166,7 @@ public:
 	virtual ~lbDatabaseTableViewPanel();
 
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	char*		LB_STDCALL getName() { return base_formName; }
 
 	char*	   LB_STDCALL getFormName() { return formName; }
 
@@ -1500,6 +1509,7 @@ public:
 	virtual ~lbDatabaseDialog();
 
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+		char*		LB_STDCALL getName();
 
 	char*      LB_STDCALL getFormName();
 
@@ -1690,7 +1700,7 @@ public:
 	virtual ~lbDatabaseTableViewDialog();
 	
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
-	
+	char*		LB_STDCALL getName();
 	char*      LB_STDCALL getFormName();
 	
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };

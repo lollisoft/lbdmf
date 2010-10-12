@@ -21,10 +21,7 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-            
-            73252 Lenningen (germany)
+    p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
 */
 /*...e*/
 /*...sincludes:0:*/

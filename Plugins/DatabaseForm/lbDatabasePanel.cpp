@@ -1,31 +1,29 @@
 /*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
-    The author of this work will be reached by e-Mail or paper mail.
-    e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-
-            73252 Lenningen (germany)
-*/
+ DMF Distributed Multiplatform Framework (the initial goal of this library)
+ This file is part of lbDMF.
+ Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+ 
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ 
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ 
+ The author of this work will be reached by e-Mail or paper mail.
+ e-Mail: lothar.behrens@lollisoft.de
+ p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
+ 
+ */
 /*...e*/
 
 
@@ -326,44 +324,32 @@ lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dis
 	int references = getRefCount();
 	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
 	sprintf(eventName, "%p , and this is %p.", evHandler, this);
-	_LOG << "lbDatabasePanel::registerEventHandler() called. Instance of lb_I_EventHandler* is " << eventName LOG_
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
 	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseFirst", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBFirst, eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseNext", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBNext,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
 
 	sprintf(eventName, "%pDatabasePrev", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBPrev,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseLast", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBLast,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseAdd", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBAdd,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
 
 	sprintf(eventName, "%pDatabaseDelete", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBDelete,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-	references = getRefCount();
-
+	
 	sprintf(eventName, "%pDatabaseRefresh", evHandler);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBRefresh,  eventName);
-	_LOG << "lbDatabasePanel::registerEventHandler() References are " << references << "." LOG_
-
+	
+	sprintf(eventName, "%pDBFormInitialized", evHandler);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBFormInitialized,  eventName);
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -1443,6 +1429,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	int DatabaseAdd;
 	int DatabaseDelete;
 	int DatabaseRefresh;
+	int DBFormInitialized;
 	int ImageButtonClick;
 /*...e*/
 
@@ -1468,10 +1455,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 		sprintf(eventName, "%pDatabaseDelete", evHandler);
 		eman->registerEvent(eventName,  DatabaseDelete);
-
+	
 		sprintf(eventName, "%pDatabaseRefresh", evHandler);
 		eman->registerEvent(eventName,  DatabaseRefresh);
-
+	
+		sprintf(eventName, "%pDBFormInitialized", evHandler);
+		eman->registerEvent(eventName,  DBFormInitialized);
+	
 //		sprintf(eventName, "%pImageButtonClick", this);
 //		eman->registerEvent(eventName,  ImageButtonClick);
 
@@ -1923,6 +1913,10 @@ _CL_LOG << "Connect event handlers" LOG_
 	if (sampleQuery->getColumns() == 0) {
 		meta->msgBox("Warning", "Database backend does not contain any columns.");
 	}
+
+	// The event does not need any parameter, thus I can fire it this way like pressing a menu entry.
+	sprintf(eventName, "%pDBFormInitialized", evHandler);
+	meta->fireEvent(eventName);
 }
 /*...e*/
 
@@ -4623,6 +4617,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFormInitialized(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	lbErrCodes errUpdate = ERR_NONE;
@@ -5572,7 +5570,13 @@ lb_I_String* LB_STDCALL lbDatabasePanel::getForeignColumn(int pos)
 
 bool LB_STDCALL lbDatabasePanel::isCharacterColumn(char* name)
 {
-	return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
+	wxWindow* w = FindWindowByName(wxString(name), this);
+
+	if (w->IsKindOf(CLASSINFO(wxTextCtrl))) {
+		return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
+	}	
+	
+	return false;
 }
 /*...e*/
 

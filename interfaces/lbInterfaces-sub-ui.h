@@ -59,6 +59,12 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL setName(char const * name, char const * appention = NULL) = 0;
 
+		
+	/** \brief Get the original name.
+	 * The original name is that name, that was used in name of setName.
+	 */
+	virtual char* LB_STDCALL getName() = 0;
+		
 	/** \brief Add a button
 	 *
 	 * Add a new button at the given position and size.

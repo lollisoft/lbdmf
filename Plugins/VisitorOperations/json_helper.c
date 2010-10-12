@@ -65,6 +65,8 @@ json_render_tree_indented (json_t * root, int level)
 		while (ita != NULL)
 		{
 			json_render_tree_indented (ita, level + 1);
+			if (ita->next != NULL)
+				if (ita->next == ita->next->next) break;
 			itb = ita->next;
 			ita = itb;
 		}

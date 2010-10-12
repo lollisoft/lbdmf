@@ -772,6 +772,10 @@ json_tree_to_string (json_t * root, char **text)
 		}
 		else if (cursor->next)
 		{
+			if (cursor->next == cursor->next->next) {
+				cursor = cursor->parent;
+				goto state2;	/* close value */
+			}
 			cursor = cursor->next;
 			goto state1;	/* open value */
 		}

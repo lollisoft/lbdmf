@@ -263,6 +263,10 @@ char*      LB_STDCALL lbDatabaseDialog::getFormName() {
 	return panel->getFormName();
 }
 
+char*      LB_STDCALL lbDatabaseDialog::getName() {
+	return panel->getName();
+}
+
 /*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getQuery\40\\41\:0:*/
 char* LB_STDCALL lbDatabaseDialog::getQuery() {
 	return panel->getQuery();

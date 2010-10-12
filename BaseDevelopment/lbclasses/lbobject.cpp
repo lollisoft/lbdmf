@@ -454,7 +454,8 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 	UAP(lb_I_String, string)
 	QI(uk_p_string, lb_I_String, string)
 
-
+	if (string == NULL) return ERR_PARAM_WRONG_TYPE;
+	
 	p->setData(string->getData());
 
 

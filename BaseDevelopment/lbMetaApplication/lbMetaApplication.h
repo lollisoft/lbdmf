@@ -21,20 +21,23 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-            
-            73252 Lenningen (germany)
-*/
+    p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
+
+ */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.74 2010/06/30 06:05:57 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.75 2010/10/12 07:04:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.75  2010/10/12 07:04:22  lollisoft
+ * Completed implementation to write to json file from within an interceptor for events.
+ *
+ * Sample code of interceptor has to be extracted, published  and documented.
+ *
  * Revision 1.74  2010/06/30 06:05:57  lollisoft
  * Added code to support unloading application module (detachInterface) and changed code to try correctly unloading modules.
  *
@@ -431,23 +434,31 @@ public:
 	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry);
 	
 
-	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 	lb_I_Unknown* LB_STDCALL getUnknown();
 	lbErrCodes LB_STDCALL loadSubModules();
-	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
 
-	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 /*...sWrapper for some usual GUI functions:8:*/
 /*...e*/
 
-	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+	lbErrCodes				LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+
+	/* \brief Wrapper for FileExists function in lbHook.
+	 * This function enables UML models (activitie) to make decisions based on files.
+	 */
+	lbErrCodes				LB_STDCALL isFileAvailable(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL enterDebugger(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL getLoginData(lb_I_Unknown* uk);
+	
+	lbErrCodes				LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
+	void					LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
+	lbErrCodes				LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+	
 	/// \brief My handler for changed properties.
-	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL doLog(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL propertyChanged(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL doAutoload(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL doLog(lb_I_Unknown* uk);
+	
 	bool                    LB_STDCALL isPropertyPaneLayoutFloating();
 	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
