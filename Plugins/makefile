@@ -97,6 +97,7 @@ ALLTARGETS = \
 	DatabaseForm \
 	lbDMFDataModel \
 	lbXSLTTransformer \
+	lbFileOperationsPlugin \
 	DatabaseReport
 endif
 
@@ -137,6 +138,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+lbFileOperationsPlugin: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 lbXSLTTransformer: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
