@@ -3135,6 +3135,11 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += " WHERE ";
 		}
 
+		if (currentCursorview.Count() == 0) {
+			_LOG << "Error: The currentCursorview array is empty!" LOG_
+			return false;
+		}
+		
 		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " < ";
 		tempSQL += currentCursorview[0];
