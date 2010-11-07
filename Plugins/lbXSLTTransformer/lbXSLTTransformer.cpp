@@ -123,6 +123,10 @@ lbErrCodes LB_STDCALL lbXSLTTransformer::setData(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL lbXSLTTransformer::registerEventHandler(lb_I_Dispatcher* disp) {
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	int temp;
+	eman->registerEvent("transformXSLT", temp);
+	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbXSLTTransformer::transformXSLT, "transformXSLT");
 }
 
@@ -267,7 +271,9 @@ lbErrCodes LB_STDCALL lbXSLTTransformer::transformXSLT(lb_I_Unknown* uk) {
 	xmlChar *xmlbuff;
 	int buffersize;
 	
-	xmlDocDumpFormatMemory(res, &xmlbuff, &buffersize, 1);
+	//xmlDocDumpFormatMemory(res, &xmlbuff, &buffersize, 1);
+	
+	xsltSaveResultToString(&xmlbuff, &buffersize, res, cur);	
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, memorybuffer)
 	

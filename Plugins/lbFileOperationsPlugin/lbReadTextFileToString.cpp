@@ -85,6 +85,10 @@ lbErrCodes LB_STDCALL lbReadTextFileToString::setData(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL lbReadTextFileToString::registerEventHandler(lb_I_Dispatcher* disp) {
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	int temp;
+	eman->registerEvent("readFileToString", temp);
+	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbReadTextFileToString::readFileToString, "readFileToString");
 }
 

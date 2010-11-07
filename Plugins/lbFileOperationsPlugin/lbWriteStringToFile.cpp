@@ -85,6 +85,10 @@ lbErrCodes LB_STDCALL lbWriteStringToFile::setData(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL lbWriteStringToFile::registerEventHandler(lb_I_Dispatcher* disp) {
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	int temp;
+	eman->registerEvent("writeStringToFile", temp);
+
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbWriteStringToFile::writeStringToFile, "writeStringToFile");
 }
 
@@ -154,7 +158,7 @@ lbErrCodes LB_STDCALL lbWriteStringToFile::writeStringToFile(lb_I_Unknown* uk) {
 	}
 	
 	oStream->setFileName(filename->charrep());
-	
+	oStream->setBinary();
 	oStream->open();
 	
 	*oStream << source->charrep();
