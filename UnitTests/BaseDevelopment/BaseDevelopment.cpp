@@ -285,6 +285,7 @@ public:
 
 };
 
+
 class BaseDevelopmentLogger : public TestFixture<BaseDevelopmentLogger>
 {
 public:
@@ -584,6 +585,44 @@ public:
 	}
 };
 
+
+class BaseDevelopmentInputStream : public TestFixture<BaseDevelopmentInputStream>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentInputStream )
+	{
+		TEST_CASE(test_readBinary)
+	}
+
+	void test_readBinary( void )
+	{
+		puts("test_readBinary");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, iStream)
+		
+		oStream->setBinary();
+		oStream->setFileName("Test.txt");
+		
+		const char* test = "Test";
+		
+		*oStream << test;
+		
+		oStream->close();
+		
+		iStream->setFileName("Test.txt");
+		iStream->open();
+		
+		UAP(lb_I_String, s)
+		
+		s = iStream->getAsString();
+		
+		iStream->close();
+		
+		ASSERT_EQUALS(true, *s == "Test")
+	}
+	
+};
 
 
 
@@ -1515,6 +1554,7 @@ public:
 REGISTER_FIXTURE( BaseDevelopmentHook );
 REGISTER_FIXTURE( BaseDevelopmentLogger );
 REGISTER_FIXTURE( BaseDevelopmentString );
+REGISTER_FIXTURE( BaseDevelopmentInputStream );
 REGISTER_FIXTURE( BaseDevelopmentContainer );
 REGISTER_FIXTURE( BaseDevelopmentMetaApplication );
 REGISTER_FIXTURE( BaseDevelopmentDatabase );
