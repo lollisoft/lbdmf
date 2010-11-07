@@ -297,6 +297,9 @@ public:
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
+		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
+		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
+		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 	}
 
 	void makePluginName(char* path, char* module, char*& result) {
@@ -347,6 +350,33 @@ public:
 		free(pluginDir);
 	}
 
+	lb_I_String* readStringFromFile(char* filename) {
+		UAP(lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, iStream)
+		
+		iStream->setFileName(filename);
+		
+		iStream->open();
+		
+		s = iStream->getAsString();
+		iStream->close();
+		
+		s++;
+		return s.getPtr();
+	}
+	
+	void writeStringToFile(char* filename, lb_I_String* s) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		oStream->setBinary();
+		oStream->open();
+		
+		*oStream << s->charrep();
+		
+		oStream->close();
+	}
+	
 	void writeGoodXsl(char* filename) {
 		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 		
@@ -361,6 +391,23 @@ public:
 		}
 	}
 	
+	
+	void writeGoodXsl(char* filename, char* _template) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			if (_template != NULL) *oStream << _template;
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+
 	void writeBadXsl(char* filename) {
 		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 		
@@ -443,6 +490,226 @@ public:
 		return action.getPtr();
 	}
 
+	void test_Delegated_Action_lbWriteStringToFile( void ) {
+		puts("test_Delegated_Action_lbWriteStringToFile");
+		
+		lbErrCodes err = ERR_NONE;
+
+		// They are registered as event handlers
+		
+		//UAP(lb_I_DelegatedAction, action)
+		//action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbWriteStringToFile");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, source)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+
+		*name = "source";
+		*source = "Test";
+		params->setUAPString(*&name, *&source);
+		
+		*name = "filename";
+		*filename = "Test.txt";
+		params->setUAPString(*&name, *&filename);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		PM->initialize();
+
+		if (PM->beginEnumPlugins()) {
+			while (true) {
+				UAP(lb_I_Plugin, pl)
+				pl = PM->nextPlugin();
+				if (pl == NULL) break;
+				pl->autorun();
+			}
+		}
+		
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Unknown, uk_result)
+		QI(params, lb_I_Unknown, uk)
+		
+		disp->dispatch("writeStringToFile", *&uk, &uk_result);
+		
+		//int nextStep1 = action->execute(*&params);
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		
+		*name = "result";
+		params->getUAPString(*&name, *&result);
+
+		
+		UAP(lb_I_String, test)
+		
+		test = readStringFromFile("Test.txt");
+		
+		ASSERT_EQUALS( true, *test == "Test")
+		
+		// No hard failure
+		//ASSERT_EQUALS(-1, nextStep1)
+		
+		// Success = 1, Failure = 0
+		ASSERT_EQUALS("1", result->charrep())
+	}
+	
+	void test_Delegated_Action_lbReadTextFileToString( void ) {
+		puts("test_Delegated_Action_lbReadTextFileToString");
+	
+		lbErrCodes err = ERR_NONE;
+		
+		// They are registered as event handlers
+		
+		//UAP(lb_I_DelegatedAction, action)
+		//action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbReadTextFileToString");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, target)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		
+		*name = "target";
+		*target = "";
+		params->setUAPString(*&name, *&target);
+		
+		*name = "filename";
+		*filename = "Test.txt";
+		params->setUAPString(*&name, *&filename);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		PM->initialize();
+		
+		if (PM->beginEnumPlugins()) {
+			while (true) {
+				UAP(lb_I_Plugin, pl)
+				pl = PM->nextPlugin();
+				if (pl == NULL) break;
+				pl->autorun();
+			}
+		}
+
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Unknown, uk_result)
+		QI(params, lb_I_Unknown, uk)
+		
+		disp->dispatch("readFileToString", *&uk, &uk_result);
+
+		//int nextStep1 = action->execute(*&params);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		
+		*name = "result";
+		params->getUAPString(*&name, *&result);
+		
+		
+		*name = "target";
+		params->getUAPString(*&name, *&target);
+		
+		// No hard failure
+		//ASSERT_EQUALS(-1, nextStep1)
+
+		printf("Text is '%s'\n", target->charrep());
+		
+		ASSERT_EQUALS( true, *target == "Test" )
+		
+		// Success = 1, Failure = 0
+		ASSERT_EQUALS("1", result->charrep())
+	}
+	
+	void test_Delegated_Action_lbXSLTTransformer( void ) {
+		puts("test_Delegated_Action_lbXSLTTransformer");
+		
+		lbErrCodes err = ERR_NONE;
+		
+		// They are registered as event handlers
+		
+		//UAP(lb_I_DelegatedAction, action)
+		//action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbReadTextFileToString");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, source)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stylesheet)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		
+		*name = "source";
+		*source = "";
+		
+		*source += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		*source += "<Customers>";
+		*source += "	<Customer name='Boss' vorname='Hugo'>";
+		*source += "	</Customer>";
+		*source += "</Customers>";
+
+		writeStringToFile("Text.xml", *&source);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, myTemplate)
+		
+		*myTemplate = "";
+		*myTemplate += "<xsl:template match=\"text()|@*\">";
+		*myTemplate += "<xsl:value-of select=\".\"/>";
+		*myTemplate += "</xsl:template>";
+		*myTemplate += "<xsl:template match=\"text()|@*\"/>";
+		*myTemplate += "";
+
+		*myTemplate += "<xsl:template match=\"//Customers/Customer\">";
+		*myTemplate += "<xsl:value-of select=\"./@name\"/>, <xsl:value-of select=\"./@vorname\"/>";
+		*myTemplate += "</xsl:template>";
+
+
+		*source = "Text.xml";
+		
+		params->setUAPString(*&name, *&source);
+		
+		*name = "stylesheet";
+		*stylesheet = "Style.xsl";
+		params->setUAPString(*&name, *&stylesheet);
+		
+		writeGoodXsl(stylesheet->charrep(), myTemplate->charrep());
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		PM->initialize();
+		
+		if (PM->beginEnumPlugins()) {
+			while (true) {
+				UAP(lb_I_Plugin, pl)
+				pl = PM->nextPlugin();
+				if (pl == NULL) break;
+				pl->autorun();
+			}
+		}
+		
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Unknown, uk_result)
+		QI(params, lb_I_Unknown, uk)
+		
+		setLogActivated(true);
+		disp->dispatch("transformXSLT", *&uk, &uk_result);
+		setLogActivated(false);
+		
+		//int nextStep1 = action->execute(*&params);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stepoutput)
+		
+		
+		*name = "result";
+		params->getUAPString(*&name, *&result);
+		
+		*name = "stepoutput";
+		params->getUAPString(*&name, *&stepoutput);
+		
+		// No hard failure
+		//ASSERT_EQUALS(-1, nextStep1)
+		
+		printf("Text is '%s'\n", stepoutput->charrep());
+		
+		ASSERT_EQUALS( true, *stepoutput == "Boss, Hugo" )
+		
+		// Success = 1, Failure = 0
+		ASSERT_EQUALS("1", result->charrep())
+	}
 
 	void test_Delegated_Action_lbDMFXslt_selfexporting( void )
 	{
