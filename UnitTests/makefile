@@ -26,6 +26,15 @@ endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
@@ -93,6 +102,22 @@ ALLTARGETS = \
 	TestRunner
 
 endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+TARGETDLL=so
+TARGETEXE=elf
+TARGETPLUGIN=soplugin
+TARGETFRAMEWORK=so
+
+ALLTARGETS = \
+	MiniCppUnit \
+	BaseDevelopment \
+	Actions \
+	TestRunner
+
+endif
+
 ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
@@ -162,6 +187,22 @@ ifeq ($(OSTYPE), Windows_NT)
 
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+endif
+
+ifeq ($(OSTYPE), linux)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 endif

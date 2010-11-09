@@ -58,13 +58,19 @@ endif
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook
+VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -llbHook
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -llbHook
 endif    
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook
+VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -llbHook
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

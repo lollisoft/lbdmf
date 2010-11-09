@@ -603,6 +603,7 @@ public:
 		
 		oStream->setBinary();
 		oStream->setFileName("Test.txt");
+		oStream->open();
 		
 		const char* test = "Test";
 		

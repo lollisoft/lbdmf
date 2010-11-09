@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.221 $
+# * $Revision: 1.222 $
 # * $Name:  $
-# * $Id: Makefile,v 1.221 2010/08/29 21:09:30 lollisoft Exp $
+# * $Id: Makefile,v 1.222 2010/11/09 08:11:57 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.222  2010/11/09 08:11:57  lollisoft
+# * Added unit tests target on debian ppc. Not all tests are passing yet.
+# *
 # * Revision 1.221  2010/08/29 21:09:30  lollisoft
 # * Changes to get more modules compiled with MinGW.
 # * Also changed my adress in some files as I have a new
@@ -825,6 +828,7 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../UnitTests \
 	../AppDevelopment
 endif
 endif
@@ -833,6 +837,7 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), linux-debian-ppc)
 BASEDIRECTORIES= \
 	../Plugins \
+	../UnitTests \
 	../Modules
 endif
 endif

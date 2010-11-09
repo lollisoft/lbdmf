@@ -202,6 +202,13 @@ const char* LB_STDCALL lbInputStream::getFileName() {
 
 lb_I_String* LB_STDCALL lbInputStream::getAsString() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+
+	if (!isOpen) {
+		_LOG << "Error: File is not open." LOG_
+		*string = "";
+		string++;
+		return string.getPtr();	
+	}
 	
 	int size = 0;
 
