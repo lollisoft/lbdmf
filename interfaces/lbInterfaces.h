@@ -572,6 +572,9 @@ PRIMARY KEY (id),
 #define FALSE false
 #endif
 
+/** \todo Put each definition in a separate block.
+ *
+ */
 	// KDevelop: Problems to set these variable :-)
 #ifdef TVISION
 #ifndef LB_STDCALL
@@ -582,6 +585,7 @@ PRIMARY KEY (id),
 #endif
 #ifndef WINDOWS
 #define LB_STDCALL
+#define LB_CDECL
 #endif
 #endif
 #endif
@@ -651,6 +655,11 @@ PRIMARY KEY (id),
 #define DLLEXPORT
 #endif
 #endif
+
+#if !defined(LB_CDECL)
+#error LB_CDECL is not defined !
+#endif
+
 
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__

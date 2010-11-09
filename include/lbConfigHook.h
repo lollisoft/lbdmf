@@ -360,9 +360,7 @@
 #endif
 
 #if !defined(LB_CDECL)
-#ifdef WINDOWS
 #error LB_CDECL is not defined !
-#endif
 #endif
 
 

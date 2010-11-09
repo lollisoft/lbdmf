@@ -2900,6 +2900,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 
         if (OnQuitAccepted) return ERR_NONE; // Skip the action from now on.
 
+	if (statusbar_name_mappings == NULL) return ERR_NONE;
 
         if (params != NULL) {
                 UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
