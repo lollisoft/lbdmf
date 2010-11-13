@@ -129,7 +129,8 @@ bool SqliteDatabaseLayer::Close()
           free(open_statements);
           open_statements = temp;
         }
-        SetErrorMessage(_(open_statements));
+		wxString s = open_statements;
+        SetErrorMessage(s);
       } else {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         SetErrorMessage(ConvertFromUnicodeStream(err_msg));
