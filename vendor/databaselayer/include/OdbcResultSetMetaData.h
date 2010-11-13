@@ -40,9 +40,9 @@ public:
   virtual wxString GetColumnName(int i);
   virtual int GetColumnCount();
   virtual int GetPrimaryKeys() { return 0; }
-  virtual wxString GetPrimaryKey(int i) { return wxString(""); }
-  virtual wxString GetTableForColumn(int) { return wxString(""); }
-  virtual wxString GetTableForColumn(wxString) { return wxString(""); }
+  virtual wxString GetPrimaryKey(int i) { return wxString(_("")); }
+  virtual wxString GetTableForColumn(int) { return wxString(_("")); }
+  virtual wxString GetTableForColumn(wxString) { return wxString(_("")); }
   
 private:
 
