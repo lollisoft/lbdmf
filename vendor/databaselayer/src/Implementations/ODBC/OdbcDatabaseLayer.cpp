@@ -566,30 +566,30 @@ wxArrayString OdbcDatabaseLayer::GetColumns(const wxString& table)
 }
 
 bool OdbcDatabaseLayer::GetColumnNullable(const wxString& table, const wxString& column) {
-	throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "OdbcDatabaseLayer::GetColumnNullable not implemented.");
+	throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, _("OdbcDatabaseLayer::GetColumnNullable not implemented."));
 	return true;
 }
 
 int OdbcDatabaseLayer::GetPrimaryKeys(const wxString& table) {
   int count = 0;
-  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, _("Primary keys support not implemented."));
   return count;
 }
 
 wxString& OdbcDatabaseLayer::GetPrimaryKeyColumn(const int index) {
-  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, _("Primary keys support not implemented."));
 	return arrPrimaryColumns[index];
 }
 
 wxString& OdbcDatabaseLayer::GetPrimaryKeySequence(const int index) {
-  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, _("Primary keys support not implemented."));
 	return arrPrimarySequence[index];
 }
 
 #ifdef SUPPORT_FOREIGN_KEYS
 wxArrayString OdbcDatabaseLayer::GetForeignKeys(const wxString& table) {
   wxArrayString returnArray;
-  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Foreign keys support not implemented.");
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, _("Foreign keys support not implemented."));
   return returnArray;
 }
 #endif
