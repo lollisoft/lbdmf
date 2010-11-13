@@ -277,7 +277,7 @@ void SqlitePreparedStatement::RunQuery()
           free(open_statements);
           open_statements = temp;
         }
-        SetErrorMessage(open_statements);
+        SetErrorMessage(_(open_statements));
       } else {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         SetErrorMessage(ConvertFromUnicodeStream(err_msg));

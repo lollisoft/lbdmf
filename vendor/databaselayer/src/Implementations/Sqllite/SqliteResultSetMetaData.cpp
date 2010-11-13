@@ -95,6 +95,6 @@ wxString SqliteResultSetMetaData::GetTableForColumn(wxString column) {
 		if (GetColumnName(i) == column) return GetTableForColumn(i);
 	}
 	// Error
-	return "";
+	return _("");
 }
 

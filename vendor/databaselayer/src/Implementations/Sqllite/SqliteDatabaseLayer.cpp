@@ -129,7 +129,7 @@ bool SqliteDatabaseLayer::Close()
           free(open_statements);
           open_statements = temp;
         }
-        SetErrorMessage(open_statements);
+        SetErrorMessage(_(open_statements));
       } else {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         SetErrorMessage(ConvertFromUnicodeStream(err_msg));
@@ -179,20 +179,20 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
   wxArrayString QueryArray;
 
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
+	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 		wxString rewrittenQuery;
-		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
+		if (!TableExists(wxString(_("lbDMF_ForeignKeys")))) {
 			wxString createSystemTables;
 
 			createSystemTables =
-			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
-			wxString("	\"PKTable\" BPCHAR,") +
-			wxString("	\"PKColumn\" BPCHAR,") +
-			wxString("	\"FKTable\" BPCHAR,") +
-			wxString("	\"FKColumn\" BPCHAR") +
-			wxString(");\n");
+			wxString(_("CREATE TABLE \"lbDMF_ForeignKeys\" (")) +
+			wxString(_("	\"PKTable\" BPCHAR,")) +
+			wxString(_("	\"PKColumn\" BPCHAR,")) +
+			wxString(_("	\"FKTable\" BPCHAR,")) +
+			wxString(_("	\"FKColumn\" BPCHAR")) +
+			wxString(_(");\n"));
 			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
 		} else {
 			rewrittenQuery = wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
@@ -257,7 +257,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
   {
     wxArrayString QueryArray;
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains("SKIP REWRITE")) && (strQuery.Upper().Contains("CREATE") || strQuery.Upper().Contains("ALTER"))) {
+	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 
@@ -265,16 +265,16 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 		 * This is due to no support for SQL DROP and DELETE statements in the parser of the fk source code.
 		 */
 		wxString rewrittenQuery;
-		if (!TableExists(wxString("lbDMF_ForeignKeys"))) {
+		if (!TableExists(wxString(_("lbDMF_ForeignKeys")))) {
 			wxString createSystemTables;
 
 			createSystemTables =
-			wxString("CREATE TABLE \"lbDMF_ForeignKeys\" (") +
-			wxString("	\"PKTable\" BPCHAR,") +
-			wxString("	\"PKColumn\" BPCHAR,") +
-			wxString("	\"FKTable\" BPCHAR,") +
-			wxString("	\"FKColumn\" BPCHAR") +
-			wxString(");\n");
+			wxString(_("CREATE TABLE \"lbDMF_ForeignKeys\" (")) +
+			wxString(_("	\"PKTable\" BPCHAR,")) +
+			wxString(_("	\"PKColumn\" BPCHAR,")) +
+			wxString(_("	\"FKTable\" BPCHAR,")) +
+			wxString(_("	\"FKColumn\" BPCHAR")) +
+			wxString(_(");\n"));
 			rewrittenQuery = createSystemTables + strQuery;
 		} else {
 			rewrittenQuery = strQuery;
@@ -295,7 +295,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       }
 	  return NULL;
 	} else {
-		if (strQuery.Upper().Contains("SKIP REWRITE")) {
+		if (strQuery.Upper().Contains(_("SKIP REWRITE"))) {
 			wxString strErrorMessage = _("");
 			char* szErrorMessage = NULL;
 			int nReturn = sqlite3_exec(m_pDatabase, strQuery.c_str(), 0, 0, &szErrorMessage);
