@@ -9,6 +9,8 @@ else
 RELPATH=/Projects/CPP
 endif
 
+
+ifndef RPMBUILD
 ifeq ($(OSTYPE), solaris)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
@@ -32,6 +34,35 @@ ifeq ($(OSTYPE), Cross_OW)
 MKMK=mkmk
 DEVROOT_MAKE=$(DEVROOT)
 endif
+endif
+
+ifdef RPMBUILD
+ifeq ($(OSTYPE), solaris)
+DEVROOT_MAKE=$(DEVROOT)
+MKMK=$(prefix)/bin/mkmk
+endif
+ifeq ($(OSTYPE), linux-debian-ppc)
+DEVROOT_MAKE=$(DEVROOT)
+MKMK=$(prefix)/bin/mkmk
+endif
+ifeq ($(OSTYPE), linux)
+DEVROOT_MAKE=$(DEVROOT)
+MKMK=$(prefix)/bin/mkmk
+endif
+ifeq ($(OSTYPE), osx)
+DEVROOT_MAKE=$(DEVROOT)
+MKMK=$(prefix)/bin/mkmk
+endif
+ifeq ($(OSTYPE), Windows_NT)
+MKMK=mkmk
+endif
+ifeq ($(OSTYPE), Cross_OW)
+MKMK=mkmk
+DEVROOT_MAKE=$(DEVROOT)
+endif
+endif
+
+
 _MODULE=$(MODULE)
 
 ifeq ($(TARGET), tvision_dll)
