@@ -28,9 +28,9 @@ int main()
 	}
 
 
-    setVerbose(true);
+    //setVerbose(true);
 	unHookAll();
-    setVerbose(false);
+    //setVerbose(false);
 
 
 	return result;
