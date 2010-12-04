@@ -1244,6 +1244,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 						loadedModules = delMod->next;
 					}
 
+					printf("Unload module %s.\n", name);
 					while (dlclose(delMod->lib) == 0) {
 						//if (isVerbose())
 							printf("Unloaded module %s.\n", name);
