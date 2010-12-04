@@ -299,9 +299,82 @@ public:
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
 		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
+		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
 		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 	}
 
+	void test_Delegated_Action_lbGetIdForFormValue( void ) {
+		puts("test_Delegated_Action_lbGetIdForFormValue");
+		lbErrCodes err = ERR_NONE;
+
+		UAP(lb_I_DelegatedAction, action)
+		
+		action = getActionDelegate("lbDMFBasicActionSteps", "instanceOflbDMFIdForFormValue");
+		
+		ASSERT_EQUALS( true, action != NULL )
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, v)
+		
+		parameter->setData("DBName");
+		v->setData("lbDMF");
+		param->setUAPString(*&parameter, *&v);
+		
+		parameter->setData("DBUser");
+		v->setData("dba");
+		param->setUAPString(*&parameter, *&v);
+		
+		parameter->setData("DBPass");
+		v->setData("trainres");
+		param->setUAPString(*&parameter, *&v);
+		
+		parameter->setData("source Form");
+		v->setData("Formulare");
+		param->setUAPString(*&parameter, *&v);
+		
+		parameter->setData("source field");
+		v->setData("name");
+		param->setUAPString(*&parameter, *&v);
+			
+		parameter->setData("source value");
+		v->setData("Formulare");
+		param->setUAPString(*&parameter, *&v);
+		
+		parameter->setData("application");
+		v->setData("lbDMF Manager");
+		param->setUAPString(*&parameter, *&v);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+        myUIWrapper->initialize();
+		
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+		
+		UAP(lb_I_Container, applications)
+		
+		applications = meta->getApplications();
+		
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		
+		setLogActivated(true);
+		long nextActionId = action->execute(*&param);
+		setLogActivated(false);
+		
+		ASSERT_EQUALS( (long)-1, nextActionId )
+		
+		
+		
+	}
+	
 	void makePluginName(char* path, char* module, char*& result) {
 		char* pluginDir = NULL;
 
