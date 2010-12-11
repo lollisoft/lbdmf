@@ -129,7 +129,7 @@ bool SqliteDatabaseLayer::Close()
           free(open_statements);
           open_statements = temp;
         }
-		wxString s = open_statements;
+		wxString s = (wxChar*) open_statements;
         SetErrorMessage(s);
       } else {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
@@ -194,18 +194,18 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 			wxString(_("	\"FKTable\" BPCHAR,")) +
 			wxString(_("	\"FKColumn\" BPCHAR")) +
 			wxString(_(");\n"));
-			rewrittenQuery = createSystemTables + wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+			rewrittenQuery = createSystemTables + wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.c_str()));
 		} else {
-			rewrittenQuery = wxString(rewriteSchemaOfDDL((char*) strQuery.c_str()));
+			rewrittenQuery = wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.c_str()));
 		}
 		wxString strErrorMessage = _("");
 		char* szErrorMessage = NULL;
-		int nReturn = sqlite3_exec(m_pDatabase, rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
+		int nReturn = sqlite3_exec(m_pDatabase, (const char*) rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
 		if (szErrorMessage != NULL)
 		{
 			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 			strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-			printf(strErrorMessage);
+			printf(strErrorMessage.c_str());
 			sqlite3_free(szErrorMessage);
 			return NULL;
 		}
