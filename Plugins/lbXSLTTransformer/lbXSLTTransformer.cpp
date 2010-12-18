@@ -98,7 +98,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbXSLTTransformer::lbXSLTTransformer() {
-	
+	ref = STARTREF;
 }
 
 lbXSLTTransformer::~lbXSLTTransformer() {

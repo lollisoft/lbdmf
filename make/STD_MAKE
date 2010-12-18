@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.139 $
+# * $Revision: 1.140 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.139 2010/05/29 08:02:44 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.140 2010/12/18 09:38:39 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.140  2010/12/18 09:38:39  lollisoft
+# * Some changes on my macbook.
+# *
 # * Revision 1.139  2010/05/29 08:02:44  lollisoft
 # * Added MINGW standard library lbHook.
 # *
@@ -1371,6 +1374,14 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.2.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.4.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.5.0)
 OSNAME=Leopard
 endif
 

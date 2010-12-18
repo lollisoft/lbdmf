@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.222 $
+# * $Revision: 1.223 $
 # * $Name:  $
-# * $Id: Makefile,v 1.222 2010/11/09 08:11:57 lollisoft Exp $
+# * $Id: Makefile,v 1.223 2010/12/18 09:38:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.223  2010/12/18 09:38:38  lollisoft
+# * Some changes on my macbook.
+# *
 # * Revision 1.222  2010/11/09 08:11:57  lollisoft
 # * Added unit tests target on debian ppc. Not all tests are passing yet.
 # *
@@ -796,6 +799,14 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.2.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.4.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.5.0)
 OSNAME=Leopard
 endif
 
