@@ -99,6 +99,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
 
@@ -143,6 +144,11 @@ lbDynamicAppStorage: dummy
 lbDMFXslt: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+lbDMFBasicActionSteps: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 
 clean:
 	for sub_target in $(ALLTARGETS); do \
