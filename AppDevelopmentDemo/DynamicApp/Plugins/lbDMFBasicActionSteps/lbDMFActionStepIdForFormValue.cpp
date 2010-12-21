@@ -55,7 +55,7 @@
 #include <direct.h>
 #endif
 
-#include <lbDMFIdForFormValue.h>
+#include <lbDMFActionStepIdForFormValue.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbDMFIdForFormValue, lbDMFIdForFormValue)
 
@@ -123,7 +123,10 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
-
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ApplicationName)
+	
+	*name = "application";
+	execution_params->getUAPString(*&name, *&ApplicationName);
 	
 	*name = "source field";
 	execution_params->getUAPString(*&name, *&SourceColumn);
@@ -229,7 +232,6 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 									
 									if (database == NULL) {
 										_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-										chdir(oldcwd);
 										
 										*paramName = "result";
 										*paramValue = "0";
@@ -242,7 +244,7 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 								
 								database->init();
 								
-								if (database->connect(AppDBName->charrep(), AppDBName->charrep(), AppDBUser->cherrap(), AppDBPass->charrep()) != ERR_NONE) {
+								if (database->connect(AppDBName->charrep(), AppDBName->charrep(), AppDBUser->charrep(), AppDBPass->charrep()) != ERR_NONE) {
 									_LOG << "Error: Could not connect to given database: '" << AppDBName->charrep() << "'" LOG_
 									
 									*paramName = "result";
@@ -258,11 +260,11 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 								
 								if (q->query(query->charrep()) == ERR_NONE) {
 									UAP_REQUEST(getModuleInstance(), lb_I_String, where)
-									bool isChar = q->isCharacterColumn(SourceColumn->charrep());
+									bool isChar = q->getColumnType(SourceColumn->charrep()) == lb_I_Query::lbDBColumnChar;
 									
 									*where = " WHERE ";
 									*where += SourceColumn->charrep(); 
-									*where += " = "
+									*where += " = ";
 									if (isChar) *where += "'";
 									*where += SourceValue->charrep(); 
 									if (isChar) *where += "'";
@@ -271,6 +273,26 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 									
 									if (q->query(query->charrep()) == ERR_NONE) {
 										// Found some data
+										if (q->dataFetched()) {
+											int first = 0;
+											int last = 0;
+											
+											if (q->first() == ERR_NONE) first = q->getPosition();
+											if (q->last() == ERR_NONE) last = q->getPosition();
+											
+											if (first+1 == last) {
+												// One row
+											} else {
+												// More than one row
+											}
+										} else {
+											*paramName = "result";
+											*paramValue = "0";
+
+											execution_params->setUAPString(*&paramName, *&paramValue);
+											
+											return next_action;
+										}
 									}
 								}
 								
