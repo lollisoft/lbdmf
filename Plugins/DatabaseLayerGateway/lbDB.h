@@ -33,69 +33,6 @@
 /*...sRevision history:0:*/
 /*...e*/
 
-#include <iostream>
-
-class DatabaseLayer;
-
-class lbDatabaseLayerDatabase :
-public lb_I_Database
-{
-private:
-
-	DECLARE_LB_UNKNOWN()
-
-public:
-        lbDatabaseLayerDatabase();
-        virtual ~lbDatabaseLayerDatabase();
-
-	lbErrCodes	LB_STDCALL init();
-	void	LB_STDCALL close();
-	void	LB_STDCALL open(char* connectionname);
-	
-	bool		LB_STDCALL isConnected();
-	
-	/**
-	 * Makes a connection to the specified database. For ODBC database drivers,
-	 * the DSN is a simple name without a special driver postfix.
-	 *
-	 * Input:	DSN	database name (name[:driver][:host][:port])
-	 *		user	database user
-	 *		passwd	database password
-	 */
-	lbErrCodes	LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd);
-	lb_I_Query*	LB_STDCALL getQuery(char* connectionname, int readonly = 1);
-
-	lbErrCodes	LB_STDCALL connect(char* connectionname, char* pass);
-
-	lbErrCodes	LB_STDCALL setUser(char* _user);
-	lbErrCodes	LB_STDCALL setDB(char* _db);	
-	
-	lb_I_Container* LB_STDCALL getTables(char* connectionname);
-	lb_I_Container* LB_STDCALL getColumns(char* connectionname);
-	
-	lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
-	lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
-	
-	lb_I_String*	LB_STDCALL getDriverName();
-	lb_I_String*	LB_STDCALL getDriverVersion();
-	lb_I_String*	LB_STDCALL getDatabaseName();
-	lb_I_String*	LB_STDCALL getDBMSName();
-	lb_I_String*	LB_STDCALL getDBMSVersion();
-	
-	DatabaseLayer* LB_STDCALL getBackend(char* connectionname);
-private:
-	RETCODE  retcode;
-	HENV     henv;	
-	HDBC     hdbc;
-	char*	 user;
-	char*	 db;
-	bool	 connected;
-	DatabaseLayer* dbl;
-
-	UAP(lb_I_Container, connPooling)
-};
-
-
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
 extern "C" {

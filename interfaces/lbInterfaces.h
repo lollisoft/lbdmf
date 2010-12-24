@@ -1930,7 +1930,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 /** \def IMPLEMENT_SINGLETON_FUNCTOR Implements the singleton functor in a cpp file.
  * Use this once per class.
  */
-#define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
+#define IMPLEMENT_SINGLETON_FUNCTOR_BASE(name, clsname) \
 class singletonHolder_##name { \
 public: \
 	singletonHolder_##name() { \
@@ -1939,15 +1939,20 @@ public: \
 	} \
 	virtual ~singletonHolder_##name() { \
 		_CL_VERBOSE << "~singletonHolder_" << #name << "() called." LOG_ \
+		destroy(); \
+		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
+	} \
+	void destroy() { \
 		if (singleton != NULL) { \
-			if (_TRMemValidate(singleton)) \
+			if (_TRMemValidate(singleton)) { \
 				delete singleton; \
+				singleton = NULL; \
+			} \
 			else \
 				if (isLogActivated()) printf("ERROR: Sinleton object has been deleted prior!\n"); \
 		} else { \
-			if (isLogActivated()) printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
+			if (isLogActivated()) printf("Warning: singletonHolder_" #name " was not used yet.\n"); \
 		} \
-		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
 	} \
 	void set(clsname* _singleton) { \
 		lb_I_Unknown* temp; \
@@ -2013,6 +2018,30 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
         return ERR_NONE; \
 } \
 }
+
+#ifdef LINUX
+#define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
+IMPLEMENT_SINGLETON_FUNCTOR_BASE(name, clsname) \
+extern "C" { \
+__attribute__((constructor)) \
+static void constructor_##name() { \
+	printf("Constructor for singleton object 'singleton_%s' called.\n", #name); \
+} \
+__attribute__((destructor)) \
+static void destructor_##name() { \
+	printf("Destructor for singleton object 'singleton_%s' called.\n", #name); \
+	if (singleton_##name.get() != NULL) { \
+		printf("Destruct instance 'singleton_%s'.\n", #name); \
+		singleton_##name.destroy(); \
+	} \
+} \
+}
+#endif
+#ifndef LINUX
+#define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
+IMPLEMENT_SINGLETON_FUNCTOR_BASE(name, clsname)
+#endif
+
 /*...e*/
 
 

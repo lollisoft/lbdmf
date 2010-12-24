@@ -1,6 +1,6 @@
 format 63
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 7
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -42,6 +42,11 @@ format 63
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 133250 "Codegeneration as Workflow"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition yes show_members_visibility default show_members_stereotype yes show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
     classdiagram 128258 "Formulare"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
@@ -498,6 +503,22 @@ ${inlines}
 	  b parent class_ref 128130 // Formulare
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+
+      operation 129154 "CGWorkflow"
+	stereotype "lbDMF:workflow"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 

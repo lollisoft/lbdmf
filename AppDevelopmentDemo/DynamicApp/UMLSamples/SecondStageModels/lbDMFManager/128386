@@ -1,6 +1,6 @@
 format 63
 "lbDMF" // DMFToUML::lbDMF
-  revision 3
+  revision 4
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -46,6 +46,11 @@ format 63
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 133378 "Stereotypes"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
     class 133378 "masterdetail_action"
       visibility package stereotype "stereotype"
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -340,6 +345,35 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 130434 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 136834 "workflow"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Operation"
+      key "stereotypeIconPath" value ""
+      classrelation 141442 // <unidirectional association>
+	relation 138370 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141442 // <unidirectional association>
 	  b parent class_ref 133506 // Element
       end
     end
