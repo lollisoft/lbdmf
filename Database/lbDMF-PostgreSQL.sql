@@ -330,7 +330,7 @@ CREATE TABLE "formular_actions" (
 CREATE TABLE "formular_parameters" (
 	"id" SERIAL,
 	"parametername" CHAR(255),
-	"parametervalue" CHAR(255),
+	"parametervalue" TEXT,
 	"formularid" INTEGER
 ) WITH OIDS;
 
