@@ -126,7 +126,10 @@ void _dbError_STMT(char* lp, HSTMT hstmt);
 void _dbError_ENV(char* lp, HENV henv);
 void _dbError_DBC(char* lp, HDBC hdbc);
 
-#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+///\todo Implement retrieving the limits from http://msdn.microsoft.com/en-us/library/ms711681(v=VS.85).aspx
+// PostgreSQL defines the table name as type name and this type is defined to have 64 chars
+//#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+#define TAB_LEN 64 + 1
 
 ///\todo Implement retrieving the limits from http://msdn.microsoft.com/en-us/library/ms711681(v=VS.85).aspx
 // PostgreSQL defines the column name as type name and this type is defined to have 64 chars
