@@ -127,7 +127,11 @@ void _dbError_ENV(char* lp, HENV henv);
 void _dbError_DBC(char* lp, HDBC hdbc);
 
 #define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
-#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+
+///\todo Implement retrieving the limits from http://msdn.microsoft.com/en-us/library/ms711681(v=VS.85).aspx
+// PostgreSQL defines the column name as type name and this type is defined to have 64 chars
+//#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+#define COL_LEN 64 + 1
 //#define TAB_LEN 128+1
 #define REM_LEN 254+1
 //#define COL_LEN 100
@@ -6088,7 +6092,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	columns->setCloning(false);
 
 	SQLCHAR       szCatalog[TAB_LEN], szSchema[TAB_LEN];
-	SQLCHAR       szTableName[TAB_LEN], szColumnName[TAB_LEN];
+	SQLCHAR       szTableName[TAB_LEN], szColumnName[COL_LEN];
 	SQLCHAR       szTypeName[TAB_LEN], szRemarks[REM_LEN];
 	SQLCHAR       szColumnDefault[TAB_LEN], szIsNullable[TAB_LEN];
 	SQLINTEGER    ColumnSize, BufferLength, CharOctetLength, OrdinalPosition;
@@ -6137,7 +6141,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		 //SQLBindCol(hstmt, 1, SQL_C_CHAR, szCatalog, TAB_LEN,&cbCatalog);
 		 //SQLBindCol(hstmt, 2, SQL_C_CHAR, szSchema, TAB_LEN, &cbSchema);
 		 SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, TAB_LEN,&cbTableName);
-		 SQLBindCol(hstmt, 4, SQL_C_CHAR, szColumnName, TAB_LEN, &cbColumnName);
+		 SQLBindCol(hstmt, 4, SQL_C_CHAR, szColumnName, COL_LEN, &cbColumnName);
 		 //SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
 		 SQLBindCol(hstmt, 6, SQL_C_CHAR, szTypeName, TAB_LEN, &cbTypeName);
 		 SQLBindCol(hstmt, 7, SQL_C_SLONG, &ColumnSize, 0, &cbColumnSize);
@@ -6408,8 +6412,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getPrimaryKeys(" << connectionname << ") called." LOG_
-//#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
-//#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
 	PrimaryKeys++;
 
@@ -6584,8 +6586,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getForeignKeys(" << connectionname << ") called." LOG_
-#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
-#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, ForeignKeys)
 	ForeignKeys++;
 
