@@ -31,7 +31,7 @@
 #include <lbConfigHook.h>
 #endif
 
-#include "module.h"
+#include <lbtransfer-module.h>
 
 #include <conio.h>
 
