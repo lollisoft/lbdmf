@@ -110,8 +110,8 @@ public:
 
 	char* LB_STDCALL gethostname();
 
-	void LB_STDCALL initSymbolic(char *host, char* service);
-        void LB_STDCALL reinit(char *mysockaddr="");
+	bool LB_STDCALL initSymbolic(char *host, char* service);
+    void LB_STDCALL reinit(char *mysockaddr="");
 
 	int LB_STDCALL isServer() { return _isServer; }
 

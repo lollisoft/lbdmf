@@ -657,11 +657,11 @@ _LOG << "lbSocket::reinit(char *mysockaddr): This function should not be used" L
 }
 /*...e*/
 /*...slbSocket\58\\58\initSymbolic\40\char\42\ host\44\ char\42\ service\41\:0:*/
-void lbSocket::initSymbolic(char* host, char* service) {
+bool lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
-	//COUT << "Initialize for host '" << host << "'" << ENDL;
+	_CL_LOG << "Initialize for host '" << host << "' and port " << service LOG_
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
@@ -693,7 +693,7 @@ void lbSocket::initSymbolic(char* host, char* service) {
 /*...e*/
 	
 	servent* s = getservbyname(service, NULL);
- 
+
 /*...sStruct definition:0:*/
  /*
  struct hostent { 
@@ -706,21 +706,22 @@ void lbSocket::initSymbolic(char* host, char* service) {
  */
 /*...e*/
 
-	if(s == NULL) _LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
- 	sprintf(msg, "Got hostaddress: %d", inet_addrFromString(host));
- 	_LOG << msg LOG_
-#endif
-/*...e*/
+	if(s == NULL) {
+		_CL_LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
+		return false;
+	}
+
  	u_short port = s->s_port;
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-	sprintf(msg, "lbSocket::init(char* hostaddr, char* port) with %s %d calling", host, port);
-	_LOG << msg LOG_
-#endif
-/*...e*/
+	setLogActivated(true);
+	if (serverMode == 1) {
+		_CL_LOG << "Listening on port " << port << "..." LOG_
+	} else {
+		_CL_LOG << "Opening port " << port << "..." LOG_
+	}
+	setLogActivated(false);
+
  	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
+	return true;
 }
 /*...e*/
 /*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
