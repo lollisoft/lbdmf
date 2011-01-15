@@ -58,13 +58,17 @@ extern "C" {
 
 #include <lbthread.h>
 
+#ifdef WINDOWS
+#define UseThis_NoMore
+#endif
+
 #ifdef UseThis_NoMore
 IMPLEMENT_FUNCTOR(instanceOflbCritSect, lbCritSect)
 IMPLEMENT_FUNCTOR(instanceOflbLock, lbLock)
 IMPLEMENT_FUNCTOR(instanceOflbThread, lbThread)
 
 
-int lbThread::threadCount = 0;
+//int lbThread::threadCount = 0;
 
 #ifdef __WXGTK__
 /*...sPV haeder:0:*/
@@ -407,6 +411,9 @@ lbErrCodes lbThreadInternal::suspend() {
 
 /*...slbThreadInternal\58\\58\resume\40\\41\:0:*/
 lbErrCodes lbThreadInternal::resume() {
+	setLogActivated(true);
+	_CL_LOG << "lbThreadInternal::resume() called and doing nothing." LOG_
+	setLogActivated(false);
     return ERR_NONE;
 }
 /*...e*/
@@ -552,6 +559,13 @@ lb_I_ThreadImplementation* LB_STDCALL lbThread::getThreadImplementation() {
 }
 
 lbErrCodes LB_STDCALL lbThread::setThreadImplementation(lb_I_ThreadImplementation* impl) {
+	setLogActivated(true);
+	if (impl != NULL) {
+		_CL_LOG << "lbThread::setThreadImplementation(" << impl->getClassName() << ") called." LOG_
+	} else {
+		_CL_LOG << "lbThread::setThreadImplementation(NULL) called." LOG_
+	}
+	setLogActivated(false);
 	_impl = impl;
 	return ERR_NONE;
 }
