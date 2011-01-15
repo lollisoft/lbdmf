@@ -380,8 +380,8 @@ public:
 
 	virtual char* LB_STDCALL gethostname() = 0;
 
-	virtual void LB_STDCALL initSymbolic(char *host, char* service) = 0;
-        virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
+	virtual bool LB_STDCALL initSymbolic(char *host, char* service) = 0;
+    virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
 
 //	virtual lbErrCodes LB_STDCALL neagleOff(SOCKET s);
 
