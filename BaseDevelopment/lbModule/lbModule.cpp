@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.130 $
+ * $Revision: 1.131 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.130 2010/05/29 07:46:39 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.131 2011/01/15 08:34:05 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.131  2011/01/15 08:34:05  lollisoft
+ * Added stuff for client server communication. These classes are not ready.
+ *
  * Revision 1.130  2010/05/29 07:46:39  lollisoft
  * Compiles with mingw.
  *
@@ -2392,9 +2395,33 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		found = true;
 	}
 
+	if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
+		functor = PREFIX "instanceOflbTransferDataObject";
+		module = "lbtransfer";
+		found = true;
+	}
+
+	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
+		functor = PREFIX "instanceOflb_Transfer_Data";
+		module = "lbtransfer";
+		found = true;
+	}
+
 	if (strcmp(searchArgument, "lb_I_BinaryData") == 0) {
 		functor = PREFIX "instanceOfBinaryData";
 		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_ApplicationServer") == 0) {
+		functor = PREFIX "instanceOflbAppServer";
+		module = "lbcs";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_ApplicationBus") == 0) {
+		functor = PREFIX "instanceOfApplicationBusProxy";
+		module = "ApplicationBusProxy";
 		found = true;
 	}
 
