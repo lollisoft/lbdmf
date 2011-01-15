@@ -32,11 +32,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.75 2010/05/29 07:48:40 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.76 2011/01/15 08:37:28 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.76  2011/01/15 08:37:28  lollisoft
+ * Corrected server related plugin handling and added a function to return
+ * the server plugin module that may be responsible to startup a server
+ * instance at once.
+ *
  * Revision 1.75  2010/05/29 07:48:40  lollisoft
  * Compiles with mingw. Found a bug with not initialized variable.
  *
@@ -417,6 +422,7 @@ public:
 	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version);
     lb_I_Plugin* LB_STDCALL nextPlugin();
 
+	lb_I_ApplicationServerModul* LB_STDCALL nextServerPluginModul();
 	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace);
     lb_I_Plugin* LB_STDCALL nextServerPlugin();
 
@@ -491,11 +497,13 @@ lbPluginManager::lbPluginManager() {
 	begunServerEnumerate = firstServerEnumerate = firstUnitTestEnumerate = false;
 	firstUnitTestPlugin = false;
 	firstPlugin = true;
+	firstServerPlugin = true;
 	lastPlugin = false;
 	lastServerPlugin = false;
 	lastUnitTestPlugin = false;
 	isInitialized = false;
 	isUnitTestInitialized = false;
+	isServerInitialized = false;
 	REQUEST(getModuleInstance(), lb_I_String, MyPluginDir)
 	_CL_LOG << "lbPluginManager::lbPluginManager() called." LOG_
 }
@@ -714,7 +722,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 
-	_CL_VERBOSE << "Try to load server module '" << module << "'" LOG_
+	_CL_LOG << "Try to load server module '" << module << "'" LOG_
 
 	char* pluginDir = NULL;
 
@@ -1449,6 +1457,40 @@ bool LB_STDCALL lbPluginManager::beginEnumServerPlugins() {
 	return false;
 }
 /*...e*/
+
+lb_I_ApplicationServerModul* LB_STDCALL lbPluginManager::nextServerPluginModul() {
+	lbErrCodes err = ERR_NONE;
+
+	if (!isServerInitialized) initialize();
+
+	if (begunServerEnumerate) {
+		while (PluginServerModules->hasMoreElements()) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_ApplicationServerModul, plM)
+
+			uk = PluginServerModules->nextElement();
+
+			if (uk == NULL) {
+				_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+				return NULL;
+			}
+
+			QI(uk, lb_I_ApplicationServerModul, plM)
+				
+			if (plM != NULL) {
+				plM++;
+				return plM.getPtr();
+			}
+		}
+		begunServerEnumerate = false;
+		return NULL;
+	} else {
+		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
+	}
+
+	return NULL;
+}
+
 /*...slb_I_ApplicationServerModul\42\ LB_STDCALL lbPluginManager\58\\58\nextServerPlugin\40\\41\:0:*/
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 	lbErrCodes err = ERR_NONE;
@@ -1480,7 +1522,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 
 				QI(uk, lb_I_ApplicationServerModul, plM)
 
-				_CL_LOG << "Got a plugin module with " << plM->getRefCount() << " references." LOG_
 
 				if (PluginServerContainer != NULL) {
 					PluginServerContainer--;
@@ -1494,7 +1535,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 					return NULL;
 				}
 
-				_CL_LOG << "Got a PluginContainer with " << PluginServerContainer->getRefCount() << " references." LOG_
 
 				if (PluginServerContainer->Count() == 0) {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
@@ -1526,7 +1566,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 
 				        return plugin.getPtr();
 				} else {
-					firstPlugin = true;
+					firstServerPlugin = true;
 
 					return nextServerPlugin();
 				}
