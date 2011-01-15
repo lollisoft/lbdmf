@@ -18,7 +18,6 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
@@ -165,9 +164,9 @@ pLB_TRANSFER_DATA lbTransferDataObject::getTransferData() const {
 /*...slb_Transfer_Data\58\\58\lb_Transfer_Data\40\\41\:0:*/
 lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
 	lbErrCodes err = ERR_NONE;
-	REQUEST(manager.getPtr(), lb_I_Container, elements)
-	REQUEST(manager.getPtr(), lb_I_Integer, intKey)
-	REQUEST(manager.getPtr(), lb_I_String, clientHost)
+	REQUEST(getModuleInstance(), lb_I_Container, elements)
+	REQUEST(getModuleInstance(), lb_I_Integer, intKey)
+	REQUEST(getModuleInstance(), lb_I_String, clientHost)
 	
 	QI(intKey, lb_I_KeyBase, key)
 	
@@ -180,7 +179,7 @@ lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
         ref = 0;
         serverside=_serverside;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Socket, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Socket, s)
 
         *clientHost = s->gethostname();
         clientPid = lbGetCurrentProcessId();
@@ -775,10 +774,21 @@ void lbTransfer::init(char *target) {
 LOG("lbTransfer::init(char *target) called");
 #endif
 /*...e*/
-        strcpy(token, strtok(target, "/"));
-        machine = strdup(token);
-        strcpy(token, strtok(NULL, "/"));
-        service = strdup(token);
+
+		char* pch = NULL;
+		
+		pch = strtok(target, "/");
+
+		if (pch != NULL) {
+			machine = strdup(pch);
+			pch = strtok(NULL, "/");
+		}
+
+		if (pch != NULL) {
+			service = strdup(pch);
+			pch = strtok(NULL, "/");
+		}
+		
 //COUT << "Check for service" << ENDL;
         if (service == NULL) {
                 LOG("lbTransfer::init(char *target): Service name couldn't retrieved from target string!");
