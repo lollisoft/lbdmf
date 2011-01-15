@@ -1,4 +1,3 @@
-
 /*
 	Automatically created file. Do not modify.
  */
@@ -45,6 +44,9 @@ char* ApplicationBus::getServiceName() {
 }
 
 lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr) {
+		setLogActivated(true);
+		_CL_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
+		setLogActivated(false);
 
         protoMgr->addProtocolHandler("AnounceUser", this, (lbProtocolCallback) &ApplicationBus::_AnounceUser);
 
@@ -54,8 +56,8 @@ lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* pr
 
         protoMgr->addProtocolHandler("getServiceForProtocol", this, (lbProtocolCallback) &ApplicationBus::_getServiceForProtocol);
 
-        protoMgr->addProtocolHandler("Disconnect", this, (lbProtocolCallback) &ApplicationBus::HandleDisconnect);
-        protoMgr->addProtocolHandler("Connect", this, (lbProtocolCallback) &ApplicationBus::HandleConnect);
+        //protoMgr->addProtocolHandler("Disconnect", this, (lbProtocolCallback) &ApplicationBus::HandleDisconnect);
+        //protoMgr->addProtocolHandler("Connect", this, (lbProtocolCallback) &ApplicationBus::HandleConnect);
 
         return ERR_NONE;
 }
@@ -190,14 +192,14 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
 	return ERR_NONE;
 }
 
-void LB_STDCALL ApplicationBus::AnounceUser(PCHAR name, PCHAR password) {
+void LB_STDCALL ApplicationBus::AnounceUser(char* name, char* password) {
 
 }
 lbErrCodes LB_STDCALL ApplicationBus::_AnounceUser(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
     lbErrCodes err = ERR_NONE;
-PCHAR name;
-	    PCHAR password;
+char* name;
+	    char* password;
 	    
 
 	unsigned long pid = 0;
@@ -231,7 +233,7 @@ PCHAR name;
     return err;
 }
       
-void LB_STDCALL ApplicationBus::Echo(PCHAR& text) {
+void LB_STDCALL ApplicationBus::Echo(char* text) {
 
 }
 lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
@@ -242,7 +244,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-PCHAR text;
+char* text;
 	    
 
 /*...sEcho proto:0:*/
@@ -269,7 +271,7 @@ PCHAR text;
     return err;
 }
       
-void LB_STDCALL ApplicationBus::getServices(PCHAR& services) {
+void LB_STDCALL ApplicationBus::getServices(char* services) {
 
 }
 lbErrCodes LB_STDCALL ApplicationBus::_getServices(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
@@ -280,7 +282,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_getServices(lb_I_Transfer_Data* request, 
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-PCHAR services;
+char* services;
 	    
 
 /*...sEcho proto:0:*/
@@ -301,19 +303,19 @@ getServices(services);
     return err;
 }
       
-void LB_STDCALL ApplicationBus::getServiceForProtocol(PCHAR protocol, PCHAR& service) {
+void LB_STDCALL ApplicationBus::getServiceForProtocol(char* protocol, char* service) {
 
 }
 lbErrCodes LB_STDCALL ApplicationBus::_getServiceForProtocol(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
     lbErrCodes err = ERR_NONE;
-PCHAR protocol;
+char* protocol;
 	    
 
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-PCHAR service;
+char* service;
 	    
 
 /*...sEcho proto:0:*/
