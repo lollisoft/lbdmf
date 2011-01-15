@@ -26,8 +26,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(ApplicationBusProxy)
         ADD_INTERFACE(lb_I_ApplicationBus)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lb_I_Transfer* ApplicationBusProxy::ABSConnection = NULL;
-bool ApplicationBusProxy::connected = false;
+//lb_I_Transfer* ApplicationBusProxy::ABSConnection = NULL;
+//bool ApplicationBusProxy::connected = false;
 
 lbErrCodes LB_STDCALL ApplicationBusProxy::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "ApplicationBusProxy::setData(...) not implemented yet" LOG_
@@ -37,15 +37,15 @@ lbErrCodes LB_STDCALL ApplicationBusProxy::setData(lb_I_Unknown* uk) {
 ApplicationBusProxy::ApplicationBusProxy() {
 	ref = STARTREF;
 	_CL_LOG << "Init ApplicationBusProxy" LOG_
-
+	
     if (ABSConnection == NULL) {
         /**
          * Initialize the tcp connection...
          */
 
-        UAP_REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
+        REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        ABSConnection->init("//localhost/ApplicationBus");
+        ABSConnection->init("//t43/busmaster/applicationbus");
         
         Connect();
     }
@@ -165,7 +165,7 @@ int ApplicationBusProxy::Disconnect() {
 
 
 
-void LB_STDCALL ApplicationBusProxy::AnounceUser(PCHAR name, PCHAR password) {
+void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 
@@ -193,7 +193,7 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(PCHAR name, PCHAR password) {
 	
 }
       
-void LB_STDCALL ApplicationBusProxy::Echo(PCHAR& text) {
+void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 
@@ -225,7 +225,7 @@ void LB_STDCALL ApplicationBusProxy::Echo(PCHAR& text) {
 	
 }
       
-void LB_STDCALL ApplicationBusProxy::getServices(PCHAR& services) {
+void LB_STDCALL ApplicationBusProxy::getServices(char* services) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 
@@ -254,7 +254,7 @@ void LB_STDCALL ApplicationBusProxy::getServices(PCHAR& services) {
 	
 }
       
-void LB_STDCALL ApplicationBusProxy::getServiceForProtocol(PCHAR protocol, PCHAR& service) {
+void LB_STDCALL ApplicationBusProxy::getServiceForProtocol(char* protocol, char* service) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 

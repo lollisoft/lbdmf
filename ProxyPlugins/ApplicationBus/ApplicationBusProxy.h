@@ -6,9 +6,9 @@
       
 
 class ApplicationBusProxy
-        : public lb_I_Proxy,
-      
-        public lb_I_ApplicationBus {
+        : public 
+		lb_I_Proxy,
+        lb_I_ApplicationBus {
       
 public:
         ApplicationBusProxy();
@@ -19,21 +19,21 @@ public:
         DECLARE_LB_UNKNOWN()
 
       
-      void LB_STDCALL AnounceUser(PCHAR name, PCHAR password);
+      void LB_STDCALL AnounceUser(char* name, char* password);
       
-      void LB_STDCALL Echo(PCHAR& text);
+      void LB_STDCALL Echo(char* text);
       
-      void LB_STDCALL getServices(PCHAR& services);
+      void LB_STDCALL getServices(char* services);
       
-      void LB_STDCALL getServiceForProtocol(PCHAR protocol, PCHAR& service);
+      void LB_STDCALL getServiceForProtocol(char* protocol, char* service);
       
 
 private:
 	int Connect();
 	int Disconnect();
 
-    static bool connected;
-	static lb_I_Transfer* ABSConnection;
+    bool connected;
+	UAP(lb_I_Transfer, ABSConnection)
 
 };
 
