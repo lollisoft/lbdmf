@@ -2292,7 +2292,7 @@ class lb_I_DispatchProtocol : public lb_I_Unknown {
 public:
 
 	/// Store the protocol handler.
-	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);
+	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn) = 0;
 
 	/// Get the protocol callback function.
 	virtual lbProtocolCallback LB_STDCALL getProto() = 0;
@@ -4157,6 +4157,8 @@ public:
 	 */
 	virtual lb_I_Plugin* LB_STDCALL nextServerPlugin() = 0;
 
+	virtual lb_I_ApplicationServerModul* LB_STDCALL nextServerPluginModul() = 0;
+	
 	/** \brief Find first matching plugin.
 	 *
 	 * This function searches for a plugin, that matches the match string.
