@@ -32,8 +32,10 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
+RELPATH_MAKE=
 else
 RELPATH=\Projects\CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 endif
 
@@ -78,10 +80,13 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 
-TARGETDLL=dll
-TARGETEXE=exe
-TARGETWXPLUGIN=wxplugin
-TARGETPLUGIN=plugin
+TARGET_SELECTOR=_target_mingw
+#TARGET_SELECTOR=
+
+TARGETEXE=exe$(TARGET_SELECTOR)
+TARGETDLL=dll$(TARGET_SELECTOR)
+TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
+TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
 ApplicationBus \
@@ -109,11 +114,11 @@ mkrelease:
 dummy:
 
 ApplicationBus: dummy
-	$(MAKE) -C $@ -e MODULE=ApplicationBusProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=ApplicationBusProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
 	$(MAKE) -C $@
 
 Fax: dummy
-	$(MAKE) -C $@ -e MODULE=FaxProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=FaxProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
 	$(MAKE) -C $@
 
 
