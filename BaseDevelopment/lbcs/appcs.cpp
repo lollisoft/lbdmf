@@ -144,6 +144,10 @@ lbErrCodes lbProtocolThread::answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Da
 void lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) {
 	finished = false;
 
+	setLogActivated(true);
+	_LOG << "lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
+	setLogActivated(false);
+	
 	/**
 	 * Loop only exit if not ERR_NONE. This can occur
 	 * if any communication error has arrived.
@@ -165,23 +169,24 @@ void lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) {
 	  result->deleteAll();
 	
 	  if ((rcin = waitForRequest(*&clt, *&request)) != ERR_NONE) {
-	    LOG("waitForRequest(*&clt, *&request) failed");
+		setLogActivated(true);
+		_LOG << "waitForRequest(*&clt, *&request) failed" LOG_
+		setLogActivated(false);
 	  } else {
             if ((rc_handler = parentthread->dispatch(*&request, *&result)) != ERR_NONE) {
-			LOG("handleRequest(*&request, *&result) failed");
+			setLogActivated(true);
+			_LOG << "handleRequest(*&request, *&result) failed" LOG_
+			setLogActivated(false);
 		}
-/*...sAPPBUS_SVR_VERBOSE:0:*/
-#ifdef APPBUS_SVR_VERBOSE
-LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answer");
-#endif
-/*...e*/
+			setLogActivated(true);
+			_LOG << "lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answer" LOG_
+			setLogActivated(false);
 		if ((rCOUT = answerRequest(*&clt, *&result)) != ERR_NONE) {
 			LOG("answerRequest(clt, *&result) failed");
 		}
-/*...sAPPBUS_SVR_VERBOSE:0:*/
-#ifdef APPBUS_SVR_VERBOSE
-LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
-#endif
+			setLogActivated(true);
+			_LOG << "lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent" LOG_
+			setLogActivated(false);
 /*...e*/
 	}
 
@@ -274,6 +279,7 @@ protected:
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServerThread)
+	ADD_INTERFACE(lb_I_ThreadImplementation)
 	ADD_INTERFACE(lb_I_ProtocolDispatcher)
 	ADD_INTERFACE(lb_I_Thread)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -293,12 +299,9 @@ bool LB_STDCALL lbAppServerThread::isFinished() {
 
 /*...svoid\42\ lbAppServerThread\58\\58\ThreadFunction\40\lb_I_Thread\42\ threadHost\41\:0:*/
 void lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) {
-/*...sAPPCS_VERBOSE:0:*/
-#ifdef APPCS_VERBOSE
-	LOGENABLE("lbAppServerThread::Entry()");
-	LOG("lbAppServerThread::Entry(): Do request");
-#endif
-/*...e*/
+	setLogActivated(true);
+	_LOG << "lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
+	setLogActivated(false);
 
 	// Here should be called the function listen() (Not in initTransfer())
 	
@@ -334,7 +337,8 @@ lbErrCodes lbAppServerThread::init(lb_I_Transfer* _clt, lb_I_ApplicationServer* 
 	/*
 		Check if the given transfer client has valid data
 	*/
-	
+	_CL_LOG << "lbAppServerThread::init(...) called." LOG_
+
 	if (_clt == NULL) {
 		LOG("lbAppServerThread::lbAppServerThread(...) Error: Have a NULL pointer!");
 	}
@@ -638,6 +642,8 @@ protected:
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServerChildThread)
+	ADD_INTERFACE(lb_I_ApplicationServerThread)
+	ADD_INTERFACE(lb_I_ThreadImplementation)
 	ADD_INTERFACE(lb_I_ProtocolDispatcher)
 	ADD_INTERFACE(lb_I_Thread)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -1051,6 +1057,8 @@ lbConnection::~lbConnection() {
 
 /*...slbAppServer:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServer)
+	ADD_INTERFACE(lb_I_ApplicationServer)
+	ADD_INTERFACE(lb_I_ProtocolDispatcher)
 	ADD_INTERFACE(lb_I_ProtocolTarget)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1082,10 +1090,13 @@ lbAppServer::lbAppServer() {
     
     REQUEST(getModuleInstance(), lb_I_Container, serverThreads)
     REQUEST(getModuleInstance(), lb_I_Container, serverModules)
-    
+	
+    REQUEST(getModuleInstance(), lb_I_Container, mainThreads)
+	
     //Disallow the serverThreads container to copy the threads at insert.
     
     serverThreads->setCloning(false);
+    mainThreads->setCloning(false);
 }
 /*...e*/
 /*...slbAppServer\58\\58\\126\lbAppServer\40\\41\:0:*/
@@ -1119,8 +1130,10 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 
 		lbAppServerChildThread* impl = new lbAppServerChildThread();
 		impl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		setLogActivated(true);
 		QI(impl, lb_I_ApplicationServerThread, thread_impl)	
 		QI(impl, lb_I_ThreadImplementation, ti)
+		setLogActivated(false);
 
 		moduleThread->setThreadImplementation(ti.getPtr());
 		
@@ -1135,12 +1148,11 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 	// Loads all handlers and makes it reachable by the protocol dispatcher.
 	servermodule->registerModul(this); 
 
-	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
-	transfer->init(servermodule->getServiceName());
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer, transf)
+	transf->init(servermodule->getServiceName());
 
-	thread_impl->init(transfer, this);
+	thread_impl->init(*&transf, this);
 
-#ifdef bla	
 	// Register all protocol handlers.
 
 	protocolHandlers = servermodule->getPlugins();
@@ -1156,7 +1168,6 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 			pt->registerProtocols(this);
 		}
 	}
-#endif		
 	
 	return 1;
 }
@@ -1206,28 +1217,47 @@ void LB_STDCALL lbAppServer::run() {
 	// find plugin modules with the above interface.
 	
 	if (PM->beginEnumServerPlugins()) {
-	        while (true) {
-			UAP(lb_I_Plugin, pl)
+        while (true) {
 			UAP(lb_I_ApplicationServerModul, plAsm)
-			pl = PM->nextServerPlugin();
+			plAsm = PM->nextServerPluginModul();
 
-	                if (pl == NULL) break;
+			if (plAsm == NULL)
+				break;
 
-			QI(pl, lb_I_ApplicationServerModul, plAsm)
-
-			// I think, each module gets it's own thread
-	                if ((plAsm == NULL) || initServerModul(*&plAsm) == 0) {
-				_LOG << "Error: Failed to initialize server module." LOG_
+			setLogActivated(true);
+			_CL_LOG << "Found a server module." LOG_
+			setLogActivated(false);
+			
+			if (plAsm == NULL) {
+				setLogActivated(true);
+				_CL_LOG << "Error: Server module not of given type." LOG_
+				setLogActivated(false);
 			}
-	        }
+			
+			if ((plAsm != NULL) && initServerModul(*&plAsm) == 0) {
+				setLogActivated(true);
+				_CL_LOG << "Error: Failed to initialize server module." LOG_
+				setLogActivated(false);
+			}
+		}
 	}
+
+	LOG("lbAppServer::lbAppServer(): Initialize lb_I_Transfer object");
+	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
+	transfer->init("localhost/busmaster");
+	LOG("lbAppServer::lbAppServer(): Initialized");
 
 	while (1) {
 		UAP(lb_I_Transfer, clt)
-
-		if (transfer == NULL) LOG("lbAppServer::run() Error: transfer object pointer is NULL!");
 		
+		if (transfer == NULL) {
+			_CL_LOG << "lbAppServer::run() Error: transfer object pointer is NULL!" LOG_
+			return;
+		}
+		
+		setLogActivated(true);
 		_CL_LOG << "lbAppServer: Wait for connection..." LOG_
+		setLogActivated(false);
 		
 		if ((clt = transfer->accept()) == 0) 
 		{
@@ -1235,9 +1265,22 @@ void LB_STDCALL lbAppServer::run() {
 			continue;
 		}
 
+		setLogActivated(true);
+		_CL_LOG << "Got connection..." LOG_
+		setLogActivated(false);
 
 		UAP(lb_I_Thread, freeThread)
 
+		if (mainThreads == NULL) {
+			setLogActivated(true);
+			_CL_LOG << "Error: No server plugins registered." LOG_
+			setLogActivated(false);
+			continue;
+		}
+		setLogActivated(true);
+		_CL_LOG << "Handle request." LOG_
+		setLogActivated(false);
+		
 		if (mainThreads->Count() < maxThreads)	{
 			REQUEST(getModuleInstance(), lb_I_Thread, freeThread)
 
@@ -1277,6 +1320,9 @@ void LB_STDCALL lbAppServer::run() {
 			}
 		} 
 		
+		setLogActivated(true);
+		_CL_LOG << "Run request." LOG_
+		setLogActivated(false);
 		freeThread->run();
 	}
 }
@@ -1649,7 +1695,9 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
 	}
 /*...e*/
 
-	//COUT << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << ENDL;
+	setLogActivated(true);
+	_CL_LOG << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid LOG_
+	setLogActivated(false);
 	
 	result->add("Accept");
 	result->add(clienthost);
