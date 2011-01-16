@@ -2294,6 +2294,8 @@ public:
 	/// Store the protocol handler.
 	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn) = 0;
 
+	virtual char* LB_STDCALL getServiceName() = 0;
+	
 	/// Get the protocol callback function.
 	virtual lbProtocolCallback LB_STDCALL getProto() = 0;
 
