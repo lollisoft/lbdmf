@@ -114,7 +114,7 @@ mkrelease:
 dummy:
 
 ApplicationBus: dummy
-	$(MAKE) -C $@ -e MODULE=ApplicationBusProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=ApplicationBusProxy -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
 	$(MAKE) -C $@
 
 Fax: dummy
