@@ -64,23 +64,22 @@ private:
 	ObjectTyp OTyp;
 };
 /*...e*/
-/*...slb_Transfer_Data:0:*/
+/*...slbTransferData:0:*/
 /**
  * This class represents the buffer to be send over a socket. A object of type lbObject
  * should be able to created over a constructor with a parameter of this type. 
  */
-class lb_Transfer_Data : public
+class lbTransferData : public
 		lb_I_Transfer_Data
 {
-
 public:
-	lb_Transfer_Data(int _serverside=0);
-	virtual ~lb_Transfer_Data();
-        
-        lb_Transfer_Data(const lb_I_Transfer_Data & t);
-
+	lbTransferData();
+	virtual ~lbTransferData();
+    lbTransferData(const lb_I_Transfer_Data & t);
 	lb_I_Transfer_Data& LB_STDCALL assign(lb_I_Transfer_Data const & t);
 
+	void LB_STDCALL setServerSide(int _serverside);
+	
 	DECLARE_LB_UNKNOWN()
 
 	/**
@@ -196,7 +195,7 @@ public:
 	int LB_STDCALL isConnected();
 
 	/**
-	 * Got a connection...
+	 * Wait for a request after having got a connectin.
 	 */
 	lb_I_Transfer* LB_STDCALL accept();
 
@@ -215,7 +214,7 @@ public:
 
 private:
 	lbTransfer(lb_I_Transfer* t);
-
+	
 	int recv(lb_I_Transfer_Data* data);
 	int send(lb_I_Transfer_Data* data);
 
@@ -230,6 +229,9 @@ private:
 	lbErrCodes waitForDatatype(char* & result);
 	int waitForBuffer(byte * & buffer, int & len);
 
+	UAP(lb_I_String, hostName)
+	UAP(lb_I_String, portName)
+	
 	UAP(lb_I_Socket, sock)
 	int laststate;
 	int connected;
@@ -247,6 +249,8 @@ private:
 };
 /*...e*/
 
+char* getStringFromEnumeration(LB_PACKET_TYPE type);
+
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {
@@ -254,7 +258,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOflbTransfer)
-DECLARE_FUNCTOR(instanceOflb_Transfer_Data)
+DECLARE_FUNCTOR(instanceOflbTransferData)
 DECLARE_FUNCTOR(instanceOflbTransferDataObject)
 
 /*...sendif __cplusplus:0:*/

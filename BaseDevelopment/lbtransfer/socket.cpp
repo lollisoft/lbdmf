@@ -363,7 +363,7 @@ int lbSocket::connect()
 {
       if (lbSockState == LB_SOCK_CONNECTED) {
       	_LOG << "lbSocket::connect(): ERROR: Illegal state for this function" LOG_
-      	return 0;
+		close();
       }
 #ifdef WINDOWS
       status=::connect(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
@@ -486,6 +486,7 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
 #endif
 /*...e*/
     lbSocket* socket = new lbSocket();
+	socket->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
     socket->setSockConnection(clientSocket);
     
     // Be secure clientSocket of this instance is INVALID_SOCKET
@@ -661,64 +662,28 @@ bool lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
-	_CL_LOG << "Initialize for host '" << host << "' and port " << service LOG_
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
-	_LOG << msg LOG_
-#endif
-/*...e*/
+	_LOG << "Initialize for host '" << host << "' and port '" << service << "'" LOG_
+
 	if (strcmp(host, "localhost") == 0)
 	{
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-		_LOG << "lbSocket::initSymbolic(char* host, char* service): Socket initializing as server" LOG_
-#endif
-/*...e*/
 		serverMode = 1;
-	}
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-	 else {
-
+	} else {
 		_LOG << "lbSocket::initSymbolic(char* host, char* service): Socket initializing as client" LOG_
-
 	}
-#endif
-/*...e*/
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE	
-	_LOG << "lbSocket::initSymbolic(char* host, char* service) called" LOG_
-#endif
-/*...e*/
 	
 	servent* s = getservbyname(service, NULL);
 
-/*...sStruct definition:0:*/
- /*
- struct hostent { 
-     char FAR *       h_name; 
-     char FAR * FAR * h_aliases; 
-     short            h_addrtype; 
-     short            h_length; 
-     char FAR * FAR * h_addr_list; 
- };
- */
-/*...e*/
-
 	if(s == NULL) {
-		_CL_LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
+		_LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
 		return false;
 	}
 
  	u_short port = s->s_port;
-	setLogActivated(true);
 	if (serverMode == 1) {
-		_CL_LOG << "Listening on port " << port << "..." LOG_
+		_LOG << "Listening on port " << port << "..." LOG_
 	} else {
-		_CL_LOG << "Opening port " << port << "..." LOG_
+		_LOG << "Opening port " << port << "..." LOG_
 	}
-	setLogActivated(false);
 
  	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
 	return true;
@@ -1384,7 +1349,7 @@ if (_isServer == 1) {
 /*...slbSocket\58\\58\recv\40\lb_I_Transfer_Data\42\ data\41\:0:*/
 lbErrCodes lbSocket::recv(lb_I_Transfer_Data* data) {
 	int i;
-_LOG << "lbSocket::recv(lb_Transfer_Data & data) Not implemented!" LOG_
+_LOG << "lbSocket::recv(lbTransferData & data) Not implemented!" LOG_
 	if (recvInteger(i) == 1) {
 	}
 
@@ -1393,7 +1358,7 @@ _LOG << "lbSocket::recv(lb_Transfer_Data & data) Not implemented!" LOG_
 /*...e*/
 /*...slbSocket\58\\58\send\40\lb_I_Transfer_Data\42\ data\41\:0:*/
 lbErrCodes lbSocket::send(lb_I_Transfer_Data* data) {
-_LOG << "lbSocket::recv(lb_Transfer_Data & data) Not implemented!" LOG_
+_LOG << "lbSocket::recv(lbTransferData & data) Not implemented!" LOG_
 	return ERR_SOCKET_NOT_IMPLEMENTED;
 }
 /*...e*/
