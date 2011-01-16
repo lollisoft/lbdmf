@@ -21,7 +21,8 @@
 IMPLEMENT_FUNCTOR(instanceOfApplicationBus, ApplicationBus)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(ApplicationBus)
-        ADD_INTERFACE(lb_I_ApplicationBus_ProtocolTarget)
+	ADD_INTERFACE(lb_I_ProtocolTarget)
+	ADD_INTERFACE(lb_I_ApplicationBus_ProtocolTarget)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL ApplicationBus::setData(lb_I_Unknown* uk) {
@@ -44,9 +45,7 @@ char* ApplicationBus::getServiceName() {
 }
 
 lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr) {
-		setLogActivated(true);
-		_CL_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
-		setLogActivated(false);
+		_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
 
         protoMgr->addProtocolHandler("AnounceUser", this, (lbProtocolCallback) &ApplicationBus::_AnounceUser);
 
@@ -193,7 +192,7 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
 }
 
 void LB_STDCALL ApplicationBus::AnounceUser(char* name, char* password) {
-
+	_LOG << "ApplicationBus::AnounceUser(" << name << ", " << password << ") called." LOG_
 }
 lbErrCodes LB_STDCALL ApplicationBus::_AnounceUser(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
@@ -234,7 +233,7 @@ char* name;
 }
       
 void LB_STDCALL ApplicationBus::Echo(char* text) {
-
+	_LOG << "ApplicationBus::Echo(" << text << ") called." LOG_
 }
 lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
@@ -244,7 +243,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-char* text;
+	char* text;
 	    
 
 /*...sEcho proto:0:*/
@@ -254,6 +253,10 @@ char* text;
 */
 /*...e*/
 
+	if (request->requestString("Echo") != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: Echo function identifer not sent", "ApplicationBus::Echo(...)");
+		return ERR_TRANSFER_PROTOCOL;
+	}
 
     // requestString allocates memory for the parameter
 	if (request->requestString("text", text) != ERR_NONE) {

@@ -89,27 +89,31 @@ lbErrCodes LB_STDCALL lbPluginApplicationBus::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbPluginApplicationBus::lbPluginApplicationBus() {
-	_CL_VERBOSE << "lbPluginApplicationBus::lbPluginApplicationBus() called.\n" LOG_
+	_LOG << "lbPluginApplicationBus::lbPluginApplicationBus() called." LOG_
 	ref = STARTREF;
 }
 
 lbPluginApplicationBus::~lbPluginApplicationBus() {
-	_CL_VERBOSE << "lbPluginApplicationBus::~lbPluginApplicationBus() called.\n" LOG_
+	_LOG << "lbPluginApplicationBus::~lbPluginApplicationBus() called.\n" LOG_
 }
 
 bool LB_STDCALL lbPluginApplicationBus::canAutorun() {
+	_LOG << "lbPluginApplicationBus::canAutorun() called.\n" LOG_
 	return false;
 }
 
 lbErrCodes LB_STDCALL lbPluginApplicationBus::autorun() {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbPluginApplicationBus::autorun() called.\n" LOG_
 	return err;
 }
 
 void LB_STDCALL lbPluginApplicationBus::initialize() {
+	_LOG << "lbPluginApplicationBus::initialize() called.\n" LOG_
 }
 	
 bool LB_STDCALL lbPluginApplicationBus::run() {
+	_LOG << "lbPluginApplicationBus::run() called.\n" LOG_
 	return true;
 }
 
@@ -134,13 +138,11 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationBus::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (impl == NULL) {
-
-		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
+		_LOG << "Warning: getImplementation() has not been used prior." LOG_
+		ApplicationBus* applicationBus = new ApplicationBus();
+		applicationBus->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		ApplicationBus* InputStream = new ApplicationBus();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
-		QI(InputStream, lb_I_Unknown, impl)
+		QI(applicationBus, lb_I_Unknown, impl)
 	}
 	
 	lb_I_Unknown* r = impl.getPtr();
@@ -173,6 +175,11 @@ public:
 	
 	char* LB_STDCALL getServiceName();
 	void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr);
+
+private:
+	UAP(lb_I_Container, protocolHandlers)
+	UAP(lb_I_Container, protocolHandlerInstances)
+	
 };
 
 IMPLEMENT_FUNCTOR(instanceOfPluginServerModule, lbServerModul)
@@ -198,8 +205,8 @@ void LB_STDCALL lbServerModul::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbServerModul::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbServerModul::setData(...) for ApplicationBus not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "lbServerModul::setData(...) for ApplicationBus not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 char* LB_STDCALL lbServerModul::getServiceName() {
@@ -207,7 +214,58 @@ char* LB_STDCALL lbServerModul::getServiceName() {
 }
 
 void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) {
-	_CL_LOG << "void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) called." LOG_
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) for ApplicationBus called." LOG_
+	initialize();
+	
+	if (protocolHandlerInstances == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, protocolHandlerInstances)
+		protocolHandlerInstances->setCloning(false);
+	} else {
+		protocolHandlerInstances->deleteAll();
+	}
+	
+	protocolHandlers = getPlugins();
+	protocolHandlers->finishIteration();
+	
+	while (protocolHandlers->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+		UAP(lb_I_ProtocolTarget, pt)
+		_LOG << "Try to register a protocol handler." LOG_
+		uk = protocolHandlers->nextElement();
+		
+		QI(uk, lb_I_Plugin, pl)
+		
+		if (pl == NULL) {
+			_LOG << "Error: Element in plugin list has no interface of type lb_I_Plugin (" << uk->getClassName() << ")." LOG_
+			continue;
+		}
+
+		pl->initialize();
+		ukPl = pl->getImplementation(); 
+		
+		if (ukPl == NULL) {
+			_LOG << "Error: Peeked plugin element is NULL" LOG_
+			continue;
+		}
+		
+		QI(ukPl, lb_I_ProtocolTarget, pt)
+		
+		if (pt != NULL) {
+			_LOG << "Register protocols for " << pt->getClassName() LOG_
+			pt->registerProtocols(*&pMgr);
+			//Ensure lifetime hold by plugin implementation and thus by this class.
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
+			UAP(lb_I_KeyBase, PluginKey)
+			*pluginName = ukPl->getClassName();
+			QI(pluginName, lb_I_KeyBase, PluginKey)
+			protocolHandlerInstances->insert(&ukPl, &PluginKey);
+		} else {
+			_LOG << "Have not got an interface of type lb_I_ProtocolTarget." LOG_
+		}
+	}
 }
 
     
