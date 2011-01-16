@@ -45,11 +45,10 @@ ApplicationBusProxy::ApplicationBusProxy() {
 
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        ABSConnection->init("//t43/busmaster/applicationbus");
-        
+        ABSConnection->init("t43/busmaster");
         Connect();
     }
-    _CL_LOG << "Initialized" LOG_
+    _LOG << "ApplicationBusProxy Initialized" LOG_
 }
 
 ApplicationBusProxy::~ApplicationBusProxy() {
@@ -59,21 +58,24 @@ ApplicationBusProxy::~ApplicationBusProxy() {
 int ApplicationBusProxy::Connect() {
 	char* answer;
 	char buf[100] = "";
-	lb_I_Transfer_Data* result;
-
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+	client->setServerSide(0);
+	result->setServerSide(0);
 
 	client->add("Connect");
 	client->add("Host");
-	client->add("anakin");
+	client->add("T43");
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
 	client->add(lbGetCurrentThreadId());
 
+	_LOG << "Client sends the packets..." LOG_
     *ABSConnection << *&client;
+	_LOG << "Client waits for answer..." LOG_
     *ABSConnection >> *&result;
-
+	_LOG << "Connect returns with an answer..." LOG_
 	// Handle the request
 	int count = result->getPacketCount();
 
@@ -92,15 +94,17 @@ int ApplicationBusProxy::Connect() {
 				
 				if (strcmp(buffer, "Accept") == 0) {
 					connected = true;
+					_LOG << "Connection accepted." LOG_
 					return 1;
 				} else {
 					connected = false;
+					_LOG << "Connection failed!" LOG_
 					return 0;
 				}
 				break;
 				
 			default:
-				_CL_LOG << "Unknown packet type!" LOG_
+				_LOG << "Unknown packet type!" LOG_
 				
 				break;
 		}
@@ -108,7 +112,7 @@ int ApplicationBusProxy::Connect() {
 		result->incrementPosition();
 	}
                 
-        return 1;
+	return 1;
 }
 
 int ApplicationBusProxy::Disconnect() {
@@ -181,6 +185,7 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
     user_info->add(password);
 	    
 	
+	ABSConnection->init(NULL);
 	*ABSConnection << *&user_info;
 	if (ABSConnection->getLastError() != ERR_NONE) 
 	    _LOG << "Error in sending AnounceUser data" LOG_
@@ -199,13 +204,17 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
-		
+
+	user_info->setServerSide(0);
+	result->setServerSide(0);
+
+	
     user_info->add("Echo");
 
     user_info->add("text");
     user_info->add(text);
 	    
-	
+	ABSConnection->init(NULL);
 	*ABSConnection << *&user_info;
 	if (ABSConnection->getLastError() != ERR_NONE) 
 	    _LOG << "Error in sending Echo data" LOG_
@@ -219,7 +228,7 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
             _LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
             return;
         } else {
-            _CL_LOG << "Parameter 'text' = '" << text << "'" LOG_
+            _CL_LOG << "Parameter result: 'text' = '" << text << "'" LOG_
         }
 	    
 	
@@ -234,7 +243,7 @@ void LB_STDCALL ApplicationBusProxy::getServices(char* services) {
 		
     user_info->add("getServices");
 
-	
+	ABSConnection->init(NULL);
 	*ABSConnection << *&user_info;
 	if (ABSConnection->getLastError() != ERR_NONE) 
 	    _LOG << "Error in sending getServices data" LOG_
@@ -266,7 +275,7 @@ void LB_STDCALL ApplicationBusProxy::getServiceForProtocol(char* protocol, char*
     user_info->add("protocol");
     user_info->add(protocol);
 	    
-	
+	ABSConnection->init(NULL);
 	*ABSConnection << *&user_info;
 	if (ABSConnection->getLastError() != ERR_NONE) 
 	    _LOG << "Error in sending getServiceForProtocol data" LOG_
