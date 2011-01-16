@@ -1,6 +1,10 @@
+#include <lbConfigHook.h>
 #include <lbinclude.h>
 #include <conio.h>
 #include <signal.h>
+
+#include <IApplicationBus.h>
+#include <ApplicationBus/ApplicationBusProxy.h>
 
 void handler(int sig) {
 	cout << "Oops..." << endl;
@@ -8,9 +12,9 @@ void handler(int sig) {
 }
 
 /*...smain:0:*/
-void main(int argc, char** argv) {
-LOGPREFIX("ServerTest: ");
+int main(int argc, char** argv) {
 	int count = 0;
+	setLogActivated(true);
 
 	/**
 	 * This let the app not crashing. But the handler simply
@@ -18,23 +22,21 @@ LOGPREFIX("ServerTest: ");
 	 */
 	signal(SIGINT, handler);
 
-
-	LOG("-------------- Testing Server---------------");
-	lbAppBusClient client;
-	LOG("------- Must be connected to Server --------");
-	
-	//cout << "Begin tesing Anounce user in 1 sec..." << endl;
-	//lb_sleep(1000);
-
-
-	char buf[100] = "";
-	
-	while (count++ < 1000) {
-		client.Echo("Hallo, dies ist eine Echo - Message");
+	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, client)
+	if (client != NULL) {
+		char buf[100] = "";
+		_LOG << "Application bus instantiated." LOG_
+		while (count++ < 1) {
+			char* text = "Hallo, dies ist eine Echo - Message";
+			client->Echo(text);
+		}
+	} else {
+		_CL_LOG << "Error: Can't find application bus." LOG_
 	}
 	
-	cout << "Ending server test thread" << endl;
+	_CL_LOG << "Ending server test thread" LOG_
 	getch();
 	exit(0);
+	return 0;
 }
 /*...e*/
