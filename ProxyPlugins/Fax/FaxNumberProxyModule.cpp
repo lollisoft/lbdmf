@@ -27,6 +27,7 @@
             73252 Lenningen (germany)
 */
 
+#ifdef IMPLEMENT_PROXY_PLUGIN
 #define Fax_DLL
 
 #include <string.h>
@@ -74,4 +75,4 @@ void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) {
 
 }
 
-    
+#endif //IMPLEMENT_PROXY_PLUGIN
