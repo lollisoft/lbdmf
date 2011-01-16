@@ -144,9 +144,7 @@ lbErrCodes lbProtocolThread::answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Da
 void lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) {
 	finished = false;
 
-	setLogActivated(true);
 	_LOG << "lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
-	setLogActivated(false);
 	
 	/**
 	 * Loop only exit if not ERR_NONE. This can occur
@@ -169,24 +167,16 @@ void lbProtocolThread::ThreadFunction(lb_I_Thread* threadHost) {
 	  result->deleteAll();
 	
 	  if ((rcin = waitForRequest(*&clt, *&request)) != ERR_NONE) {
-		setLogActivated(true);
 		_LOG << "waitForRequest(*&clt, *&request) failed" LOG_
-		setLogActivated(false);
 	  } else {
             if ((rc_handler = parentthread->dispatch(*&request, *&result)) != ERR_NONE) {
-			setLogActivated(true);
 			_LOG << "handleRequest(*&request, *&result) failed" LOG_
-			setLogActivated(false);
 		}
-			setLogActivated(true);
 			_LOG << "lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answer" LOG_
-			setLogActivated(false);
 		if ((rCOUT = answerRequest(*&clt, *&result)) != ERR_NONE) {
 			LOG("answerRequest(clt, *&result) failed");
 		}
-			setLogActivated(true);
 			_LOG << "lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent" LOG_
-			setLogActivated(false);
 /*...e*/
 	}
 
@@ -299,9 +289,7 @@ bool LB_STDCALL lbAppServerThread::isFinished() {
 
 /*...svoid\42\ lbAppServerThread\58\\58\ThreadFunction\40\lb_I_Thread\42\ threadHost\41\:0:*/
 void lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) {
-	setLogActivated(true);
 	_LOG << "lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
-	setLogActivated(false);
 
 	// Here should be called the function listen() (Not in initTransfer())
 	
@@ -433,12 +421,21 @@ LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
 /*...slbAppServerThread\58\\58\isConnected\40\\46\\46\\46\\41\:0:*/
 bool LB_STDCALL lbAppServerThread::isConnected(lb_I_Transfer_Data* request) {
 	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_KeyBase, key)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, tid)
-	tid->setData(request->getClientTid());
-	QI(tid, lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	UAP(lb_I_KeyBase, keybase)
+	QI(key, lb_I_KeyBase, keybase)
 
-	if (connections->exists(&key) == 1) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Pid)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Tid)
+
+	Pid->setData(request->getClientPid());
+	Tid->setData(request->getClientTid());
+		
+	*key = request->getClientHost();
+	*key += Pid->charrep();
+	*key += Tid->charrep();
+		
+	if (connections->exists(&keybase)) {
 		return true;
 	}
 	
@@ -957,12 +954,21 @@ lbErrCodes LB_STDCALL lbAppServerChildThread::delProtocolHandler(const char* han
 /*...slbAppServerChildThread\58\\58\isConnected\40\\46\\46\\46\\41\:0:*/
 bool LB_STDCALL lbAppServerChildThread::isConnected(lb_I_Transfer_Data* request) {
 	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_KeyBase, key)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, tid)
-	tid->setData(request->getClientTid());
-	QI(tid, lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	UAP(lb_I_KeyBase, keybase)
+	QI(key, lb_I_KeyBase, keybase)
 
-	if (connections->exists(&key) == 1) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Pid)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Tid)
+
+	Pid->setData(request->getClientPid());
+	Tid->setData(request->getClientTid());
+		
+	*key = request->getClientHost();
+	*key += Pid->charrep();
+	*key += Tid->charrep();
+		
+	if (connections->exists(&keybase)) {
 		return true;
 	}
 	
@@ -1011,13 +1017,27 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDispatchProto)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbDispatchProto::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbDispatchProto::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
+		lbErrCodes err = ERR_NONE;
+		UAP(lb_I_DispatchProtocol, proto)
+		QI(uk, lb_I_DispatchProtocol, proto)
+		
+		if (proto != NULL) {
+			setProto(proto->getServiceName(), proto->getProtocolHandlerInstance(), proto->getProto());
+		} else {
+			_CL_LOG << "Error: Copying lbDispatchProto instance not possible." LOG_
+		}
+		
+        return ERR_NONE;
 }
 
 lbDispatchProto::lbDispatchProto() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_String, service)
+}
+
+char* LB_STDCALL lbDispatchProto::getServiceName() {
+	if (service == NULL) return "";
+	return service->charrep();
 }
 
 lbErrCodes LB_STDCALL lbDispatchProto::setProto(const char* _service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn) {
@@ -1115,8 +1135,16 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 	UAP(lb_I_ApplicationServerThread, thread_impl)
 	UAP(lb_I_ThreadImplementation, ti)
 	
+	setLogActivated(true);
 	*servicename = servermodule->getServiceName();
 	
+	_LOG << "initServerModul() called with " << servicename->charrep() LOG_
+
+#ifndef USE_MULTITHREAD_CODE
+	servermodule->registerModul(this);
+#endif
+
+#ifdef USE_MULTITHREAD_CODE
 	UAP(lb_I_Unknown, ukThread)
 	UAP(lb_I_Thread, moduleThread)
 
@@ -1130,10 +1158,8 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 
 		lbAppServerChildThread* impl = new lbAppServerChildThread();
 		impl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-		setLogActivated(true);
 		QI(impl, lb_I_ApplicationServerThread, thread_impl)	
 		QI(impl, lb_I_ThreadImplementation, ti)
-		setLogActivated(false);
 
 		moduleThread->setThreadImplementation(ti.getPtr());
 		
@@ -1168,6 +1194,8 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 			pt->registerProtocols(this);
 		}
 	}
+#endif
+	setLogActivated(false);
 	
 	return 1;
 }
@@ -1195,12 +1223,7 @@ lbErrCodes LB_STDCALL lbAppServer::activateServerPlugin(char* name) {
 // Main server
 /*...slbAppServer\58\\58\run\40\\41\:0:*/
 void LB_STDCALL lbAppServer::run() {
-/*...sAPPCS_VERBOSE:0:*/
-#ifdef APPCS_VERBOSE
-	LOG("lbAppServer::run() called");
-        LOG("lbAppServer::run(): Initialize lb_I_Transfer object");
-#endif
-/*...e*/
+	_LOG << "lbAppServer::run() called" LOG_
 	lbErrCodes err = ERR_NONE;
 	char srvname[100] = "";
 	
@@ -1224,47 +1247,58 @@ void LB_STDCALL lbAppServer::run() {
 			if (plAsm == NULL)
 				break;
 
-			setLogActivated(true);
 			_CL_LOG << "Found a server module." LOG_
-			setLogActivated(false);
 			
 			if (plAsm == NULL) {
-				setLogActivated(true);
 				_CL_LOG << "Error: Server module not of given type." LOG_
-				setLogActivated(false);
 			}
 			
 			if ((plAsm != NULL) && initServerModul(*&plAsm) == 0) {
-				setLogActivated(true);
 				_CL_LOG << "Error: Failed to initialize server module." LOG_
-				setLogActivated(false);
 			}
 		}
 	}
 
-	LOG("lbAppServer::lbAppServer(): Initialize lb_I_Transfer object");
+	setLogActivated(true);
+	_LOG << "lbAppServer::lbAppServer(): Initialize lb_I_Transfer object" LOG_
 	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
 	transfer->init("localhost/busmaster");
-	LOG("lbAppServer::lbAppServer(): Initialized");
+	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
 
 	while (1) {
 		UAP(lb_I_Transfer, clt)
 		
+		_LOG << "lbAppServer: Wait for connection..." LOG_
 		if (transfer == NULL) {
-			_CL_LOG << "lbAppServer::run() Error: transfer object pointer is NULL!" LOG_
+			_LOG << "lbAppServer::run() Error: transfer object pointer is NULL!" LOG_
 			return;
 		}
 		
-		setLogActivated(true);
-		_CL_LOG << "lbAppServer: Wait for connection..." LOG_
-		setLogActivated(false);
-		
 		if ((clt = transfer->accept()) == 0) 
 		{
-			LOG("lbAppServer::run() error while accepting on a socket");
+			_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
 			continue;
+		} else {
+			_LOG << "lbAppServer: Got a connection..." LOG_
 		}
 
+		
+		
+#ifndef USE_MULTITHREAD_CODE
+		UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, request)
+		UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
+		_LOG << "lbAppServer: Prepare transfer data instances..." LOG_
+		request->setServerSide(1);
+		result->setServerSide(1);
+		_LOG << "lbAppServer: Recieve and demarshal request..." LOG_
+		*clt >> *&request;
+		_LOG << "lbAppServer: Dispatch request..." LOG_
+		dispatch(*&request, *&result);
+		_LOG << "lbAppServer: Marshal and send answer..." LOG_
+		*clt << *&result;
+#endif		
+
+#ifdef USE_MULTITHREAD_CODE
 		setLogActivated(true);
 		_CL_LOG << "Got connection..." LOG_
 		setLogActivated(false);
@@ -1319,11 +1353,11 @@ void LB_STDCALL lbAppServer::run() {
 				}
 			}
 		} 
-		
 		setLogActivated(true);
 		_CL_LOG << "Run request." LOG_
 		setLogActivated(false);
 		freeThread->run();
+#endif		
 	}
 }
 /*...e*/
@@ -1354,9 +1388,15 @@ lbErrCodes lbAppServer::_connected(lb_I_Transfer* _clt) {
 	  request->deleteAll();
 	  result->deleteAll();
 	
+		setLogActivated(true);
+		_CL_LOG << "Answer request..." LOG_
+		setLogActivated(false);
 	  if ((rcin = waitForRequest(_clt, *&request)) != ERR_NONE) {
 	    LOG("waitForRequest(_clt, *&request) failed");
 	  } else {
+			setLogActivated(true);
+			_CL_LOG << "Dispatch request..." LOG_
+			setLogActivated(false);
             if ((rc_handler = dispatch(*&request, *&result)) != ERR_NONE) {
 			LOG("handleRequest(*&request, *&result) failed");
 		}
@@ -1365,6 +1405,9 @@ lbErrCodes lbAppServer::_connected(lb_I_Transfer* _clt) {
 LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answer");
 #endif
 /*...e*/
+		setLogActivated(true);
+		_CL_LOG << "Answer request..." LOG_
+		setLogActivated(false);
 		if ((rCOUT = answerRequest(_clt, *&result)) != ERR_NONE) {
 			LOG("answerRequest(_clt, *&result) failed");
 		}
@@ -1373,7 +1416,7 @@ LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answe
 LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
 #endif
 /*...e*/
-	}
+	  }
 
 	/**
 	 * Request is set correctly, because loop is entered at least once.
@@ -1397,8 +1440,7 @@ LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
 /*...slbAppServer\58\\58\dispatch\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result)
 {// Dispatching were possible here with servertype...
-
-lbErrCodes err = ERR_NONE;
+	lbErrCodes err = ERR_NONE;
 
 	/**
 	 * One server thread is created for one client process. But this
@@ -1409,7 +1451,7 @@ lbErrCodes err = ERR_NONE;
 	 */
 	if (isConnected(request) == 0) {
 		err = HandleConnect(request, result);
-		LOG("Handled a nonconnected request");
+		_CL_LOG << "lbAppServer: Handled a nonconnected request." LOG_
 		return err;
 	}
 	else {
@@ -1431,9 +1473,11 @@ lbErrCodes err = ERR_NONE;
 			QI(uk, lb_I_DispatchProtocol, proto)
 		
 			if (proto != NULL) {
+				_LOG << "lbAppServer: Call registered protocol callback." LOG_
 				err = (proto->getProtocolHandlerInstance()->*((lbProtocolCallback) (proto->getProto()))) (request, result);
+				_LOG << "lbAppServer: Called registered protocol callback." LOG_
 			} else {
-				LOG("Can not dispatch unknown request");
+				_LOG << "lbAppServer: Can not dispatch unknown request." LOG_
 				err = ERR_APP_SERVER_DISPATCH;
 			}
 			
@@ -1537,16 +1581,27 @@ lbErrCodes LB_STDCALL lbAppServer::delProtocolHandler(const char* handlername) {
 /*...slbAppServer\58\\58\isConnected\40\\46\\46\\46\\41\:0:*/
 bool LB_STDCALL lbAppServer::isConnected(lb_I_Transfer_Data* request) {
 	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_KeyBase, key)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, tid)
-	tid->setData(request->getClientTid());
-	QI(tid, lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	UAP(lb_I_KeyBase, keybase)
+	QI(key, lb_I_KeyBase, keybase)
 
-	if (connections->exists(&key) == 1) {
-		return 1;
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Pid)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Tid)
+
+	Pid->setData(request->getClientPid());
+	Tid->setData(request->getClientTid());
+		
+	*key = request->getClientHost();
+	*key += Pid->charrep();
+	*key += Tid->charrep();
+	
+	_LOG << "Check if client is connected: " << key->charrep() LOG_
+	
+	if (connections->exists(&keybase)) {
+		return true;
 	}
 	
-	return 0;
+	return false;
 }
 /*...e*/
 /*...slbAppServer\58\\58\makeProtoErrAnswer\40\\46\\46\\46\\41\:0:*/
@@ -1556,7 +1611,9 @@ lbErrCodes lbAppServer::makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg
 	result->add(msg);
 	
 	sprintf(buf, "%s Cause: %s", where, msg);
-	LOG(buf);
+	setLogActivated(true);
+	_CL_LOG << buf LOG_
+	setLogActivated(false);
 	
 	return ERR_NONE;
 }
@@ -1564,11 +1621,9 @@ lbErrCodes lbAppServer::makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg
 /*...slbAppServer\58\\58\HandleConnect\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	lbErrCodes err = ERR_NONE;
-/*...sAPPBUS_SVR_VERBOSE:0:*/
-#ifdef APPBUS_SVR_VERBOSE
-LOG("lbAppServer::HandleConnect(...) called");
-#endif
-/*...e*/
+
+	_LOG << "lbAppServer::HandleConnect() called." LOG_
+	
 	LB_PACKET_TYPE type;
 	char *clienthost = NULL;
 	unsigned long pid = 0;
@@ -1626,8 +1681,11 @@ LOG("lbAppServer::HandleConnect(...) called");
 	*key = clienthost;
 	*key += Pid->charrep();
 	*key += Tid->charrep();
-		
-	if (connections->exists(&keybase)) {
+
+	_LOG << "Check if client is connected: " << keybase->charrep() LOG_
+	
+	if (!connections->exists(&keybase)) {
+		_LOG << "Connect the client: " << keybase->charrep() LOG_
 		result->add("Accept");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
@@ -1648,10 +1706,10 @@ LOG("lbAppServer::HandleConnect(...) called");
 	} else {
 		result->add("Deny");
 		result->add("Already connected");
-		LOG("lbAppServer::HandleConnect(...) Error: already connected!");
+		_LOG << "lbAppServer::HandleConnect(...) Error: already connected!" LOG_
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
-//COUT << "lbAppServer::HandleConnect(...) Succeeded" << ENDL;	
+	_LOG << "lbAppServer::HandleConnect(...) Succeeded" LOG_
 	return ERR_NONE;
 }
 /*...e*/

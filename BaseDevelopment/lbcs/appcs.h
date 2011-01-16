@@ -94,6 +94,8 @@ public:
 
 	lbErrCodes LB_STDCALL setProto(const char* _service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);	
 	
+	char* LB_STDCALL getServiceName();
+	
 	lbProtocolCallback LB_STDCALL getProto();
 	
 	lb_I_ProtocolTarget* LB_STDCALL getProtocolHandlerInstance();
