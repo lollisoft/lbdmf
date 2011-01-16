@@ -19,6 +19,8 @@ int main(int argc, char** argv) {
 	 */
 	signal(SIGINT, handler);
 
+	signal(SIGILL, handler);
+
 	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
  	if (appServer != NULL) {
 		appServer->run();
