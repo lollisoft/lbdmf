@@ -69,6 +69,8 @@ public:
                 return assign(t);
         }
 
+		virtual void LB_STDCALL setServerSide(int _serverside=0) = 0;
+		
         virtual lb_I_Transfer_Data& LB_STDCALL assign(const lb_I_Transfer_Data & t) = 0;
         
         virtual int LB_STDCALL hasMorePackets() const = 0;
