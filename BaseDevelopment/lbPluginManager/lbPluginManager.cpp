@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.76 2011/01/15 08:37:28 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.77 2011/01/16 21:49:45 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.77  2011/01/16 21:49:45  lollisoft
+ * Log to file instead to console for this case.
+ *
  * Revision 1.76  2011/01/15 08:37:28  lollisoft
  * Corrected server related plugin handling and added a function to return
  * the server plugin module that may be responsible to startup a server
@@ -2092,7 +2095,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 		lbErrCodes err = ERR_NONE;
 		
 		if (implementation == NULL) {
-			_CL_LOG << "lbPlugin::getImplementation() Error: Have no plugin implementation. Could not proceed." LOG_
+			_LOG << "lbPlugin::getImplementation() Error: Have no plugin implementation. Could not proceed. Call initialize first." LOG_
 		}
 		
 		UAP(lb_I_PluginImpl, impl)
