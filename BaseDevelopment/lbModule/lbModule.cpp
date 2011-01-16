@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.131 $
+ * $Revision: 1.132 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.131 2011/01/15 08:34:05 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.132 2011/01/16 21:48:43 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.132  2011/01/16 21:48:43  lollisoft
+ * Corrected a mass rename. And added a todo as the proxy plugins should be
+ * implemented in a falback search for proxy interfaces. This will automate and
+ * ease deployment.
+ *
  * Revision 1.131  2011/01/15 08:34:05  lollisoft
  * Added stuff for client server communication. These classes are not ready.
  *
@@ -2402,7 +2407,7 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
-		functor = PREFIX "instanceOflb_Transfer_Data";
+		functor = PREFIX "instanceOflbTransferData";
 		module = "lbtransfer";
 		found = true;
 	}
@@ -2419,6 +2424,7 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		found = true;
 	}
 	
+///\todo Implement this as 'search in plugins'.
 	if (strcmp(searchArgument, "lb_I_ApplicationBus") == 0) {
 		functor = PREFIX "instanceOfApplicationBusProxy";
 		module = "ApplicationBusProxy";
