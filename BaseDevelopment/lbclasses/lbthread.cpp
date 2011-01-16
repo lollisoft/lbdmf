@@ -156,6 +156,10 @@ void initsem(int client)
 
 #endif //UseThis_NoMore
 
+
+#define IMPLEMENT_MUTEX
+#ifdef IMPLEMENT_MUTEX
+
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbMutex)
 ADD_INTERFACE(lb_I_Mutex)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -258,12 +262,16 @@ void lbMutex::release()
 } 
 /*...e*/
 /*...e*/
+#endif
+
 #define UseThis_NoMore
 #ifdef UseThis_NoMore
 
 /*...slbCritSect:0:*/
 //#define USE_CRITICAL_SECTION
 
+#define IMPLEMENT_CRITSECT
+#ifdef IMPLEMENT_CRITSECT
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbCritSect)
 ADD_INTERFACE(lb_I_CriticalSection)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -289,7 +297,10 @@ lbErrCodes lbCritSect::leave() {
 	return ERR_NONE;
 }
 /*...e*/
+#endif
 
+#define IMPLEMENT_LOCK
+#ifdef IMPLEMENT_LOCK
 /*...slbLock:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLock)
 ADD_INTERFACE(lb_I_Lock)
@@ -345,8 +356,12 @@ _CL_VERBOSE << "lbLock::~lbLock(...) leaved" LOG_
 #endif	
 }
 /*...e*/
+#endif
 
 #ifdef WINDOWS
+
+#define IMPLEMENT_THREAD_INTERNAL
+#ifdef IMPLEMENT_THREAD_INTERNAL
 /*...slbThreadInternal:0:*/
 
 // TLS index of the slot where we store the pointer to the current thread
@@ -426,6 +441,8 @@ DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
 }
 /*...e*/
 /*...e*/
+#endif
+
 #endif //WINDOWS
 
 #ifdef LINUX
@@ -534,6 +551,7 @@ LOGENABLE("lbThread::lbThread()");
 		}
 	}
 	pThreadImpl = new lbThreadInternal();
+	
 }
 
 lbThread::~lbThread() {
@@ -572,34 +590,43 @@ lbErrCodes LB_STDCALL lbThread::setThreadImplementation(lb_I_ThreadImplementatio
 
 lbErrCodes LB_STDCALL lbThread::create() {
   lbErrCodes err;
+  
+  if (_impl != NULL) {
+  
+  } else {
 /*...sCreate if needed:2:*/
-  if (pThreadImpl == NULL) _LOG << "lbThread::create() Error: Have a NULL pointer (pThreadImpl)!" LOG_
-  if (pThreadImpl->getHandle() == NULL) {
+	if (pThreadImpl == NULL) _LOG << "lbThread::create() Error: Have a NULL pointer (pThreadImpl)!" LOG_
+	if (pThreadImpl->getHandle() == NULL) {
 /*...sTHREAD_VERBOSE:2:*/
-#ifdef THREAD_VERBOSE
-	_CL_VERBOSE << "lbThread::run will create a new thread" LOG_
-#endif
+	#ifdef THREAD_VERBOSE
+		_CL_VERBOSE << "lbThread::run will create a new thread" LOG_
+	#endif
 /*...e*/
-
+	
 /*...sTHREAD_VERBOSE:2:*/
-#ifdef THREAD_VERBOSE
-	if (this == NULL) {
-		_CL_VERBOSE << "lbThreadInternal::Create: Got a null pointer (this)." LOG_
-	}
-#endif
+	#ifdef THREAD_VERBOSE
+		if (this == NULL) {
+			_CL_VERBOSE << "lbThreadInternal::Create: Got a null pointer (this)." LOG_
+		}
+	#endif
 /*...e*/
-
-  	if ((err = pThreadImpl->Create(this)) != ERR_NONE) {
-		_CL_VERBOSE << "lbThread::run creation of thread failed" LOG_
-		return err;
-  	}
-  } else printf("Creation of thread not needed\n");
+	
+		if ((err = pThreadImpl->Create(this)) != ERR_NONE) {
+			_CL_VERBOSE << "lbThread::run creation of thread failed" LOG_
+			return err;
+		}
+	} else printf("Creation of thread not needed\n");
 /*...e*/
+  }
   return err;
 }
 
 lbErrCodes LB_STDCALL lbThread::run() {
   lbErrCodes err;
+  
+  if (_impl != NULL) {
+	lbThreadFunction f = _impl->getThreadFunction();
+  } else {
 /*...sLet it run:2:*/
   if ((err = pThreadImpl->resume()) != ERR_NONE) {
 	printf("lbThread::resume failed\n");
@@ -609,6 +636,7 @@ lbErrCodes LB_STDCALL lbThread::run() {
 _CL_VERBOSE << "lbThread::resume done" LOG_
 #endif
 /*...e*/
+  }
   return err;
 /*...e*/
 }
