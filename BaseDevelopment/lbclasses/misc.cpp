@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: misc.cpp,v 1.50 2010/04/25 21:37:09 lollisoft Exp $
+ * $Id: misc.cpp,v 1.51 2011/01/16 21:44:42 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.51  2011/01/16 21:44:42  lollisoft
+ * Removed printf code in LOG function.
+ *
  * Revision 1.50  2010/04/25 21:37:09  lollisoft
  * Successfully ported lbHook to MINGW compiler. There were only two issues
  * I have identified: The enum problem as reported from Michal Necasek having
@@ -492,14 +495,11 @@ _CL_VERBOSE << "Do log a line..." LOG_
         mutex->enter(); 
         
         if (doLog == TRUE) {
-    		printf("Malloc heap for logging message\n");
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
                 logdirect(m, f, level);
-		printf("Freeing it\n");
                 free((void*) m);
-		printf("Have freed up memory of logging message\n");
         }
         mutex->release();
 _CL_VERBOSE << "Done log a line..." LOG_
