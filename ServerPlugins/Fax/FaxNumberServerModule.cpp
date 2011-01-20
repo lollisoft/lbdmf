@@ -34,8 +34,27 @@
 #include <lbConfigHook.h>
 
 #include <appcs.h>
-#include <appbus.h>
+//#include <appbus.h>
 
+class lbServerModul : public lb_I_ApplicationServerModul {
+public:
+	lbServerModul();
+	virtual ~lbServerModul();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL initialize();
+	
+	DECLARE_PLUGINS()
+	
+	char* LB_STDCALL getServiceName();
+	void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr);
+	
+private:
+	UAP(lb_I_Container, protocolHandlers)
+	UAP(lb_I_Container, protocolHandlerInstances)
+	
+};
 
 IMPLEMENT_FUNCTOR(instanceOfPluginServerModule, lbServerModul)
 

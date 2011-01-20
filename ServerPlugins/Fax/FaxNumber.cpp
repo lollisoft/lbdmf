@@ -52,7 +52,7 @@ lbErrCodes LB_STDCALL FaxNumber::registerProtocols(lb_I_ProtocolManager* protoMg
 }
 
 
-void LB_STDCALL FaxNumber::AskForFaxNumber(PCHAR& faxnumber) {
+void LB_STDCALL FaxNumber::AskForFaxNumber(lb_I_String* faxnumber) {
 
 }
 lbErrCodes LB_STDCALL FaxNumber::_AskForFaxNumber(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
@@ -63,7 +63,7 @@ lbErrCodes LB_STDCALL FaxNumber::_AskForFaxNumber(lb_I_Transfer_Data* request, l
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-PCHAR faxnumber;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, faxnumber)
 	    
 
 /*...sEcho proto:0:*/
@@ -73,13 +73,11 @@ PCHAR faxnumber;
 */
 /*...e*/
 
-AskForFaxNumber(faxnumber);
+	AskForFaxNumber(*&faxnumber);
 
 
 	result->add("faxnumber");
-	result->add(faxnumber);
-	free(faxnumber);
-	    
+	result->add(faxnumber->charrep());
 
     return err;
 }

@@ -3,16 +3,13 @@
  */
 
 #include <lbConfigHook.h>
+
 #include <IApplicationBus.h>
 
-#undef DLLEXPORT
-
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLEXPORT
-#endif
-#ifdef LINUX 
-#define DLLEXPORT
-#endif
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CS_DLL
+#include <lbcs-module.h>
+/*...e*/
 
 #include <ApplicationBus.h>
 

@@ -20,9 +20,8 @@ public:
 
       
       lbErrCodes LB_STDCALL _AskForFaxNumber(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
-      void LB_STDCALL AskForFaxNumber(PCHAR& faxnumber);
+      void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber);
       
 };
 
 DECLARE_FUNCTOR(instanceOfFaxNumber)
-    

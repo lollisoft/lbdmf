@@ -32,10 +32,10 @@
 #include <lbConfigHook.h>
 #include <IApplicationBus.h>
 
-#undef DLLEXPORT
-
 #include <appcs.h>
 //#include <appbus.h>
+
+#undef DLLEXPORT
 
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLEXPORT

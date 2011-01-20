@@ -16,6 +16,7 @@ ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -25,6 +26,7 @@ ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -44,6 +46,7 @@ ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 endif
 
