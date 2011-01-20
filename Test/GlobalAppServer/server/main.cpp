@@ -5,7 +5,7 @@
 #include <signal.h>
 
 void handler(int sig) {
-	cout << "Oops..." << endl;
+	COUT << "Oops..." << ENDL;
 	exit(0);
 }
 
@@ -28,7 +28,9 @@ int main(int argc, char** argv) {
 		printf("Global application server not found...\n");
 	}
 	printf("Global application server is ending...\n");
+#ifndef OSX
 	getch();
+#endif
 	return 0;
 }
 /*...e*/
