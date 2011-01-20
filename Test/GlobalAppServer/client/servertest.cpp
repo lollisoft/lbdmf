@@ -4,10 +4,10 @@
 #include <signal.h>
 
 #include <IApplicationBus.h>
-#include <ApplicationBus/ApplicationBusProxy.h>
+//#include <ApplicationBus/ApplicationBusProxy.h>
 
 void handler(int sig) {
-	cout << "Oops..." << endl;
+	COUT << "Oops..." << ENDL;
 	exit(0);
 }
 
@@ -37,7 +37,9 @@ int main(int argc, char** argv) {
 	}
 	
 	_CL_LOG << "Ending server test thread" LOG_
+#ifndef OSX
 	getch();
+#endif
 	exit(0);
 	return 0;
 }
