@@ -14,8 +14,10 @@
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
+RELPATH_MAKE=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -23,8 +25,10 @@ endif
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
+RELPATH_MAKE=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -42,8 +46,10 @@ endif
 ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
+RELPATH_MAKE=
 else
 RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/CPP
 endif
 endif
 
@@ -118,7 +124,7 @@ ApplicationBus: dummy
 	$(MAKE) -C $@
 
 Fax: dummy
-	$(MAKE) -C $@ -e MODULE=FaxProxy -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=FaxProxy -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
 	$(MAKE) -C $@
 
 

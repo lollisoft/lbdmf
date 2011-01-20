@@ -169,7 +169,7 @@ int FaxNumberProxy::Disconnect() {
 
 
 
-void LB_STDCALL FaxNumberProxy::AskForFaxNumber(PCHAR& faxnumber) {
+void LB_STDCALL FaxNumberProxy::AskForFaxNumber(lb_I_String* faxnumber) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 
@@ -186,15 +186,17 @@ void LB_STDCALL FaxNumberProxy::AskForFaxNumber(PCHAR& faxnumber) {
 	*ABSConnection >> *&result;
 	if (ABSConnection->getLastError() != ERR_NONE)
 	    _LOG << "Error in recieving AskForFaxNumber answer" LOG_
-	
 
-        if (result->requestString("faxnumber", faxnumber) != ERR_NONE) {
-            _LOG << "Error in recieving parameter from AskForFaxNumber. Parameter 'faxnumber' wrong or not given." LOG_
-            return;
-        } else {
-            _CL_LOG << "Parameter 'faxnumber' = '" << faxnumber << "'" LOG_
-        }
+		char* _faxnumber;
+
+    if (result->requestString("faxnumber", _faxnumber) != ERR_NONE) {
+        _LOG << "Error in recieving parameter from AskForFaxNumber. Parameter 'faxnumber' wrong or not given." LOG_
+        return;
+    } else {
+        _CL_LOG << "Parameter 'faxnumber' = '" << _faxnumber << "'" LOG_
+    }
 	    
+	*faxnumber = _faxnumber;
 	
 }
       

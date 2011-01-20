@@ -19,7 +19,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
       
-      void LB_STDCALL AskForFaxNumber(PCHAR& faxnumber);
+      void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber);
       
 
 private:
