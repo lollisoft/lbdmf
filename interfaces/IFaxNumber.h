@@ -6,7 +6,7 @@ class lb_I_FaxNumber :
 public lb_I_Unknown {
 public:
       
-	virtual void LB_STDCALL AskForFaxNumber(PCHAR& faxnumber) = 0;
+	virtual void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber) = 0;
       
 };
 
@@ -17,7 +17,7 @@ class lb_I_FaxNumber_ProtocolTarget :
 public lb_I_ProtocolTarget {
 public:
       
-	virtual void LB_STDCALL AskForFaxNumber(PCHAR& faxnumber) = 0;
+	virtual void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber) = 0;
       
 };
 		
