@@ -30,27 +30,6 @@
 #ifndef LB_APPCS
 #define LB_APPCS
 
-/*...sdefine DLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef APPCS_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef APPCS_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
-
 /*...sclass lbConnection:0:*/
 /** \brief Connection properties.
  */
