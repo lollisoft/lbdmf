@@ -190,7 +190,7 @@ public:
 	 * The target parameter is build up like an internet address.
 	 * Exsample: //anakin/service/subservice
 	 */
-	void LB_STDCALL init(char *target);
+	lbErrCodes LB_STDCALL init(char *target);
 
 	int LB_STDCALL isConnected();
 

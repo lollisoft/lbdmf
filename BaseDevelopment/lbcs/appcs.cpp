@@ -1262,7 +1262,10 @@ void LB_STDCALL lbAppServer::run() {
 	setLogActivated(true);
 	_LOG << "lbAppServer::lbAppServer(): Initialize lb_I_Transfer object" LOG_
 	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
-	transfer->init("localhost/busmaster");
+	if (transfer->init("localhost/busmaster") != ERR_NONE) {
+		_CL_LOG << "Can't initialize communication channel." LOG_
+		return;
+	}
 	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
 
 	while (1) {

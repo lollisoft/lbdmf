@@ -47,18 +47,18 @@
 #include <lbConfigHook.h>
 #endif
 
-/*...s\35\ifdef __WXGTK__:0:*/
-#ifdef __WXGTK__
+/*...s\35\ifdef LINUX:0:*/
+#ifdef LINUX
 #include <lbinclude.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include <curses.h>
-#endif // __WXGTK__
+//#include <curses.h>
+#endif // LINUX
 /*...e*/
 
-/*...s\35\ifdef __WXGTK__:0:*/
+/*...s\35\ifdef LINUX:0:*/
 #ifdef OSX
 #ifdef __cplusplus
 extern "C" {      
@@ -379,7 +379,7 @@ int lbSocket::connect()
         return 0;  
       }
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
       status=::connect(serverSocket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
       if (status < 0)
       {
@@ -396,11 +396,11 @@ int lbSocket::connect()
 /*...slbSocket\58\\58\close\40\\41\:0:*/
 int lbSocket::close()
 {
-#ifdef __WXGTK__
+#ifdef LINUX
         status=::shutdown(serverSocket, 2);
         if (status < 0)
         {
-          cerr << "ERROR: closesocket unsuccessful" << ENDL;
+          _CL_LOG << "ERROR: closesocket unsuccessful" LOG_;
           return 0;
         }
 #endif
@@ -435,7 +435,7 @@ LOGENABLE("lbSocket::listen()");
     if (status == SOCKET_ERROR)
       _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
     status=::listen(serverSocket, 1);
     if (status < 0)
       _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
@@ -448,6 +448,7 @@ LOGENABLE("lbSocket::listen()");
 /*...slbSocket\58\\58\accept\40\lbSocket\42\\38\ s\41\:0:*/
 lb_I_Socket* lbSocket::accept()
 {
+	// Mac OS X problems. Maybe http://shoe.bocks.com/net/ helps
     lb_I_Socket* s = NULL;
 
 /*...sSOCKET_VERBOSE:0:*/
@@ -468,9 +469,54 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
 
 #endif
 /*...e*/
-/*...s__WXGTK__:0:*/
-#ifdef __WXGTK__
+/*...sLINUX:0:*/
+#ifdef LINUX
     clientSocket=::accept(serverSocket, (sockaddr*) &clientSockAddr, &addrLen); 
+    if (clientSocket == -1) {
+		_LOG << "Error while accepting on socket" LOG_
+// Where are the definitions?
+/*		
+		switch (errno) {
+			case EBADF:
+				_LOG << "socket is not a valid file descriptor." LOG_ 
+				break;
+			case ECONNABORTED: 
+				_LOG << "The connection to socket has been aborted." LOG_ 
+				break;
+			case EFAULT: 
+				_LOG << "The address parameter is not in a writable part of the user address space." LOG_ 
+				break;
+			case EINTR: 
+				_LOG << "The accept() system call was terminated by a signal." LOG_ 
+				break;
+			case EINVAL: 
+				_LOG << "socket is unwilling to accept connections." LOG_ 
+				break;
+			case EMFILE: 
+				_LOG << "The per-process descriptor table is full." LOG_ 
+				break;
+			case ENFILE: 
+				_LOG << "The system file table is full." LOG_ 
+				break;
+			case ENOMEM: 
+				_LOG << "Insufficient memory was available to complete the operation." LOG_ 
+				break;
+			case ENOTSOCK: 
+				_LOG << "socket references a file type other than a socket." LOG_ 
+				break;
+			case EOPNOTSUPP: 
+				_LOG << "socket is not of type SOCK_STREAM and thus does not accept connections." LOG_ 
+				break;
+			case EWOULDBLOCK: 
+				_LOG << "socket is marked as non-blocking and no connections are present to be accepted." LOG_ 
+				break;
+			default:
+				_LOG << "Unknown error code." LOG_ 
+				break;
+		}
+*/
+		return NULL;
+	}
 #endif
 /*...e*/
 
@@ -516,7 +562,7 @@ int lbSocket::bind()
     if (status == SOCKET_ERROR)
       _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
     status=::bind(serverSocket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
     if (status < 0)
       _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
@@ -540,7 +586,7 @@ int lbSocket::socket()
 
 
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
   serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
   if (serverSocket < 0)
     _LOG << "lbSocket::socket(): ERROR: socket unsuccessful" LOG_
@@ -608,7 +654,7 @@ int lbSocket::startup()
 		startupflag = 1;
 	}
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
 #endif
   return 1;
 }
@@ -634,10 +680,10 @@ _LOG << "lbSocket::reinit(char *mysockaddr): This function should not be used" L
     connect();
   }
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
   if (strcmp(mysockaddr, "") == 0)
   {
-    if (__isServer == 1)
+    if (_isServer == 1)
     {
       //listen();
     
@@ -763,14 +809,14 @@ _LOG << "lbSocket::init( unsigned long mysockaddr, u_short port): Initializing a
   }
 #endif
 /*...e*/
-/*...s__WXGTK__:0:*/
-#ifdef __WXGTK__
+/*...sLINUX:0:*/
+#ifdef LINUX
   addrLen=sizeof(sockaddr);
 
   if (_isServer == 1)
   {// Address given, assume this as client initialition
     /* convert IP address into in_addr form */
-    destAddr=inet_addr(mysockaddr);
+	  destAddr= mysockaddr; // inet_addr(...)
     /* copy destAddr into sockaddr_in structure */
     memcpy(&serverSockAddr.sin_addr, &destAddr, sizeof(destAddr));
   }
@@ -964,8 +1010,8 @@ _LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
 /*...e*/
 #endif
 /*...e*/
-/*...s__WXGTK__:0:*/
-#ifdef __WXGTK__
+/*...sLINUX:0:*/
+#ifdef LINUX
   if (_isServer == 1)
     numrcv=::recv(clientSocket, buf,
       MAXBUFLEN, NO_FLAGS_SET);
@@ -981,7 +1027,7 @@ _LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
         status=WSACleanup();
         cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
-      return 0;
+      return ERR_NONE;
     }
 #endif
 /*...e*/
@@ -1065,9 +1111,9 @@ if (_isServer == 1) {
     		_LOG << "lbSocket::send(void* buf, int len) Error: Could not send all data at once!" LOG_
 	}
 #endif
-/*...s__WXGTK__:0:*/
-#ifdef __WXGTK__
-   int numsnt = 0;
+/*...sLINUX:0:*/
+#ifdef LINUX
+   numsnt = 0;
 
 	if (_isServer == 0)
     	numsnt=::send(serverSocket,
@@ -1086,7 +1132,7 @@ if (_isServer == 1) {
       if (status < 0)
         cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
-      return 0;  
+      return ERR_NONE;  
     }
 #endif
 /*...e*/
@@ -1199,8 +1245,8 @@ _LOG << msg LOG_
     }
 #endif
 /*...e*/
-/*...s__WXGTK__:0:*/
-#ifdef __WXGTK__
+/*...sLINUX:0:*/
+#ifdef LINUX
   if (_isServer == 1)
     numrcv=::recv(clientSocket, buf,
       MAXBUFLEN, NO_FLAGS_SET);
@@ -1216,7 +1262,7 @@ _LOG << msg LOG_
         status=WSACleanup();
         cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
-      return 0;
+      return ERR_NONE;
     }
 #endif
 /*...e*/
@@ -1311,7 +1357,7 @@ if (_isServer == 1) {
 	    	_LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
 	    }
 #endif
-#ifdef __WXGTK__
+#ifdef LINUX
    int numsnt = 0;
 
 	if (_isServer == 0)

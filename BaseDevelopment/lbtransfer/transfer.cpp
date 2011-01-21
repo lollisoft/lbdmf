@@ -122,7 +122,7 @@ lbTransfer::~lbTransfer() {
  * The machine name has to be resolved to a IP address
  * A service has to be resolved to a port number
  */
-void lbTransfer::init(char *target) {
+lbErrCodes lbTransfer::init(char *target) {
         u_short port;
         char *mysockaddr;
         char token[100];
@@ -139,8 +139,12 @@ void lbTransfer::init(char *target) {
 			service = portName->charrep();
 		} else {
 			_LOG << "lbTransfer::init(" << target << ") called." LOG_
-		
-			pch = strtok(target, "/");
+
+			char* copytarget = NULL;
+			
+			copytarget = strdup(target);
+			
+			pch = strtok(copytarget, "/");
 
 			if (pch != NULL) {
 				machine = strdup(pch);
@@ -179,11 +183,15 @@ void lbTransfer::init(char *target) {
                  * mapped to a port.
                  */
 
-                sock->initSymbolic(machine, service);
+			if (!sock->initSymbolic(machine, service)) {
+				_LOG << "Initialization of socket failed." LOG_
+				return ERR_SOCKET_INIT;
+			}
         } else {
                 _LOG << "Subservices currently not supported" LOG_
                 // Handle special cases with subservices
         }
+	return ERR_NONE;
 }
 /*...e*/
 

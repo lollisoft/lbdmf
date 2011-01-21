@@ -345,7 +345,7 @@ public:
 /*...sclass lb_I_Transfer:0:*/
 class lb_I_Transfer : public lb_I_Unknown {
 public:
-	virtual void LB_STDCALL init(char *target) = 0;
+	virtual lbErrCodes LB_STDCALL init(char *target) = 0;
 
 	virtual int LB_STDCALL isConnected() = 0;
 

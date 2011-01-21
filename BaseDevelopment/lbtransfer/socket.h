@@ -179,7 +179,8 @@ private:
 	int startupflag;
 
 #endif //WINDOWS        
-#ifdef __WXGTK__
+#ifdef LINUX
+#ifndef OSX
 	int serverSocket;
 	int clientSocket;
 	struct sockaddr_in serverSockAddr;
@@ -190,6 +191,7 @@ private:
 	
 	unsigned long destAddr; // for client init
 #endif
+#endif
 #ifdef OSX
 	int serverSocket;
 	int clientSocket;
@@ -197,7 +199,7 @@ private:
 	struct sockaddr_in serverSockAddr;
 	struct sockaddr_in clientSockAddr;
 	int status;
-	int addrLen; //=sizeof(SOCKADDR_IN);
+	socklen_t addrLen; //=sizeof(SOCKADDR_IN);
 	int numrcv;
 	
 	unsigned long destAddr; // for client init

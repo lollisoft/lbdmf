@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.44 2010/10/12 07:04:22 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.45 2011/01/21 07:53:15 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.45  2011/01/21 07:53:15  lollisoft
+ * Returning error codes to better detect failures.
+ *
  * Revision 1.44  2010/10/12 07:04:22  lollisoft
  * Completed implementation to write to json file from within an interceptor for events.
  *
@@ -313,6 +316,7 @@ enum lbErrCodes {
 	ERR_SOCKET_RECV,
 	ERR_SOCKET_UNCONNECTED,
 	ERR_SOCKET_CLOSED,
+	ERR_SOCKET_INIT,
 
 /* Errcodes for the database module */
 
