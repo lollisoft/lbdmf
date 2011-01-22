@@ -726,9 +726,9 @@ bool lbSocket::initSymbolic(char* host, char* service) {
 
  	u_short port = s->s_port;
 	if (serverMode == 1) {
-		_LOG << "Listening on port " << port << "..." LOG_
+		_LOG << "Listening on port " << ntohs(port) << "..." LOG_
 	} else {
-		_LOG << "Opening port " << port << "..." LOG_
+		_LOG << "Opening port " << ntohs(port) << "..." LOG_
 	}
 
  	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
