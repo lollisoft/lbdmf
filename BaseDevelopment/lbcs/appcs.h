@@ -251,6 +251,13 @@ public:
  * Base class for all distributed objects. This class can't be instanciated
  * directly. Use lbAppBusClient instead. Also deletion is inhibed. Use
  * dismiss() instead.
+ *
+ * I think this class is rubbish as I now can produce any client server objects
+ * by code generation. And for that the application bus used here will be one
+ * of the generated client objects (proxy) and server objects.
+ *
+ * The client proxy is registered in the lb_I_Module registry, but may be
+ * implemented as a plugin as it was planned.
  */
 class lbAppClient : public lb_I_ApplicationClient {
 private:
@@ -269,6 +276,7 @@ private:
         
 public:
 
+		// This function has basically been moved to the lb_I_Module interface.
         lb_I_Unknown* LB_STDCALL requestObject(const char* type, const char* name);
 
 /*...sImplement the interfaces:8:*/
@@ -289,7 +297,7 @@ public:
 	void dismiss();
 	
 	// lbAppBusClient must be able to create objects of this class
-	friend class lbAppBusClient;
+	//friend class lbAppBusClient;
 	
 protected:
 
@@ -297,9 +305,9 @@ protected:
 	 * lbAppClient's can not instantiated directly. lbAppBusClient does
 	 * this. Also it sets its instance pointer here.
 	 */
-	void setAppBusClient(lbAppBusClient* _AppBusClient);
+	//void setAppBusClient(lbAppBusClient* _AppBusClient);
 
-	lbAppBusClient* AppBusClient;
+	//lbAppBusClient* AppBusClient;
 	
 	lb_I_Transfer* clientConnection;
 

@@ -118,15 +118,15 @@ public:
 	lbErrCodes LB_STDCALL recvInteger(int& i);
 	lbErrCodes LB_STDCALL sendInteger(int i);
 	
-	lbErrCodes LB_STDCALL send(void* buf, int len);		
+	lbErrCodes LB_STDCALL send(void* buf, short len);		
 
 	/**
 	 * Buffer must be allocated.
 	 */	
-	lbErrCodes LB_STDCALL recv(void* buf, int & len);
+	lbErrCodes LB_STDCALL recv(void* buf, short & len);
 		
         lbErrCodes LB_STDCALL recv_charbuf(char *buf);
-        lbErrCodes LB_STDCALL send_charbuf(char *buf, int len);
+        lbErrCodes LB_STDCALL send_charbuf(char *buf, short len);
 
 	/**
 	 * Send and recieve a data buffer and automatically split off to

@@ -514,7 +514,7 @@ LOG("Begin reciefing buffer");
         if (i == 0) LOG("Recieving subsequent packets");
 #endif
 /*...e*/
-                int gotBuflen = MAXBUFLEN;
+                short gotBuflen = MAXBUFLEN;
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::waitForBuffer(...) Recv peace");
@@ -550,7 +550,7 @@ LOG("Recieving remaining");
 #endif
 /*...e*/
 //      currbufferpos = currbufferpos + (buflen-peaces*MAXBUFLEN);
-        int wanted_peace_size = (buflen-peaces*MAXBUFLEN);
+        short wanted_peace_size = (buflen-peaces*MAXBUFLEN);
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %p, torecv = %d", peaces, (void*) currbufferpos, wanted_peace_size);

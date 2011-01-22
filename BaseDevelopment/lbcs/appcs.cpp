@@ -1784,7 +1784,7 @@ lbErrCodes LB_STDCALL lbAppClient::setData(lb_I_Unknown* uk) {
 /*...slbAppClient\58\\58\lbAppClient\40\\41\:0:*/
 lbAppClient::lbAppClient() {
 	clientConnection = NULL;
-	AppBusClient = NULL;
+	//AppBusClient = NULL;
 }
 /*...e*/
 /*...slbAppClient\58\\58\lbAppClient\40\lb_I_Transfer \42\ clConn\41\:0:*/
@@ -1886,8 +1886,9 @@ lbErrCodes LB_STDCALL lbAppClient::request(const char* request, lb_I_Transfer_Da
 lbErrCodes LB_STDCALL lbAppClient::release() {
 	return ERR_NONE;
 }
-
+/*
 void lbAppClient::setAppBusClient(lbAppBusClient* _AppBusClient) {
 	AppBusClient = _AppBusClient;
 }
+ */
 /*...e*/
