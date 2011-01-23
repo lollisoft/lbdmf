@@ -343,18 +343,15 @@ return 1;
 /*...slbSocket\58\\58\neagleOff\40\SOCKET s\41\:0:*/
 lbErrCodes lbSocket::neagleOff(SOCKET s) {
 	int opt = 1;
+	_LOG << "lbSocket::neagleOff() called." LOG_
+	
+	if (::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)(&opt), sizeof(int)) != 0)
+	{
+		_LOG << "Error: NeagleOff failed" LOG_
+		return ERR_SOCKET_NEAGLEOFF;
+	}
 
-        if (::setsockopt(s, 
-               IPPROTO_TCP, 
-               TCP_NODELAY, 
-               (char*)(&opt), 
-               sizeof(int)) != 0)
-        {
-        	_LOG << "Error: NeagleOff failed" LOG_
-        	return ERR_SOCKET_NEAGLEOFF;
-        }
-        
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 
@@ -560,25 +557,30 @@ int lbSocket::bind()
 int lbSocket::socket()
 {
 #ifdef WINDOWS
-  /* create a socket */
-  serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
-  if (serverSocket == INVALID_SOCKET) {
-    LogWSAError("lbSocket::socket(): ERROR: socket unsuccessful");
-    return 0;
-  }  
+	/* create a socket */
+	serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
 
-
-  if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
-
-
+	if (serverSocket == INVALID_SOCKET) {
+		LogWSAError("lbSocket::socket(): ERROR: socket unsuccessful");
+		return 0;
+	}  
+	
+	
+	if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
+		
+		
 #endif
 #ifdef LINUX
-  serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
-  if (serverSocket < 0)
-    _LOG << "lbSocket::socket(): ERROR: socket unsuccessful" LOG_
+	serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
+	
+	if (serverSocket < 0) {
+		_LOG << "lbSocket::socket(): ERROR: socket unsuccessful" LOG_
+	}
+	
+	if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 #endif
-
-  return 1;  
+		
+		return 1;  
 }
 /*...e*/
 
