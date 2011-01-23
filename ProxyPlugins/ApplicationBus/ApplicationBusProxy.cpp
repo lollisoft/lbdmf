@@ -45,7 +45,8 @@ ApplicationBusProxy::ApplicationBusProxy() {
 
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        ABSConnection->init("t43/busmaster");
+		// The name of the lbDMF Busmaster must be defined in hosts or DNS
+        ABSConnection->init("busmaster/busmaster");
         Connect();
     }
     _LOG << "ApplicationBusProxy Initialized" LOG_
