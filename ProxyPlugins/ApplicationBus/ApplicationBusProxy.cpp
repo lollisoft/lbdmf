@@ -60,12 +60,16 @@ int ApplicationBusProxy::Connect() {
 	char buf[100] = "";
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	client->setServerSide(0);
 	result->setServerSide(0);
 
+	
+	ABSConnection->gethostname(*&temp);
+	
 	client->add("Connect");
 	client->add("Host");
-	client->add("T43");
+	client->add(temp->charrep());
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
