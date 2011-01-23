@@ -728,7 +728,7 @@ bool lbSocket::initSymbolic(char* host, char* service) {
 		_LOG << "Opening port " << ntohs(port) << "..." LOG_
 	}
 
- 	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
+ 	init((serverMode == 1) ? 0 : inet_addrFromString(host), ntohs(port)); // In the function htons is used.
 	return true;
 }
 /*...e*/
