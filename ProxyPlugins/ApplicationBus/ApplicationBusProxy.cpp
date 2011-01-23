@@ -176,7 +176,11 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
 		
-    user_info->add("AnounceUser");
+
+	user_info->setClientPid(lbGetCurrentProcessId());
+	user_info->setClientTid(lbGetCurrentThreadId());
+
+	user_info->add("AnounceUser");
 
     user_info->add("name");
     user_info->add(name);
@@ -209,6 +213,8 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	result->setServerSide(0);
 
 	
+	user_info->setClientPid(lbGetCurrentProcessId());
+	user_info->setClientTid(lbGetCurrentThreadId());
     user_info->add("Echo");
 
     user_info->add("text");
