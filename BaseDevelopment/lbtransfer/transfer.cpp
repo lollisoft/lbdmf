@@ -30,8 +30,6 @@
 #include <lbConfigHook.h>
 #endif
 
-#include <lbtransfer-module.h>
-
 #include <conio.h>
 
 #ifndef LBDMF_PREC
