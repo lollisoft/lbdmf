@@ -14,7 +14,7 @@ void handler(int sig) {
 /*...smain:0:*/
 int main(int argc, char** argv) {
 	int count = 0;
-	setLogActivated(true);
+	//setLogActivated(true);
 
 	/**
 	 * This let the app not crashing. But the handler simply
