@@ -639,7 +639,7 @@ unsigned long lbSocket::inet_addrFromString(char* w) {
             _LOG << "Host alias: " << *hep->h_aliases++ LOG_
         while (*hep->h_addr_list)
         {
-            bcopy(*hep->h_addr_list++, (char *) &a, sizeof(a));
+            memcpy((char *) &a, *hep->h_addr_list++, sizeof(a));
             _LOG << "Host address: " << inet_ntoa(a) LOG_
 			return a.s_addr;
         }
@@ -1160,7 +1160,7 @@ _LOG << msg LOG_
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly" LOG_
+	if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
       
     numrcv=::recv(clientSocket, buf,
       len, NO_FLAGS_SET);
