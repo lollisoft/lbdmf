@@ -49,12 +49,20 @@
 
 /*...s\35\ifdef LINUX:0:*/
 #ifdef LINUX
-#include <lbinclude.h>
+#ifndef OSX
+//#include <lbinclude.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <stropts.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <netdb.h>
 //#include <curses.h>
+#endif
 #endif // LINUX
 /*...e*/
 
@@ -250,7 +258,7 @@ int lbSocket::isValid() {
 
 pendingBytes++;
 return 1;
-
+#ifdef bla
 	if (_isServer == 1) {
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
@@ -337,6 +345,7 @@ return 1;
 	#endif
 /*...e*/
 	return 1;
+#endif
 }
 /*...e*/
 
@@ -464,7 +473,7 @@ lb_I_Socket* lbSocket::accept()
 /*...e*/
 /*...sLINUX:0:*/
 #ifdef LINUX
-    clientSocket=::accept(serverSocket, (sockaddr*) &clientSockAddr, &addrLen); 
+    clientSocket=::accept(serverSocket, (sockaddr*) &clientSockAddr, (socklen_t*)&addrLen); 
     if (clientSocket == -1) {
 		_LOG << "Error while accepting on socket" LOG_
 // Where are the definitions?

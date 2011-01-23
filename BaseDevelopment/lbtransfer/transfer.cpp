@@ -67,8 +67,10 @@ class lbTransferModule {
 public:
         lbTransferModule() {
                 signal(SIGINT, handler);
+#ifndef LINUX
 #ifndef OSX
                 signal(SIGBREAK, handler);
+#endif
 #endif
                 signal(SIGABRT, handler);
                 signal(SIGSEGV, handler);

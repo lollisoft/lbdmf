@@ -45,7 +45,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <sys/types.h>
-#ifdef __WXGTK__
+#ifdef LINUX
+#ifndef OSX
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <sys/socket.h>
@@ -54,7 +55,14 @@
 #define MAXBUFLEN 256
 #define NO_FLAGS_SET 0
 #define PORT (u_short) 44965
-#endif //__WXGTK__
+
+// iObviously on Linux the definition is also missing or I use 'SOCKET'
+typedef u_int   SOCKET;
+// byte is also not defines at the time how teh includes are places.
+typedef unsigned char byte;
+
+#endif //OSX
+#endif //LINUX
 
 #ifdef OSX
 #include <sys/ipc.h>
@@ -183,6 +191,7 @@ private:
 #ifndef OSX
 	int serverSocket;
 	int clientSocket;
+  	int clBackup;
 	struct sockaddr_in serverSockAddr;
 	struct sockaddr_in clientSockAddr;
 	int status;
