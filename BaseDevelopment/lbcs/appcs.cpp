@@ -27,8 +27,6 @@
             73252 Lenningen (germany)
 */
 /*...e*/
-#define APPCS_DLL
-
 #ifdef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
@@ -42,9 +40,12 @@
 #include <lbConfigHook.h>
 #endif
 
+#define LB_CS_DLL
+#include <lbcs-module.h>
 #include <appcs.h>
-//#include <appbus.h>
 
+
+IMPLEMENT_FUNCTOR(instanceOflbAppServer, lbAppServer)
 
 /*...slbProtocolThread:0:*/
 class lbProtocolThread : public lb_I_ProtocolThread {
@@ -126,7 +127,6 @@ lbErrCodes lbProtocolThread::answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Da
 {
 	// Need a little delay till client may be ready to recieve data...
 //LOG("This pause is needed ???");
-//	lb_sleep(1000);
 
 	*_clt << result;
 
@@ -469,7 +469,6 @@ lbErrCodes lbAppServerThread::answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_D
 {
 	// Need a little delay till client may be ready to recieve data...
 //LOG("This pause is needed ???");
-//	lb_sleep(1000);
 
 	*_clt << result;
 
@@ -696,7 +695,6 @@ void lbAppServerChildThread::ThreadFunction(lb_I_Thread* threadHost) {
 			freeThread->create();
 		} else {
 			while (subThreads->Count() == maxThreads) {
-				lb_sleep(100);
 				while (subThreads->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					UAP(lb_I_Thread, thread)
@@ -887,7 +885,6 @@ lbErrCodes lbAppServerChildThread::answerRequest(lb_I_Transfer* _clt, lb_I_Trans
 {
 	// Need a little delay till client may be ready to recieve data...
 //LOG("This pause is needed ???");
-//	lb_sleep(1000);
 
 	*_clt << result;
 
@@ -1086,8 +1083,6 @@ lbErrCodes LB_STDCALL lbAppServer::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbAppServer::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
-
-IMPLEMENT_FUNCTOR(instanceOflbAppServer, lbAppServer)
 
 /*...slbAppServer\58\\58\lbAppServer\40\\41\:0:*/
 lbAppServer::lbAppServer() {
@@ -1335,7 +1330,6 @@ void LB_STDCALL lbAppServer::run() {
 			freeThread->create();
 		} else {
 			while (mainThreads->Count() == maxThreads) {
-				lb_sleep(100);
 				while (mainThreads->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					UAP(lb_I_Thread, thread)
@@ -1515,7 +1509,6 @@ lbErrCodes lbAppServer::answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* r
 {
 	// Need a little delay till client may be ready to recieve data...
 //LOG("This pause is needed ???");
-//	lb_sleep(1000);
 
 	*_clt << result;
 
