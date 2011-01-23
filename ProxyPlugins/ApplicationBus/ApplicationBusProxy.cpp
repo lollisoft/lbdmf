@@ -210,38 +210,44 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
-
+	
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
-
+	
 	user_info->setServerSide(0);
 	result->setServerSide(0);
-
+	
 	
 	user_info->setClientPid(lbGetCurrentProcessId());
 	user_info->setClientTid(lbGetCurrentThreadId());
     user_info->add("Echo");
-
+	
     user_info->add("text");
     user_info->add(text);
-	    
-	ABSConnection->init(NULL);
-	*ABSConnection << *&user_info;
-	if (ABSConnection->getLastError() != ERR_NONE) 
-	    _LOG << "Error in sending Echo data" LOG_
-
-	*ABSConnection >> *&result;
-	if (ABSConnection->getLastError() != ERR_NONE)
-	    _LOG << "Error in recieving Echo answer" LOG_
 	
+	ABSConnection->init(NULL);
+	
+	*ABSConnection << *&user_info;
+	
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in sending Echo data" LOG_
+	}
+	
+	*ABSConnection >> *&result;
 
-        if (result->requestString("text", text) != ERR_NONE) {
-            _LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
-            return;
-        } else {
-            _CL_LOG << "Parameter result: 'text' = '" << text << "'" LOG_
-        }
-	    
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in recieving Echo answer" LOG_
+	}
+	
+	if (result->requestString("text", text) != ERR_NONE) {
+		_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
+		return;
+	} else {
+		setLogActivated(true);
+		_CL_LOG << "Parameter result: 'text' = '" << text << "'" LOG_
+		setLogActivated(false);
+	}
+	
 	
 }
       
