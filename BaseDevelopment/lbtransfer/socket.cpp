@@ -862,12 +862,6 @@ _LOG << "lbSocket::recvInteger(): Leave" LOG_
 
 /*...slbSocket\58\\58\recv\40\void\42\ buf\44\ int \38\ len\41\:0:*/
 lbErrCodes lbSocket::recv(void* buf, short & len) {
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-_LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
-#endif
-/*...e*/
-
 //_LOG << "Enter recv" LOG_
 //    lbMutexLocker mlock(recvMutex);
     
@@ -875,46 +869,34 @@ _LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
     int numrcv = 0;
     char* bufpos = (char*) buf;
     int lastError = 0;
+	short nlen;
 
-/*...sWINDOWS:0:*/
-#ifdef WINDOWS
   while (isValid() == 0) {
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-  	_LOG << "lbSocket::recv(...) Failed while isValid() check!" LOG_
-#endif
-/*...e*/
   	lb_sleep(100);
   } 
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-  _LOG << "lbSocket::recv(...) Have valid data" LOG_
-#endif
-/*...e*/
+/*...sWINDOWS:0:*/
+#ifdef WINDOWS
 
     if (_isServer == 1)
     {
-      if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
+		if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
 
-// Empfange Packetgr”áe
-    numrcv=::recv(clientSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
+		// Get the buffer size
+		numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		len = ntohs(nlen);
+		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
 
-    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
-
-      numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
     }  
     if (_isServer == 0)
     {
-// Empfange Packetgr”áe
-    numrcv=::recv(serverSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
+		// Get the buffer size
+		numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		len = ntohs(nlen);
 
-    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
      
-      numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
     }
          
 /*...shandle any error:0:*/
@@ -961,13 +943,27 @@ _LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
 /*...e*/
 /*...sLINUX:0:*/
 #ifdef LINUX
-  if (_isServer == 1)
-    numrcv=::recv(clientSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
-      
-  if (_isServer == 0)
-    numrcv=::recv(serverSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+    if (_isServer == 1)
+    {
+		if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
+
+		// Get the buffer size
+		numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		len = ntohs(nlen);
+		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
+
+		numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
+    }  
+    if (_isServer == 0)
+    {
+		// Get the buffer size
+		numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		len = ntohs(nlen);
+
+		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
+     
+		numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
+    }
 
     if ((numrcv == 0) || (numrcv < 0))
     {

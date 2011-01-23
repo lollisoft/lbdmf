@@ -508,7 +508,7 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
         */
         
         if (sock->recv((void* )currbufferpos, wanted_peace_size) != ERR_NONE) {
-                LOG("Can't get buffer");
+                _LOG << "Can't get buffer" LOG_
                 return 0;
         }
 
