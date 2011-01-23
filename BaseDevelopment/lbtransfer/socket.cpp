@@ -452,11 +452,6 @@ lb_I_Socket* lbSocket::accept()
 	// Mac OS X problems. Maybe http://shoe.bocks.com/net/ helps
     lb_I_Socket* s = NULL;
 
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-LOGENABLE("lbSocket::accept(lbSocket *& s)");
-#endif
-/*...e*/
       if (lbSockState == LB_SOCK_CONNECTED) {
       	_LOG << "lbSocket::accept(lbSocket** s): ERROR: Illegal state for this function" LOG_
       	return NULL; //ERR_SOCKET_STATE;
@@ -521,17 +516,13 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
 #endif
 /*...e*/
 
-    if (neagleOff(clientSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
+    if (neagleOff(clientSocket) != ERR_NONE) _LOG << "Error: Can not activate TCP_NODELAY" LOG_
 
     if (clientSocket == -1) {
     	_LOG << "lbSocket::accept(lbSocket** s): Created clientSocket is invalid" LOG_
     	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;
     }
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE    
-    _LOG << "lbSocket::accept(lbSocket*& s): Create a new lbSocket for the client" LOG_
-#endif
-/*...e*/
+
     lbSocket* socket = new lbSocket();
 	socket->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
     socket->setSockConnection(clientSocket);
@@ -540,12 +531,6 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
     
     clientSocket = -1;
     
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-    _LOG << "lbSocket::accept(lbSocket*& s): Created" LOG_
-#endif
-/*...e*/
-
     // This socket can never be in connected state
     //lbSockState = LB_SOCK_CONNECTED;
 
@@ -1124,60 +1109,35 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
       _LOG << "Error: Can not recieve on unconnected socket" LOG_
       return ERR_SOCKET_UNCONNECTED;
     }
-    
-//_LOG << "Enter recv" LOG_
-//    lbMutexLocker mlock(recvMutex);
-    
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-char msg[100];
-sprintf(msg, "lbSocket::recv_charbuf(char *buf) enter");
-_LOG << msg LOG_
-#endif
-/*...e*/
+
+    // Wait a bit.
+	while (isValid() == 0) {
+		lb_sleep(100);
+	} 
 
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
-  while (isValid() == 0) {
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-  	_LOG << "lbSocket::recv_charbuf(...) Failed while isValid() check!" LOG_
-#endif
-/*...e*/
-  	lb_sleep(100);
-  } 
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-  _LOG << "lbSocket::recv_charbuf(...) Have valid data" LOG_
-#endif
-/*...e*/
-
 /*...sserver:0:*/
   if (_isServer == 1) {
+// Get the packet size of the next recv
+    numrcv=::recv(clientSocket, (char*)&len, sizeof(len), NO_FLAGS_SET);
 
-// Empfange Packetgr”áe
-    numrcv=::recv(clientSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
-
-	if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
+	if (numrcv != sizeof(len)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
       
-    numrcv=::recv(clientSocket, buf,
-      len, NO_FLAGS_SET);
+    numrcv=::recv(clientSocket, buf, len, NO_FLAGS_SET);
   }
 /*...e*/
   
 /*...sclient:0:*/
   if (_isServer == 0) {
-// Empfange Packetgr”áe
-    numrcv=::recv(serverSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
+    // Get the packet size of the next recv
+    numrcv=::recv(serverSocket, (char*)&len, sizeof(len), NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly" LOG_
+    if (numrcv != sizeof(len)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
   
-    numrcv=::recv(serverSocket, buf,
-      len, NO_FLAGS_SET);
+    numrcv=::recv(serverSocket, buf, len, NO_FLAGS_SET);
   }    
 /*...e*/
 
@@ -1247,50 +1207,32 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	lbErrCodes err = ERR_NONE;
 	int lastError = 0;
 	char msg[100];
+	short nlen = htons(len+1);
+
+	_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
+
 #ifdef WINDOWS
 	int numsnt;
-	len++;
 	//_LOG << "Enter send" LOG_
 	//   lbMutexLocker mlock(sendMutex);
 	
 	if (_isServer == 0) {
-		/*...sVERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-		sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-		_LOG << msg LOG_
-#endif
-		/*...e*/
-		
+
 		// Sende Packetgr”áe
-		numsnt=::send(serverSocket,
-					  (char*)&len, sizeof(len),
-					  NO_FLAGS_SET);
+		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
     		
-			// Sende Packet    		
-			numsnt=::send(serverSocket,
-						  buf, len,
-						  NO_FLAGS_SET);
+		// Sende Packet    		
+		numsnt=::send(serverSocket, buf, len, NO_FLAGS_SET);
 	}
 	if (_isServer == 1) {
-		/*...sVERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-		sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-		_LOG << msg LOG_
-#endif
-		/*...e*/
-		
 		// Sende Packetgr”áe
-		numsnt=::send(clientSocket,
-					  (char*)&len, sizeof(len),
-					  NO_FLAGS_SET);
+		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
-			numsnt=::send(clientSocket,
-						  buf, len,
-						  NO_FLAGS_SET);
+		numsnt=::send(clientSocket, buf, len, NO_FLAGS_SET);
 	}
 	
 	
@@ -1325,28 +1267,22 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	int numsnt = 0;
 	
 	if (_isServer == 0) {
-		numsnt=::send(serverSocket,
-					  (char*)&len, sizeof(len),
-					  NO_FLAGS_SET);
+		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
-		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) 
+			_LOG << "Error: Packet size not sent correctly" LOG_
 
-		numsnt=::send(serverSocket,
-					  buf, len,
-					  NO_FLAGS_SET);
+		numsnt=::send(serverSocket, buf, len, NO_FLAGS_SET);
 	}
 	
-	if (_isServer == 1)
-		numsnt=::send(serverSocket,
-					  (char*)&len, sizeof(len),
-					  NO_FLAGS_SET);
+	if (_isServer == 1) {
+		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 	
-	if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) 
+			_LOG << "Error: Packet size not sent correctly" LOG_
 
-	numsnt=::send(clientSocket,
-					  buf, len,
-					  NO_FLAGS_SET);
-	
+		numsnt=::send(clientSocket, buf, len, NO_FLAGS_SET);
+	}	
 #endif
 	return err;
 }
