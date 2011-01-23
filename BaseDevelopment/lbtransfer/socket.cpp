@@ -989,105 +989,93 @@ _LOG << "lbSocket::recv(void* buf, int & len): Leave" LOG_
 /*...slbSocket\58\\58\send\40\void\42\ buf\44\ int len\41\:0:*/
 lbErrCodes lbSocket::send(void *buf, short len)
 {
-lbErrCodes err = ERR_NONE;
-int lastError = 0;
-char msg[100];
-char *bufpos = (char*) buf;
-int numsnt = 0;
-//_LOG << "Enter send" LOG_
-//lbMutexLocker mlock(sendMutex);
-
+	lbErrCodes err = ERR_NONE;
+	int lastError = 0;
+	char msg[100];
+	char *bufpos = (char*) buf;
+	int numsnt = 0;
+	short nlen = htons(len);
+	//_LOG << "Enter send" LOG_
+	//lbMutexLocker mlock(sendMutex);
+	
 #ifdef WINDOWS
-if (_isServer == 0) {
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-    sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    _LOG << msg LOG_
-#endif
-/*...e*/
-
-// Sende Packetgr”áe
-    numsnt=::send(serverSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
-
-    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
-
-    numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
-}
-if (_isServer == 1) {
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-    sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    _LOG << msg LOG_
-#endif
-/*...e*/
-// Sende Packetgr”áe
-    numsnt=::send(clientSocket,
-    		(char*)&len, sizeof(len),
-    		NO_FLAGS_SET);
-
-    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
-
-    numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
-}
-  
+	if (_isServer == 0) {
+		
+		// Sende Packetgr”áe
+		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		
+		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+			
+		numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
+	}
+	if (_isServer == 1) {
+		// Sende Packetgr”áe
+		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		
+		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+			
+		numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
+	}
+	
     if ((numsnt != len) && (numsnt == SOCKET_ERROR))
     {
-      if (_isServer == 0) {
-	      lastError = LogWSAError("lbSocket::send(...) client");
-      } else {
-	      lastError = LogWSAError("lbSocket::send(...) server");
-      }
-
-
-      char msg[100] = "";
-      sprintf(msg, "lbSocket::send(void *buf, int len) Error: numsnt(%d) != len(%d)", numsnt, len);
-      _LOG << msg LOG_
-      _LOG << "lbSocket::send(void *buf, int len): Connection terminated" LOG_
-      status=closesocket((_isServer == 1) ? serverSocket : clientSocket);
-      if (status == SOCKET_ERROR)
-        _LOG << "ERROR: closesocket unsuccessful" LOG_
-      status=WSACleanup();
-      if (status == SOCKET_ERROR)
-        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
-      return err;  
+		if (_isServer == 0) {
+			lastError = LogWSAError("lbSocket::send(...) client");
+		} else {
+			lastError = LogWSAError("lbSocket::send(...) server");
+		}
+		
+		
+		char msg[100] = "";
+		sprintf(msg, "lbSocket::send(void *buf, int len) Error: numsnt(%d) != len(%d)", numsnt, len);
+		_LOG << msg LOG_
+		_LOG << "lbSocket::send(void *buf, int len): Connection terminated" LOG_
+		status=closesocket((_isServer == 1) ? serverSocket : clientSocket);
+		if (status == SOCKET_ERROR)
+			_LOG << "ERROR: closesocket unsuccessful" LOG_
+			status=WSACleanup();
+		if (status == SOCKET_ERROR)
+			_LOG << "ERROR: WSACleanup unsuccessful" LOG_
+			return err;  
     } else if (numsnt != len) {
-    		_LOG << "lbSocket::send(void* buf, int len) Error: Could not send all data at once!" LOG_
+		_LOG << "lbSocket::send(void* buf, int len) Error: Could not send all data at once!" LOG_
 	}
 #endif
 /*...sLINUX:0:*/
 #ifdef LINUX
-   numsnt = 0;
-
-	if (_isServer == 0)
-    	numsnt=::send(serverSocket,
-        	        buf, len + 1,
-            	    NO_FLAGS_SET);
-	if (_isServer == 1)
-    	numsnt=::send(clientSocket,
-        	        buf, len + 1,
-            	    NO_FLAGS_SET);
-                
-    if (numsnt != len + 1)
+	numsnt = 0;
+	
+	if (_isServer == 0) {
+		
+		// Sende Packetgr”áe
+		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		
+		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+			
+		numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
+	}
+	if (_isServer == 1) {
+		// Sende Packetgr”áe
+		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		
+		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+			
+		numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
+	}
+	
+    if (numsnt != len)
     {
 #ifdef bla      
-      close();
-      status=WSACleanup();
-      if (status < 0)
-        cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
+		close();
+		status=WSACleanup();
+		if (status < 0)
+			cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
-      return ERR_NONE;  
+		return ERR_NONE;  
     }
 #endif
 /*...e*/
-
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-    _LOG << "lbSocket::send(char *buf, int len) returning" LOG_
-#endif
-/*...e*/
-
+	
     return err;
 }
 /*...e*/
@@ -1212,9 +1200,12 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	lbErrCodes err = ERR_NONE;
 	int lastError = 0;
 	char msg[100];
-	short nlen = htons(len+1);
+	short nlen = 0;
+	
+	len++;
+	nlen = htons(len);
 
-		_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
+	_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
 
 #ifdef WINDOWS
 	int numsnt;
@@ -1223,20 +1214,21 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	
 	if (_isServer == 0) {
 
-		// Sende Packetgr”áe
+		// Send packet size
 		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
     		
-		// Sende Packet    		
+		// Send packet		
 		numsnt=::send(serverSocket, buf, len, NO_FLAGS_SET);
 	}
 	if (_isServer == 1) {
-		// Sende Packetgr”áe
+		// Send packet size
 		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
+		// Send packet		
 		numsnt=::send(clientSocket, buf, len, NO_FLAGS_SET);
 	}
 	
