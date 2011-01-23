@@ -1205,8 +1205,6 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	len++;
 	nlen = htons(len);
 
-	_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
-
 #ifdef WINDOWS
 	int numsnt;
 	//_LOG << "Enter send" LOG_
