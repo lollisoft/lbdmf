@@ -871,9 +871,10 @@ lbErrCodes lbSocket::recv(void* buf, short & len) {
     int lastError = 0;
 	short nlen;
 
-  while (isValid() == 0) {
+/*  while (isValid() == 0) {
   	lb_sleep(100);
-  } 
+  }
+ */
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
 
@@ -1095,10 +1096,10 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     }
 
     // Wait a bit.
-	while (isValid() == 0) {
+/*	while (isValid() == 0) {
 		lb_sleep(100);
 	} 
-
+*/
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
 /*...sserver:0:*/
