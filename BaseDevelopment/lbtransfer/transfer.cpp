@@ -447,95 +447,48 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
         char buf[MAXBUFLEN];
         char msg[100];
         int buflen;     
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Enter");
-#endif
-/*...e*/
+
         if (waitforAnswer("Datablock") == 0) {
                 LOG("Could not get 'Datablock' identifer");
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("sendString('ok')");
-#endif
-/*...e*/
+
         if (sendString("ok") == 0) {
                 LOG("lbTransfer::waitForBuffer(...) Error: Sending 'ok' after recieving 'Datablock'");
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("sock->recv_charbuf((char*) buf)");
-#endif
-/*...e*/
-/*...sGet buffersize:8:*/
+
+		/*...sGet buffersize:8:*/
         // Get the size of the packet for memory allocation (if possible)
         if (sock->recvInteger(buflen) != ERR_NONE) {
-                LOG("lbTransfer::waitForBuffer(...) Error: Could not get buffer size");
+                _LOG << "lbTransfer::waitForBuffer(...) Error: Could not get buffer size" LOG_
                 return 0;       
         }
         
         if (sendString("ok") == 0) {
-                LOG("lbTransfer::waitForBuffer(...) Error: Could not send 'ok' after recieving buffer size");
+                _LOG << "lbTransfer::waitForBuffer(...) Error: Could not send 'ok' after recieving buffer size" LOG_
                 return 0;
         }
 /*...e*/
         len = buflen;
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-sprintf(msg, "Got a buffersize of %d bytes", len);
-LOG(msg);
-#endif  
-/*...e*/
+
         buffer = (byte*) malloc(buflen);
 
         int peaces = buflen / MAXBUFLEN;
         byte * currbufferpos = buffer;
 
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %p", peaces, (void*) currbufferpos);
-LOG(msg);
-#endif
-/*...e*/
-
         // target knows multiple packets from buffersize > MAXBUFLEN !
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("Begin reciefing buffer");
-#endif
-/*...e*/
-/*...sRecieving all packets except the last:0:*/
+
+		/*...sRecieving all packets except the last:0:*/
         for (int i = 0; i < peaces; i++) {
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-        if (i == 0) LOG("Recieving subsequent packets");
-#endif
-/*...e*/
                 short gotBuflen = MAXBUFLEN;
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::waitForBuffer(...) Recv peace");
-#endif
-/*...e*/
                 if (sock->recv((void* )currbufferpos, gotBuflen) != ERR_NONE) {
                         LOG("sock->recv((void* )currbufferpos, gotBuflen) failed");
                         return 0;
                 }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE 
-                sprintf(msg, "Wanted buflen: %d. Got this: %d", buflen, gotBuflen);
-                LOG(msg);
-#endif          
-/*...e*/
+
                 currbufferpos = currbufferpos + MAXBUFLEN;
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("Send 'ok'");
-#endif
-/*...e*/
+
                 if (sendString("Peace ok") == 0) {
                         LOG("Cannot send answer 'Peace ok'");
                         return 0;
@@ -544,19 +497,8 @@ LOG("Send 'ok'");
 /*...e*/
         
         // Recv remaining
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("Recieving remaining");     
-#endif
-/*...e*/
 //      currbufferpos = currbufferpos + (buflen-peaces*MAXBUFLEN);
         short wanted_peace_size = (buflen-peaces*MAXBUFLEN);
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %p, torecv = %d", peaces, (void*) currbufferpos, wanted_peace_size);
-LOG(msg);
-#endif
-/*...e*/
         
         /* // Done in recv self
         if (sock->isValid() == 0) {
@@ -569,26 +511,12 @@ LOG(msg);
                 LOG("Can't get buffer");
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-char gotbuffer[100];
-strncpy(gotbuffer, (char*)buffer, len);
-gotbuffer[len] = 0;
 
-sprintf(msg, "Returning '%s', len is %d", gotbuffer, wanted_peace_size);
-LOG(msg);
-#endif
-/*...e*/
         if (sendString("Buffer ok") == 0) {
                 LOG("Can't send back 'ok'");
                 return 0;
         }
 
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Leave");
-#endif
-/*...e*/
         return 1;       
 }
 /*...e*/
