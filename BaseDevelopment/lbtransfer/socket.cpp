@@ -1103,7 +1103,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     int lastError = 0;
     // Wait for a datapacket
     int numrcv = 0;
-    short len = 0; // Packet len haeder
+    short nlen = 0; // Packet len haeder
 
     if (lbSockState != LB_SOCK_CONNECTED) {
       _LOG << "Error: Can not recieve on unconnected socket" LOG_
@@ -1120,24 +1120,24 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 /*...sserver:0:*/
   if (_isServer == 1) {
 // Get the packet size of the next recv
-    numrcv=::recv(clientSocket, (char*)&len, sizeof(len), NO_FLAGS_SET);
+    numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
-	if (numrcv != sizeof(len)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
+	if (numrcv != sizeof(nlen)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
-    numrcv=::recv(clientSocket, buf, len, NO_FLAGS_SET);
+    numrcv=::recv(clientSocket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
 /*...e*/
   
 /*...sclient:0:*/
   if (_isServer == 0) {
     // Get the packet size of the next recv
-    numrcv=::recv(serverSocket, (char*)&len, sizeof(len), NO_FLAGS_SET);
+    numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(len) LOG_
+    if (numrcv != sizeof(nlen)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
-    numrcv=::recv(serverSocket, buf, len, NO_FLAGS_SET);
+    numrcv=::recv(serverSocket, buf, ntohs(nlen), NO_FLAGS_SET);
   }    
 /*...e*/
 
@@ -1171,13 +1171,29 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 /*...e*/
 /*...sLINUX:0:*/
 #ifdef LINUX
-  if (_isServer == 1)
-    numrcv=::recv(clientSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+/*...sserver:0:*/
+  if (_isServer == 1) {
+// Get the packet size of the next recv
+    numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+
+	if (numrcv != sizeof(nlen)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
-  if (_isServer == 0)
-    numrcv=::recv(serverSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+    numrcv=::recv(clientSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+  }
+/*...e*/
+  
+/*...sclient:0:*/
+  if (_isServer == 0) {
+    // Get the packet size of the next recv
+    numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+
+    if (numrcv != sizeof(nlen)) 
+		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
+  
+    numrcv=::recv(serverSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+  }    
+/*...e*/
 
     if ((numrcv == 0) || (numrcv < 0))
     {
@@ -1188,13 +1204,6 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 #endif
       return ERR_NONE;
     }
-#endif
-/*...e*/
-
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-sprintf(msg, "lbSocket::recv_charbuf(char *buf) Leave");
-_LOG << msg LOG_
 #endif
 /*...e*/
     
@@ -1209,7 +1218,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	char msg[100];
 	short nlen = htons(len+1);
 
-	_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
+		_LOG << "Send packet size. Have " << (int) sizeof(len) LOG_
 
 #ifdef WINDOWS
 	int numsnt;
