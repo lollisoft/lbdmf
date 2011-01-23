@@ -1636,8 +1636,10 @@ LB_DLLEXPORT
 LB_CDECL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
-#else
-//#error "Only Windows target is supported"
+#endif
+#ifdef LINUX
+	// No real threads supported.
+	return 0L; //::getpid();
 #endif
 }
 
@@ -1651,8 +1653,9 @@ LB_DLLEXPORT
 LB_CDECL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
-#else
-//#error "Only Windows target is supported"
+#endif
+#ifdef LINUX
+	return getpid();
 #endif
 }
 /*...e*/

@@ -622,9 +622,9 @@ unsigned long lbSocket::inet_addrFromString(char* w) {
         _LOG << "Hostname: " << hep->h_name LOG_
         while (*hep->h_aliases)
             _LOG << "Host alias: " << *hep->h_aliases++ LOG_
-        while (*hep->h_addr_list)
+        if (*hep->h_addr_list)
         {
-            memcpy((char *) &a, *hep->h_addr_list++, sizeof(a));
+            memcpy((char *) &a, *hep->h_addr_list, sizeof(a));
             _LOG << "Host address: " << inet_ntoa(a) LOG_
 			return a.s_addr;
         }

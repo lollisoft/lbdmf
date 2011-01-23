@@ -647,11 +647,12 @@ int lbTransfer::send(lb_I_Transfer_Data* data) {
 	lastError = ERR_NONE;
 
 	if (!data->isServerSide()) {
-		_LOG << "Client sends the additional data..." LOG_
 /*...sClient sends internal data:0:*/
 		DWORD cP = data->getClientPid();
 		DWORD cT = data->getClientTid();
 		char* h  = data->getClientHost();
+		_LOG << "Client sends the additional data (" << h << ", Pid=" << (int) cP << ", Tid=" << (int) cT LOG_
+
 		if (sendBuffer((byte*) &cP, sizeof(DWORD)) == 0) {
 			_LOG << "lbTransfer::send(...) Error: Could not send internal pid" LOG_
 			return 0;
