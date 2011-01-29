@@ -37,9 +37,6 @@ int main(int argc, char** argv) {
 	}
 	
 	_CL_LOG << "Ending server test thread" LOG_
-#ifndef OSX
-	getch();
-#endif
 	exit(0);
 	return 0;
 }
