@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
 	 * This let the app not crashing. But the handler simply
 	 * does exit(0), no cleanup yet ???
 	 */
-	signal(SIGINT, handler);
+	//signal(SIGINT, handler);
 
-	signal(SIGILL, handler);
+	//signal(SIGILL, handler);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
  	if (appServer != NULL) {
@@ -28,9 +28,6 @@ int main(int argc, char** argv) {
 		printf("Global application server not found...\n");
 	}
 	printf("Global application server is ending...\n");
-#ifndef OSX
-	getch();
-#endif
 	return 0;
 }
 /*...e*/
