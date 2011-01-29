@@ -48,6 +48,7 @@ ApplicationBusProxy::ApplicationBusProxy() {
 		// The name of the lbDMF Busmaster must be defined in hosts or DNS
         ABSConnection->init("busmaster/busmaster");
         Connect();
+	ABSConnection->close();
     }
     _LOG << "ApplicationBusProxy Initialized" LOG_
 }
@@ -238,6 +239,8 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	if (ABSConnection->getLastError() != ERR_NONE) {
 	    _LOG << "Error in recieving Echo answer" LOG_
 	}
+
+	ABSConnection->close();
 	
 	if (result->requestString("text", text) != ERR_NONE) {
 		_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
