@@ -417,6 +417,7 @@ int lbSocket::close()
 	else
 		status=::closesocket(clientSocket);	
 #endif
+	lbSockState = LB_SOCK_CLOSED;
         return 1;
 }
 /*...e*/
@@ -836,7 +837,7 @@ lbErrCodes lbSocket::sendInteger(int i) {
 	char buf[MAXBUFLEN];
 	sprintf(buf, "%d", i);
 
-	if ((err = send_charbuf(buf, strlen(buf))) == ERR_NONE)
+	if ((err = send_charbuf(buf, strlen(buf)))  == ERR_NONE)
 	{
 		return err;
 	} else {
@@ -850,11 +851,6 @@ lbErrCodes lbSocket::recvInteger(int& i) {
 	lbErrCodes err = ERR_NONE;
 	char buf[MAXBUFLEN];
         // Wait for a datapacket
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-_LOG << "lbSocket::recvInteger(): Enter" LOG_
-#endif
-/*...e*/
 
 	if ((err = recv_charbuf(buf)) == ERR_NONE) {
 		int number = atoi(buf);
@@ -862,11 +858,6 @@ _LOG << "lbSocket::recvInteger(): Enter" LOG_
 	} else {
 		_LOG << "lbSocket: Error while recieving an integer" LOG_
 	}
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-_LOG << "lbSocket::recvInteger(): Leave" LOG_
-#endif
-/*...e*/
 	return err;
 }
 /*...e*/

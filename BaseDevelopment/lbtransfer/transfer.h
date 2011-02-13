@@ -192,6 +192,8 @@ public:
 	 */
 	lbErrCodes LB_STDCALL init(char *target);
 
+	lbErrCodes LB_STDCALL close();
+
 	int LB_STDCALL isConnected();
 
 	/**

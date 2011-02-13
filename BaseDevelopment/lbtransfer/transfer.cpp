@@ -195,6 +195,12 @@ lbErrCodes lbTransfer::init(char *target) {
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lbTransfer::close() {
+	if (sock != NULL) {
+		sock->close();
+	}
+}
+
 int lbTransfer::isValid() {
         return sock->isValid();
 }
@@ -294,6 +300,8 @@ int lbTransfer::waitforAnswer(char* answer) {
         char buf[MAXBUFLEN];
         char msg[100];
 
+	memset(buf, 0, sizeof(buf));
+
         if (sock->recv_charbuf(buf) != ERR_NONE)  {
 			_LOG << "lbSocket: Failed to get any answer" LOG_
 			return 0;
@@ -314,7 +322,7 @@ int lbTransfer::waitforAnswer(char* answer) {
 /*...e*/
 /*...slbTransfer\58\\58\sendString\40\char\42\ type\41\:0:*/
 int lbTransfer::sendString(char* type) {
-        if (sock->send_charbuf(type, strlen(type)+1) != ERR_NONE) {
+        if (sock->send_charbuf(type, strlen(type)) != ERR_NONE) {
                 LOG("lbTransfer::sendString(char* type): Failed to send simple string");
                 return 0;
         }

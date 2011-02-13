@@ -121,6 +121,8 @@ public:
 	bool LB_STDCALL initSymbolic(char *host, char* service);
     void LB_STDCALL reinit(char *mysockaddr="");
 
+	int LB_STDCALL close();
+	
 	int LB_STDCALL isServer() { return _isServer; }
 
 	lbErrCodes LB_STDCALL recvInteger(int& i);
@@ -157,7 +159,6 @@ private:
         int bind();
         int listen();
         int socket();
-	int close();
         int connect();
         int setSockConnection(SOCKET s);
 	lbErrCodes LB_STDCALL neagleOff(SOCKET s);
