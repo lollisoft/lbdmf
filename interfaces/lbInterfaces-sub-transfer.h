@@ -343,9 +343,21 @@ public:
 /*...e*/
 
 /*...sclass lb_I_Transfer:0:*/
+/** \brief Send a prepared protocol sequence.
+ * This class is used to send a prepared protocol sequence in a protocol that
+ * the implementation must understand. The lb_I_Transfer_Data interface understands
+ * some primitives to be send over the wire.
+ */
 class lb_I_Transfer : public lb_I_Unknown {
 public:
+	/** \brief Open the connection.
+	 * This function opens the connection to the given hostname and protocol name.
+	 */
 	virtual lbErrCodes LB_STDCALL init(char *target) = 0;
+	/** \brief Close the connection.
+	 * This function currently must be called after the transmission has been done and the answe has been recieved..
+	 */
+	virtual lbErrCodes LB_STDCALL close() = 0;
 
 	virtual int LB_STDCALL isConnected() = 0;
 
@@ -383,7 +395,9 @@ public:
 	virtual char* LB_STDCALL gethostname() = 0;
 
 	virtual bool LB_STDCALL initSymbolic(char *host, char* service) = 0;
-    virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
+    	virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
+
+	virtual int LB_STDCALL close() = 0;
 
 //	virtual lbErrCodes LB_STDCALL neagleOff(SOCKET s);
 

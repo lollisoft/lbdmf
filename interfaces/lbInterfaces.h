@@ -668,7 +668,7 @@ PRIMARY KEY (id),
 #ifndef _MSC_VER
 #ifndef TVISION
 #ifndef __MINGW32__
-	typedef unsigned short byte;
+	typedef unsigned char byte;
 	typedef unsigned short u_short;
 #endif
 #endif
