@@ -1467,6 +1467,11 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 			*s = buffer;
 			
 			uk = dispatchTable->getElement(&key);
+			if (uk == NULL) {
+				_LOG << "lbAppServer::dispatch(...) Error: Failed to lookup protocol handler for '" << key->charrep() << "'." LOG_
+				return ERR_APP_SERVER_DISPATCH;
+			}
+			
 			QI(uk, lb_I_DispatchProtocol, proto)
 		
 			if (proto != NULL) {
