@@ -1120,7 +1120,7 @@ lbAppServer::~lbAppServer() {
 }
 /*...e*/
 /*...slbAppServer\58\\58\initServerModul\40\lb_I_ApplicationServerModul\42\ servermodule\41\:0:*/
-int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
+int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char* serverInstance) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Container, protocolHandlers)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, servicename)
@@ -1136,7 +1136,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule) {
 	_LOG << "initServerModul() called with " << servicename->charrep() LOG_
 
 #ifndef USE_MULTITHREAD_CODE
-	servermodule->registerModul(this);
+	servermodule->registerModul(this, serverInstance);
 #endif
 
 #ifdef USE_MULTITHREAD_CODE
@@ -1200,7 +1200,7 @@ char* LB_STDCALL lbAppServer::getServiceName() {
 	return "localhost/busmaster";
 }
 
-lbErrCodes LB_STDCALL lbAppServer::registerProtocols(lb_I_ProtocolManager* protoMgr) {
+lbErrCodes LB_STDCALL lbAppServer::registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) {
 	protoMgr->addProtocolHandler("Connect", this, (lbProtocolCallback) &lbAppServer::HandleConnect);
 	protoMgr->addProtocolHandler("Disconnect", this, (lbProtocolCallback) &lbAppServer::HandleDisconnect);
 	return ERR_NONE;
@@ -1224,7 +1224,7 @@ void LB_STDCALL lbAppServer::run() {
 	
 	int maxThreads = 50;
 
-	registerProtocols(this);
+	registerProtocols(this, "BusMaster"); // server instance name not used internally for this class.
 		
 	// Find all lb_I_ApplicationServerModul implementations.
 	// Similar to plugins these are self descriptable.
@@ -1248,7 +1248,7 @@ void LB_STDCALL lbAppServer::run() {
 				_CL_LOG << "Error: Server module not of given type." LOG_
 			}
 			
-			if ((plAsm != NULL) && initServerModul(*&plAsm) == 0) {
+			if ((plAsm != NULL) && initServerModul(*&plAsm, "BusMaster") == 0) {
 				_CL_LOG << "Error: Failed to initialize server module." LOG_
 			}
 		}
@@ -1262,11 +1262,12 @@ void LB_STDCALL lbAppServer::run() {
 		return;
 	}
 	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
+	_CL_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
 
 	while (1) {
 		UAP(lb_I_Transfer, clt)
 		
-		_LOG << "lbAppServer: Wait for connection..." LOG_
+
 		if (transfer == NULL) {
 			_LOG << "lbAppServer::run() Error: transfer object pointer is NULL!" LOG_
 			return;
@@ -1275,9 +1276,8 @@ void LB_STDCALL lbAppServer::run() {
 		if ((clt = transfer->accept()) == 0) 
 		{
 			_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
-			continue;
-		} else {
-			_LOG << "lbAppServer: Got a connection..." LOG_
+			_CL_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
+			return;
 		}
 
 		
@@ -1285,14 +1285,14 @@ void LB_STDCALL lbAppServer::run() {
 #ifndef USE_MULTITHREAD_CODE
 		UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, request)
 		UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
-		_LOG << "lbAppServer: Prepare transfer data instances..." LOG_
+
 		request->setServerSide(1);
 		result->setServerSide(1);
-		_LOG << "lbAppServer: Recieve and demarshal request..." LOG_
+
 		*clt >> *&request;
-		_LOG << "lbAppServer: Dispatch request..." LOG_
+
 		dispatch(*&request, *&result);
-		_LOG << "lbAppServer: Marshal and send answer..." LOG_
+
 		*clt << *&result;
 #endif		
 
@@ -1470,9 +1470,9 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 			QI(uk, lb_I_DispatchProtocol, proto)
 		
 			if (proto != NULL) {
-				_LOG << "lbAppServer: Call registered protocol callback." LOG_
+
 				err = (proto->getProtocolHandlerInstance()->*((lbProtocolCallback) (proto->getProto()))) (request, result);
-				_LOG << "lbAppServer: Called registered protocol callback." LOG_
+
 			} else {
 				_LOG << "lbAppServer: Can not dispatch unknown request." LOG_
 				err = ERR_APP_SERVER_DISPATCH;
@@ -1540,11 +1540,11 @@ lbErrCodes LB_STDCALL lbAppServer::addProtocolHandler(const char* handlername, l
 		QI(proto, lb_I_Unknown, uk)
 	
 		if ((err = dispatchTable->insert(&uk, &hkey)) != ERR_NONE) {
-			LOG("Could not add handler");
+			_LOG << "Could not add handler" LOG_
 			err = ERR_APP_SERVER_ADDHANDLER;
 		}
 	} else {
-		LOG("Service previously added");
+		_LOG << "Service previously added" LOG_
 		err = ERR_APP_SERVER_ADDHANDLER;
 	}
 	return err;
@@ -1591,7 +1591,7 @@ bool LB_STDCALL lbAppServer::isConnected(lb_I_Transfer_Data* request) {
 	*key += Pid->charrep();
 	*key += Tid->charrep();
 	
-	_LOG << "Check if client is connected: " << key->charrep() LOG_
+
 	
 	if (connections->exists(&keybase)) {
 		return true;
@@ -1618,7 +1618,7 @@ lbErrCodes lbAppServer::makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg
 lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	lbErrCodes err = ERR_NONE;
 
-	_LOG << "lbAppServer::HandleConnect() called." LOG_
+
 	
 	LB_PACKET_TYPE type;
 	char *clienthost = NULL;
@@ -1678,10 +1678,8 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 	*key += Pid->charrep();
 	*key += Tid->charrep();
 
-	_LOG << "Check if client is connected: " << keybase->charrep() LOG_
-	
 	if (!connections->exists(&keybase)) {
-		_LOG << "Connect the client: " << keybase->charrep() LOG_
+		_LOG << "Connect client: " << keybase->charrep() LOG_
 		result->add("Accept");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
@@ -1702,10 +1700,10 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 	} else {
 		result->add("Deny");
 		result->add("Already connected");
-		_LOG << "lbAppServer::HandleConnect(...) Error: already connected!" LOG_
+		_LOG << "lbAppServer::HandleConnect(...) Error: Client "  << keybase->charrep() << " already connected!" LOG_
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
-	_LOG << "lbAppServer::HandleConnect(...) Succeeded" LOG_
+
 	return ERR_NONE;
 }
 /*...e*/

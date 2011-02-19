@@ -100,7 +100,8 @@ lbErrCodes LB_STDCALL lbTransfer::setData(lb_I_Unknown* uk) {
 /*...slbTransfer\58\\58\lbTransfer\40\\41\:0:*/
 lbTransfer::lbTransfer() {
 	ref = STARTREF;
-	REQUEST(getModuleInstance(), lb_I_Socket, sock)
+	// Moved to init(...)
+	//REQUEST(getModuleInstance(), lb_I_Socket, sock)
 	laststate = 1;
 	connected = 0;
 	state = LB_STATE_UNINITIALIZED;
@@ -178,11 +179,17 @@ lbErrCodes lbTransfer::init(char *target) {
 		
 
         if (subservice == NULL) {
-                /**
-                 * machine is the computername. Service is the name of a service
-                 * mapped to a port.
-                 */
-
+			/**
+			 * machine is the computername. Service is the name of a service
+			 * mapped to a port.
+			 */
+		
+			if (sock != NULL) {
+				_LOG << "Error: The socket instance must be NULL before calling init(...)." LOG_
+			}
+		
+			REQUEST(getModuleInstance(), lb_I_Socket, sock)
+				 
 			if (!sock->initSymbolic(machine, service)) {
 				_LOG << "Initialization of socket failed." LOG_
 				return ERR_SOCKET_INIT;
@@ -240,11 +247,6 @@ char* getStringFromEnumeration(LB_PACKET_TYPE type) {
 /*...sLB_PACKET_TYPE getEnumerationFromString\40\char\42\ typeAsString\41\:0:*/
 LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
         if (strcmp(typeAsString, "PACKET_LB_CHAR") == 0) {
-/*...sTRANSFER_VERBOSE:0:*/
-        #ifdef TRANSFER_VERBOSE
-                LOG("getEnumerationFromString(...) returns LB_CHAR");
-        #endif
-/*...e*/
                 return PACKET_LB_CHAR;
         }
         if (strcmp(typeAsString, "PACKET_LB_INT") == 0) return PACKET_LB_INT;
@@ -264,24 +266,19 @@ int lbTransfer::resetServerStateMachine() {
         char buf[100];
         
         if (sock->send_charbuf("reset", strlen("reset")) == 0) {
-                LOG("lbSocket: Panic, can't send reset comando to server");
+                _LOG << "lbSocket: Panic, can't send reset comando to server" LOG_
                 return 0;
         }
 
         if (sock->recv_charbuf(buf) == 0) { 
-                LOG("lbSocket: Panic, can't reset server's statemachine");
+                _LOG << "lbSocket: Panic, can't reset server's statemachine" LOG_
                 return 0;
         }
 
         if (strcmp(buf, "ok") != 0) {
-                LOG("lbSocket: Server state error, reset comando don't be answered with 'ok'");
+                _LOG << "lbSocket: Server state error, reset comando don't be answered with 'ok'" LOG_
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-        LOG("lbTransfer: Reseting server statemachine sucseeded");
-#endif
-/*...e*/
         return 1;
 }
 /*...e*/
@@ -289,7 +286,7 @@ int lbTransfer::resetServerStateMachine() {
 /*...slbTransfer\58\\58\sendDatatype\40\char\42\ type\41\:0:*/
 lbErrCodes lbTransfer::sendDatatype(char* type) {
         if (sock->send_charbuf(type, strlen(type)+1) != ERR_NONE) {
-                LOG("lbTransfer::sendDatatype(char* type): Failed to send packet type information");
+                _LOG << "lbTransfer::sendDatatype(char* type): Failed to send packet type information" LOG_
                 return ERR_TRANSFER_SEND_DATATYPE;
         }
         return ERR_NONE;
@@ -298,9 +295,8 @@ lbErrCodes lbTransfer::sendDatatype(char* type) {
 /*...slbTransfer\58\\58\waitforAnswer\40\char\42\ answer\41\:0:*/
 int lbTransfer::waitforAnswer(char* answer) {
         char buf[MAXBUFLEN];
-        char msg[100];
-
-	memset(buf, 0, sizeof(buf));
+        char msg[100] = "";
+		memset(buf, 0, sizeof(buf));
 
         if (sock->recv_charbuf(buf) != ERR_NONE)  {
 			_LOG << "lbSocket: Failed to get any answer" LOG_
@@ -323,7 +319,7 @@ int lbTransfer::waitforAnswer(char* answer) {
 /*...slbTransfer\58\\58\sendString\40\char\42\ type\41\:0:*/
 int lbTransfer::sendString(char* type) {
         if (sock->send_charbuf(type, strlen(type)) != ERR_NONE) {
-                LOG("lbTransfer::sendString(char* type): Failed to send simple string");
+                _LOG << "lbTransfer::sendString(char* type): Failed to send simple string" LOG_
                 return 0;
         }
         return 1;
@@ -336,13 +332,13 @@ int lbTransfer::sendDataCount(int c) {
         if (waitforAnswer("ok") == 0) return 0;
 
         if (sock->sendInteger(c) != ERR_NONE) {
-                LOG("lbTransfer: Could not send integer value");
+                _LOG << "lbTransfer: Could not send integer value" LOG_
                 resetServerStateMachine();
                 return 0;
         }
 
         if (waitforAnswer("Datacount ok") == 0) {
-        LOG("lbTransfer::sendDataCount(int c): Error, answer not got");
+				_LOG << "lbTransfer::sendDataCount(int c): Error, answer not got" LOG_
                 return 0;
         }
         return 1;       
@@ -350,23 +346,14 @@ int lbTransfer::sendDataCount(int c) {
 /*...e*/
 /*...slbTransfer\58\\58\sendBuffer\40\byte\42\ buf\44\ int len\41\:0:*/
 int lbTransfer::sendBuffer(byte* buf, int len) {
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::sendBuffer(void* buf, int len) Enter");
-#endif
-/*...e*/
         if (sendString("Datablock") == 0) {
-                LOG("lbTransfer: Could not send 'Datablock' message");
+                _LOG << "lbTransfer: Could not send 'Datablock' message" LOG_
                 resetServerStateMachine();
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer('ok')");
-#endif
-/*...e*/
+
         if (waitforAnswer("ok") == 0) {
-        LOG("Could not get answer 'ok' after sending 'Datablock'");
+				_LOG << "Could not get answer 'ok' after sending 'Datablock'" LOG_
                 return 0;
         }
 
@@ -382,55 +369,34 @@ LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer('ok')");
 
         // target knows multiple packets from buffersize > MAXBUFLEN !
         for (int i = 0; i < peaces; i++) {
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-                if (i == 0) LOG("Sending subsequent packets");
-#endif
-/*...e*/
-                if (sock->send((void* )currbufferpos, MAXBUFLEN) != ERR_NONE) 
+
+			if (sock->send((void* )currbufferpos, MAXBUFLEN) != ERR_NONE) 
                 {
-                        LOG("lbTransfer::sendBuffer(byte* buf, int len) failed");
+                        _LOG << "lbTransfer::sendBuffer(byte* buf, int len) failed" LOG_
                         return 0;
                 }
                 currbufferpos = currbufferpos + MAXBUFLEN;
                 if (waitforAnswer("Peace ok") == 0) 
                 {
-                        LOG("lbTransfer::sendBuffer(byte* buf, int len) waiting for 'Peace ok' failed");
+                        _LOG << "lbTransfer::sendBuffer(byte* buf, int len) waiting for 'Peace ok' failed" LOG_
                         return 0;
                 }
         }
         
         // Send remaining
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("Send remaining");
-#endif
-/*...e*/
+
         //currbufferpos = currbufferpos + (len-peaces*MAXBUFLEN);
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-        sprintf(msg, "Sending this buffer: '%s'", (char*) currbufferpos);
-        LOG(msg);
-#endif
-/*...e*/
+
         if (sock->send((void* )currbufferpos, (len-peaces*MAXBUFLEN)) != ERR_NONE) 
         {
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("Wait for answer 'Buffer Ok'");
-#endif
-/*...e*/
+
         if (waitforAnswer("Buffer ok") == 0) {
-                LOG("Got incorrect answer");
+                _LOG << "Got incorrect answer" LOG_
                 return 0;
         }
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-LOG("lbTransfer::sendBuffer(byte* buf, int len) returning with success");
-#endif
-/*...e*/
+
         return 1;
 }
 
@@ -442,7 +408,7 @@ int lbTransfer::waitForString(char* & string) {
 
         if (sock->recv_charbuf(buf) != ERR_NONE)
         {
-          LOG("lbSocket: Failed to get any data while waiting for a string");
+          _LOG << "lbSocket: Failed to get any data while waiting for a string" LOG_
           return 0;
         }  
         string = strdup(buf);
@@ -457,22 +423,26 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
         int buflen;     
 
         if (waitforAnswer("Datablock") == 0) {
-                LOG("Could not get 'Datablock' identifer");
+                _LOG << "Could not get 'Datablock' identifer" LOG_
                 return 0;
         }
 
         if (sendString("ok") == 0) {
-                LOG("lbTransfer::waitForBuffer(...) Error: Sending 'ok' after recieving 'Datablock'");
+                _LOG << "lbTransfer::waitForBuffer(...) Error: Sending 'ok' after recieving 'Datablock'" LOG_
                 return 0;
         }
 
+
+		
 		/*...sGet buffersize:8:*/
         // Get the size of the packet for memory allocation (if possible)
         if (sock->recvInteger(buflen) != ERR_NONE) {
                 _LOG << "lbTransfer::waitForBuffer(...) Error: Could not get buffer size" LOG_
                 return 0;       
         }
-        
+		
+
+		
         if (sendString("ok") == 0) {
                 _LOG << "lbTransfer::waitForBuffer(...) Error: Could not send 'ok' after recieving buffer size" LOG_
                 return 0;
@@ -487,18 +457,22 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
 
         // target knows multiple packets from buffersize > MAXBUFLEN !
 
+
+		
 		/*...sRecieving all packets except the last:0:*/
         for (int i = 0; i < peaces; i++) {
                 short gotBuflen = MAXBUFLEN;
                 if (sock->recv((void* )currbufferpos, gotBuflen) != ERR_NONE) {
-                        LOG("sock->recv((void* )currbufferpos, gotBuflen) failed");
+                        _LOG << "sock->recv((void* )currbufferpos, gotBuflen) failed" LOG_
                         return 0;
                 }
 
                 currbufferpos = currbufferpos + MAXBUFLEN;
-
+				
+		
+		
                 if (sendString("Peace ok") == 0) {
-                        LOG("Cannot send answer 'Peace ok'");
+                        _LOG << "Cannot send answer 'Peace ok'" LOG_
                         return 0;
                 }
         }
@@ -510,7 +484,7 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
         
         /* // Done in recv self
         if (sock->isValid() == 0) {
-                LOG("lbTransfer::waitForBuffer(...) Error: Can't get data from an invalid socket!");
+                _LOG << "lbTransfer::waitForBuffer(...) Error: Can't get data from an invalid socket!" LOG_
                 return 0;
         }
         */
@@ -521,7 +495,7 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
         }
 
         if (sendString("Buffer ok") == 0) {
-                LOG("Can't send back 'ok'");
+                _LOG << "Can't send back 'ok'" LOG_
                 return 0;
         }
 
@@ -536,9 +510,6 @@ int lbTransfer::waitForDataCount(int & c) {
         if (sendString("ok") == 0) return 0;
         if (sock->recvInteger(c) != ERR_NONE) return 0;
         if (sendString("Datacount ok") == 0) return 0;
-		
-		_LOG << "lbTransfer::waitForDataCount() got " << c LOG_
-		
         return 1;
 }
 /*...e*/
@@ -555,7 +526,7 @@ lbErrCodes lbTransfer::waitForDatatype(char* &result) {
                                 err = ERR_TRANSFER_ENDED;
                                 break;
                         default:
-                                LOG("lbSocket: Failed to get any datatype");
+                                _LOG << "lbSocket: Failed to get any datatype" LOG_
                                 err = ERR_TRANSFER_FAILED;
                 }
                 result = '\0';
@@ -581,6 +552,9 @@ lbErrCodes lbTransfer::getLastError() {
 /*...slbTransfer\58\\58\setSockConnection\40\lb_I_Socket\42\ s\41\:0:*/
 int lbTransfer::setSockConnection(lb_I_Socket* s) {
         state = LB_STATE_CONNECTED;
+		if (sock != NULL) {
+			_LOG << "lbTransfer::setSockConnection() overwrites another socket instance!" LOG_
+		}
         sock = s;
         connected = 1;  
         return 1;
@@ -589,42 +563,39 @@ int lbTransfer::setSockConnection(lb_I_Socket* s) {
 
 /*...slbTransfer\58\\58\accept\40\\41\:0:*/
 lb_I_Transfer* lbTransfer::accept() {
-        if (state == LB_STATE_CONNECTED) {
-                LOG("lbTransfer::accept(lbTransfer*& t) State error: Accept can not be called!");
-                return NULL;
-        }
-        fprintf(stderr, "Waiting for a connection...\n");
-        UAP(lb_I_Socket, s)
+	if (state == LB_STATE_CONNECTED) {
+		_LOG << "lbTransfer::accept(lbTransfer*& t) State error: Accept can not be called!" LOG_
+		return NULL;
+	}
+    
+    _CL_LOG << "Waiting for a connection..." LOG_
+	UAP(lb_I_Socket, s)
 
-        if (sock == NULL) {
-        	_LOG << "lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!" LOG_
-        	return NULL;
+	if (sock == NULL) {
+		_LOG << "lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!" LOG_
+		return NULL;
 	}
 	
-        s = sock->accept();	
-        if (s != NULL) {
-/*...sTRANSFER_VERBOSE:0:*/
-#ifdef TRANSFER_VERBOSE
-                LOG("lbTransfer::accept(lbTransfer*& t): Create a lbTransfer object for the connected client");
-#endif
-/*...e*/
-               UAP_REQUEST(getModuleInstance(), lb_I_Transfer, t)
+	s = sock->accept();
+	s++;// accept does not use UAP
+	if (s != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Transfer, t)
                  
-                if (s == NULL) {
-                        LOG("t->setSockConnection(s) Error: s is a NULL pointer!"); 
-                        return 0;
-                }
+		if (s == NULL) {
+			_LOG << "t->setSockConnection(s) Error: s is a NULL pointer!" LOG_
+			return 0;
+		}
                 
-                // t cannot call accept or those functions that
-                // are outside of connected state
+		// t cannot call accept or those functions that
+		// are outside of connected state
                 
-                t->setSockConnection(s.getPtr());
-                t++;
-                return t.getPtr();
-        } else {
-                LOG("lbTransfer::accept(lb_I_Transfer* t): Error, failed to accept on serversocket");
-                return NULL;
-        }
+		t->setSockConnection(s.getPtr());
+		t++;
+		return t.getPtr();
+	} else {
+		_LOG << "lbTransfer::accept(lb_I_Transfer* t): Error, failed to accept on serversocket" LOG_
+		return NULL;
+	}
 }
 /*...e*/
 
@@ -699,7 +670,7 @@ int lbTransfer::send(lb_I_Transfer_Data* data) {
 		return 0;
 	}
 
-	_LOG << "Send number of protocol packets as of " << data->getPacketCount() LOG_
+
 	if (sendDataCount(data->getPacketCount()) == 0) {
 		_LOG << "Failed to send number of protocol packets" LOG_
 		lastError = ERR_TRANSFER_FAILED;
@@ -709,8 +680,8 @@ int lbTransfer::send(lb_I_Transfer_Data* data) {
 	data->resetPositionCount(); // Ensure starting an iteration
 	while (data->hasMorePackets() == 1) {
 		pLB_TRANSFER_DATA pData = data->getNextPacket();
-		_LOG << "Send a protocol packet of type " << getStringFromEnumeration(pData->packet_type) LOG_
 
+		
 		if (pData == NULL) {
 			lastError = ERR_TRANSFER_NULLPTR;
 			_LOG << "lbTransfer::send(const lbTransferData & data): Error, can't send buffer. Null pointer exception." LOG_
@@ -750,8 +721,6 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
 	lbErrCodes err = ERR_NONE;
 
 	if (data->isServerSide()) {
-		_LOG << "Server recieves the additional data..." LOG_
-
 /*...sServerside recieves internal data :16:*/
 
         if (waitForBuffer((byte*&) buf, len) == 0) {
@@ -766,13 +735,13 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
         delete buf;
 
         if (sendString("Got buffer") == 0) {
-                LOG("Could not get answer 'Got buffer'");
+                _LOG << "Could not get answer 'Got buffer'" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
         
         if (waitForBuffer((byte*&) buf, len) == 0) {
-                LOG("lbTransfer::send(...) Error: Could not send internal tid");
+                _LOG << "lbTransfer::send(...) Error: Could not send internal tid" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
@@ -781,13 +750,13 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
         delete buf;
 
         if (sendString("Got buffer") == 0) {
-                LOG("Could not get answer 'Got buffer'");
+                _LOG << "Could not get answer 'Got buffer'" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
 
         if (waitForString(h) == 0) {
-                LOG("lbTransfer::send(...) Error: Could not send internal client hostname");
+                _LOG << "lbTransfer::send(...) Error: Could not send internal client hostname" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }       
@@ -816,7 +785,7 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
            
 /*...swaitForDataCount:28:*/
 			if (waitForDataCount(count) == 0) {
-				LOG("waitForDataCount(count) Error: No packet count");
+				_LOG << "waitForDataCount(count) Error: No packet count" LOG_
 				fprintf(stderr, "Waiting for packet count: Results in an error\n");
 				lastError = ERR_TRANSFER_FAILED;
 				return 0;
@@ -829,7 +798,7 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
                 LB_PACKET_TYPE type;
                 char* typeAsString = NULL;
                 if (waitForString(typeAsString) == 0) {
-                        LOG("lbTransfer::recv(...) Error: Could not get packet type information!");
+                        _LOG << "lbTransfer::recv(...) Error: Could not get packet type information!" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;
                 }
@@ -847,34 +816,29 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
                         }
                 }
                 if (waitForBuffer((byte* &) buf, len) == 0) {
-                        LOG("waitForBuffer((byte* &) buf, len) Error: Waiting for buffer failed!");
+                        _LOG << "waitForBuffer((byte* &) buf, len) Error: Waiting for buffer failed!" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;       
                 }
 
                 data->add(buf, len, type);
                 if (sendString("Got buffer") == 0) {
-                        LOG("Could not get answer 'Got buffer'");
+                        _LOG << "Could not get answer 'Got buffer'" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;
                 }
             }
 
 /*...e*/
-/*...sTRANSFER_VERBOSE:16:*/
-#ifdef TRANSFER_VERBOSE    
-            LOG("Ending recieving packets");
-#endif
-/*...e*/
 /*...e*/
           } else {
                 lastError = ERR_TRANSFER_FAILED;
-                LOG("lbTransfer::recv(...) Error: Currently only 'lbTransferData' is supported");
+                _LOG << "lbTransfer::recv(...) Error: Currently only 'lbTransferData' is supported" LOG_
                 return 0;
           }
         } else {
                 lastError = ERR_TRANSFER_FAILED;
-                LOG("lbTransfer::recv(lbTransferData & data): Could not get any data type");
+                _LOG << "lbTransfer::recv(lbTransferData & data): Could not get any data type" LOG_
                 return 0;
         }
 

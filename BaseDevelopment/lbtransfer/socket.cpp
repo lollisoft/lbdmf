@@ -234,9 +234,6 @@ lbSocket::lbSocket(const lbSocket& s) {
 /*...e*/
 
 lbSocket::~lbSocket() {
-	COUT << "lbSocket::~lbSocket() called" << ENDL;
-	_LOG << "lbSocket::~lbSocket() called" LOG_
-	
 	if (lbSockState == LB_SOCK_CONNECTED) close();
 	sockUse--;
 #ifdef WINDOWS	
@@ -352,7 +349,7 @@ return 1;
 /*...slbSocket\58\\58\neagleOff\40\SOCKET s\41\:0:*/
 lbErrCodes lbSocket::neagleOff(SOCKET s) {
 	int opt = 1;
-	_LOG << "lbSocket::neagleOff() called." LOG_
+
 	
 	if (::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)(&opt), sizeof(int)) != 0)
 	{
@@ -468,8 +465,9 @@ lb_I_Socket* lbSocket::accept()
     /* accept the connection request when one
        is received */
     clientSocket=::accept(serverSocket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-    if (clientSocket == SOCKET_ERROR) _LOG << "Error while accepting on socket" LOG_
-
+    if (clientSocket == SOCKET_ERROR) {
+		_LOG << "Error while accepting on socket" LOG_
+	}
 #endif
 /*...e*/
 /*...sLINUX:0:*/
@@ -523,8 +521,10 @@ lb_I_Socket* lbSocket::accept()
 #endif
 /*...e*/
 
-    if (neagleOff(clientSocket) != ERR_NONE) _LOG << "Error: Can not activate TCP_NODELAY" LOG_
-
+    if (neagleOff(clientSocket) != ERR_NONE) {
+		_LOG << "Error: Can not activate TCP_NODELAY" LOG_
+	}
+	
     if (clientSocket == -1) {
     	_LOG << "lbSocket::accept(lbSocket** s): Created clientSocket is invalid" LOG_
     	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;

@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.77 2011/01/16 21:49:45 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.78 2011/02/19 18:57:13 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.78  2011/02/19 18:57:13  lollisoft
+ * Adopted code to use server instance name for creating a namespace like protocol naming.
+ *
  * Revision 1.77  2011/01/16 21:49:45  lollisoft
  * Log to file instead to console for this case.
  *
@@ -784,20 +787,21 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 
 			// It may be a Microsoft compiled plugin...
 			if (manager->makeInstance("instanceOfPluginServerModule", pluginModule, &ukPlugin) == ERR_NONE) {
+				UAP(lb_I_Unknown, ukPlugin1)
+				UAP(lb_I_ApplicationServerModul, plM)
+				UAP(lb_I_ApplicationServerModul, plMTest)
 
 				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 
-				PluginServerModules->insert(&ukPlugin, &key);
+				QI(ukPlugin, lb_I_ApplicationServerModul, plMTest)
 
-				UAP(lb_I_Unknown, ukPlugin1)
-
-				ukPlugin1 = PluginServerModules->getElement(&key);
-
-				UAP(lb_I_ApplicationServerModul, plM)
-				QI(ukPlugin1, lb_I_ApplicationServerModul, plM)
-
-				plM->setModule(pluginModule);
-				plM->initialize();
+				if (plMTest != NULL) {
+					PluginServerModules->insert(&ukPlugin, &key);
+					ukPlugin1 = PluginServerModules->getElement(&key);
+					QI(ukPlugin, lb_I_ApplicationServerModul, plM)
+					plM->setModule(pluginModule);
+					plM->initialize();
+				}
 
 				free(pluginModule);
 				free(pluginDir);
@@ -809,21 +813,22 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 			return false;
 
 		} else {
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-			PluginServerModules->insert(&ukPlugin, &key);
-
 			UAP(lb_I_Unknown, ukPlugin1)
-
-			ukPlugin1 = PluginServerModules->getElement(&key);
-
 			UAP(lb_I_ApplicationServerModul, plM)
-			QI(ukPlugin1, lb_I_ApplicationServerModul, plM)
+			UAP(lb_I_ApplicationServerModul, plMTest)
 
-			_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
+			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 
-			plM->setModule(pluginModule);
-			plM->initialize();
+			QI(ukPlugin, lb_I_ApplicationServerModul, plMTest)
 
+			if (plMTest != NULL) {
+				PluginServerModules->insert(&ukPlugin, &key);
+				ukPlugin1 = PluginServerModules->getElement(&key);
+				QI(ukPlugin1, lb_I_ApplicationServerModul, plM)
+				plM->setModule(pluginModule);
+				plM->initialize();
+			}
+			
 			free(pluginModule);
 			free(pluginDir);
 		}

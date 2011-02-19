@@ -2361,7 +2361,7 @@ public:
 	 * The service name could be overwritten to use another service.
 	 */
 	virtual char* LB_STDCALL getServiceName() = 0;
-	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr) = 0;
+	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) = 0;
 };
 /*...e*/
 
@@ -4665,7 +4665,7 @@ public:
 	virtual char* LB_STDCALL getServiceName() = 0;
 
 	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
-	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
+	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr, char* serverInstance) = 0;
 };
 
 class lb_I_UnitTestModul : public lb_I_PluginModule {

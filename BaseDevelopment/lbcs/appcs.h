@@ -141,7 +141,7 @@ public:
 	lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result);
 
 	char* LB_STDCALL getServiceName();
-	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr);	                  
+	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance);	                  
 
 	/**
 	 * Called from run() and gives a lb_I_Transfer instance.
@@ -185,7 +185,7 @@ protected:
 	 */
 	lbErrCodes makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg, char* where);
 	
-	int initServerModul(lb_I_ApplicationServerModul* servermodule);
+	int initServerModul(lb_I_ApplicationServerModul* servermodule, char* serverInstance);
 
 	lb_I_Transfer *transfer;	
 	UAP(lb_I_Container, connections)	
