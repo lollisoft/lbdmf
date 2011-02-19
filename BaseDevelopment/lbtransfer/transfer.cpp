@@ -575,20 +575,15 @@ lb_I_Transfer* lbTransfer::accept() {
 		_LOG << "lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!" LOG_
 		return NULL;
 	}
-	
+
 	s = sock->accept();
-	s++;// accept does not use UAP
 	if (s != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Transfer, t)
                  
-		if (s == NULL) {
-			_LOG << "t->setSockConnection(s) Error: s is a NULL pointer!" LOG_
-			return 0;
-		}
-                
 		// t cannot call accept or those functions that
 		// are outside of connected state
                 
+		s++;// accept does not use UAP
 		t->setSockConnection(s.getPtr());
 		t++;
 		return t.getPtr();
