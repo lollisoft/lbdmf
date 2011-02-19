@@ -30,7 +30,8 @@ lbErrCodes LB_STDCALL ApplicationBus::setData(lb_I_Unknown* uk) {
 
 ApplicationBus::ApplicationBus() {
 	ref = STARTREF;
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, connections)
+	//UAP_REQUEST(getModuleInstance(), lb_I_Container, connections)
+	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 }
 
 ApplicationBus::~ApplicationBus() {
@@ -41,19 +42,54 @@ char* ApplicationBus::getServiceName() {
         return "localhost/ApplicationBus";
 }
 
-lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr) {
+lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) {
 		_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
 
-        protoMgr->addProtocolHandler("AnounceUser", this, (lbProtocolCallback) &ApplicationBus::_AnounceUser);
+		UAP_REQUEST(getModuleInstance(), lb_I_String, protocolScope)
+		
+		*ServerInstance = serverInstance;
+		
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "getServerName";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServerName);
 
-        protoMgr->addProtocolHandler("Echo", this, (lbProtocolCallback) &ApplicationBus::_Echo);
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "getServiceName";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServiceName);
 
-        protoMgr->addProtocolHandler("getServices", this, (lbProtocolCallback) &ApplicationBus::_getServices);
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "AnounceUser";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_AnounceUser);
 
-        protoMgr->addProtocolHandler("getServiceForProtocol", this, (lbProtocolCallback) &ApplicationBus::_getServiceForProtocol);
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "Echo";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_Echo);
 
-        //protoMgr->addProtocolHandler("Disconnect", this, (lbProtocolCallback) &ApplicationBus::HandleDisconnect);
-        //protoMgr->addProtocolHandler("Connect", this, (lbProtocolCallback) &ApplicationBus::HandleConnect);
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "getServices";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServices);
+
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "getServiceForProtocol";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServiceForProtocol);
 
         return ERR_NONE;
 }
@@ -118,6 +154,8 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
 		
 	if (connections->exists(&keybase)) {
 		result->add("Accept");
+		result->add("InstanceName");
+		result->add(ServerInstance->charrep());
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, param)

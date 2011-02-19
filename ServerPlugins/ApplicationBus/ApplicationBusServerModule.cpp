@@ -174,12 +174,13 @@ public:
 	DECLARE_PLUGINS()
 	
 	char* LB_STDCALL getServiceName();
-	void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr);
+	void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr, char* serverInstance);
 
 private:
 	UAP(lb_I_Container, protocolHandlers)
 	UAP(lb_I_Container, protocolHandlerInstances)
 	
+	char* LB_STDCALL getModuleName();
 };
 
 IMPLEMENT_FUNCTOR(instanceOfPluginServerModule, lbServerModul)
@@ -209,11 +210,15 @@ lbErrCodes LB_STDCALL lbServerModul::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+char* LB_STDCALL lbServerModul::getModuleName() {
+	return "ApplicationBus";
+}
+
 char* LB_STDCALL lbServerModul::getServiceName() {
 	return "localhost/ApplicationBus";
 }
 
-void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) {
+void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr, char* serverInstance) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) for ApplicationBus called." LOG_
 	initialize();
@@ -255,7 +260,7 @@ void LB_STDCALL lbServerModul::registerModul(lb_I_ProtocolManager* pMgr) {
 		
 		if (pt != NULL) {
 			_LOG << "Register protocols for " << pt->getClassName() LOG_
-			pt->registerProtocols(*&pMgr);
+			pt->registerProtocols(*&pMgr, serverInstance);
 			//Ensure lifetime hold by plugin implementation and thus by this class.
 			UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
 			UAP(lb_I_KeyBase, PluginKey)
