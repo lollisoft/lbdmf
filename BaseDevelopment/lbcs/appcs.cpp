@@ -1681,6 +1681,8 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 	if (!connections->exists(&keybase)) {
 		_LOG << "Connect client: " << keybase->charrep() LOG_
 		result->add("Accept");
+		result->add("InstanceName");
+		result->add("BusMaster");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, param)
