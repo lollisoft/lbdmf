@@ -94,6 +94,22 @@ lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* pr
         return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL ApplicationBus::_getServerName(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
+	return ERR_NONE;
+}
+
+lb_I_String* LB_STDCALL ApplicationBus::getServerName(char* applicationName) {
+	return NULL;
+}
+		
+lbErrCodes LB_STDCALL ApplicationBus::_getServiceName(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
+	return ERR_NONE;
+}
+
+lb_I_String* LB_STDCALL ApplicationBus::getServiceName(char* applicationName) {
+	return NULL;
+}
+
 
 lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
 	lbErrCodes err = ERR_NONE;
@@ -288,7 +304,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
 */
 /*...e*/
 
-	if (request->requestString("Echo") != ERR_NONE) {
+	if (request->requestString("BusMaster.ApplicationBus.Echo") != ERR_NONE) {
 		result->makeProtoErrAnswer("Error: Echo function identifer not sent", "ApplicationBus::Echo(...)");
 		return ERR_TRANSFER_PROTOCOL;
 	}
