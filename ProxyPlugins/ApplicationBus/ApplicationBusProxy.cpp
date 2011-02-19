@@ -38,6 +38,8 @@ ApplicationBusProxy::ApplicationBusProxy() {
 	ref = STARTREF;
 	_CL_LOG << "Init ApplicationBusProxy" LOG_
 	
+	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
+	
     if (ABSConnection == NULL) {
         /**
          * Initialize the tcp connection...
@@ -66,7 +68,7 @@ int ApplicationBusProxy::Connect() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	client->setServerSide(0);
 	result->setServerSide(0);
-
+	setLogActivated(true);
 	
 	ABSConnection->gethostname(*&temp);
 	
@@ -108,6 +110,8 @@ int ApplicationBusProxy::Connect() {
 						result->incrementPosition();
 						result->get(buffer);
 						*serverInstance = buffer;
+						setLogActivated(true);
+						_LOG << "Have server instanve = " << serverInstance->charrep() LOG_
 						return 1;
 					}
 				}
@@ -124,6 +128,7 @@ int ApplicationBusProxy::Connect() {
 
 	_LOG << "Connection failed!" LOG_
 	connected = false;
+	setLogActivated(true);
                 
 	return 0;
 }
