@@ -48,7 +48,7 @@ ApplicationBusProxy::ApplicationBusProxy() {
 		// The name of the lbDMF Busmaster must be defined in hosts or DNS
         ABSConnection->init("busmaster/busmaster");
         Connect();
-	ABSConnection->close();
+		ABSConnection->close();
     }
     _LOG << "ApplicationBusProxy Initialized" LOG_
 }
@@ -57,6 +57,7 @@ ApplicationBusProxy::~ApplicationBusProxy() {
 
 }
 
+//\todo Remove as it is unused.
 int ApplicationBusProxy::Connect() {
 	char* answer;
 	char buf[100] = "";
@@ -101,11 +102,14 @@ int ApplicationBusProxy::Connect() {
 				if (strcmp(buffer, "Accept") == 0) {
 					connected = true;
 					_LOG << "Connection accepted." LOG_
-					return 1;
-				} else {
-					connected = false;
-					_LOG << "Connection failed!" LOG_
-					return 0;
+					result->incrementPosition();
+					result->get(buffer);
+					if (strcmp(buffer, "InstanceName") == 0) {
+						result->incrementPosition();
+						result->get(buffer);
+						*serverInstance = buffer;
+						return 1;
+					}
 				}
 				break;
 				
@@ -117,8 +121,11 @@ int ApplicationBusProxy::Connect() {
 			
 		result->incrementPosition();
 	}
+
+	_LOG << "Connection failed!" LOG_
+	connected = false;
                 
-	return 1;
+	return 0;
 }
 
 int ApplicationBusProxy::Disconnect() {
@@ -186,7 +193,7 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 	user_info->setClientPid(lbGetCurrentProcessId());
 	user_info->setClientTid(lbGetCurrentThreadId());
 
-	user_info->add("AnounceUser");
+	user_info->add("ApplicationBus.AnounceUser");
 
     user_info->add("name");
     user_info->add(name);
@@ -221,7 +228,7 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	
 	user_info->setClientPid(lbGetCurrentProcessId());
 	user_info->setClientTid(lbGetCurrentThreadId());
-    user_info->add("Echo");
+    user_info->add("ApplicationBus.Echo");
 	
     user_info->add("text");
     user_info->add(text);
@@ -261,7 +268,7 @@ void LB_STDCALL ApplicationBusProxy::getServices(char* services) {
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
 		
-    user_info->add("getServices");
+    user_info->add("ApplicationBus.getServices");
 
 	ABSConnection->init(NULL);
 	*ABSConnection << *&user_info;
@@ -290,7 +297,7 @@ void LB_STDCALL ApplicationBusProxy::getServiceForProtocol(char* protocol, char*
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
 		
-    user_info->add("getServiceForProtocol");
+    user_info->add("ApplicationBus.getServiceForProtocol");
 
     user_info->add("protocol");
     user_info->add(protocol);
