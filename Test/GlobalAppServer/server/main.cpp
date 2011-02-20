@@ -11,7 +11,10 @@ void handler(int sig) {
 
 /*...smain:0:*/
 int main(int argc, char** argv) {
-	printf("Global application server is starting...\n");
+	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
+	setLogActivated(true);
+	_CL_LOG << "Global application server is starting..." LOG_
+	setLogActivated(false);
 
 	/**
 	 * This let the app not crashing. But the handler simply
@@ -21,7 +24,6 @@ int main(int argc, char** argv) {
 
 	//signal(SIGILL, handler);
 
-	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
  	if (appServer != NULL) {
 		appServer->run();
 	} else {
