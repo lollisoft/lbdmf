@@ -1254,7 +1254,6 @@ void LB_STDCALL lbAppServer::run() {
 		}
 	}
 
-	setLogActivated(true);
 	_LOG << "lbAppServer::lbAppServer(): Initialize lb_I_Transfer object" LOG_
 	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
 	if (transfer->init("localhost/busmaster") != ERR_NONE) {
@@ -1262,7 +1261,9 @@ void LB_STDCALL lbAppServer::run() {
 		return;
 	}
 	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
-	_CL_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
+	setLogActivated(true);
+	_CL_LOG << "Global application server is started." LOG_
+	setLogActivated(false);
 
 	while (1) {
 		UAP(lb_I_Transfer, clt)
