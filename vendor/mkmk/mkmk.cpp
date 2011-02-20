@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.112 $
+ * $Revision: 1.113 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.112 2010/08/29 21:09:30 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.113 2011/02/20 09:31:09 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.113  2011/02/20 09:31:09  lollisoft
+ * Added cleaning up *.o files.
+ *
  * Revision 1.112  2010/08/29 21:09:30  lollisoft
  * Changes to get more modules compiled with MinGW.
  * Also changed my adress in some files as I have a new
@@ -1567,7 +1570,7 @@ void write_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
     printf("clean:\n");
-    printf("\t\t-@rm *.exp *.err *.ilk *.lib *.lk1 *.mk1 *.map *.mk *.mk1 *.sym *.obj *.idb *.pch *.pdb\n");
+    printf("\t\t-@rm *.exp *.err *.ilk *.lib *.lk1 *.mk1 *.map *.mk *.mk1 *.sym *.obj *.o *.idb *.pch *.pdb\n");
     printf("\t\t-@rm -f *.bak\n");
 #ifdef bla
     printf("\t\t-@rm *.err\n");
@@ -1580,6 +1583,7 @@ void write_clean(char* modulename = NULL) {
     printf("\t\t-@rm *.mk1\n");
     printf("\t\t-@rm *.sym\n");
     printf("\t\t-@rm *.obj\n");
+    printf("\t\t-@rm *.o\n");
     printf("\t\t-@rm -f *.bak\n");
     printf("\t\t-@rm *.idb\n");
     printf("\t\t-@rm *.pch\n");
@@ -2051,7 +2055,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.112 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.113 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
