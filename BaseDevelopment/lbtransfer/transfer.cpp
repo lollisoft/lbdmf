@@ -113,7 +113,7 @@ lbTransfer::lbTransfer() {
 /*...e*/
 /*...slbTransfer\58\\58\\126\lbTransfer\40\\41\:0:*/
 lbTransfer::~lbTransfer() {
-        COUT << "lbTransfer::~lbTransfer() called" << ENDL;
+        _CL_VERBOSE << "lbTransfer::~lbTransfer() called." LOG_
 }
 /*...e*/
 /*...slbTransfer\58\\58\init\40\char \42\target\41\:0:*/
