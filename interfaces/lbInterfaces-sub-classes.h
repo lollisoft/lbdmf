@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.95 $
+ * $Revision: 1.96 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.95 2010/05/17 05:41:46 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.96 2011/02/20 09:29:53 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.96  2011/02/20 09:29:53  lollisoft
+ * Made skip list log messages verbose only.
+ *
  * Revision 1.95  2010/05/17 05:41:46  lollisoft
  * More method or constructor reordering.
  *
@@ -1048,7 +1051,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
-	_CL_LOG << "Added an element with key value of " << key->charrep() LOG_ \
+	_CL_VERBOSE << "Added an element with key value of " << key->charrep() LOG_ \
     if (key != NULL) { \
     	if (key->getRefCount() > 1) { \
     	        _CL_VERBOSE << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_ \
