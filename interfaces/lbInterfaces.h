@@ -64,6 +64,261 @@
  * compile and install it. After that, reinstall ODBC driver version 07.03.0200 for UPDATEABLE CURSORS.
  *
  * \ref Postsetup "Post setup instructions."
+ *
+ * A new feature that has been documented in the pdf documentation but not here:
+ *
+ * Actions
+ *
+ * Actions are a mechanism to configure user interaction in a dynamic fashion. Basically the database forms have prebuild actions
+ * such as First, Previous, Next, Last, Add, Delete, Refresh. Also there are actions that will be created by the model, if you add
+ * a stereotype of masterdetail_action or detailmaster_action what results into 'jump into the details form' or 'jump into the master form'.
+ *
+ * But there are many other possible actions that could be triggered not only by code. Here I will start listing these actions for a reference.
+ *
+ * \ref Actionreference "Actions reference page."
+ */
+/*...e*/
+
+/*...sActions reference page.:0:*/
+/** \page Actionreference Actions reference page.
+ *
+ * \section Introduction
+ * Users interact with software in general. Each interaction can be understood as such and I'll name them actions.
+ * The main application - wxWrapper - for sample, predefines a set of actions that are to be used by the application ligic.
+ * Other actions are provided by other modules if They are loaded. I mean plugins.
+ *
+ * \section Dive Dive into
+ * Most of these actions are defined to get the ability of loose coupling. If an action is called (by name), but does not exist,
+ * nothing happens. The software functionality in general will not be affected. Also most of these actions were used from withing
+ * hard coded functionality. That's what I will change in the future and have begun to understand it's importance for a prototype.
+ *
+ * Therefore this sections are for.
+ *
+ * \section Actions1 Actions in the meta application
+ *
+ * Registered handlers in lb_MetaApplication::registerEventHandler:
+ *
+ * \b doAutoload Activates or deactivates autoloading the last logged in application. No parameters are required.
+ *
+ * \b doLog Activates or deactivates logging. Logging to file and console are affected by this function.
+ *
+ * \b enterDebugger Breaks into the debugger. It was used earlyer, but not recently.
+ *
+ * \b getBasicApplicationInfo Nope, it does nothing more than creating a console message for now. To be filled with useful code.
+ *
+ * \b getMainModuleInfo If the meta application has an associated GUI, it displays the information about it self in a dialog. If not it prints it to the console.
+ *
+ * '<b>Button Test pressed</b>' Was for first trials of these dispatched event handlers or actions.
+ *
+ * \b getLoginData Used to open a login form. Not supported yet on console.
+ *
+ * Properties could change and thus one may be interested in that event. The meta application uses the following function to register a group of propertie's change events
+ * handled by a function: registerPropertyChangeEventGroup. The following parameters are registered and thus could also triggered from anywhere.
+ *
+ * Group of properties 'General' (prefix in the handler name):
+ *
+ * '<b>Base directory</b>' sets a new base directory where the application operates, but does not chdir to.
+ *
+ * '<b>Autoselect last application</b>' Activates a small helper to ease the login procedure. Not yet implemented.
+ *
+ * '<b>Autorefresh updated data</b>' Sets autorefresh in database forms to not work on invalid (old) data.
+ *
+ * '<b>Autoopen last application</b>' Same as the event handler doAutoload.
+ *
+ * '<b>Prefer database configuration</b>' Prefer using the database contents instead local cache in file.
+ *
+ * '<b>Application Database backend</b>' The database backend namespace for the application. Used to lookup different database implementations.
+ *
+ * '<b>System Database backend</b>' The database backend namespace for the system. The system database stores the configuration of an application.
+ *
+ * '<b>Use application Database backend</b>' Use the backend database by namespace. If not, an ODBC backend is used.
+ *
+ * '<b>Use system Database backend</b>' Same for the system database, thus one can use different database systems for configuration and application.
+ *
+ * \section Actions2 Actions in the wxWrapperDLL module
+ *
+ * Registered handler in lb_wxFrame::registerEventHandler:
+ *
+ * \b ShowPropertyPanel
+ *
+ * \b switchPanelUse
+ *
+ * \b switchTableUse
+ *
+ * \b setPreferredPropertyPanelByNamespace
+ *
+ * \b showMsgBox
+ *
+ * \b addStatusBar
+ *
+ * \b addStatusBar_TextArea
+ *
+ * \b setStatusText
+ *
+ * \b addToolBar
+ *
+ * \b removeToolBar
+ *
+ * \b addTool_To_ToolBar
+ *
+ * \b removeTool_From_ToolBar
+ *
+ * \b toggleTool_From_ToolBar
+ *
+ * \b showLeftTreeView
+ *
+ * \section Actions3 Actions in the wxWrapper (dynamic.cpp) module
+ *
+ * \b AddMenu
+ *
+ * \b AddMenuBar
+ *
+ * \b AddMenuEntry
+ *
+ * \b AddButton
+ *
+ * \b AddLabel
+ *
+ * \b AddTextField
+ *
+ * \b askOpenFileReadStream
+ *
+ * \b askYesNo
+ *
+ * \b enableEvent
+ *
+ * \b disableEvent
+ *
+ * \b toggleEvent
+ *
+ * \b setXRCFile
+ *
+ * \b askForDirectory
+ *
+ * \section Actions4 Actions in the lbLoginWizard.cpp module
+ * Also Plugins can register dispatch handlers. Thus the software has a very simple extension mechanism.
+ *
+ * \b RunLogin
+ *
+ * \section Actions5 Actions in the lbDynamicApplication module when the app is loaded (what makes the main database application functionality possible)
+ *
+ * If the application loaded is 'lbDMF Manager'
+ *
+ * \b evtExportApplicationToXML Save the application model (in database) to XML format.
+ *
+ * \b exportApplicationToXMLBuffer Save the application model (in database) to XML formatted string.
+ *
+ * \b exportApplicationConfigurationToUMLXMIDoc Saves the application model (in database) to XMI formatted UML representation.
+ *
+ * \b importUMLXMIDocIntoApplication Imports an XMI UML representation from file.
+ *
+ * \b editProperties Opens the properties panel.
+ *
+ * If the application loaded is not 'lbDMF Manager'
+ *
+ * \b exportApplicationToXMLBuffer
+ *
+ * \b exportApplicationConfigurationToUMLXMIDoc
+ *
+ * \section Actions6 Actions in the lbDynamicApplication module when the lb_I_Application implementation is initialized
+ *
+ * \b resetCustomDBFormsToDynamic
+ *
+ * \b executeQueryFromFile
+ *
+ * \b overwriteDatabase
+ * 
+ * \section Actions7 Actions in lbDynamicApplication::activateDBForms when the forms per application are initialized
+ *
+ * For each form in the formulare table, eventname is used to register an 'open form' action for the configured form.
+ *
+ * \section Actions8 Actions in the plugin manager
+ *
+ * The plugin manager yet only registers runUnitTests as action.
+ *
+ * \section Actions9 Actions in the foreign key primary key selection dialog
+ *
+ * There will be registered one event handler to select a column. I currently don't know what is it for.
+ *
+ * \section Actions10 Actions that are registered per database dialog
+ *
+ * Each handler has prefixed the string value of the instance pointer (0xaf56bc78).
+ *
+ * \b DatabaseFirst
+ *
+ * \b DatabaseNext
+ *
+ * \b DatabasePrev
+ *
+ * \b DatabaseLast
+ *
+ * \b DatabaseAdd
+ *
+ * \b DatabaseDelete
+ *
+ * \section Actions11 Actions that are registered per database panel
+ *
+ * Each handler has prefixed the string value of the instance pointer (0xaf56bc78).
+ *
+ * \b DatabaseFirst
+ *
+ * \b DatabaseNext
+ *
+ * \b DatabasePrev
+ *
+ * \b DatabaseLast
+ *
+ * \b DatabaseAdd
+ *
+ * \b DatabaseDelete
+ *
+ * \b DatabaseRefresh
+ *
+ * \b DBFormInitialized
+ * 
+ * \section Actions12 Actions that are registered per database table view dialog
+ *
+ * Each handler has prefixed the string value of the instance pointer (0xaf56bc78).
+ *
+ * \b DatabaseFirst
+ *
+ * \b DatabaseNext
+ *
+ * \b DatabasePrev
+ *
+ * \b DatabaseLast
+ *
+ * \b DatabaseAdd
+ *
+ * \b DatabaseDelete
+ * 
+ * \section Actions13 Actions that are registered per database table view panel
+ *
+ * Each handler has prefixed the string value of the instance pointer (0xaf56bc78).
+ *
+ * \b DatabaseFirst
+ *
+ * \b DatabaseNext
+ *
+ * \b DatabasePrev
+ *
+ * \b DatabaseLast
+ *
+ * \b DatabaseAdd
+ *
+ * \b DatabaseDelete
+ *
+ * \b DatabaseRefresh
+ * 
+ * \section Actions14 Actions registered per database form actions configuration
+ *
+ * Each action is registered in the following schema: '<instance pointer string>(<action name>)'.
+ *
+ * \section Actions15 Action handlers in Unit Tests
+ * The Unit Tests demonstrate the ability to simulate user interaction such as askYesNo. It registers this handler to react
+ * upon application logic with user interaction. See UIWrapper::registerEventHandler in testUMLImport.cpp or Actions.cpp in
+ * the UnitTests sub directories Actions/BaseDebelopment or RegressionTests sub directory TestUMLImport.
+ * 
  */
 /*...e*/
 
