@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
-            
-            73252 Lenningen (germany)
+			Ginsterweg 4
+
+			65760 Eschborn (germany)
 -->
 <!-- Helper to create multible files. -->
 <xsl:import href="../include/exsl.xsl"/>
@@ -83,9 +83,9 @@
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Rosmarinstr. 3
+#			 Ginsterweg 4
 #
-#            40235 Duesseldorf (germany)
+#			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
@@ -234,9 +234,9 @@ endif
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Heinrich-Scheufelen-Platz 2
+#            Ginsterweg 4
 #
-#            73252 Lenningen (germany)
+#            65760 Eschborn (germany)
 
 
 ifeq ($(OSTYPE), Windows_NT)

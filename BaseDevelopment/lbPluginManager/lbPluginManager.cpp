@@ -23,20 +23,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.78 2011/02/19 18:57:13 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.79 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.79  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.78  2011/02/19 18:57:13  lollisoft
  * Adopted code to use server instance name for creating a namespace like protocol naming.
  *

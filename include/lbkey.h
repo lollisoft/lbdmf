@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbkey.h,v 1.1 2009/11/08 11:49:32 lollisoft Exp $
+ * $Id: lbkey.h,v 1.2 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.2  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.1  2009/11/08 11:49:32  lollisoft
  * Implemented 'unit test' like capabilities. The TestPlugin in the Plugins directory demonstrates the usage. Yet missing is a real test listener and stuff to display results. But it shows a working unit test mechanism using plugins.
  *

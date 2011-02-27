@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.170 2010/01/14 17:31:25 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.171 2011/02/27 10:34:00 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,20 +42,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.170 $
+ * $Revision: 1.171 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.170 2010/01/14 17:31:25 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.171 2011/02/27 10:34:00 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.171  2011/02/27 10:34:00  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.170  2010/01/14 17:31:25  lollisoft
  * More changes for interceptor functionality, but crashes on Mac OS X (PPC).
  *

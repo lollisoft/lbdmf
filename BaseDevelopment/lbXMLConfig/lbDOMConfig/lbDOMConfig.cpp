@@ -22,20 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.55 2009/12/29 12:33:59 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.56 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.56  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.55  2009/12/29 12:33:59  lollisoft
  * Bugfix for Tracker ID 2921178
  *

@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbGlobal.h,v 1.6 2005/03/31 09:13:57 lollisoft Exp $
+ * $Id: lbGlobal.h,v 1.7 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbGlobal.h,v $
+ * Revision 1.7  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.6  2005/03/31 09:13:57  lollisoft
  * Copyright text problems under linux.
  *

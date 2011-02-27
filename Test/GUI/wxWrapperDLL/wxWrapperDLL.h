@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
             
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.41 2010/03/28 19:21:38 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.42 2011/02/27 10:34:00 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.42  2011/02/27 10:34:00  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.41  2010/03/28 19:21:38  lollisoft
  * New TreView code added to initially let open a tree view panel.
  *

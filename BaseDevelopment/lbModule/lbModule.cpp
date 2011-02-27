@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
             
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.132 $
+ * $Revision: 1.133 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.132 2011/01/16 21:48:43 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.133 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.133  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.132  2011/01/16 21:48:43  lollisoft
  * Corrected a mass rename. And added a todo as the proxy plugins should be
  * implemented in a falback search for proxy interfaces. This will automate and

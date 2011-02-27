@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+    Ginsterweg 4
+ 
+    65760 Eschborn (germany)
+ */
 /*...e*/
 
 #ifndef __LB_LoginWizard__
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbLoginWizard.h,v 1.4 2005/10/26 06:07:19 lollisoft Exp $
+ * $Id: lbLoginWizard.h,v 1.5 2011/02/27 10:34:00 lollisoft Exp $
  *
  * $Log: lbLoginWizard.h,v $
+ * Revision 1.5  2011/02/27 10:34:00  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.4  2005/10/26 06:07:19  lollisoft
  * Commit due to checks of crashes on OS X and Linux.
  *

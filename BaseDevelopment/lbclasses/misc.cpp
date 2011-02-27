@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: misc.cpp,v 1.51 2011/01/16 21:44:42 lollisoft Exp $
+ * $Id: misc.cpp,v 1.52 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.52  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.51  2011/01/16 21:44:42  lollisoft
  * Removed printf code in LOG function.
  *

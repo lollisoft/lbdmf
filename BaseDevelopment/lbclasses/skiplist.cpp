@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
             
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.60 2010/05/17 05:44:44 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.61 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.61  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.60  2010/05/17 05:44:44  lollisoft
  * Many changes related to support mixing MinGW with Open Watcom.
  *

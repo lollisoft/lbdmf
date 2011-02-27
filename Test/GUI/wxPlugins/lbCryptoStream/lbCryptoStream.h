@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
             
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbCryptoStream.h,v 1.1 2010/01/12 19:47:52 lollisoft Exp $
+ * $Id: lbCryptoStream.h,v 1.2 2011/02/27 10:34:00 lollisoft Exp $
  *
  * $Log: lbCryptoStream.h,v $
+ * Revision 1.2  2011/02/27 10:34:00  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.1  2010/01/12 19:47:52  lollisoft
  * Mostly completed plugin based interceptor functionality for events.
  *

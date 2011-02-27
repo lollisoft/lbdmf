@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 /*...sincludes:0:*/

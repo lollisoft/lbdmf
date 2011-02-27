@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 #ifdef _MSC_VER
@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.26 2010/03/20 22:47:41 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.27 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.27  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.26  2010/03/20 22:47:41  lollisoft
  * Added support for mingw mixed mode (with Open Watcom).
  * This is tested with the Basetypes sample application that uses

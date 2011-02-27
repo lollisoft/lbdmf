@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-			Heinrich-Scheufelen-Platz 2
+			Ginsterweg 4
 
-			73252 Lenningen (germany)
+			65760 Eschborn (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.33 2010/02/24 12:14:56 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.34 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.34  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.33  2010/02/24 12:14:56  lollisoft
  * Changes on Mac.
  *

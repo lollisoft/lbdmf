@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 #ifndef __LB_MODULE__
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbModule.h,v 1.17 2005/05/10 20:20:36 lollisoft Exp $
+ * $Id: lbModule.h,v 1.18 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.18  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.17  2005/05/10 20:20:36  lollisoft
  * Include files changed to be more actially language compilant
  *

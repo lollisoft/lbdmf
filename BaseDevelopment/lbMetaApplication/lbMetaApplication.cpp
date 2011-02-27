@@ -22,20 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
 
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.180 $
+ * $Revision: 1.181 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.180 2010/08/29 21:09:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.181 2011/02/27 10:30:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.181  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.180  2010/08/29 21:09:30  lollisoft
  * Changes to get more modules compiled with MinGW.
  * Also changed my adress in some files as I have a new

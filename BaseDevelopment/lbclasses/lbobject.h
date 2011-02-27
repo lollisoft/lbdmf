@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Heinrich-Scheufelen-Platz 2
+            Ginsterweg 4
             
-            73252 Lenningen (germany)
+            65760 Eschborn (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbobject.h,v 1.51 2010/04/29 06:52:37 lollisoft Exp $
+ * $Id: lbobject.h,v 1.52 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.52  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.51  2010/04/29 06:52:37  lollisoft
  * Reordered interface for lb_I_Parameter implementation.
  *

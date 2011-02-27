@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.13 2007/04/22 13:33:16 lollisoft Exp $
+ * $Id: lb_misc.h,v 1.14 2011/02/27 10:30:36 lollisoft Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.14  2011/02/27 10:30:36  lollisoft
+ * Changed all copyright entries addresses to match my current postal address.
+ *
  * Revision 1.13  2007/04/22 13:33:16  lollisoft
  * Removed lb_sleep.
  *
