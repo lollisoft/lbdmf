@@ -100,8 +100,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModule)
 
 BEGIN_PLUGINS(lbPluginModule)
-	// Project manager
 	ADD_PLUGIN(lbPluginDMFIdForFormValue, BasicActionSteps)
+	ADD_PLUGIN(lbPluginCallActivityHandler, BasicActionSteps)
 END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
