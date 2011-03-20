@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.66 2011/02/27 10:34:00 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.67 2011/03/20 07:42:17 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.67  2011/03/20 07:42:17  lollisoft
+ * Moved code to a new library (lbDMFBasicActionSteps).
+ *
  * Revision 1.66  2011/02/27 10:34:00  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -538,52 +541,6 @@ public:
 protected:
 	long myActionID;
 	UAP(lb_I_Database, db)
-};
-/*...e*/
-/*...sclass lbExecuteAction:0:*/
-class lbExecuteAction : public lb_I_DelegatedAction
-{
-public:
-	lbExecuteAction();
-	virtual ~lbExecuteAction();
-
-	void LB_STDCALL setActionID(long id);
-	long LB_STDCALL execute(lb_I_Parameter* params);
-
-	void LB_STDCALL setDatabase(lb_I_Database* _db);
-
-	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
-	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
-
-	DECLARE_LB_UNKNOWN()
-
-protected:
-	long myActionID;
-	UAP(lb_I_Database, db)
-	UAP(lb_I_ActionStep_Parameters, replacers)
-};
-/*...e*/
-/*...sclass lbDesicionAction:0:*/
-class lbDecisionAction : public lb_I_DelegatedAction
-{
-public:
-	lbDecisionAction();
-	virtual ~lbDecisionAction();
-
-	void LB_STDCALL setActionID(long id);
-	long LB_STDCALL execute(lb_I_Parameter* params);
-
-	void LB_STDCALL setDatabase(lb_I_Database* _db);
-
-	void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions);
-	void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams);
-
-	DECLARE_LB_UNKNOWN()
-
-protected:
-	long myActionID;
-	UAP(lb_I_Database, db)
-	UAP(lb_I_Action_Step_Transitions, transitions)
 };
 /*...e*/
 /*...sclass lbDesicionAction:0:*/
