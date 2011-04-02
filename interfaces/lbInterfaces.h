@@ -2193,9 +2193,11 @@ public: \
 		singleton = NULL; \
 	} \
 	virtual ~singletonHolder_##name() { \
-		_CL_VERBOSE << "~singletonHolder_" << #name << "() called." LOG_ \
+		setLogActivated(true); \
+		_CL_LOG << "~singletonHolder_" << #name << "() called." LOG_ \
 		destroy(); \
-		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
+		_CL_LOG << "~singletonHolder_" << #name << "() leaving." LOG_ \
+		setLogActivated(false); \
 	} \
 	void destroy() { \
 		if (singleton != NULL) { \
@@ -2204,9 +2206,9 @@ public: \
 				singleton = NULL; \
 			} \
 			else \
-				if (isLogActivated()) printf("ERROR: Sinleton object has been deleted prior!\n"); \
+				/*if (isLogActivated())*/ printf("ERROR: Sinleton object has been deleted prior!\n"); \
 		} else { \
-			if (isLogActivated()) printf("Warning: singletonHolder_" #name " was not used yet.\n"); \
+			/*if (isLogActivated())*/ printf("Warning: singletonHolder_" #name " was not used yet.\n"); \
 		} \
 	} \
 	void set(clsname* _singleton) { \
