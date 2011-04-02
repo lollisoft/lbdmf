@@ -77,7 +77,7 @@ MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
 C_ELFOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -DSUPPORT_FOREIGN_KEYS -DBUILD_LIBRARY
 C_ELFOPS = $(C_ELFOPS_WX)
 VENDORLIBS=-L$(HOME)/lib -llbsqlite3
-L_OPS=`wx-config --inplace --libs` -L$(prefix)/lib -llbdatabaselayer_sqllite -lc /usr/lib/libgcc_s.1.dylib -o 
+L_OPS=$(OSX_ARCH) `wx-config --inplace --libs` -L$(prefix)/lib -llbdatabaselayer_sqllite -lc /usr/lib/libgcc_s.1.dylib -o 
 LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook -framework System
 endif    
 
