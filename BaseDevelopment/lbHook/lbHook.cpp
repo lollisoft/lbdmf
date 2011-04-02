@@ -659,9 +659,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 
 	if (m) {
 		hinst = m->lib;
+		m->libreferences++;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
+		m->libreferences = 1;
 	}
 
 	if ((hinst = LoadLibrary(name)) == NULL)
@@ -708,9 +710,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 
 	if (m != NULL) {
 		hinst = m->lib;
+		m->libreferences++;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
+		m->libreferences = 1;
 	}
 
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
@@ -1243,13 +1247,15 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 					if (loadedModules == delMod) {
 						loadedModules = delMod->next;
 					}
-
-					printf("Unload module %s.\n", name);
-					while (dlclose(delMod->lib) == 0) {
+					int errCode = 0;
+					printf("Unload module %s with %d references.\n", name, delMod->libreferences);
+					while ((errCode = dlclose(delMod->lib)) == 0) {
 						//if (isVerbose())
 							printf("Unloaded module %s.\n", name);
-//					} else {
-//						if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
+					}
+					{
+						printf("Error while unloading module: %s\n", dlerror());
+						if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
 					}
 
 					free(delMod->name);
