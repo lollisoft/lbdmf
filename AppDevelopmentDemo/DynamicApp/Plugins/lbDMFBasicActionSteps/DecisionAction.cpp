@@ -214,14 +214,16 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						*right = expression->right(expression->strpos("==")+2)->charrep(); 
 						
 						right->trim();
+						right->trim(false);
 						left->trim();
+						left->trim(false);
 						
 						*paramName = left->charrep();
 						params->getUAPString(*&paramName, *&paramValue); /// \todo Evaluate not containing parameter.
 						
 						right->replace("\"", " ");
 						right->trim();
-						//right.Trim(false);
+						right->trim(false);
 						
 						if (paramValue->charrep() == NULL) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
@@ -234,6 +236,7 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 							return 0;
 						}
 						paramValue->trim();
+						paramValue->trim(false);
 						
 						_LOG << "Evaluate == expression ('" << paramValue->charrep() << "' == '" << right->charrep() << "')" LOG_
 						
@@ -257,20 +260,25 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						*right = expression->right(expression->strpos("!=")+2)->charrep(); 
 
 						right->trim();
+						right->trim(false);
 						left->trim();
+						left->trim(false);
 						
 						*paramName = left->charrep();
 						params->getUAPString(*&paramName, *&paramValue); /// \todo Evaluate not containing parameter.
 						
 						right->replace("\"", " ", true);
 						right->trim();
-						//right->trim(false);
+						right->trim(false);
 						
 						if (paramValue->charrep() == NULL) {
 							meta->msgBox("Error", "Parameter to compare is not passed.");
 							return 0;
 						}
 						
+						paramValue->trim();
+						paramValue->trim(false);
+
 						if (!(*paramValue == right->charrep())) {
 							if (expressionTrue == true) {
 								_LOG << "Error: Multible expressions are true. This is wrong for a decision!" LOG_
@@ -291,7 +299,9 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 						*right = expression->right(expression->strpos("=")+1)->charrep(); 
 						
 						right->trim();
+						right->trim(false);
 						left->trim();
+						left->trim(false);
 						
 						*paramValue = right->charrep();
 						*paramName = left->charrep();

@@ -1,6 +1,6 @@
-format 63
+format 67
 "lbDMF" // DMFToUML::lbDMF
-  revision 4
+  revision 5
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -374,6 +374,35 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 141442 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 143490 "application"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Class"
+      key "stereotypeIconPath" value ""
+      classrelation 147970 // <unidirectional association>
+	relation 144898 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147970 // <unidirectional association>
 	  b parent class_ref 133506 // Element
       end
     end

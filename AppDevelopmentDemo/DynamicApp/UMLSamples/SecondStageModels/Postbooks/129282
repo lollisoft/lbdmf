@@ -1,6 +1,6 @@
-format 63
+format 67
 "postbooks" // DMFToUML::postbooks
-  revision 17
+  revision 18
   modified_by 2 "lothar"
   // class settings
   //class diagram settings

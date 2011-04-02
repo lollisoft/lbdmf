@@ -421,6 +421,7 @@ public:
 		TEST_CASE(test_Instanciate_lbString)
 		TEST_CASE(test_lbString_Initialized_properly)
 		TEST_CASE(test_lbString_trim)
+		TEST_CASE(test_lbString_trim_left)
 		TEST_CASE(test_lbString_replace)
 		TEST_CASE(test_lbString_toLower)
 		TEST_CASE(test_lbString_stristr)
@@ -554,19 +555,31 @@ public:
 		ASSERT_EQUALS( true, s->charrep() != NULL );
 		ASSERT_EQUALS( true, *s == "" );
 	}
-
+	
 	void test_lbString_trim( void )
 	{
 		puts("test_lbString_trim");
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-
+		
 		*s = " lala ";
-
+		
 		s->trim();
-
+		
 		ASSERT_EQUALS( true, *s == " lala" );
 	}
-
+	
+	void test_lbString_trim_left( void )
+	{
+		puts("test_lbString_trim_left");
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		
+		*s = " lala ";
+		
+		s->trim(false);
+		
+		ASSERT_EQUALS( true, *s == "lala " );
+	}
+	
 	void test_lbString_replace( void )
 	{
 		puts("test_lbString_replace");

@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbobject.h,v 1.52 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbobject.h,v 1.53 2011/04/02 10:44:17 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.53  2011/04/02 10:44:17  lollisoft
+ * Now the UML based activities are reworked and they work while testing it against postbooks database.
+ *
  * Revision 1.52  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -414,7 +417,7 @@ class lbString : public lb_I_String
 {
 public:	
 
-	void LB_STDCALL trim();
+	void LB_STDCALL trim(bool fromright = true);
 	void LB_STDCALL toLower();
 
 	char* LB_STDCALL stristr(const char *String, const char *Pattern);

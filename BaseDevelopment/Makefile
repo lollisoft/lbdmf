@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.223 $
+# * $Revision: 1.224 $
 # * $Name:  $
-# * $Id: Makefile,v 1.223 2010/12/18 09:38:38 lollisoft Exp $
+# * $Id: Makefile,v 1.224 2011/04/02 10:44:17 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.224  2011/04/02 10:44:17  lollisoft
+# * Now the UML based activities are reworked and they work while testing it against postbooks database.
+# *
 # * Revision 1.223  2010/12/18 09:38:38  lollisoft
 # * Some changes on my macbook.
 # *
@@ -807,6 +810,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.5.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.7.0)
 OSNAME=Leopard
 endif
 

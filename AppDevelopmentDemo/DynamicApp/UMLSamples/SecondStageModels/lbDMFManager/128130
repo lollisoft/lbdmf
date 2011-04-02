@@ -1,6 +1,6 @@
-format 63
+format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 8
+  revision 12
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -520,6 +520,25 @@ ${inlines}
 	
 	
       end
+
+      operation 142210 "validate"
+	stereotype "validator"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "name" explicit_type "string"
+	  param in name "interface" explicit_type "string"
+	  param in name "functor" explicit_type "string"
+	  param in name "modulename" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 128770 "Aktionen"
@@ -924,6 +943,140 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+    end
+
+    activity 128130 "actValidateAnwendungen"
+      stereotype "validator"
+      specification operation_ref 142210 // validate
+      activitydiagram 146434 "ActivityValidateAnwendungen"
+	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+	show_infonote default drawing_language default show_stereotype_properties default
+	size A4
+      end
+
+      activitynode 134530 initial ""
+	flow 134530 "<flow>"
+	  on activitynode_ref 134658 // decision
+	end
+      end
+
+      activitynode 134658 decision ""
+	flow 134658 "<flow>"
+	  on activitynode_ref 134914 // decision
+	end
+
+	flow 141570 ""
+	  on activityaction_ref 134530 // activity action The name of the application must not be empty
+	    uml_guard "name == \"\""
+	end
+      end
+
+      activitynode 134786 activity_final ""
+      end
+
+      activitynode 134914 decision ""
+	flow 134786 "<flow>"
+	  on activitynode_ref 135042 // decision
+	end
+
+	flow 141954 "<flow>"
+	  on activityaction_ref 134786 // activity action The interface of the application must not be empty
+	    uml_guard "interface == \"\""
+	end
+      end
+
+      activitynode 135042 decision ""
+	flow 134914 "<flow>"
+	  on activitynode_ref 135170 // decision
+	end
+      end
+
+      activitynode 135170 decision ""
+	flow 141442 "<flow>"
+	  on activitynode_ref 134786 // activity_final
+	end
+      end
+
+      activityaction 134530 "The name of the application must not be empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "The name of the application must not be empty"
+	key "signal" value "showMsgBox"
+	key "title" value "Error"
+	flow 141826 "<flow>"
+	  on activityaction_ref 134658 // activity action seterror
+	end
+      end
+
+      activityaction 134658 "seterror"
+	opaque_action
+	flow 141698 "<flow>"
+	  on activitynode_ref 134786 // activity_final
+	      uml_transformation "result = 0"
+	end
+      end
+
+      activityaction 134786 "The interface of the application must not be empty"
+	send_signal_action
+	ncouples 3
+	key "msg" value "The interface of the application must not be empty"
+	key "title" value "Error"
+	key "signal" value "showMsgBox"
+	flow 142082 "<flow>"
+	  on activityaction_ref 134658 // activity action seterror
+	end
+      end
+    end
+  end
+
+  classview 136066 "Main Application"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 139906 "The application class"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    class 143362 "Application"
+      visibility package stereotype "lbDMF:application"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 135682 "Foo"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "Name" explicit_type "string"
+	  param in name "Value" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
   end

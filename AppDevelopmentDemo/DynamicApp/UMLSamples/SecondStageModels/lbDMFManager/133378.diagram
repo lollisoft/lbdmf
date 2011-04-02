@@ -1,4 +1,4 @@
-format 63
+format 67
 
 classcanvas 128002 class_ref 133378 // masterdetail_action
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
@@ -39,6 +39,10 @@ end
 classcanvas 130178 class_ref 136834 // workflow
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 283 340 2000
+end
+classcanvas 130434 class_ref 143490 // application
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 83 47 2000
 end
 relationcanvas 129154 relation_ref 130306 // <unidirectional association>
   from ref 128770 z 1999 to ref 129026
@@ -82,6 +86,11 @@ relationcanvas 130050 relation_ref 129538 // <unidirectional association>
 end
 relationcanvas 130306 relation_ref 138370 // <unidirectional association>
   from ref 130178 z 1999 to ref 129026
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130562 relation_ref 144898 // <unidirectional association>
+  from ref 130434 z 2005 to ref 129026
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

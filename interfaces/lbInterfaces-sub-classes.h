@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.97 $
+ * $Revision: 1.98 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.97 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.98 2011/04/02 10:44:17 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.98  2011/04/02 10:44:17  lollisoft
+ * Now the UML based activities are reworked and they work while testing it against postbooks database.
+ *
  * Revision 1.97  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -619,9 +622,9 @@ class lb_I_String : public lb_I_KeyBase {
 public:
 	/** \brief Trim trailing spaces.
 	 *
-	 * Removes the trailing spaces in the string.
+	 * Removes the spaces in the string at the end (default).
 	 */
-	virtual void LB_STDCALL trim() = 0;
+	virtual void LB_STDCALL trim(bool fromright = true) = 0;
 
 	/** \brief Set all characters to lower. 
 	 *

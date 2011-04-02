@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.141 $
+# * $Revision: 1.142 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.141 2011/02/27 10:34:00 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.142 2011/04/02 10:44:17 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.142  2011/04/02 10:44:17  lollisoft
+# * Now the UML based activities are reworked and they work while testing it against postbooks database.
+# *
 # * Revision 1.141  2011/02/27 10:34:00  lollisoft
 # * Changed all copyright entries addresses to match my current postal address.
 # *
@@ -1385,6 +1388,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.5.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.7.0)
 OSNAME=Leopard
 endif
 

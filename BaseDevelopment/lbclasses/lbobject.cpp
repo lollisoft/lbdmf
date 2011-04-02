@@ -1210,14 +1210,24 @@ char* LB_STDCALL lbString::strristr(const char *String, const char *Pattern)
 }
 
 
-void LB_STDCALL lbString::trim() {
-	size_t pos; 
+void LB_STDCALL lbString::trim(bool fromright) {
+	size_t pos=0; 
 	if (stringdata == NULL) return;
 
-	for (pos=strlen(stringdata); pos--;    ) { 
-		if (isspace( stringdata[pos] )) stringdata[pos] = '\0' ; 
-		else break; 
-    } 
+	if (fromright) {
+		for (pos=strlen(stringdata); pos--;    ) { 
+			if (isspace( stringdata[pos] )) stringdata[pos] = '\0' ; 
+			else break; 
+		}
+	} else {
+		while (stringdata[pos++] == ' ')
+			;
+		char* temp = stringdata;
+		stringdata+=(--pos);
+		stringdata = strdup(stringdata);
+		free(temp);
+		printf("Stringdata is '%s'.", stringdata);
+	}
 }
 
 void LB_STDCALL lbString::toLower() {

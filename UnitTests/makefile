@@ -83,6 +83,10 @@ ifeq ($(OSVERSION_), 10.5.0)
 OSNAME=Leopard
 endif
 
+ifeq ($(OSVERSION_), 10.7.0)
+OSNAME=Leopard
+endif
+
 
 endif
 
