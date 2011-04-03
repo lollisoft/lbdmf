@@ -80,7 +80,7 @@ end
 flowcanvas 129666 flow_ref 141570 // 
   
   from ref 128130 z 2001 label "
-[name == \"\"]" xyz 165.5 83 2001 to ref 129282
+[name == \"\"]" xyz 165 83 2001 to ref 129282
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 129922 flow_ref 141698 // <flow>
@@ -111,7 +111,7 @@ flowcanvas 130946 flow_ref 142082 // <flow>
 end
 flowcanvas 131586 flow_ref 148610 // <flow>
   
-  from ref 128642 z 2001 label "[functor == \"\"]" xyz 165.5 237 3000 to ref 131330
+  from ref 128642 z 2001 label "[functor == \"\"]" xyz 165 237 2001 to ref 131330
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 131714 flow_ref 148738 // <flow>
@@ -128,7 +128,7 @@ flowcanvas 132226 flow_ref 148866 // <flow>
 end
 flowcanvas 132482 flow_ref 148994 // <flow>
   
-  from ref 128770 z 2008 label "[modulename == \"\"]" xyz 147.5 315 3000 to ref 131970
+  from ref 128770 z 2008 label "[modulename == \"\"]" xyz 147 315 2008 to ref 131970
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 line 130178 -_-_
