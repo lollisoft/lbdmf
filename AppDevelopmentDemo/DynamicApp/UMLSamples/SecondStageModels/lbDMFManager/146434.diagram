@@ -1,0 +1,138 @@
+format 67
+
+activitynodecanvas 128002 activitynode_ref 134530 // initial
+  xyz 83 42 2000
+end
+activitynodecanvas 128130 activitynode_ref 134658 // decision
+  xyz 80 97 2000
+end
+activitynodecanvas 128386 activitynode_ref 134786 // activity_final
+  xyz 81 474 2000
+end
+activitynodecanvas 128514 activitynode_ref 134914 // decision
+  xyz 80 168 2000
+end
+activitynodecanvas 128642 activitynode_ref 135042 // decision
+  xyz 80 235 2000
+end
+activitynodecanvas 128770 activitynode_ref 135170 // decision
+  xyz 80 312 2000
+end
+activityactioncanvas 129282 activityaction_ref 134530 // activity action The name of the application must not be empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 302 92 2000 341 50
+end
+activityactioncanvas 129794 activityaction_ref 134658 // activity action seterror
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 629 455 2000 101 61
+end
+activityactioncanvas 130562 activityaction_ref 134786 // activity action The interface of the application must not be empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 302 163 2000 339 46
+end
+activityactioncanvas 131330 activityaction_ref 141314 // activity action The functor of the application must not be empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 302 230 2000 338 48
+end
+activityactioncanvas 131970 activityaction_ref 141442 // activity action The modulename of the application must not be empty
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 302 306 2007 339 48
+  pins
+    pincanvas 132098 pin_ref 128130 // target
+      xyzwh 292 312 2009 11 11 label_xy 256 303
+    end
+  end
+end
+flowcanvas 128258 flow_ref 134530 // <flow>
+  
+  from ref 128002 z 2001 to ref 128130
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 128898 flow_ref 134658 // <flow>
+  
+  from ref 128130 z 2001 to ref 128514
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129026 flow_ref 134786 // <flow>
+  
+  from ref 128514 z 2001 to ref 128642
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129154 flow_ref 134914 // <flow>
+  
+  from ref 128642 z 2001 to ref 128770
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129410 flow_ref 141442 // <flow>
+  
+  from ref 128770 z 2001 to ref 128386
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 132610 "<<transformation>>
+result = 1"
+    xyzwh 112 388 2001 126 48
+end
+flowcanvas 129666 flow_ref 141570 // 
+  
+  from ref 128130 z 2001 label "
+[name == \"\"]" xyz 165.5 83 2001 to ref 129282
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 129922 flow_ref 141698 // <flow>
+  
+  from ref 129794 z 2001 to ref 128386
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 130050 "<<transformation>>
+result = 0"
+    xyzwh 311 513 2001 137 53
+end
+flowcanvas 130306 flow_ref 141826 // <flow>
+  
+  from ref 129282 z 2001 to point 676 112
+  line 130434 z 2001 to ref 129794
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130818 flow_ref 141954 // <flow>
+  
+  from ref 128514 z 2001 label "[interface == \"\"]" xyz 161 169 2001 to ref 130562
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 130946 flow_ref 142082 // <flow>
+  
+  from ref 130562 z 2001 to point 661 183
+  line 131074 z 2001 to ref 129794
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 131586 flow_ref 148610 // <flow>
+  
+  from ref 128642 z 2001 label "[functor == \"\"]" xyz 165.5 237 3000 to ref 131330
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 131714 flow_ref 148738 // <flow>
+  
+  from ref 131330 z 2001 to point 652 247
+  line 131842 z 2001 to ref 129794
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 132226 flow_ref 148866 // <flow>
+  
+  from ref 131970 z 2008 to point 652 326
+  line 132354 z 2008 to ref 129794
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 132482 flow_ref 148994 // <flow>
+  
+  from ref 128770 z 2008 label "[modulename == \"\"]" xyz 147.5 315 3000 to ref 131970
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+line 130178 -_-_
+  from ref 129922 z 2002 to ref 130050
+line 132738 -_-_
+  from ref 129410 z 2002 to ref 132610
+end
