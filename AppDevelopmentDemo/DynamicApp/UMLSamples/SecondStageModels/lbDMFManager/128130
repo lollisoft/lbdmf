@@ -1056,11 +1056,6 @@ ${inlines}
 	key "signal" value "showMsgBox"
 	key "msg" value "The modulename of the application must not be empty"
 	key "title" value "Error"
-	pin 128130 "target" explicit_type ""
-	  unordered 
-	  in
-	end
-
 	flow 148866 "<flow>"
 	  on activityaction_ref 134658 // activity action seterror
 	end

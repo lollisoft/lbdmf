@@ -1,50 +1,50 @@
 format 67
 
 activitynodecanvas 128002 activitynode_ref 134530 // initial
-  xyz 83 42 2000
+  xyz 83.3617 42.8635 2000
 end
 activitynodecanvas 128130 activitynode_ref 134658 // decision
-  xyz 80 97 2000
+  xyz 80.3617 97.2021 2000
 end
 activitynodecanvas 128386 activitynode_ref 134786 // activity_final
-  xyz 81 474 2000
+  xyz 81.3982 474.758 2000
 end
 activitynodecanvas 128514 activitynode_ref 134914 // decision
-  xyz 80 168 2000
+  xyz 80.3617 168.796 2000
 end
 activitynodecanvas 128642 activitynode_ref 135042 // decision
-  xyz 80 235 2000
+  xyz 80.3617 235.245 2000
 end
 activitynodecanvas 128770 activitynode_ref 135170 // decision
-  xyz 80 312 2000
+  xyz 80.3617 312.058 2000
 end
 activityactioncanvas 129282 activityaction_ref 134530 // activity action The name of the application must not be empty
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 302 92 2000 341 50
+  xyzwh 302.247 91.2386 2000 341 51
 end
 activityactioncanvas 129794 activityaction_ref 134658 // activity action seterror
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 629 455 2000 101 61
+  xyzwh 629.811 455.722 2000 101 61
 end
 activityactioncanvas 130562 activityaction_ref 134786 // activity action The interface of the application must not be empty
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 302 163 2000 339 46
+  xyzwh 302.21 162.76 2000 339 47
 end
 activityactioncanvas 131330 activityaction_ref 141314 // activity action The functor of the application must not be empty
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 302 230 2000 338 48
+  xyzwh 301.174 229.245 2000 339 49
 end
 activityactioncanvas 131970 activityaction_ref 141442 // activity action The modulename of the application must not be empty
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 302 306 2007 339 48
+  xyzwh 302.21 305.022 2007 339 49
   pins
     pincanvas 132098 pin_ref 128130 // target
-      xyzwh 292 312 2009 11 11 label_xy 256 303
+      xyzwh 292.852 296.583 2009 11 11 label_xy 256 286
     end
   end
 end
@@ -75,7 +75,7 @@ flowcanvas 129410 flow_ref 141442 // <flow>
   transformation 
   information 132610 "<<transformation>>
 result = 1"
-    xyzwh 112 388 2001 126 48
+    xyzwh 112.358 388.018 2001 126 48
 end
 flowcanvas 129666 flow_ref 141570 // 
   
@@ -90,11 +90,11 @@ flowcanvas 129922 flow_ref 141698 // <flow>
   transformation 
   information 130050 "<<transformation>>
 result = 0"
-    xyzwh 311 513 2001 137 53
+    xyzwh 311.849 513.695 2001 137 53
 end
 flowcanvas 130306 flow_ref 141826 // <flow>
   
-  from ref 129282 z 2001 to point 676 112
+  from ref 129282 z 2001 to point 676.774 112.166
   line 130434 z 2001 to ref 129794
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
@@ -105,7 +105,7 @@ flowcanvas 130818 flow_ref 141954 // <flow>
 end
 flowcanvas 130946 flow_ref 142082 // <flow>
   
-  from ref 130562 z 2001 to point 661 183
+  from ref 130562 z 2001 to point 661.226 183.76
   line 131074 z 2001 to ref 129794
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
@@ -116,13 +116,13 @@ flowcanvas 131586 flow_ref 148610 // <flow>
 end
 flowcanvas 131714 flow_ref 148738 // <flow>
   
-  from ref 131330 z 2001 to point 652 247
+  from ref 131330 z 2001 to point 652.897 247.098
   line 131842 z 2001 to ref 129794
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
 flowcanvas 132226 flow_ref 148866 // <flow>
   
-  from ref 131970 z 2008 to point 652 326
+  from ref 131970 z 2008 to point 652.897 326.985
   line 132354 z 2008 to ref 129794
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
 end
