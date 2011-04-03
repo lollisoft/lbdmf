@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.181 $
+ * $Revision: 1.182 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.181 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.182 2011/04/03 19:31:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.182  2011/04/03 19:31:42  lollisoft
+ * Minor changes in console mode.
+ *
  * Revision 1.181  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -870,7 +873,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
 	} else {
-	        COUT << "lb_MetaApplication::lbEvHandler2() called in console mode" << ENDL;
+	        COUT << "Information: The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.\n" << ENDL;
 	}
 
 	return ERR_NONE;
