@@ -825,7 +825,6 @@ ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_userid_users
 ALTER TABLE "users" ADD CONSTRAINT "cst_users_lastapp_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 
 
-
 --
 -- SQL script created for PostgreSQL
 --
@@ -895,9 +894,9 @@ begin
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
 	else
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', '' '', applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''<dbuser>'', applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''<dbpass>'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
 	end if;
   end if;
 return applicationid;
@@ -983,7 +982,6 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
   
-
 CREATE OR REPLACE FUNCTION "createReportTable"()
   RETURNS void AS
 $BODY$
@@ -1018,7 +1016,6 @@ $BODY$
   LANGUAGE 'plpgsql' VOLATILE
   COST 100;
 ALTER FUNCTION "createReportTable"() OWNER TO postgres;
-
   
   
 -- Delete application definitions if they exist. The deletion must be done in reverse order.
@@ -1867,8 +1864,28 @@ INSERT INTO "action_step_parameter" ("name", "value", "interface", "description"
 
 INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22802_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'showMsgBox', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The functor must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
+
 INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22882_56', '11', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'showMsgBox', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The modulename of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
+
+INSERT INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('name', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+		
+INSERT INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('interface', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+		
+INSERT INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('functor', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+		
+INSERT INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('modulename', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+		
 -- Create activity transitions
 
 INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_70'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_73'));
@@ -1886,6 +1903,8 @@ INSERT INTO "action_step_transitions" ("expression", "description", "src_actioni
 INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('functor == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f82_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
 
 INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_72'));
+
+UPDATE "action_step_transitions" set "expression" = 'result = 1' where "src_actionid" = (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73') and dst_actionid = (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_72');
 
 INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('modulename == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
 
@@ -1921,9 +1940,17 @@ UPDATE "action_steps" set "bezeichnung" = 'seterror' where "bezeichnung" = 'BOUM
 		
 UPDATE "action_steps" set "bezeichnung" = 'showMsgBox' where "bezeichnung" = 'BOUML_0x20e82_56';
 		
-UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x22802_56';
+UPDATE "action_steps" set "bezeichnung" = 'showMsgBox' where "bezeichnung" = 'BOUML_0x22802_56';
 		
-UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x22882_56';
+UPDATE "action_steps" set "bezeichnung" = 'showMsgBox' where "bezeichnung" = 'BOUML_0x22882_56';
+		
+-- Nodetype uml:ActivityParameterNode not known.
+		
+-- Nodetype uml:ActivityParameterNode not known.
+		
+-- Nodetype uml:ActivityParameterNode not known.
+		
+-- Nodetype uml:ActivityParameterNode not known.
 		
 
 -- Cleanup unused double types
