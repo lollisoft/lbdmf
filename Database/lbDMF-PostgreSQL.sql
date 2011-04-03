@@ -825,6 +825,7 @@ ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_userid_users
 ALTER TABLE "users" ADD CONSTRAINT "cst_users_lastapp_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 
 
+
 --
 -- SQL script created for PostgreSQL
 --
@@ -873,6 +874,7 @@ begin
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open form'', ''instanceOflbFormAction'', ''lbDatabaseForm'');
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open detail form'', ''instanceOflbDetailFormAction'', ''lbDatabaseForm'');
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open master form'', ''instanceOflbMasterFormAction'', ''lbDatabaseForm'');
+		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''CreateReport'', ''instanceOflbExecuteAction'', ''lbDatabaseForm'');
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Open Database Report'', ''instanceOflbDBReportAction'', ''lbDatabaseReport'');
 		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES (''Perform XSLT transformation'', ''instanceOflbDMFXslt'', ''lbDMFXslt'');
 
@@ -893,9 +895,9 @@ begin
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
 		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
 	else
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', ''lbDMF'', applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''dba'', applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''trainres'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', '' '', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''<dbuser>'', applicationid);
+		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''<dbpass>'', applicationid);
 	end if;
   end if;
 return applicationid;
@@ -981,6 +983,42 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
   
+
+CREATE OR REPLACE FUNCTION "createReportTable"()
+  RETURNS void AS
+$BODY$
+declare
+tres text;
+begin
+  select tablename into tres from pg_tables where tablename = 'report';
+  if tres is null then
+    execute '
+CREATE TABLE report
+(
+  report_id SERIAL,
+  report_name text,
+  report_sys boolean,
+  report_source text,
+  report_descrip text,
+  report_grade integer NOT NULL,
+  report_loaddate timestamp without time zone,
+  CONSTRAINT report_pkey PRIMARY KEY (report_id)
+)
+WITH (OIDS=TRUE);
+
+CREATE UNIQUE INDEX report_name_grade_idx
+  ON report
+  USING btree
+  (report_name, report_grade);
+	';
+  end if;
+  return;
+end;
+$BODY$
+  LANGUAGE 'plpgsql' VOLATILE
+  COST 100;
+ALTER FUNCTION "createReportTable"() OWNER TO postgres;
+
   
   
 -- Delete application definitions if they exist. The deletion must be done in reverse order.
@@ -1010,12 +1048,17 @@ delete from anwendungen_formulare where anwendungid in (select id from anwendung
 delete from formulare where anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager');
+update users set lastapp = NULL where lastapp in (select id from anwendungen where name = 'lbDMF Manager');
+delete from anwendungen where name = 'lbDMF Manager';
 
 drop table tempactions;  
 		
 		-- Class Benutzer of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Benutzer');
 
 
@@ -1024,7 +1067,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 	values ('Benutzer', 'Benutzer verwalten', 'manageBenutzer', 'Edit data of Benutzer', 'kuser.png', getorcreateapplication('lbDMF Manager'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "passwort", "userid", "vorname", "name" from "users" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "passwort", "userid", "vorname", "name" from "users"', getformularid(getorcreateapplication('lbDMF Manager'), 'Benutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'Benutzer', true);
 
 
@@ -1053,7 +1096,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Formulare of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Formulare');
 
 
@@ -1066,7 +1111,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formulare', 'typ', 'formulartypen', 'beschreibung');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "menuname", "menuhilfe", "eventname", "toolbarimage", "anwendungid", "typ" from "formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "name", "menuname", "menuhilfe", "eventname", "toolbarimage", "anwendungid", "typ" from "formulare"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formulare', true);
 
 
@@ -1108,14 +1153,34 @@ INSERT INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values 
 INSERT INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21882_0' and source = 'name'), 'action_master_detail_BOUML_0x21882_0');
 UPDATE actions set name = 'Formularaktionenzuordnen' where name = 'BOUML_0x21882_0';
 	
+-- Association from Formulare to Formulare
+-- From formular 'BOUML_0x1f482_4'
+-- To   formular 'BOUML_0x21202_4'
+
+
+
+
+-- Create Postgresql based action
+-- Select action type ActionType: , Property: BOUML_0x22402_0.
+
+
+
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Formulare'));
 
 
+-- Create report link from 'BOUML_0x21202_4' to 'BOUML_0x1f482_4'
+		
+INSERT INTO "actions" (name, typ, source) VALUES ('Print Formulare', (select id from action_types where bezeichnung = 'Buttonpress'), 'anwendungid');
+INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Printing step', 1, '/Applications/xTuple/rptrender.app/Contents/MacOS/rptrender -databaseURL=pgsql://vmhost:5432/lbdmf -username=dba -passwd=trainres -loadFromDb=ReportFormulare -printpreview -close', (select id from action_types where action_handler = 'instanceOflbExecuteAction' and module = 'lbDatabaseForm' and bezeichnung = 'CreateReport'), (select id from actions where name = 'Print Formulare'));
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = 'Formulare'), (select id from actions where name = 'Print Formulare'), 'evt_PrintFormulare_Formulare"/>');
+		
 		-- Class Formular_Parameter of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Formular_Parameter');
 
 
@@ -1126,7 +1191,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_parameters', 'formularid', 'formulare', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "formularid" from "formular_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "formularid" from "formular_parameters"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formular_Parameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formular_Parameter', true);
 
 
@@ -1137,7 +1202,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class AnwendungenBenutzer of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'AnwendungenBenutzer');
 
 
@@ -1150,7 +1217,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('user_anwendungen', 'anwendungenid', 'anwendungen', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "userid", "anwendungenid" from "user_anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenBenutzer'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "userid", "anwendungenid" from "user_anwendungen"', getformularid(getorcreateapplication('lbDMF Manager'), 'AnwendungenBenutzer'));
 insert into column_types (name, tablename, ro) values ('ID', 'AnwendungenBenutzer', true);
 
 
@@ -1161,7 +1228,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class FormulareAnwendung of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'FormulareAnwendung');
 
 
@@ -1174,7 +1243,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungen_formulare', 'formularid', 'formulare', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "anwendungid", "formularid" from "anwendungen_formulare" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'FormulareAnwendung'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "anwendungid", "formularid" from "anwendungen_formulare"', getformularid(getorcreateapplication('lbDMF Manager'), 'FormulareAnwendung'));
 insert into column_types (name, tablename, ro) values ('ID', 'FormulareAnwendung', true);
 
 
@@ -1185,7 +1254,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Anwendungen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Anwendungen');
 
 
@@ -1194,7 +1265,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 	values ('Anwendungen', 'Anwendungen verwalten', 'manageAnwendungen', 'Edit data of Anwendungen', 'kthememgr.png', getorcreateapplication('lbDMF Manager'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "titel", "name", "interface", "functor", "modulename" from "anwendungen" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "titel", "name", "interface", "functor", "modulename" from "anwendungen"', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungen', true);
 
 
@@ -1236,12 +1307,21 @@ UPDATE actions set name = 'Formulare' where name = 'BOUML_0x21702_0';
 	
 -- Create operation definitions
 
+-- Generate codegeneration operation 'Codegenerieren' for 'Anwendungen'
+
+INSERT INTO "actions" (name, typ, source) VALUES ('Codegenerieren', (select id from action_types where bezeichnung = 'Buttonpress'), 'name');
+INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = 'Codegenerieren'));
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen')), (select id from actions where name = 'Codegenerieren'), 'evt_Anwendungen_Codegenerieren');
+
+	
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungen'));
 
 
 		-- Class Aktionen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Aktionen');
 
 
@@ -1252,7 +1332,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'typ', 'action_types', 'bezeichnung');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "target", "source", "name", "typ" from "actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "target", "source", "name", "typ" from "actions"', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionen', true);
 
 
@@ -1281,7 +1361,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Uebersetzungen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Uebersetzungen');
 
 
@@ -1290,7 +1372,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 	values ('Uebersetzungen', 'Uebersetzungen verwalten', 'manageUebersetzungen', 'Edit data of Uebersetzungen', 'babelfish.png', getorcreateapplication('lbDMF Manager'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "translated", "text" from "translations" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Uebersetzungen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "translated", "text" from "translations"', getformularid(getorcreateapplication('lbDMF Manager'), 'Uebersetzungen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Uebersetzungen', true);
 
 
@@ -1301,7 +1383,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Formularaktionenzuordnen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Formularaktionenzuordnen');
 
 
@@ -1314,7 +1398,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_actions', 'formular', 'formulare', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "event", "action", "formular" from "formular_actions" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "event", "action", "formular" from "formular_actions"', getformularid(getorcreateapplication('lbDMF Manager'), 'Formularaktionenzuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Formularaktionenzuordnen', true);
 
 
@@ -1325,7 +1409,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Anwendungsparameter of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Anwendungsparameter');
 
 
@@ -1336,7 +1422,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungs_parameter', 'anwendungid', 'anwendungen', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "anwendungid" from "anwendungs_parameter" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "parametervalue", "parametername", "anwendungid" from "anwendungs_parameter"', getformularid(getorcreateapplication('lbDMF Manager'), 'Anwendungsparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Anwendungsparameter', true);
 
 
@@ -1347,7 +1433,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Aktionsschrittezuordnen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Aktionsschrittezuordnen');
 
 
@@ -1360,7 +1448,7 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('action_steps', 'actionid', 'actions', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "bezeichnung", "what", "a_order_nr", "type", "actionid" from "action_steps" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "bezeichnung", "what", "a_order_nr", "type", "actionid" from "action_steps"', getformularid(getorcreateapplication('lbDMF Manager'), 'Aktionsschrittezuordnen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Aktionsschrittezuordnen', true);
 
 
@@ -1371,7 +1459,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Reportdefinitionen of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Reportdefinitionen');
 
 
@@ -1380,7 +1470,7 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 	values ('Reportdefinitionen', 'Reportdefinitionen verwalten', 'manageReportdefinitionen', 'Edit data of Reportdefinitionen', 'print_class.png', getorcreateapplication('lbDMF Manager'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "description", "name" from "reports" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "description", "name" from "reports"', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportdefinitionen'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportdefinitionen', true);
 
 
@@ -1409,7 +1499,9 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 		-- Class Reportparameter of type FORM found.
 					
--- Generate DMF form definition for lbDMF Manager
+-- Generate DMF form definition for lbDMF Manager in PostgreSQL database 
+
+
 select dropformular('lbDMF Manager', 'Reportparameter');
 
 
@@ -1420,13 +1512,422 @@ insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwen
 INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('report_parameters', 'reportid', 'reports', 'name');
 
 
-insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "value", "name", "reportid" from "report_parameters" order by id', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
+insert into formular_parameters (parametername, parametervalue, formularid) values('query', 'select "value", "name", "reportid" from "report_parameters"', getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
 insert into column_types (name, tablename, ro) values ('ID', 'Reportparameter', true);
 
 
 -- Create operation definitions
 
 insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateapplication('lbDMF Manager'), getformularid(getorcreateapplication('lbDMF Manager'), 'Reportparameter'));
+
+
+		-- Class Formulare of type FORM found.
+					
+-- Generate DMF report definition for Reports in PostgreSQL database 
+
+
+-- select dropreport('Reports', 'Formulare');
+
+
+
+-- insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) values ('Formulare', 'Formulare verwalten', 'manageFormulare', 'Edit data of Formulare', '', getorcreateapplication('Reports'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
+
+
+select "createReportTable"();
+
+delete from report where report_name = 'ReportFormulare';
+insert into report (report_name, report_grade, report_source) values('ReportFormulare', 0, '<!DOCTYPE openRPTDef>
+<report>
+ <title></title>
+ <name></name>
+ <description></description>
+ <size>A4</size>
+ <portrait/>
+ <topmargin>100</topmargin>
+ <bottommargin>100</bottommargin>
+ <rightmargin>100</rightmargin>
+ <leftmargin>100</leftmargin>
+ <querysource>
+  <name>FormularQuery</name>
+  <sql>select "name", "menuname", "menuorder", "eventname", "menuhilfe", "toolbarimage" from Formulare
+order by id</sql>
+ </querysource>
+ <pghead>
+  <height>75</height>
+
+
+
+  <label>
+   <rect>
+    <x>5</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>name</string>
+  </label>
+			
+  <label>
+   <rect>
+    <x>93.8333333333333</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>menuname</string>
+  </label>
+			
+  <label>
+   <rect>
+    <x>182.666666666667</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>menuorder</string>
+  </label>
+			
+  <label>
+   <rect>
+    <x>271.5</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>eventname</string>
+  </label>
+			
+  <label>
+   <rect>
+    <x>360.333333333333</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>menuhilfe</string>
+  </label>
+			
+  <label>
+   <rect>
+    <x>449.166666666667</x>
+    <y>25</y>
+    <width>100</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>toolbarimage</string>
+  </label>
+			
+
+  <line>
+   <xstart>0</xstart>
+   <ystart>20</ystart>
+   <xend>625</xend>
+   <yend>20</yend>
+   <weight>2</weight>
+  </line>
+  <line>
+   <xstart>0</xstart>
+   <ystart>75</ystart>
+   <xend>625</xend>
+   <yend>75</yend>
+   <weight>2</weight>
+  </line>
+ </pghead>
+ 
+ <section>
+  <name>Formulare</name>
+  <detail>
+   <key>
+    <query>FormularQuery</query>
+   </key>
+   <height>70</height>
+
+
+
+
+   <field>
+    <rect>
+     <x>5</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>name</column>
+    </data>
+   </field>
+			
+   <field>
+    <rect>
+     <x>93.8333333333333</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>menuname</column>
+    </data>
+   </field>
+			
+   <field>
+    <rect>
+     <x>182.666666666667</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>menuorder</column>
+    </data>
+   </field>
+			
+   <field>
+    <rect>
+     <x>271.5</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>eventname</column>
+    </data>
+   </field>
+			
+   <field>
+    <rect>
+     <x>360.333333333333</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>menuhilfe</column>
+    </data>
+   </field>
+			
+   <field>
+    <rect>
+     <x>449.166666666667</x>
+     <y>25</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>FormularQuery</query>
+     <column>toolbarimage</column>
+    </data>
+   </field>
+			
+   
+   <line>
+    <xstart>0</xstart>
+    <ystart>60</ystart>
+    <xend>625</xend>
+    <yend>60</yend>
+    <weight>0</weight>
+   </line>
+  </detail>
+ </section>
+</report>');
+
+
+
+
+-- Activity operation for class Anwendungen in package lbDMF Manager is actValidateAnwendungen.
+-- Operation is a validator using activity 
+-- Activity ID is 'BOUML_0x1f482_39'
+		-- Activity 'actValidateAnwendungen' found.
+			
+INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('actValidateAnwendungen_BOUML_0x1f482_39', 'instanceOflbAction', 'lbDatabaseForm');
+
+INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('actValidateAnwendungen_BOUML_0x1f482_39', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), '', '');
+
+INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = 'Anwendungen'), (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'eventactValidateAnwendungen_BOUML_0x1f482_39_Validator');
+	
+-- Create activity nodes for Sqlite
+
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20d82_70', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e02_73', '2', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e82_72', '3', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20f02_73', '4', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20f82_73', '5', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x21002_73', '6', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20d82_56', '7', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'showMsgBox', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The name of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
+
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e02_46', '8', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '');
+		
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e82_56', '9', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'showMsgBox', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
+
+INSERT INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The interface of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
+
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22802_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+
+INSERT INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22882_56', '11', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+
+-- Create activity transitions
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_70'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_73'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f02_73'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('name == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f02_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f82_73'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('interface == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f02_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f82_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('functor == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20f82_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_72'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('modulename == ""', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x21002_73'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_72'));
+
+UPDATE "action_step_transitions" set "expression" = 'result = 0' where "src_actionid" = (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46') and dst_actionid = (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_72');
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46'));
+
+INSERT INTO "action_step_transitions" ("expression", "description", "src_actionid", "dst_actionid") VALUES ('', '_BOUML_0x1f482_39', (select id from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'), (select id from "action_steps" where "bezeichnung" = 'BOUML_0x20e02_46'));
+
+-- Rename activity nodes for Sqlite
+
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x20d82_70';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x20e02_73';
+		
+UPDATE "action_steps" set "bezeichnung" = 'FinalNode' where "bezeichnung" = 'BOUML_0x20e82_72';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x20f02_73';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x20f82_73';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x21002_73';
+		
+UPDATE "action_steps" set "bezeichnung" = 'showMsgBox' where "bezeichnung" = 'BOUML_0x20d82_56';
+		
+UPDATE "action_steps" set "bezeichnung" = 'seterror' where "bezeichnung" = 'BOUML_0x20e02_46';
+		
+UPDATE "action_steps" set "bezeichnung" = 'showMsgBox' where "bezeichnung" = 'BOUML_0x20e82_56';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x22802_56';
+		
+UPDATE "action_steps" set "bezeichnung" = '' where "bezeichnung" = 'BOUML_0x22882_56';
+		
+
+-- Cleanup unused double types
+DELETE FROM "action_types" where "id" NOT IN (SELECT "typ" from "actions") AND "id" NOT IN (SELECT "type" from "action_steps");
 
 
 -- Script ready.

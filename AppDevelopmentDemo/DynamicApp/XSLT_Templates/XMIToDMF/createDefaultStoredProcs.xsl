@@ -186,6 +186,40 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
   
+CREATE OR REPLACE FUNCTION "createReportTable"()
+  RETURNS void AS
+$BODY$
+declare
+tres text;
+begin
+  select tablename into tres from pg_tables where tablename = 'report';
+  if tres is null then
+    execute '
+CREATE TABLE report
+(
+  report_id SERIAL,
+  report_name text,
+  report_sys boolean,
+  report_source text,
+  report_descrip text,
+  report_grade integer NOT NULL,
+  report_loaddate timestamp without time zone,
+  CONSTRAINT report_pkey PRIMARY KEY (report_id)
+)
+WITH (OIDS=TRUE);
+
+CREATE UNIQUE INDEX report_name_grade_idx
+  ON report
+  USING btree
+  (report_name, report_grade);
+	';
+  end if;
+  return;
+end;
+$BODY$
+  LANGUAGE 'plpgsql' VOLATILE
+  COST 100;
+ALTER FUNCTION "createReportTable"() OWNER TO postgres;
   
   
 -- Delete application definitions if they exist. The deletion must be done in reverse order.

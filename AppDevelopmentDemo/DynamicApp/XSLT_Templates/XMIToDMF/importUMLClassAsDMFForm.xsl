@@ -430,7 +430,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 
 INSERT INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>');
 INSERT INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
-INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
+INSERT INTO "formular_actions" (formular, action, event) VALUES ((getformularid(getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), '<xsl:value-of select="$classname"/>')), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
 
 	</xsl:when>
 	<xsl:when test="./xmi:Extension/stereotype/@name='callxslt'">

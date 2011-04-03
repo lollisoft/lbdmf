@@ -1,6 +1,6 @@
-format 63
+format 67
 "lbDMFManager"
-  revision 185
+  revision 186
   modified_by 2 "lothar"
 
 
@@ -37,7 +37,7 @@ format 63
   mark_for_import
   
   ncouples 12
-  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopment/DynamicApp/ModelExchange/lbDMFManagerBoUML.xmi"
+  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF Manager.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "UTF-8"
   key "gxmi uml2.0" value "no"
