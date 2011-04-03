@@ -116,6 +116,7 @@ TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
 
