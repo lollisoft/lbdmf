@@ -8,16 +8,21 @@
  * Notes:
  **************************************************************/
 
-#include <wx/dataobj.h>
-#include "ShapeCanvas.h"
-#include "ShapeHandle.h"
-#include "ShapeBase.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/ShapeCanvas.h"
+#include "wx/wxsf/ShapeHandle.h"
+#include "wx/wxsf/ShapeBase.h"
 
 #include <wx/listimpl.cpp>
 
 IMPLEMENT_DYNAMIC_CLASS(wxSFShapeHandle, wxObject);
 
-WX_DEFINE_LIST(CHandleList);
+WX_DEFINE_LIST(HandleList);
 
 wxSFShapeHandle::wxSFShapeHandle(void)
 {
@@ -45,7 +50,8 @@ wxSFShapeHandle::wxSFShapeHandle(wxSFShapeBase* parent, HANDLETYPE type, long id
 	m_fMouseOver = false;
 }
 
-wxSFShapeHandle::wxSFShapeHandle(wxSFShapeHandle& obj)
+wxSFShapeHandle::wxSFShapeHandle(const wxSFShapeHandle& obj)
+: wxObject(obj)
 {
 	// initialize data members
 	m_nType = obj.m_nType;
@@ -66,23 +72,27 @@ wxSFShapeHandle::~wxSFShapeHandle(void)
 // Public functions
 //----------------------------------------------------------------------------------//
 
-bool wxSFShapeHandle::IsInside(const wxPoint& pos)
+bool wxSFShapeHandle::Contains(const wxPoint& pos)
 {
-#if wxCHECK_VERSION(2, 8, 0)
 	return GetHandleRect().Contains(pos);
-#else // replacement code for old version
-	return GetHandleRect().Inside(pos);
-#endif
 }
 
-void wxSFShapeHandle::Draw(wxSFScaledPaintDC& dc)
+void wxSFShapeHandle::Draw(wxDC& dc)
 {
+    #if wxUSE_GRAPHICS_CONTEXT
+    wxSFScaledDC::EnableGC( false );
+    #endif
+
 	if(m_fVisible && m_pParentShape)
 	{
 		if(m_fMouseOver)DrawHover(dc);
 		else
 			DrawNormal(dc);
 	}
+
+    #if wxUSE_GRAPHICS_CONTEXT
+    wxSFScaledDC::EnableGC( wxSFShapeCanvas::IsGCEnabled() );
+    #endif
 }
 
 void wxSFShapeHandle::Refresh()
@@ -90,46 +100,122 @@ void wxSFShapeHandle::Refresh()
 	if(m_pParentShape)m_pParentShape->Refresh();
 }
 
-void wxSFShapeHandle::OnMouseMove(const wxPoint& pos)
+//----------------------------------------------------------------------------------//
+// Protected functions
+//----------------------------------------------------------------------------------//
+
+void wxSFShapeHandle::DrawNormal(wxDC& dc)
 {
-	if(m_fVisible)
+    #ifdef __WXGTK__
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    #else
+    dc.SetPen(*wxBLACK_PEN);
+    #endif
+    dc.SetBrush(*wxBLACK_BRUSH);
+
+    dc.SetLogicalFunction(wxINVERT);
+    dc.DrawRectangle(GetHandleRect());
+    dc.SetLogicalFunction(wxCOPY);
+
+    dc.SetPen(wxNullPen);
+    dc.SetBrush(wxNullBrush);
+}
+
+void wxSFShapeHandle::DrawHover(wxDC& dc)
+{
+    if(m_pParentShape->ContainsStyle(wxSFShapeBase::sfsSIZE_CHANGE))
+    {
+        dc.SetPen(*wxBLACK_PEN);
+        dc.SetBrush(wxBrush(m_pParentShape->GetHoverColour()));
+        dc.DrawRectangle(GetHandleRect());
+        dc.SetBrush(wxNullBrush);
+        dc.SetPen(wxNullPen);
+    }
+    else
+    {
+        DrawNormal(dc);
+    }
+}
+
+wxRect wxSFShapeHandle::GetHandleRect() const
+{
+	if(m_pParentShape)
 	{
-		if(IsInside(pos))
+		wxRect hrct;
+		wxRect brct = m_pParentShape->GetBoundingBox();
+		switch(m_nType)
 		{
-			if(!m_fMouseOver)
+		case hndLEFTTOP:
+			hrct = wxRect(brct.GetLeftTop(), wxSize(7,7));
+			break;
+		case hndTOP:
+			hrct = wxRect(wxPoint(brct.GetLeft() + brct.GetWidth()/2, brct.GetTop()), wxSize(7,7));
+			break;
+		case hndRIGHTTOP:
+			hrct = wxRect(brct.GetRightTop(), wxSize(7,7));
+			break;
+		case hndRIGHT:
+			hrct = wxRect(wxPoint(brct.GetRight(), brct.GetTop() + brct.GetHeight()/2), wxSize(7,7));
+			break;
+		case hndRIGHTBOTTOM:
+			hrct = wxRect(brct.GetRightBottom(), wxSize(7,7));
+			break;
+		case hndBOTTOM:
+			hrct = wxRect(wxPoint(brct.GetLeft() + brct.GetWidth()/2, brct.GetBottom()), wxSize(7,7));
+			break;
+		case hndLEFTBOTTOM:
+			hrct = wxRect(brct.GetLeftBottom(), wxSize(7,7));
+			break;
+		case hndLEFT:
+			hrct = wxRect(wxPoint(brct.GetLeft(), brct.GetTop() + brct.GetHeight()/2), wxSize(7,7));
+			break;
+		case hndLINECTRL:
 			{
-				m_fMouseOver = true;
-				Refresh();
+				wxRealPoint* pt = ((wxSFLineShape*)m_pParentShape)->GetControlPoints().Item(m_nId)->GetData();
+				hrct = wxRect(wxPoint((int)pt->x, (int)pt->y), wxSize(7,7));
 			}
+			break;
+        case hndLINEEND:
+        case hndLINESTART:
+            {
+                wxSFLineShape *pLine = (wxSFLineShape*)m_pParentShape;
+					
+				wxRealPoint pt;
+				if( m_nType == hndLINESTART )
+				{
+					pt = pLine->GetSrcPoint();
+				}
+				else
+					pt = pLine->GetTrgPoint();
+
+                hrct = wxRect(wxPoint((int)pt.x, (int)pt.y), wxSize(7,7));
+            }
+            break;
+
+		default:
+			hrct = wxRect();
 		}
-		else
-		{
-			if(m_fMouseOver)
-			{
-				m_fMouseOver = false;
-				Refresh();
-			}
-		}
+
+		hrct.Offset(-3, -3);
+		return hrct;
 	}
+	else
+		return wxRect();
 }
 
 //----------------------------------------------------------------------------------//
-// Public virtual functions
+// Private functions
 //----------------------------------------------------------------------------------//
 
-void wxSFShapeHandle::OnBeginDrag(const wxPoint& pos)
+void wxSFShapeHandle::_OnBeginDrag(const wxPoint& pos)
 {
-    // HINT: override it if neccessary...
-
 	m_nPrevPos = m_nStartPos = pos;
 
 	if(m_pParentShape)m_pParentShape->OnBeginHandle(*this);
 }
 
-void wxSFShapeHandle::OnDragging(const wxPoint& pos)
+void wxSFShapeHandle::_OnDragging(const wxPoint& pos)
 {
-    // HINT: override it if neccessary...
-
 	if(m_fVisible && m_pParentShape && m_pParentShape->ContainsStyle(wxSFShapeBase::sfsSIZE_CHANGE))
 	{
 		if(pos != m_nPrevPos)
@@ -195,119 +281,33 @@ void wxSFShapeHandle::OnDragging(const wxPoint& pos)
 	}
 }
 
-void wxSFShapeHandle::OnEndDrag(const wxPoint& pos)
+void wxSFShapeHandle::_OnEndDrag(const wxPoint& pos)
 {
-	// HINT: override it if neccessary...
-
+	wxUnusedVar( pos );
+	
 	if(m_pParentShape)m_pParentShape->OnEndHandle(*this);
 }
 
-//----------------------------------------------------------------------------------//
-// Protected functions functions
-//----------------------------------------------------------------------------------//
-
-void wxSFShapeHandle::DrawNormal(wxSFScaledPaintDC& dc)
+void wxSFShapeHandle::_OnMouseMove(const wxPoint& pos)
 {
-    dc.SetPen(*wxBLACK_PEN);
-    dc.SetBrush(*wxBLACK_BRUSH);
-    dc.SetLogicalFunction(wxINVERT);
-    #ifdef __WXGTK__
-    dc.DrawRectangle(GetHandleRect().Inflate(1, 1));
-    #else
-    dc.DrawRectangle(GetHandleRect());
-    #endif
-    dc.SetLogicalFunction(wxCOPY);
-    dc.SetPen(wxNullPen);
-    dc.SetBrush(wxNullBrush);
-}
-
-void wxSFShapeHandle::DrawHover(wxSFScaledPaintDC& dc)
-{
-    if(m_pParentShape->ContainsStyle(wxSFShapeBase::sfsSIZE_CHANGE))
-    {
-        dc.SetBrush(wxBrush(m_pParentShape->GetHoverColour()));
-        dc.DrawRectangle(GetHandleRect());
-        dc.SetBrush(wxNullBrush);
-    }
-    else
-    {
-        DrawNormal(dc);
-    }
-}
-
-wxRect wxSFShapeHandle::GetHandleRect() const
-{
-	if(m_pParentShape)
-	{
-		wxRect hrct;
-		wxRect brct = m_pParentShape->GetBoundingBox();
-		switch(m_nType)
+	if(m_fVisible)
+	{	
+		if(Contains(pos))
 		{
-		case hndLEFTTOP:
-			hrct = wxRect(brct.GetLeftTop(), wxSize(7,7));
-			break;
-		case hndTOP:
-			hrct = wxRect(wxPoint(brct.GetLeft() + brct.GetWidth()/2, brct.GetTop()), wxSize(7,7));
-			break;
-		case hndRIGHTTOP:
-#if wxCHECK_VERSION(2, 8, 0)
-			hrct = wxRect(brct.GetRightTop(), wxSize(7,7));
-#else // replacement code for old version
-			hrct = wxRect(wxPoint(brct.GetRightBottom().x, brct.GetTopLeft().y), wxSize(7,7));
-#endif
-			break;
-		case hndRIGHT:
-			hrct = wxRect(wxPoint(brct.GetRight(), brct.GetTop() + brct.GetHeight()/2), wxSize(7,7));
-			break;
-		case hndRIGHTBOTTOM:
-			hrct = wxRect(brct.GetRightBottom(), wxSize(7,7));
-			break;
-		case hndBOTTOM:
-			hrct = wxRect(wxPoint(brct.GetLeft() + brct.GetWidth()/2, brct.GetBottom()), wxSize(7,7));
-			break;
-		case hndLEFTBOTTOM:
-#if wxCHECK_VERSION(2, 8, 0)
-			hrct = wxRect(brct.GetLeftBottom(), wxSize(7,7));
-#else // replacement code for old version
-			hrct = wxRect(wxPoint(brct.GetTopLeft().x, brct.GetBottomRight().y), wxSize(7,7));
-#endif
-			break;
-		case hndLEFT:
-			hrct = wxRect(wxPoint(brct.GetLeft(), brct.GetTop() + brct.GetHeight()/2), wxSize(7,7));
-			break;
-		case hndLINECTRL:
+			if(!m_fMouseOver)
 			{
-				wxRealPoint* pt = ((wxSFLineShape*)m_pParentShape)->GetControlPoints().Item(m_nId)->GetData();
-				hrct = wxRect(wxPoint((int)pt->x, (int)pt->y), wxSize(7,7));
+				m_fMouseOver = true;
+				Refresh();
 			}
-			break;
-        case hndLINEEND:
-        case hndLINESTART:
-            {
-                wxSFLineShape *pLine = (wxSFLineShape*)m_pParentShape;
-                // Get all polyline segments
-                CLineSegmentArray m_arrLineSegments;
-                pLine->GetLineSegments(m_arrLineSegments);
-
-                wxRealPoint pt;
-                if(m_nType == hndLINESTART)
-                {
-                    pt = m_arrLineSegments.Item(0).m_nSrc;
-                }
-                else
-                    pt = m_arrLineSegments.Item(m_arrLineSegments.Count()-1).m_nTrg;
-
-                hrct = wxRect(wxPoint((int)pt.x, (int)pt.y), wxSize(7,7));
-            }
-            break;
-
-		default:
-			hrct = wxRect();
 		}
-
-		hrct.Offset(-3, -3);
-		return hrct;
+		else
+		{
+			if(m_fMouseOver)
+			{
+				m_fMouseOver = false;
+				Refresh();
+			}
+		}
 	}
-	else
-		return wxRect();
 }
+

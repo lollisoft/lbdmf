@@ -10,7 +10,21 @@
 #ifndef WX_PCH_H_INCLUDED
 #define WX_PCH_H_INCLUDED
 
+#ifdef _DISWARNINGS_MSVC
+//#pragma warning( disable : 4100 )
 #pragma warning( disable : 4251 )
+#pragma warning( disable : 4275 )
+#endif
+
+// debug memory allocation enhancement (see next tip)
+#ifdef _DEBUG_MSVC
+#ifdef _DEBUG
+#include <crtdbg.h>
+#define DEBUG_NEW new(_NORMAL_BLOCK ,__FILE__, __LINE__)
+#else
+#define DEBUG_NEW new
+#endif
+#endif
 
 // basic wxWidgets headers
 #include <wx/wxprec.h>

@@ -8,9 +8,15 @@
  * Notes:
  **************************************************************/
 
-#include "FixedRectShape.h"
+#include "wx_pch.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFSquareShape, wxSFRectShape);
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/FixedRectShape.h"
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFSquareShape, wxSFRectShape);
 
 wxSFSquareShape::wxSFSquareShape(void)
 : wxSFRectShape()
@@ -24,7 +30,7 @@ wxSFSquareShape::wxSFSquareShape(const wxRealPoint& pos, double size, wxSFDiagra
 
 }
 
-wxSFSquareShape::wxSFSquareShape(wxSFSquareShape& obj)
+wxSFSquareShape::wxSFSquareShape(const wxSFSquareShape& obj)
 : wxSFRectShape(obj)
 {
 
@@ -149,4 +155,6 @@ void wxSFSquareShape::OnHandle(wxSFShapeHandle& handle)
     default:
         break;
 	}
+	
+	wxSFShapeBase::OnHandle( handle );
 }

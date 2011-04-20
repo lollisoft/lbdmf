@@ -8,8 +8,14 @@
  * Notes:
  **************************************************************/
 
-#include "ShapeBase.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/ShapeBase.h"
+#include "wx/wxsf/CommonFcn.h"
 
 //----------------------------------------------------------------------------------//
 // Serialization
@@ -33,5 +39,12 @@ void wxSFShapeBase::Deserialize(wxXmlNode* node)
 	if( m_pUserData )
 	{
 	    m_pUserData->SetParent(this);
+	}
+	
+	// update fixed connection points
+	for( ConnectionPointList::iterator it = m_lstConnectionPts.begin(); it != m_lstConnectionPts.end(); ++it )
+	{
+		wxSFConnectionPoint *pCp = (wxSFConnectionPoint*) *it;
+		pCp->SetParentShape( this );
 	}
 }

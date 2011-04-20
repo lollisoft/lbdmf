@@ -8,14 +8,21 @@
  * Notes:
  **************************************************************/
 
-#include <wx/dataobj.h>
-#include "RectShape.h"
-#include "ShapeCanvas.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/RectShape.h"
+#include "wx/wxsf/ShapeCanvas.h"
+#include "wx/wxsf/CommonFcn.h"
 
 // TODO: wxSFShapeBase: Implement LockAspectRation() function
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFRectShape, wxSFShapeBase);
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFRectShape, wxSFShapeBase);
 
 wxSFRectShape::wxSFRectShape(void) : wxSFShapeBase()
 {
@@ -23,9 +30,7 @@ wxSFRectShape::wxSFRectShape(void) : wxSFShapeBase()
 	m_Border = sfdvRECTSHAPE_BORDER;
 	m_Fill = sfdvRECTSHAPE_FILL;
 
-	XS_SERIALIZE_EX(m_nRectSize, wxT("size"),sfdvRECTSHAPE_SIZE);
-	XS_SERIALIZE_EX(m_Border, wxT("border"), sfdvRECTSHAPE_BORDER);
-	XS_SERIALIZE_EX(m_Fill, wxT("fill"),sfdvRECTSHAPE_FILL);
+	MarkSerializableDataMembers();
 }
 
 wxSFRectShape::wxSFRectShape(const wxRealPoint& pos, const wxRealPoint& size, wxSFDiagramManager* manager)
@@ -35,20 +40,27 @@ wxSFRectShape::wxSFRectShape(const wxRealPoint& pos, const wxRealPoint& size, wx
 	m_Border = sfdvRECTSHAPE_BORDER;
 	m_Fill = sfdvRECTSHAPE_FILL;
 
-	XS_SERIALIZE_EX(m_nRectSize, wxT("size"),sfdvRECTSHAPE_SIZE);
-	XS_SERIALIZE_EX(m_Border, wxT("border"), sfdvRECTSHAPE_BORDER);
-	XS_SERIALIZE_EX(m_Fill, wxT("fill"),sfdvRECTSHAPE_FILL);
+	MarkSerializableDataMembers();
 }
 
-wxSFRectShape::wxSFRectShape(wxSFRectShape& obj) : wxSFShapeBase(obj)
+wxSFRectShape::wxSFRectShape(const wxSFRectShape& obj) : wxSFShapeBase(obj)
 {
 	m_nRectSize = obj.m_nRectSize;
 	m_Border = obj.m_Border;
 	m_Fill = obj.m_Fill;
+
+	MarkSerializableDataMembers();
 }
 
 wxSFRectShape::~wxSFRectShape(void)
 {
+}
+
+void wxSFRectShape::MarkSerializableDataMembers()
+{
+	XS_SERIALIZE_EX(m_nRectSize, wxT("size"), sfdvRECTSHAPE_SIZE);
+	XS_SERIALIZE_EX(m_Border, wxT("border"), sfdvRECTSHAPE_BORDER);
+	XS_SERIALIZE_EX(m_Fill, wxT("fill"), sfdvRECTSHAPE_FILL);
 }
 
 //----------------------------------------------------------------------------------//
@@ -57,8 +69,8 @@ wxSFRectShape::~wxSFRectShape(void)
 
 wxRect wxSFRectShape::GetBoundingBox()
 {
-    wxRealPoint apos = GetAbsolutePosition();
-	return wxRect(wxPoint((int)apos.x, (int)apos.y), wxSize((int)m_nRectSize.x, (int)m_nRectSize.y ));
+    wxRealPoint apos = this->GetAbsolutePosition();
+    return wxRect(wxPoint((int)apos.x, (int)apos.y), wxSize((int)m_nRectSize.x, (int)m_nRectSize.y ));
 }
 
 void wxSFRectShape::Scale(double x, double y, bool children)
@@ -80,32 +92,27 @@ void wxSFRectShape::FitToChildren()
 
     wxSFShapeBase* pChild;
 
-    // get bounding box of the shape and children set be inside it
-    wxRect chBB = GetBoundingBox();
+    // get bounding box of the shape and children set be inside it	
+	wxRect chBB = this->GetBoundingBox();
+	wxRect shpBB = chBB;
 
-    wxShapeListNode* node = (wxShapeListNode*)GetFirstChildNode();
+    SerializableList::compatibility_iterator node = GetFirstChildNode();
     while(node)
     {
-        pChild = node->GetData();
+        pChild = (wxSFShapeBase*)node->GetData();
 
-        if( pChild->GetStyle() & sfsALWAYS_INSIDE )
+        if( pChild->ContainsStyle(sfsALWAYS_INSIDE) )
         {
             pChild->GetCompleteBoundingBox(chBB, bbSELF | bbCHILDREN);
         }
         node = node->GetNext();
     }
 
-	//GetCompleteBoundingBox(chBB, bbSELF | bbCHILDREN);
-
 	if(!chBB.IsEmpty())
 	{
-		wxRect shpBB = GetBoundingBox();
+		//wxRect shpBB = this->GetBoundingBox();
 
-#if wxCHECK_VERSION(2, 8, 0)
 		if(!shpBB.Contains(chBB))
-#else // replacement code for old version
-		if(!shpBB.Inside(chBB.GetTopLeft()) && !shpBB.Inside(chBB.GetBottomRight()))
-#endif
 		{
 			double dx = chBB.GetLeft() - shpBB.GetLeft();
 			double dy = chBB.GetTop() - shpBB.GetTop();
@@ -118,10 +125,10 @@ void wxSFRectShape::FitToChildren()
 			// move its "1st level" children if neccessary
 			if((dx < 0) || (dy < 0))
 			{
-				node = (wxShapeListNode*)GetFirstChildNode();
+				node = GetFirstChildNode();
 				while(node)
 				{
-					pChild = node->GetData();
+					pChild = (wxSFShapeBase*)node->GetData();
 					if(dx < 0)pChild->MoveBy(abs((int)dx), 0);
 					if(dy < 0)pChild->MoveBy(0, abs((int)dy));
 
@@ -129,10 +136,6 @@ void wxSFRectShape::FitToChildren()
 				}
 			}
 		}
-
-		// perform the action recursively
-		/*wxSFShapeBase* m_pParentShape = GetParentShape();
-		if(m_pParentShape)m_pParentShape->FitToChildren();*/
 	}
 }
 
@@ -140,53 +143,59 @@ void wxSFRectShape::FitToChildren()
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFRectShape::DrawNormal(wxSFScaledPaintDC &dc)
+void wxSFRectShape::DrawNormal(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(m_Border);
 	dc.SetBrush(m_Fill);
-	dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawRectangle(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFRectShape::DrawHover(wxSFScaledPaintDC &dc)
+void wxSFRectShape::DrawHover(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(wxPen(m_nHoverColor, 1));
 	dc.SetBrush(m_Fill);
-	dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawRectangle(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFRectShape::DrawHighlighted(wxSFScaledPaintDC &dc)
+void wxSFRectShape::DrawHighlighted(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(wxPen(m_nHoverColor, 2));
 	dc.SetBrush(m_Fill);
-	dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawRectangle(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
+}
+
+void wxSFRectShape::DrawShadow(wxDC& dc)
+{
+	// HINT: overload it for custom actions...
+
+    if( m_Fill.GetStyle() != wxTRANSPARENT )
+    {
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(GetParentCanvas()->GetShadowFill());
+        dc.DrawRectangle(Conv2Point(GetAbsolutePosition() + GetParentCanvas()->GetShadowOffset()), Conv2Size(m_nRectSize));
+        dc.SetBrush(m_Fill);
+        dc.SetPen(wxNullPen);
+    }
 }
 
 void wxSFRectShape::OnRightHandle(wxSFShapeHandle& handle)
 {
 	// HINT: overload it for custom actions...
 
-	/*wxRect chBB;
-	GetCompleteBoundingBox(chBB, bbCHILDREN | bbOMITALIGNED);
-
-	if(!chBB.IsEmpty())
-	{
-		if(handle.GetPosition().x <= chBB.GetRight())return;
-	}*/
-
-	m_nRectSize.x = handle.GetPosition().x - GetAbsolutePosition().x;
-	//m_nRectSize.x = m_nPrevSize.x + handle.GetTotalDelta().x;
+	//m_nRectSize.x = handle.GetPosition().x - GetAbsolutePosition().x;
+	m_nRectSize.x += handle.GetDelta().x;
 }
 
 void wxSFRectShape::OnLeftHandle(wxSFShapeHandle& handle)
@@ -194,26 +203,23 @@ void wxSFRectShape::OnLeftHandle(wxSFShapeHandle& handle)
 	// HINT: overload it for custom actions...
 
     wxSFShapeBase *pChild;
-	/*wxRect chBB;
-	GetCompleteBoundingBox(chBB, bbCHILDREN | bbOMITALIGNED);
 
-	if(!chBB.IsEmpty())
-	{
-		if(handle.GetPosition().x > chBB.GetLeft())return;
-	}*/
-
-	double dx = (double)handle.GetPosition().x - GetAbsolutePosition().x;
+	//double dx = (double)handle.GetPosition().x - GetAbsolutePosition().x;
+	double dx = (double)handle.GetDelta().x;
 
 	// update position of children
-	wxShapeListNode *node = (wxShapeListNode*)GetFirstChildNode();
-	while(node)
-	{
-	    pChild = node->GetData();
-	    if( pChild->GetHAlign() == halignNONE )
-	    {
-            pChild->MoveBy(-dx, 0);
-	    }
-		node = node->GetNext();
+	if( !ContainsStyle(sfsLOCK_CHILDREN) )
+	{	
+		SerializableList::compatibility_iterator node = GetFirstChildNode();
+		while(node)
+		{
+			pChild = (wxSFShapeBase*)node->GetData();
+			if( pChild->GetHAlign() == halignNONE )
+			{
+				pChild->MoveBy(-dx, 0);
+			}
+			node = node->GetNext();
+		}
 	}
 	// update position and size of the shape
 	m_nRectSize.x -= dx;
@@ -225,26 +231,23 @@ void wxSFRectShape::OnTopHandle(wxSFShapeHandle& handle)
 	// HINT: overload it for custom actions...
 
     wxSFShapeBase *pChild;
-	/*wxRect chBB;
-	GetCompleteBoundingBox(chBB, bbCHILDREN | bbOMITALIGNED);
 
-	if(!chBB.IsEmpty())
-	{
-		if(handle.GetPosition().y > chBB.GetTop())return;
-	}*/
-
-	double dy = (double)handle.GetPosition().y - GetAbsolutePosition().y;
+	//double dy = (double)handle.GetPosition().y - GetAbsolutePosition().y;
+	double dy = (double)handle.GetDelta().y;
 
 	// update position of children
-	wxShapeListNode *node = (wxShapeListNode*)GetFirstChildNode();
-	while(node)
+	if( !ContainsStyle( sfsLOCK_CHILDREN ) )
 	{
-	    pChild = node->GetData();
-	    if( pChild->GetVAlign() == valignNONE )
-	    {
-            pChild->MoveBy(0, -dy);
-	    }
-		node = node->GetNext();
+		SerializableList::compatibility_iterator node = GetFirstChildNode();
+		while(node)
+		{
+			pChild = (wxSFShapeBase*)node->GetData();
+			if( pChild->GetVAlign() == valignNONE )
+			{
+				pChild->MoveBy(0, -dy);
+			}
+			node = node->GetNext();
+		}
 	}
 	// update position and size of the shape
 	m_nRectSize.y -= dy;
@@ -255,55 +258,34 @@ void wxSFRectShape::OnBottomHandle(wxSFShapeHandle& handle)
 {
 	// HINT: overload it for custom actions...
 
-	/*wxRect chBB;
-	GetCompleteBoundingBox(chBB, bbCHILDREN | bbOMITALIGNED);
-
-	if(!chBB.IsEmpty())
-	{
-		if(handle.GetPosition().y <= chBB.GetBottom())return;
-	}*/
-
-	m_nRectSize.y = handle.GetPosition().y - GetAbsolutePosition().y;
+	//m_nRectSize.y = handle.GetPosition().y - GetAbsolutePosition().y;
+	m_nRectSize.y += handle.GetDelta().y;
 }
 
-wxRealPoint wxSFRectShape::GetBorderPoint(const wxRealPoint& to)
+wxRealPoint wxSFRectShape::GetBorderPoint(const wxRealPoint& start, const wxRealPoint& end)
 {
     // HINT: override it for custom actions ...
 
     // the function calculates intesection of line leading from the shape center to
     // given point with the shape's bounding box;
 
-    wxRealPoint intersection, center = GetCenter();
+    wxRealPoint intersection;
     wxRect bbRct = this->GetBoundingBox();
 
 
-#if wxCHECK_VERSION(2, 8, 0)
     if(LinesIntersection(wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetTopLeft().y),
-                         wxRealPoint(bbRct.GetTopRight().x, bbRct.GetTopRight().y), center, to, intersection)) return intersection;
+                             wxRealPoint(bbRct.GetTopRight().x + 1, bbRct.GetTopRight().y), start, end, intersection)) return intersection;
 
-    else if(LinesIntersection(wxRealPoint(bbRct.GetTopRight().x, bbRct.GetTopRight().y),
-                              wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetBottomRight().y + 1), center, to, intersection)) return intersection;
+    if(LinesIntersection(wxRealPoint(bbRct.GetTopRight().x + 1, bbRct.GetTopRight().y),
+                                  wxRealPoint(bbRct.GetBottomRight().x + 1, bbRct.GetBottomRight().y + 1), start, end, intersection)) return intersection;
 
-    else if(LinesIntersection(wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetBottomRight().y + 1),
-                              wxRealPoint(bbRct.GetBottomLeft().x, bbRct.GetBottomLeft().y + 1), center, to, intersection)) return intersection;
+	if(LinesIntersection(wxRealPoint(bbRct.GetBottomRight().x + 1, bbRct.GetBottomRight().y + 1),
+                                  wxRealPoint(bbRct.GetBottomLeft().x, bbRct.GetBottomLeft().y + 1), start, end, intersection)) return intersection;
 
-    else if(LinesIntersection(wxRealPoint(bbRct.GetBottomLeft().x, bbRct.GetBottomLeft().y + 1),
-                              wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetTopLeft().y), center, to, intersection)) return intersection;
-#else // replacement code for old version
-    if(LinesIntersection(wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetTopLeft().y),
-                         wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetTopLeft().y), center, to, intersection)) return intersection;
-
-    else if(LinesIntersection(wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetTopLeft().y),
-                              wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetBottomRight().y + 1), center, to, intersection)) return intersection;
-
-    else if(LinesIntersection(wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetBottomRight().y + 1),
-                              wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetBottomRight().y + 1), center, to, intersection)) return intersection;
-
-    else if(LinesIntersection(wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetBottomRight().y + 1),
-                              wxRealPoint(bbRct.GetBottomRight().x, bbRct.GetTopLeft().y), center, to, intersection)) return intersection;
-#endif
-
-    return center;
+    if(LinesIntersection(wxRealPoint(bbRct.GetBottomLeft().x, bbRct.GetBottomLeft().y + 1),
+                                  wxRealPoint(bbRct.GetTopLeft().x, bbRct.GetTopLeft().y), start, end, intersection)) return intersection;
+	
+    return GetCenter();
 }
 
 //----------------------------------------------------------------------------------//
@@ -370,10 +352,14 @@ void wxSFRectShape::OnHandle(wxSFShapeHandle& handle)
     default:
         break;
 	}
+	
+	wxSFShapeBase::OnHandle( handle );
 }
 
 void wxSFRectShape::OnBeginHandle(wxSFShapeHandle& handle)
 {
     m_nPrevPosition = m_nRelativePosition;
     m_nPrevSize = m_nRectSize;
+	
+	wxSFShapeBase::OnBeginHandle( handle );
 }

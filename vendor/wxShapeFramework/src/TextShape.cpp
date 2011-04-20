@@ -8,11 +8,16 @@
  * Notes:
  **************************************************************/
 
-#include <wx/dataobj.h>
-#include "TextShape.h"
-#include "ShapeCanvas.h"
+#include "wx_pch.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFTextShape, wxSFRectShape);
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/TextShape.h"
+#include "wx/wxsf/ShapeCanvas.h"
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFTextShape, wxSFRectShape);
 
 wxSFTextShape::wxSFTextShape(void)
 : wxSFRectShape()
@@ -27,16 +32,16 @@ wxSFTextShape::wxSFTextShape(void)
 
     m_Fill = *wxTRANSPARENT_BRUSH;
     m_Border = *wxTRANSPARENT_PEN;
+	
+	m_nRectSize = wxRealPoint(0, 0);
 
-    XS_SERIALIZE_EX(m_Font, wxT("font"), sfdvTEXTSHAPE_FONT);
-    XS_SERIALIZE_EX(m_TextColor, wxT("color"), sfdvTEXTSHAPE_TEXTCOLOR);
-    XS_SERIALIZE(m_sText, wxT("text"));
+	MarkSerializableDataMembers();
 
     UpdateRectSize();
 }
 
 wxSFTextShape::wxSFTextShape(const wxRealPoint& pos, const wxString& txt, wxSFDiagramManager* manager)
-: wxSFRectShape(pos, wxRealPoint(1, 1), manager)
+: wxSFRectShape(pos, wxRealPoint(0, 0), manager)
 {
     m_Font = sfdvTEXTSHAPE_FONT;
     m_Font.SetPointSize(12);
@@ -49,14 +54,12 @@ wxSFTextShape::wxSFTextShape(const wxRealPoint& pos, const wxString& txt, wxSFDi
     m_Fill = *wxTRANSPARENT_BRUSH;
     m_Border = *wxTRANSPARENT_PEN;
 
-    XS_SERIALIZE_EX(m_Font, wxT("font"), sfdvTEXTSHAPE_FONT);
-    XS_SERIALIZE_EX(m_TextColor, wxT("color"), sfdvTEXTSHAPE_TEXTCOLOR);
-    XS_SERIALIZE(m_sText, wxT("text"));
+	MarkSerializableDataMembers();
 
     UpdateRectSize();
 }
 
-wxSFTextShape::wxSFTextShape(wxSFTextShape& obj)
+wxSFTextShape::wxSFTextShape(const wxSFTextShape& obj)
 : wxSFRectShape(obj)
 {
     m_Font = obj.m_Font;
@@ -64,12 +67,21 @@ wxSFTextShape::wxSFTextShape(wxSFTextShape& obj)
     m_TextColor = obj.m_TextColor;
     m_sText = obj.m_sText;
 
+	MarkSerializableDataMembers();
+
     UpdateRectSize();
 }
 
 wxSFTextShape::~wxSFTextShape()
 {
 
+}
+
+void wxSFTextShape::MarkSerializableDataMembers()
+{
+    XS_SERIALIZE_EX(m_Font, wxT("font"), sfdvTEXTSHAPE_FONT);
+    XS_SERIALIZE_EX(m_TextColor, wxT("color"), sfdvTEXTSHAPE_TEXTCOLOR);
+    XS_SERIALIZE(m_sText, wxT("text"));
 }
 
 //----------------------------------------------------------------------------------//
@@ -147,19 +159,12 @@ void wxSFTextShape::OnHandle(wxSFShapeHandle& handle)
 	case wxSFShapeHandle::hndLEFT:
 		{
 		    double dx = m_nRectSize.x - prevSize.x;
-
-            // update position of children
-            /*ShapeList m_lstChildren;
-            GetChildren(m_lstChildren);
-            m_lstChildren.Insert(this);*/
-
-            //wxShapeListNode *node = m_lstChildren.GetFirst();
             MoveBy(-dx, 0);
 
-            wxShapeListNode *node = (wxShapeListNode*)GetFirstChildNode();
+            SerializableList::compatibility_iterator node = GetFirstChildNode();
             while(node)
             {
-                node->GetData()->MoveBy(-dx, 0);
+                ((wxSFShapeBase*)node->GetData())->MoveBy(-dx, 0);
                 node = node->GetNext();
             }
 		}
@@ -168,19 +173,12 @@ void wxSFTextShape::OnHandle(wxSFShapeHandle& handle)
 	case wxSFShapeHandle::hndTOP:
 		{
 		    double dy = m_nRectSize.y - prevSize.y;
-
-            // update position of children
-            /*ShapeList m_lstChildren;
-            GetChildren(m_lstChildren);
-            m_lstChildren.Insert(this);
-
-            wxShapeListNode *node = m_lstChildren.GetFirst();*/
             MoveBy(0, -dy);
 
-            wxShapeListNode *node = (wxShapeListNode*)GetFirstChildNode();
+            SerializableList::compatibility_iterator node = GetFirstChildNode();
             while(node)
             {
-                node->GetData()->MoveBy(0, -dy);
+                ((wxSFShapeBase*)node->GetData())->MoveBy(0, -dy);
                 node = node->GetNext();
             }
 		}
@@ -189,6 +187,8 @@ void wxSFTextShape::OnHandle(wxSFShapeHandle& handle)
     default:
         break;
 	}
+	
+	wxSFShapeBase::OnHandle( handle );
 }
 
 //----------------------------------------------------------------------------------//
@@ -198,15 +198,43 @@ void wxSFTextShape::OnHandle(wxSFShapeHandle& handle)
 wxSize wxSFTextShape::GetTextExtent()
 {
     wxCoord w = -1, h = -1;
-
     if(m_pParentManager && GetParentCanvas())
     {
         wxClientDC dc((wxWindow*)GetParentCanvas());
 
         // calculate text extent
-        dc.SetFont(m_Font);
-        dc.GetMultiLineTextExtent(m_sText, &w, &h, &m_nLineHeight);
-        dc.SetFont(wxNullFont);
+        if( wxSFShapeCanvas::IsGCEnabled() )
+        {
+            #if wxUSE_GRAPHICS_CONTEXT
+			double wd = -1, hd = -1, d = 0, e = 0;
+
+			wxGraphicsContext *pGC = wxGraphicsContext::Create( dc );
+            pGC->SetFont( m_Font, *wxBLACK );
+			
+			// we must use string tokenizer to inspect all lines of possible multiline text
+			h = 0;
+			wxString sLine;
+			
+			wxStringTokenizer tokens( m_sText, wxT("\n\r"), wxTOKEN_RET_EMPTY );
+			while( tokens.HasMoreTokens() )
+			{
+				sLine = tokens.GetNextToken();
+				pGC->GetTextExtent( sLine, &wd, &hd, &d, &e );
+				
+				h += (hd + e);
+				if( (wd + d) > w ) w = (wd + d);
+			}
+			m_nLineHeight = (hd + e);
+			
+            pGC->SetFont( wxNullFont, *wxBLACK );
+            #endif
+        }
+        else
+        {
+            dc.SetFont(m_Font);
+            dc.GetMultiLineTextExtent(m_sText, &w, &h, &m_nLineHeight);
+            dc.SetFont(wxNullFont);
+        }
     }
     else
     {
@@ -217,7 +245,12 @@ wxSize wxSFTextShape::GetTextExtent()
         m_nLineHeight = int(m_nRectSize.y/tokens.CountTokens());
     }
 
-    return wxSize(w, h);
+    /*if( wxSFShapeCanvas::IsGCEnabled() )
+    {
+        return wxSize((wxCoord)(wd + d), (wxCoord)(hd + e));
+    }
+    else*/
+        return wxSize(w, h);
 }
 
 void wxSFTextShape::UpdateRectSize()
@@ -250,22 +283,37 @@ void wxSFTextShape::SetFont(const wxFont& font)
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFTextShape::DrawNormal(wxSFScaledPaintDC& dc)
+void wxSFTextShape::DrawNormal(wxDC& dc)
 {
     wxSFRectShape::DrawNormal(dc);
     DrawTextContent(dc);
 }
 
-void wxSFTextShape::DrawHover(wxSFScaledPaintDC& dc)
+void wxSFTextShape::DrawHover(wxDC& dc)
 {
     wxSFRectShape::DrawHover(dc);
     DrawTextContent(dc);
 }
 
-void wxSFTextShape::DrawHighlighted(wxSFScaledPaintDC& dc)
+void wxSFTextShape::DrawHighlighted(wxDC& dc)
 {
     wxSFRectShape::DrawHighlighted(dc);
     DrawTextContent(dc);
+}
+
+void wxSFTextShape::DrawShadow(wxDC& dc)
+{
+	// HINT: overload it for custom actions...
+
+	wxColour nCurrColor = m_TextColor;
+	m_TextColor = GetParentCanvas()->GetShadowFill().GetColour();
+	wxRealPoint nOffset = GetParentCanvas()->GetShadowOffset();
+
+	MoveBy(nOffset);
+	DrawTextContent(dc);
+	MoveBy(-nOffset.x, -nOffset.y);
+
+	m_TextColor = nCurrColor;
 }
 
 void wxSFTextShape::OnLeftHandle(wxSFShapeHandle& handle)
@@ -273,6 +321,7 @@ void wxSFTextShape::OnLeftHandle(wxSFShapeHandle& handle)
 	// HINT: overload it for custom actions...
 
     m_nRectSize.x -= ((double)handle.GetPosition().x - GetAbsolutePosition().x);
+	//m_nRectSize.x -= (double)handle.GetDelta().x;
 }
 
 void wxSFTextShape::OnTopHandle(wxSFShapeHandle& handle)
@@ -280,17 +329,36 @@ void wxSFTextShape::OnTopHandle(wxSFShapeHandle& handle)
 	// HINT: overload it for custom actions...
 
 	m_nRectSize.y -= ((double)handle.GetPosition().y - GetAbsolutePosition().y);
+	//m_nRectSize.y -= (double)handle.GetDelta().y;
+}
+
+void wxSFTextShape::OnBottomHandle(wxSFShapeHandle& handle)
+{
+	// HINT: overload it for custom actions...
+	
+	m_nRectSize.y = handle.GetPosition().y - GetAbsolutePosition().y;
+	
+}
+
+void wxSFTextShape::OnRightHandle(wxSFShapeHandle& handle)
+{
+	// HINT: overload it for custom actions...
+	
+	m_nRectSize.x =handle.GetPosition().x - GetAbsolutePosition().x;
 }
 
 //----------------------------------------------------------------------------------//
 // protected functions
 //----------------------------------------------------------------------------------//
-
-void wxSFTextShape::DrawTextContent(wxSFScaledPaintDC& dc)
+void wxSFTextShape::DrawTextContent(wxDC& dc)
 {
 	wxString line;
 	int i = 0;
 
+	dc.SetBrush(m_Fill);
+	dc.SetBackgroundMode(wxTRANSPARENT);
+
+    /*#ifdef __WXMSW__
     if(m_Fill.GetStyle() == wxTRANSPARENT)
     {
         dc.SetBackgroundMode(wxTRANSPARENT);
@@ -300,6 +368,7 @@ void wxSFTextShape::DrawTextContent(wxSFScaledPaintDC& dc)
         dc.SetBackgroundMode(wxSOLID);
         dc.SetTextBackground(m_Fill.GetColour());
     }
+    #endif*/
 
     dc.SetTextForeground(m_TextColor);
 	dc.SetFont(m_Font);
@@ -311,9 +380,11 @@ void wxSFTextShape::DrawTextContent(wxSFScaledPaintDC& dc)
     while(tokens.HasMoreTokens())
     {
         line = tokens.GetNextToken();
-		dc.DrawText(line, pos.x, pos.y + i*m_nLineHeight);
+		dc.DrawText(line, (int)pos.x, (int)pos.y + i*m_nLineHeight);
 		i++;
 	}
 
     dc.SetFont(wxNullFont);
+
+	dc.SetBrush(wxNullBrush);
 }

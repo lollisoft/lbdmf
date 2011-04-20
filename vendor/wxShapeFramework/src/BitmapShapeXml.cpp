@@ -8,8 +8,14 @@
  * Notes:
  **************************************************************/
 
-#include "BitmapShape.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/BitmapShape.h"
+#include "wx/wxsf/CommonFcn.h"
 
 //----------------------------------------------------------------------------------//
 // Serialization

@@ -8,18 +8,26 @@
  * Notes:
  **************************************************************/
 
-#include "PolygonShape.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFPolygonShape, wxSFRectShape);
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/PolygonShape.h"
+#include "wx/wxsf/CommonFcn.h"
+#include "wx/wxsf/ShapeCanvas.h"
+
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFPolygonShape, wxSFRectShape);
 
 wxSFPolygonShape::wxSFPolygonShape(void)
 : wxSFRectShape()
 {
 	m_fConnectToVertex = sfdvPOLYGONSHAPE_VERTEXCONNECTIONS;
 
-	XS_SERIALIZE_EX(m_fConnectToVertex, wxT("connect_to_vertex"), sfdvPOLYGONSHAPE_VERTEXCONNECTIONS);
-    XS_SERIALIZE(m_arrVertices, wxT("vertices"));
+	MarkSerializableDataMembers();
 }
 
 wxSFPolygonShape::wxSFPolygonShape(int n, const wxRealPoint pts[], const wxRealPoint& pos, wxSFDiagramManager* manager)
@@ -27,16 +35,17 @@ wxSFPolygonShape::wxSFPolygonShape(int n, const wxRealPoint pts[], const wxRealP
 {
 	m_fConnectToVertex = sfdvPOLYGONSHAPE_VERTEXCONNECTIONS;
 
-	XS_SERIALIZE_EX(m_fConnectToVertex, wxT("connect_to_vertex"), sfdvPOLYGONSHAPE_VERTEXCONNECTIONS);
-    XS_SERIALIZE(m_arrVertices, wxT("vertices"));
+	MarkSerializableDataMembers();
 
 	SetVertices(n, pts);
 }
 
-wxSFPolygonShape::wxSFPolygonShape(wxSFPolygonShape& obj)
+wxSFPolygonShape::wxSFPolygonShape(const wxSFPolygonShape& obj)
 : wxSFRectShape(obj)
 {
 	m_fConnectToVertex = obj.m_fConnectToVertex;
+
+	MarkSerializableDataMembers();
 
 	m_arrVertices.Clear();
 	for(size_t i = 0; i < obj.m_arrVertices.Count(); i++)m_arrVertices.Add(obj.m_arrVertices[i]);
@@ -44,6 +53,12 @@ wxSFPolygonShape::wxSFPolygonShape(wxSFPolygonShape& obj)
 
 wxSFPolygonShape::~wxSFPolygonShape(void)
 {
+}
+
+void wxSFPolygonShape::MarkSerializableDataMembers()
+{
+	XS_SERIALIZE_EX(m_fConnectToVertex, wxT("connect_to_vertex"), sfdvPOLYGONSHAPE_VERTEXCONNECTIONS);
+    XS_SERIALIZE(m_arrVertices, wxT("vertices"));
 }
 
 //----------------------------------------------------------------------------------//
@@ -64,30 +79,30 @@ void wxSFPolygonShape::SetVertices(size_t n, const wxRealPoint pts[])
 // public virtual functions
 //----------------------------------------------------------------------------------//
 
-wxRealPoint wxSFPolygonShape::GetBorderPoint(const wxRealPoint& to)
+wxRealPoint wxSFPolygonShape::GetBorderPoint(const wxRealPoint& start, const wxRealPoint& end)
 {
     // HINT: override it for custom actions ...
 
 	bool fSuccess = false;
 	double tmpMinDist = 0, minDist = 0;
-	wxRealPoint tmpIntersection, intersection, center;
+	wxRealPoint tmpIntersection, intersection;
 	size_t ptsCnt = m_arrVertices.Count();
 
 	wxRealPoint *pts = new wxRealPoint[ptsCnt];
 	GetTranslatedVerices(pts);
 
-	intersection = center = GetCenter();
+	intersection = start; //GetCenter();
 
-	if(ptsCnt == 0)return center;
+	if(ptsCnt == 0)return GetCenter();
 
 	if(m_fConnectToVertex)
 	{
-		minDist = Distance(pts[0], to);
+		minDist = Distance(pts[0], end);
 		intersection = pts[0];
 
 		for(size_t i = 1; i < ptsCnt; i++)
 		{
-			tmpMinDist = Distance(pts[i], to);
+			tmpMinDist = Distance(pts[i], end);
 			if(tmpMinDist < minDist)
 			{
 				minDist = tmpMinDist;
@@ -102,16 +117,16 @@ wxRealPoint wxSFPolygonShape::GetBorderPoint(const wxRealPoint& to)
 	{
 		for(size_t i = 0; i < ptsCnt; i++)
 		{
-			if(LinesIntersection(pts[i], pts[(i+1) % ptsCnt], center, to, tmpIntersection))
+			if(LinesIntersection(pts[i], pts[(i+1) % ptsCnt], start, end, tmpIntersection))
 			{
 				if(!fSuccess)
 				{
-					minDist = Distance(intersection, to);
+					minDist = Distance(intersection, end);
 					intersection = tmpIntersection;
 				}
 				else
 				{
-					tmpMinDist = Distance(intersection, to);
+					tmpMinDist = Distance(intersection, end);
 					if(tmpMinDist < minDist)
 					{
 						minDist = tmpMinDist;
@@ -130,7 +145,7 @@ wxRealPoint wxSFPolygonShape::GetBorderPoint(const wxRealPoint& to)
 		}
 		else
 		{
-			return center;
+			return GetCenter();
 		}
 	}
 }
@@ -187,6 +202,13 @@ void wxSFPolygonShape::GetTranslatedVerices(wxRealPoint pts[])
 	for(size_t i = 0; i < m_arrVertices.Count(); i++)pts[i] = absPos + m_arrVertices[i];
 }
 
+void wxSFPolygonShape::GetTranslatedVerices(wxPoint pts[])
+{
+	wxPoint absPos = Conv2Point(GetAbsolutePosition());
+
+	for(size_t i = 0; i < m_arrVertices.Count(); i++)pts[i] = absPos + Conv2Point(m_arrVertices[i]);
+}
+
 void wxSFPolygonShape::NormalizeVertices()
 {
 	// move all vertices so the polygon's relative bounding box will be located in the origin
@@ -231,10 +253,10 @@ void wxSFPolygonShape::FitBoundingBoxToVertices()
 	m_nRectSize.y = maxy - miny;
 }
 
-void wxSFPolygonShape::DrawPolygonShape(wxSFScaledPaintDC &dc)
+void wxSFPolygonShape::DrawPolygonShape(wxDC& dc)
 {
 	size_t vcount = m_arrVertices.Count();
-	wxRealPoint *pts = new wxRealPoint[vcount];
+	wxPoint *pts = new wxPoint[vcount];
 
 	GetTranslatedVerices(pts);
 	dc.DrawPolygon(vcount, pts);
@@ -246,7 +268,7 @@ void wxSFPolygonShape::DrawPolygonShape(wxSFScaledPaintDC &dc)
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFPolygonShape::DrawNormal(wxSFScaledPaintDC &dc)
+void wxSFPolygonShape::DrawNormal(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -257,7 +279,7 @@ void wxSFPolygonShape::DrawNormal(wxSFScaledPaintDC &dc)
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFPolygonShape::DrawHover(wxSFScaledPaintDC &dc)
+void wxSFPolygonShape::DrawHover(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -268,7 +290,7 @@ void wxSFPolygonShape::DrawHover(wxSFScaledPaintDC &dc)
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFPolygonShape::DrawHighlighted(wxSFScaledPaintDC &dc)
+void wxSFPolygonShape::DrawHighlighted(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -277,4 +299,24 @@ void wxSFPolygonShape::DrawHighlighted(wxSFScaledPaintDC &dc)
 	DrawPolygonShape(dc);
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
+}
+
+void wxSFPolygonShape::DrawShadow(wxDC& dc)
+{
+	// HINT: overload it for custom actions...
+
+    if( m_Fill.GetStyle() != wxTRANSPARENT )
+    {
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(GetParentCanvas()->GetShadowFill());
+
+        wxRealPoint nOffset = GetParentCanvas()->GetShadowOffset();
+
+        MoveBy(nOffset);
+        DrawPolygonShape(dc);
+        MoveBy(-nOffset.x, -nOffset.y);
+
+        dc.SetBrush(wxNullBrush);
+        dc.SetPen(wxNullPen);
+    }
 }

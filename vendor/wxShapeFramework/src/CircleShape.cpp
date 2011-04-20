@@ -8,10 +8,19 @@
  * Notes:
  **************************************************************/
 
-#include "CircleShape.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFCircleShape, wxSFSquareShape);
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/CircleShape.h"
+#include "wx/wxsf/CommonFcn.h"
+#include "wx/wxsf/ShapeCanvas.h"
+
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFCircleShape, wxSFSquareShape);
 
 wxSFCircleShape::wxSFCircleShape(void)
 : wxSFSquareShape()
@@ -25,7 +34,7 @@ wxSFCircleShape::wxSFCircleShape(const wxRealPoint& pos, double radius, wxSFDiag
 
 }
 
-wxSFCircleShape::wxSFCircleShape(wxSFCircleShape& obj)
+wxSFCircleShape::wxSFCircleShape(const wxSFCircleShape& obj)
 : wxSFSquareShape(obj)
 {
 
@@ -40,23 +49,23 @@ wxSFCircleShape::~wxSFCircleShape()
 // public virtual functions
 //----------------------------------------------------------------------------------//
 
-wxRealPoint wxSFCircleShape::GetBorderPoint(const wxRealPoint& to)
-{
-    wxRealPoint center = GetAbsolutePosition() + wxRealPoint(m_nRectSize.x/2, m_nRectSize.y/2);
-	double dist = Distance(center, to);
+wxRealPoint wxSFCircleShape::GetBorderPoint(const wxRealPoint& start, const wxRealPoint& end)
+{		
+	double dist = Distance(start, end);
+	wxRealPoint nCenter = GetAbsolutePosition() + wxRealPoint(m_nRectSize.x/2, m_nRectSize.y/2);
 
 	if(dist)
 	{
-		double srcDx = m_nRectSize.x/2*(to.x-center.x)/dist;
-		double srcDy = m_nRectSize.y/2*(to.y-center.y)/dist;
-		return wxRealPoint(center.x + srcDx, center.y + srcDy);
+		double srcDx = m_nRectSize.x/2*(end.x-start.x)/dist - (start.x-nCenter.x);
+		double srcDy = m_nRectSize.y/2*(end.y-start.y)/dist - (start.y-nCenter.y);
+
+		return wxRealPoint(start.x + srcDx, start.y + srcDy);
 	}
 	else
-		return center;
-
+		return nCenter;
 }
 
-bool wxSFCircleShape::IsInside(const wxPoint& pos)
+bool wxSFCircleShape::Contains(const wxPoint& pos)
 {
     wxRealPoint center = GetAbsolutePosition() + wxRealPoint(m_nRectSize.x/2, m_nRectSize.y/2);
 
@@ -70,7 +79,7 @@ bool wxSFCircleShape::IsInside(const wxPoint& pos)
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFCircleShape::DrawNormal(wxSFScaledPaintDC& dc)
+void wxSFCircleShape::DrawNormal(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -78,12 +87,12 @@ void wxSFCircleShape::DrawNormal(wxSFScaledPaintDC& dc)
 
 	dc.SetPen(m_Border);
 	dc.SetBrush(m_Fill);
-	dc.DrawCircle(pos.x + m_nRectSize.x/2, pos.y + m_nRectSize.y/2, m_nRectSize.x/2);
+	dc.DrawCircle(int(pos.x + m_nRectSize.x/2), int(pos.y + m_nRectSize.y/2), int(m_nRectSize.x/2));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFCircleShape::DrawHover(wxSFScaledPaintDC& dc)
+void wxSFCircleShape::DrawHover(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -91,12 +100,12 @@ void wxSFCircleShape::DrawHover(wxSFScaledPaintDC& dc)
 
 	dc.SetPen(wxPen(m_nHoverColor, 1));
 	dc.SetBrush(m_Fill);
-	dc.DrawCircle(pos.x + m_nRectSize.x/2, pos.y + m_nRectSize.y/2, m_nRectSize.x/2);
+	dc.DrawCircle(int(pos.x + m_nRectSize.x/2), int(pos.y + m_nRectSize.y/2), int(m_nRectSize.x/2));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFCircleShape::DrawHighlighted(wxSFScaledPaintDC& dc)
+void wxSFCircleShape::DrawHighlighted(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
@@ -104,9 +113,25 @@ void wxSFCircleShape::DrawHighlighted(wxSFScaledPaintDC& dc)
 
 	dc.SetPen(wxPen(m_nHoverColor, 2));
 	dc.SetBrush(m_Fill);
-	dc.DrawCircle(pos.x + m_nRectSize.x/2, pos.y + m_nRectSize.y/2, m_nRectSize.x/2);
+	dc.DrawCircle(int(pos.x + m_nRectSize.x/2), int(pos.y + m_nRectSize.y/2), int(m_nRectSize.x/2));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
+}
+
+void wxSFCircleShape::DrawShadow(wxDC& dc)
+{
+	// HINT: overload it for custom actions...
+
+    if( m_Fill.GetStyle() != wxTRANSPARENT )
+    {
+        wxRealPoint pos = GetAbsolutePosition();
+
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(GetParentCanvas()->GetShadowFill());
+        dc.DrawCircle(int(pos.x + m_nRectSize.x/2 + GetParentCanvas()->GetShadowOffset().x), int(pos.y + m_nRectSize.y/2 + GetParentCanvas()->GetShadowOffset().y), int(m_nRectSize.x/2));
+        dc.SetBrush(wxNullBrush);
+        dc.SetPen(wxNullPen);
+    }
 }
 
 

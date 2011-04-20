@@ -8,13 +8,19 @@
  * Notes:
  **************************************************************/
 
-#include "DiamondShape.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/DiamondShape.h"
+#include "wx/wxsf/CommonFcn.h"
 
 // diamond shape
 const wxRealPoint diamond[4]={wxRealPoint(0,25), wxRealPoint(50,0), wxRealPoint(100, 25), wxRealPoint(50, 50)};
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFDiamondShape, wxSFPolygonShape);
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFDiamondShape, wxSFPolygonShape);
 
 wxSFDiamondShape::wxSFDiamondShape()
 : wxSFPolygonShape()
@@ -30,7 +36,7 @@ wxSFDiamondShape::wxSFDiamondShape(const wxRealPoint& pos, wxSFDiagramManager* m
 	EnablePropertySerialization(wxT("vertices"), false);
 }
 
-wxSFDiamondShape::wxSFDiamondShape(wxSFDiamondShape& obj)
+wxSFDiamondShape::wxSFDiamondShape(const wxSFDiamondShape& obj)
 : wxSFPolygonShape(obj)
 {
 
@@ -45,14 +51,11 @@ wxSFDiamondShape::~wxSFDiamondShape()
 // public virtual functions
 //----------------------------------------------------------------------------------//
 
-bool wxSFDiamondShape::IsInside(const wxPoint& pos)
+bool wxSFDiamondShape::Contains(const wxPoint& pos)
 {
     wxRect bbRct = this->GetBoundingBox();
-#if wxCHECK_VERSION(2, 8, 0)
     if(!bbRct.Contains(pos))return false;
-#else // replacement code for old version
-    if(!bbRct.Inside(pos))return false;
-#endif
+
     wxRealPoint center = GetCenter();
     double k = ((double)bbRct.GetHeight()/2)/((double)bbRct.GetWidth()/2);
 

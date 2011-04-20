@@ -8,9 +8,19 @@
  * Notes:
  **************************************************************/
 
-#include "EllipseShape.h"
+#include "wx_pch.h"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFEllipseShape, wxSFRectShape);
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/EllipseShape.h"
+#include "wx/wxsf/ShapeCanvas.h"
+#include "wx/wxsf/CommonFcn.h"
+
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFEllipseShape, wxSFRectShape);
 
 wxSFEllipseShape::wxSFEllipseShape(void)
 :wxSFRectShape()
@@ -24,7 +34,7 @@ wxSFEllipseShape::wxSFEllipseShape(const wxRealPoint& pos, const wxRealPoint& si
 
 }
 
-wxSFEllipseShape::wxSFEllipseShape(wxSFEllipseShape& obj)
+wxSFEllipseShape::wxSFEllipseShape(const wxSFEllipseShape& obj)
 : wxSFRectShape(obj)
 {
 
@@ -39,16 +49,23 @@ wxSFEllipseShape::~wxSFEllipseShape()
 // public virtual functions
 //----------------------------------------------------------------------------------//
 
-wxRealPoint wxSFEllipseShape::GetBorderPoint(const wxRealPoint& to)
+wxRealPoint wxSFEllipseShape::GetBorderPoint(const wxRealPoint& start, const wxRealPoint& end)
 {
-    // HINT: overload it for custom actions...
+	double dist = Distance(start, end);
+	wxRealPoint nCenter = GetAbsolutePosition() + wxRealPoint(m_nRectSize.x/2, m_nRectSize.y/2);
 
-    // TODO: wxSFEllipseShape: Improve 'GetBorderPoint' function
+	if(dist)
+	{
+		double srcDx = m_nRectSize.x/2*(end.x-start.x)/dist - (start.x-nCenter.x);
+		double srcDy = m_nRectSize.y/2*(end.y-start.y)/dist - (start.y-nCenter.y);
 
-    return wxSFRectShape::GetBorderPoint(to);
+		return wxRealPoint(start.x + srcDx, start.y + srcDy);
+	}
+	else
+		return nCenter;
 }
 
-bool wxSFEllipseShape::IsInside(const wxPoint& pos)
+bool wxSFEllipseShape::Contains(const wxPoint& pos)
 {
     // HINT: overload it for custom actions...
 
@@ -71,37 +88,51 @@ bool wxSFEllipseShape::IsInside(const wxPoint& pos)
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFEllipseShape::DrawNormal(wxSFScaledPaintDC& dc)
+void wxSFEllipseShape::DrawNormal(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(m_Border);
 	dc.SetBrush(m_Fill);
-	dc.DrawEllipse(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawEllipse(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFEllipseShape::DrawHover(wxSFScaledPaintDC& dc)
+void wxSFEllipseShape::DrawHover(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(wxPen(m_nHoverColor, 1));
 	dc.SetBrush(m_Fill);
-	dc.DrawEllipse(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawEllipse(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFEllipseShape::DrawHighlighted(wxSFScaledPaintDC& dc)
+void wxSFEllipseShape::DrawHighlighted(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	dc.SetPen(wxPen(m_nHoverColor, 2));
 	dc.SetBrush(m_Fill);
-	dc.DrawEllipse(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawEllipse(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
+}
+
+void wxSFEllipseShape::DrawShadow(wxDC& dc)
+{
+	// HINT: overload it for custom actions...
+
+    if( m_Fill.GetStyle() != wxTRANSPARENT )
+    {
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(GetParentCanvas()->GetShadowFill());
+        dc.DrawEllipse(Conv2Point(GetAbsolutePosition() + GetParentCanvas()->GetShadowOffset()), Conv2Size(m_nRectSize));
+        dc.SetBrush(wxNullBrush);
+        dc.SetPen(wxNullPen);
+    }
 }
 
 

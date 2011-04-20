@@ -7,56 +7,79 @@
  * License:   wxWidgets license (www.wxwidgets.org)
  * Notes:
  **************************************************************/
+#include "wx_pch.h"
 
-#include <wx/dataobj.h>
-#include <wx/image.h>
-#include "BitmapShape.h"
-#include "ShapeCanvas.h"
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/BitmapShape.h"
+#include "wx/wxsf/ShapeCanvas.h"
+#include "wx/wxsf/CommonFcn.h"
 
 #include "res/NoSource.xpm"
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFBitmapShape, wxSFRectShape);
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFBitmapShape, wxSFRectShape);
 
 wxSFBitmapShape::wxSFBitmapShape(void)
 : wxSFRectShape()
 {
     m_sBitmapPath = wxT("");
+
 	m_fRescaleInProgress = false;
 	m_fCanScale = sfdvBITMAPSHAPE_SCALEIMAGE;
 	CreateFromXPM(NoSource_xpm);
 
-    XS_SERIALIZE(m_sBitmapPath, wxT("path"));
-    XS_SERIALIZE_EX(m_fCanScale, wxT("scale_image"), sfdvBITMAPSHAPE_SCALEIMAGE);
+	// mark serialized properties
+	MarkSerializableDataMembers();
 }
 
 wxSFBitmapShape::wxSFBitmapShape(const wxRealPoint& pos, const wxString& bitmapPath, wxSFDiagramManager* manager)
 : wxSFRectShape(pos, wxRealPoint(1, 1), manager)
 {
     m_sBitmapPath = wxT("");
+
 	m_fRescaleInProgress = false;
 	m_fCanScale = sfdvBITMAPSHAPE_SCALEIMAGE;
 	CreateFromFile(bitmapPath);
 
-    XS_SERIALIZE(m_sBitmapPath, wxT("path"));
-    XS_SERIALIZE_EX(m_fCanScale, wxT("scale_image"), sfdvBITMAPSHAPE_SCALEIMAGE);
+	// mark serialized properties
+	MarkSerializableDataMembers();
 }
 
-wxSFBitmapShape::wxSFBitmapShape(wxSFBitmapShape& obj)
+wxSFBitmapShape::wxSFBitmapShape(const wxSFBitmapShape& obj)
+: wxSFRectShape(obj)
 {
-	m_fCanScale = obj.m_fCanScale;
 	m_sBitmapPath = obj.m_sBitmapPath;
-	m_Bitmap = obj.m_Bitmap;
+
+	m_fRescaleInProgress = false;
+	m_fCanScale = obj.m_fCanScale;
+
+	// create real bitmap copy
+	m_Bitmap = obj.m_Bitmap.GetSubBitmap(wxRect(0, 0, obj.m_Bitmap.GetWidth(), obj.m_Bitmap.GetHeight()));
+	m_OriginalBitmap = m_Bitmap;
+
+	// mark serialized properties
+	MarkSerializableDataMembers();
 }
 
 wxSFBitmapShape::~wxSFBitmapShape(void)
 {
 }
 
+void wxSFBitmapShape::MarkSerializableDataMembers()
+{
+    XS_SERIALIZE(m_sBitmapPath, wxT("path"));
+    XS_SERIALIZE_EX(m_fCanScale, wxT("scale_image"), sfdvBITMAPSHAPE_SCALEIMAGE);
+}
+
 //----------------------------------------------------------------------------------//
 // public functions
 //----------------------------------------------------------------------------------//
 
-bool wxSFBitmapShape::CreateFromFile(const wxString& file)
+bool wxSFBitmapShape::CreateFromFile(const wxString& file, wxBitmapType type)
 {
 	bool fSuccess = true;
 
@@ -66,7 +89,7 @@ bool wxSFBitmapShape::CreateFromFile(const wxString& file)
 		m_sBitmapPath = file;
 		if(wxFileExists(m_sBitmapPath))
 		{
-			fSuccess = m_Bitmap.LoadFile(m_sBitmapPath, wxBITMAP_TYPE_BMP);
+			fSuccess = m_Bitmap.LoadFile(m_sBitmapPath, type);
 
 		}
 		else
@@ -83,15 +106,12 @@ bool wxSFBitmapShape::CreateFromFile(const wxString& file)
 	m_nRectSize.x = m_Bitmap.GetWidth();
 	m_nRectSize.y = m_Bitmap.GetHeight();
 
-	//EnableSizeChange(m_fCanScale);
 	if(m_fCanScale)
 	{
 	    AddStyle(sfsSIZE_CHANGE);
-        //SetStyle(GetStyle() | sfsSIZE_CHANGE);
 	}
 	else
         RemoveStyle(sfsSIZE_CHANGE);
-        //SetStyle(GetStyle() & ~sfsSIZE_CHANGE);
 
 	return fSuccess;
 }
@@ -102,13 +122,9 @@ bool wxSFBitmapShape::CreateFromXPM(const char* const* bits)
 	m_sBitmapPath = wxT("");
 
 	// create bitmap from XPM
-	m_Bitmap = wxBitmap((const char**) bits);
-
-#if wxCHECK_VERSION(2, 8, 0)
+	m_Bitmap = wxBitmap(bits);
 	fSuccess = m_Bitmap.IsOk();
-#else // replacement code for old version
-	fSuccess = m_Bitmap.Ok();
-#endif
+
 	if(!fSuccess)
 	{
 		m_Bitmap = wxBitmap(NoSource_xpm);
@@ -119,15 +135,12 @@ bool wxSFBitmapShape::CreateFromXPM(const char* const* bits)
 	m_nRectSize.x = m_Bitmap.GetWidth();
 	m_nRectSize.y = m_Bitmap.GetHeight();
 
-	//EnableSizeChange(m_fCanScale);
 	if(m_fCanScale)
 	{
-        //SetStyle(GetStyle() | sfsSIZE_CHANGE);
         AddStyle(sfsSIZE_CHANGE);
 	}
 	else
         RemoveStyle(sfsSIZE_CHANGE);
-        //SetStyle(GetStyle() & ~sfsSIZE_CHANGE);
 
 	return fSuccess;
 }
@@ -143,7 +156,7 @@ void wxSFBitmapShape::Scale(double x, double y, bool children)
 		m_nRectSize.x *= x;
 		m_nRectSize.y *= y;
 
-		if(!m_fRescaleInProgress)RescaleImage(m_nRectSize);
+		if(!m_fRescaleInProgress) RescaleImage(m_nRectSize);
 
         // call default function implementation (needed for scaling of shape's children)
 		wxSFShapeBase::Scale(x, y, children);
@@ -157,6 +170,8 @@ void wxSFBitmapShape::OnBeginHandle(wxSFShapeHandle& handle)
 		m_fRescaleInProgress = true;
 		m_nPrevPos = GetAbsolutePosition();
 	}
+	
+	wxSFShapeBase::OnBeginHandle(handle);
 }
 
 void wxSFBitmapShape::OnHandle(wxSFShapeHandle& handle)
@@ -167,8 +182,6 @@ void wxSFBitmapShape::OnHandle(wxSFShapeHandle& handle)
 	}
 	else
         RemoveStyle(sfsSIZE_CHANGE);
-        //SetStyle(GetStyle() & ~sfsSIZE_CHANGE);
-		//EnableSizeChange(false);
 }
 
 void wxSFBitmapShape::OnEndHandle(wxSFShapeHandle& handle)
@@ -178,6 +191,8 @@ void wxSFBitmapShape::OnEndHandle(wxSFShapeHandle& handle)
 		m_fRescaleInProgress = false;
 		RescaleImage(m_nRectSize);
 	}
+	
+	wxSFShapeBase::OnEndHandle(handle);
 }
 
 //----------------------------------------------------------------------------------//
@@ -189,11 +204,16 @@ void wxSFBitmapShape::RescaleImage(const wxRealPoint& size)
     if( GetParentCanvas() )
     {
         wxImage image = m_OriginalBitmap.ConvertToImage();
-#if wxCHECK_VERSION(2, 8, 0)
-        image.Rescale(int(size.x * GetParentCanvas()->GetScale()), int(size.y * GetParentCanvas()->GetScale()), wxIMAGE_QUALITY_NORMAL);
-#else // replacement code for old version
-        image.Rescale(int(size.x * GetParentCanvas()->GetScale()), int(size.y * GetParentCanvas()->GetScale()));
-#endif
+
+        if( wxSFShapeCanvas::IsGCEnabled() )
+        {
+            image.Rescale(int(size.x), int(size.y), wxIMAGE_QUALITY_NORMAL);
+        }
+        else
+        {
+            image.Rescale(int(size.x * GetParentCanvas()->GetScale()), int(size.y * GetParentCanvas()->GetScale()), wxIMAGE_QUALITY_NORMAL);
+        }
+
         m_Bitmap = wxBitmap(image);
     }
 }
@@ -202,50 +222,48 @@ void wxSFBitmapShape::RescaleImage(const wxRealPoint& size)
 // protected virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFBitmapShape::DrawNormal(wxSFScaledPaintDC &dc)
+void wxSFBitmapShape::DrawNormal(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	if(m_fRescaleInProgress)
 	{
-		dc.DrawBitmap(m_Bitmap, m_nPrevPos.x, m_nPrevPos.y);
+		dc.DrawBitmap(m_Bitmap, Conv2Point(m_nPrevPos));
 
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.SetPen(wxPen(wxColour(100, 100, 100), 1, wxDOT));
-		dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+		dc.DrawRectangle(Conv2Point(GetAbsolutePosition()), Conv2Size(m_nRectSize));
 		dc.SetPen(wxNullPen);
 		dc.SetBrush(wxNullBrush);
 	}
 	else
-	{
-		dc.DrawBitmap(m_Bitmap, GetAbsolutePosition());
-	}
+		dc.DrawBitmap(m_Bitmap, Conv2Point(GetAbsolutePosition()));
 }
 
-void wxSFBitmapShape::DrawHover(wxSFScaledPaintDC &dc)
+void wxSFBitmapShape::DrawHover(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	wxRealPoint pos = GetAbsolutePosition();
-	dc.DrawBitmap(m_Bitmap, pos.x, pos.y);
+	dc.DrawBitmap(m_Bitmap, Conv2Point(pos));
 
 	dc.SetPen(wxPen(m_nHoverColor, 1));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawRectangle(Conv2Point(pos), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }
 
-void wxSFBitmapShape::DrawHighlighted(wxSFScaledPaintDC &dc)
+void wxSFBitmapShape::DrawHighlighted(wxDC& dc)
 {
 	// HINT: overload it for custom actions...
 
 	wxRealPoint pos = GetAbsolutePosition();
-	dc.DrawBitmap(m_Bitmap, pos.x, pos.y);
+	dc.DrawBitmap(m_Bitmap, Conv2Point(pos));
 
 	dc.SetPen(wxPen(m_nHoverColor, 2));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dc.DrawRectangle(GetAbsolutePosition(), m_nRectSize);
+	dc.DrawRectangle(Conv2Point(pos), Conv2Size(m_nRectSize));
 	dc.SetBrush(wxNullBrush);
 	dc.SetPen(wxNullPen);
 }

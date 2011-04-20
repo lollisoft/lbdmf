@@ -8,10 +8,15 @@
  * Notes:
  **************************************************************/
 
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
 #include <wx/mstream.h>
 
-#include <wx/dataobj.h>
-#include "ShapeDataObject.h"
+#include "wx/wxsf/ShapeDataObject.h"
 
 wxSFShapeDataObject::wxSFShapeDataObject(const wxDataFormat& format)
 : wxDataObjectSimple(format)
@@ -36,7 +41,7 @@ wxString wxSFShapeDataObject::SerializeSelectedShapes(const ShapeList& selection
 	wxXmlNode *root = new wxXmlNode(wxXML_ELEMENT_NODE, wxT("chart"));
 
 	// serialize copied shapes to XML node
-	wxShapeListNode *node = selection.GetFirst();
+	ShapeList::compatibility_iterator node = selection.GetFirst();
 	while(node)
 	{
 		pShape = node->GetData();

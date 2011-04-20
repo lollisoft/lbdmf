@@ -8,10 +8,15 @@
  * Notes:
  **************************************************************/
 
-#include <wx/dataobj.h>
-#include "MultiSelRect.h"
-#include "ShapeCanvas.h"
-#include "TextShape.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/MultiSelRect.h"
+#include "wx/wxsf/ShapeCanvas.h"
+#include "wx/wxsf/TextShape.h"
 #include <math.h>
 
 wxSFMultiSelRect::wxSFMultiSelRect(void)
@@ -37,7 +42,7 @@ void wxSFMultiSelRect::OnBeginHandle(wxSFShapeHandle& handle)
 		ShapeList lstShapes;
 		GetParentCanvas()->GetSelectedShapes(lstShapes);
 
-		wxShapeListNode* node = lstShapes.GetFirst();
+		ShapeList::compatibility_iterator node = lstShapes.GetFirst();
 		while(node)
 		{
 			node->GetData()->OnBeginHandle(handle);
@@ -55,7 +60,7 @@ void wxSFMultiSelRect::OnEndHandle(wxSFShapeHandle& handle)
 		ShapeList lstShapes;
 		GetParentCanvas()->GetSelectedShapes(lstShapes);
 
-		wxShapeListNode* node = lstShapes.GetFirst();
+		ShapeList::compatibility_iterator node = lstShapes.GetFirst();
 		while(node)
 		{
 			node->GetData()->OnEndHandle(handle);
@@ -77,7 +82,7 @@ bool wxSFMultiSelRect::AnyWidthExceeded(const wxPoint& delta)
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
 		// first determine whether any shape in the selection exceeds its bounds
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 		    pShape = node->GetData();
@@ -101,7 +106,7 @@ bool wxSFMultiSelRect::AnyHeightExceeded(const wxPoint& delta)
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
 		// first determine whether any shape in the selection exceeds its bounds
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 		    pShape = node->GetData();
@@ -124,16 +129,16 @@ void wxSFMultiSelRect::OnRightHandle(wxSFShapeHandle& handle)
 {
 	if(GetParentCanvas() && !AnyWidthExceeded(handle.GetDelta()))
 	{
-	    wxRealPointListNode* ptnode;
+	    RealPointList::compatibility_iterator ptnode;
 	    wxSFLineShape* pLine;
 	    wxRealPoint* pt;
 
-		double dx, sx = (GetRectSize().x - 2*MEOFFSET + handle.GetDelta().x)/(GetRectSize().x - 2*MEOFFSET);
+		double dx, sx = (GetRectSize().x - 2*sfDEFAULT_ME_OFFSET + handle.GetDelta().x)/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET);
 
 		ShapeList m_lstSelection;
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 			wxSFShapeBase* pShape = node->GetData();
@@ -141,10 +146,12 @@ void wxSFMultiSelRect::OnRightHandle(wxSFShapeHandle& handle)
 			// scale main parent shape
 			if(!pShape->IsKindOf(CLASSINFO(wxSFLineShape)))
 			{
-			    dx = (pShape->GetAbsolutePosition().x - (GetAbsolutePosition().x + MEOFFSET))/(GetRectSize().x - 2*MEOFFSET)*handle.GetDelta().x;
+			    dx = (pShape->GetAbsolutePosition().x - (GetAbsolutePosition().x + sfDEFAULT_ME_OFFSET))/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().x;
 
 				if(pShape->ContainsStyle(sfsSIZE_CHANGE))pShape->Scale(sx, 1, sfWITHCHILDREN);
                 if(pShape->ContainsStyle(sfsPOSITION_CHANGE))pShape->MoveBy(dx, 0);
+				
+				pShape->FitToChildren();
 			}
 			else
 			{
@@ -155,7 +162,7 @@ void wxSFMultiSelRect::OnRightHandle(wxSFShapeHandle& handle)
                     while(ptnode)
                     {
                         pt = ptnode->GetData();
-                        dx = ( pt->x - (GetAbsolutePosition().x + MEOFFSET))/(GetRectSize().x - 2*MEOFFSET)*handle.GetDelta().x;
+                        dx = ( pt->x - (GetAbsolutePosition().x + sfDEFAULT_ME_OFFSET))/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().x;
                         pt->x += dx;
                         pt->x = floor(pt->x);
                         ptnode = ptnode->GetNext();
@@ -172,16 +179,16 @@ void wxSFMultiSelRect::OnLeftHandle(wxSFShapeHandle& handle)
 {
 	if(GetParentCanvas() && !AnyWidthExceeded(wxPoint(-handle.GetDelta().x, 0)))
 	{
-	    wxRealPointListNode* ptnode;
+	    RealPointList::compatibility_iterator ptnode;
 	    wxSFLineShape* pLine;
 	    wxRealPoint* pt;
 
-		double dx, sx = (GetRectSize().x - 2*MEOFFSET - handle.GetDelta().x)/(GetRectSize().x - 2*MEOFFSET);
+		double dx, sx = (GetRectSize().x - 2*sfDEFAULT_ME_OFFSET - handle.GetDelta().x)/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET);
 
 		ShapeList m_lstSelection;
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 			wxSFShapeBase* pShape = node->GetData();
@@ -196,13 +203,14 @@ void wxSFMultiSelRect::OnLeftHandle(wxSFShapeHandle& handle)
                     }
                     else
                     {
-                        double dx = handle.GetDelta().x - (pShape->GetAbsolutePosition().x - (GetAbsolutePosition().x + MEOFFSET))/(GetRectSize().x - 2*MEOFFSET)*handle.GetDelta().x;
+                        double dx = handle.GetDelta().x - (pShape->GetAbsolutePosition().x - (GetAbsolutePosition().x + sfDEFAULT_ME_OFFSET))/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().x;
                         pShape->MoveBy(dx, 0);
                     }
                 }
 
                 if(pShape->ContainsStyle(sfsSIZE_CHANGE))pShape->Scale(sx, 1, sfWITHCHILDREN);
-
+				
+				pShape->FitToChildren();
             }
             else
 			{
@@ -213,7 +221,7 @@ void wxSFMultiSelRect::OnLeftHandle(wxSFShapeHandle& handle)
                     while(ptnode)
                     {
                         pt = ptnode->GetData();
-                        dx = handle.GetDelta().x - (pt->x - (GetAbsolutePosition().x + MEOFFSET))/(GetRectSize().x - 2*MEOFFSET)*handle.GetDelta().x;
+                        dx = handle.GetDelta().x - (pt->x - (GetAbsolutePosition().x + sfDEFAULT_ME_OFFSET))/(GetRectSize().x - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().x;
                         pt->x += dx;
                         pt->x = floor(pt->x);
                         ptnode = ptnode->GetNext();
@@ -230,26 +238,28 @@ void wxSFMultiSelRect::OnBottomHandle(wxSFShapeHandle& handle)
 {
 	if(GetParentCanvas()  && !AnyHeightExceeded(handle.GetDelta()))
 	{
-        wxRealPointListNode* ptnode;
+        RealPointList::compatibility_iterator ptnode;
 	    wxSFLineShape* pLine;
 	    wxRealPoint* pt;
 
-		double dy, sy = (GetRectSize().y - 2*MEOFFSET + handle.GetDelta().y)/(GetRectSize().y - 2*MEOFFSET);
+		double dy, sy = (GetRectSize().y - 2*sfDEFAULT_ME_OFFSET + handle.GetDelta().y)/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET);
 
 		ShapeList m_lstSelection;
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 			wxSFShapeBase* pShape = node->GetData();
 
             if(!pShape->IsKindOf(CLASSINFO(wxSFLineShape)))
             {
-                dy = (pShape->GetAbsolutePosition().y - (GetAbsolutePosition().y + MEOFFSET))/(GetRectSize().y - 2*MEOFFSET)*handle.GetDelta().y;
+                dy = (pShape->GetAbsolutePosition().y - (GetAbsolutePosition().y + sfDEFAULT_ME_OFFSET))/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().y;
 
                 if(pShape->ContainsStyle(sfsSIZE_CHANGE))pShape->Scale(1, sy, sfWITHCHILDREN);
                 if(pShape->ContainsStyle(sfsPOSITION_CHANGE))pShape->MoveBy(0, dy);
+				
+				pShape->FitToChildren();
             }
             else
             {
@@ -260,7 +270,7 @@ void wxSFMultiSelRect::OnBottomHandle(wxSFShapeHandle& handle)
                     while(ptnode)
                     {
                         pt = ptnode->GetData();
-                        dy = ( pt->y - (GetAbsolutePosition().y + MEOFFSET))/(GetRectSize().y - 2*MEOFFSET)*handle.GetDelta().y;
+                        dy = ( pt->y - (GetAbsolutePosition().y + sfDEFAULT_ME_OFFSET))/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().y;
                         pt->y += dy;
                         pt->y = floor(pt->y);
                         ptnode = ptnode->GetNext();
@@ -277,16 +287,16 @@ void wxSFMultiSelRect::OnTopHandle(wxSFShapeHandle& handle)
 {
 	if(GetParentCanvas()  && !AnyHeightExceeded(wxPoint(0, -handle.GetDelta().y)))
 	{
-	    wxRealPointListNode* ptnode;
+	    RealPointList::compatibility_iterator ptnode;
 	    wxSFLineShape* pLine;
 	    wxRealPoint* pt;
 
-		double dy, sy = (GetRectSize().y - 2*MEOFFSET - handle.GetDelta().y)/(GetRectSize().y - 2*MEOFFSET);
+		double dy, sy = (GetRectSize().y - 2*sfDEFAULT_ME_OFFSET - handle.GetDelta().y)/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET);
 
 		ShapeList m_lstSelection;
 		GetParentCanvas()->GetSelectedShapes(m_lstSelection);
 
-		wxShapeListNode *node = m_lstSelection.GetFirst();
+		ShapeList::compatibility_iterator node = m_lstSelection.GetFirst();
 		while(node)
 		{
 			wxSFShapeBase* pShape = node->GetData();
@@ -301,12 +311,14 @@ void wxSFMultiSelRect::OnTopHandle(wxSFShapeHandle& handle)
                     }
                     else
                     {
-                        double dy = handle.GetDelta().y - (pShape->GetAbsolutePosition().y - (GetAbsolutePosition().y + MEOFFSET))/(GetRectSize().y - 2*MEOFFSET)*handle.GetDelta().y;
+                        double dy = handle.GetDelta().y - (pShape->GetAbsolutePosition().y - (GetAbsolutePosition().y + sfDEFAULT_ME_OFFSET))/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().y;
                         pShape->MoveBy(0, dy);
                     }
                 }
 
                 if(pShape->ContainsStyle(sfsSIZE_CHANGE))pShape->Scale(1, sy, sfWITHCHILDREN);
+				
+				pShape->FitToChildren();
             }
             else
             {
@@ -317,7 +329,7 @@ void wxSFMultiSelRect::OnTopHandle(wxSFShapeHandle& handle)
                     while(ptnode)
                     {
                         pt = ptnode->GetData();
-                        dy = handle.GetDelta().y - (pt->y - (GetAbsolutePosition().y + MEOFFSET))/(GetRectSize().y - 2*MEOFFSET)*handle.GetDelta().y;
+                        dy = handle.GetDelta().y - (pt->y - (GetAbsolutePosition().y + sfDEFAULT_ME_OFFSET))/(GetRectSize().y - 2*sfDEFAULT_ME_OFFSET)*handle.GetDelta().y;
                         pt->y += dy;
                         pt->y = floor(pt->y);
                         ptnode = ptnode->GetNext();

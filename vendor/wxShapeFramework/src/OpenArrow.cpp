@@ -8,27 +8,44 @@
  * Notes:
  **************************************************************/
 
-#include "OpenArrow.h"
-#include "CommonFcn.h"
+#include "wx_pch.h"
+
+#ifdef _DEBUG_MSVC
+#define new DEBUG_NEW
+#endif
+
+#include "wx/wxsf/OpenArrow.h"
+#include "wx/wxsf/CommonFcn.h"
 
 // arrow shape
-const wxRealPoint arrow[3]={wxRealPoint(0,0), wxRealPoint(10,4), wxRealPoint(10,-4)};
+static const wxRealPoint arrow[3]={wxRealPoint(0,0), wxRealPoint(10,4), wxRealPoint(10,-4)};
 
-IMPLEMENT_DYNAMIC_CLASS(wxSFOpenArrow, wxSFArrowBase);
+using namespace wxSFCommonFcn;
+
+XS_IMPLEMENT_CLONABLE_CLASS(wxSFOpenArrow, wxSFArrowBase);
 
 wxSFOpenArrow::wxSFOpenArrow(void)
 : wxSFArrowBase()
 {
+	m_Pen = sfdvARROW_BORDER;
+	
+	XS_SERIALIZE_EX(m_Pen, wxT("arrow_style"), sfdvARROW_BORDER);
 }
 
 wxSFOpenArrow::wxSFOpenArrow(wxSFShapeBase* parent)
 : wxSFArrowBase(parent)
 {
+	m_Pen = sfdvARROW_BORDER;
+	
+	XS_SERIALIZE_EX(m_Pen, wxT("arrow_style"), sfdvARROW_BORDER);
 }
 
-wxSFOpenArrow::wxSFOpenArrow(wxSFOpenArrow& obj)
+wxSFOpenArrow::wxSFOpenArrow(const wxSFOpenArrow& obj)
 : wxSFArrowBase(obj)
 {
+	m_Pen = obj.m_Pen;
+	
+	XS_SERIALIZE_EX(m_Pen, wxT("arrow_style"), sfdvARROW_BORDER);
 }
 
 wxSFOpenArrow::~wxSFOpenArrow(void)
@@ -39,34 +56,14 @@ wxSFOpenArrow::~wxSFOpenArrow(void)
 // public virtual functions
 //----------------------------------------------------------------------------------//
 
-void wxSFOpenArrow::Draw(const wxRealPoint &from, const wxRealPoint &to, wxSFScaledPaintDC &dc)
+void wxSFOpenArrow::Draw(const wxRealPoint &from, const wxRealPoint &to, wxDC& dc)
 {
-	wxRealPoint rarrow[3];
-	double cosa, sina, dist;
+	wxPoint rarrow[3];
+	
+	TranslateArrow( rarrow, arrow, 3, from, to );
 
-	// calculate distance between line points
-	dist = Distance(from, to);
-
-	// calculate sin and cos of given line segment
-	sina = (from.y - to.y)/dist;
-	cosa = (from.x - to.x)/dist;
-
-    // rotate arrow
-	for(int i = 0; i<3; i++)
-	{
-		rarrow[i].x = ((arrow[i].x*cosa-arrow[i].y*sina)+to.x);
-		rarrow[i].y = ((arrow[i].x*sina+arrow[i].y*cosa)+to.y);
-	}
-
-	DrawArrowShape(3, rarrow, dc);
-}
-
-//----------------------------------------------------------------------------------//
-// protected virtual functions
-//----------------------------------------------------------------------------------//
-
-void wxSFOpenArrow::DrawArrowShape(int n, wxRealPoint pts[], wxSFScaledPaintDC &dc)
-{
-	dc.DrawLine(pts[0], pts[1]);
-    dc.DrawLine(pts[0], pts[2]);
+	dc.SetPen( m_Pen );
+	dc.DrawLine(rarrow[0], rarrow[1]);
+    dc.DrawLine(rarrow[0], rarrow[2]);
+	dc.SetPen( wxNullPen );
 }

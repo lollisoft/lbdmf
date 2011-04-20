@@ -37,6 +37,18 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxPropgrid.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+
+MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG) -lwxWrapperDLL -llbHook
+
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL_MINGW_CPP += -I../include
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/wxwin/wx/include 
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+
+CPP_MINGW_EXEOPS += -DUSE_WXWRAPPER_DLL -D__WIN32__ -DWINVER=0x0400 -D__WINDOWS95__ -D__WINDOWS__ -D__WXMSW__ -DLB_I_EXTENTIONS -D__WXDEBUG__
+
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
