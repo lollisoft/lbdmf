@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.224 $
+# * $Revision: 1.225 $
 # * $Name:  $
-# * $Id: Makefile,v 1.224 2011/04/02 10:44:17 lollisoft Exp $
+# * $Id: Makefile,v 1.225 2011/04/20 20:35:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.225  2011/04/20 20:35:36  lollisoft
+# * Activated optional wxShapeFramework compile task.
+# *
 # * Revision 1.224  2011/04/02 10:44:17  lollisoft
 # * Now the UML based activities are reworked and they work while testing it against postbooks database.
 # *
@@ -1006,13 +1009,13 @@ ALLTARGETS = \
 	../vendor/databaselayer/tests \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES) \
-	../Test/GUI/wxWrapper
+	../Test/GUI/wxWrapper \
+	../vendor/wxShapeFramework/src \
+	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	../vendor/wxARG/src \
 #	../vendor/cryptostream/src/crypstrm \
-#	../vendor/wxShapeFramework/src \
 #	../vendor/dbwrapcontrols \
-#	../vendor/wxShapeFramework/example \
 #	../vendor/databaselayer/tests \
 
 
@@ -1328,7 +1331,9 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
 	$(BASEDIRECTORIES) \
-	../Doc/html
+	../Doc/html \
+	../vendor/wxShapeFramework/src \
+	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	lbcs \
 #	../vendor/cryptostream/src/crypstrm \
@@ -1783,12 +1788,12 @@ endif
 	cp ../vendor/wxARG/src/wxActiveRecordGenerator $(prefix)/bin
 
 ../vendor/wxShapeFramework/src: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/wxShapeFramework/example: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
@@ -1932,6 +1937,15 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/wxShapeFramework/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
+../vendor/wxShapeFramework/samples/wxSFDemo: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
 endif
 
 ../../open-watcom: dummy
