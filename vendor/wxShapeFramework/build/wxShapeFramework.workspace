@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="wxShapeFramework" Database="./wxShapeFramework.tags">
+  <Project Name="wxSF" Path="../src/wxSF.project" Active="Yes" />
+  <Project Name="wxSFDemo" Path="../samples/wxSFDemo/wxSFDemo.project" Active="No" />
+  <Project Name="wxSFSample1" Path="../samples/wxSFSample1/wxSFSample1.project" Active="No" />
+  <Project Name="wxSFSample2" Path="../samples/wxSFSample2/wxSFSample2.project" Active="No" />
+  <Project Name="wxSFSample3" Path="../samples/wxSFSample3/wxSFSample3.project" Active="No" />
+  <Project Name="wxSFSample4" Path="../samples/wxSFSample4/wxSFSample4.project" Active="No" />
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="wxSF" ConfigName="Release"/>
+      <Project Name="wxSFDemo" ConfigName="Release"/>
+      <Project Name="wxSFSample1" ConfigName="Release"/>
+      <Project Name="wxSFSample2" ConfigName="Release"/>
+      <Project Name="wxSFSample3" ConfigName="Release"/>
+      <Project Name="wxSFSample4" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="wxSF" ConfigName="Debug"/>
+      <Project Name="wxSFDemo" ConfigName="Debug"/>
+      <Project Name="wxSFSample1" ConfigName="Debug"/>
+      <Project Name="wxSFSample2" ConfigName="Debug"/>
+      <Project Name="wxSFSample3" ConfigName="Debug"/>
+      <Project Name="wxSFSample4" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

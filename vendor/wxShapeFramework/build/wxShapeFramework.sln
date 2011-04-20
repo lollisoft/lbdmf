@@ -1,0 +1,66 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSF", "../src/wxSF.vcproj", "{550B3929-A065-A145-BE53-F0DA3335C0F2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSFDemo", "../samples/wxSFDemo/wxSFDemo.vcproj", "{3D33C0DB-7DCE-ED48-9FF3-5165C5529034}"
+	ProjectSection(ProjectDependencies) = postProject
+		{550B3929-A065-A145-BE53-F0DA3335C0F2} = {550B3929-A065-A145-BE53-F0DA3335C0F2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSFSample1", "../samples/wxSFSample1/wxSFSample1.vcproj", "{4771899D-E41C-454F-BBAD-8104F4E53713}"
+	ProjectSection(ProjectDependencies) = postProject
+		{550B3929-A065-A145-BE53-F0DA3335C0F2} = {550B3929-A065-A145-BE53-F0DA3335C0F2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSFSample2", "../samples/wxSFSample2/wxSFSample2.vcproj", "{B3474E3F-87A4-B642-BD35-6E05D48A5497}"
+	ProjectSection(ProjectDependencies) = postProject
+		{550B3929-A065-A145-BE53-F0DA3335C0F2} = {550B3929-A065-A145-BE53-F0DA3335C0F2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSFSample3", "../samples/wxSFSample3/wxSFSample3.vcproj", "{825729F3-2117-F24A-806B-E7225A66FDB3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{550B3929-A065-A145-BE53-F0DA3335C0F2} = {550B3929-A065-A145-BE53-F0DA3335C0F2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSFSample4", "../samples/wxSFSample4/wxSFSample4.vcproj", "{FCD546E6-864B-A145-B38C-DE9312480556}"
+	ProjectSection(ProjectDependencies) = postProject
+		{550B3929-A065-A145-BE53-F0DA3335C0F2} = {550B3929-A065-A145-BE53-F0DA3335C0F2}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|Win32 = Release|Win32
+		Debug|Win32 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{550B3929-A065-A145-BE53-F0DA3335C0F2}.Release|Win32.ActiveCfg = Release|Win32
+		{550B3929-A065-A145-BE53-F0DA3335C0F2}.Release|Win32.Build.0 = Release|Win32
+		{550B3929-A065-A145-BE53-F0DA3335C0F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{550B3929-A065-A145-BE53-F0DA3335C0F2}.Debug|Win32.Build.0 = Debug|Win32
+		{3D33C0DB-7DCE-ED48-9FF3-5165C5529034}.Release|Win32.ActiveCfg = Release|Win32
+		{3D33C0DB-7DCE-ED48-9FF3-5165C5529034}.Release|Win32.Build.0 = Release|Win32
+		{3D33C0DB-7DCE-ED48-9FF3-5165C5529034}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3D33C0DB-7DCE-ED48-9FF3-5165C5529034}.Debug|Win32.Build.0 = Debug|Win32
+		{4771899D-E41C-454F-BBAD-8104F4E53713}.Release|Win32.ActiveCfg = Release|Win32
+		{4771899D-E41C-454F-BBAD-8104F4E53713}.Release|Win32.Build.0 = Release|Win32
+		{4771899D-E41C-454F-BBAD-8104F4E53713}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4771899D-E41C-454F-BBAD-8104F4E53713}.Debug|Win32.Build.0 = Debug|Win32
+		{B3474E3F-87A4-B642-BD35-6E05D48A5497}.Release|Win32.ActiveCfg = Release|Win32
+		{B3474E3F-87A4-B642-BD35-6E05D48A5497}.Release|Win32.Build.0 = Release|Win32
+		{B3474E3F-87A4-B642-BD35-6E05D48A5497}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B3474E3F-87A4-B642-BD35-6E05D48A5497}.Debug|Win32.Build.0 = Debug|Win32
+		{825729F3-2117-F24A-806B-E7225A66FDB3}.Release|Win32.ActiveCfg = Release|Win32
+		{825729F3-2117-F24A-806B-E7225A66FDB3}.Release|Win32.Build.0 = Release|Win32
+		{825729F3-2117-F24A-806B-E7225A66FDB3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{825729F3-2117-F24A-806B-E7225A66FDB3}.Debug|Win32.Build.0 = Debug|Win32
+		{FCD546E6-864B-A145-B38C-DE9312480556}.Release|Win32.ActiveCfg = Release|Win32
+		{FCD546E6-864B-A145-B38C-DE9312480556}.Release|Win32.Build.0 = Release|Win32
+		{FCD546E6-864B-A145-B38C-DE9312480556}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FCD546E6-864B-A145-B38C-DE9312480556}.Debug|Win32.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
