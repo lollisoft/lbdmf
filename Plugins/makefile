@@ -118,6 +118,8 @@ ALLTARGETS = \
 	lbDMFDataModel \
 	TestPlugin \
 	DatabaseLayerGateway \
+	lbXSLTTransformer \
+	lbFileOperationsPlugin \
 	DatabaseReport
 endif
 
