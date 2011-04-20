@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<canvas>
+    <settings>
+        <object type="wxSFCanvasSettings">
+            <property name="id" type="long">-1</property>
+            <property name="scale" type="double">1.000000</property>
+            <property name="style" type="long">1011</property>
+            <property name="accepted_shapes" type="arraystring">
+                <item>All</item>
+            </property>
+        </object>
+    </settings>
+    <chart>
+        <object type="wxSFRoundRectShape">
+            <property name="id" type="long">2</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">614.060538,102.000000</property>
+            <property name="size" type="realpoint">127.121194,64.818303</property>
+        </object>
+        <object type="wxSFEllipseShape">
+            <property name="id" type="long">5</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">84.000000,373.000000</property>
+            <property name="size" type="realpoint">169.000000,75.000000</property>
+        </object>
+        <object type="wxSFCircleShape">
+            <property name="id" type="long">7</property>
+            <property name="style" type="long">891</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">519.000000,399.000000</property>
+            <property name="size" type="realpoint">50.000000,50.000000</property>
+        </object>
+        <object type="wxSFLineShape">
+            <property name="id" type="long">10</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">474.000000,256.000000</property>
+            <property name="source" type="long">9</property>
+            <property name="target" type="long">7</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+        </object>
+        <object type="wxSFLineShape">
+            <property name="id" type="long">11</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">474.000000,256.000000</property>
+            <property name="source" type="long">9</property>
+            <property name="target" type="long">5</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+        </object>
+        <object type="wxSFLineShape">
+            <property name="id" type="long">12</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">474.000000,256.000000</property>
+            <property name="source" type="long">7</property>
+            <property name="target" type="long">2</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+        </object>
+        <object type="wxSFDiamondShape">
+            <property name="id" type="long">9</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">317.000000,371.000000</property>
+            <property name="size" type="realpoint">135.000000,66.000000</property>
+        </object>
+        <object type="wxSFLineShape">
+            <property name="id" type="long">6</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">474.000000,256.000000</property>
+            <property name="source" type="long">1</property>
+            <property name="target" type="long">5</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+            <property name="source_offset" type="realpoint">0.098361,0.903382</property>
+        </object>
+        <object type="wxSFLineShape">
+            <property name="id" type="long">8</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">474.000000,256.000000</property>
+            <property name="source" type="long">1</property>
+            <property name="target" type="long">7</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+            <property name="source_offset" type="realpoint">0.937705,0.932367</property>
+        </object>
+        <object type="wxSFCurveShape">
+            <property name="id" type="long">3</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>wxSFTextShape</item>
+                <item>wxSFEditTextShape</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">470.000000,300.000000</property>
+            <property name="source" type="long">1</property>
+            <property name="target" type="long">2</property>
+            <property name="target_arrow" type="serializabledynamic">
+                <object type="wxSFSolidArrow">
+                    <property name="id" type="long">-1</property>
+                </object>
+            </property>
+            <property name="source_offset" type="realpoint">0.957377,0.864734</property>
+            <property name="control_points" type="listrealpoint">
+                <item>766.000000,357.000000</item>
+                <item>730.000000,246.000000</item>
+                <item>810.000000,212.000000</item>
+            </property>
+        </object>
+        <object type="wxSFRectShape">
+            <property name="id" type="long">1</property>
+            <property name="style" type="long">895</property>
+            <property name="accepted_children" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">182.000000,75.963661</property>
+            <property name="size" type="realpoint">305.090866,207.418569</property>
+            <object type="wxSFTextShape">
+                <property name="id" type="long">4</property>
+                <property name="style" type="long">895</property>
+                <property name="accepted_connections" type="arraystring">
+                    <item>All</item>
+                </property>
+                <property name="accepted_src_neighbours" type="arraystring">
+                    <item>All</item>
+                </property>
+                <property name="accepted_trg_neighbours" type="arraystring">
+                    <item>wxSFTextShape</item>
+                    <item>wxSFEditTextShape</item>
+                </property>
+                <property name="relative_position" type="realpoint">32.000000,10.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">1</property>
+                <property name="vborder" type="double">10.000000</property>
+                <property name="size" type="realpoint">240.000000,46.000000</property>
+                <property name="border" type="pen">0,0,0 1 106</property>
+                <property name="fill" type="brush">0,0,0 106</property>
+                <property name="font" type="font">sans 29</property>
+                <property name="text" type="string">Hello World!</property>
+            </object>
+        </object>
+    </chart>
+</canvas>

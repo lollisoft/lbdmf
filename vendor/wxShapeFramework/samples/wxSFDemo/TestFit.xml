@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<canvas>
+    <settings>
+        <object type="wxSFCanvasSettings">
+            <property name="id" type="long">-1</property>
+            <property name="scale" type="double">1.000000</property>
+            <property name="style" type="long">1023</property>
+            <property name="accepted_shapes" type="arraystring">
+                <item>All</item>
+            </property>
+        </object>
+    </settings>
+    <chart>
+        <object type="wxSFRectShape">
+            <property name="id" type="long">1</property>
+            <property name="accepted_children" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_connections" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_src_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="accepted_trg_neighbours" type="arraystring">
+                <item>All</item>
+            </property>
+            <property name="relative_position" type="realpoint">20.000000,20.000000</property>
+            <property name="size" type="realpoint">100.000000,39.000000</property>
+            <object type="wxSFTextShape">
+                <property name="id" type="long">2</property>
+                <property name="accepted_connections" type="arraystring">
+                    <item>All</item>
+                </property>
+                <property name="accepted_src_neighbours" type="arraystring">
+                    <item>All</item>
+                </property>
+                <property name="accepted_trg_neighbours" type="arraystring">
+                    <item>wxSFTextShape</item>
+                    <item>wxSFEditTextShape</item>
+                </property>
+                <property name="relative_position" type="realpoint">3.000000,10.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">1</property>
+                <property name="vborder" type="double">10.000000</property>
+                <property name="size" type="realpoint">94.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello World!</property>
+            </object>
+        </object>
+    </chart>
+</canvas>

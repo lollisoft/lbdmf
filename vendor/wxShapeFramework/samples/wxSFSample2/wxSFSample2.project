@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="wxSFSample2">
+  <File Name="SampleCanvas.cpp"/>
+  <File Name="SampleShape.cpp"/>
+  <File Name="wxSFSample2App.cpp"/>
+  <File Name="wxSFSample2Main.cpp"/>
+  <File Name="wx_pch.cpp"/>
+  <File Name="SampleCanvas.h"/>
+  <File Name="SampleShape.h"/>
+  <File Name="wxSFSample2App.h"/>
+  <File Name="wxSFSample2Main.h"/>
+  <File Name="wx_pch.h"/>
+  <File Name="wxSF.rc"/>
+  <Settings Type="Executable">
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="bin/gcc/wxSFSample2.exe" IntermediateDirectory=".objsu" Command="wxSFSample2.exe" CommandArguments="" WorkingDirectory="bin/gcc" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-Wall;-O3;-fno-strict-aliasing;">
+        <IncludePath Value="../../include"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswu"/>
+        <Preprocessor Value="WXUSINGDLL"/>
+        <Preprocessor Value="UNICODE"/>
+        <Preprocessor Value="_UNICODE"/>
+        <Preprocessor Value="__WX__"/>
+        <Preprocessor Value="__WXMSW__"/>
+        <Preprocessor Value="WIN32"/>
+        <Preprocessor Value="_WINDOWS"/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="-mwindows;-s;">
+        <LibraryPath Value="bin/gcc"/>
+        <LibraryPath Value="../../build"/>
+        <LibraryPath Value="$(WXWIN)/lib/gcc_dll"/>
+        <LibraryPath Value="../../lib/gcc_dll"/>
+        <Library Value="wxmsw28u_wxsf"/>
+        <Library Value="wxmsw28u"/>
+      </Linker>
+      <ResourceCompiler Required="yes" Options="-DWXUSINGDLL;-DUNICODE;-D_UNICODE;-D__WX__;-D__WXMSW__;-DWIN32;-D_WINDOWS;-DNDEBUG;">
+        <IncludePath Value="../../include"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswu"/>
+      </ResourceCompiler>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="bin/gcc/wxSFSample2d.exe" IntermediateDirectory=".objsud" Command="wxSFSample2d.exe" CommandArguments="" WorkingDirectory="bin/gcc" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-Wall;-g;-O0;">
+        <IncludePath Value="../../include"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswud"/>
+        <Preprocessor Value="WXUSINGDLL"/>
+        <Preprocessor Value="UNICODE"/>
+        <Preprocessor Value="_UNICODE"/>
+        <Preprocessor Value="__WX__"/>
+        <Preprocessor Value="__WXMSW__"/>
+        <Preprocessor Value="WIN32"/>
+        <Preprocessor Value="_WINDOWS"/>
+        <Preprocessor Value="DEBUG"/>
+        <Preprocessor Value="_DEBUG"/>
+        <Preprocessor Value="__WXDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-mwindows;">
+        <LibraryPath Value="bin/gcc"/>
+        <LibraryPath Value="../../build"/>
+        <LibraryPath Value="$(WXWIN)/lib/gcc_dll"/>
+        <LibraryPath Value="../../lib/gcc_dll"/>
+        <Library Value="wxmsw28ud_wxsf"/>
+        <Library Value="wxmsw28ud"/>
+      </Linker>
+      <ResourceCompiler Required="yes" Options="-DWXUSINGDLL;-DUNICODE;-D_UNICODE;-D__WX__;-D__WXMSW__;-DWIN32;-D_WINDOWS;-DDEBUG;-D_DEBUG;-D__WXDEBUG__;">
+        <IncludePath Value="../../include"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswud"/>
+      </ResourceCompiler>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Release">
+    <Project Name="wxSF"/>
+  </Dependencies>
+  <Dependencies name="Debug">
+    <Project Name="wxSF"/>
+  </Dependencies>
+</CodeLite_Project>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="wxSF">
+  <VirtualDirectory Name="wxxmlserializer">
+    <File Name="wxxmlserializer/PropertyIO.cpp"/>
+    <File Name="wxxmlserializer/XmlSerializer.cpp"/>
+    <File Name="wxxmlserializer/XmlSerializerConv.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="wx">
+      <VirtualDirectory Name="wxsf">
+        <File Name="../include/wx/wxsf/ArrowBase.h"/>
+        <File Name="../include/wx/wxsf/AutoLayout.h"/>
+        <File Name="../include/wx/wxsf/BitmapShape.h"/>
+        <File Name="../include/wx/wxsf/CanvasHistory.h"/>
+        <File Name="../include/wx/wxsf/CanvasState.h"/>
+        <File Name="../include/wx/wxsf/CircleArrow.h"/>
+        <File Name="../include/wx/wxsf/CircleShape.h"/>
+        <File Name="../include/wx/wxsf/CommonFcn.h"/>
+        <File Name="../include/wx/wxsf/ControlShape.h"/>
+        <File Name="../include/wx/wxsf/CurveShape.h"/>
+        <File Name="../include/wx/wxsf/Defs.h"/>
+        <File Name="../include/wx/wxsf/DiagramManager.h"/>
+        <File Name="../include/wx/wxsf/DiamondArrow.h"/>
+        <File Name="../include/wx/wxsf/DiamondShape.h"/>
+        <File Name="../include/wx/wxsf/EditTextShape.h"/>
+        <File Name="../include/wx/wxsf/EllipseShape.h"/>
+        <File Name="../include/wx/wxsf/FixedRectShape.h"/>
+        <File Name="../include/wx/wxsf/FlexGridShape.h"/>
+        <File Name="../include/wx/wxsf/GridShape.h"/>
+        <File Name="../include/wx/wxsf/LineShape.h"/>
+        <File Name="../include/wx/wxsf/MultiSelRect.h"/>
+        <File Name="../include/wx/wxsf/OpenArrow.h"/>
+        <File Name="../include/wx/wxsf/OrthoShape.h"/>
+        <File Name="../include/wx/wxsf/PolygonShape.h"/>
+        <File Name="../include/wx/wxsf/Printout.h"/>
+        <File Name="../include/wx/wxsf/RectShape.h"/>
+        <File Name="../include/wx/wxsf/RoundOrthoShape.h"/>
+        <File Name="../include/wx/wxsf/RoundRectShape.h"/>
+        <File Name="../include/wx/wxsf/ScaledDC.h"/>
+        <File Name="../include/wx/wxsf/SFEvents.h"/>
+        <File Name="../include/wx/wxsf/ShapeBase.h"/>
+        <File Name="../include/wx/wxsf/ShapeCanvas.h"/>
+        <File Name="../include/wx/wxsf/ShapeDataObject.h"/>
+        <File Name="../include/wx/wxsf/ShapeDockpoint.h"/>
+        <File Name="../include/wx/wxsf/ShapeHandle.h"/>
+        <File Name="../include/wx/wxsf/SolidArrow.h"/>
+        <File Name="../include/wx/wxsf/TextShape.h"/>
+        <File Name="../include/wx/wxsf/Thumbnail.h"/>
+        <File Name="../include/wx/wxsf/wxShapeFramework.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="wxxmlserializer">
+        <File Name="../include/wx/wxxmlserializer/Defs.h"/>
+        <File Name="../include/wx/wxxmlserializer/PropertyIO.h"/>
+        <File Name="../include/wx/wxxmlserializer/XmlSerializer.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <File Name="../include/ArrowBase.h"/>
+    <File Name="../include/BitmapShape.h"/>
+    <File Name="../include/CanvasHistory.h"/>
+    <File Name="../include/CanvasState.h"/>
+    <File Name="../include/CircleShape.h"/>
+    <File Name="../include/CommonFcn.h"/>
+    <File Name="../include/CurveShape.h"/>
+    <File Name="../include/Defs.h"/>
+    <File Name="../include/DiagramManager.h"/>
+    <File Name="../include/DiamondShape.h"/>
+    <File Name="../include/EditTextShape.h"/>
+    <File Name="../include/EllipseShape.h"/>
+    <File Name="../include/FixedRectShape.h"/>
+    <File Name="../include/LineShape.h"/>
+    <File Name="../include/MultiSelRect.h"/>
+    <File Name="../include/OpenArrow.h"/>
+    <File Name="../include/PolygonShape.h"/>
+    <File Name="../include/RectShape.h"/>
+    <File Name="../include/RoundRectShape.h"/>
+    <File Name="../include/ScaledPaintDC.h"/>
+    <File Name="../include/SFEvents.h"/>
+    <File Name="../include/ShapeBase.h"/>
+    <File Name="../include/ShapeCanvas.h"/>
+    <File Name="../include/ShapeDataObject.h"/>
+    <File Name="../include/ShapeHandle.h"/>
+    <File Name="../include/SolidArrow.h"/>
+    <File Name="../include/TextShape.h"/>
+    <File Name="../include/wxShapeFramework.h"/>
+    <File Name="../include/XmlSerializer.h"/>
+  </VirtualDirectory>
+  <File Name="ArrowBase.cpp"/>
+  <File Name="AutoLayout.cpp"/>
+  <File Name="BitmapShape.cpp"/>
+  <File Name="BitmapShapeXml.cpp"/>
+  <File Name="CanvasHistory.cpp"/>
+  <File Name="CanvasState.cpp"/>
+  <File Name="CircleArrow.cpp"/>
+  <File Name="CircleShape.cpp"/>
+  <File Name="CommonFcn.cpp"/>
+  <File Name="ControlShape.cpp"/>
+  <File Name="CurveShape.cpp"/>
+  <File Name="CurveShapeXml.cpp"/>
+  <File Name="DiagramManager.cpp"/>
+  <File Name="DiamondArrow.cpp"/>
+  <File Name="DiamondShape.cpp"/>
+  <File Name="EditTextShape.cpp"/>
+  <File Name="EllipseShape.cpp"/>
+  <File Name="FixedRectShape.cpp"/>
+  <File Name="FlexGridShape.cpp"/>
+  <File Name="GridShape.cpp"/>
+  <File Name="LineShape.cpp"/>
+  <File Name="LineShapeXml.cpp"/>
+  <File Name="MultiSelRect.cpp"/>
+  <File Name="OpenArrow.cpp"/>
+  <File Name="OrthoShape.cpp"/>
+  <File Name="PolygonShape.cpp"/>
+  <File Name="PolygonShapeXml.cpp"/>
+  <File Name="Printout.cpp"/>
+  <File Name="RectShape.cpp"/>
+  <File Name="RectShapeXml.cpp"/>
+  <File Name="RoundOrthoShape.cpp"/>
+  <File Name="RoundRectShape.cpp"/>
+  <File Name="RoundRectShapeXml.cpp"/>
+  <File Name="ScaledDC.cpp"/>
+  <File Name="ScaledPaintDC.cpp"/>
+  <File Name="SFEvents.cpp"/>
+  <File Name="ShapeBase.cpp"/>
+  <File Name="ShapeBaseXml.cpp"/>
+  <File Name="ShapeCanvas.cpp"/>
+  <File Name="ShapeDataObject.cpp"/>
+  <File Name="ShapeDockpoint.cpp"/>
+  <File Name="ShapeHandle.cpp"/>
+  <File Name="SolidArrow.cpp"/>
+  <File Name="TextShape.cpp"/>
+  <File Name="TextShapeXml.cpp"/>
+  <File Name="Thumbnail.cpp"/>
+  <File Name="wx_pch.cpp"/>
+  <File Name="wx_pch.h"/>
+  <File Name="wxSF.rc"/>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../lib/gcc_dll/wxmsw28u_wxsf.dll" IntermediateDirectory=".objsu" Command="wxmsw28u_wxsf.dll" CommandArguments="" WorkingDirectory="../lib/gcc_dll" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-Wall;-O3;-fno-strict-aliasing;">
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../src"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswu"/>
+        <Preprocessor Value="WXMAKINGDLL_WXSF"/>
+        <Preprocessor Value="WXMAKINGDLL_WXXS"/>
+        <Preprocessor Value="WXUSINGDLL"/>
+        <Preprocessor Value="UNICODE"/>
+        <Preprocessor Value="_UNICODE"/>
+        <Preprocessor Value="__WX__"/>
+        <Preprocessor Value="__WXMSW__"/>
+        <Preprocessor Value="WIN32"/>
+        <Preprocessor Value="_WINDOWS"/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--out-implib=&quot;../lib/gcc_dll/libwxmsw28u_wxsf.a&quot;;-s;">
+        <LibraryPath Value="../lib/gcc_dll"/>
+        <LibraryPath Value="../build"/>
+        <LibraryPath Value="$(WXWIN)/lib/gcc_dll"/>
+        <Library Value="wxmsw28u"/>
+      </Linker>
+      <ResourceCompiler Required="yes" Options="-DWXMAKINGDLL_WXSF;-DWXMAKINGDLL_WXXS;-DWXUSINGDLL;-DUNICODE;-D_UNICODE;-D__WX__;-D__WXMSW__;-DWIN32;-D_WINDOWS;-DNDEBUG;">
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../src"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswu"/>
+      </ResourceCompiler>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../lib/gcc_dll/wxmsw28ud_wxsf.dll" IntermediateDirectory=".objsud" Command="wxmsw28ud_wxsf.dll" CommandArguments="" WorkingDirectory="../lib/gcc_dll" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-Wall;-g;-O0;">
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../src"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswud"/>
+        <Preprocessor Value="WXMAKINGDLL_WXSF"/>
+        <Preprocessor Value="WXMAKINGDLL_WXXS"/>
+        <Preprocessor Value="WXUSINGDLL"/>
+        <Preprocessor Value="UNICODE"/>
+        <Preprocessor Value="_UNICODE"/>
+        <Preprocessor Value="__WX__"/>
+        <Preprocessor Value="__WXMSW__"/>
+        <Preprocessor Value="WIN32"/>
+        <Preprocessor Value="_WINDOWS"/>
+        <Preprocessor Value="DEBUG"/>
+        <Preprocessor Value="_DEBUG"/>
+        <Preprocessor Value="__WXDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--out-implib=&quot;../lib/gcc_dll/libwxmsw28ud_wxsf.a&quot;;">
+        <LibraryPath Value="../lib/gcc_dll"/>
+        <LibraryPath Value="../build"/>
+        <LibraryPath Value="$(WXWIN)/lib/gcc_dll"/>
+        <Library Value="wxmsw28ud"/>
+      </Linker>
+      <ResourceCompiler Required="yes" Options="-DWXMAKINGDLL_WXSF;-DWXMAKINGDLL_WXXS;-DWXUSINGDLL;-DUNICODE;-D_UNICODE;-D__WX__;-D__WXMSW__;-DWIN32;-D_WINDOWS;-DDEBUG;-D_DEBUG;-D__WXDEBUG__;">
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../src"/>
+        <IncludePath Value="$(WXWIN)/include"/>
+        <IncludePath Value="$(WXWIN)/lib/gcc_dll/mswud"/>
+      </ResourceCompiler>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Release">
+  </Dependencies>
+  <Dependencies name="Debug">
+  </Dependencies>
+</CodeLite_Project>

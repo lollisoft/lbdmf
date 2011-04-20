@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chart owner="wxShapeFramework" version="1.0">
+    <object type="cStarShape">
+        <property name="id" type="long">1</property>
+        <property name="accepted_connections" type="arraystring">
+            <item>All</item>
+        </property>
+        <property name="accepted_src_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="accepted_trg_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="relative_position" type="realpoint">400.000000,110.000000</property>
+        <property name="size" type="realpoint">100.000000,100.000000</property>
+        <property name="connect_to_vertex" type="bool">0</property>
+        <property name="description" type="string">Insert some shape's description text here...</property>
+        <property name="title" type="serializabledynamicnocreate">
+            <object type="wxSFEditTextShape">
+                <property name="id" type="long">4</property>
+                <property name="style" type="long">168</property>
+                <property name="relative_position" type="realpoint">29.000000,41.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">2</property>
+                <property name="size" type="realpoint">43.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello!</property>
+            </object>
+        </property>
+    </object>
+    <object type="wxSFLineShape">
+        <property name="id" type="long">7</property>
+        <property name="relative_position" type="realpoint">390.000000,270.000000</property>
+        <property name="source" type="long">5</property>
+        <property name="target" type="long">1</property>
+        <property name="target_arrow" type="serializabledynamic">
+            <object type="wxSFSolidArrow">
+                <property name="id" type="long">-1</property>
+            </object>
+        </property>
+    </object>
+    <object type="wxSFLineShape">
+        <property name="id" type="long">8</property>
+        <property name="relative_position" type="realpoint">390.000000,270.000000</property>
+        <property name="source" type="long">1</property>
+        <property name="target" type="long">3</property>
+        <property name="target_arrow" type="serializabledynamic">
+            <object type="wxSFSolidArrow">
+                <property name="id" type="long">-1</property>
+            </object>
+        </property>
+    </object>
+    <object type="wxSFLineShape">
+        <property name="id" type="long">9</property>
+        <property name="relative_position" type="realpoint">390.000000,270.000000</property>
+        <property name="source" type="long">3</property>
+        <property name="target" type="long">5</property>
+        <property name="target_arrow" type="serializabledynamic">
+            <object type="wxSFSolidArrow">
+                <property name="id" type="long">-1</property>
+            </object>
+        </property>
+    </object>
+    <object type="cStarShape">
+        <property name="id" type="long">3</property>
+        <property name="accepted_connections" type="arraystring">
+            <item>All</item>
+        </property>
+        <property name="accepted_src_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="accepted_trg_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="relative_position" type="realpoint">220.000000,320.000000</property>
+        <property name="size" type="realpoint">100.000000,100.000000</property>
+        <property name="connect_to_vertex" type="bool">0</property>
+        <property name="description" type="string">Insert some shape's description text here...</property>
+        <property name="title" type="serializabledynamicnocreate">
+            <object type="wxSFEditTextShape">
+                <property name="id" type="long">6</property>
+                <property name="style" type="long">168</property>
+                <property name="relative_position" type="realpoint">29.000000,41.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">2</property>
+                <property name="size" type="realpoint">43.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello!</property>
+            </object>
+        </property>
+    </object>
+    <object type="cStarShape">
+        <property name="id" type="long">12</property>
+        <property name="accepted_connections" type="arraystring">
+            <item>All</item>
+        </property>
+        <property name="accepted_src_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="accepted_trg_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="relative_position" type="realpoint">570.000000,240.000000</property>
+        <property name="size" type="realpoint">100.000000,100.000000</property>
+        <property name="connect_to_vertex" type="bool">0</property>
+        <property name="description" type="string">Insert some shape's description text here...</property>
+        <property name="title" type="serializabledynamicnocreate">
+            <object type="wxSFEditTextShape">
+                <property name="id" type="long">13</property>
+                <property name="style" type="long">168</property>
+                <property name="relative_position" type="realpoint">29.000000,41.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">2</property>
+                <property name="size" type="realpoint">43.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello!</property>
+            </object>
+        </property>
+    </object>
+    <object type="wxSFLineShape">
+        <property name="id" type="long">14</property>
+        <property name="relative_position" type="realpoint">390.000000,270.000000</property>
+        <property name="source" type="long">1</property>
+        <property name="target" type="long">12</property>
+        <property name="target_arrow" type="serializabledynamic">
+            <object type="wxSFSolidArrow">
+                <property name="id" type="long">-1</property>
+            </object>
+        </property>
+    </object>
+    <object type="wxSFLineShape">
+        <property name="id" type="long">15</property>
+        <property name="relative_position" type="realpoint">390.000000,270.000000</property>
+        <property name="source" type="long">10</property>
+        <property name="target" type="long">12</property>
+        <property name="target_arrow" type="serializabledynamic">
+            <object type="wxSFSolidArrow">
+                <property name="id" type="long">-1</property>
+            </object>
+        </property>
+    </object>
+    <object type="cStarShape">
+        <property name="id" type="long">5</property>
+        <property name="accepted_connections" type="arraystring">
+            <item>All</item>
+        </property>
+        <property name="accepted_src_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="accepted_trg_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="relative_position" type="realpoint">90.000000,60.000000</property>
+        <property name="size" type="realpoint">150.000000,200.000000</property>
+        <property name="connect_to_vertex" type="bool">0</property>
+        <property name="description" type="string">Insert some shape's description text here...</property>
+        <property name="title" type="serializabledynamicnocreate">
+            <object type="wxSFEditTextShape">
+                <property name="id" type="long">2</property>
+                <property name="style" type="long">168</property>
+                <property name="relative_position" type="realpoint">54.000000,91.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">2</property>
+                <property name="size" type="realpoint">43.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello!</property>
+            </object>
+        </property>
+    </object>
+    <object type="cStarShape">
+        <property name="id" type="long">10</property>
+        <property name="accepted_connections" type="arraystring">
+            <item>All</item>
+        </property>
+        <property name="accepted_src_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="accepted_trg_neighbours" type="arraystring">
+            <item>cStarShape</item>
+        </property>
+        <property name="relative_position" type="realpoint">410.000000,330.000000</property>
+        <property name="size" type="realpoint">100.000000,100.000000</property>
+        <property name="connect_to_vertex" type="bool">0</property>
+        <property name="description" type="string">Insert some shape's description text here...</property>
+        <property name="title" type="serializabledynamicnocreate">
+            <object type="wxSFEditTextShape">
+                <property name="id" type="long">11</property>
+                <property name="style" type="long">168</property>
+                <property name="relative_position" type="realpoint">29.000000,41.000000</property>
+                <property name="halign" type="long">2</property>
+                <property name="valign" type="long">2</property>
+                <property name="size" type="realpoint">43.000000,19.000000</property>
+                <property name="border" type="pen">0,0,0,255 1 106</property>
+                <property name="fill" type="brush">0,0,0,255 106</property>
+                <property name="font" type="font">sans 12</property>
+                <property name="text" type="string">Hello!</property>
+            </object>
+        </property>
+    </object>
+</chart>
