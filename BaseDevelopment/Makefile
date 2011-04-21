@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.225 $
+# * $Revision: 1.226 $
 # * $Name:  $
-# * $Id: Makefile,v 1.225 2011/04/20 20:35:36 lollisoft Exp $
+# * $Id: Makefile,v 1.226 2011/04/21 11:33:39 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.226  2011/04/21 11:33:39  lollisoft
+# * Added wxSF demo target on Mac OS X.
+# *
 # * Revision 1.225  2011/04/20 20:35:36  lollisoft
 # * Activated optional wxShapeFramework compile task.
 # *
@@ -1770,6 +1773,10 @@ ifeq ($(OSNAME), Panther)
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
+
+../vendor/wxShapeFramework/samples/wxSFDemo: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/sample: dummy
 ifeq ($(OSNAME), Panther)
