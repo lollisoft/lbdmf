@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 15
+  revision 18
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -505,7 +505,7 @@ ${inlines}
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
 
-      operation 129154 "CGWorkflow"
+      operation 129154 "GenerateTurboVision"
 	stereotype "lbDMF:workflow"
 	public explicit_return_type ""
 	nparams 1
@@ -956,7 +956,7 @@ ${inlines}
       end
 
       activitynode 134530 initial ""
-	flow 134530 "<flow>"
+	flow 162178 "<flow>"
 	  on activitynode_ref 134658 // decision
 	end
       end
@@ -1079,6 +1079,64 @@ ${inlines}
       parameter 128386 "modulename" explicit_type ""
 	unordered 
 	in
+      end
+    end
+
+    activity 134658 "GenerateTurboVision"
+      stereotype "workflow"
+      activitydiagram 152962 "CGWorkflow"
+	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations no shadow default
+	show_infonote default drawing_language default show_stereotype_properties default
+	size A4
+      end
+
+      activitynode 141698 initial ""
+	flow 162562 "<flow>"
+	  on activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
+	      uml_transformation "SaveApplicationID = {source value}"
+	end
+      end
+
+      activitynode 141826 activity_final ""
+      end
+
+      activityaction 147970 "Generate TurboVision"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLTFromBuffer"
+	key "stylesheet" value "{style}"
+	key "source" value "{file}"
+	flow 155650 "<flow>"
+	  on activitynode_ref 141826 // activity_final
+	      uml_transformation "result = 1"
+	end
+      end
+
+      activityaction 148098 "Get ApplicationId"
+	opaque_action
+      end
+
+      activityaction 148226 "exportApplicationToXMLBuffer"
+	send_signal_action
+	ncouples 2
+	key "signal" value "exportApplicationToXMLBuffer"
+	key "SaveApplicationID" value "{SaveApplicationID}"
+	flow 169090 ""
+	  on activityaction_ref 154754 // activity action write memorybuffer to file
+	      uml_transformation "file = lala.xml"
+	end
+      end
+
+      activityaction 154754 "write memorybuffer to file"
+	send_signal_action
+	ncouples 3
+	key "signal" value "writeStringToFile"
+	key "filename" value "{file}"
+	key "source" value "{memorybuffer}"
+	flow 169218 "<flow>"
+	  on activityaction_ref 147970 // activity action Generate TurboVision
+	      uml_transformation "stylesheet = style.xsl"
+	end
       end
     end
   end

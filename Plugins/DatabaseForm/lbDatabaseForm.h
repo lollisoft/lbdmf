@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.67 2011/03/20 07:42:17 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.68 2011/04/21 11:49:26 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.68  2011/04/21 11:49:26  lollisoft
+ * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
+ *
  * Revision 1.67  2011/03/20 07:42:17  lollisoft
  * Moved code to a new library (lbDMFBasicActionSteps).
  *
@@ -430,7 +433,7 @@ protected:
 	 */
 	lb_I_Action_Step_Transitions* LB_STDCALL loadTransitionsForActionStep(lb_I_Long* step, lb_I_Action_Step_Transitions* allTransitions = NULL);
 
-	lb_I_ActionStep_Parameters* LB_STDCALL loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters = NULL);
+	lb_I_ActionStep_Parameters* LB_STDCALL loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters = NULL, lb_I_Parameter* allParameters = NULL);
 
 	long LB_STDCALL getNextStepId(lb_I_Action_Step_Transitions* trans, lb_I_Parameter* params, long id);
 

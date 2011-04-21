@@ -180,9 +180,53 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 -- Activity ID is '<xsl:value-of select="$activityID"/>'
 		<xsl:if test="$activityID=''">-- Activity not found.</xsl:if>
 		<xsl:if test="$activityID!=''">-- Activity '<xsl:value-of select="$activity"/>' found.
-			<xsl:call-template name="convertActivityTolbDMFActivity"><xsl:with-param name="ID" select="$activityID"/><xsl:with-param name="Name" select="$activity"/><xsl:with-param name="FormName" select="../@name"/></xsl:call-template>
+			<xsl:call-template name="convertActivityTolbDMFActivity">
+			<xsl:with-param name="ID" select="$activityID"/>
+			<xsl:with-param name="Name" select="$activity"/>
+			<xsl:with-param name="FormName" select="../@name"/>
+			<xsl:with-param name="TypeName" select="'FormValidator'"/>
+			</xsl:call-template>
 		</xsl:if>
 	</xsl:if>
+
+<!-- The plain workflow stereotype may be obsolete, if I am using the profile. -->
+
+	<xsl:if test="./xmi:Extension/stereotype/@name='workflow'">
+-- Activity operation for class <xsl:value-of select="../@name"/> in package <xsl:value-of select="../../@name"/> is <xsl:value-of select="@name"/>.
+-- Operation is a validator using activity <xsl:value-of select="./xmi:Extension/taggedValue[@tag='validator']/@value"/>
+		<xsl:variable name="activity" select="@name"/>
+		<xsl:variable name="activityID" select="//packagedElement[@xmi:type = 'uml:Activity'][@name = $activity]/@xmi:id"/>
+<!--<xsl:apply-templates select="../../packagedElement[@xmi:type = 'uml:Activity'][@name = $function]"/>-->
+-- Activity ID is '<xsl:value-of select="$activityID"/>'
+		<xsl:if test="$activityID=''">-- Activity not found.</xsl:if>
+		<xsl:if test="$activityID!=''">-- Activity '<xsl:value-of select="$activity"/>' found.
+			<xsl:call-template name="convertActivityTolbDMFActivity">
+			<xsl:with-param name="ID" select="$activityID"/>
+			<xsl:with-param name="Name" select="$activity"/>
+			<xsl:with-param name="FormName" select="../@name"/>
+			<xsl:with-param name="TypeName" select="'Buttonpress'"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:if>
+
+	<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:workflow'">
+-- Activity operation for class <xsl:value-of select="../@name"/> in package <xsl:value-of select="../../@name"/> is <xsl:value-of select="@name"/>.
+-- Operation is a validator using activity <xsl:value-of select="./xmi:Extension/taggedValue[@tag='validator']/@value"/>
+		<xsl:variable name="activity" select="@name"/>
+		<xsl:variable name="activityID" select="//packagedElement[@xmi:type = 'uml:Activity'][@name = $activity]/@xmi:id"/>
+<!--<xsl:apply-templates select="../../packagedElement[@xmi:type = 'uml:Activity'][@name = $function]"/>-->
+-- Activity ID is '<xsl:value-of select="$activityID"/>'
+		<xsl:if test="$activityID=''">-- Activity not found.</xsl:if>
+		<xsl:if test="$activityID!=''">-- Activity '<xsl:value-of select="$activity"/>' found.
+			<xsl:call-template name="convertActivityTolbDMFActivity">
+			<xsl:with-param name="ID" select="$activityID"/>
+			<xsl:with-param name="Name" select="$activity"/>
+			<xsl:with-param name="FormName" select="../@name"/>
+			<xsl:with-param name="TypeName" select="'Buttonpress'"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:if>
+
 </xsl:for-each>
 -- Script ready.
 </xsl:template>
@@ -191,32 +235,26 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
     <xsl:param name="ID"/>
     <xsl:param name="Name"/>
     <xsl:param name="FormName"/>
+    <xsl:param name="TypeName"/> <!-- The action type name as registered. -->
 <xsl:choose>
 	<xsl:when test="$TargetDBType='PostgreSQL'">
 INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), '', '');
+INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'), '<xsl:value-of select="./ownedParameter/@name"/>', '');
 
-INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_Validator');
+INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_<xsl:value-of select="$TypeName"/>');
 	</xsl:when>
 	<xsl:when test="$TargetDBType='Sqlite'">
 -- Generate statemachine for <xsl:value-of select="$ID"/>
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
 
 -- A form validator should be used before saving the changes to the database
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('FormValidator', '', '');
-
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('InitialNode', '', '');
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('SendSignalAction', 'instanceOflbSendSignalAction', 'lbDatabaseForm');
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('DecisionNode', 'instanceOflbDecisionAction', 'lbDatabaseForm');
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('OpaqueAction', 'instanceOflbOpAqueOperation', 'lbDatabaseForm');
-INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('FinalNode', '', '');
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), '', '');
+INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'), '<xsl:value-of select="./ownedParameter/@name"/>', '');
 
-INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_Validator');
+INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_<xsl:value-of select="$TypeName"/>');
 	</xsl:when>
 	<xsl:when test="$TargetDBType='MSSQL'">
 	</xsl:when>

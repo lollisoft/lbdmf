@@ -175,7 +175,7 @@
 								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="name"/>
 							</xmi:Extension>
 						</ownedAttribute>
-						<ownedOperation xmi:type="uml:Operation" name="CGWorkflow" xmi:id="BOUML_0x1f882_2" visibility="public" isAbstract="false">
+						<ownedOperation xmi:type="uml:Operation" name="GenerateTurboVision" xmi:id="BOUML_0x1f882_2" visibility="public" isAbstract="false">
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:workflow"/>
 							</xmi:Extension>
@@ -328,12 +328,12 @@
 							<stereotype name="validator"/>
 						</xmi:Extension>
 						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x20d82_70">
-							<outgoing xmi:idref="BOUML_0x20d82_40"/>
+							<outgoing xmi:idref="BOUML_0x27982_40"/>
 						</node>
 						<node xmi:type="uml:DecisionNode" xmi:id="BOUML_0x20e02_73">
 							<outgoing xmi:idref="BOUML_0x20e02_40"/>
 							<outgoing xmi:idref="BOUML_0x22902_40"/>
-							<incoming xmi:idref="BOUML_0x20d82_40"/>
+							<incoming xmi:idref="BOUML_0x27982_40"/>
 						</node>
 						<node xmi:type="uml:FinalNode" xmi:id="BOUML_0x20e82_72">
 							<incoming xmi:idref="BOUML_0x22882_40"/>
@@ -394,8 +394,6 @@
 								<taggedValue tag="signal" value="showMsgBox"/>
 								<taggedValue tag="msg" value="The modulename of the application must not be empty"/>
 							</xmi:Extension>
-							<target xmi:type="uml:InputPin" name="target" xmi:id="BOUML_0x1f482_69" ordering="unordered">
-							</target>
 							<outgoing xmi:idref="BOUML_0x24582_40"/>
 							<incoming xmi:idref="BOUML_0x24602_40"/>
 						</node>
@@ -415,7 +413,7 @@
 						</ownedParameter>
 						<node xmi:type="uml:ActivityParameterNode" name ="modulename" xmi:id="BOUML_PARAMETER_NODE_0x1f582_41" ordering="unordered">
 						</node>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x20d82_40" source="BOUML_0x20d82_70" target="BOUML_0x20e02_73">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x27982_40" source="BOUML_0x20d82_70" target="BOUML_0x20e02_73">
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x20e02_40" source="BOUML_0x20e02_73" target="BOUML_0x20f02_73">
 						</edge>
@@ -460,6 +458,68 @@
 						</ownedBehavior>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x22882_40">
 							<body>result = 1</body>
+						</ownedBehavior>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Activity" xmi:id="BOUML_0x20e02_39" name="GenerateTurboVision">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="workflow"/>
+						</xmi:Extension>
+						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x22982_70">
+							<outgoing xmi:idref="BOUML_0x27b02_40"/>
+						</node>
+						<node xmi:type="uml:FinalNode" xmi:id="BOUML_0x22a02_72">
+							<incoming xmi:idref="BOUML_0x26002_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24202_56" name="Generate TurboVision">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="transformXSLTFromBuffer"/>
+								<taggedValue tag="source" value="{file}"/>
+								<taggedValue tag="stylesheet" value="{style}"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x26002_40"/>
+							<incoming xmi:idref="BOUML_0x29502_40"/>
+						</node>
+						<node xmi:type="uml:OpaqueAction" xmi:id="BOUML_0x24282_46" name="Get ApplicationId">
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24302_56" name="exportApplicationToXMLBuffer">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="SaveApplicationID" value="{SaveApplicationID}"/>
+								<taggedValue tag="signal" value="exportApplicationToXMLBuffer"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x29482_40"/>
+							<incoming xmi:idref="BOUML_0x27b02_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x25c82_56" name="write memorybuffer to file">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="writeStringToFile"/>
+								<taggedValue tag="source" value="{memorybuffer}"/>
+								<taggedValue tag="filename" value="{file}"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x29502_40"/>
+							<incoming xmi:idref="BOUML_0x29482_40"/>
+						</node>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x27b02_40" source="BOUML_0x22982_70" target="BOUML_0x24302_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x27b02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x26002_40" source="BOUML_0x24202_56" target="BOUML_0x22a02_72" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x26002_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29482_40" source="BOUML_0x24302_56" target="BOUML_0x25c82_56" selection="BOUML_OPAQUE_SELECTION_BEHAVIOR_0x29482_40" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29502_40" source="BOUML_0x25c82_56" target="BOUML_0x24202_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29502_40">
+						</edge>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x27b02_40">
+							<body>SaveApplicationID = {source value}</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
+							<body>file = lala.xml</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_SELECTION_BEHAVIOR_0x29482_40">
+							<body>memorybuffer</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x26002_40">
+							<body>result = 1</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29502_40">
+							<body>stylesheet = style.xsl</body>
 						</ownedBehavior>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f982_0" client="BOUML_0x1f402_4" supplier="BOUML_0x20882_4">

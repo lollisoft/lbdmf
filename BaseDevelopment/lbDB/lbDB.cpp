@@ -191,7 +191,8 @@ public:
          * Convert the internal data to a char array and return the data.
          */
         lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
-        lbErrCodes	LB_STDCALL getLong(int column, lb_I_Long* instance);
+	lbErrCodes	LB_STDCALL getLong(int column, lb_I_Long* instance);
+	lbErrCodes	LB_STDCALL getLong(const char* column, lb_I_Long* instance);
         lbErrCodes	LB_STDCALL getString(const char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
@@ -335,6 +336,7 @@ public:
         lb_I_String*	LB_STDCALL getAsString(const char* column);
 		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 		lb_I_Long*		LB_STDCALL getAsLong(int column);
+		lb_I_Long*		LB_STDCALL getAsLong(const char* column);
 
 		lb_I_BinaryData* LB_STDCALL getBinaryData(int column);
 		lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column);
@@ -1280,12 +1282,17 @@ Therefore I need an indicator, set by the user of this library to know, which on
 /*...e*/
 lbErrCodes	LB_STDCALL lbBoundColumns::getLong(int column, lb_I_Long* instance) {
 	lbErrCodes err = ERR_NONE;
-
+	
 	UAP(lb_I_BoundColumn, bc)
-
+	
 	bc = getBoundColumn(column);
 	bc->getAsLong(instance);
-
+	
+	return ERR_NONE;
+}
+lbErrCodes	LB_STDCALL lbBoundColumns::getLong(const char* column, lb_I_Long* instance) {
+	getLong(getColumnIndex(column), instance);
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -1919,7 +1926,20 @@ lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
 	} else {
 		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
 	}
+	
+	return value.getPtr();
+}
 
+lb_I_Long* LB_STDCALL lbQuery::getAsLong(const char* column) {
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+	// Caller get's an owner
+	value++;
+	if (boundColumns != NULL) {
+		boundColumns->getLong(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
 	return value.getPtr();
 }
 

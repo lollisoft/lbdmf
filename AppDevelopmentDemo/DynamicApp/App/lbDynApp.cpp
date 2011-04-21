@@ -1334,10 +1334,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
         ukDoc = metaapp->getActiveDocument();
         QI(ukDoc, lb_I_Parameter, document)
 
-        *name = "SaveApplicationID";
-        document->getUAPInteger(*&name, *&AppID);
-    _LOG << "Export application " << AppID->charrep() << " to XML buffer." LOG_
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_String, ApplicationName)
+		*name = "SaveApplicationID";
+		*ApplicationName = "";
+		param->getUAPString(*&name, *&ApplicationName);
 
+
+		// Get it either from parameter or document value
+		if (*ApplicationName == "") {
+			document->getUAPInteger(*&name, *&AppID);
+			_LOG << "Export application " << AppID->charrep() << " to XML buffer." LOG_
+		} else {
+			UAP(lb_I_Applications, applications)
+			applications = metaapp->getApplicationModel();
+			applications->selectApplication(ApplicationName->charrep());
+
+			AppID->setData(applications->getApplicationID());
+			
+			// Pass it into the current application document as the save operation requires it.
+			document->setUAPInteger(*&name, *&AppID);
+		}
+	
         if (dirty) {
                 dirty = false;
                 bool b = metaapp->usingApplicationDatabaseBackend();

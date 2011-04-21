@@ -304,6 +304,14 @@ INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actio
 INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
 
 	</xsl:when>
+	<xsl:when test="./xmi:Extension/stereotype/@name='workflow'">
+-- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
+
+INSERT OR IGNORE INTO "actions" (name, typ, source) VALUES ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Buttonpress'), '<xsl:value-of select="./ownedParameter/@name"/>');
+INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = '<xsl:value-of select="@name"/>'));
+INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = '<xsl:value-of select="$classname"/>'), (select id from actions where name = '<xsl:value-of select="@name"/>'), 'evt_<xsl:value-of select="$classname"/>_<xsl:value-of select="@name"/>');
+
+	</xsl:when>
 	<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:test_application_via_lua'">
 -- Generate codegeneration operation '<xsl:value-of select="@name"/>' for '<xsl:value-of select="$classname"/>'
 

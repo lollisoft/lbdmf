@@ -282,8 +282,19 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 											
 											if (first+1 == last) {
 												// One row
+												*paramName = "id";
+												UAP(lb_I_Long, l)
+												l = q->getAsLong(SourceColumn->charrep());
+												*paramValue = l->charrep();
+												execution_params->setUAPString(*&paramName, *&paramValue);
 											} else {
 												// More than one row
+												*paramName = "result";
+												*paramValue = "0";
+												
+												execution_params->setUAPString(*&paramName, *&paramValue);
+												
+												return next_action;
 											}
 										} else {
 											*paramName = "result";

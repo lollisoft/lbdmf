@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.98 $
+ * $Revision: 1.99 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.98 2011/04/02 10:44:17 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.99 2011/04/21 11:49:26 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.99  2011/04/21 11:49:26  lollisoft
+ * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
+ *
  * Revision 1.98  2011/04/02 10:44:17  lollisoft
  * Now the UML based activities are reworked and they work while testing it against postbooks database.
  *
@@ -972,6 +975,7 @@ public:
 	
 	virtual void LB_STDCALL delParameter(lb_I_String*& parameter) = 0;
 
+	virtual void LB_STDCALL copyFrom(lb_I_Parameter* source) = 0;
 };
 /*...e*/
 

@@ -284,7 +284,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 	return NULL;
 }
 
-lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters) {
+lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_I_Long* step, lb_I_ActionStep_Parameters* allActionStepParameters, lb_I_Parameter* allParameters) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_ActionStep_Parameters, stepParameters)
@@ -347,6 +347,9 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				value = query->getAsString(2);
 				_interface = query->getAsString(3);
 				description = query->getAsString(4);
+				
+				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
+				
 				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 				err = query->next();
@@ -357,6 +360,9 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				value = query->getAsString(2);
 				_interface = query->getAsString(3);
 				description = query->getAsString(4);
+
+				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
+				
 				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
@@ -376,6 +382,9 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				*value = allActionStepParameters->getActionStepParameterValue();
 				*_interface = allActionStepParameters->getActionStepParameterInterface();
 				*description = allActionStepParameters->getActionStepParameterDescription();
+				
+				if (allParameters != NULL) value->substitutePlaceholder(allParameters);		
+				
 				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
@@ -517,8 +526,10 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 						*right = expression.substr(expression.find("=")+1).c_str();
 
 						right->trim();
-						right->replace(" ", "");
+						right->trim(false);
+						right->substitutePlaceholder(*&params);
 						left->trim();
+						left->trim(false);
 
 						_LOG << "Have build left = '" << left->charrep() << "' and right = '" << right->charrep() << "' from expression = '" << expression.c_str() << "'" LOG_
 
@@ -667,7 +678,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 
 		action->setTransitions(*&trans);
-		action->setParameter(loadParametersForActionStep(*&id, NULL));
+		action->setParameter(loadParametersForActionStep(*&id, NULL, *&params));
 
 		nextStep = action->execute(*&params);
 
@@ -764,7 +775,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				UAP(lb_I_Action_Step_Transitions, trans)
 				trans = loadTransitionsForActionStep(*&id, *&appActionStepTransitions);
 				action->setTransitions(*&trans);
-				action->setParameter(loadParametersForActionStep(*&id, NULL));
+				action->setParameter(loadParametersForActionStep(*&id, NULL, *&params));
 				nextStep = action->execute(*&params);
 
 				// If the delegated action doesn't support transitions, do it here.

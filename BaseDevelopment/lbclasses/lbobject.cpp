@@ -320,6 +320,34 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
 	ADD_INTERFACE(lb_I_Parameter)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void LB_STDCALL lbParameter::copyFrom(lb_I_Parameter* source) {
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+		parameters->setCloning(cloning);
+	}
+	
+	UAP(lb_I_Container, c)
+	c = source->getParameterList();
+	
+	if (c != NULL) {
+		while (c->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+			uk = c->nextElement();
+			key = c->currentKey();
+			
+			if (parameters->exists(&key)) 
+				parameters->remove(&key);
+			
+			parameters->insert(&uk, &key);
+		}
+	}
+}
+
 lb_I_Container* LB_STDCALL lbParameter::getParameterList() {
 	if (parameters == NULL) return NULL;
 
@@ -1000,7 +1028,58 @@ lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) 
 	
 	/// \todo Implement catching failures.
 	*substituted = charrep();
+
+	// First copy the params to enable their removement without touching the params.
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, tosubstitute)
+	tosubstitute->copyFrom(*&params);
+		
+	// Remove those parameters, that do not exist in string
 	
+	UAP(lb_I_Container, p)
+	p = params->getParameterList();
+	p->finishIteration();
+	while (p->hasMoreElements() == 1) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = p->nextElement();
+		key = p->currentKey();
+		*s = "{";
+		*s += key->charrep();
+		*s += "}";
+		
+		if (substituted->strpos(s->charrep()) == -1)
+			tosubstitute->delParameter(*&key);
+	}
+	
+	// Now substitute each of tosubstitute once and remove it from tosubstitute
+	p = tosubstitute->getParameterList();
+	p->finishIteration();
+	
+	if (p->Count() > 1) {
+		_LOG << "Error: Currently substitutePlaceholder can only replace one placeholder." LOG_
+		return *this;
+	}
+	
+	while (p->hasMoreElements() == 1) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = p->nextElement();
+		key = p->currentKey();
+		
+		*s = key->charrep();
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		params->getUAPString(*&s, *&value);
+		
+		*s = "{";
+		*s += key->charrep();
+		*s += "}";
+		
+		substituted->replace(s->charrep(), value->charrep());
+	}
+	
+#ifdef bla	
 	while (substituted->strpos("{") > -1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, replacer)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -1016,6 +1095,7 @@ lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) 
 		
 		substituted->replace(replacer->charrep(), value->charrep());
 	}
+#endif
 	
 	setData(substituted->charrep());
 	

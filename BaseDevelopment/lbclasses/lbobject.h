@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbobject.h,v 1.53 2011/04/02 10:44:17 lollisoft Exp $
+ * $Id: lbobject.h,v 1.54 2011/04/21 11:49:26 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.54  2011/04/21 11:49:26  lollisoft
+ * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
+ *
  * Revision 1.53  2011/04/02 10:44:17  lollisoft
  * Now the UML based activities are reworked and they work while testing it against postbooks database.
  *
@@ -380,6 +383,8 @@ public:
 	void LB_STDCALL setCloning(bool doClone=true);
 	
 	void LB_STDCALL delParameter(lb_I_String*& parameter);
+	
+	void LB_STDCALL copyFrom(lb_I_Parameter* source);
 
 	DECLARE_LB_UNKNOWN()
 

@@ -214,6 +214,7 @@ public:
 
 	lbErrCodes			LB_STDCALL getString(int column, lb_I_String* instance);
 	lbErrCodes			LB_STDCALL getLong(int column, lb_I_Long* instance);
+	lbErrCodes			LB_STDCALL getLong(const char* column, lb_I_Long* instance);
 	lbErrCodes			LB_STDCALL getString(const char* column, lb_I_String* instance);
 	lbErrCodes			LB_STDCALL setString(char* column, lb_I_String* instance);
 
@@ -366,6 +367,7 @@ public:
 	lb_I_String*				LB_STDCALL getAsString(int column);
 	lb_I_String*				LB_STDCALL getAsString(const char* column);
 	lb_I_Long*					LB_STDCALL getAsLong(int column);
+	lb_I_Long*					LB_STDCALL getAsLong(const char* column);
 	lbErrCodes					LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 
 	lb_I_BinaryData*			LB_STDCALL getBinaryData(int column);
@@ -482,6 +484,7 @@ private:
 	 */
 	UAP(lb_I_Container, cachedColumnTableNames)
 	UAP(lb_I_Container, cachedColumnNames)
+	UAP(lb_I_Container, cachedReverseColumnNames)
 	UAP(lb_I_Container, cachedColumnTypes)
 
 	UAP(lb_I_Container, cachedColumnPrimaryColumns)
@@ -1266,11 +1269,17 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 
 lbErrCodes	LB_STDCALL lbDatabaseLayerBoundColumns::getLong(int column, lb_I_Long* instance) {
 	lbErrCodes err = ERR_NONE;
-
+	
 	UAP(lb_I_BoundColumn, bc)
-
+	
 	bc = getBoundColumn(column);
 	bc->getAsLong(instance);
+	
+	return ERR_NONE;
+}
+
+lbErrCodes	LB_STDCALL lbDatabaseLayerBoundColumns::getLong(const char* column, lb_I_Long* instance) {
+	getLong(getColumnIndex(column), instance);
 
 	return ERR_NONE;
 }
@@ -1381,6 +1390,9 @@ lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
 	if (cachedColumnNames == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnNames)
 	}
+	if (cachedReverseColumnNames == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, cachedReverseColumnNames)
+	}
 	if (cachedColumnTableNames == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, cachedColumnTableNames)
 	}
@@ -1434,11 +1446,15 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 				UAP_REQUEST(getModuleManager(), lb_I_Integer, type)
 				UAP_REQUEST(getModuleManager(), lb_I_Integer, columnIndex)
 				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_KeyBase, reverse_key)
 				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_Unknown, reverse_uk)
 				UAP(lb_I_Unknown, ukT)
 				UAP(lb_I_Unknown, ukTable)
 
 				QI(columnIndex, lb_I_KeyBase, key)
+				QI(columnIndex, lb_I_Unknown, reverse_key)
+				QI(name, lb_I_KeyBase, reverse_uk)
 				QI(name, lb_I_Unknown, uk)
 				QI(type, lb_I_Unknown, ukT)
 				QI(tablename, lb_I_Unknown, ukTable)
@@ -1450,6 +1466,7 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 
 				*name = column.c_str();
 
+				cachedReverseColumnNames->insert(&reverse_uk, &reverse_key);
 				cachedColumnNames->insert(&uk, &key);
 				cachedColumnTypes->insert(&ukT, &key);
 
@@ -2289,7 +2306,7 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, col)
 	QI(col, lb_I_KeyBase, key)
 	col->setData(column);
-
+	
 	if (cachedDataColumns->exists(&key) == 1) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_Long, value)
@@ -2300,13 +2317,31 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 	} else {
 		REQUEST(getModuleInstance(), lb_I_Long, value)
 	}
-
+	
 	// Caller get's an owner
 	value++;
-
+	
 	///\todo Implement this.
-
+	
 	return value.getPtr();
+}
+
+lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(const char* column) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+	
+	*name = column;
+	
+	UAP(lb_I_Unknown, uk)
+	uk = cachedReverseColumnNames->getElement(&key);
+	
+	UAP(lb_I_Integer, i)
+	QI(uk, lb_I_Integer, i)
+	
+	
+	return getAsLong((int) i->getData());
 }
 
 lb_I_BinaryData* LB_STDCALL lbDatabaseLayerQuery::getBinaryData(int column) {

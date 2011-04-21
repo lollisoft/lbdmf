@@ -448,12 +448,20 @@ public:
         virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value) = 0;
 		
 		/**
-		 * \brief Get the column data as lb_I_Integer* instance.
+		 * \brief Get the column data as lb_I_Long* instance.
 		 * 
-		 * Builds a lb_I_Integer instance and fills in the data of the bound column.
+		 * Builds a lb_I_Long instance and fills in the data of the bound column.
 		 * The database column must be of valit integer type. 
 		 */
 		virtual lb_I_Long* LB_STDCALL getAsLong(int column) = 0;
+		
+	   /**
+		* \brief Get the column data as lb_I_Long* instance.
+		* 
+		* Builds a lb_I_Long instance and fills in the data of the bound column.
+		* The database column must be of valit integer type. 
+		*/
+		virtual lb_I_Long* LB_STDCALL getAsLong(const char* column) = 0;
 		
 		/** \brief Get BLOB data.
 		 */
@@ -820,7 +828,7 @@ public:
 	 * \param instance String instance to be filled with the value.
 	 */
         virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
-        
+	
 	/**
 	 * \brief Get the column as string representation.
 	 *
@@ -829,8 +837,18 @@ public:
 	 * \param column Index of the column.
 	 * \param instance String instance to be filled with the value.
 	 */
-        virtual lbErrCodes      LB_STDCALL getLong(int column, lb_I_Long* instance) = 0;
-        
+	virtual lbErrCodes      LB_STDCALL getLong(int column, lb_I_Long* instance) = 0;
+	
+	/**
+	 * \brief Get the column as string representation.
+	 *
+	 * Returns index column as a string.
+	 *
+	 * \param column Name of the column.
+	 * \param instance String instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getLong(const char* column, lb_I_Long* instance) = 0;
+	
 	/**
 	 * \brief Get the column as string representation.
 	 *
