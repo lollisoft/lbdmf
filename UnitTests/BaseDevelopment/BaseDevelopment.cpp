@@ -429,31 +429,177 @@ public:
 		TEST_CASE(test_lbString_getData)
 		TEST_CASE(test_lbString_setDataWithUnknownLong)
 		TEST_CASE(test_lbString_setDataWithUnknownNULL)
+		TEST_CASE(test_lbString_substitutePlaceholder_Empty)
+		TEST_CASE(test_lbString_substitutePlaceholder_OneIsEmpty)
+		TEST_CASE(test_lbString_substitutePlaceholder_One)
+		TEST_CASE(test_lbString_substitutePlaceholder_Two)
+		TEST_CASE(test_lbString_substitutePlaceholder_MissingBegin)
+		TEST_CASE(test_lbString_substitutePlaceholder_MissingEnd)
+		TEST_CASE(test_lbString_substitutePlaceholder_Inner)
+		TEST_CASE(test_lbString_substitutePlaceholder_WithPlaceholder)
+		TEST_CASE(test_lbString_substitutePlaceholder_InnerMissingBegin)
+		TEST_CASE(test_lbString_substitutePlaceholder_InnerMissingEnd)
 	}
 
 
 public:
-	void setUp()
+	void test_lbString_substitutePlaceholder_Empty( void )
 	{
-#ifdef __MINGW32__
-		signal(SIGSEGV, sig_handler);
-		signal(SIGABRT, sig_handler);
-#endif
-#ifdef LINUX
-		signal(SIGSEGV, sig_handler);
-		signal(SIGBUS, sig_handler);
-#endif
-#ifdef OSX
-		signal(SIGABRT, sig_handler);
-		signal(SIGTRAP, sig_handler);
-		signal(SIGSEGV, sig_handler);
-		signal(SIGTERM, sig_handler);
-		signal(SIGBUS, sig_handler);
-#endif
+		puts("test_lbString_substitutePlaceholder_Empty");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( true, *s == "" );
 	}
 
-	void tearDown()
+	void test_lbString_substitutePlaceholder_OneIsEmpty( void )
 	{
+		puts("test_lbString_substitutePlaceholder_OneIsEmpty");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A}";
+
+		AddPlaceholder(*&p, "A", "");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala ", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_WithPlaceholder( void )
+	{
+		puts("test_lbString_substitutePlaceholder_WithPlaceholder");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A}";
+
+		AddPlaceholder(*&p, "A", "Bla {A}");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala Bla {A}", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_One( void )
+	{
+		puts("test_lbString_substitutePlaceholder_One");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala Bla", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_Inner( void )
+	{
+		puts("test_lbString_substitutePlaceholder_Inner");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A{B}}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala {A{B}}", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_InnerMissingEnd( void )
+	{
+		puts("test_lbString_substitutePlaceholder_InnerMissingEnd");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A{B}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala {A{B}", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_InnerMissingBegin( void )
+	{
+		puts("test_lbString_substitutePlaceholder_InnerMissingBegin");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {AB}}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala {AB}}", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_MissingBegin( void )
+	{
+		puts("test_lbString_substitutePlaceholder_MissingBegin");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala A}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala A}", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_MissingEnd( void )
+	{
+		puts("test_lbString_substitutePlaceholder_MissingEnd");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala {A", s->charrep() );
+	}
+
+	void test_lbString_substitutePlaceholder_Two( void )
+	{
+		puts("test_lbString_substitutePlaceholder_Two");
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		*s = "Lala {A} {B}";
+
+		AddPlaceholder(*&p, "A", "Bla");
+		AddPlaceholder(*&p, "B", "Blubb");
+
+		s->substitutePlaceholder(*&p);
+
+		ASSERT_EQUALS( "Lala Bla Blubb", s->charrep() );
+	}
+
+	void AddPlaceholder(lb_I_Parameter* p, char* name, char* value)
+	{
+		UAP_REQUEST(getModuleInstance(), lb_I_String, k)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, v)
+	
+		*k = name;
+		*v = value;
+		p->setUAPString(*&k, *&v);
 	}
 
 	void test_lbString_setDataWithUnknownLong( void )
@@ -577,7 +723,7 @@ public:
 		
 		s->trim(false);
 		
-		ASSERT_EQUALS( true, *s == "lala " );
+		ASSERT_EQUALS( "lala ", s->charrep() );
 	}
 	
 	void test_lbString_replace( void )
@@ -595,6 +741,29 @@ public:
 	bool LoadSettings()
 	{
 		return true;
+	}
+
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGSEGV, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+#ifdef OSX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+
+	void tearDown()
+	{
 	}
 };
 
@@ -1573,3 +1742,4 @@ REGISTER_FIXTURE( BaseDevelopmentContainer );
 REGISTER_FIXTURE( BaseDevelopmentMetaApplication );
 REGISTER_FIXTURE( BaseDevelopmentDatabase );
 REGISTER_FIXTURE( BaseDevelopmentEventManager );
+
