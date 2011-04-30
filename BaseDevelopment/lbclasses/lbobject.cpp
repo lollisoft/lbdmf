@@ -1025,80 +1025,78 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2, bool no
 
 lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, substituted)
-	
-	/// \todo Implement catching failures.
-	*substituted = charrep();
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tosubstitute)
+	*substituted = "";
+	*tosubstitute = charrep();
+	char* temp = charrep();
 
-	// First copy the params to enable their removement without touching the params.
-	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, tosubstitute)
-	tosubstitute->copyFrom(*&params);
-		
-	// Remove those parameters, that do not exist in string
-	
-	UAP(lb_I_Container, p)
-	p = params->getParameterList();
-	p->finishIteration();
-	while (p->hasMoreElements() == 1) {
-		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_KeyBase, key)
-		uk = p->nextElement();
-		key = p->currentKey();
-		*s = "{";
-		*s += key->charrep();
-		*s += "}";
-		
-		if (substituted->strpos(s->charrep()) == -1)
-			tosubstitute->delParameter(*&key);
-	}
-	
-	// Now substitute each of tosubstitute once and remove it from tosubstitute
-	p = tosubstitute->getParameterList();
-	p->finishIteration();
-	
-	if (p->Count() > 1) {
-		_LOG << "Error: Currently substitutePlaceholder can only replace one placeholder." LOG_
-		return *this;
-	}
-	
-	while (p->hasMoreElements() == 1) {
-		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_KeyBase, key)
-		uk = p->nextElement();
-		key = p->currentKey();
-		
-		*s = key->charrep();
-		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-		params->getUAPString(*&s, *&value);
-		
-		*s = "{";
-		*s += key->charrep();
-		*s += "}";
-		
-		substituted->replace(s->charrep(), value->charrep());
-	}
-	
-#ifdef bla	
-	while (substituted->strpos("{") > -1) {
-		UAP_REQUEST(getModuleInstance(), lb_I_String, replacer)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-		UAP(lb_I_String, right)
-		UAP(lb_I_String, left)
-		right = substituted->right(substituted->strpos("{")+1); 
-		left = right->left(right->strpos("}"));
-		*replacer = "{";
-		*replacer += left->charrep();
-		*replacer += "}";
+	int i = 0;
+	int a = 0;
+	int b = 0;
 
-		params->getUAPString(*&left, *&value);
-		
-		substituted->replace(replacer->charrep(), value->charrep());
+	// Count occurences of placeholders (inner placeholders are not accepted)
+	while (temp[i] != 0) {
+		if (temp[i] == '{') 
+			a++;
+		if (temp[i] == '}') 
+			if (a == (b+1)) b++;
+		i++;
 	}
-#endif
-	
+
+	if (a != b) return *this;
+	if (a == 0) return *this;
+
+	i = 0;
+	int from = -1;
+	int to = -1;
+	while (temp[i] != 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, placeholder)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		bool found = false;
+
+		if (temp[i] == '{') {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, t)
+			*t = tosubstitute->charrep();
+			//t = t->right((from == -1) ? 0 : from);
+			t = t->left(i);
+			*substituted += t->charrep();
+			//printf("Substituted becomes : '%s'\n", substituted->charrep());
+			from = i;
+		}
+		if (temp[i] == '}') {
+			to = i;
+			if (from >= 0 && to >= 0 && from != to) {
+				found = true;
+				key = tosubstitute->right(from+1);
+				key = key->left(to - from - 1);
+
+				//printf("Have a key: %s\n", key->charrep());
+				tosubstitute = tosubstitute->right(to + 1);
+				temp = tosubstitute->charrep();
+				i = -1;
+				from = -1;
+				//printf("Tosubstitute becomes : '%s'\n", tosubstitute->charrep());
+			}
+		}
+
+		if (found) {
+			if (params->getUAPString(*&key, *&value) == ERR_NONE)
+				*substituted += value->charrep();
+			else {
+				*substituted += "{";
+				*substituted += key->charrep();
+				*substituted += "}";
+			}
+
+			found = false;
+		}
+		i++;
+	}
+
+	*substituted += tosubstitute->charrep();
 	setData(substituted->charrep());
-	
+
 	return *this;
 }
 
@@ -1306,7 +1304,6 @@ void LB_STDCALL lbString::trim(bool fromright) {
 		stringdata+=(--pos);
 		stringdata = strdup(stringdata);
 		free(temp);
-		printf("Stringdata is '%s'.", stringdata);
 	}
 }
 
