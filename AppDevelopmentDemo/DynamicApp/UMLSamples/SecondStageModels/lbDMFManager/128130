@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 18
+  revision 19
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1103,8 +1103,8 @@ ${inlines}
       activityaction 147970 "Generate TurboVision"
 	send_signal_action
 	ncouples 3
-	key "signal" value "transformXSLTFromBuffer"
-	key "stylesheet" value "{style}"
+	key "signal" value "transformXSLT"
+	key "stylesheet" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
 	key "source" value "{file}"
 	flow 155650 "<flow>"
 	  on activitynode_ref 141826 // activity_final
@@ -1135,7 +1135,6 @@ ${inlines}
 	key "source" value "{memorybuffer}"
 	flow 169218 "<flow>"
 	  on activityaction_ref 147970 // activity action Generate TurboVision
-	      uml_transformation "stylesheet = style.xsl"
 	end
       end
     end

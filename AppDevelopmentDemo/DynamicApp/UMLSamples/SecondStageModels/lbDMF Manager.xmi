@@ -472,9 +472,9 @@
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24202_56" name="Generate TurboVision">
 							<xmi:Extension extender="Bouml">
-								<taggedValue tag="signal" value="transformXSLTFromBuffer"/>
+								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="{style}"/>
+								<taggedValue tag="stylesheet" value="/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x26002_40"/>
 							<incoming xmi:idref="BOUML_0x29502_40"/>
@@ -502,9 +502,9 @@
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x26002_40" source="BOUML_0x24202_56" target="BOUML_0x22a02_72" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x26002_40">
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29482_40" source="BOUML_0x24302_56" target="BOUML_0x25c82_56" selection="BOUML_OPAQUE_SELECTION_BEHAVIOR_0x29482_40" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29482_40" source="BOUML_0x24302_56" target="BOUML_0x25c82_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29502_40" source="BOUML_0x25c82_56" target="BOUML_0x24202_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29502_40">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29502_40" source="BOUML_0x25c82_56" target="BOUML_0x24202_56">
 						</edge>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x27b02_40">
 							<body>SaveApplicationID = {source value}</body>
@@ -512,14 +512,8 @@
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
 							<body>file = lala.xml</body>
 						</ownedBehavior>
-						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_SELECTION_BEHAVIOR_0x29482_40">
-							<body>memorybuffer</body>
-						</ownedBehavior>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x26002_40">
 							<body>result = 1</body>
-						</ownedBehavior>
-						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29502_40">
-							<body>stylesheet = style.xsl</body>
 						</ownedBehavior>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f982_0" client="BOUML_0x1f402_4" supplier="BOUML_0x20882_4">
