@@ -32,11 +32,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.79 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.80 2011/05/07 10:36:24 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.80  2011/05/07 10:36:24  lollisoft
+ * Some bugfixes regarding plugin initialization.
+ * Completely implemented an UML based code generation workflow using UML Activit’es.
+ *
  * Revision 1.79  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -1347,6 +1351,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					PluginContainer.resetPtr();
 				}
 
+				bool bLog = isLogActivated();
+				setLogActivated(true);
+				_LOG << "Initialize plugin " << plM->getModule()->charrep() LOG_
+				setLogActivated(bLog);
+				
 				PluginContainer = plM->getPlugins();
 
 				if (PluginContainer == NULL) {

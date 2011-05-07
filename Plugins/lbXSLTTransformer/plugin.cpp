@@ -78,6 +78,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -107,6 +108,10 @@ lbPluginModuleXSLTTransformer::~lbPluginModuleXSLTTransformer() {
 void LB_STDCALL lbPluginModuleXSLTTransformer::initialize() {
 	_CL_VERBOSE << "lbPluginModuleXSLTTransformer::initialize() called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleXSLTTransformer::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleXSLTTransformer::setData(lb_I_Unknown* uk) {

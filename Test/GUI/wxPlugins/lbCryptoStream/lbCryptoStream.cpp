@@ -75,8 +75,9 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	virtual void LB_STDCALL initialize();
-
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
+	
 	DECLARE_PLUGINS()
 };
 
@@ -101,6 +102,10 @@ lbPluginModuleCryptoStream::~lbPluginModuleCryptoStream() {
 
 void LB_STDCALL lbPluginModuleCryptoStream::initialize() {
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleCryptoStream::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleCryptoStream::setData(lb_I_Unknown* uk) {

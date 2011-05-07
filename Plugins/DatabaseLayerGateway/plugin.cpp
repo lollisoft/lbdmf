@@ -84,6 +84,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 
 	DECLARE_PLUGINS()
 };
@@ -113,6 +114,10 @@ lbPluginModuleDatabaseLayerGateway::~lbPluginModuleDatabaseLayerGateway() {
 void LB_STDCALL lbPluginModuleDatabaseLayerGateway::initialize() {
 	_CL_VERBOSE << "lbPluginModuleDatabaseLayerGateway::initialize() called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleDatabaseLayerGateway::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseLayerGateway::setData(lb_I_Unknown* uk) {

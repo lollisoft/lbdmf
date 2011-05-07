@@ -103,7 +103,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	virtual void LB_STDCALL initialize();
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -140,6 +141,10 @@ lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {
 void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
 	_CL_VERBOSE << "lbPluginModuleDatabaseForm::initialize() called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleDatabaseForm::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseForm::setData(lb_I_Unknown* uk) {

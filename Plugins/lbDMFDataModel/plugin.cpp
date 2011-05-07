@@ -78,7 +78,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	virtual void LB_STDCALL initialize();
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -133,8 +134,12 @@ lbPluginModulelbDMFDataModel::~lbPluginModulelbDMFDataModel() {
 void LB_STDCALL lbPluginModulelbDMFDataModel::initialize() {
 	char ptr[20] = "";
 	sprintf(ptr, "%p", this);
-
+	
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModulelbDMFDataModel::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModulelbDMFDataModel::setData(lb_I_Unknown* uk) {

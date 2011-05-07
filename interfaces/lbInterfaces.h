@@ -4499,7 +4499,7 @@ public:
 	 * Each plugin module may do some installation task. This routine is responsible for this task.
 	 * Please do not call any install method before the plugin manager has initialized all plugins.
 	 */
-	virtual void LB_STDCALL install() {}
+	virtual void LB_STDCALL install() = 0;
 
 protected:
 	/**

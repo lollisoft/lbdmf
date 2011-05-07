@@ -115,6 +115,13 @@ void LB_STDCALL lbSendSignalAction::setParameter(lb_I_ActionStep_Parameters* myP
 lb_I_String* LB_STDCALL lbSendSignalAction::substitutePlaceholder(lb_I_String* value, lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, substituted)
 
+	if (value == NULL) {
+		_LOG << "Error: The value parameter is a null pointer." LOG_
+		*substituted = "";
+		substituted++;
+		return substituted.getPtr();
+	}
+	
 	*substituted = value->charrep();
 
 	while (substituted->strpos("{") > -1) {
@@ -123,13 +130,21 @@ lb_I_String* LB_STDCALL lbSendSignalAction::substitutePlaceholder(lb_I_String* v
 		UAP(lb_I_String, right)
 		UAP(lb_I_String, left)
 		left = substituted->left(substituted->strpos("}"));
-		right = left->right(substituted->strpos("{"));
+		right = left->right(substituted->strpos("{") + 1);
 		*replacer = "{";
 		*replacer += right->charrep();
 		*replacer = "}";
 
 		params->getUAPString(*&right, *&value);
 
+		if (value == NULL) {
+			_LOG << "Error: Missing parameter to substitude to (" << right->charrep() << ")." LOG_
+			substituted++;
+			return substituted.getPtr();
+		}
+
+		_LOG << "Info: Substitude '" << right->charrep() << "' with '" << value->charrep() << "." LOG_
+		
 		substituted->replace(replacer->charrep(), value->charrep());
 	}
 	substituted++;
@@ -223,7 +238,7 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
-				UAP(lb_I_String, valueSubstituted)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, valueSubstituted)
 
 				SignalParams->setNextActionStepParameter();
 
@@ -235,8 +250,28 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 				if (I++ == 0) *msg += ", ";
 				*msg += value->charrep();
 
-				valueSubstituted = substitutePlaceholder(*&value, *&params);
-				param->setUAPString(*&name, *&valueSubstituted);
+				// Temporarly drop the current parameter
+				//UAP_REQUEST(getModuleInstance(), lb_I_String, valueBackup)
+				//*valueBackup = value->charrep();
+				//params->delParameter(*&name);
+			
+				// Hack to avoid replacing within substituted XML document
+				if (value->strpos("<lbDMF applicationid=") != -1)
+				{
+					*valueSubstituted = value->charrep();
+					_LOG << "Substituted parameter " << name->charrep() << " with value " << valueSubstituted->charrep() << "." LOG_
+					param->setUAPString(*&name, *&valueSubstituted);
+				}
+				else
+				{
+					*valueSubstituted = value->substitutePlaceholder(*&params).charrep();
+					_LOG << "Substituted parameter " << name->charrep() << " with value " << valueSubstituted->charrep() << "." LOG_
+					param->setUAPString(*&name, *&valueSubstituted);
+				}
+				
+				
+				// Restore temporarly dropped parameter
+				//params->setUAPString(*&name, *&valueBackup);
 			}
 
 			*msg += ")";

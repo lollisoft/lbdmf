@@ -71,7 +71,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	virtual void LB_STDCALL initialize();
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 
 	DECLARE_PLUGINS()
 };
@@ -110,6 +111,10 @@ void LB_STDCALL lbPluginModule::initialize() {
 
 	_LOG << "lbPluginModule::initialize() lbPluginDMFXslt called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModule::install() {
+	lbErrCodes err = ERR_NONE;
 
 	UAP(lb_I_Database, database)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)

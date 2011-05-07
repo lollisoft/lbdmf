@@ -79,7 +79,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	virtual void LB_STDCALL initialize();
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 
 	DECLARE_PLUGINS()
 };
@@ -105,6 +106,10 @@ lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
 
 void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleLoginWizard::install() {
+	
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {

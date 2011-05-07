@@ -81,6 +81,7 @@ public:
 	
 	char* LB_STDCALL getTestFixture();
 	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -113,6 +114,10 @@ lbPluginModuleTest::~lbPluginModuleTest() {
 void LB_STDCALL lbPluginModuleTest::initialize() {
 	_CL_LOG << "lbPluginModuleTest::initialize() called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleTest::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleTest::setData(lb_I_Unknown* uk) {

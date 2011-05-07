@@ -78,6 +78,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -108,6 +109,10 @@ lbPluginModuleFileOperations::~lbPluginModuleFileOperations() {
 void LB_STDCALL lbPluginModuleFileOperations::initialize() {
 	_CL_VERBOSE << "lbPluginModuleFileOperations::initialize() called." LOG_
 	enumPlugins();
+}
+
+void LB_STDCALL lbPluginModuleFileOperations::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleFileOperations::setData(lb_I_Unknown* uk) {
