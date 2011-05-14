@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 22
+  revision 28
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1091,28 +1091,23 @@ ${inlines}
       end
 
       activitynode 141698 initial ""
-	flow 182402 "<flow>"
-	  on activitynode_ref 148354 // decision
+	flow 184194 "<flow>"
+	  on activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
 	end
       end
 
       activitynode 141826 activity_final ""
       end
 
-      activityaction 147970 "Generate TurboVision"
+      activityaction 147970 "Generate TurboVision (Mac)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "stylesheet" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
 	key "source" value "{file}"
-	flow 155650 "<flow>"
-	  on activitynode_ref 141826 // activity_final
-	      uml_transformation "result = 1"
+	flow 183682 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
 	end
-      end
-
-      activityaction 148098 "Get ApplicationId"
-	opaque_action
       end
 
       activityaction 148226 "exportApplicationToXMLBuffer"
@@ -1132,31 +1127,8 @@ ${inlines}
 	key "signal" value "writeStringToFile"
 	key "filename" value "{file}"
 	key "source" value "{memorybuffer}"
-	flow 169218 "<flow>"
-	  on activityaction_ref 147970 // activity action Generate TurboVision
-	end
-      end
-
-      activityaction 161282 "Show OS Type"
-	send_signal_action
-	ncouples 3
-	key "signal" value "showMsgBox"
-	key "msg" value "{OSType}"
-	key "title" value "Info"
-	flow 175874 "<flow>"
-	  on activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
-	      uml_transformation "SaveApplicationID = {source value}"
-	end
-      end
-
-      activitynode 148354 decision ""
-	flow 182530 "<flow>"
-	  on activityaction_ref 161282 // activity action Show OS Type
-	    uml_guard "OSType == \"Mac\""
-	end
-
-	flow 182658 "<flow>"
-	  on activityaction_ref 167810 // activity action Not yet supported
+	flow 190722 "<flow>"
+	  on activityaction_ref 174722 // activity action Show OS Type
 	end
       end
 
@@ -1164,10 +1136,84 @@ ${inlines}
 	send_signal_action
 	ncouples 3
 	key "signal" value "showMsgBox"
-	key "msg" value "Bis jetzt kann nur auf einem Mac Code generiert werden."
+	key "msg" value "Only Mac, Windows and Unix flavoured machines are supported."
 	key "title" value "Info"
-	flow 182786 "<flow>"
+	flow 183554 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
+	end
+      end
+
+      activityaction 167938 "Generate TurboVision (Windows)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "{file}"
+	key "stylesheet" value "\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\TurboVision\\\\gen_TurboVisionFixedFormularClasses.xsl"
+	flow 183810 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
+	end
+      end
+
+      activityaction 168066 "Generate TurboVision (Unix)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "{file}"
+	key "stylesheet" value "/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
+	flow 183938 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
+	end
+      end
+
+      activityaction 168194 "NOP"
+	opaque_action
+	flow 184066 "<flow>"
 	  on activitynode_ref 141826 // activity_final
+	      uml_transformation "result = 1"
+	end
+      end
+
+      activityaction 174722 "Show OS Type"
+	send_signal_action
+	ncouples 3
+	key "signal" value "showMsgBox"
+	key "msg" value "Os Type is {OSType}"
+	key "title" value "Betriebssystem..."
+	flow 197250 "<flow>"
+	  on activitynode_ref 148354 // decision
+	end
+      end
+
+      activitynode 148354 decision "Unix"
+	flow 197378 "<flow>"
+	  on activitynode_ref 148482 // decision
+	end
+
+	flow 197762 "<flow>"
+	  on activityaction_ref 168066 // activity action Generate TurboVision (Unix)
+	    uml_guard "OSType == \"Unix\""
+	end
+      end
+
+      activitynode 148482 decision "Mac"
+	flow 197506 "<flow>"
+	  on activitynode_ref 148610 // decision
+	end
+
+	flow 197890 "<flow>"
+	  on activityaction_ref 147970 // activity action Generate TurboVision (Mac)
+	    uml_guard "OSType == \"Mac\""
+	end
+      end
+
+      activitynode 148610 decision "Windows"
+	flow 198018 "<flow>"
+	  on activityaction_ref 167938 // activity action Generate TurboVision (Windows)
+	    uml_guard "OSType == \"Windows\""
+	end
+
+	flow 198274 "<flow>"
+	  on activityaction_ref 167810 // activity action Not yet supported
 	end
       end
     end

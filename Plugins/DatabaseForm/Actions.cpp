@@ -28,6 +28,17 @@
 */
 /*...e*/
 
+// To review an imported workflow, the following query can be used:
+/*
+ select actionid, srcid, bezeichnung, name, value, expression, dst_actionid, src_actionid from (
+ select actions.id as actionid, action_steps.id as srcid, action_steps.bezeichnung, action_step_parameter.name, action_step_parameter.value from actions
+ inner join action_steps on action_steps.actionid = actions.id
+ inner join action_step_parameter on action_step_parameter.action_step_id = action_steps.id
+ -- where actions.id = 20
+ ) as temp inner join action_step_transitions on action_step_transitions.dst_actionid = srcid
+order by src_actionid
+*/
+
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
 
