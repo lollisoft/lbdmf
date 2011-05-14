@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 19
+  revision 22
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1091,9 +1091,8 @@ ${inlines}
       end
 
       activitynode 141698 initial ""
-	flow 162562 "<flow>"
-	  on activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
-	      uml_transformation "SaveApplicationID = {source value}"
+	flow 182402 "<flow>"
+	  on activitynode_ref 148354 // decision
 	end
       end
 
@@ -1135,6 +1134,40 @@ ${inlines}
 	key "source" value "{memorybuffer}"
 	flow 169218 "<flow>"
 	  on activityaction_ref 147970 // activity action Generate TurboVision
+	end
+      end
+
+      activityaction 161282 "Show OS Type"
+	send_signal_action
+	ncouples 3
+	key "signal" value "showMsgBox"
+	key "msg" value "{OSType}"
+	key "title" value "Info"
+	flow 175874 "<flow>"
+	  on activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
+	      uml_transformation "SaveApplicationID = {source value}"
+	end
+      end
+
+      activitynode 148354 decision ""
+	flow 182530 "<flow>"
+	  on activityaction_ref 161282 // activity action Show OS Type
+	    uml_guard "OSType == \"Mac\""
+	end
+
+	flow 182658 "<flow>"
+	  on activityaction_ref 167810 // activity action Not yet supported
+	end
+      end
+
+      activityaction 167810 "Not yet supported"
+	send_signal_action
+	ncouples 3
+	key "signal" value "showMsgBox"
+	key "msg" value "Bis jetzt kann nur auf einem Mac Code generiert werden."
+	key "title" value "Info"
+	flow 182786 "<flow>"
+	  on activitynode_ref 141826 // activity_final
 	end
       end
     end

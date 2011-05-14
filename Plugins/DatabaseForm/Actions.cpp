@@ -884,6 +884,13 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 	loadDataModel();
 
+		
+	UAP_REQUEST(getModuleInstance(), lb_I_String, OSTypeVarName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, OSType)
+	*OSTypeVarName = "OSType";
+	*OSType = getOsType();
+	params->setUAPString(*&OSTypeVarName, *&OSType);
+	
 	if (appActionSteps != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, sortedActionSteps)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, order)

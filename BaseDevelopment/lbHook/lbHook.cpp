@@ -210,6 +210,8 @@ extern "C" DLLEXPORT void		LB_CDECL _uninitLocale() { uninitLocale(); }
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
+extern "C" DLLEXPORT char*		LB_CDECL _getOsType() { return getOsType(); }
+
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf) { return new lbStringKey(buf); }
@@ -331,6 +333,34 @@ DLLEXPORT char* LB_CDECL getLogDirectory() {
 	return lbLogDirectory;
 }
 /*...e*/
+
+/** \brief Return the operating system type.
+ * On windows it will return "Windows".
+ * On Mac it will return "Mac".
+ * On Linux, Solaris and other Unix flavour systems it will return "Unix".
+ */
+extern "C" DLLEXPORT char* LB_CDECL getOsType() {
+	static char* osIsMac = "Mac";
+	static char* osIsWindows = "Windows";
+	static char* osIsUnix = "Unix";
+
+#ifdef __MINGW32__
+	return osIsWindows;
+#endif
+#ifdef __WATCOMC__
+	return osIsWindows;
+#endif
+#ifdef OSX
+	return osIsMac;
+#endif
+#ifdef LINUX
+	return osIsUnix;
+#endif
+#ifdef UNIX
+	return osIsUnix;
+#endif	
+}
+
 
 DLLEXPORT void LB_CDECL deleteDirectory(const char* name) {
 		#ifdef __MINGW32__

@@ -413,6 +413,7 @@ extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name);
 extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text);
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
+extern "C" DLLEXPORT char*		LB_CDECL _getOsType();
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
@@ -488,6 +489,7 @@ extern "C" DLLEXPORT lb_I_Log* LB_CDECL getLoggerInstance();
 extern "C" DLLEXPORT void LB_CDECL setLoggerInstance(lb_I_Log* l);
 extern "C" DLLEXPORT void LB_CDECL createLogInstance();
 
+extern "C" DLLEXPORT char* LB_CDECL getOsType();
 
 #ifdef OSX
 bool LB_CDECL OSXMemValidate(void* ptr);

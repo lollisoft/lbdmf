@@ -465,10 +465,11 @@
 							<stereotype name="workflow"/>
 						</xmi:Extension>
 						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x22982_70">
-							<outgoing xmi:idref="BOUML_0x27b02_40"/>
+							<outgoing xmi:idref="BOUML_0x2c882_40"/>
 						</node>
 						<node xmi:type="uml:FinalNode" xmi:id="BOUML_0x22a02_72">
 							<incoming xmi:idref="BOUML_0x26002_40"/>
+							<incoming xmi:idref="BOUML_0x2ca02_40"/>
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24202_56" name="Generate TurboVision">
 							<xmi:Extension extender="Bouml">
@@ -487,7 +488,7 @@
 								<taggedValue tag="signal" value="exportApplicationToXMLBuffer"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x29482_40"/>
-							<incoming xmi:idref="BOUML_0x27b02_40"/>
+							<incoming xmi:idref="BOUML_0x2af02_40"/>
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x25c82_56" name="write memorybuffer to file">
 							<xmi:Extension extender="Bouml">
@@ -498,7 +499,30 @@
 							<outgoing xmi:idref="BOUML_0x29502_40"/>
 							<incoming xmi:idref="BOUML_0x29482_40"/>
 						</node>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x27b02_40" source="BOUML_0x22982_70" target="BOUML_0x24302_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x27b02_40">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x27602_56" name="Show OS Type">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="title" value="Info"/>
+								<taggedValue tag="signal" value="showMsgBox"/>
+								<taggedValue tag="msg" value="{OSType}"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x2af02_40"/>
+							<incoming xmi:idref="BOUML_0x2c902_40"/>
+						</node>
+						<node xmi:type="uml:DecisionNode" xmi:id="BOUML_0x24382_73">
+							<outgoing xmi:idref="BOUML_0x2c902_40"/>
+							<outgoing xmi:idref="BOUML_0x2c982_40"/>
+							<incoming xmi:idref="BOUML_0x2c882_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x28f82_56" name="Not yet supported">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="title" value="Info"/>
+								<taggedValue tag="signal" value="showMsgBox"/>
+								<taggedValue tag="msg" value="Bis jetzt kann nur auf einem Mac Code generiert werden."/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x2ca02_40"/>
+							<incoming xmi:idref="BOUML_0x2c982_40"/>
+						</node>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2c882_40" source="BOUML_0x22982_70" target="BOUML_0x24382_73">
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x26002_40" source="BOUML_0x24202_56" target="BOUML_0x22a02_72" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x26002_40">
 						</edge>
@@ -506,7 +530,18 @@
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29502_40" source="BOUML_0x25c82_56" target="BOUML_0x24202_56">
 						</edge>
-						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x27b02_40">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2af02_40" source="BOUML_0x27602_56" target="BOUML_0x24302_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x2af02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2c902_40" source="BOUML_0x24382_73" target="BOUML_0x27602_56">
+							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x2c902_40">
+								<body>OSType == &quot;Mac&quot;</body>
+							</guard>
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2c982_40" source="BOUML_0x24382_73" target="BOUML_0x28f82_56">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2ca02_40" source="BOUML_0x28f82_56" target="BOUML_0x22a02_72">
+						</edge>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x2af02_40">
 							<body>SaveApplicationID = {source value}</body>
 						</ownedBehavior>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
