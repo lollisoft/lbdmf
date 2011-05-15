@@ -109,7 +109,7 @@ MOD_INCL=$(STD_INCL) -I `xslt-config --prefix`/include -I `xml2-config --prefix`
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -lexslt 
 L_OPS=$(L_SOOPS) `xslt-config --libs` `xml2-config --libs` -lexslt
 endif    
 
