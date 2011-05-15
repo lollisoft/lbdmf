@@ -63,6 +63,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
 
@@ -75,6 +76,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
 
@@ -87,6 +89,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
 

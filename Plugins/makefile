@@ -48,6 +48,8 @@ ALLTARGETS = \
 	DatabaseLayerGateway \
 	DatabaseForm \
 	lbDMFDataModel \
+	lbXSLTTransformer \
+	lbFileOperationsPlugin \
 	DatabaseReport
 endif
 
@@ -64,6 +66,8 @@ ALLTARGETS = \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
+	lbXSLTTransformer \
+	lbFileOperationsPlugin \
 	DatabaseReport
 endif
 
@@ -80,6 +84,8 @@ ALLTARGETS = \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
+	lbXSLTTransformer \
+	lbFileOperationsPlugin \
 	DatabaseReport
 endif
 
