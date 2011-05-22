@@ -512,7 +512,7 @@
 								<taggedValue tag="stylesheet" value="\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x2ce02_40"/>
-							<incoming xmi:idref="BOUML_0x30582_40"/>
+							<incoming xmi:idref="BOUML_0x32102_40"/>
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x29082_56" name="Generate TurboVision (Unix)">
 							<xmi:Extension extender="Bouml">
@@ -529,6 +529,7 @@
 							<incoming xmi:idref="BOUML_0x2cd02_40"/>
 							<incoming xmi:idref="BOUML_0x2ce02_40"/>
 							<incoming xmi:idref="BOUML_0x2ce82_40"/>
+							<incoming xmi:idref="BOUML_0x32202_40"/>
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2aa82_56" name="Show OS Type">
 							<xmi:Extension extender="Bouml">
@@ -550,9 +551,31 @@
 							<incoming xmi:idref="BOUML_0x30302_40"/>
 						</node>
 						<node xmi:type="uml:DecisionNode" xmi:id="BOUML_0x24482_73" name="Windows">
-							<outgoing xmi:idref="BOUML_0x30582_40"/>
 							<outgoing xmi:idref="BOUML_0x30682_40"/>
+							<outgoing xmi:idref="BOUML_0x32002_40"/>
 							<incoming xmi:idref="BOUML_0x30382_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2c402_56" name="IsMyDevEnvironment">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="fileExists"/>
+								<taggedValue tag="filename" value="\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x32082_40"/>
+							<incoming xmi:idref="BOUML_0x32002_40"/>
+						</node>
+						<node xmi:type="uml:DecisionNode" xmi:id="BOUML_0x25e02_73">
+							<outgoing xmi:idref="BOUML_0x32102_40"/>
+							<outgoing xmi:idref="BOUML_0x32182_40"/>
+							<incoming xmi:idref="BOUML_0x32082_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2c482_56" name="Generate TurboVision (Windows installed)">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="transformXSLT"/>
+								<taggedValue tag="source" value="{file}"/>
+								<taggedValue tag="stylesheet" value="\\lbDMF\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x32202_40"/>
+							<incoming xmi:idref="BOUML_0x32182_40"/>
 						</node>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2cf82_40" source="BOUML_0x22982_70" target="BOUML_0x24302_56">
 						</edge>
@@ -586,12 +609,26 @@
 								<body>OSType == &quot;Mac&quot;</body>
 							</guard>
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x30582_40" source="BOUML_0x24482_73" target="BOUML_0x29002_56">
-							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x30582_40">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x30682_40" source="BOUML_0x24482_73" target="BOUML_0x28f82_56">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32002_40" source="BOUML_0x24482_73" target="BOUML_0x2c402_56">
+							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x32002_40">
 								<body>OSType == &quot;Windows&quot;</body>
 							</guard>
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x30682_40" source="BOUML_0x24482_73" target="BOUML_0x28f82_56">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32082_40" source="BOUML_0x2c402_56" target="BOUML_0x25e02_73">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32102_40" source="BOUML_0x25e02_73" target="BOUML_0x29002_56">
+							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x32102_40">
+								<body>result == 1</body>
+							</guard>
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32182_40" source="BOUML_0x25e02_73" target="BOUML_0x2c482_56">
+							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x32182_40">
+								<body>result == 0</body>
+							</guard>
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32202_40" source="BOUML_0x2c482_56" target="BOUML_0x29102_46">
 						</edge>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
 							<body>file = lala.xml</body>

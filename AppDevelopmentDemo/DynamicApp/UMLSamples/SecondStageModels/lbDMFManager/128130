@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 28
+  revision 29
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1207,13 +1207,46 @@ ${inlines}
       end
 
       activitynode 148610 decision "Windows"
-	flow 198018 "<flow>"
-	  on activityaction_ref 167938 // activity action Generate TurboVision (Windows)
-	    uml_guard "OSType == \"Windows\""
-	end
-
 	flow 198274 "<flow>"
 	  on activityaction_ref 167810 // activity action Not yet supported
+	end
+
+	flow 204802 "<flow>"
+	  on activityaction_ref 181250 // activity action IsMyDevEnvironment
+	    uml_guard "OSType == \"Windows\""
+	end
+      end
+
+      activityaction 181250 "IsMyDevEnvironment"
+	send_signal_action
+	ncouples 2
+	key "signal" value "fileExists"
+	key "filename" value "\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\TurboVision\\\\gen_TurboVisionFixedFormularClasses.xsl"
+	flow 204930 "<flow>"
+	  on activitynode_ref 155138 // decision
+	end
+      end
+
+      activitynode 155138 decision ""
+	flow 205058 "<flow>"
+	  on activityaction_ref 167938 // activity action Generate TurboVision (Windows)
+	    uml_guard "result == 1"
+	end
+
+	flow 205186 "<flow>"
+	  on activityaction_ref 181378 // activity action Generate TurboVision (Windows installed)
+	    uml_guard "result == 0"
+	end
+      end
+
+      activityaction 181378 "Generate TurboVision (Windows installed)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "{file}"
+	key "stylesheet" value "\\\\lbDMF\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\TurboVision\\\\gen_TurboVisionFixedFormularClasses.xsl"
+	flow 205314 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
 	end
       end
     end
