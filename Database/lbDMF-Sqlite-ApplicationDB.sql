@@ -36,6 +36,17 @@
 -- Generate application table action_parameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
 
+CREATE TABLE "report"
+(
+  report_id INTEGER PRIMARY KEY,
+  report_name BPCHAR,
+  report_sys BOOLEAN,
+  report_source BPCHAR,
+  report_descrip BPCHAR,
+  report_grade INTEGER NOT NULL,
+  report_loaddate TIMESTAMP
+);
+
 -- CREATE Sqlite TABLE action_parameters
 CREATE TABLE "action_parameters" (
 	"id" INTEGER PRIMARY KEY,
