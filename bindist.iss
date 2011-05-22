@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Samples
-AppVerName=lbDMF Binary Samples 1.0.1
-OutputBaseFilename=lbDMF-BinSamples-1.0.1
+AppVerName=lbDMF Binary Samples 1.0.2
+OutputBaseFilename=lbDMF-BinSamples-1.0.2
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -37,6 +37,11 @@ Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; 
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
 
+Source: "Q:\Develop\Projects\plugins\lbCryptoStream.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\plugins\lbDMFBasicActionSteps.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\plugins\lbFileOperationsPlugin.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\plugins\lbXSLTTransformer.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+
 Source: "Q:\Develop\Projects\dll\lbClasses.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbDB.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbModule.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -45,7 +50,8 @@ Source: "Q:\Develop\Projects\dll\lbDynApp.dll"; DestDir: "{app}\Develop\Projects
 Source: "Q:\Develop\Projects\dll\lbPluginManager.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbMetaApplication.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxWrapperDLL.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\wxmsw28_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmsw28d_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\dll\wxmsw28_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\Develop\Projects\dll\wxmsw26d_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxAUI.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxPropgrid.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -65,6 +71,8 @@ Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.bat"; DestDir: "{app}"; Cop
 Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
+; --- MinGW Library needed to run my applications.
+Source: "Q:\develop\Tools\mingw\bin\mingwm10.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
 ; Stuff for Sqlite based databases
 Source: "Q:\Develop\Projects\dll\sqlite3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;

@@ -2,6 +2,8 @@
 xcopy /E /I /Y %1 %DEVROOT%\%1
 cd %DEVROOT%\%1
 del /Y /S CVS
+del /S *.o
+del /S *.a
 del /S *.mbr
 del /S *.err
 del /S *.bsc
