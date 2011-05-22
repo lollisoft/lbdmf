@@ -92,8 +92,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleFileOperations)
 
 BEGIN_PLUGINS(lbPluginModuleFileOperations)
-ADD_PLUGIN(lbPluginReadTextFileToString,			ActionStep)
+ADD_PLUGIN(lbPluginReadTextFileToString,		ActionStep)
 ADD_PLUGIN(lbPluginWriteStringToFile,			ActionStep)
+ADD_PLUGIN(lbPluginFileExists,					ActionStep)
 END_PLUGINS()
 
 
