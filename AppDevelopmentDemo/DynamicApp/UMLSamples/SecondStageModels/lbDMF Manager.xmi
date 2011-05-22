@@ -572,7 +572,7 @@
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="\\lbDMF\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"/>
+								<taggedValue tag="stylesheet" value="\\lbDMF\\XSLT\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x32202_40"/>
 							<incoming xmi:idref="BOUML_0x32182_40"/>

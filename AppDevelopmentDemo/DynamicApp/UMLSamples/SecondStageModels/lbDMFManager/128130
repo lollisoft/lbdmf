@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 29
+  revision 30
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1244,7 +1244,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "\\\\lbDMF\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\TurboVision\\\\gen_TurboVisionFixedFormularClasses.xsl"
+	key "stylesheet" value "\\\\lbDMF\\\\XSLT\\\\TurboVision\\\\gen_TurboVisionFixedFormularClasses.xsl"
 	flow 205314 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
 	end
