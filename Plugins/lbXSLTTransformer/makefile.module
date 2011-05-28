@@ -123,7 +123,7 @@ L_OPS=$(L_SOOPS) `wx-config --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
