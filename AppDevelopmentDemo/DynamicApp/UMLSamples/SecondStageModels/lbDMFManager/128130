@@ -1,6 +1,6 @@
 format 67
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 30
+  revision 31
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
