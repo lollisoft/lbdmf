@@ -1,6 +1,39 @@
 This file describes some things that should be done in the next time.
-	
+
 I also will discuss some problems while the development stages.
+
+29.05.2011	I have a big issue with releasing phase. It takes always too long to get a release to the public.
+		The cause are too many manual steps in building, deploying and testing. There must be a better solution
+		for this. Some info from my todays chat protocol:
+
+		dpkg: gsimmons wants you to know: from memory, etch sources.list is "deb http://archive.debian.org/debian etch main contrib non-free" and "deb http://archive.debian.org/debian-security 
+		etch/updates main contrib non-free".  But realise that Etch has not had security support since February 2010 and that you should upgrade to a newer release.  Ask me about <etch->lenny>.
+		dpkg: Release Notes for Debian GNU/Linux 5.0 (Lenny) are at http://www.debian.org/releases/lenny/releasenotes .  See also http://bugs.debian.org/release-notes and 
+		http://wiki.debian.org/NewInLenny. Also ask me about <i-g>, <installer firmware>, <etch->lenny key>, <lenny errata>, <squeeze release notes>.
+
+		lothar: Hi, I have a Etch (PPC) and experience to not find some packages in the last time. apt-get update returns some errors (404). How to fix/reset to uptodate repositories?
+		gsimmons: dpkg: tell lothar -about etch sources.list
+		gsimmons: lothar: Consider updating your system to Lenny when convenient.
+		chealer: lothar: are you aware that etch is no longer supported?
+		lothar: Yes I plan it.
+		lothar: chealer: Oops. Then I should update to the newest version.
+		lothar: Does upgrading a running Etch work or is a fresh install the better way?
+		lothar: Are there any sources about implementing an automated setup (with info on an USB stick for sampe)?
+		chealer: lothar: what do you mean by an automated setup?
+		lothar: Things like a detailed instruction how to setup a box without interaction, but I do support that list. It is more seen in the enterprise to deploy hundreds of machines. Another 			sample is using the setup to create test instances for software rollout. Imaging would be a later issue I think. I would avoid the error-prone manual setup for future installs and like to 			save time.
+		dba: lothar: look at preseeding as described in the appendix of the debian installer manual
+		dba: lothar: for creating the media, you might want to use debian-live + live-installer (part of d-i)
+		gsimmons: lothar: WRT upgrading, provided you follow the procedure in the release notes (/msg dpkg lenny release notes), this should be straightforward.
+		lothar: Ok, thanks - I'll have to RTFM some manuals :-)
+		shirish: hi all, does anybody know of a manpage where the Debian contents files and how/what they should be like is explained. 
+		shirish: by debian contents files I mean something like  http://ftp.us.debian.org/debian/dists/stable/Contents-amd64.gz
+		shirish: also does anybody know where are they put in when running apt/apt-get or/and aptitude ?
+		nevyn: the list files?
+		nevyn: /var/lib/apt/lists/
+		shirish: nevyn: thank you. btw do you know of any manpage or any documentation anywhere which tells about the InRelease files and how they are made up. 
+		nevyn: nope.
+		nevyn: it might be in the reference guide tho.
+		Modus (+l 468) von debhelper
 
 22.09.2008	There are some remaining problems with sqlite based databases when opening
 		the 4th detailform over a master detail action. The problem is that there

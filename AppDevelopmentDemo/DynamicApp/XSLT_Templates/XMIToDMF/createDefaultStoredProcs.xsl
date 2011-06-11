@@ -302,7 +302,7 @@ INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module")
 -- Delete application definitions if they exist. The deletion must be done in reverse order.
 
 -- help table to not loose unused actions.
-CREATE TABLE "tempactions" (
+CREATE TABLE IF NOT EXISTS "tempactions" (
 	"id"		INTEGER PRIMARY KEY,
 	"taction"	INTEGER
 );
