@@ -1,3 +1,29 @@
+2011-06-12 20:54  lollisoft
+
+	* lbdmf.spec: Revert thr trials to cope with spaces in files and
+	  moved the hack to the makefile.
+
+2011-06-12 20:51  lollisoft
+
+	* BaseDevelopment/Makefile: Hack for the RPM space in file issue.
+
+2011-06-12 16:52  lollisoft
+
+	* lbdmf.spec: Added RPM_BUILD_ROOT to usage of wrapspaces.awk.
+
+2011-06-12 15:02  lollisoft
+
+	* lbdmf.spec: Using wrapspaces.awk to cope with spaces in files.
+
+2011-06-12 15:01  lollisoft
+
+	* wrapspaces.awk: Required to wrap files with spaces into double
+	  quotes.
+
+2011-06-12 11:15  lollisoft
+
+	* ChangeLog-basic.txt: Changelog updated for release 1.0.2
+
 2011-06-12 10:59  lollisoft
 
 	* mkchangelog.sh: Probably the slashes were the cause of missing
@@ -194,7 +220,7 @@
 	  Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp,
 	  Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp: Some bugfixes
 	  regarding plugin initialization.  Completely implemented an UML
-	  based code generation workflow using UML Activities.
+	  based code generation workflow using UML Activit’es.
 
 2011-05-01 10:39  lollisoft
 
