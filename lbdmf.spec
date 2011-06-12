@@ -58,7 +58,7 @@ cd $RPM_BUILD_ROOT
 find . -type d -fprint $RPM_BUILD_DIR/file.list.%{name}.dirs
 find . -type f -fprint $RPM_BUILD_DIR/file.list.%{name}.files.tmp
 sed '/\/man\//s/$/.gz/g' $RPM_BUILD_DIR/file.list.%{name}.files.tmp > $RPM_BUILD_DIR/file.list.%{name}.files.pre
-awk -f wrapspaces.awk < $RPM_BUILD_DIR/file.list.%{name}.files.pre > $RPM_BUILD_DIR/file.list.%{name}.files
+awk -f $RPM_BUILD_ROOT/wrapspaces.awk < $RPM_BUILD_DIR/file.list.%{name}.files.pre > $RPM_BUILD_DIR/file.list.%{name}.files
 find . -type l -fprint $RPM_BUILD_DIR/file.list.%{name}.libs
 sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' $RPM_BUILD_DIR/file.list.%{name}.dirs > $RPM_BUILD_DIR/file.list.%{name}
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $RPM_BUILD_DIR/file.list.%{name}
