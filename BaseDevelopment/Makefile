@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.226 $
+# * $Revision: 1.227 $
 # * $Name:  $
-# * $Id: Makefile,v 1.226 2011/04/21 11:33:39 lollisoft Exp $
+# * $Id: Makefile,v 1.227 2011/06/12 18:51:55 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.227  2011/06/12 18:51:55  lollisoft
+# * Hack for the RPM space in file issue.
+# *
 # * Revision 1.226  2011/04/21 11:33:39  lollisoft
 # * Added wxSF demo target on Mac OS X.
 # *
@@ -1542,6 +1545,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
 	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
+	mv "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi" "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi"
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
