@@ -12,6 +12,6 @@ MISCFILES=`cat CVS/Entries | grep -Ev "^D" | awk -- 'BEGIN { FS="\/"; }{ print $
 
 LASTDATE=`awk -f printRecentChangedate.awk < ChangeLog-basic.txt`
 export LASTDATE
-cvs log -d \>"$LASTDATE" $MISCFILES AppDevelopmentDemo/ BaseDevelopment/ Compilers/ Concepts/ Database/ Doc/ include/ interfaces/ make Plugins/ RegressionTests/ Samples/ Test/ UnitTests/ vendor/mkmk > ChangeLog
+cvs log -d \>"$LASTDATE" $MISCFILES AppDevelopmentDemo BaseDevelopment Compilers Concepts Database Doc include interfaces make Plugins RegressionTests Samples Test UnitTests vendor/mkmk > ChangeLog
 
 ./vendor/cvs2cl/cvs2cl.pl --fsf --header /dev/null -f ChangeLog-basic.txt --stdin < ChangeLog
