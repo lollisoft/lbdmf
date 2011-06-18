@@ -1130,7 +1130,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 
 	q->skipFKCollecting();
 
-	char *_actionquery = "select id, name, typ, source, target from actions";
+	const char *_actionquery = "select id, name, typ, source, target from actions";
 
 
 	if (q->query(_actionquery) != ERR_NONE) {
@@ -1182,7 +1182,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Steps* action_steps) {
 
 	q->skipFKCollecting();
 
-	char *_actionquery = "select \"id\", \"bezeichnung\", \"actionid\", \"a_order_nr\", \"type\", \"what\" from \"action_steps\"";
+	const char *_actionquery = "select \"id\", \"bezeichnung\", \"actionid\", \"a_order_nr\", \"type\", \"what\" from \"action_steps\"";
 
 	if (q->query(_actionquery) != ERR_NONE) {
 		_LOG << "Error: Access to action_steps table failed. Read action_steps would be skipped." LOG_
@@ -1236,7 +1236,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Types* action_types) {
 
 	q->skipFKCollecting();
 
-	char *_actionquery = "select id, bezeichnung, action_handler, module from action_types";
+	const char *_actionquery = "select id, bezeichnung, action_handler, module from action_types";
 
 
 	if (q->query(_actionquery) != ERR_NONE) {
@@ -1285,7 +1285,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Actions* formular_act
 
 	q->skipFKCollecting();
 
-	char *_actionquery = "select id, formular, \"action\", event from formular_actions";
+	const char *_actionquery = "select id, formular, \"action\", event from formular_actions";
 
 
 	if (q->query(_actionquery) != ERR_NONE) {
@@ -1849,8 +1849,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							char* buffer = (char*) malloc(1000);
 							buffer[0] = 0;
 
+							UAP(lb_I_String, table_name)
+							table_name = form_query->getTableName(name->charrep());
+							
 							sprintf(buffer, "select pkname, pktable	from foreignkey_visibledata_mapping "
-									"where fkname = '%s' and fktable = '%s'", name->charrep(), form_query->getTableName(name->charrep()));
+									"where fkname = '%s' and fktable = '%s'", name->charrep(), table_name->charrep());
 
 							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
 								UAP(lb_I_String, PKName)

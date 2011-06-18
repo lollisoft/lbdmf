@@ -124,7 +124,7 @@ public:
 		
 	DECLARE_LB_UNKNOWN()
 	
-	bool LB_STDCALL setAlgorythm(char* name);
+	bool LB_STDCALL setAlgorythm(const char* name);
 	lb_I_CryptoStream& LB_STDCALL operator>> (lb_I_String* string);
 	lb_I_CryptoStream& LB_STDCALL operator<< (lb_I_String* string);
 		
@@ -160,7 +160,7 @@ lbCryptoStream::lbCryptoStream() {
 	REQUEST(getModuleInstance(), lb_I_String, cryptobuffer)
 }
 /*...e*/
-bool LB_STDCALL lbCryptoStream::setAlgorythm(char* name) {
+bool LB_STDCALL lbCryptoStream::setAlgorythm(const char* name) {
 	if (algorythm) free(algorythm);
 	algorythm = strdup(name);
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)

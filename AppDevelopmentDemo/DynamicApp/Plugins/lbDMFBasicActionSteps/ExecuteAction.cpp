@@ -309,8 +309,8 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 	
 	database->init();
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";

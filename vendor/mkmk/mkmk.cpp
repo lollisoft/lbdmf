@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.113 $
+ * $Revision: 1.114 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.113 2011/02/20 09:31:09 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.113  2011/02/20 09:31:09  lollisoft
  * Added cleaning up *.o files.
  *
@@ -2055,7 +2058,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.113 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2193,7 +2196,7 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 int depCount = 0;
 
 /*...svoid replace\40\char\42\ to\44\ char\42\ match\44\ char\42\ replace\41\:0:*/
-void replace(char* to, char* match, char* replace) {
+void replace(char* to, const char* match, const char* replace) {
         char rep[800] = "";
         char repl[800] = "";
         char* t;

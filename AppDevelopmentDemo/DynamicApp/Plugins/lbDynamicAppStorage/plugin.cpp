@@ -182,8 +182,8 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 		}
 	}
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -230,8 +230,8 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, initialDatabaseLocation)
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	char* home = getenv("HOME");
 	
 	bool  localInitialisation = false;

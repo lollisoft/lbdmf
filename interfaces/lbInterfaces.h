@@ -1214,7 +1214,7 @@ public:
 	 * it self. The pointer, you have in use, is undefined afterwards. You should set
 	 * it to NULL.
 	 */
-	virtual lbErrCodes LB_STDCALL release(char const* file, int line) = 0;
+	virtual lbErrCodes LB_STDCALL release(const char* file, int line) = 0;
 
 	/**
 	 * This function returns it's location of creation. The creation of this instance
@@ -1251,7 +1251,7 @@ public:
 	 * Set the module manager. This is the - so called - object hook to get new
 	 * instances of any kint of interface.
 	 */
-	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line) = 0;
+	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, const char* file, int line) = 0;
 
 	/**
 	 * This returns the module manager, if you like to use it. It may not be set up
@@ -1269,7 +1269,7 @@ public:
 	 * An idea may be a dummy call to it at any point after instantiation and include code
 	 * to register all defined interfaces one per livetime.
 	 */
-	virtual lbErrCodes LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const = 0;
+	virtual lbErrCodes LB_STDCALL queryInterface(const char* name, void** unknown, const char* file, int line) const = 0;
 
 	/**
 	 * This is an attempt to resolve any dangling references. As yet tried, a release on another
@@ -1279,7 +1279,7 @@ public:
 	 *
 	 * With the help of UAP, it may be possible, because it can hold such an ID for each reference.
 	 */
-	virtual char const* LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line) = 0;
+	virtual char const* LB_STDCALL _queryInterface(const char* name, void** unknown, const char* file, int line) = 0;
 
         /**
          * This was used yet for put an object in a container. After inserting the object
@@ -1301,7 +1301,7 @@ public:
          *
          *		return uk;
          */
-        virtual lb_I_Unknown* LB_STDCALL clone(char* file, int line) const = 0;
+        virtual lb_I_Unknown* LB_STDCALL clone(const char* file, int line) const = 0;
 
         /**
          * This member must be implemented by the programmer of each class. setData is called
@@ -1645,17 +1645,17 @@ public:
  */
 #define DECLARE_LB_UNKNOWN() \
 public: \
-	lbErrCodes 	LB_STDCALL release(char const* file, int line); \
+	lbErrCodes 	LB_STDCALL release(const char* file, int line); \
 	char*           LB_STDCALL getCreationLoc() const; \
 	int 		LB_STDCALL deleteState(); \
 	void 		LB_STDCALL setDebug(long i) { debug_macro = i; } \
 	int 		LB_STDCALL getRefCount() { return ref; } \
 	char const*	LB_STDCALL getClassName(); \
-	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char const* file, int line); \
+	void 		LB_STDCALL setModuleManager(lb_I_Module* m, const char* file, int line); \
 	lb_I_Module*    LB_STDCALL getModuleManager(); \
-	lbErrCodes 	LB_STDCALL queryInterface(char const* name, void** unknown, char const* file, int line) const; \
-	char const*	LB_STDCALL _queryInterface(char const* name, void** unknown, char const* file, int line); \
-	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
+	lbErrCodes 	LB_STDCALL queryInterface(const char* name, void** unknown, const char* file, int line) const; \
+	char const*	LB_STDCALL _queryInterface(const char* name, void** unknown, const char* file, int line); \
+	lb_I_Unknown* 	LB_STDCALL clone(const char* file, int line) const; \
 	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
 	void		LB_STDCALL accept(lb_I_Aspect* v) { \
 	    if (v == NULL) {\
@@ -1692,7 +1692,7 @@ public:
 char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
-char const* LB_STDCALL classname::_queryInterface(char const* name, void** unknown, char const* file, int line) { \
+char const* LB_STDCALL classname::_queryInterface(const char* name, void** unknown, const char* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
 	ID[0] = 0; \
 	strcat(ID, name); \
@@ -1717,7 +1717,7 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 		return _mm.getPtr(); \
 } \
 \
-void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char const* file, int line) { \
+void LB_STDCALL classname::setModuleManager(lb_I_Module* m, const char* file, int line) { \
 	lastSMFile.set(file); \
 	lastSMLine = line; \
 	if (m == NULL) { \
@@ -1755,7 +1755,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	if (manager != NULL) return manager->getCreationLoc(buf); \
 	return strdup("Have no manager - location can't be found"); \
 } \
-lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
+lbErrCodes LB_STDCALL classname::release(const char* file, int line) { \
 	if (_TRMemValidate(this)) { \
 	if (debug_macro == 1) { \
 		_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
@@ -1809,7 +1809,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         return ERR_INSTANCE_STILL_USED; \
 } \
 \
-lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
+lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 \
 	if (debug_macro == 1) { \
 		_LOG << #classname << "::clone(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
@@ -1860,7 +1860,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 } \
 \
-lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
+lbErrCodes LB_STDCALL classname::queryInterface(const char* name, void** unknown, const char* file, int line) const { \
 	char _classname[100] = #classname; \
 	lastQIFile.set(file); \
 	lastQILine = line; \
@@ -2013,7 +2013,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         return ERR_INSTANCE_STILL_USED; \
 } \
 \
-lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
+lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 \
 	classname* cloned = new classname(); \
 	cloned->setDebug(debug_macro); \
@@ -2123,7 +2123,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
  */
 
 extern "C" {
-typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, const char* file, int line);
 }
 
 /** \def DECLARE_FUNCTOR Declares a functor in a header file.
@@ -2137,7 +2137,7 @@ typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**,
 
 #define DECLARE_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, const char* file, int line); \
 }
 
 /** \def IMPLEMENT_FUNCTOR Implements the functor in a cpp file.
@@ -2145,7 +2145,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  */
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, const char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	clsname* instance = new clsname(); \
@@ -2179,7 +2179,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  */
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, const char* file, int line); \
 }
 
 /** \def IMPLEMENT_SINGLETON_FUNCTOR Implements the singleton functor in a cpp file.
@@ -2228,7 +2228,7 @@ public: \
 singletonHolder_##name singleton_##name; \
 \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char const* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, const char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	if (singleton_##name.get() == NULL) { \
@@ -2303,7 +2303,7 @@ IMPLEMENT_SINGLETON_FUNCTOR_BASE(name, clsname)
 
 
 #define DECLARE_TESTFIXTURE() \
-void LB_STDCALL addTestMethod(TestMethod methodFn, char* _testname); \
+void LB_STDCALL addTestMethod(TestMethod methodFn, const char* _testname); \
 void LB_STDCALL registerTests(); \
 void LB_STDCALL setUp(); \
 void LB_STDCALL tearDown(); \
@@ -2362,7 +2362,7 @@ void TestMethod##TF::call() { \
 	if (instance) (instance->*(TestMethod) m_testmethod) (); \
 } \
 \
-void LB_STDCALL TF::addTestMethod(TestMethod methodFn, char* _testname) { \
+void LB_STDCALL TF::addTestMethod(TestMethod methodFn, const char* _testname) { \
 	lbErrCodes err = ERR_NONE; \
 	UAP_REQUEST(getModuleInstance(), lb_I_String, testname) \
 	UAP(lb_I_KeyBase, tmkey) \
@@ -2618,7 +2618,7 @@ public:
 	 * The service name could be overwritten to use another service.
 	 */
 	virtual char* LB_STDCALL getServiceName() = 0;
-	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) = 0;
+	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) = 0;
 };
 /*...e*/
 
@@ -2632,7 +2632,7 @@ public:
 	virtual lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result) = 0;
 
 	virtual void LB_STDCALL autostartServerPlugins(bool start) = 0;
-	virtual lbErrCodes LB_STDCALL activateServerPlugin(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL activateServerPlugin(const char* name) = 0;
 	virtual void LB_STDCALL run() = 0;
 };
 
@@ -2663,8 +2663,8 @@ public:
 /// A Frame ??
 class lb_I_EventSink {
 public:
-	virtual lb_I_EventCallback LB_STDCALL getEventFunction(char* name) = 0;
-	virtual lbErrCodes LB_STDCALL Connect(char* evName, lb_I_EventCallback evFn) = 0;
+	virtual lb_I_EventCallback LB_STDCALL getEventFunction(const char* name) = 0;
+	virtual lbErrCodes LB_STDCALL Connect(const char* evName, lb_I_EventCallback evFn) = 0;
 	virtual lbErrCodes LB_STDCALL getSinkEventList(lb_I_Container* c) = 0;
 
 	/**
@@ -2696,7 +2696,7 @@ public:
 	 * instance has a dispatcher and therefore handles it self. You must register
 	 * the dispatcher after all requested id's for your events.
 	 */
-	virtual lbErrCodes LB_STDCALL setEvent(char* name, lbEvHandler handler = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL setEvent(const char* name, lbEvHandler handler = NULL) = 0;
 	/**
 	 * Get the id back.
 	 */
@@ -2738,12 +2738,12 @@ public:
 	 * \param EvName The symbolic name of the event. This could be a #define EVENTXY "eventXY".
 	 * \param EvNr The ID, generated inside of this implementation.
 	 */
-	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr) = 0;
+	virtual lbErrCodes LB_STDCALL registerEvent(const char* EvName, int & EvNr) = 0;
 
 	/**
 	 * Get the ID of a registered symbolic event name. Parameters as above described.
 	 */
-	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
+	virtual lbErrCodes LB_STDCALL resolveEvent(const char* EvName, int & evNr) = 0;
 
 	virtual char* LB_STDCALL reverseEvent(int evNr) = 0;
 
@@ -2849,7 +2849,7 @@ class lb_I_VisitableHelper : public lb_I_Unknown {
  */
 class lb_I_DispatchRequest : public lb_I_Unknown {
 public:
-	virtual lbErrCodes LB_STDCALL setRequestName(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL setRequestName(const char* name) = 0;
 };
 /*...e*/
 /*...sclass lb_I_DispatchResponce:0:*/
@@ -2887,12 +2887,12 @@ public:
 	 * Register an event handler function under it's name. If the name is not registered, the
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName) = 0;
 
 	/**
 	 * \brief Remove an event handler.
 	 */
-	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName) = 0;
 
 	/**
 	 * Register an event handler function under it's id. If the id is not registered, the
@@ -2934,7 +2934,7 @@ public:
 	 *
 	 */
 	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
-	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(const char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
 
 	/**
 	 * lb_I_DispatchRequest variant. Parameter contains all needed data for the dispatch request.
@@ -2943,8 +2943,8 @@ public:
 
 #ifdef IMPLEMENT_NEWSTUFF
 	// Using the interceptor pattern at this place as it is simple to intercept all dynamic fnctionality.
-	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName) = 0;
-	virtual lbErrCodes LB_STDCALL delInterceptor(char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, const char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL delInterceptor(const char* EvName) = 0;
 
 	//virtual lbErrCodes LB_STDCALL activateInterceptor(char* EvName, lb_I_EvHandler* ev) = 0;
 
@@ -3038,11 +3038,11 @@ public:
 
 	/** \brief Set the user for the current application.
 	 */
-	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
+	virtual lbErrCodes LB_STDCALL setUserName(const char* user) = 0;
 
 	/** \brief Set the application name for the current application.
 	 */
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
+	virtual lbErrCodes LB_STDCALL setApplicationName(const char* app) = 0;
 
     /** \brief Enable directly callable save.
      */
@@ -3055,7 +3055,7 @@ public:
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */
-	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL) = 0;
 
 	/** \brief Cleanup.
 	 *
@@ -3130,13 +3130,13 @@ public:
 	/** \brief Set user name.
 	 * Set the user name. The user name is the login name in the database if lbDMF is used.
 	 */
-	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
+	virtual lbErrCodes LB_STDCALL setUserName(const char* user) = 0;
 
 	/** \brief Set application name.
 	 * The application name must be configured in the database and must point to a module
 	 * (DLL/so) containing an interface with this name: lb_I_Application.
 	 */
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
+	virtual lbErrCodes LB_STDCALL setApplicationName(const char* app) = 0;
 
 
 	/** \brief Set automatic loading of SQL data after update.
@@ -3185,14 +3185,14 @@ public:
 	/** \brief Base directory for files.
 	 * This parameter is for setup the base directory for files needed by meta application.
 	 */
-	virtual void	   LB_STDCALL setDirLocation(char* dirloc) = 0;
+	virtual void	   LB_STDCALL setDirLocation(const char* dirloc) = 0;
 
 	/** \brief Initialize the class.
 	 * Initialize the application module. Optionally, provide user and application name.
 	 * This function loads also some plugins if available. Thus it should be uninitialized
 	 * before exit. This is due to the singleton instance implementation.
 	 */
-	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL) = 0;
 
 	/** \brief Uninitialize the class.
 	 * After uninitialisation, the class shouldn't used any more.
@@ -3232,7 +3232,7 @@ public:
 	 *
 	 * Used to load given application with user's rights.
 	 */
-	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app) = 0;
+	virtual lbErrCodes LB_STDCALL loadApplication(const char* user, const char* app) = 0;
 
 	/** \brief Unload any loaded application.
 	 */
@@ -3242,81 +3242,81 @@ public:
 	 */
 
 	/// \brief Add a toolbar to the main window.
-	virtual lbErrCodes LB_STDCALL addToolBar(char* toolbarName) = 0;
+	virtual lbErrCodes LB_STDCALL addToolBar(const char* toolbarName) = 0;
 
 	/// \brief Remove a toolbar to the main window.
-	virtual lbErrCodes LB_STDCALL removeToolBar(char* toolbarName) = 0;
+	virtual lbErrCodes LB_STDCALL removeToolBar(const char* toolbarName) = 0;
 
 	/// \brief Add or insert a tool to the toolbar.
-	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addToolBarButton(const char* toolbarName, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry = NULL) = 0;
 
 	/// \brief Remove a tool from the toolbar.
-	virtual lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry) = 0;
+	virtual lbErrCodes LB_STDCALL removeToolBarButton(const char* toolbarName, const char* entry) = 0;
 
 	/// \brief Activate or deactivate a tool.
-	virtual lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry) = 0;
+	virtual lbErrCodes LB_STDCALL toggleToolBarButton(const char* toolbarName, const char* entry) = 0;
 
 	/** Add a menubar name after.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuBar(const char* name, const char* after = NULL) = 0;
 
 	/** Add a menu.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenu(const char* name) = 0;
 
 	/** Add menu entry.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL) = 0;
 
 	/** Add a checkable menu entry.
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL) = 0;
 
 	/** \brief Enable a given event.
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL enableEvent(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL enableEvent(const char* name) = 0;
 
 	/** \brief Disable a given event.
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL disableEvent(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL disableEvent(const char* name) = 0;
 
 	/** \brief Toggle a given event.
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL toggleEvent(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL toggleEvent(const char* name) = 0;
 
 	/** Add a button.
 	 */
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) = 0;
 
 	/** Add a label.
 	 */
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) = 0;
 
 	/** Add a text field.
 	 */
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) = 0;
 
 	/** \brief Ask the user for a file by given extention.
 	 */
-	virtual lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions) = 0;
+	virtual lb_I_InputStream* LB_STDCALL askOpenFileReadStream(const char* extentions) = 0;
 
 	/** \brief Ask the user for YES or NO.
 	 */
-	virtual bool LB_STDCALL askYesNo(char* msg) = 0;
+	virtual bool LB_STDCALL askYesNo(const char* msg) = 0;
 
 	/** \brief Show a simple message box.
 	 */
-	virtual void LB_STDCALL msgBox(char* title, char* msg) = 0;
+	virtual void LB_STDCALL msgBox(const char* title, const char* msg) = 0;
 
 	virtual void LB_STDCALL addStatusBar() = 0;
 
-	virtual void LB_STDCALL addStatusBar_TextArea(char* name) = 0;
+	virtual void LB_STDCALL addStatusBar_TextArea(const char* name) = 0;
 
-	virtual void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true) = 0;
+	virtual void LB_STDCALL setStatusText(const char* name, const char* value, bool call_yield = true) = 0;
 
 	// Hack to avoid crash when the window close button is pressed. Used in OnExit in dynamic.cpp.
 	virtual void LB_STDCALL disableStatusbar() = 0;
@@ -3332,7 +3332,7 @@ public:
 	 * would be unique and could be dispatched correctly to the given handler. The handler could reverse the event name and
 	 * figure out which value has been changed.
 	 */
-	virtual lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) = 0;
+	virtual lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(const char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) = 0;
 
 	/** \brief Access to the object's parameters.
 	 *
@@ -3392,15 +3392,15 @@ public:
 	 *
 	 * This could be used for temporary storage of variable data.
 	 */
-	virtual void	LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname) = 0;
+	virtual void	LB_STDCALL addPropertySet(lb_I_Parameter* properties, const char* setname) = 0;
 
 	/** \brief Delete a set of properties.
 	 *
 	 * This could be used to remove property sets again.
 	 */
-	virtual void			LB_STDCALL delPropertySet(char* setname) = 0;
+	virtual void			LB_STDCALL delPropertySet(const char* setname) = 0;
 
-	virtual lb_I_Parameter*	LB_STDCALL getPropertySet(char* setname, bool copy = false) = 0;
+	virtual lb_I_Parameter*	LB_STDCALL getPropertySet(const char* setname, bool copy = false) = 0;
 
 	/** \brief Gets a directory from user.
 	 *
@@ -3427,11 +3427,11 @@ public:
 
 	/** \brief Set a different system database backend.
 	 */
-	virtual void			LB_STDCALL setSystemDatabaseBackend(char* backend) = 0;
+	virtual void			LB_STDCALL setSystemDatabaseBackend(const char* backend) = 0;
 
 	/** \brief Set a different application database backend.
 	 */
-	virtual void			LB_STDCALL setApplicationDatabaseBackend(char* backend) = 0;
+	virtual void			LB_STDCALL setApplicationDatabaseBackend(const char* backend) = 0;
 
 	/** \brief Use a different system database backend.
 	 */
@@ -3454,12 +3454,12 @@ public:
 	 * This function is used to change property values from within source code.
 	 * Primary use would be property setup or testing purposes.
 	 */
-	virtual void			LB_STDCALL firePropertyChangeEvent(char* name, char* value) = 0;
+	virtual void			LB_STDCALL firePropertyChangeEvent(const char* name, const char* value) = 0;
 
 	/** \brief Fire an event.
 	 *
 	 */
-	virtual void			LB_STDCALL fireEvent(char* name) = 0;
+	virtual void			LB_STDCALL fireEvent(const char* name) = 0;
 
 	/** \brief Set the name of the process.
 	 * The user of this library should pass the process name.
@@ -4425,8 +4425,8 @@ public:
 	 * The match string could be a functor name, an interface name or partial of them.
 	 * The order, in that this function will search is decided by the match string.
 	 */
-	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version = "1.0") = 0;
-	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace) = 0;
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(const char* match, const char* _namespace, const char* _version = "1.0") = 0;
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(const char* match, const char* _namespace) = 0;
 
 	/** \brief Find first matching server plugin.
 	 *
@@ -4476,7 +4476,7 @@ public:
 	 * Set the name of the module. Typically the path and name to the shared library.
 	 */
 
-	virtual void LB_STDCALL setModule(char* module) = 0;
+	virtual void LB_STDCALL setModule(const char* module) = 0;
 
 	/** \brief Get the name of the module.
 	 * Returns the name of the module.
@@ -4510,7 +4510,7 @@ protected:
 
 
 #define DECLARE_PLUGINS() \
-	virtual void LB_STDCALL setModule(char* module); \
+	virtual void LB_STDCALL setModule(const char* module); \
 	virtual lb_I_String* LB_STDCALL getModule(); \
 	virtual lb_I_Container* LB_STDCALL getPlugins(); \
 	virtual void LB_STDCALL enumPlugins(); \
@@ -4519,7 +4519,7 @@ protected:
 
 #define BEGIN_PLUGINS(cls) \
 \
-void LB_STDCALL cls::setModule(char* module) { \
+void LB_STDCALL cls::setModule(const char* module) { \
 	if (_module == NULL) { \
 		REQUEST(manager.getPtr(), lb_I_String, _module) \
 	} \
@@ -4568,8 +4568,9 @@ void LB_STDCALL cls::enumPlugins() { \
 	Pl##plugin##namespace->setModule(_module->charrep()); \
 	Pl##plugin##namespace->setName(#plugin); \
 	Pl##plugin##namespace->setNamespace(#namespace); \
-	Pl##plugin##namespace->setVersion("1.0"); \
-	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << ", version '" << "1.0" << "' in '" << _module->charrep() << "' added." LOG_
+	Pl##plugin##namespace->setVersion("1.0");
+
+//	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << ", version '" << "1.0" << "' in '" << _module->charrep() << "' added." LOG_
 
 #define ADD_PLUGIN_V(plugin, namespace, version) \
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
@@ -4762,7 +4763,7 @@ public:
 	 * checks, if it contains the requested interface. If this is true,
 	 * the instance will stay alive. If not, it will be released.
 	 */
-	virtual bool LB_STDCALL hasInterface(char* name) = 0;
+	virtual bool LB_STDCALL hasInterface(const char* name) = 0;
 
 	/** \brief Returns the underlying implementation as unknown instance.
 	 *
@@ -4800,19 +4801,19 @@ public:
 	/**
 	 * Set the name of the module where the plugin is in.
 	 */
-	virtual void LB_STDCALL setModule(char* module) = 0;
+	virtual void LB_STDCALL setModule(const char* module) = 0;
 
 	/**
 	 * Set the name of the plugin. This would be the functor name for
 	 * an instance of the plugin.
 	 */
-	virtual void LB_STDCALL setName(char* name) = 0;
+	virtual void LB_STDCALL setName(const char* name) = 0;
 
 	/**
 	 * Set the version of the plugin. The version distinguishes between
 	 * different versions of the same class.
 	 */
-	virtual void LB_STDCALL setVersion(char* version) = 0;
+	virtual void LB_STDCALL setVersion(const char* version) = 0;
 
 
 	/**
@@ -4823,7 +4824,7 @@ public:
 	 *
 	 * This means, propably a server, where no user interaction is available.
 	 */
-	virtual void LB_STDCALL setNamespace(char* __namespace) = 0;
+	virtual void LB_STDCALL setNamespace(const char* __namespace) = 0;
 
 	/** \brief Get shared library name.
 	 *

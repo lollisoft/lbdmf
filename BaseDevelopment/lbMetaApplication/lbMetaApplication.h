@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.75 2010/10/12 07:04:22 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.76 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.76  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.75  2010/10/12 07:04:22  lollisoft
  * Completed implementation to write to json file from within an interceptor for events.
  *
@@ -328,8 +331,8 @@ public:
 	lbErrCodes LB_STDCALL save();
 	lbErrCodes LB_STDCALL load();
 	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	lbErrCodes LB_STDCALL setUserName(char* user);
-	lbErrCodes LB_STDCALL setApplicationName(char* app);
+	lbErrCodes LB_STDCALL setUserName(const char* user);
+	lbErrCodes LB_STDCALL setApplicationName(const char* app);
 	void	   LB_STDCALL setAutorefreshData(bool b);
 	void	   LB_STDCALL setGUIMaximized(bool b);
 	bool	   LB_STDCALL getGUIMaximized();
@@ -339,13 +342,13 @@ public:
 	bool	   LB_STDCALL getAutoload();
 	bool	   LB_STDCALL getAutoselect();
 	char*	   LB_STDCALL getDirLocation();
-	void	   LB_STDCALL setDirLocation(char* dirloc);
+	void	   LB_STDCALL setDirLocation(const char* dirloc);
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
 	lbErrCodes LB_STDCALL uninitialize();
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
@@ -355,21 +358,21 @@ public:
 	/**
 	 * Load the real application.
 	 */
-	lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
+	lbErrCodes LB_STDCALL loadApplication(const char* user, const char* app);
 	lbErrCodes LB_STDCALL unloadApplication();
-	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
-	lbErrCodes LB_STDCALL removeToolBar(char* toolbarName);
-	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL);
-	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
-	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);
+	lbErrCodes LB_STDCALL addToolBar(const char* toolbarName);
+	lbErrCodes LB_STDCALL removeToolBar(const char* toolbarName);
+	lbErrCodes LB_STDCALL addToolBarButton(const char* toolbarName, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL removeToolBarButton(const char* toolbarName, const char* entry);
+	lbErrCodes LB_STDCALL toggleToolBarButton(const char* toolbarName, const char* entry);
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
+	lbErrCodes LB_STDCALL addMenuBar(const char* name, const char* after = NULL);
 	/**
 	 * Add a menu behind the last.
 	 */
-	lbErrCodes LB_STDCALL addMenu(char* name);
+	lbErrCodes LB_STDCALL addMenu(const char* name);
 	/**
 	 * Add a menu entry in the named menu after given entry,
 	 * if provided. The handler must be registered.
@@ -380,26 +383,26 @@ public:
 	 *	char* evHandler:	The name of a registered event handler, that handle this
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
-	lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	lbErrCodes LB_STDCALL addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	lbErrCodes LB_STDCALL enableEvent(char* name);
-	lbErrCodes LB_STDCALL disableEvent(char* name);
-	lbErrCodes LB_STDCALL toggleEvent(char* name);
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
-	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
-	bool			  LB_STDCALL askYesNo(char* msg);
-	void			  LB_STDCALL msgBox(char* title, char* msg);
+	lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL enableEvent(const char* name);
+	lbErrCodes LB_STDCALL disableEvent(const char* name);
+	lbErrCodes LB_STDCALL toggleEvent(const char* name);
+	lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h);
+	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(const char* extentions);
+	bool			  LB_STDCALL askYesNo(const char* msg);
+	void			  LB_STDCALL msgBox(const char* title, const char* msg);
 	void LB_STDCALL addStatusBar();
-	void LB_STDCALL addStatusBar_TextArea(char* name);
-	void LB_STDCALL setStatusText(char* name, const char* value, bool call_yield = true);
+	void LB_STDCALL addStatusBar_TextArea(const char* name);
+	void LB_STDCALL setStatusText(const char* name, const char* value, bool call_yield = true);
 	void LB_STDCALL disableStatusbar();
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
 	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false);
-	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
+	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(const char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
 	lb_I_Parameter* LB_STDCALL getParameter();
 	bool LB_STDCALL login(const char* user, const char* pass);
 	lb_I_Container* LB_STDCALL getApplications();
@@ -413,25 +416,25 @@ public:
 	lb_I_Applications*		LB_STDCALL getApplicationModel();
 	void                    LB_STDCALL setLoadFromDatabase(bool b);
 	bool                    LB_STDCALL getLoadFromDatabase();
-	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname);
-	void					LB_STDCALL delPropertySet(char* setname);
-	lb_I_Parameter*			LB_STDCALL getPropertySet(char* setname, bool copy = false);
+	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, const char* setname);
+	void					LB_STDCALL delPropertySet(const char* setname);
+	lb_I_Parameter*			LB_STDCALL getPropertySet(const char* setname, bool copy = false);
 	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
 	char*					LB_STDCALL getSystemDatabaseBackend();
 	char*					LB_STDCALL getApplicationDatabaseBackend();
-	void					LB_STDCALL setSystemDatabaseBackend(char* backend);
-	void					LB_STDCALL setApplicationDatabaseBackend(char* backend);
+	void					LB_STDCALL setSystemDatabaseBackend(const char* backend);
+	void					LB_STDCALL setApplicationDatabaseBackend(const char* backend);
 	void					LB_STDCALL useSystemDatabaseBackend(bool backend);
 	void					LB_STDCALL useApplicationDatabaseBackend(bool backend);
 	bool					LB_STDCALL usingSystemDatabaseBackend();
 	bool					LB_STDCALL usingApplicationDatabaseBackend();
-	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
-	void					LB_STDCALL fireEvent(char* name);
+	void					LB_STDCALL firePropertyChangeEvent(const char* name, const char* value);
+	void					LB_STDCALL fireEvent(const char* name);
 	void					LB_STDCALL setProcessName(const char* name);
 	lb_I_String*			LB_STDCALL getProcessName();
 
 	DECLARE_LB_UNKNOWN()
-	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry);
+	lbErrCodes LB_STDCALL addToolBarTool(const char* toolbarName, const char* tooltype, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry);
 	
 
 	lb_I_Unknown* LB_STDCALL getUnknown();
@@ -461,7 +464,7 @@ public:
 	
 	bool                    LB_STDCALL isPropertyPaneLayoutFloating();
 	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
-	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
+	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, const char* prefix);
 
 	
 	
@@ -538,7 +541,7 @@ public:
          * instance has a dispatcher and therefore handles it self. You must register
          * the dispatcher after all requested id's for your events.
          */
-        virtual lbErrCodes LB_STDCALL setEvent(char* name, lbEvHandler handler = NULL);
+        virtual lbErrCodes LB_STDCALL setEvent(const char* name, lbEvHandler handler = NULL);
         /**
          * Get the id back.
          */
@@ -565,8 +568,8 @@ protected:
 class lb_Dispatcher : public lb_I_Dispatcher {
 public:
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager);
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
-	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName);
+	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName);
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr);
 
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
@@ -587,7 +590,7 @@ public:
 	 * EvName = "AnnounceHandler"
 	 * EvData = lb_I_HandlerAddress
 	 */
-	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
+	virtual lbErrCodes LB_STDCALL dispatch(const char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
 
@@ -597,8 +600,8 @@ public:
 	 * The interceptor to add should be put into a queue, if there is no event handler registered. Then
 	 * it will be possible to add interceptors as early as possible.
 	 */
-	lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName);
-	lbErrCodes LB_STDCALL delInterceptor(char* EvName);
+	lbErrCodes LB_STDCALL setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, const char* EvName);
+	lbErrCodes LB_STDCALL delInterceptor(const char* EvName);
 	lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_String* EvName, lb_I_Unknown* interceptedInstance);
 
 	lb_I_String* LB_STDCALL getInterceptorDefinitions();
@@ -627,8 +630,8 @@ public:
 /*...sclass lb_EventManager:0:*/
 class lb_EventManager : public lb_I_EventManager {
 public:
-	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
-	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr);
+	virtual lbErrCodes LB_STDCALL registerEvent(const char* EvName, int & EvNr);
+	virtual lbErrCodes LB_STDCALL resolveEvent(const char* EvName, int & evNr);
 	virtual char* LB_STDCALL reverseEvent(int evNr);
 
 public:

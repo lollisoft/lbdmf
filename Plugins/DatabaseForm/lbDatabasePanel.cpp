@@ -107,7 +107,7 @@ extern "C" {
 /*...sdoc:0:*/
 /*
 	This database dialog sample uses a fixed query yet.
-	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
+	It is used as the only dialog from lb_wxGUI::createDBForm(const char* formName).
 
 	It should be changed in any way, if there are more different sample queries.
 	Handling creation and usage of form elements directly in wxDialog failed
@@ -354,7 +354,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dis
 }
 /*...e*/
 
-int LB_STDCALL lbDatabasePanel::lookupColumnIndex(char* name) {
+int LB_STDCALL lbDatabasePanel::lookupColumnIndex(const char* name) {
     UAP(lb_I_String, Name)
 
     for (int i = 1; i <= sampleQuery->getColumns(); i++) {
@@ -365,7 +365,7 @@ int LB_STDCALL lbDatabasePanel::lookupColumnIndex(char* name) {
     return -1;
 }
 
-void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 /*...sCreate controls based on configuration in a database:40:*/
 				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
                 lbErrCodes err = ERR_NONE;
@@ -528,7 +528,7 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(char* name, wxSizer* sizerMain,
 /*...e*/
 }
 
-void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 			lbErrCodes err = ERR_NONE;
             UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
@@ -919,7 +919,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(char* name, wxSizer* sizerMain, w
 
 //#define USE_NEW_RESIZEABLE
 
-void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addTextField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 	UAP(lb_I_String, s)
 	//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
 	int i = lookupColumnIndex(name);
@@ -969,7 +969,7 @@ void LB_STDCALL lbDatabasePanel::addTextField(char* name, wxSizer* sizerMain, wx
 	}
 }
 
-void LB_STDCALL lbDatabasePanel::addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						_CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -1006,7 +1006,7 @@ void LB_STDCALL lbDatabasePanel::addFloatField(char* name, wxSizer* sizerMain, w
 						}
 }
 
-void LB_STDCALL lbDatabasePanel::addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
                         _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -1042,7 +1042,7 @@ void LB_STDCALL lbDatabasePanel::addLongField(char* name, wxSizer* sizerMain, wx
 
 }
 
-void LB_STDCALL lbDatabasePanel::addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addIntegerField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
                         _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -1078,7 +1078,7 @@ void LB_STDCALL lbDatabasePanel::addIntegerField(char* name, wxSizer* sizerMain,
 
 }
 
-void LB_STDCALL lbDatabasePanel::addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 					UAP(lb_I_BinaryData, binary)
 
 					binary = sampleQuery->getBinaryData(name);
@@ -1111,7 +1111,7 @@ void LB_STDCALL lbDatabasePanel::addBinaryField(char* name, wxSizer* sizerMain, 
 					}
 }
 
-void LB_STDCALL lbDatabasePanel::addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						wxCheckBox *check = new wxCheckBox(this, -1,
 							"", wxPoint());
 						check->SetName(name);
@@ -1124,7 +1124,7 @@ void LB_STDCALL lbDatabasePanel::addCheckField(char* name, wxSizer* sizerMain, w
 						}
 }
 
-void LB_STDCALL lbDatabasePanel::addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
 
@@ -1149,7 +1149,7 @@ void LB_STDCALL lbDatabasePanel::addDateField(char* name, wxSizer* sizerMain, wx
 }
 
 
-bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(char* sql, lb_I_Container* addcolumns) {
+bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
@@ -1268,7 +1268,7 @@ bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(char* sql, lb_I_
 }
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
@@ -1773,7 +1773,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		_LOG << "Create actions for formular '" << formName << "' by query." LOG_
 		actionQuery = database->getQuery("lbDMF", 0);
 
-		char *_actionquery = "select actions.name, formular_actions.event from actions "
+		const char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join Formulare on formular_actions.formular = Formulare.id "
 			     "where Formulare.name = '%s'";
@@ -1999,7 +1999,7 @@ void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 }
 
 
-void LB_STDCALL lbDatabasePanel::addLabel(char* text, wxSizer* sizer, bool hideThisColumn) {
+void LB_STDCALL lbDatabasePanel::addLabel(const char* text, wxSizer* sizer, bool hideThisColumn) {
 	char* tLabel = (char*) malloc(strlen(text) + 6);
 	tLabel[0] = 0;
 	tLabel = strcat(tLabel, text);
@@ -2539,11 +2539,11 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabasePanel::setName(char const * name, char const * appention) {
+lbErrCodes LB_STDCALL lbDatabasePanel::setName(const char* name, const char* appention) {
 	if (formName) free(formName);
 	if (untranslated_formName) free(untranslated_formName);
 
-	char* transl = _trans((char*) name);
+	char* transl = _trans((const char*) name);
 
 	char* temp = (char*) malloc(strlen(transl)+1);
 	temp[0] = 0;
@@ -2684,7 +2684,7 @@ const char* LB_STDCALL lbDatabasePanel::getControlValue(int pos) {
 }
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\char\42\ name\41\:0:*/
-const char* LB_STDCALL lbDatabasePanel::getControlValue(char* name) {
+const char* LB_STDCALL lbDatabasePanel::getControlValue(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	wxString value;
 
@@ -2792,7 +2792,7 @@ const char* LB_STDCALL lbDatabasePanel::getControlValue(char* name) {
 /*...e*/
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
-void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
+void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(const char* toTable) {
 	lbErrCodes err = ERR_NONE;
 
 	if (ignoredPKTables == NULL) {
@@ -3834,14 +3834,14 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...e*/
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
-void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
+void LB_STDCALL lbDatabasePanel::setFilter(const char* filter) {
 /// \todo Need a dynamic handler to provide setting filter by action.
 	if (filter != NULL) SQLWhere->setData(filter);
 }
 /*...e*/
 
 /*...schar\42\ lbDatabasePanel\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-lb_I_String* lbDatabasePanel::getTableName(char* columnName) {
+lb_I_String* lbDatabasePanel::getTableName(const char* columnName) {
 	return sampleQuery->getTableName(columnName);
 }
 /*...e*/
@@ -4411,7 +4411,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							binary->append((void*) "\0", 1);
 
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-							tx->SetValue(wxString((char*) binary->getData()));
+							tx->SetValue(wxString((const char*) binary->getData()));
 						}
 						break;
 					case lb_I_Query::lbDBColumnUnknown:
@@ -5535,7 +5535,7 @@ int LB_STDCALL lbDatabasePanel::getPrimaryColumns()
 }
 /*...e*/
 /*...sint LB_STDCALL lbDatabasePanel\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
-int LB_STDCALL lbDatabasePanel::getForeignColumns(char* primaryTable)
+int LB_STDCALL lbDatabasePanel::getForeignColumns(const char* primaryTable)
 {
 	/*
 	   Directly forward the request to the formular field information class.
@@ -5568,7 +5568,7 @@ lb_I_String* LB_STDCALL lbDatabasePanel::getForeignColumn(int pos)
 	return sampleQuery->getFKColumn(pos);
 }
 
-bool LB_STDCALL lbDatabasePanel::isCharacterColumn(char* name)
+bool LB_STDCALL lbDatabasePanel::isCharacterColumn(const char* name)
 {
 	wxWindow* w = FindWindowByName(wxString(name), this);
 

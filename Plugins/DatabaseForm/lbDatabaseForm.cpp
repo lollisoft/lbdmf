@@ -102,7 +102,7 @@ extern "C" {
 /*...sdoc:0:*/
 /*
 	This database dialog sample uses a fixed query yet.
-	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
+	It is used as the only dialog from lb_wxGUI::createDBForm(const char* formName).
 
 	It should be changed in any way, if there are more different sample queries.
 	Handling creation and usage of form elements directly in wxDialog failed

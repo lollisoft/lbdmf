@@ -224,7 +224,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::registerEventHandler(lb_I_Dispa
 }
 /*...e*/
 /*...svoid LB_STDCALL lbDatabaseTableViewDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+void LB_STDCALL lbDatabaseTableViewDialog::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
@@ -254,7 +254,7 @@ void LB_STDCALL lbDatabaseTableViewDialog::init(char* _SQLString, char* DBName, 
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lbDatabaseTableViewDialog\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::setName(char const * name, char const * appention) {
+lbErrCodes LB_STDCALL lbDatabaseTableViewDialog::setName(const char* name, const char* appention) {
 	wxString Name = wxString(name)+wxString(appention);
 	SetName(Name);
 	SetLabel(Name);
@@ -309,7 +309,7 @@ const char* LB_STDCALL lbDatabaseTableViewDialog::getControlValue(int pos) {
 }
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabaseTableViewDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
-const char* LB_STDCALL lbDatabaseTableViewDialog::getControlValue(char* name) {
+const char* LB_STDCALL lbDatabaseTableViewDialog::getControlValue(const char* name) {
 
 	wxString value;
 
@@ -320,7 +320,7 @@ const char* LB_STDCALL lbDatabaseTableViewDialog::getControlValue(char* name) {
 /*...e*/
 
 /*...svoid LB_STDCALL lbDatabaseTableViewDialog\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewDialog::ignoreForeignKeys(char* toTable) {
+void LB_STDCALL lbDatabaseTableViewDialog::ignoreForeignKeys(const char* toTable) {
 	panel->ignoreForeignKeys(toTable);
 }
 /*...e*/
@@ -350,13 +350,13 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewDialog::open() {
 }
 
 /*...svoid LB_STDCALL lbDatabaseTableViewDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewDialog::setFilter(char* filter) {
+void LB_STDCALL lbDatabaseTableViewDialog::setFilter(const char* filter) {
 	panel->setFilter(filter);
 }
 /*...e*/
 
 /*...schar\42\ lbDatabaseTableViewDialog\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-lb_I_String* lbDatabaseTableViewDialog::getTableName(char* columnName) {
+lb_I_String* lbDatabaseTableViewDialog::getTableName(const char* columnName) {
 	return panel->getTableName(columnName);
 }
 /*...e*/
@@ -440,7 +440,7 @@ int LB_STDCALL lbDatabaseTableViewDialog::getPrimaryColumns()
 }
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseTableViewDialog\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
-int LB_STDCALL lbDatabaseTableViewDialog::getForeignColumns(char* primaryTable)
+int LB_STDCALL lbDatabaseTableViewDialog::getForeignColumns(const char* primaryTable)
 {
 	return panel->getForeignColumns(primaryTable);
 }
@@ -456,7 +456,7 @@ lb_I_String* LB_STDCALL lbDatabaseTableViewDialog::getForeignColumn(int pos)
 	return panel->getForeignColumn(pos);
 }
 
-bool LB_STDCALL lbDatabaseTableViewDialog::isCharacterColumn(char* name)
+bool LB_STDCALL lbDatabaseTableViewDialog::isCharacterColumn(const char* name)
 {
 	return panel->isCharacterColumn(name);
 }

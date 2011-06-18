@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.68 2011/04/21 11:49:26 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.69 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.69  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.68  2011/04/21 11:49:26  lollisoft
  * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
  *
@@ -332,7 +335,7 @@ public:
 	void LB_STDCALL create(int parentId) { }
 	int  LB_STDCALL getId() { return GetId(); }
 
-	void LB_STDCALL init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(lb_I_Query* query, const char* DBName, const char* DBUser, const char* DBPass);
 
 	void LB_STDCALL show() { ShowModal (); };
 	void LB_STDCALL destroy() {
@@ -601,27 +604,27 @@ public:
 
 	/** \brief Add a mapping from event name to it's action ID.
 	 */
-	void addRegisteredAction(long ActionID, char* eventName);
+	void addRegisteredAction(long ActionID, const char* eventName);
 
 	/** \brief ID of action target.
 	 *
 	 * Get the ID of the action target based on the 'what' data field.
 	 * This is needed, when
 	 */
-	char* getActionTargetID(char* reversed_event);
+	char* getActionTargetID(const char* reversed_event);
 
 	/** \brief ID of action target as long.
 	 *
 	 * Get the ID of the action target based on the 'what' data field.
 	 * This is needed, when
 	 */
-	long getActionTargetIDLong(char* reversed_event);
+	long getActionTargetIDLong(const char* reversed_event);
 
 	/** \brief Source field of the action. */
-	char* getActionSourceDataField(char* reversed_event);
+	char* getActionSourceDataField(const char* reversed_event);
 
 	/** \brief ID for the action. */
-	long getActionID(char* reversed_event);
+	long getActionID(const char* reversed_event);
 
 	/** \brief Get the action instance.
 	 *
@@ -660,7 +663,7 @@ protected:
 class FormularFieldInformation {
 public:
 
-	FormularFieldInformation(char const * formularname, lb_I_Query* query);
+	FormularFieldInformation(const char* formularname, lb_I_Query* query);
 	virtual ~FormularFieldInformation() {
 		_CL_LOG << "ROFields has " << ROFields->getRefCount() << " references." LOG_
 		_CL_LOG << "SCFields has " << SCFields->getRefCount() << " references." LOG_
@@ -670,16 +673,16 @@ public:
 	 *
 	 * Returns true, if the specifed field is readonly.
 	 */
-	bool isReadonly(char* field);
+	bool isReadonly(const char* field);
 
 	/** \brief Check, if there must be used a special control.
 	 *
 	 * Returns true, if the configuration says, that there must be used a special
 	 * control. This is the case if I like to use an ownerdrawn control.
 	 */
-	bool isSpecialColumn(char* field);
+	bool isSpecialColumn(const char* field);
 
-	char* getControlType(char* name);
+	char* getControlType(const char* name);
 
 protected:
 
@@ -700,7 +703,7 @@ public:
 
         void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master);
 
-        void LB_STDCALL addMasterColumn(char* column);
+        void LB_STDCALL addMasterColumn(const char* column);
 
         int LB_STDCALL getMasterColumns();
 
@@ -762,17 +765,17 @@ public:
 	 */
 	virtual ~lbDatabasePanel();
 
-	lbErrCodes	LB_STDCALL setName(char const * name, char const * appention);
+	lbErrCodes	LB_STDCALL setName(const char* name, const char* appention);
 	char*		LB_STDCALL getName() { return base_formName; }
 	char*		LB_STDCALL getFormName() { return formName; }
 
-	lbErrCodes	LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes	LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes	LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes	LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes	LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	void		LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
+	void		LB_STDCALL addLabel(const char* text, wxSizer* sizer, bool hideThisColumn);
 
 	void		LB_STDCALL create(int parentId);
 	int			LB_STDCALL getId() { return GetId(); }
@@ -784,13 +787,13 @@ public:
 	};
 
 /*...sfrom DatabaseForm interface:8:*/
-	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
-	void LB_STDCALL setFilter(char* filter);
+	void LB_STDCALL setFilter(const char* filter);
 
-	const char* LB_STDCALL getControlValue(char* name);
+	const char* LB_STDCALL getControlValue(const char* name);
 
 /*...e*/
 
@@ -809,15 +812,15 @@ public:
 
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 
-	int LB_STDCALL getForeignColumns(char* primaryTable);
+	int LB_STDCALL getForeignColumns(const char* primaryTable);
 
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
 
-	bool LB_STDCALL isCharacterColumn(char* name);
+	bool LB_STDCALL isCharacterColumn(const char* name);
 
-	void LB_STDCALL ignoreForeignKeys(char* toTable);
+	void LB_STDCALL ignoreForeignKeys(const char* toTable);
 
-	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(const char* columnName);
 
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
@@ -960,20 +963,20 @@ public:
 	 */
 	void OnPaint(wxCommandEvent& event);
 
-    int LB_STDCALL lookupColumnIndex(char* name);
+    int LB_STDCALL lookupColumnIndex(const char* name);
 
     // Helperfunctions that later may be factory functions for the controls.
-    void LB_STDCALL addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addSpecialField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
-	bool LB_STDCALL checkMissingNotNullableColumns(char* sql, lb_I_Container* addcolumns);
+	bool LB_STDCALL checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns);
 		
 	DECLARE_LB_UNKNOWN()
 
@@ -1084,7 +1087,7 @@ public:
 	 */
 	virtual ~lbDatabaseTableViewPanel();
 
-	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	lbErrCodes LB_STDCALL setName(const char* name, const char* appention);
 	char*		LB_STDCALL getName() { return base_formName; }
 
 	char*	   LB_STDCALL getFormName() { return formName; }
@@ -1099,13 +1102,13 @@ public:
 	};
 
 /*...sfrom DatabaseForm interface:8:*/
-	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
-	void LB_STDCALL setFilter(char* filter);
+	void LB_STDCALL setFilter(const char* filter);
 
-	const char* LB_STDCALL getControlValue(char* name);
+	const char* LB_STDCALL getControlValue(const char* name);
 
 /*...e*/
 
@@ -1124,15 +1127,15 @@ public:
 
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 
-	int LB_STDCALL getForeignColumns(char* primaryTable);
+	int LB_STDCALL getForeignColumns(const char* primaryTable);
 
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
 
-	bool LB_STDCALL isCharacterColumn(char* name);
+	bool LB_STDCALL isCharacterColumn(const char* name);
 
-	void LB_STDCALL ignoreForeignKeys(char* toTable);
+	void LB_STDCALL ignoreForeignKeys(const char* toTable);
 
-	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(const char* columnName);
 
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
@@ -1264,45 +1267,45 @@ public:
 
     void LB_STDCALL fillRow(int position);
     void LB_STDCALL fillTable();
-    int LB_STDCALL lookupColumnIndex(char* name);
+    int LB_STDCALL lookupColumnIndex(const char* name);
 
     // Helperfunctions that later may be factory functions for the controls.
-    void LB_STDCALL addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addSpecialField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
-    void LB_STDCALL addSpecialColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addComboColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addTextColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addLongColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addIntegerColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addCheckColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addDateColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addFloatColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
-    void LB_STDCALL addBinaryColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addSpecialColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addComboColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addTextColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addLongColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addIntegerColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addCheckColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDateColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addFloatColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addBinaryColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
     // wxGrid event handler
     void OnCellValueChanged( wxGridEvent& ev );
     void OnSelectCell( wxGridEvent& ev );
 
     // Old factory methods (obsolede ?)
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	void LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
+	void LB_STDCALL addLabel(const char* text, wxSizer* sizer, bool hideThisColumn);
 
     // wxGrid based functions
     void LB_STDCALL setColumnReadonly(int column);
-    void LB_STDCALL setColumnLabel(int column, char* name);
+    void LB_STDCALL setColumnLabel(int column, const char* name);
 
     void LB_STDCALL setCellCombo(int row, int col, lb_I_Container* s, lb_I_Long* current);
     void LB_STDCALL setCellText(int row, int col, lb_I_String* s);
@@ -1427,16 +1430,16 @@ public:
 	 */
 	virtual ~lbDatabaseDialog();
 
-	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	lbErrCodes LB_STDCALL setName(const char* name, const char* appention);
 		char*		LB_STDCALL getName();
 
 	char*      LB_STDCALL getFormName();
 
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
 	void LB_STDCALL create(int parentId);
 	int  LB_STDCALL getId() { return GetId(); }
@@ -1445,13 +1448,13 @@ public:
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 
 /*...sfrom DatabaseForm interface:8:*/
-	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
 
-	void LB_STDCALL setFilter(char* filter);
+	void LB_STDCALL setFilter(const char* filter);
 
-	const char* LB_STDCALL getControlValue(char* name);
+	const char* LB_STDCALL getControlValue(const char* name);
 
 /*...e*/
 
@@ -1470,15 +1473,15 @@ public:
 
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 
-	int LB_STDCALL getForeignColumns(char* primaryTable);
+	int LB_STDCALL getForeignColumns(const char* primaryTable);
 
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
 
-	bool LB_STDCALL isCharacterColumn(char* name);
+	bool LB_STDCALL isCharacterColumn(const char* name);
 
-	void LB_STDCALL ignoreForeignKeys(char* toTable);
+	void LB_STDCALL ignoreForeignKeys(const char* toTable);
 
-	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(const char* columnName);
 
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 
@@ -1618,15 +1621,15 @@ public:
 	 */
 	virtual ~lbDatabaseTableViewDialog();
 	
-	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+	lbErrCodes LB_STDCALL setName(const char* name, const char* appention);
 	char*		LB_STDCALL getName();
 	char*      LB_STDCALL getFormName();
 	
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 	
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 	
 	void LB_STDCALL create(int parentId);
 	int  LB_STDCALL getId() { return GetId(); }
@@ -1635,13 +1638,13 @@ public:
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 	
 	/*...sfrom DatabaseForm interface:8:*/
-	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 	
 	char* LB_STDCALL getQuery();
 	
-	void LB_STDCALL setFilter(char* filter);
+	void LB_STDCALL setFilter(const char* filter);
 	
-	const char* LB_STDCALL getControlValue(char* name);
+	const char* LB_STDCALL getControlValue(const char* name);
 	
 	/*...e*/
 	
@@ -1660,15 +1663,15 @@ public:
 	
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 	
-	int LB_STDCALL getForeignColumns(char* primaryTable);
+	int LB_STDCALL getForeignColumns(const char* primaryTable);
 	
 	lb_I_String* LB_STDCALL getForeignColumn(int pos);
 	
-	bool LB_STDCALL isCharacterColumn(char* name);
+	bool LB_STDCALL isCharacterColumn(const char* name);
 	
-	void LB_STDCALL ignoreForeignKeys(char* toTable);
+	void LB_STDCALL ignoreForeignKeys(const char* toTable);
 	
-	lb_I_String* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(const char* columnName);
 	
 	lb_I_String* LB_STDCALL getColumnName(int pos);
 	

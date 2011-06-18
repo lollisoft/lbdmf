@@ -83,14 +83,14 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	virtual lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
 	virtual lbErrCodes LB_STDCALL uninitialize();
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
 	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
-	virtual lbErrCodes LB_STDCALL setUserName(char* user);
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
+	virtual lbErrCodes LB_STDCALL setUserName(const char* user);
+	virtual lbErrCodes LB_STDCALL setApplicationName(const char* app);
 
 	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
 
@@ -224,7 +224,7 @@ lbErrCodes LB_STDCALL UIWrapper::uninitialize() {
 	return ERR_NONE;
 }
 /*...slbErrCodes LB_STDCALL lbApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
-lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 
 	// To be implemented in a separate application module
 
@@ -272,7 +272,7 @@ lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
 	(*app)->setData(LogonApplication->charrep());
 	return ERR_NONE;
 }
-lbErrCodes LB_STDCALL UIWrapper::setUserName(char* user) {
+lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 	if (LogonUser == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
@@ -281,7 +281,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(char* user) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL UIWrapper::setApplicationName(char* app) {
+lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
 	if (LogonApplication == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 	}

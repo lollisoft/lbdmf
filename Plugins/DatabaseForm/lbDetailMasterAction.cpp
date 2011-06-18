@@ -272,7 +272,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
 		meta->getUserName(&user);
 
-		char* b =
+		const char* b =
 		"select Formulare.id from Formulare inner join Anwendungen_Formulare on "
 		"Formulare.id = Anwendungen_Formulare.formularid "
 		"inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
@@ -310,8 +310,8 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 		database->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -330,7 +330,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 				/*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
 
-				char* b = "select parametervalue from formular_parameters where formularid = %s";
+				const char* b = "select parametervalue from formular_parameters where formularid = %s";
 
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
 				buffer[0] = 0;
@@ -548,8 +548,8 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 
 	database->init();
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";

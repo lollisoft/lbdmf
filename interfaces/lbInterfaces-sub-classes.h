@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.99 $
+ * $Revision: 1.100 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.99 2011/04/21 11:49:26 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.100 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.100  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.99  2011/04/21 11:49:26  lollisoft
  * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
  *
@@ -637,16 +640,16 @@ public:
 	/** \brief Get case insensitive substr.
 	 *
 	 */
-	virtual char* LB_STDCALL stristr(const char *String, const char *Pattern) = 0;
+	virtual char* LB_STDCALL stristr(const char* String, const char* Pattern) = 0;
 
-	virtual char* LB_STDCALL strristr(const char *String, const char *Pattern) = 0;
+	virtual char* LB_STDCALL strristr(const char* String, const char* Pattern) = 0;
 
         /**
          * \brief Set the string data from char*
          * 
          * \param p Input char const * data .
          */
-        virtual void LB_STDCALL setData(char const * p) = 0;
+        virtual void LB_STDCALL setData(const char* p) = 0;
         
         /**
          * \brief Return char* representation.
@@ -721,7 +724,7 @@ public:
 		 *
 		 * \param path string value to be set.
 		 */        
-        virtual void LB_STDCALL setData(char* path) = 0;
+        virtual void LB_STDCALL setData(const char* path) = 0;
         
         /**
          * \brief Get the path value.
@@ -754,7 +757,7 @@ public:
 		 *
 		 * \param path string value to be set.
 		 */        
-        virtual void LB_STDCALL setData(char* path) = 0;
+        virtual void LB_STDCALL setData(const char* path) = 0;
         
         /**
          * \brief Get the path value.
@@ -868,14 +871,14 @@ public:
         /**
          * Integer parameter
          */
-        virtual void LB_STDCALL setInt(char* parameter, int p) = 0;
-        virtual int LB_STDCALL getInt(char* parameter) const = 0;
+        virtual void LB_STDCALL setInt(const char* parameter, int p) = 0;
+        virtual int LB_STDCALL getInt(const char* parameter) const = 0;
         
         /**
          * char* parameter
          */
-        virtual void LB_STDCALL setChar(char* parameter, int p) = 0;
-        virtual lbErrCodes LB_STDCALL getChar(char* parameter, char** buffer, int length) = 0;
+        virtual void LB_STDCALL setChar(const char* parameter, int p) = 0;
+        virtual lbErrCodes LB_STDCALL getChar(const char* parameter, char** buffer, int length) = 0;
         
         /**
          * Hopefully the better variant for char arrays.
@@ -1633,24 +1636,24 @@ class lb_I_Module :
 {
 public:
 
-	virtual char* LB_STDCALL getCreationLoc(char const* addr) = 0;
-    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
-    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
-    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
-    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) = 0;
+	virtual char* LB_STDCALL getCreationLoc(const char* addr) = 0;
+    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0) = 0;
+    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
+    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
+    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
 
-    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0) = 0;
+    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0) = 0;
 
         /**
          * This function loads a module and stores the modulehandle in an array
          * or a list. If the object is destroyed, the loaded modules are
          * automatically unloaded (the array/list).
          */
-        virtual lbErrCodes LB_STDCALL load(char* name) = 0;
+        virtual lbErrCodes LB_STDCALL load(const char* name) = 0;
 
-	virtual lbErrCodes LB_STDCALL preload(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL preload(const char* name) = 0;
 
-	virtual void LB_STDCALL printReferences(char* addr) = 0;        
+	virtual void LB_STDCALL printReferences(const char* addr) = 0;        
         
         /**
          * The module manager is responsible for creating any instances, that are
@@ -1668,8 +1671,8 @@ public:
          * get back a lb_I_String for a functor or a lb_I_Container for a list of
          * them. The errcode helps to decide.
          */
-        virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
-        virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
+        virtual lbErrCodes LB_STDCALL getFunctors(const char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
+        virtual lbErrCodes LB_STDCALL getInstance(const char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
         
         /**
          *
@@ -1678,7 +1681,7 @@ public:
         //virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
         
-        virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance) = 0;
+        virtual lbErrCodes LB_STDCALL makeInstance(const char* functor, const char* module, lb_I_Unknown** instance) = 0;
         
         virtual char* LB_STDCALL getCreationLoc() const = 0;
 };
@@ -1701,9 +1704,9 @@ public:
 	virtual char* LB_STDCALL getFile() = 0;
 	virtual int LB_STDCALL getLine() = 0;
 	
-	virtual void LB_STDCALL setAddress(char* a) = 0;
-	virtual void LB_STDCALL setClassname(char* c) = 0;
-	virtual void LB_STDCALL setFile(char* f) = 0;
+	virtual void LB_STDCALL setAddress(const char* a) = 0;
+	virtual void LB_STDCALL setClassname(const char* c) = 0;
+	virtual void LB_STDCALL setFile(const char* f) = 0;
 	virtual void LB_STDCALL setLine(int l) = 0;
 
 
@@ -1712,8 +1715,8 @@ public:
 	 * If the release function is used directly, it shows me an unregistered reference,
 	 * so I will find all non UAP pointers.
 	 */
-	virtual void LB_STDCALL addReference(char* classname, char* file, int line) = 0;
-	virtual void LB_STDCALL delReference(char* classname, char* file, int line) = 0;
+	virtual void LB_STDCALL addReference(const char* classname, const char* file, int line) = 0;
+	virtual void LB_STDCALL delReference(const char* classname, const char* file, int line) = 0;
 };
 /*...e*/
 /*...sclass lb_I_InstanceReference:0:*/
@@ -1725,7 +1728,7 @@ public:
         virtual int LB_STDCALL getLine() = 0;
         virtual int LB_STDCALL getCount() = 0;
 
-        virtual void LB_STDCALL setFile(char* f) = 0;
+        virtual void LB_STDCALL setFile(const char* f) = 0;
         virtual void LB_STDCALL setLine(int l) = 0;
         virtual void LB_STDCALL setCount(int c) = 0;
 
@@ -1737,22 +1740,22 @@ public:
 
 // This order does not work with visual C++ !!??
 //    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;
-    virtual void		LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
+    virtual void		LB_STDCALL logdirect(const char *msg, const char *f, int level) = 0;
 // Take it here...    
-    virtual void		LB_STDCALL log(const char *msg, long line, char* file) = 0;
+    virtual void		LB_STDCALL log(const char *msg, long line, const char* file) = 0;
     virtual void		LB_STDCALL log(int log) = 0;
-    virtual void		LB_STDCALL enable(char *where) = 0;
-    virtual void		LB_STDCALL disable(char *where) = 0;
-    virtual void		LB_STDCALL event_begin(char *event) = 0;
-    virtual void		LB_STDCALL event_end(char *event) = 0;
-    virtual void		LB_STDCALL setPrefix(char* p) = 0;
+    virtual void		LB_STDCALL enable(const char *where) = 0;
+    virtual void		LB_STDCALL disable(const char *where) = 0;
+    virtual void		LB_STDCALL event_begin(const char *event) = 0;
+    virtual void		LB_STDCALL event_end(const char *event) = 0;
+    virtual void		LB_STDCALL setPrefix(const char* p) = 0;
     
     
     virtual lb_I_Log&	LB_STDCALL operator<< (const int i) = 0;
     virtual lb_I_Log&	LB_STDCALL operator<< (const long i) = 0;
     virtual lb_I_Log&	LB_STDCALL operator<< (const char c) = 0;
     virtual lb_I_Log&	LB_STDCALL operator<< (const char* string) = 0;
-    virtual void		LB_STDCALL setCustomLogFile(char* name) = 0;
+    virtual void		LB_STDCALL setCustomLogFile(const char* name) = 0;
 };
 /*...e*/
 /*...sZThread interfaces:0:*/

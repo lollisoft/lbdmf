@@ -199,7 +199,7 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 
-	bool LB_STDCALL begin(char* file);
+	bool LB_STDCALL begin(const char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
 	void LB_STDCALL end();
 
@@ -240,7 +240,7 @@ lbJSONInputStream::~lbJSONInputStream() {
 }
 /*...e*/
 
-bool LB_STDCALL lbJSONInputStream::begin(char* file) {
+bool LB_STDCALL lbJSONInputStream::begin(const char* file) {
 	REQUEST(manager.getPtr(), lb_I_InputStream, iStream)
 	
 	iStream->setFileName(file);

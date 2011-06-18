@@ -248,8 +248,8 @@ char*  LB_STDCALL lbFormularParameters::getParameter(const char* name, long form
 			return getParameterValue();
 		}
 	}
-	
-	return "";
+
+	return (char*) "";
 }
 
 char*  LB_STDCALL lbFormularParameters::getParameterValue() {
@@ -678,7 +678,7 @@ char*  LB_STDCALL lbApplicationParameters::getParameter(const char* name, long a
 		}
 	}
 	
-	return "";
+	return (char*)"";
 }
 
 char*  LB_STDCALL lbApplicationParameters::getParameterValue() {

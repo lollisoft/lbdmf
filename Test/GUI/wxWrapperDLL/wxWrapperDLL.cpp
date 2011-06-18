@@ -156,7 +156,7 @@ public:
 
         wxString LB_STDCALL getSelectedApp() { return app; }
 
-        void setLoggedOnUser(char* user);
+        void setLoggedOnUser(const char* user);
 
         virtual bool TransferDataFromWindow();
 
@@ -250,7 +250,7 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
         }
 /*...e*/
 /*...svoid wxAppSelectPage\58\\58\setLoggedOnUser\40\char\42\ user\41\:0:*/
-void wxAppSelectPage::setLoggedOnUser(char* user) {
+void wxAppSelectPage::setLoggedOnUser(const char* user) {
                 lbErrCodes err = ERR_NONE;
 
                 if (userid != NULL) free(userid);
@@ -303,15 +303,15 @@ DECLARE_LB_UNKNOWN()
 
         wxLogonPage(wxWizard *parent);
 
-        char const * LB_STDCALL getTextValue(char* _name);
+        char const * LB_STDCALL getTextValue(const char* _name);
 
         void setAppSelectPage(wxAppSelectPage* p);
 
         // wizard event handlers
         void OnWizardCancel(wxWizardEvent& event);
 
-        lbErrCodes LB_STDCALL createPasswdCtrl(char* _name);
-        lbErrCodes LB_STDCALL createTextCtrl(char* _name);
+        lbErrCodes LB_STDCALL createPasswdCtrl(const char* _name);
+        lbErrCodes LB_STDCALL createTextCtrl(const char* _name);
         virtual bool TransferDataFromWindow();
         void init(wxWindow* parent);
 
@@ -376,7 +376,7 @@ void wxLogonPage::OnWizardCancel(wxWizardEvent& event) {
 
 
 /*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\createPasswdCtrl\40\char\42\ _name\41\:0:*/
-lbErrCodes LB_STDCALL wxLogonPage::createPasswdCtrl(char* _name) {
+lbErrCodes LB_STDCALL wxLogonPage::createPasswdCtrl(const char* _name) {
         char* name = NULL;
 
         name = strdup(_name);
@@ -403,7 +403,7 @@ lbErrCodes LB_STDCALL wxLogonPage::createPasswdCtrl(char* _name) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\createTextCtrl\40\char\42\ _name\41\:0:*/
-lbErrCodes LB_STDCALL wxLogonPage::createTextCtrl(char* _name) {
+lbErrCodes LB_STDCALL wxLogonPage::createTextCtrl(const char* _name) {
         char* name = NULL;
 
         name = strdup(_name);
@@ -433,15 +433,15 @@ lbErrCodes LB_STDCALL wxLogonPage::createTextCtrl(char* _name) {
 bool wxLogonPage::TransferDataFromWindow() {
         lbErrCodes err = ERR_NONE;
 
-        char* pass = strdup(getTextValue("Passwort:"));
-        char* user = strdup(getTextValue("Benutzer:"));
+        const char* pass = strdup(getTextValue("Passwort:"));
+        const char* user = strdup(getTextValue("Benutzer:"));
 
         UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
         if (meta->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
-                if (pass) free(pass);
-                if (user) free(user);
+                if (pass) free((void*)pass);
+                if (user) free((void*)user);
 
                 return TRUE;
         } else {
@@ -505,7 +505,7 @@ void wxLogonPage::init(wxWindow* parent) {
 /*...e*/
 
 /*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
-char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
+char const * LB_STDCALL wxLogonPage::getTextValue(const char* _name) {
 
         wxWindow* w = FindWindow(wxString(_name));
 
@@ -1129,7 +1129,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
 
 
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) {
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass) {
         lbErrCodes err = ERR_NONE;
 
         // Locate the form instance in the container
@@ -1389,7 +1389,7 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::getFrame() {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuEntry\40\char\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
+lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(const char* entry) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_Frame, frame)
 
@@ -1430,7 +1430,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
+lbErrCodes LB_STDCALL lb_wxGUI::msgBox(const char* windowTitle, const char* msg) {
         if (!splashOpened) {
         wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
 
@@ -1450,7 +1450,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
         return ERR_NONE;
 }
 /*...e*/
-lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
+lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(const char* name) {
         lbErrCodes err = ERR_NONE;
 
         wxWindow* W = ::wxFindWindowByName(wxString(name));
@@ -1483,7 +1483,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
         return NULL;
 }
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\findDBForm\40\char\42\ name\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
         lbErrCodes err = ERR_NONE;
 
         wxWindow* W = ::wxFindWindowByName(wxString(name));
@@ -1517,7 +1517,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
         return NULL;
 }
 /*...e*/
-void LB_STDCALL lb_wxGUI::showForm(char* name) {
+void LB_STDCALL lb_wxGUI::showForm(const char* name) {
         if (frame->isPanelUsage()) {
                 int num = notebook->GetPageCount();
 
@@ -1708,7 +1708,7 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
         }
 }
 
-void LB_STDCALL lb_wxGUI::setIcon(char* name) {
+void LB_STDCALL lb_wxGUI::setIcon(const char* name) {
         #ifdef __WXMSW__
             frame->SetIcon(wxIcon("mondrian"));
         #endif
@@ -1717,7 +1717,7 @@ void LB_STDCALL lb_wxGUI::setIcon(char* name) {
         #endif
 }
 
-void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
+void LB_STDCALL lb_wxGUI::registerDBForm(const char* formName, lb_I_DatabaseForm* form) {
 
 }
 

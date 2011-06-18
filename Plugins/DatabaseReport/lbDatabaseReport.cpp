@@ -232,8 +232,8 @@ long  lbDBReportProperties::initData(char* report) {
 	if (report) _report = strdup(report);
 	
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -265,8 +265,8 @@ void lbDBReportProperties::setIntParameter(char* name, int _value) {
 	
 	ReportCFGDB->init();
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -465,7 +465,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
 		meta->getUserName(&user);		
 		
-		char* b =
+		const char* b =
 		"select Formulare.id from Formulare inner join Anwendungen_Formulare on "
 		"Formulare.id = Anwendungen_Formulare.formularid "
 		"inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
@@ -488,8 +488,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		database->init();
 		
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 		
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -510,7 +510,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				/*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
 				
-				char* b = "select parametervalue from formular_parameters where formularid = %s";
+				const char* b = "select parametervalue from formular_parameters where formularid = %s";
 				
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
 				buffer[0] = 0;

@@ -156,7 +156,7 @@ public:
 	/** \brief Set the filename.
 	 *
 	 */
-	virtual void LB_STDCALL setFileName(char* name) = 0;
+	virtual void LB_STDCALL setFileName(const char* name) = 0;
 
 	/** \brief Get the filename.
 	 *
@@ -258,7 +258,7 @@ public:
 class lb_I_CryptoStream : 
 	public lb_I_Unknown {
 	public:
-		virtual bool LB_STDCALL setAlgorythm(char* name) = 0;
+		virtual bool LB_STDCALL setAlgorythm(const char* name) = 0;
 		virtual lb_I_CryptoStream& LB_STDCALL operator<< (lb_I_String* string) = 0;
 		virtual lb_I_CryptoStream& LB_STDCALL operator>> (lb_I_String* string) = 0;
 };

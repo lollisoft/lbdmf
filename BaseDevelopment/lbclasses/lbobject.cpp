@@ -116,7 +116,7 @@ lbLocale::~lbLocale() {
 	_CL_LOG << "lbLocale::~lbLocale() called." LOG_
 }
 
-void LB_STDCALL lbLocale::setLanguage(char const * lang) {
+void LB_STDCALL lbLocale::setLanguage(const char* lang) {
 	if (_lang) free(_lang);
 	_lang = (char*) malloc(strlen(lang)+1);
 	_lang[0] = 0;
@@ -131,7 +131,7 @@ void LB_STDCALL lbLocale::setTranslationData(lb_I_Unknown* uk) {
 
 /*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
 /// \todo Add default language in insert statement. This enables automatic creation of new languages, if selected.
-void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
+void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
@@ -163,8 +163,8 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 
 		database->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -255,8 +255,8 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 
 			database->init();
 
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
+			const char* lbDMFPasswd = getenv("lbDMFPasswd");
+			const char* lbDMFUser   = getenv("lbDMFUser");
 
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -1397,7 +1397,7 @@ lbFileLocation::~lbFileLocation() {
 	if (_path != NULL) free(_path);
 }
 
-void lbFileLocation::setData(char* path) {
+void lbFileLocation::setData(const char* path) {
 	if (_path != NULL) free(_path);
 	if (path == NULL) {
 		_path = strdup("");
@@ -1486,7 +1486,7 @@ lbDirLocation::~lbDirLocation() {
 	if (_path != NULL) free(_path);
 }
 
-void lbDirLocation::setData(char* path) {
+void lbDirLocation::setData(const char* path) {
 	if (_path != NULL) free(_path);
 	_path = strdup(path);
 }
@@ -1628,7 +1628,7 @@ char* LB_STDCALL lbInteger::charrep() const {
 lbBoolean::lbBoolean() {
 	ref = STARTREF;
 	integerdata = 0;
-	key = "false";
+	key = (char*) "false";
 }
 
 lbBoolean::~lbBoolean() {
@@ -1636,8 +1636,8 @@ lbBoolean::~lbBoolean() {
 
 void lbBoolean::setData(bool p) {
 	integerdata = p;
-	if (p == 0) key = "false";
-	else key = "true";
+	if (p == 0) key = (char*) "false";
+	else key = (char*) "true";
 }
 
 bool lbBoolean::getData() const {
@@ -1678,8 +1678,8 @@ int LB_STDCALL lbBoolean::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbBoolean::charrep() const {
-	if (integerdata) return "true";
-	else return "false";
+	if (integerdata) return (char*) "true";
+	else return (char*) "false";
 }
 /*...e*/
 /*...e*/
@@ -1785,7 +1785,7 @@ void lbLong::setData(long p) {
 		key = (char*) malloc(30);
 	}
 
-	sprintf(key, "%d", longdata);
+	sprintf(key, "%ld", longdata);
 }
 
 long lbLong::getData() const {

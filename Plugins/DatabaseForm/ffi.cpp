@@ -192,8 +192,8 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 		
 		database->init();
 		
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 		
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -302,7 +302,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	}
 }
 
-bool FormularFieldInformation::isReadonly(char* field) {
+bool FormularFieldInformation::isReadonly(const char* field) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
@@ -322,7 +322,7 @@ bool FormularFieldInformation::isReadonly(char* field) {
 	
 }
 
-bool FormularFieldInformation::isSpecialColumn(char* field) {
+bool FormularFieldInformation::isSpecialColumn(const char* field) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
@@ -340,7 +340,7 @@ bool FormularFieldInformation::isSpecialColumn(char* field) {
 	return false;
 }
 
-char* FormularFieldInformation::getControlType(char* name) {
+char* FormularFieldInformation::getControlType(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)

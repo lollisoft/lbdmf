@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.27 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.28 2011/06/18 17:29:55 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.28  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.27  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -304,7 +307,7 @@ char* lbKeyUL::charrep() const {
 	static char buf[100];
 	buf[0] = 0;
 
-	sprintf(buf, "%d", key);
+	sprintf(buf, "%ld", key);
     
 	return buf;
 }

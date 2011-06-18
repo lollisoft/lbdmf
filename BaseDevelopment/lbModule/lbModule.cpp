@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.133 $
+ * $Revision: 1.134 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.133 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.134 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.134  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.133  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -1209,9 +1212,9 @@ public:
 	virtual char* LB_STDCALL getFile();
 	virtual int LB_STDCALL getLine();
 	
-	virtual void LB_STDCALL setAddress(char* a);
-	virtual void LB_STDCALL setClassname(char* c);
-	virtual void LB_STDCALL setFile(char* f);
+	virtual void LB_STDCALL setAddress(const char* a);
+	virtual void LB_STDCALL setClassname(const char* c);
+	virtual void LB_STDCALL setFile(const char* f);
 	virtual void LB_STDCALL setLine(int l);
 	
 	/**
@@ -1219,8 +1222,8 @@ public:
 	 * If the release function is used directly, it shows me an unregistered reference,
 	 * so I will find all non UAP pointers.
 	 */
-	virtual void LB_STDCALL addReference(char* classname, char* file, int line);
-	virtual void LB_STDCALL delReference(char* classname, char* file, int line);
+	virtual void LB_STDCALL addReference(const char* classname, const char* file, int line);
+	virtual void LB_STDCALL delReference(const char* classname, const char* file, int line);
 	
 	UAP(lb_I_Container, references)
 	lbErrCodes err;
@@ -1246,7 +1249,7 @@ lbInstance::~lbInstance() {
 }
 
 /*...svoid LB_STDCALL lbInstance\58\\58\addReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbInstance::addReference(char* classname, char* file, int line) {
+void LB_STDCALL lbInstance::addReference(const char* classname, const char* file, int line) {
 	if (references == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, references)
 	}
@@ -1277,7 +1280,7 @@ void LB_STDCALL lbInstance::addReference(char* classname, char* file, int line) 
 }
 /*...e*/
 /*...svoid LB_STDCALL lbInstance\58\\58\delReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbInstance::delReference(char* classname, char* file, int line) {
+void LB_STDCALL lbInstance::delReference(const char* classname, const char* file, int line) {
         if (references == NULL) {
                 REQUEST(manager.getPtr(), lb_I_Container, references)
         }
@@ -1328,17 +1331,17 @@ int LB_STDCALL lbInstance::getLine() {
 	return line;
 }
 
-void LB_STDCALL lbInstance::setAddress(char* a) {
+void LB_STDCALL lbInstance::setAddress(const char* a) {
 	if (addr != NULL) free(addr);
 	addr = strdup(a);
 }
 
-void LB_STDCALL lbInstance::setClassname(char* c) {
+void LB_STDCALL lbInstance::setClassname(const char* c) {
 	if (classname != NULL) free(classname);
 	classname = strdup(c);
 }
 
-void LB_STDCALL lbInstance::setFile(char* f) {
+void LB_STDCALL lbInstance::setFile(const char* f) {
 	if (file != NULL) free(file);
 	file = strdup(f);
 }
@@ -1372,7 +1375,7 @@ lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 /*...sImplementation for key:0:*/
 // Implementation for key
 
-char const* LB_STDCALL lbInstance::getKeyType() const {
+const char* LB_STDCALL lbInstance::getKeyType() const {
     return "string";
 }
 
@@ -1412,7 +1415,7 @@ public:
 	virtual int LB_STDCALL getLine();
 	virtual int LB_STDCALL getCount();
 
-	virtual void LB_STDCALL setFile(char* f);
+	virtual void LB_STDCALL setFile(const char* f);
 	virtual void LB_STDCALL setLine(int l);
 	virtual void LB_STDCALL setCount(int c);
 
@@ -1448,7 +1451,7 @@ void LB_STDCALL lbInstanceReference::setCount(int c) {
 	count = c;
 }
 
-void LB_STDCALL lbInstanceReference::setFile(char* f) {
+void LB_STDCALL lbInstanceReference::setFile(const char* f) {
 
 }
 	
@@ -1947,15 +1950,16 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 
 /*...sInstanceRepository\58\\58\getCreationLoc\40\char\42\ addr\41\:0:*/
 char* LB_STDCALL InstanceRepository::getCreationLoc(char* addr) {
+	static char buf[1000] = "";
 	instanceList* temp = iList;
 /*...sfirst element:8:*/
 	if (iList == NULL) {
-		return "No IR elements available";
+		sprintf(buf, "%s", "No IR elements available");
+		return buf;
 	}
 /*...e*/
 /*...smore than one elements:8:*/
 	while (temp != NULL) {
-		static char buf[1000] = "";
 		sprintf(buf, "Location File: %s, Line: %d", temp->file, temp->line);
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
 			return buf;
@@ -1963,7 +1967,8 @@ char* LB_STDCALL InstanceRepository::getCreationLoc(char* addr) {
 		temp = temp->next;
 	}
 /*...e*/
-	return strdup("No location stored");	
+	sprintf(buf, "%s", "No location stored");
+	return buf;
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\printReferences\40\char\42\ addr\41\:0:*/
@@ -1975,7 +1980,7 @@ void LB_STDCALL InstanceRepository::printReferences(char* addr) {
 			referenceList* rTemp = temp->rList;
 			
 			while(rTemp != NULL) {
-				printf("Reference for %s in %f at %d with %d stored count's\n", 
+				printf("Reference for %s in %s at %d with %d stored count's\n", 
 				temp->classname, rTemp->file, rTemp->line, rTemp->count);
 				rTemp = rTemp->next;
 			}
@@ -2073,7 +2078,7 @@ public:
 
 public:
 
-        virtual void LB_STDCALL setFunctor(char* functor) {
+        virtual void LB_STDCALL setFunctor(const char* functor) {
         	if (_functor)
         		free(_functor);
 		if (functor == NULL) return;
@@ -2082,7 +2087,7 @@ public:
         	strcpy(_functor, functor);
         }
         
-        virtual void LB_STDCALL setModule(char* module) {
+        virtual void LB_STDCALL setModule(const char* module) {
         	if (_module != NULL)
         		free(_module);
 		if (module == NULL) return;
@@ -2091,7 +2096,7 @@ public:
         	strcpy(_module, module);
         }
         
-        virtual void LB_STDCALL setInterface(char* iface) {
+        virtual void LB_STDCALL setInterface(const char* iface) {
         	if (_interface != NULL)
  			free(_interface);
         	_interface = (char*) malloc(strlen(iface)+1);
@@ -2219,8 +2224,8 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		return NULL;
 	}
 
-	char* module = NULL;
-	char* functor = NULL;
+	const char* module = NULL;
+	const char* functor = NULL;
 	bool  found = false;
 
 // Add code here to overload exsisting interface definitions by custom repository
@@ -2526,20 +2531,20 @@ class lbModule :
                 public lb_I_Module
 {
 public:
-	virtual char* LB_STDCALL getCreationLoc(char const* addr);
-    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
-    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line);
-    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line);
-    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line);
+	virtual char* LB_STDCALL getCreationLoc(const char* addr);
+    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0);
+    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, const char* implName, const char* file, int line);
+    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, const char* implName, const char* file, int line);
+    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, const char* implName, const char* file, int line);
 
-    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char const* implName, char const* file = "", int line = 0);
-	virtual lbErrCodes LB_STDCALL load(char* name);
-	virtual lbErrCodes LB_STDCALL preload(char* name);
-	virtual void LB_STDCALL printReferences(char* addr);        
-    virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
-    virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0);
+	virtual lbErrCodes LB_STDCALL load(const char* name);
+	virtual lbErrCodes LB_STDCALL preload(const char* name);
+	virtual void LB_STDCALL printReferences(const char* addr);        
+    virtual lbErrCodes LB_STDCALL getFunctors(const char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+    virtual lbErrCodes LB_STDCALL getInstance(const char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
     virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst);
-    virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
+    virtual lbErrCodes LB_STDCALL makeInstance(const char* functor, const char* module, lb_I_Unknown** instance);
 
 
 
@@ -2550,7 +2555,7 @@ public:
 
         
 
-    virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
+    virtual lbErrCodes LB_STDCALL getDefaultImpl(const char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
         
 public:
 	lbModule();
@@ -2776,8 +2781,8 @@ printf("Increased\n");
 
 
 /*...sdebug helper:0:*/
-/*...schar\42\ LB_STDCALL lbModule\58\\58\getCreationLoc\40\char const\42\ addr\41\:0:*/
-char* LB_STDCALL lbModule::getCreationLoc(char const* addr) {
+/*...schar\42\ LB_STDCALL lbModule\58\\58\getCreationLoc\40\const char\42\ addr\41\:0:*/
+char* LB_STDCALL lbModule::getCreationLoc(const char* addr) {
 #ifdef IR_USAGE
 	if (IR != NULL) {
 		return IR->getCreationLoc(addr);
@@ -2787,12 +2792,12 @@ char* LB_STDCALL lbModule::getCreationLoc(char const* addr) {
 	}
 #endif
 #ifndef IR_USAGE
-	return "IR is deactivated!";
+	return (char*) "IR is deactivated!";
 #endif
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\printReferences\40\char\42\ addr\41\:0:*/
-void LB_STDCALL lbModule::printReferences(char* addr) {
+void LB_STDCALL lbModule::printReferences(const char* addr) {
 	if (IR != NULL) {
 	#ifdef VERBOSE
 		IR->printReferences(addr);
@@ -2801,7 +2806,7 @@ void LB_STDCALL lbModule::printReferences(char* addr) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_create\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char const* implName, char const* file, int line) {
+void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, const char* implName, const char* file, int line) {
 #ifdef IR_USAGE
         char* buf = (char*) malloc(1000);
         buf[0] = 0;
@@ -2826,7 +2831,7 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char const* implName
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_add\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char const* implName, char const* file, int line) {
+void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, const char* implName, const char* file, int line) {
 #ifdef IR_USAGE
         char addr[20] = "";
         sprintf(addr, "%p", (void*) that);
@@ -2840,7 +2845,7 @@ void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char const* implName, c
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_release\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char const* implName, char const* file, int line) {
+void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, const char* implName, const char* file, int line) {
 	/**
 	 * A buffer with to few bytes may result in crashes. Because I do not make strlen checks,
 	 * I must set the buffer to 
@@ -2860,7 +2865,7 @@ void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char const* implNam
 }
 /*...e*/
 /*...svoid LB_STDCALL lbModule\58\\58\notify_destroy\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, char const* implName, char const* file, int line) {
+void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, const char* implName, const char* file, int line) {
 	/**
 	 * A buffer with to few bytes may result in crashes. Because I do not make strlen checks,
 	 * I must set the buffer to 
@@ -2881,7 +2886,7 @@ void LB_STDCALL lbModule::notify_destroy(lb_I_Unknown* that, char const* implNam
 /*...e*/
 
 /*...sint  LB_STDCALL lbModule\58\\58\can_delete\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
-int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char const* implName, char const* file, int line) {
+int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, const char* implName, const char* file, int line) {
 #ifdef IR_USAGE
 
 #endif
@@ -3078,7 +3083,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
         
         if (node == NULL) {
                 _CL_VERBOSE << "NULL pointer detected!" LOG_
-                return "NULL";
+                return (char*) "NULL";
         }
         
         if (strcmp (node->getName(), "Module") == 0) {
@@ -3095,7 +3100,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                                 
                                 if (err != ERR_NONE) {
                                         _CL_VERBOSE << "Error while getting attribute value: " << value LOG_
-                                        return "NULL";
+                                        return (char*) "NULL";
                                 } else {
                                         return value;
                                 }
@@ -3118,7 +3123,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                                 
                                 if (err != ERR_NONE) {
                                         _CL_VERBOSE << "Error while getting attribute value" LOG_
-                                        return "NULL";
+                                        return (char*) "NULL";
                                 } else {
                                         return value;
                                 }
@@ -3141,7 +3146,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                 
         }
 
-        return "NULL";
+        return (char*) "NULL";
 }
 /*...e*/
 /*...slbModule\58\\58\findFunctorName\40\\46\\46\\46\\41\:0:*/
@@ -3233,7 +3238,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
 }
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\getDefaultImpl\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\\42\ node\44\ char\42\\38\ implTor\44\ char\42\\38\ module\41\:0:*/
-lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module) {
+lbErrCodes LB_STDCALL lbModule::getDefaultImpl(const char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module) {
         lbErrCodes err = ERR_NONE;
         int count = 0;
         UAP(lb_I_ConfigObject, _node)
@@ -3314,7 +3319,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
 }
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\getFunctors\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ lb_I_Unknown\42\\38\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+lbErrCodes LB_STDCALL lbModule::getFunctors(const char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
 /*...sbla:0:*/
 #ifdef bla
         lbModuleContainer* functors = new lbModuleContainer();
@@ -3395,7 +3400,7 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
 }
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\42\ instance\41\:0:*/
-lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown** instance) {
+lbErrCodes LB_STDCALL lbModule::makeInstance(const char* functor, const char* module, lb_I_Unknown** instance) {
 	lbErrCodes err = ERR_NONE;
 	HINSTANCE h = getModuleHandle();
 		
@@ -3448,7 +3453,7 @@ lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_U
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lbModule::getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+lbErrCodes LB_STDCALL lbModule::getInstance(const char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
         return ERR_NONE;
 }
 /*...e*/
@@ -3847,7 +3852,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 IMPLEMENT_SINGLETON_FUNCTOR(getlb_ModuleInstance, lbModule)
 
 /*...slbErrCodes lbModule\58\\58\preload\40\char\42\ name\41\:0:*/
-lbErrCodes lbModule::preload(char* name) {
+lbErrCodes lbModule::preload(const char* name) {
 printf("lbModule::load(%s) called\n", name);
 
 	HINSTANCE temp;
@@ -3858,7 +3863,7 @@ printf("lbModule::load(%s) called\n", name);
 }
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
-lbErrCodes lbModule::load(char* name) {
+lbErrCodes lbModule::load(const char* name) {
 printf("lbModule::load(%s) called\n", name);
 #ifndef USE_INTERFACE_REPOSITORY
         UAP(lb_I_XMLConfig, xml_Instance)

@@ -221,8 +221,8 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 
 			db->init();
 
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
+			const char* lbDMFPasswd = getenv("lbDMFPasswd");
+			const char* lbDMFUser   = getenv("lbDMFUser");
 
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -331,8 +331,8 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 
 			db->init();
 
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
+			const char* lbDMFPasswd = getenv("lbDMFPasswd");
+			const char* lbDMFUser   = getenv("lbDMFUser");
 
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -1000,8 +1000,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 		db->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";

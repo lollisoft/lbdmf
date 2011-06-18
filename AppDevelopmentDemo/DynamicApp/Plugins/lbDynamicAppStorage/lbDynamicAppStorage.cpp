@@ -1983,8 +1983,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				
 			database->init();
 			
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
+			const char* lbDMFPasswd = getenv("lbDMFPasswd");
+			const char* lbDMFUser   = getenv("lbDMFUser");
 			
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";

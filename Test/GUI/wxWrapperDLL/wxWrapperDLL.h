@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.42 2011/02/27 10:34:00 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.42  2011/02/27 10:34:00  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -529,7 +532,7 @@ public:
 
 	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName);
 
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
@@ -591,14 +594,14 @@ public:
         virtual lbErrCodes LB_STDCALL activateMenuEntry();
         
         virtual lbErrCodes LB_STDCALL gotoMenuRoot();
-        virtual lbErrCodes LB_STDCALL gotoMenuEntry(char* entry);
+        virtual lbErrCodes LB_STDCALL gotoMenuEntry(const char* entry);
         
         virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry);
         virtual lbErrCodes LB_STDCALL insertMenuEntry(lb_I_Unknown* entry);
 
 /*...e*/
         
-        virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg);
+        virtual lbErrCodes LB_STDCALL msgBox(const char* windowTitle, const char* msg);
         
         virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp);
 
@@ -606,12 +609,12 @@ public:
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addMenuBar(const char* name) { return ERR_NONE; };
 
 	/**
 	 * Add a menu behind the last.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addMenu(const char* name) { return ERR_NONE; };
 	
 	/**
 	 * Add a menu entry in the named menu after given entry,
@@ -623,7 +626,7 @@ public:
 	 *	char* evHandler:	The name of a registered event handler, that handle this
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL) { return ERR_NONE; };
 
 	/**
 	 * Add a button at a given position.
@@ -636,13 +639,13 @@ public:
 	 *	int w			W coordinade
 	 *	int h			H coordinade
 	 */
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 
 
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
 
 
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
 
 	void LB_STDCALL splashDestroyed();
@@ -650,14 +653,14 @@ public:
 	void LB_STDCALL showPendingMessages();
 
         
-	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
+	void LB_STDCALL registerDBForm(const char* formName, lb_I_DatabaseForm* form);
 
-	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
-	lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(char* name);
+	lb_I_DatabaseForm* LB_STDCALL findDBForm(const char* name);
+	lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(const char* name);
 
-	void LB_STDCALL showForm(char* name);
+	void LB_STDCALL showForm(const char* name);
 
-	void LB_STDCALL setIcon(char* name);
+	void LB_STDCALL setIcon(const char* name);
 
 	/*
 	 * Cleanup. This will destroy all possible (hidden) dialogs.

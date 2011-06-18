@@ -380,7 +380,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::createTableViewControls(int columns) {
     SetSizer(itemBoxSizer2);
 }
 
-int LB_STDCALL lbDatabaseTableViewPanel::lookupColumnIndex(char* name) {
+int LB_STDCALL lbDatabaseTableViewPanel::lookupColumnIndex(const char* name) {
     UAP(lb_I_String, Name)
 
     for (int i = 1; i <= sampleQuery->getColumns(); i++) {
@@ -391,7 +391,7 @@ int LB_STDCALL lbDatabaseTableViewPanel::lookupColumnIndex(char* name) {
     return -1;
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 /*...sCreate controls based on configuration in a database:40:*/
 				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
                 lbErrCodes err = ERR_NONE;
@@ -535,7 +535,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addSpecialField(char* name, wxSizer* s
 /*...e*/
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 			lbErrCodes err = ERR_NONE;
             UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
@@ -908,7 +908,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(char* name, wxSizer* siz
 			free(buffer);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addTextField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addTextField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						UAP(lb_I_String, s)
 						//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
 						int i = lookupColumnIndex(name);
@@ -926,7 +926,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addTextField(char* name, wxSizer* size
 						}
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						_CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -963,7 +963,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(char* name, wxSizer* siz
 						}
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addLongField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
                         _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -999,7 +999,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addLongField(char* name, wxSizer* size
 
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
                         _CL_LOG << "Have a numeric field." LOG_
 						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
 
@@ -1035,7 +1035,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addIntegerField(char* name, wxSizer* s
 
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 					UAP(lb_I_BinaryData, binary)
 
 					binary = sampleQuery->getBinaryData(name);
@@ -1068,7 +1068,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addBinaryField(char* name, wxSizer* si
 					}
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addCheckField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						wxCheckBox *check = new wxCheckBox(this, -1,
 							"", wxPoint());
 						check->SetName(name);
@@ -1081,7 +1081,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addCheckField(char* name, wxSizer* siz
 						}
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addDateField(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 						UAP(lb_I_String, s)
 						int i = lookupColumnIndex(name);
 
@@ -1133,47 +1133,47 @@ void LB_STDCALL lbDatabaseTableViewPanel::setCellFloat(int row, int col, lb_I_St
     TableView->SetCellValue(row, col, s->charrep());
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addSpecialColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addSpecialColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addComboColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addComboColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addTextColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addTextColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addLongColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addLongColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addIntegerColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addIntegerColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addCheckColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addCheckColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addDateColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addDateColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addFloatColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addFloatColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
 
-void LB_STDCALL lbDatabaseTableViewPanel::addBinaryColumn(char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addBinaryColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }
@@ -1310,7 +1310,7 @@ void lbDatabaseTableViewPanel::OnCellValueChanged( wxGridEvent& ev ) {
 }
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
@@ -1726,7 +1726,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(char* _SQLString, char* DBName, c
 		_LOG << "Create actions for formular '" << formName << "' by query." LOG_
 		actionQuery = database->getQuery("lbDMF", 0);
 
-		char *_actionquery = "select actions.name, formular_actions.event from actions "
+		const char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join Formulare on formular_actions.formular = Formulare.id "
 			     "where Formulare.name = '%s'";
@@ -1937,7 +1937,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 }
 
 
-void LB_STDCALL lbDatabaseTableViewPanel::addLabel(char* text, wxSizer* sizer, bool hideThisColumn) {
+void LB_STDCALL lbDatabaseTableViewPanel::addLabel(const char* text, wxSizer* sizer, bool hideThisColumn) {
 	char* tLabel = (char*) malloc(strlen(text) + 6);
 	tLabel[0] = 0;
 	tLabel = strcat(tLabel, text);
@@ -2599,7 +2599,7 @@ const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(int pos) {
 }
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabaseTableViewPanel\58\\58\getControlValue\40\char\42\ name\41\:0:*/
-const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(char* name) {
+const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(const char* name) {
 
 	wxString value;
 
@@ -2648,7 +2648,7 @@ const char* LB_STDCALL lbDatabaseTableViewPanel::getControlValue(char* name) {
 /*...e*/
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewPanel::ignoreForeignKeys(char* toTable) {
+void LB_STDCALL lbDatabaseTableViewPanel::ignoreForeignKeys(const char* toTable) {
 	lbErrCodes err = ERR_NONE;
 
 	if (ignoredPKTables == NULL) {
@@ -3690,13 +3690,13 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 /*...e*/
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
-void LB_STDCALL lbDatabaseTableViewPanel::setFilter(char* filter) {
+void LB_STDCALL lbDatabaseTableViewPanel::setFilter(const char* filter) {
 	if (filter != NULL) SQLWhere->setData(filter);
 }
 /*...e*/
 
 /*...schar\42\ lbDatabaseTableViewPanel\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-lb_I_String* lbDatabaseTableViewPanel::getTableName(char* columnName) {
+lb_I_String* lbDatabaseTableViewPanel::getTableName(const char* columnName) {
 	return sampleQuery->getTableName(columnName);
 }
 /*...e*/
@@ -4964,7 +4964,7 @@ int LB_STDCALL lbDatabaseTableViewPanel::getPrimaryColumns()
 }
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseTableViewPanel\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
-int LB_STDCALL lbDatabaseTableViewPanel::getForeignColumns(char* primaryTable)
+int LB_STDCALL lbDatabaseTableViewPanel::getForeignColumns(const char* primaryTable)
 {
 	/*
 	   Directly forward the request to the formular field information class.
@@ -4997,7 +4997,7 @@ lb_I_String* LB_STDCALL lbDatabaseTableViewPanel::getForeignColumn(int pos)
 	return sampleQuery->getFKColumn(pos);
 }
 
-bool LB_STDCALL lbDatabaseTableViewPanel::isCharacterColumn(char* name)
+bool LB_STDCALL lbDatabaseTableViewPanel::isCharacterColumn(const char* name)
 {
 	return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
 }

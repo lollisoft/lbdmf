@@ -57,7 +57,7 @@ public:
 	/** \brief Set the name of the form
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL setName(char const * name, char const * appention = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL setName(const char* name, const char* appention = NULL) = 0;
 
 		
 	/** \brief Get the original name.
@@ -69,19 +69,19 @@ public:
 	 *
 	 * Add a new button at the given position and size.
 	 */
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) = 0;
 	
 	/** \brief Add a label
 	 *
 	 * Add a new label at the given position and size.
 	 */
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) = 0;
 	
 	/** \brief Add a text field
 	 *
 	 * Add a new text field at the given position and size.
 	 */
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) = 0;
 	
 	/** \brief Add an ownerdrawn control
 	 *
@@ -89,7 +89,7 @@ public:
 	 *
 	 * This aims to draw various symbols or drawings based on an interpreted language.
 	 */
-	virtual lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) = 0;
 
 	virtual void LB_STDCALL show() = 0;
 	virtual void LB_STDCALL destroy() = 0;
@@ -141,7 +141,7 @@ public:
 	 * \param formName Is the name for the form.
 	 * \param queryString Is the SQL query whose data should be displayed for modification.
 	 */
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) = 0;
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass) = 0;
 
 	/** \brief Register a form.
 	 *
@@ -150,7 +150,7 @@ public:
 	 *
 	 * It will be used in the master detail form implementations. 
 	 */
-	virtual void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form) = 0;
+	virtual void LB_STDCALL registerDBForm(const char* formName, lb_I_DatabaseForm* form) = 0;
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm() = 0;
 /*...e*/
@@ -183,7 +183,7 @@ public:
 	/**
 	 * Go to any menu entry, to manipulate at this position.
 	 */
-	virtual lbErrCodes LB_STDCALL gotoMenuEntry(char* entry) = 0;
+	virtual lbErrCodes LB_STDCALL gotoMenuEntry(const char* entry) = 0;
 	
 	/**
 	 * Insert a menu instance after the current position.
@@ -222,12 +222,12 @@ public:
 	/**
 	 * Add a menu bar to the main menu with the given name.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuBar(const char* name) = 0;
 
 	/**
 	 * Add a menu behind the last.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenu(const char* name) = 0;
 	
 	/**
 	 * Add a menu entry in the named menu after given entry,
@@ -239,7 +239,7 @@ public:
 	 * \param  evHandler The name of a registered event handler, that handle this
 	 * \param  afterentry Insert the entry after an exsisting entry
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL) = 0;
 /*...e*/
 
 
@@ -249,7 +249,7 @@ public:
 	 * Let the GUI server show a dialog box.
 	 * This would be the simplest way to show informations to the user.
 	 */
-	virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg) = 0;
+	virtual lbErrCodes LB_STDCALL msgBox(const char* windowTitle, const char* msg) = 0;
 
 	/**
 	 * We do not implement a dispatcher here, but we need one.
@@ -261,23 +261,23 @@ public:
 	 *
 	 * This function finds any dynamic database window by their name.
 	 */
-	virtual lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name) = 0;
+	virtual lb_I_DatabaseForm* LB_STDCALL findDBForm(const char* name) = 0;
 	
 	/**
 	 * \brief Find any custom database window.
 	 *
 	 * This function finds any custom database window by their name.
 	 */
-	virtual lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(char* name) = 0;
+	virtual lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(const char* name) = 0;
 	
 	/**
 	 * \brief Show form with given name.
 	 */
-	virtual void LB_STDCALL showForm(char* name) = 0;
+	virtual void LB_STDCALL showForm(const char* name) = 0;
 	
 	/** \brief Set the app's icon.
 	 */
-	virtual void LB_STDCALL setIcon(char* name) = 0;
+	virtual void LB_STDCALL setIcon(const char* name) = 0;
 	
 	/** \brief Add an existing instance of a formular.
 	 * Expected is a panel based formular, that could be placed into a notebook like

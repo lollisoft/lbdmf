@@ -136,8 +136,8 @@ void LB_STDCALL lbPluginModule::install() {
 		_LOG << "Using built in database backend for lbPluginModule::initialize() operation..." LOG_
 	}
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";

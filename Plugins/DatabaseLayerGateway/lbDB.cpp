@@ -97,7 +97,7 @@ class lbDatabaseLayerDatabase :
 		
 		lbErrCodes	LB_STDCALL init();
 		void	LB_STDCALL close();
-		void	LB_STDCALL open(char* connectionname);
+		void	LB_STDCALL open(const char* connectionname);
 		
 		bool		LB_STDCALL isConnected();
 		
@@ -109,19 +109,19 @@ class lbDatabaseLayerDatabase :
 		 *		user	database user
 		 *		passwd	database password
 		 */
-		lbErrCodes	LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd);
-		lb_I_Query*	LB_STDCALL getQuery(char* connectionname, int readonly = 1);
+		lbErrCodes	LB_STDCALL connect(const char* connectionname, const char* DSN, const char* user, const char* passwd);
+		lb_I_Query*	LB_STDCALL getQuery(const char* connectionname, int readonly = 1);
 		
-		lbErrCodes	LB_STDCALL connect(char* connectionname, char* pass);
+		lbErrCodes	LB_STDCALL connect(const char* connectionname, const char* pass);
 		
-		lbErrCodes	LB_STDCALL setUser(char* _user);
-		lbErrCodes	LB_STDCALL setDB(char* _db);	
+		lbErrCodes	LB_STDCALL setUser(const char* _user);
+		lbErrCodes	LB_STDCALL setDB(const char* _db);	
 		
-		lb_I_Container* LB_STDCALL getTables(char* connectionname);
-		lb_I_Container* LB_STDCALL getColumns(char* connectionname);
+		lb_I_Container* LB_STDCALL getTables(const char* connectionname);
+		lb_I_Container* LB_STDCALL getColumns(const char* connectionname);
 		
-		lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
-		lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
+		lb_I_Container* LB_STDCALL getForeignKeys(const char* connectionname);
+		lb_I_Container* LB_STDCALL getPrimaryKeys(const char* connectionname);
 		
 		lb_I_String*	LB_STDCALL getDriverName();
 		lb_I_String*	LB_STDCALL getDriverVersion();
@@ -129,7 +129,7 @@ class lbDatabaseLayerDatabase :
 		lb_I_String*	LB_STDCALL getDBMSName();
 		lb_I_String*	LB_STDCALL getDBMSVersion();
 		
-		DatabaseLayer* LB_STDCALL getBackend(char* connectionname);
+		DatabaseLayer* LB_STDCALL getBackend(const char* connectionname);
 	private:
 		RETCODE  retcode;
 		HENV     henv;	
@@ -216,29 +216,29 @@ public:
 	lbErrCodes			LB_STDCALL getLong(int column, lb_I_Long* instance);
 	lbErrCodes			LB_STDCALL getLong(const char* column, lb_I_Long* instance);
 	lbErrCodes			LB_STDCALL getString(const char* column, lb_I_String* instance);
-	lbErrCodes			LB_STDCALL setString(char* column, lb_I_String* instance);
+	lbErrCodes			LB_STDCALL setString(const char* column, lb_I_String* instance);
 
 	void				LB_STDCALL unbindReadonlyColumns();
 	void				LB_STDCALL rebindReadonlyColumns();
 
 	void				LB_STDCALL indicateNullValues();
 	bool				LB_STDCALL setNull(int pos, bool b);
-	bool				LB_STDCALL setNull(char const * name, bool b);
+	bool				LB_STDCALL setNull(const char* name, bool b);
 
 	bool				LB_STDCALL isNullable(int pos);
-	bool				LB_STDCALL isNullable(char const * name);
+	bool				LB_STDCALL isNullable(const char* name);
 	bool				LB_STDCALL isNull(int pos);
-	bool				LB_STDCALL isNull(char const * name);
+	bool				LB_STDCALL isNull(const char* name);
 
 	bool				LB_STDCALL isBound(int pos);
-	bool				LB_STDCALL isBound(char const * name);
+	bool				LB_STDCALL isBound(const char* name);
 
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
-	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(const char* name);
 	int					LB_STDCALL getColumnIndex(const char* name);
 
-	void				LB_STDCALL setReadonly(char* column, bool updateable);
-	bool				LB_STDCALL getReadonly(char* column);
+	void				LB_STDCALL setReadonly(const char* column, bool updateable);
+	bool				LB_STDCALL getReadonly(const char* column);
 
 	void				LB_STDCALL rebind();
 	void				LB_STDCALL unbind();
@@ -278,9 +278,9 @@ public:
 	void						LB_STDCALL enableFKCollecting();
 	void						LB_STDCALL prepareFKList();
 
-	lb_I_String*				LB_STDCALL getTableName(char* columnName = NULL);
+	lb_I_String*				LB_STDCALL getTableName(const char* columnName = NULL);
 
-	void						LB_STDCALL dbError(char* lp, HSTMT hstmt);
+	void						LB_STDCALL dbError(const char* lp, HSTMT hstmt);
 
 	void						LB_STDCALL PrintData(bool reverse);
 	void						LB_STDCALL PrintCurrent();
@@ -289,7 +289,7 @@ public:
 
 	void						LB_STDCALL skipPeeking() { peeking = false; }
 
-	lbErrCodes					LB_STDCALL query(char* q, bool bind);
+	lbErrCodes					LB_STDCALL query(const char* q, bool bind);
 
 	lbErrCodes					LB_STDCALL bind();
 	void						LB_STDCALL unbind();
@@ -304,20 +304,20 @@ public:
 	lbErrCodes					LB_STDCALL update();
 
 	int							LB_STDCALL getColumns();
-	bool						LB_STDCALL hasColumnName(char* name);
+	bool						LB_STDCALL hasColumnName(const char* name);
 
 	lb_I_String*				LB_STDCALL getColumnName(int col);
 
-	int							LB_STDCALL hasFKColumn(char* FKName);
+	int							LB_STDCALL hasFKColumn(const char* FKName);
 
 	int							LB_STDCALL getFKColumns();
 
 	lb_I_String*				LB_STDCALL getFKColumn(int pos);
 
-	lb_I_String*				LB_STDCALL getFKColumn(char* table, char* primary);
+	lb_I_String*				LB_STDCALL getFKColumn(const char* table, const char* primary);
 
-	lb_I_String*				LB_STDCALL getPKTable(char const * FKName);
-	lb_I_String*				LB_STDCALL getPKColumn(char const * FKName);
+	lb_I_String*				LB_STDCALL getPKTable(const char* FKName);
+	lb_I_String*				LB_STDCALL getPKColumn(const char* FKName);
 
 	int							LB_STDCALL getPKColumns();
 	lb_I_String*				LB_STDCALL getPKColumn(int pos);
@@ -325,21 +325,21 @@ public:
 	bool						LB_STDCALL isFirst();
 	bool						LB_STDCALL isLast();
 
-	bool						LB_STDCALL hasDefaultValue(char* columnname);
+	bool						LB_STDCALL hasDefaultValue(const char* columnname);
 	bool						LB_STDCALL isNullable(int pos);
-	bool						LB_STDCALL isNullable(char const * name);
+	bool						LB_STDCALL isNullable(const char* name);
 	bool						LB_STDCALL isNull(int pos);
-	bool						LB_STDCALL isNull(char const * name);
+	bool						LB_STDCALL isNull(const char* name);
 	bool						LB_STDCALL setNull(int pos, bool b = true);
-	bool						LB_STDCALL setNull(char const * name, bool b = true);
+	bool						LB_STDCALL setNull(const char* name, bool b = true);
 
 	lb_I_Query::lbDBColumnTypes	LB_STDCALL getColumnType(int pos);
-	lb_I_Query::lbDBColumnTypes	LB_STDCALL getColumnType(char* name);
+	lb_I_Query::lbDBColumnTypes	LB_STDCALL getColumnType(const char* name);
 
 	lbDBCaseSensity				LB_STDCALL getCaseSensity();
 
-	void						LB_STDCALL setReadonly(char* column, bool updateable = true);
-	bool						LB_STDCALL getReadonly(char* column);
+	void						LB_STDCALL setReadonly(const char* column, bool updateable = true);
+	bool						LB_STDCALL getReadonly(const char* column);
 
 	/* Navigation */
 
@@ -350,9 +350,9 @@ public:
 	lbErrCodes					LB_STDCALL next();
 	lbErrCodes					LB_STDCALL previous();
 	lbErrCodes					LB_STDCALL last();
-	char*						LB_STDCALL setWhereClause(const char* query, char* where);
+	char*						LB_STDCALL setWhereClause(const char* query, const char* where);
 
-	char*						LB_STDCALL addWhereClause(const char* query, char* where);
+	char*						LB_STDCALL addWhereClause(const char* query, const char* where);
 
 	void						LB_STDCALL setAutoRefresh(bool b);
 
@@ -376,9 +376,9 @@ public:
 	lbErrCodes					LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
 #endif
 
-	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, char* dbname, bool ro = false);
+	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, const char* dbname, bool ro = false);
 
-	lbErrCodes					LB_STDCALL executeDirect(char* SQL);
+	lbErrCodes					LB_STDCALL executeDirect(const char* SQL);
 
 	/** \brief Build a cursor set.
 	 * Generates a list of keys in a 'window' of the main resultset.
@@ -754,12 +754,12 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isBound(int pos) {
 	return false;
 }
 
-bool LB_STDCALL lbDatabaseLayerBoundColumns::isBound(char const * name) {
+bool LB_STDCALL lbDatabaseLayerBoundColumns::isBound(const char* name) {
 	int pos = getColumnIndex(name);
 	return isBound(pos);
 }
 
-bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(char const * name) {
+bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(const char* name) {
 	int pos = getColumnIndex(name);
 	return isNull(pos);
 }
@@ -787,7 +787,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(int pos) {
 	return false;
 }
 
-bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(char const * name) {
+bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(const char* name) {
 	int pos = getColumnIndex(name);
 	return isNullable(pos);
 }
@@ -939,7 +939,7 @@ bool	LB_STDCALL lbDatabaseLayerBoundColumns::hasValidData() {
 }
 
 
-bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(char const * name, bool b) {
+bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(const char* name, bool b) {
 	lbErrCodes err = ERR_NONE;
 
 	int pos = getColumnIndex(name);
@@ -1055,7 +1055,7 @@ int LB_STDCALL lbDatabaseLayerBoundColumns::getColumnIndex(const char* name) {
 	return -1;
 }
 
-lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnType(char* name) {
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnType(const char* name) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
@@ -1084,7 +1084,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 	return lb_I_Query::lbDBColumnUnknown;
 }
 
-void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(char* column, bool updateable) {
+void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(const char* column, bool updateable) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
@@ -1119,7 +1119,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(char* column, bool upda
 	}
 }
 
-bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(char* column) {
+bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(const char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
@@ -1303,7 +1303,7 @@ lbErrCodes	LB_STDCALL lbDatabaseLayerBoundColumns::getString(const char* column,
 	return ERR_NONE;
 }
 
-lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setString(char* column, lb_I_String* instance) {
+lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setString(const char* column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Unknown, ukdata)
 	UAP(lb_I_KeyBase, key)
@@ -1722,7 +1722,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 	printf("%19s\n", s->charrep());
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(const char* SQL) {
 	_LOG << "lbDatabaseLayerQuery::executeDirect() called." LOG_
 	if (currentdbLayer != NULL) {
 		try {
@@ -1742,7 +1742,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 	return ERR_DB_INIT;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, char* dbname, bool ro) {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, const char* dbname, bool ro) {
 	_CL_VERBOSE << "lbDatabaseLayerQuery::init(...) called." LOG_
 	currentdbLayer = dbLayer;
 	if (dbName) free(dbName);
@@ -1774,7 +1774,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::bind() {
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\setWhereClause\40\const char\42\ query\44\ char\42\ where\41\:0:*/
 /// \todo Add support for joined tables.
-char* LB_STDCALL lbDatabaseLayerQuery::setWhereClause(const char* query, char* where) {
+char* LB_STDCALL lbDatabaseLayerQuery::setWhereClause(const char* query, const char* where) {
 	char* temp = NULL;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
 
@@ -1806,7 +1806,7 @@ char* LB_STDCALL lbDatabaseLayerQuery::setWhereClause(const char* query, char* w
 }
 /*...e*/
 /// \todo Implement adding where clauses to exsisting.
-char* LB_STDCALL lbDatabaseLayerQuery::addWhereClause(const char* query, char* where) {
+char* LB_STDCALL lbDatabaseLayerQuery::addWhereClause(const char* query, const char* where) {
 	return strdup("ERROR: Not implemented.");
 }
 
@@ -1818,7 +1818,7 @@ lb_I_Query::lbDBCaseSensity    LB_STDCALL lbDatabaseLayerQuery::getCaseSensity()
 	return lb_I_Query::lbDBCaseSensibility;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 	lbErrCodes err = ERR_NONE;
 	if (bind) {
 		_CL_VERBOSE << "lbDatabaseLayerQuery::query('" << q << "', true) called." LOG_
@@ -2495,12 +2495,12 @@ int LB_STDCALL lbDatabaseLayerQuery::getColumns() {
 	return count;
 }
 
-bool LB_STDCALL lbDatabaseLayerQuery::hasColumnName(char* name) {
+bool LB_STDCALL lbDatabaseLayerQuery::hasColumnName(const char* name) {
 	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true;
 	return false;
 }
 
-int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(char* FKName) {
+int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(const char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
 	if ((FKName != NULL) && (strlen(FKName) > 0)) {
@@ -2573,7 +2573,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(int pos) {
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getFKColumn\40\char\42\ table\44\ char\42\ primary\41\:0:*/
-lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* primary) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(const char* table, const char* primary) {
 	lbErrCodes err = ERR_NONE;
 
 	_CL_VERBOSE << "lbDatabaseLayerQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
@@ -2620,7 +2620,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(char* table, char* pri
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKTable\40\char const \42\ FKName\41\:0:*/
-lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(const char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
 
@@ -2656,7 +2656,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
-lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(const char* FKName) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, FK)
@@ -2819,7 +2819,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(int pos) {
 }
 /*...e*/
 
-bool LB_STDCALL lbDatabaseLayerQuery::hasDefaultValue(char* columnname) {
+bool LB_STDCALL lbDatabaseLayerQuery::hasDefaultValue(const char* columnname) {
 	_LOG << "lbQuery::hasDefaultValue(char* columnname) not implemented." LOG_
 	return false; // Not implemented
 }
@@ -2837,7 +2837,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::isNullable(int pos) {
 	return currentdbLayer->GetColumnNullable(tableName->charrep(), columnName->charrep());
 }
 
-bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(char const * name) {
+bool	LB_STDCALL lbDatabaseLayerQuery::isNullable(const char* name) {
 	if (currentdbLayer == NULL) {
 		_CL_VERBOSE << "Error: No connection opened." LOG_
 		return 0;
@@ -2861,7 +2861,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::isNull(int pos) {
 	return isNull(columnName->charrep());
 }
 
-bool	LB_STDCALL lbDatabaseLayerQuery::isNull(char const * name) {
+bool	LB_STDCALL lbDatabaseLayerQuery::isNull(const char* name) {
 	if (nullColumns.Index(wxString(name)) != wxNOT_FOUND) {
 		if (nullValues[nullColumns.Index(wxString(name))] == "true") return true;
 		else return false;
@@ -2881,7 +2881,7 @@ bool	LB_STDCALL lbDatabaseLayerQuery::setNull(int pos, bool b) {
 	return setNull(columnName->charrep(), b);
 }
 
-bool	LB_STDCALL lbDatabaseLayerQuery::setNull(char const * name, bool b) {
+bool	LB_STDCALL lbDatabaseLayerQuery::setNull(const char* name, bool b) {
 	wxString nullFlag = "false";
 	if (b) nullFlag = "true";
 
@@ -2937,7 +2937,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 }
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
-lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char* name) {
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleManager(), lb_I_String, Name)
 
@@ -2970,7 +2970,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(char*
 }
 /*...e*/
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\setReadonly\40\char\42\ column\44\ bool updateable\41\:0:*/
-void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable) {
+void LB_STDCALL lbDatabaseLayerQuery::setReadonly(const char* column, bool updateable) {
 	lbErrCodes err = ERR_NONE;
 
 	if (updateable == true)
@@ -3006,14 +3006,14 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 }
 /*...e*/
 /*...sbool LB_STDCALL lbDatabaseLayerQuery\58\\58\getReadonly\40\char\42\ column\41\:0:*/
-bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
+bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(const char* column) {
 	//return boundColumns->getReadonly(column);
 	// \todo Implement.
 	return false;
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnName) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -4174,7 +4174,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	return ERR_NONE;
 }
 
-void LB_STDCALL lbDatabaseLayerQuery::dbError(char* lp, HSTMT hstmt)
+void LB_STDCALL lbDatabaseLayerQuery::dbError(const char* lp, HSTMT hstmt)
 {
 ///\todo Implement
 }
@@ -4360,9 +4360,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 		case SQL_TINYINT:
 #endif
 			if (asParameter == 1) {
-				char* b = (char*) malloc(strlen((char const *) buffer)+3);
+				char* b = (char*) malloc(strlen((const char*) buffer)+3);
 				b[0] = 0;
-				sprintf(b, "'%s'", buffer);
+				sprintf(b, "'%s'", (char*) buffer);
 				result->setData(b);
 				free(b);
 			} else {
@@ -4386,10 +4386,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 #endif
 #endif
 #ifdef LINUX
-			sprintf(charrep, "%I64d", *(long long*) buffer);
+			sprintf(charrep, "%lld", *(long long*) buffer);
 #endif
 #ifdef OSX
-			sprintf(charrep, "%I64d", *(long long*) buffer);
+			sprintf(charrep, "%lld", *(long long*) buffer);
 #endif
 			//sprintf(charrep, "%Ld", *(long long*) buffer);
 			result->setData(charrep);
@@ -4398,7 +4398,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 		case SQL_INTEGER:
 		{
 			char charrep[100] = "";
-			sprintf(charrep, "%d", *(long*) buffer);
+			sprintf(charrep, "%ld", *(long*) buffer);
 			result->setData(charrep);
 		}
 			break;
@@ -4965,12 +4965,12 @@ void	LB_STDCALL lbDatabaseLayerDatabase::close() {
 	connected = false;
 }
 
-DatabaseLayer* LB_STDCALL lbDatabaseLayerDatabase::getBackend(char* connectionname) {
+DatabaseLayer* LB_STDCALL lbDatabaseLayerDatabase::getBackend(const char* connectionname) {
 	open(connectionname);
 	return dbl;
 }
 
-void	LB_STDCALL lbDatabaseLayerDatabase::open(char* connectionname) {
+void	LB_STDCALL lbDatabaseLayerDatabase::open(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	if (connectionname == NULL) {
 		_LOG << "lbDatabaseLayerDatabase::getQuery() Error: Did not got a connection name." LOG_
@@ -5042,7 +5042,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setUser(char* _user) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setUser(const char* _user) {
 	if (user != NULL) free(user);
 	user = (char*) malloc(strlen(_user)+1);
 	user[0] = 0;
@@ -5051,7 +5051,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setUser(char* _user) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setDB(char* _db) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setDB(const char* _db) {
 	if (db != NULL) free(db);
 	db = (char*) malloc(strlen(_db)+1);
 	db[0] = 0;
@@ -5060,7 +5060,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::setDB(char* _db) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(char* connectionname, char* pass) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(const char* connectionname, const char* pass) {
 	_CL_VERBOSE << "lbDatabaseLayerDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
 	return connect(connectionname, db, user, pass);
 }
@@ -5070,13 +5070,13 @@ bool LB_STDCALL lbDatabaseLayerDatabase::isConnected() {
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseLayerDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
+lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(const char* connectionname, const char* DSN, const char* user, const char* passwd) {
 	_LOG << "lbDatabaseLayerDatabase::connect('" << connectionname << "') called." LOG_
 	connected = true;
     return ERR_NONE;
 }
 /*...e*/
-lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, int readonly) {
+lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(const char* connectionname, int readonly) {
 	lbErrCodes err = ERR_NONE;
 	lbDatabaseLayerQuery* query = new lbDatabaseLayerQuery;
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
@@ -5097,7 +5097,7 @@ lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(char* connectionname, i
 }
 /*...e*/
 
-lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
 ///\todo Implement.
@@ -5157,7 +5157,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getTables(char* connectionna
 	return container.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columnsPageContainer)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
@@ -5385,7 +5385,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(char* connectionn
 	return columnsPageContainer.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
@@ -5474,7 +5474,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(char* connect
 	return columns.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(char* connectionname) {
+lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)

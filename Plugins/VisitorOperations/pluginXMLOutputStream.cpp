@@ -201,7 +201,7 @@ public:
 	 * This initializes an input file stream with a given name.
 	 * For each object, you will save, call their accept() member function.
 	 */
-	bool LB_STDCALL begin(char* file);
+	bool LB_STDCALL begin(const char* file);
 
 	bool LB_STDCALL begin(lb_I_Stream* stream);
 
@@ -248,7 +248,7 @@ lbXMLOutputStream::~lbXMLOutputStream() {
 }
 /*...e*/
 
-bool LB_STDCALL lbXMLOutputStream::begin(char* file) {
+bool LB_STDCALL lbXMLOutputStream::begin(const char* file) {
 	if (oStream == NULL) { 
 		REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
 		

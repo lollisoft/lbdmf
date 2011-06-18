@@ -290,8 +290,8 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         
         database->init();
         
-        char* lbDMFPasswd = getenv("lbDMFPasswd");
-        char* lbDMFUser   = getenv("lbDMFUser");
+        const char* lbDMFPasswd = getenv("lbDMFPasswd");
+        const char* lbDMFUser   = getenv("lbDMFUser");
         
         if (!lbDMFUser) lbDMFUser = "dba";
         if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -316,7 +316,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         
         UAP(lb_I_Query, query)
                 
-        char* buf;
+        const char* buf;
         if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
                 buf = "--Skip Rewrite\ninsert into \"foreignkey_visibledata_mapping\" (\"fkname\", \"fktable\", \"pkname\", \"pktable\") values('%s','%s', '%s', '%s')";
         } else {
@@ -433,7 +433,7 @@ lb_I_Unknown* LB_STDCALL lbConfigure_FK_PK_MappingDialog::getUnknown() {
 
 
 /*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Query\42\ query\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass) {
+void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, const char* DBName, const char* DBUser, const char* DBPass) {
         lbErrCodes err = ERR_NONE;
         char prefix[100] = "";
         sprintf(prefix, "%p", this);

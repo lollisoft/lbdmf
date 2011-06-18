@@ -94,7 +94,7 @@ extern "C" {
 
 #include <lbDatabaseForm.h>
 
-void FormularActions::addRegisteredAction(long ActionID, char* eventName) {
+void FormularActions::addRegisteredAction(long ActionID, const char* eventName) {
 	lbErrCodes err = ERR_NONE;
 	if (eventmapping == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, eventmapping)
@@ -156,7 +156,7 @@ lb_I_Action* FormularActions::getAction(long id) {
 }
 /*...e*/
 
-long FormularActions::getActionTargetIDLong(char* reversed_event) {
+long FormularActions::getActionTargetIDLong(const char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
 	if (eventmapping != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, eventname)
@@ -178,7 +178,7 @@ long FormularActions::getActionTargetIDLong(char* reversed_event) {
 }
 
 /*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
-char* FormularActions::getActionTargetID(char* reversed_event) {
+char* FormularActions::getActionTargetID(const char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
@@ -214,7 +214,7 @@ char* FormularActions::getActionTargetID(char* reversed_event) {
 
 	if (database == NULL) {
 		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return "-1";
+		return strdup("-1");
 	}
 	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 	
@@ -223,8 +223,8 @@ char* FormularActions::getActionTargetID(char* reversed_event) {
 
 	database->init();
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -263,7 +263,7 @@ char* FormularActions::getActionTargetID(char* reversed_event) {
 }
 /*...e*/
 /*...schar\42\ FormularActions\58\\58\getActionSourceDataField\40\char\42\ what\41\:0:*/
-char* FormularActions::getActionSourceDataField(char* reversed_event) {
+char* FormularActions::getActionSourceDataField(const char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
@@ -317,13 +317,13 @@ char* FormularActions::getActionSourceDataField(char* reversed_event) {
 
 	if (database == NULL) {
 		_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
-		return "Error";
+		return strdup("Error");
 	}
 
 	database->init();
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -359,7 +359,7 @@ char* FormularActions::getActionSourceDataField(char* reversed_event) {
 }
 /*...e*/
 /*...schar\42\ FormularActions\58\\58\getActionID\40\char\42\ what\41\:0:*/
-long FormularActions::getActionID(char* what) {
+long FormularActions::getActionID(const char* what) {
 	lbErrCodes err = ERR_NONE;
 	
 	// Get it from the foreign key in formular_actions

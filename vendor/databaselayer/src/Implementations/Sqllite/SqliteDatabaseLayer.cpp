@@ -153,19 +153,19 @@ bool SqliteDatabaseLayer::IsOpen()
 
 void SqliteDatabaseLayer::BeginTransaction()
 {
-  wxLogDebug(_("Beginning transaction"));
+  //wxLogDebug(_("Beginning transaction"));
   RunQuery(_("begin transaction;"), false);
 }
 
 void SqliteDatabaseLayer::Commit()
 {
-  wxLogDebug(_("Commiting transaction"));
+  //wxLogDebug(_("Commiting transaction"));
   RunQuery(_("commit transaction;"), false);
 }
 
 void SqliteDatabaseLayer::RollBack()
 {
-  wxLogDebug(_("Rolling back transaction"));
+  //wxLogDebug(_("Rolling back transaction"));
   RunQuery(_("rollback transaction;"), false);
 }
 

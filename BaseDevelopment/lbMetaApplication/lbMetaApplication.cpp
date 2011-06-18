@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.182 $
+ * $Revision: 1.183 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.182 2011/04/03 19:31:42 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.183 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.183  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.182  2011/04/03 19:31:42  lollisoft
  * Minor changes in console mode.
  *
@@ -1260,7 +1263,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getApplicationName(lb_I_String** app) 
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setUserName\40\char\42\ user\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
+lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(const char* user) {
 	if (!_loading_object_data)
 		if (!_logged_in) {
 			_LOG << "Error: Not logged in. Function call not allowed." LOG_
@@ -1281,7 +1284,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setApplicationName\40\char\42\ app\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(char* app) {
+lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(const char* app) {
 	if ((app == NULL) || strcmp(app, "") == 0) return ERR_NONE;
 
 	if (LogonApplication == NULL) {
@@ -1300,7 +1303,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 /// \todo Implement autologon settings for last user.
-lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) {
+lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const char* appName) {
 	lbErrCodes err = ERR_NONE;
 /*...sdoc:8:*/
 	/**
@@ -1416,7 +1419,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	addMenuBar(_trans("&Help"));
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
-		char* temp = _trans("&Login\tCtrl-L");
+		const char* temp = _trans("&Login\tCtrl-L");
 		char* login = (char*) malloc(strlen(temp)+1);
 		login[0] = 0;
 		strcpy(login, temp);
@@ -1425,7 +1428,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		free(login);
 	}
 
-	char* temp = _trans("MainModule&Info\tCtrl-I");
+	const char* temp = _trans("MainModule&Info\tCtrl-I");
 
 	char* mm = (char*) malloc(strlen(temp)+1);
 	mm[0] = 0;
@@ -1573,7 +1576,7 @@ void       LB_STDCALL lb_MetaApplication::setAutoload(bool b) {
 	_autoload = b;
 }
 
-void       LB_STDCALL lb_MetaApplication::setDirLocation(char* dirloc) {
+void       LB_STDCALL lb_MetaApplication::setDirLocation(const char* dirloc) {
 	if (_dirloc != NULL) free(_dirloc);
 	_dirloc = strdup(dirloc);
 }
@@ -1617,7 +1620,7 @@ char*		LB_STDCALL lb_MetaApplication::getSystemDatabaseBackend() {
 	Backend->trim(); // Always trim spaces.
 	setSystemDatabaseBackend(Backend->charrep());
 	if (_use_system_database_backend) return _system_database_backend;
-	return "";
+	return (char*) "";
 }
 
 char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
@@ -1627,10 +1630,10 @@ char*		LB_STDCALL lb_MetaApplication::getApplicationDatabaseBackend() {
 	setApplicationDatabaseBackend(Backend->charrep());
 
 	if (_use_application_database_backend) return _application_database_backend;
-	return "";
+	return (char*) "";
 }
 
-void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
+void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(const char* backend) {
 	if (_system_database_backend) free(_system_database_backend);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
 	*Backend = backend;
@@ -1638,7 +1641,7 @@ void		LB_STDCALL lb_MetaApplication::setSystemDatabaseBackend(char* backend) {
 	_system_database_backend = strdup(Backend->charrep());
 }
 
-void		LB_STDCALL lb_MetaApplication::setApplicationDatabaseBackend(char* backend) {
+void		LB_STDCALL lb_MetaApplication::setApplicationDatabaseBackend(const char* backend) {
 	if (_application_database_backend) free(_application_database_backend);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Backend)
 	*Backend = backend;
@@ -1867,7 +1870,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 }
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
+lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, const char* application) {
 	lbErrCodes err = ERR_NONE;
 
 	if (user == NULL) {
@@ -1890,8 +1893,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 	char* applicationName = getenv("TARGET_APPLICATION");
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -2173,7 +2176,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 /*...sBasic functions to be used for a UI application:0:*/
 
-lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
+lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(const char* toolbarName)	{
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2197,7 +2200,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
 }
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addToolBar\40\char\42\ toolbarName\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(const char* toolbarName)	{
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2221,12 +2224,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(const char* toolbarName, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry) {
 	return addToolBarTool(toolbarName, "Button", entry, evHandler, toolbarimage, afterentry);
 }
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addToolBarTool\40\char\42\ toolbarName\44\ char\42\ tooltype\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ toolbarimage\44\ char\42\ afterentry\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(const char* toolbarName, const char* tooltype, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2272,7 +2275,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\removeToolBarButton\40\char\42\ toolbarName\44\ char\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName, char* entry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(const char* toolbarName, const char* entry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2300,7 +2303,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName,
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\toggleToolBarButton\40\char\42\ toolbarName\44\ char\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName, char* entry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(const char* toolbarName, const char* entry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2329,7 +2332,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName,
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(const char* name, const char* after) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2361,12 +2364,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenu\40\char\42\ name\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(const char* name) {
 	return ERR_NONE;
 }
 /*...e*/
 /*...slb_MetaApplication\58\\58\addTextField\40\char\42\ name\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(const char* name, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2407,7 +2410,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
 }
 /*...e*/
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\askYesNo\40\char\42\ msg\41\:0:*/
-bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
+bool LB_STDCALL lb_MetaApplication::askYesNo(const char* msg) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2463,7 +2466,7 @@ void LB_STDCALL lb_MetaApplication::addStatusBar() {
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\addStatusBar_TextArea\40\char\42\ name\41\:0:*/
-void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
+void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(const char* name) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2485,7 +2488,7 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
-void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value, bool call_yield) {
+void LB_STDCALL lb_MetaApplication::setStatusText(const char* name, const char* value, bool call_yield) {
 	lbErrCodes err = ERR_NONE;
 
 	if (!isStatusbarActive) return;
@@ -2516,7 +2519,7 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value,
 /*...e*/
 
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\msgBox\40\char\42\ title\44\ char\42\ msg\41\:0:*/
-void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
+void LB_STDCALL lb_MetaApplication::msgBox(const char* title, const char* msg) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2543,7 +2546,7 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 /*...e*/
 
 /*...slb_I_InputStream\42\ LB_STDCALL lb_MetaApplication\58\\58\askOpenFileReadStream\40\char\42\ extensions\41\:0:*/
-lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extensions) {
+lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(const char* extensions) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2583,7 +2586,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 
 
 /*...slb_MetaApplication\58\\58\addLabel\40\char\42\ text\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int w, int h) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(const char* text, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2626,7 +2629,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 /*...e*/
 
 /*...slb_MetaApplication\58\\58\addButton\40\char\42\ buttonText\44\ char\42\ evHandler\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2673,7 +2676,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\enableEvent\40\char\42\ name\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
+lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(const char* name) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2698,7 +2701,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\disableEvent\40\char\42\ name\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
+lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(const char* name) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2723,7 +2726,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\toggleEvent\40\char\42\ name\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
+lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(const char* name) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -2748,14 +2751,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 }
 /*...e*/
 
-void LB_STDCALL lb_MetaApplication::fireEvent(char* name) {
+void LB_STDCALL lb_MetaApplication::fireEvent(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	int eventID = -1;
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 
-	eman->resolveEvent((char*) name, eventID);
+	eman->resolveEvent((const char*) name, eventID);
 	dispatcher->setEventManager(eman.getPtr());
 
 	param->setData(eventID);
@@ -2770,7 +2773,7 @@ void LB_STDCALL lb_MetaApplication::fireEvent(char* name) {
 	dispatcher->dispatch(eventID, uk.getPtr(), &uk_result);
 }
 
-void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* value) {
+void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(const char* name, const char* value) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
@@ -2783,18 +2786,18 @@ void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* va
 		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	}
 
-	eman->resolveEvent((char*) name, PropertyEvent);
+	eman->resolveEvent((const char*) name, PropertyEvent);
 
 	Name->setData("eventId");
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&Name, *&evId);
 
 	Name->setData("value");
-	Value->setData((char*) value);
+	Value->setData((const char*) value);
 	param->setUAPString(*&Name, *&Value);
 
 	Name->setData("name");
-	Value->setData((char*) name);
+	Value->setData((const char*) name);
 	param->setUAPString(*&Name, *&Value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2812,7 +2815,7 @@ void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* va
 	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 }
 
-void LB_STDCALL lb_MetaApplication::updatePropertyGroup(lb_I_Container* properties, char* prefix) {
+void LB_STDCALL lb_MetaApplication::updatePropertyGroup(lb_I_Container* properties, const char* prefix) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fl)
 	UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dl)
@@ -2902,7 +2905,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\registerPropertyChangeEventGroup\40\\46\\46\\46\\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
+lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(const char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP(lb_I_Container, properties)
@@ -2930,7 +2933,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char*
 
 
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -2970,7 +2973,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuEntryCheckable\40\\46\\46\\46\\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -3116,8 +3119,8 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		UAP(lb_I_Query, sampleQuery)
 		database->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -3299,7 +3302,7 @@ lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
 	return Applications.getPtr();
 }
 
-void LB_STDCALL lb_MetaApplication::delPropertySet(char* setname) {
+void LB_STDCALL lb_MetaApplication::delPropertySet(const char* setname) {
 	if (propertySets != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, set)
 		*set = setname;
@@ -3307,7 +3310,7 @@ void LB_STDCALL lb_MetaApplication::delPropertySet(char* setname) {
 	}
 }
 
-void LB_STDCALL lb_MetaApplication::addPropertySet(lb_I_Parameter* properties, char* setname) {
+void LB_STDCALL lb_MetaApplication::addPropertySet(lb_I_Parameter* properties, const char* setname) {
 	if (propertySets == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
 	}
@@ -3318,7 +3321,7 @@ void LB_STDCALL lb_MetaApplication::addPropertySet(lb_I_Parameter* properties, c
 	propertySets->setUAPParameter(*&set, properties);
 }
 
-lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, bool copy) {
+lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(const char* setname, bool copy) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, set)
 		*set = setname;
@@ -3396,8 +3399,8 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 
 		database->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -3516,7 +3519,7 @@ lbErrCodes LB_STDCALL lb_EventMapper::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lb_EventMapper::setEvent(char* name, lbEvHandler handler) {
+lbErrCodes LB_STDCALL lb_EventMapper::setEvent(const char* name, lbEvHandler handler) {
 	_name = strdup(name);
 	return ERR_NONE;
 }
@@ -3557,7 +3560,7 @@ lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 }
 
 /*...slb_EventManager\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
-lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
+lbErrCodes LB_STDCALL lb_EventManager::registerEvent(const char* EvName, int & EvNr) {
 	lbErrCodes err = ERR_NONE;
 	int newId = maxEvId + 1;
 
@@ -3638,7 +3641,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
+lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(const char* EvName, int & evNr) {
 	lbErrCodes err = ERR_NONE;
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
@@ -3695,7 +3698,7 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 		return result;
 	} else {
 		_CL_LOG << "Error: Event id not registered: " << evNr LOG_
-		return "";
+		return (char*) "";
 	}
 }
 /*...e*/
@@ -3732,20 +3735,20 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManage
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ char\42\ EvName\41\:0:*/
-lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) {
+lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName) {
 	/*
 	 * Create an instance of a function pointer object
 	 */
 
 	int id = 0;
-	_CL_LOG << "lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) called with " << EvName LOG_
+	_CL_LOG << "lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName) called with " << EvName LOG_
 	evManager->resolveEvent(EvName, id);
 	addEventHandlerFn(evHandlerInstance, evHandler, id);
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\delEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ char\42\ EvName\41\:0:*/
-lbErrCodes LB_STDCALL lb_Dispatcher::delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) {
+lbErrCodes LB_STDCALL lb_Dispatcher::delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, const char* EvName) {
 	/*
 	 * Create an instance of a function pointer object
 	 */
@@ -3906,7 +3909,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\char\42\ EvName\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
-lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
+lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(const char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
@@ -3948,7 +3951,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::activateInterceptor(lb_I_String* EvName, lb
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, char* EvName) {
+lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After, const char* EvName) {
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
 	bool foundRegistered = false;
@@ -3981,7 +3984,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(char* EvName) {
+lbErrCodes LB_STDCALL lb_Dispatcher::delInterceptor(const char* EvName) {
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
 

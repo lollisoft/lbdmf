@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.80 $
+ * $Revision: 1.81 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.80 2011/05/07 10:36:24 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.81 2011/06/18 17:29:55 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.81  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.80  2011/05/07 10:36:24  lollisoft
  * Some bugfixes regarding plugin initialization.
  * Completely implemented an UML based code generation workflow using UML Activit’es.
@@ -432,11 +435,11 @@ public:
 	bool LB_STDCALL beginEnumPlugins();
 	bool LB_STDCALL beginEnumServerPlugins();
 
-	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace, char* _version);
+	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(const char* match, const char* _namespace, const char* _version);
     lb_I_Plugin* LB_STDCALL nextPlugin();
 
 	lb_I_ApplicationServerModul* LB_STDCALL nextServerPluginModul();
-	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace);
+	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(const char* match, const char* _namespace);
     lb_I_Plugin* LB_STDCALL nextServerPlugin();
 
 	bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
@@ -449,10 +452,10 @@ public:
 private:
 
 
-	bool LB_STDCALL tryLoad(char* module, char* path);
-	bool LB_STDCALL tryLoadServerModule(char* module, char* path);
+	bool LB_STDCALL tryLoad(const char* module, const char* path);
+	bool LB_STDCALL tryLoadServerModule(const char* module, const char* path);
 
-	bool LB_STDCALL tryLoadUnitTestModule(char* module, char* path);
+	bool LB_STDCALL tryLoadUnitTestModule(const char* module, const char* path);
 	lbErrCodes LB_STDCALL runUnitTests(lb_I_Unknown* uk);
 	bool LB_STDCALL beginEnumUnitTestPlugins();
     lb_I_Plugin* LB_STDCALL nextUnitTestPlugin();
@@ -614,7 +617,7 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
 }
 
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoad\40\char\42\ module\41\:0:*/
-bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
+bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 	lbErrCodes err = ERR_NONE;
 
 	if (strcmp(".", module) == 0) return false;
@@ -729,7 +732,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 }
 /*...e*/
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoadServerModule\40\char\42\ module\41\:0:*/
-bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
+bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const char* path) {
 	lbErrCodes err = ERR_NONE;
 
 	if (strcmp(".", module) == 0) return false;
@@ -847,7 +850,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(char* module, char* path) {
 /*...e*/
 
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoadUnitTestModule\40\char\42\ module\41\:0:*/
-bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(char* module, char* path) {
+bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const char* path) {
 	lbErrCodes err = ERR_NONE;
 
 	if (strcmp(".", module) == 0) return false;
@@ -1005,7 +1008,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 	char* mask = "*.dll";
 #endif
 #ifdef LINUX
-	char* mask = "*.so";
+	const char* mask = "*.so";
 #endif
 #ifndef LINUX
 #ifdef OSX
@@ -1067,7 +1070,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 
     	free(pluginDir);
 
-		char* pwd = getenv("PWD");
+		const char* pwd = getenv("PWD");
 		if (pwd == NULL) pwd = ".";
 
 		pluginDir = (char*) malloc(strlen(pwd)+strlen("/plugins")+1);
@@ -1079,7 +1082,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if ((dir = opendir(pluginDir)) == NULL) {
 
 			/// \todo Change to a better plugin directory.
-			char* pl = "/usr";
+			const char* pl = "/usr";
 			free(pluginDir);
 			pluginDir = (char*) malloc(strlen(pl)+strlen("/plugins")+1);
 			pluginDir[0] = 0;
@@ -1091,7 +1094,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 			    free(pluginDir);
 
-				char* pwd = getenv("PWD");
+				const char* pwd = getenv("PWD");
 				if (pwd == NULL) pwd = ".";
 ///\todo Rework this.
 				pluginDir = (char*) malloc(strlen(pwd)+strlen("/wxWrapper.app/Contents/Resources")+strlen("/plugins")+1);
@@ -1409,7 +1412,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 /*...e*/
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
-lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace, char* _version) {
+lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* match, const char* _namespace, const char* _version) {
 	if (beginEnumPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
@@ -1603,7 +1606,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextServerPlugin() {
 
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingServerPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
-lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingServerPlugin(char* match, char* _namespace) {
+lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingServerPlugin(const char* match, const char* _namespace) {
 	if (beginEnumServerPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
@@ -1781,7 +1784,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
         DECLARE_LB_UNKNOWN()
 		
 		lb_I_Unknown* 		LB_STDCALL getImplementation();
-		bool 			LB_STDCALL hasInterface(char* name);
+		bool 			LB_STDCALL hasInterface(const char* name);
 		
 		void 			LB_STDCALL preinitialize();
 		
@@ -1795,10 +1798,10 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 		void 			LB_STDCALL setAttached(lb_I_PluginImpl* impl);
 		lb_I_PluginImpl*	LB_STDCALL getAttached();
 		
-		void LB_STDCALL setModule(char* module);
-		void LB_STDCALL setName(char* name);
-		void LB_STDCALL setVersion(char* version);
-		void LB_STDCALL setNamespace(char* __namespace);
+		void LB_STDCALL setModule(const char* module);
+		void LB_STDCALL setName(const char* name);
+		void LB_STDCALL setVersion(const char* version);
+		void LB_STDCALL setNamespace(const char* __namespace);
 		char* LB_STDCALL getModule() { return _module; }
 		char* LB_STDCALL getName() { return _name; }
 		char* LB_STDCALL getVersion() { return _version; }
@@ -1917,7 +1920,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 		}
 	}
 	/*...svoid LB_STDCALL lbPlugin\58\\58\setModule\40\char\42\ module\41\:0:*/
-	void LB_STDCALL lbPlugin::setModule(char* module) {
+	void LB_STDCALL lbPlugin::setModule(const char* module) {
 		if (_module) free(_module);
 		_module = NULL;
 		if (module) {
@@ -1928,7 +1931,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	}
 	/*...e*/
 	/*...svoid LB_STDCALL lbPlugin\58\\58\setName\40\char\42\ name\41\:0:*/
-	void LB_STDCALL lbPlugin::setName(char* name) {
+	void LB_STDCALL lbPlugin::setName(const char* name) {
 		if (_name) free(_name);
 		_name = NULL;
 		if (name) {
@@ -1939,7 +1942,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	}
 	/*...e*/
 	/*...svoid LB_STDCALL lbPlugin\58\\58\setVersion\40\char\42\ version\41\:0:*/
-	void LB_STDCALL lbPlugin::setVersion(char* version) {
+	void LB_STDCALL lbPlugin::setVersion(const char* version) {
 		if (_version) free(_version);
 		_version = NULL;
 		if (version) {
@@ -1950,7 +1953,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	}
 	/*...e*/
 	/*...svoid LB_STDCALL lbPlugin\58\\58\setNamespace\40\char\42\ __namespace\41\:0:*/
-	void LB_STDCALL lbPlugin::setNamespace(char* __namespace) {
+	void LB_STDCALL lbPlugin::setNamespace(const char* __namespace) {
 		if (_namespace) free(_namespace);
 		_namespace = NULL;
 		if (__namespace) {
@@ -2132,7 +2135,7 @@ bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	}
 	/*...e*/
 	/*...sbool LB_STDCALL lbPlugin\58\\58\hasInterface\40\char\42\ name\41\:0:*/
-	bool LB_STDCALL lbPlugin::hasInterface(char* name) {
+	bool LB_STDCALL lbPlugin::hasInterface(const char* name) {
 		lbErrCodes err = ERR_NONE;
 		lb_I_Unknown* temp;
 		

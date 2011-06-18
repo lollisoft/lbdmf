@@ -173,7 +173,7 @@ public:
          *
          * \param file  Provide a filename to internally create a file based stream.
          */
-        virtual bool LB_STDCALL begin(char* file) = 0;
+        virtual bool LB_STDCALL begin(const char* file) = 0;
         
         /** \brief Start the operation.
          *

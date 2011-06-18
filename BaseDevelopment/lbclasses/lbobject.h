@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbobject.h,v 1.54 2011/04/21 11:49:26 lollisoft Exp $
+ * $Id: lbobject.h,v 1.55 2011/06/18 17:29:55 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.55  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.54  2011/04/21 11:49:26  lollisoft
  * Many changes regarding UML activity stuff. But the placeholder replacement code is not yet stable and causes a out of memory error due to recursive placeholder replacements.
  *
@@ -330,9 +333,9 @@ class lbLocale : public lb_I_Locale
 {
 public:
 
-        void LB_STDCALL setLanguage(char const * lang);
+        void LB_STDCALL setLanguage(const char* lang);
 
-		void LB_STDCALL translate(char ** text, char const * to_translate);
+		void LB_STDCALL translate(char ** text, const char* to_translate);
 		void LB_STDCALL setTranslationData(lb_I_Unknown* uk);
 
         UAP(lb_I_Translations, translations)
@@ -428,7 +431,7 @@ public:
 	char* LB_STDCALL stristr(const char *String, const char *Pattern);
 	char* LB_STDCALL strristr(const char *String, const char *Pattern);
 
-	void LB_STDCALL setData(char const * p);
+	void LB_STDCALL setData(const char* p);
 	char* LB_STDCALL getData() const;
 
 // Interface definition (the order) must be equal to the deriving implementations declataion.
@@ -492,7 +495,7 @@ public:
 	
 	DECLARE_LB_KEYBASE()
 	
-	virtual void LB_STDCALL setData(char* path);
+	virtual void LB_STDCALL setData(const char* path);
 	virtual char* LB_STDCALL getData() const;
 	
 private:
@@ -512,7 +515,7 @@ public:
 	
 	DECLARE_LB_KEYBASE()
 	
-	virtual void LB_STDCALL setData(char* path);
+	virtual void LB_STDCALL setData(const char* path);
 	virtual char* LB_STDCALL getData() const;
 	
 private:

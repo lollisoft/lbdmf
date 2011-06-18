@@ -108,7 +108,7 @@ public:
 
 /*...slb_I_InputStream:0:*/
 
-	void LB_STDCALL setFileName(char* name);
+	void LB_STDCALL setFileName(const char* name);
 	const char* LB_STDCALL getFileName();
 	bool LB_STDCALL open();
 	bool LB_STDCALL close();
@@ -187,7 +187,7 @@ lbInputStream::lbInputStream() {
         lastsize = 0;
 }
 /*...e*/
-void LB_STDCALL lbInputStream::setFileName(char* name) {
+void LB_STDCALL lbInputStream::setFileName(const char* name) {
 	f[0] = 0;
 	strncpy(f, name, PATH_MAX-1);
 	if (!FileExists(f)) {

@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: misc.cpp,v 1.52 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: misc.cpp,v 1.53 2011/06/18 17:29:55 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.53  2011/06/18 17:29:55  lollisoft
+ * Changed all char* to const char* where a corresponding warning was generated.
+ *
  * Revision 1.52  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -300,21 +303,21 @@ extern "C" {
 /// \brief Logging implementation. \todo Separate file to a base class.
 class lbLog : public lb_I_Log {
 public:
-    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level);
+    virtual void LB_STDCALL logdirect(const char *msg, const char *f, int level);
 
 /*...slb_I_Log:0:*/
-    virtual void LB_STDCALL log(const char *msg, long line, char* file);
+    virtual void LB_STDCALL log(const char *msg, long line, const char* file);
     virtual void LB_STDCALL log(int log);
-    virtual void LB_STDCALL enable(char *where);
-    virtual void LB_STDCALL disable(char *where);
-    virtual void LB_STDCALL event_begin(char *event);
-    virtual void LB_STDCALL event_end(char *event);
-    virtual void LB_STDCALL setPrefix(char* p);
+    virtual void LB_STDCALL enable(const char *where);
+    virtual void LB_STDCALL disable(const char *where);
+    virtual void LB_STDCALL event_begin(const char *event);
+    virtual void LB_STDCALL event_end(const char *event);
+    virtual void LB_STDCALL setPrefix(const char* p);
     virtual lb_I_Log& LB_STDCALL operator<< (const int i);
     virtual lb_I_Log& LB_STDCALL operator<< (const long i);
     virtual lb_I_Log& LB_STDCALL operator<< (const char c);
     virtual lb_I_Log& LB_STDCALL operator<< (const char* string);
-	virtual void LB_STDCALL setCustomLogFile(char* name);
+	virtual void LB_STDCALL setCustomLogFile(const char* name);
 /*...e*/
 
     DECLARE_LB_UNKNOWN()
@@ -377,36 +380,6 @@ extern "C" {
 #endif            
 
 IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
-
-#ifdef bla
-/*...s:0:*/
-lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { 
-
-	lbErrCodes err = ERR_NONE; 
-        lbLog* instance = new lbLog(); 
-        *uk = NULL; 
-        instance->setFurtherLock(0); 
-        if (m != NULL) { 
-        	instance->setModuleManager(m, __FILE__, __LINE__); 
-        } else { 
-        	_CL_VERBOSE << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
-        } 
-        
-        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { 
-                _CL_VERBOSE << "Failed to create unknown reference to instance of " << 
-                "lbLog" << ". Errcode is " << err LOG_ 
-                if (err == ERR_STATE_FURTHER_LOCK) { 
-                	_CL_VERBOSE << "ERR_STATE_FURTHER_LOCK" LOG_ 
-                	return err; 
-                } 
-                return ERR_FUNCTOR; 
-        } 
-
-        return ERR_NONE; 
-} 
-
-/*...e*/
-#endif
 
 #ifdef __cplusplus
 }
@@ -478,16 +451,16 @@ lbLog::lbLog(int l) {
     }
 /*...e*/
 /*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
-void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
+void LB_STDCALL lbLog::logdirect(const char *msg, const char *f, int level) {
 	logMessage(msg, f, level);
 }
 /*...e*/
-void LB_STDCALL lbLog::setCustomLogFile(char* name) {
+void LB_STDCALL lbLog::setCustomLogFile(const char* name) {
 	f[0] = 0;
 	strcat(f, name);
 }
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
-void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
+void LB_STDCALL lbLog::log(const char *msg, long line, const char* file) {
 //lbLock lbLock(sect, "lbLockSection");
 
 _CL_VERBOSE << "Do log a line..." LOG_
@@ -500,7 +473,7 @@ _CL_VERBOSE << "Do log a line..." LOG_
         if (doLog == TRUE) {
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
-                sprintf(m, "%s: %d - %s", file, line, msg);
+                sprintf(m, "%s: %ld - %s", file, line, msg);
                 logdirect(m, f, level);
                 free((void*) m);
         }
@@ -517,7 +490,7 @@ void LB_STDCALL lbLog::log(int log) {
 }
 /*...e*/
 /*...slbLog\58\\58\setPrefix\40\char\42\ p\41\:0:*/
-void LB_STDCALL lbLog::setPrefix(char* p) {
+void LB_STDCALL lbLog::setPrefix(const char* p) {
 //COUT << "lbLog::setPrefix(char* p) called" << ENDL;
         {
                 //lbLock lbLock(sect, "lbLockSection");
@@ -526,7 +499,7 @@ void LB_STDCALL lbLog::setPrefix(char* p) {
 }
 /*...e*/
 /*...slbLog\58\\58\enable\40\char \42\where\41\:0:*/
-void LB_STDCALL lbLog::enable(char *where) {
+void LB_STDCALL lbLog::enable(const char *where) {
         char buf[100];
         doLog = TRUE;
         
@@ -545,7 +518,7 @@ void LB_STDCALL lbLog::enable(char *where) {
 }
 /*...e*/
 /*...slbLog\58\\58\disable\40\char \42\where\41\:0:*/
-void LB_STDCALL lbLog::disable(char *where) {
+void LB_STDCALL lbLog::disable(const char *where) {
         char buf[100];
         
         if (firstlog == 0) {
@@ -569,7 +542,7 @@ void LB_STDCALL lbLog::disable(char *where) {
 }
 /*...e*/
 /*...slbLog\58\\58\event_begin\40\char \42\event\41\:0:*/
-void LB_STDCALL lbLog::event_begin(char *event) {
+void LB_STDCALL lbLog::event_begin(const char *event) {
         if (firstlog == 0) {
         	lbLog log;// = lbLog();
         }
@@ -582,7 +555,7 @@ void LB_STDCALL lbLog::event_begin(char *event) {
 }
 /*...e*/
 /*...slbLog\58\\58\event_end\40\char \42\event\41\:0:*/
-void LB_STDCALL lbLog::event_end(char *event) {
+void LB_STDCALL lbLog::event_end(const char *event) {
        char buf[100];
        if (firstlog == 0) {
         	lbLog log;// = lbLog();
@@ -600,7 +573,7 @@ void LB_STDCALL lbLog::event_end(char *event) {
                         if( fp != NULL ) {
                                 // rest of code goes here
         
-                                fprintf( fp, "Message %s: Duration\tProcess\t%d\t%u\n",
+                                fprintf( fp, "Message %s: Duration\tProcess\t%ld\t%lu\n",
                                 event, lbGetCurrentProcessId(), end_time - start_time);
                         }
                         fclose( fp );

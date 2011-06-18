@@ -171,11 +171,11 @@ extern "C" DLLEXPORT lbErrCodes 	LB_CDECL _lbLoadModule(const char* name, HINSTA
 extern "C" DLLEXPORT lb_I_Module* 	LB_CDECL _getModuleInstance() { return getModuleInstance(); }
 extern "C" DLLEXPORT void 		LB_CDECL _set_trackObject(char* track) { set_trackObject(track); }
 extern "C" DLLEXPORT char* 		LB_CDECL _get_trackObject() { return get_trackObject(); }
-extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, char* msg) { track_Object( o, msg); }
+extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, const char* msg) { track_Object( o, msg); }
 extern "C" DLLEXPORT void 		LB_CDECL _setVerbose(bool what) { setVerbose(what); }
 extern "C" DLLEXPORT void 		LB_CDECL _setLogActivated(bool what) { setLogActivated(what); }
 extern "C" DLLEXPORT void 		LB_CDECL _lbBreak() { lbBreak(); }
-extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, char *f, int level) { logMessage(msg, f, level); }
+extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, const char *f, int level) { logMessage(msg, f, level); }
 extern "C" DLLEXPORT void 		LB_CDECL _createDirectory(const char* name) { createDirectory(name); }
 extern "C" DLLEXPORT void 		LB_CDECL _deleteDirectory(const char* name) { deleteDirectory(name); }
 extern "C" DLLEXPORT HINSTANCE 		LB_CDECL _getModuleHandle() { return getModuleHandle(); }
@@ -205,7 +205,7 @@ extern "C" DLLEXPORT char* 		LB_CDECL _lb_ltoa(const long ptr) { return lb_ltoa(
 extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentThreadId() { return lbGetCurrentThreadId(); }
 extern "C" DLLEXPORT void		LB_CDECL _lb_sleep(int ms) { lb_sleep(ms); }
 extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name) { return lbUnloadModule(name); }
-extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text) { return translateText(text); }
+extern "C" DLLEXPORT char*		LB_CDECL _translateText(const char* text) { return translateText(text); }
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale() { uninitLocale(); }
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
@@ -251,7 +251,7 @@ extern "C" DLLEXPORT void LB_CDECL createLogInstance() {
 /*...e*/
 
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
-DLLEXPORT void logMessage(const char *msg, char *f, int level) {
+DLLEXPORT void logMessage(const char *msg, const char *f, int level) {
                 FILE *fp;
 				if (!isLogActivated()) return;
 				if (!DirectoryExists(getLogDirectory())) createDirectory(getLogDirectory());
@@ -339,10 +339,10 @@ DLLEXPORT char* LB_CDECL getLogDirectory() {
  * On Mac it will return "Mac".
  * On Linux, Solaris and other Unix flavour systems it will return "Unix".
  */
-extern "C" DLLEXPORT char* LB_CDECL getOsType() {
-	static char* osIsMac = "Mac";
-	static char* osIsWindows = "Windows";
-	static char* osIsUnix = "Unix";
+extern "C" DLLEXPORT const char* LB_CDECL getOsType() {
+	static const char* osIsMac = "Mac";
+	static const char* osIsWindows = "Windows";
+	static const char* osIsUnix = "Unix";
 
 #ifdef __MINGW32__
 	return osIsWindows;
@@ -472,7 +472,7 @@ DLLEXPORT void LB_CDECL set_trackObject(char* track) {
 	printf("Have a tracking address: %s\n", trackObject);
 }
 
-DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, char* msg) {
+DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, const char* msg) {
 }
 
 DLLEXPORT char* LB_CDECL get_trackObject() {
@@ -749,7 +749,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-		char* home = NULL;//(char*) malloc(100);
+		const char* home = NULL;//(char*) malloc(100);
 		char* newname = NULL;
 
 		char* errmsg = dlerror();
@@ -931,7 +931,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbGetFunctionPtr(const char* name, HINSTANCE hinst
 /*...e*/
 /*...sDLLEXPORT lb_I_Module\42\ LB_CDECL getModuleInstance\40\\41\:0:*/
 DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance() {
-typedef lbErrCodes (LB_CDECL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes (LB_CDECL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, const char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Module, module)
@@ -945,8 +945,8 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		#endif
 	}
 
-	char* libname = getenv("MODULELIB");
-	char* functor = getenv("LBMODULEFUNCTOR");
+	const char* libname = getenv("MODULELIB");
+	const char* functor = getenv("LBMODULEFUNCTOR");
 
 	if (libname == NULL) {
 		#ifdef OSX
@@ -986,7 +986,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 	if (LB_Module_Handle == NULL) {
 		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
-			char* buf = "Failed to load module manager (%s)\n";
+			const char* buf = "Failed to load module manager (%s)\n";
 			char* msg = (char*) malloc(strlen(buf)+strlen(libname)+1);
 			sprintf(msg, buf, libname);
 			logMessage(msg);
@@ -1096,7 +1096,7 @@ DLLEXPORT void LB_CDECL uninitLocale() {
 	}
 }
 
-DLLEXPORT char* LB_CDECL translateText(char* text) {
+DLLEXPORT char* LB_CDECL translateText(const char* text) {
 	lbErrCodes err = ERR_NONE;
 
 	if (locale == NULL) {
@@ -1112,17 +1112,32 @@ DLLEXPORT char* LB_CDECL translateText(char* text) {
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 
-		if (database == NULL) return text;
+		if (database == NULL) 
+		{
+			if (translated != NULL)
+			{
+				free(translated);
+				translated = NULL;
+			}
+			if (translated == NULL) translated = (char*) strdup(text);
+			return translated;
+		}
 		database->init();
 
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
-			return text;
+			if (translated != NULL)
+			{
+				free(translated);
+				translated = NULL;
+			}
+			if (translated == NULL) translated = (char*) strdup(text);
+			return translated;
 		}
 
 		bool isFileAvailable = false;

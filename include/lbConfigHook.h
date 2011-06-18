@@ -376,11 +376,11 @@ extern "C" DLLEXPORT lbErrCodes 	LB_CDECL _lbLoadModule(const char* name, HINSTA
 extern "C" DLLEXPORT lb_I_Module* 	LB_CDECL _getModuleInstance();
 extern "C" DLLEXPORT void 		LB_CDECL _set_trackObject(char* track);
 extern "C" DLLEXPORT char* 		LB_CDECL _get_trackObject();
-extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void 		LB_CDECL _track_Object(lb_I_Unknown* o, const char* msg);
 extern "C" DLLEXPORT void 		LB_CDECL _setVerbose(bool what);
 extern "C" DLLEXPORT void 		LB_CDECL _setLogActivated(bool what);
 extern "C" DLLEXPORT void 		LB_CDECL _lbBreak();
-extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT void 		LB_CDECL _logMessage(const char *msg, const char *f, int level = 0);
 extern "C" DLLEXPORT char* 		LB_CDECL _getLogDirectory();
 extern "C" DLLEXPORT char* 		LB_CDECL _setLogDirectory(char* name);
 extern "C" DLLEXPORT void 		LB_CDECL _createDirectory(const char* name);
@@ -410,10 +410,10 @@ extern "C" DLLEXPORT char* 		LB_CDECL _lb_ltoa(const long ptr);
 extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentThreadId();
 extern "C" DLLEXPORT void		LB_CDECL _lb_sleep(int ms);
 extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbUnloadModule(const char* name);
-extern "C" DLLEXPORT char*		LB_CDECL _translateText(char* text);
+extern "C" DLLEXPORT char*		LB_CDECL _translateText(const char* text);
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
-extern "C" DLLEXPORT char*		LB_CDECL _getOsType();
+extern "C" DLLEXPORT const char*		LB_CDECL _getOsType();
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
@@ -427,7 +427,7 @@ extern "C" DLLEXPORT char* LB_CDECL lbstristr(const char *String, const char *Pa
 // Object tracking
 extern "C" DLLEXPORT void LB_CDECL set_trackObject(char* track);
 extern "C" DLLEXPORT char* LB_CDECL get_trackObject();
-extern "C" DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, char* msg);
+extern "C" DLLEXPORT void LB_CDECL track_Object(lb_I_Unknown* o, const char* msg);
 
 /*...sMEMTRACKER:0:*/
 
@@ -462,7 +462,7 @@ extern "C" DLLEXPORT void LB_CDECL lbBreak();
 #define LOGFILE "lbDMF.log"
 
 /** \brief Log a message to the given file. */
-extern "C" DLLEXPORT void LB_CDECL logMessage(const char *msg, char *f, int level = 0);
+extern "C" DLLEXPORT void LB_CDECL logMessage(const char *msg, const char *f, int level = 0);
 
 /** \brief Get the log directory.
  * Returns the log directory.
@@ -489,7 +489,7 @@ extern "C" DLLEXPORT lb_I_Log* LB_CDECL getLoggerInstance();
 extern "C" DLLEXPORT void LB_CDECL setLoggerInstance(lb_I_Log* l);
 extern "C" DLLEXPORT void LB_CDECL createLogInstance();
 
-extern "C" DLLEXPORT char* LB_CDECL getOsType();
+extern "C" DLLEXPORT const char* LB_CDECL getOsType();
 
 #ifdef OSX
 bool LB_CDECL OSXMemValidate(void* ptr);
@@ -497,7 +497,7 @@ bool LB_CDECL OSXMemValidate(void* ptr);
 
 extern "C" DLLEXPORT bool LB_CDECL lbPtrValidate(void* ptr);
 
-extern "C" DLLEXPORT char* LB_CDECL translateText(char* text);
+extern "C" DLLEXPORT char* LB_CDECL translateText(const char* text);
 extern "C" DLLEXPORT void LB_CDECL uninitLocale();
 
 

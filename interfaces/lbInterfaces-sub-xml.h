@@ -183,9 +183,9 @@ protected:
 #endif
 	
 public:
-	virtual void LB_STDCALL setFunctor(char* functor) = 0;
-	virtual void LB_STDCALL setModule(char* module) = 0;
-	virtual void LB_STDCALL setInterface(char* iface) = 0;
+	virtual void LB_STDCALL setFunctor(const char* functor) = 0;
+	virtual void LB_STDCALL setModule(const char* module) = 0;
+	virtual void LB_STDCALL setInterface(const char* iface) = 0;
 
 	virtual char* LB_STDCALL getFunctor() = 0;
 	virtual char* LB_STDCALL getModule() = 0;

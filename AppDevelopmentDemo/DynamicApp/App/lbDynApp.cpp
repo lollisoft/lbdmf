@@ -93,14 +93,14 @@ public:
          * For each event, it gets an numeric identifer so it may
          * be able to dispatch that events.
          */
-        lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+        lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
         lbErrCodes LB_STDCALL uninitialize();
         lbErrCodes LB_STDCALL run();
         lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
         lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
         lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
-        lbErrCodes LB_STDCALL setUserName(char* user);
-        lbErrCodes LB_STDCALL setApplicationName(char* app);
+        lbErrCodes LB_STDCALL setUserName(const char* user);
+        lbErrCodes LB_STDCALL setApplicationName(const char* app);
 
         lb_I_EventManager* LB_STDCALL getEVManager( void );
 
@@ -184,7 +184,7 @@ protected:
 
         /** \brief Load the database forms.
          */
-        void LB_STDCALL activateDBForms(char* user, char* app);
+        void LB_STDCALL activateDBForms(const char* user, const char* app);
 
         void LB_STDCALL loadDataFromActiveDocument();
         void LB_STDCALL saveDataToActiveDocument();
@@ -852,8 +852,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		applicationdatabase->init();
 	}
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-        char* lbDMFUser   = getenv("lbDMFUser");
+	const char* lbDMFPasswd = getenv("lbDMFPasswd");
+	const char* lbDMFUser   = getenv("lbDMFUser");
 
         if (!lbDMFUser) lbDMFUser = "dba";
         if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -1230,7 +1230,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
         if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
                 importfile = metaapp->askOpenFileReadStream("xmi");
-                XMIFileUMLProject->setData((char*) importfile->getFileName());
+                XMIFileUMLProject->setData((char*)importfile->getFileName());
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
@@ -1679,8 +1679,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
 
                 systemdatabase->init();
 
-                char* lbDMFPasswd = getenv("lbDMFPasswd");
-                char* lbDMFUser   = getenv("lbDMFUser");
+                const char* lbDMFPasswd = getenv("lbDMFPasswd");
+                const char* lbDMFUser   = getenv("lbDMFUser");
 
                 if (!lbDMFUser) lbDMFUser = "dba";
                 if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -1827,8 +1827,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                                 systemdatabase->init();
 
-                                char* lbDMFPasswd = getenv("lbDMFPasswd");
-                                char* lbDMFUser   = getenv("lbDMFUser");
+                                const char* lbDMFPasswd = getenv("lbDMFPasswd");
+                                const char* lbDMFUser   = getenv("lbDMFUser");
 
                                 if (!lbDMFUser) lbDMFUser = "dba";
                                 if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -1842,7 +1842,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         sampleQuery = systemdatabase->getQuery("lbDMF", 0);
 
-                        char* b =
+                        const char* b =
                                 "select Formulare.id, Formulare.name from Formulare "
                                 "inner join Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
                                 "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
@@ -2334,8 +2334,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 		applicationdatabase->init();
 	}
 	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-        char* lbDMFUser   = getenv("lbDMFUser");
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
 
         if (!lbDMFUser) lbDMFUser = "dba";
         if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -2920,7 +2920,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 }
 
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
-lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const char* app) {
         _CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_
         // To be implemented in a separate application module
         lbErrCodes err = ERR_NONE;
@@ -3258,7 +3258,7 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }
 
-void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
+void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
         lbErrCodes err = ERR_NONE;
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
@@ -3329,8 +3329,8 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
                 }
                 ApplicationFormulars->finishRelationIteration();
         } else {
-                char* lbDMFPasswd = getenv("lbDMFPasswd");
-                char* lbDMFUser   = getenv("lbDMFUser");
+                const char* lbDMFPasswd = getenv("lbDMFPasswd");
+                const char* lbDMFUser   = getenv("lbDMFUser");
 
                 if (!lbDMFUser) lbDMFUser = "dba";
                 if (!lbDMFPasswd) lbDMFPasswd = "trainres";
@@ -3349,7 +3349,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 
                 sampleQuery = systemdatabase->getQuery("lbDMF", 0);
 
-                char* b =
+                const char* b =
                         "select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "
                         "anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
                         "Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
@@ -3486,7 +3486,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app
         else (*app)->setData(LogonApplication->charrep());
         return ERR_NONE;
 }
-lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
+lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(const char* user) {
         if (LogonUser == NULL) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonUser)
         }
@@ -3495,7 +3495,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
         return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(char* app) {
+lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(const char* app) {
         if (LogonApplication == NULL) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }

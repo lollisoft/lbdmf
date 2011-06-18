@@ -233,7 +233,7 @@ public:
          * This initializes an input file stream with a given name.
          * For each object, you will save, call their accept() member function.
          */
-        bool LB_STDCALL begin(char* file);
+        bool LB_STDCALL begin(const char* file);
 
         bool LB_STDCALL begin(lb_I_Stream* stream);
 
@@ -338,7 +338,7 @@ lbJSONOutputStream::~lbJSONOutputStream() {
 }
 /*...e*/
 
-bool LB_STDCALL lbJSONOutputStream::begin(char* file) {
+bool LB_STDCALL lbJSONOutputStream::begin(const char* file) {
         if (oStream == NULL) { 
                 REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
                 
@@ -578,7 +578,7 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Applications_Formulars* applicati
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Parameter* params) {
-    json_t* params_array = addArray((currentnode != NULL) ? currentnode : root, "lb_I_Parameter"); // Array with parameters, or recursive arrays
+    json_t* params_array = addArray((currentnode != NULL) ? currentnode : root, (char*)"lb_I_Parameter"); // Array with parameters, or recursive arrays
 	
 	if (params_array->type == JSON_OBJECT) {
 		params_array = params_array->child->child;

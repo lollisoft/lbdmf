@@ -128,7 +128,7 @@ public:
          *
          * Set the SQL query string to be used.
          */
-        virtual lbErrCodes LB_STDCALL query(char* q, bool bind = true) = 0;
+        virtual lbErrCodes LB_STDCALL query(const char* q, bool bind = true) = 0;
 
 	/**
 	 * \brief Bind columns, if not yet have bound.
@@ -194,7 +194,7 @@ public:
 	 *
 	 * Returns false, if given column name is not in the query.
 	 */
-	virtual bool		LB_STDCALL hasColumnName(char* name) = 0;
+	virtual bool		LB_STDCALL hasColumnName(const char* name) = 0;
 	
 	/**
 	 * \brief Get the name of a column.
@@ -210,7 +210,7 @@ public:
 	 *
 	 * This is still buggy, if the query has joins.
 	 */
-	virtual lb_I_String* LB_STDCALL getTableName(char* columnName = NULL) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(const char* columnName = NULL) = 0;
 
 	/**
 	 * \brief Skip foreign column informations.
@@ -233,7 +233,7 @@ public:
 	 *
 	 * Returns 1 if true. 0 if false.
 	 */
-	virtual int	LB_STDCALL hasFKColumn(char* FKName) = 0;
+	virtual int	LB_STDCALL hasFKColumn(const char* FKName) = 0;
 
 	/**
 	 * \brief Return number of foreign columns.
@@ -248,7 +248,7 @@ public:
 	/**
 	 * \brief Get the foreign key based on given primary table and primary key name.
 	 */
-	virtual lb_I_String* LB_STDCALL getFKColumn(char* table, char* primary) = 0;
+	virtual lb_I_String* LB_STDCALL getFKColumn(const char* table, const char* primary) = 0;
 
 	/**
 	 * \brief Get primary table name.
@@ -257,13 +257,13 @@ public:
 	 * 
 	 * Returns a NULL pointer, if no primary table name could be found.
 	 */
-	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName) = 0;
+	virtual lb_I_String*	LB_STDCALL getPKTable(const char* FKName) = 0;
 
 	/** \brief Get primary column name.
 	 *
 	 * A foreign column points to another table's primary column.
 	 */
-	virtual lb_I_String* 	LB_STDCALL getPKColumn(char const * FKName) = 0;
+	virtual lb_I_String* 	LB_STDCALL getPKColumn(const char* FKName) = 0;
 
 	/**
 	 * \brief Get the count of primary columns.
@@ -283,11 +283,11 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool	LB_STDCALL isNull(char const * name) = 0;
+	virtual bool	LB_STDCALL isNull(const char* name) = 0;
 
 	/** \brief Indicates, if a column has a default value.
 	 */
-	virtual bool	LB_STDCALL hasDefaultValue(char* columnname) = 0;
+	virtual bool	LB_STDCALL hasDefaultValue(const char* columnname) = 0;
 	/**
 	 * \brief NULL indicator for pos column.
 	 */
@@ -296,7 +296,7 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool	LB_STDCALL isNullable(char const * name) = 0;
+	virtual bool	LB_STDCALL isNullable(const char* name) = 0;
 
 	/**
 	 * \brief NULL indicator for pos column.
@@ -306,7 +306,7 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool	LB_STDCALL setNull(char const * name, bool b = true) = 0;
+	virtual bool	LB_STDCALL setNull(const char* name, bool b = true) = 0;
 	
 	/**
 	 * \brief Returns false if query is not in any valid cursor position.
@@ -323,7 +323,7 @@ public:
 	 * \brief Gets the type of the column.
 	 *
 	 */
-	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(char* name) = 0;
+	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(const char* name) = 0;
 
 
 
@@ -333,13 +333,13 @@ public:
 	 *
 	 * Set the column 'column' to be updateable or not.
 	 */
-	virtual void		   LB_STDCALL setReadonly(char* column, bool updateable = true) = 0;
+	virtual void		   LB_STDCALL setReadonly(const char* column, bool updateable = true) = 0;
 
 	/** \brief Get updateability of column.
 	 *
 	 * Get the updateability of column 'column'.
 	 */
-	virtual bool		   LB_STDCALL getReadonly(char* column) = 0;
+	virtual bool		   LB_STDCALL getReadonly(const char* column) = 0;
 
 
         /* Navigation */
@@ -406,14 +406,14 @@ public:
 	 *
 	 * This function copies the result into a new buffer. You have to free() it.
 	 */
-	virtual char* LB_STDCALL setWhereClause(const char* query, char* where) = 0;
+	virtual char* LB_STDCALL setWhereClause(const char* query, const char* where) = 0;
 	
 	/** \brief Add to an existing where clause.
 	 *
 	 * This function copies the result into a new buffer. You have to free() it.
 	 */
 	 
-	virtual char* LB_STDCALL addWhereClause(const char* query, char* where) = 0;
+	virtual char* LB_STDCALL addWhereClause(const char* query, const char* where) = 0;
 		
 	/** \brief Set autorefresh on update.
 	 *
@@ -748,7 +748,7 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool LB_STDCALL isNullable(char const * name) = 0;
+	virtual bool LB_STDCALL isNullable(const char* name) = 0;
 
 	/**
 	 * \brief NULL indicator for pos column.
@@ -758,12 +758,12 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool LB_STDCALL isNull(char const * name) = 0;
+	virtual bool LB_STDCALL isNull(const char* name) = 0;
 
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool LB_STDCALL setNull(char const * name, bool b) = 0;
+	virtual bool LB_STDCALL setNull(const char* name, bool b) = 0;
 
 	/**
 	 * \brief Unbind readonly columns.
@@ -782,7 +782,7 @@ public:
 	virtual void LB_STDCALL unbind() = 0;
 
 	virtual bool LB_STDCALL isBound(int pos) = 0;
-	virtual bool LB_STDCALL isBound(char const * name) = 0;
+	virtual bool LB_STDCALL isBound(const char* name) = 0;
 
 	virtual void LB_STDCALL add() = 0;
 	virtual void LB_STDCALL finishadd() = 0;
@@ -795,7 +795,7 @@ public:
 	/**
 	 * \brief Get the type of a column.
 	 */
-	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(char* name) = 0;
+	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(const char* name) = 0;
 
 	/**
 	 * \brief Get the index of the bound column.
@@ -805,12 +805,12 @@ public:
 	/**
 	 * \brief Set the column updateability.
 	 */
-	virtual void		LB_STDCALL setReadonly(char* column, bool updateable) = 0;
+	virtual void		LB_STDCALL setReadonly(const char* column, bool updateable) = 0;
 
 	/**
 	 * \brief Get the column updateability.
 	 */
-	virtual bool		LB_STDCALL getReadonly(char* column) = 0;
+	virtual bool		LB_STDCALL getReadonly(const char* column) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.
@@ -867,7 +867,7 @@ public:
 	 * \param column Name of the column.
 	 * \param instance String instance with the value to be set.
 	 */
-	virtual lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance) = 0;        
+	virtual lbErrCodes      LB_STDCALL setString(const char* column, lb_I_String* instance) = 0;        
 
 #ifdef bla
         /**
@@ -954,10 +954,10 @@ public:
 	 */
 	virtual lbErrCodes	LB_STDCALL init() = 0;
 	virtual void	LB_STDCALL close() = 0;
-	virtual void	LB_STDCALL open(char* connectionname) = 0;
+	virtual void	LB_STDCALL open(const char* connectionname) = 0;
 
-	virtual lbErrCodes	LB_STDCALL setUser(char* _user) = 0;
-	virtual lbErrCodes	LB_STDCALL setDB(char* _db) = 0;
+	virtual lbErrCodes	LB_STDCALL setUser(const char* _user) = 0;
+	virtual lbErrCodes	LB_STDCALL setDB(const char* _db) = 0;
 
 	/** \brief Determine connection status.
 	 *
@@ -977,9 +977,9 @@ public:
 	 * \param user User to connect as.
 	 * \param passwd The passord. 
 	 */
-	virtual lbErrCodes LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd) = 0;
+	virtual lbErrCodes LB_STDCALL connect(const char* connectionname, const char* DSN, const char* user, const char* passwd) = 0;
 
-	virtual lbErrCodes LB_STDCALL connect(char* connectionname, char* pass) = 0;
+	virtual lbErrCodes LB_STDCALL connect(const char* connectionname, const char* pass) = 0;
 
 	/**
 	 * \brief Get a query instance.
@@ -989,13 +989,13 @@ public:
 	 *
 	 * \param readonly Set 0 to have write access. Default is readonly.
 	 */	
-	virtual lb_I_Query* LB_STDCALL getQuery(char* connectionname, int readonly = 1) = 0;
+	virtual lb_I_Query* LB_STDCALL getQuery(const char* connectionname, int readonly = 1) = 0;
 	
-	virtual lb_I_Container* LB_STDCALL getTables(char* connectionname) = 0;
-	virtual lb_I_Container* LB_STDCALL getColumns(char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getTables(const char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getColumns(const char* connectionname) = 0;
 
-	virtual lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname) = 0;
-	virtual lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getForeignKeys(const char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getPrimaryKeys(const char* connectionname) = 0;
 	
 	/** \brief Get the driver name.
 	 * This is usually the module name (DLL/SO).
@@ -1034,7 +1034,7 @@ public:
 	 * A database form needs a query object, from whom it should
 	 * show the data.
 	 */
-	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
+	virtual void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass) = 0;
 
 	/**
 	 * \brief Get the used SQL query.
@@ -1051,13 +1051,13 @@ public:
 	 *
 	 * Sample to show only data for one customer: kdnummer = 100001
 	 */
-	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+	virtual void LB_STDCALL setFilter(const char* filter = NULL) = 0;
 
 	/** \brief Get the table name based on column name.
 	 *
 	 * Return the related table name, that contains the given column name.
 	 */
-	virtual lb_I_String* LB_STDCALL getTableName(char* columnName) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(const char* columnName) = 0;
 
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
@@ -1070,7 +1070,7 @@ public:
 	 *
 	 * Needed to access the column name.
 	 */
-	virtual int LB_STDCALL getForeignColumns(char* primaryTable = NULL) = 0;
+	virtual int LB_STDCALL getForeignColumns(const char* primaryTable = NULL) = 0;
 
 	/** \brief Get the primary column at position pos.
 	 *
@@ -1087,12 +1087,12 @@ public:
 	/** \brief Return if the control is of type char.
 	 *
 	 */
-	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
+	virtual bool LB_STDCALL isCharacterColumn(const char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
+	virtual const char* LB_STDCALL getControlValue(const char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
@@ -1127,7 +1127,7 @@ public:
 	/**
 	 * \brief Do not include foreign keys into the layout.
 	 */
-	virtual void LB_STDCALL ignoreForeignKeys(char* toTable) = 0;
+	virtual void LB_STDCALL ignoreForeignKeys(const char* toTable) = 0;
 
 	virtual lb_I_String* LB_STDCALL getColumnName(int pos) = 0;
 	
@@ -1178,13 +1178,13 @@ public:
 	 *
 	 * Sample to show only data for one customer: kdnummer = 100001
 	 */
-	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+	virtual void LB_STDCALL setFilter(const char* filter = NULL) = 0;
 
 	/** \brief Get the table name based on column name.
 	 *
 	 * Return the related table name, that contains the given column name.
 	 */
-	virtual lb_I_String* LB_STDCALL getTableName(char* columnName) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(const char* columnName) = 0;
 
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
@@ -1197,7 +1197,7 @@ public:
 	 *
 	 * Needed to access the column name.
 	 */
-	virtual int LB_STDCALL getForeignColumns(char* primaryTable = NULL) = 0;
+	virtual int LB_STDCALL getForeignColumns(const char* primaryTable = NULL) = 0;
 
 	/** \brief Get the primary column at position pos.
 	 *
@@ -1214,12 +1214,12 @@ public:
 	/** \brief Return if the control is of type char.
 	 *
 	 */
-	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
+	virtual bool LB_STDCALL isCharacterColumn(const char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const lb_I_String* LB_STDCALL getControlValue(char* name) = 0;
+	virtual const lb_I_String* LB_STDCALL getControlValue(const char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
