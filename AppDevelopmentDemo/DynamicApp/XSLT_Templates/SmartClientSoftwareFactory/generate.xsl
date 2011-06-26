@@ -4,6 +4,7 @@
 <xsl:import href="ShellForm.cs.xsl"/>
 <xsl:import href="ShellForm.Designer.cs.xsl"/>
 <xsl:import href="ShellForm.resx.xsl"/>
+<xsl:import href="ShellApplication.sln.xsl"/>
 <xsl:import href="ShellApplication.csproj.xsl"/>
 <xsl:import href="ShellApplication.cs.xsl"/>
 <xsl:import href="ShellWorkItem.cs.xsl"/>
@@ -126,6 +127,13 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 
 <exsl:document href="{$ApplicationName}/ShellApplication.csproj" method="text">
 <xsl:call-template name="ShellApplication.csproj">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$ApplicationName}/ShellApplication.sln" method="text">
+<xsl:call-template name="ShellApplication.sln">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
