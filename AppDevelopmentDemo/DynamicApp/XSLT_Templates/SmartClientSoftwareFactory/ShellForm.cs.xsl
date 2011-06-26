@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Practices.CompositeUI.SmartParts;
+using Microsoft.Practices.CompositeUI.WinForms;
 
 namespace ShellApplication
 {
