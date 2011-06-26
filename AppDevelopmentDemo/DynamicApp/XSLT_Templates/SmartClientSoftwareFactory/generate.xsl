@@ -9,11 +9,20 @@
 <xsl:import href="ShellApplication.cs.xsl"/>
 <xsl:import href="ShellWorkItem.cs.xsl"/>
 
+<xsl:import href="ProfileCatalog.xml.xsl"/>
+
 <xsl:import href="Properties/AssemblyInfo.cs.xsl"/>
 <xsl:import href="Properties/Resources.Designer.cs.xsl"/>
 <xsl:import href="Properties/Resources.resx.xsl"/>
 <xsl:import href="Properties/Settings.Designer.cs.xsl"/>
 <xsl:import href="Properties/Settings.settings.xsl"/>
+
+<xsl:import href="Module/MyModule.sln.xsl"/>
+<xsl:import href="Module/MyModule.csproj.xsl"/>
+<xsl:import href="Module/MyModuleInit.cs.xsl"/>
+<xsl:import href="Module/MyWorkItem.cs.xsl"/>
+<xsl:import href="Module/Properties/ModuleAssemblyInfo.cs.xsl"/>
+
 
 <xsl:output method="text" indent="no"/>
 
@@ -134,6 +143,50 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 
 <exsl:document href="SmartClient/{$ApplicationName}/ShellApplication.sln" method="text">
 <xsl:call-template name="ShellApplication.sln">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}/ProfileCatalog.xml" method="text">
+<xsl:call-template name="ProfileCatalog.xml">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+
+
+<exsl:document href="SmartClient/Module/MyModule.sln" method="text">
+<xsl:call-template name="MyModule.sln">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyModule.csproj" method="text">
+<xsl:call-template name="MyModule.csproj">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyModuleInit.cs" method="text">
+<xsl:call-template name="MyModuleInit.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyWorkItem.cs" method="text">
+<xsl:call-template name="MyWorkItem.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/Properties/AssemblyInfo.cs" method="text">
+<xsl:call-template name="ModuleAssemblyInfo.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
