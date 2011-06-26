@@ -63,6 +63,7 @@
     &lt;Reference Include="System.Data" /&gt;
     &lt;Reference Include="System.Windows.Forms" /&gt;
     &lt;Reference Include="System.Xml" /&gt;
+	&lt;Reference Include="System.Drawing" /&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
     &lt;Compile Include="IMyView.cs" /&gt;
