@@ -52,35 +52,35 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 .
 
 
-<exsl:document href="{$ApplicationName}/Properties/AssemblyInfo.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/Properties/AssemblyInfo.cs" method="text">
 <xsl:call-template name="AssemblyInfo.cs">
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="DBName" select="$DBName"/>
 		<xsl:with-param name="InternalDBName" select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
-<exsl:document href="{$ApplicationName}/Properties/Resources.Designer.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/Properties/Resources.Designer.cs" method="text">
 <xsl:call-template name="Resources.Designer.cs">
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="DBName" select="$DBName"/>
 		<xsl:with-param name="InternalDBName" select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
-<exsl:document href="{$ApplicationName}/Properties/Resources.resx" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/Properties/Resources.resx" method="text">
 <xsl:call-template name="Resources.resx">
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="DBName" select="$DBName"/>
 		<xsl:with-param name="InternalDBName" select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
-<exsl:document href="{$ApplicationName}/Properties/Settings.Designer.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/Properties/Settings.Designer.cs" method="text">
 <xsl:call-template name="Settings.Designer.cs">
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="DBName" select="$DBName"/>
 		<xsl:with-param name="InternalDBName" select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
-<exsl:document href="{$ApplicationName}/Properties/Settings.settings" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/Properties/Settings.settings" method="text">
 <xsl:call-template name="Settings.settings">
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="DBName" select="$DBName"/>
@@ -90,49 +90,49 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 </exsl:document>
 
 
-<exsl:document href="{$ApplicationName}/ShellWorkItem.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellWorkItem.cs" method="text">
 <xsl:call-template name="ShellWorkItem.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellForm.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellForm.cs" method="text">
 <xsl:call-template name="ShellForm.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellForm.Designer.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellForm.Designer.cs" method="text">
 <xsl:call-template name="ShellForm.Designer.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellForm.resx" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellForm.resx" method="text">
 <xsl:call-template name="ShellForm.resx">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellApplication.cs" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellApplication.cs" method="text">
 <xsl:call-template name="ShellApplication.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellApplication.csproj" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellApplication.csproj" method="text">
 <xsl:call-template name="ShellApplication.csproj">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellApplication.sln" method="text">
+<exsl:document href="SmartClient/{$ApplicationName}/ShellApplication.sln" method="text">
 <xsl:call-template name="ShellApplication.sln">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
