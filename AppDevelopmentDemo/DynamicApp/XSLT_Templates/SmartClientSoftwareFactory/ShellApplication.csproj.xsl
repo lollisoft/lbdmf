@@ -6,13 +6,14 @@
   &lt;PropertyGroup&gt;
     &lt;Configuration Condition=" '$(Configuration)' == '' "&gt;Debug&lt;/Configuration&gt;
     &lt;Platform Condition=" '$(Platform)' == '' "&gt;AnyCPU&lt;/Platform&gt;
-    &lt;ProductVersion&gt;9.0.21022&lt;/ProductVersion&gt;
+    &lt;ProductVersion&gt;9.0.30729&lt;/ProductVersion&gt;
     &lt;SchemaVersion&gt;2.0&lt;/SchemaVersion&gt;
     &lt;ProjectGuid&gt;{27939947-5B62-4C4C-99FF-898BF0C71D07}&lt;/ProjectGuid&gt;
     &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
     &lt;AppDesignerFolder&gt;Properties&lt;/AppDesignerFolder&gt;
     &lt;RootNamespace&gt;ShellApplication&lt;/RootNamespace&gt;
-    &lt;AssemblyName&gt;ShellApplication&lt;/AssemblyName&gt;&lt;FileUpgradeFlags&gt;
+    &lt;AssemblyName&gt;ShellApplication&lt;/AssemblyName&gt;
+    &lt;FileUpgradeFlags&gt;
     &lt;/FileUpgradeFlags&gt;
     &lt;OldToolsVersion&gt;2.0&lt;/OldToolsVersion&gt;
     &lt;UpgradeBackupLocation&gt;
@@ -54,7 +55,6 @@
   &lt;ItemGroup&gt;
     &lt;Reference Include="Microsoft.Practices.ObjectBuilder, Version=1.0.51206.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"&gt;
       &lt;SpecificVersion&gt;False&lt;/SpecificVersion&gt;
-<!--      &lt;HintPath&gt;$(SolutionDir)Lib\Microsoft.Practices.ObjectBuilder.dll&lt;/HintPath&gt; -->
       &lt;HintPath&gt;..\Lib\Microsoft.Practices.ObjectBuilder.dll&lt;/HintPath&gt;
     &lt;/Reference&gt;
     &lt;Reference Include="System" /&gt;
@@ -103,13 +103,13 @@
     &lt;/Compile&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-    &lt;ProjectReference Include="..\..\..\..\..\..\Blocks\CAB\CS\Source\CompositeUI.WinForms\CompositeUI.WinForms.csproj"&gt;
-      &lt;Project&gt;{073BCD60-F2FB-4DB9-92FB-403C8F9E8DD0}&lt;/Project&gt;
-      &lt;Name&gt;CompositeUI.WinForms&lt;/Name&gt;
-    &lt;/ProjectReference&gt;
-    &lt;ProjectReference Include="..\..\..\..\..\..\Blocks\CAB\CS\Source\CompositeUI\CompositeUI.csproj"&gt;
+    &lt;ProjectReference Include="..\Blocks\CAB\CS\Source\CompositeUI\CompositeUI.csproj"&gt;
       &lt;Project&gt;{C478E40B-A05E-4C69-9AB3-7A3BB374243F}&lt;/Project&gt;
       &lt;Name&gt;CompositeUI&lt;/Name&gt;
+    &lt;/ProjectReference&gt;
+    &lt;ProjectReference Include="..\Blocks\CAB\CS\Source\CompositeUI.WinForms\CompositeUI.WinForms.csproj"&gt;
+      &lt;Project&gt;{073BCD60-F2FB-4DB9-92FB-403C8F9E8DD0}&lt;/Project&gt;
+      &lt;Name&gt;CompositeUI.WinForms&lt;/Name&gt;
     &lt;/ProjectReference&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
