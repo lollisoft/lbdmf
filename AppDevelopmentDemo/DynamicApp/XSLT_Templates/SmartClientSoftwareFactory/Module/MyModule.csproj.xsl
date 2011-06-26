@@ -71,11 +71,11 @@
     &lt;Compile Include="Properties\AssemblyInfo.cs" /&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-    &lt;ProjectReference Include="..\..\..\..\..\..\Blocks\CAB\CS\Source\CompositeUI.WinForms\CompositeUI.WinForms.csproj"&gt;
+    &lt;ProjectReference Include="..\..\Blocks\CAB\CS\Source\CompositeUI.WinForms\CompositeUI.WinForms.csproj"&gt;
       &lt;Project&gt;{073BCD60-F2FB-4DB9-92FB-403C8F9E8DD0}&lt;/Project&gt;
       &lt;Name&gt;CompositeUI.WinForms&lt;/Name&gt;
     &lt;/ProjectReference&gt;
-    &lt;ProjectReference Include="..\..\..\..\..\..\Blocks\CAB\CS\Source\CompositeUI\CompositeUI.csproj"&gt;
+    &lt;ProjectReference Include="..\..\Blocks\CAB\CS\Source\CompositeUI\CompositeUI.csproj"&gt;
       &lt;Project&gt;{C478E40B-A05E-4C69-9AB3-7A3BB374243F}&lt;/Project&gt;
       &lt;Name&gt;CompositeUI&lt;/Name&gt;
     &lt;/ProjectReference&gt;
