@@ -55,7 +55,7 @@
   &lt;ItemGroup&gt;
     &lt;Reference Include="Microsoft.Practices.ObjectBuilder, Version=1.0.51206.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"&gt;
       &lt;SpecificVersion&gt;False&lt;/SpecificVersion&gt;
-      &lt;HintPath&gt;..\Lib\Microsoft.Practices.ObjectBuilder.dll&lt;/HintPath&gt;
+      &lt;HintPath&gt;..\..\Lib\Microsoft.Practices.ObjectBuilder.dll&lt;/HintPath&gt;
     &lt;/Reference&gt;
     &lt;Reference Include="System" /&gt;
     &lt;Reference Include="System.Core"&gt;
