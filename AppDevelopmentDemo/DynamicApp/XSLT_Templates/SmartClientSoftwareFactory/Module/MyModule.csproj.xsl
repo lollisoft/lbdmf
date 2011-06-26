@@ -65,6 +65,14 @@
     &lt;Reference Include="System.Xml" /&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
+    &lt;Compile Include="IMyView.cs" /&gt;
+    &lt;Compile Include="MyPresenter.cs" /&gt;
+    &lt;Compile Include="MyView.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="MyView.Designer.cs"&gt;
+      &lt;DependentUpon&gt;MyView.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
     &lt;Compile Include="MyModuleInit.cs" /&gt;
     &lt;Compile Include="MyWorkItem.cs"&gt;
     &lt;/Compile&gt;
