@@ -25,6 +25,13 @@
 <xsl:import href="Module/MyWorkItem.cs.xsl"/>
 <xsl:import href="Module/Properties/ModuleAssemblyInfo.cs.xsl"/>
 
+<xsl:import href="Module/MyPresenter.cs.xsl"/>
+<xsl:import href="Module/MyView.cs.xsl"/>
+<xsl:import href="Module/MyView.Designer.cs.xsl"/>
+<xsl:import href="Module/MyView.resx.xsl"/>
+<xsl:import href="Module/IMyView.cs.xsl"/>
+
+
 
 <xsl:output method="text" indent="no"/>
 
@@ -186,6 +193,45 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </exsl:document>
+
+
+
+
+<exsl:document href="SmartClient/Module/IMyView.cs" method="text">
+<xsl:call-template name="IMyView.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyView.cs" method="text">
+<xsl:call-template name="MyView.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyView.Designer.cs" method="text">
+<xsl:call-template name="MyView.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyPresenter.cs" method="text">
+<xsl:call-template name="MyPresenter.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/Module/MyView.resx" method="text">
+<xsl:call-template name="MyView.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
 
 <exsl:document href="SmartClient/Module/Properties/AssemblyInfo.cs" method="text">
 <xsl:call-template name="ModuleAssemblyInfo.cs">
