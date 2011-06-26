@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.Services;
-using System.Windows.Forms;
 
 namespace MyModule
 {
@@ -25,7 +24,6 @@ namespace MyModule
 		{
 			base.Load();
 			myCatalogService.RegisterWorkItem&lt;MyWorkItem&gt;();
-			MessageBox.Show("Hello there!");
 		}
 	}
 }
