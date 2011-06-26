@@ -89,6 +89,13 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 </exsl:document>
 
 
+<exsl:document href="{$ApplicationName}/ShellWorkItem.cs" method="text">
+<xsl:call-template name="ShellWorkItem.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
 <exsl:document href="{$ApplicationName}/ShellForm.cs" method="text">
 <xsl:call-template name="ShellForm.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
@@ -103,8 +110,8 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="{$ApplicationName}/ShellForm.resx.cs" method="text">
-<xsl:call-template name="ShellForm.resx.cs">
+<exsl:document href="{$ApplicationName}/ShellForm.resx" method="text">
+<xsl:call-template name="ShellForm.resx">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
