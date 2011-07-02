@@ -16,7 +16,7 @@
 <xsl:import href="CommandMap.xsd.xsl"/>
 <xsl:import href="CommandMap.xsx.xsl"/>
 <xsl:import href="MainController.cs.xsl"/>
-
+<xsl:import href="CommandMap.xml.xsl"/>
 
 <xsl:import href="Properties/AssemblyInfo.cs.xsl"/>
 <xsl:import href="Properties/Resources.Designer.cs.xsl"/>
@@ -276,6 +276,13 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 
 <exsl:document href="SmartClient/ShellApplication/MainController.cs" method="text">
 <xsl:call-template name="MainController.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/ShellApplication/CommandMap.xml" method="text">
+<xsl:call-template name="CommandMap.xml">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
