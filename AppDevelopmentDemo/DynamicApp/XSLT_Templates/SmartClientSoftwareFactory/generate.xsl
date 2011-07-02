@@ -149,7 +149,7 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 </xsl:call-template>
 </exsl:document>
 
-<xsl:call-template name="MyModule">
+<xsl:call-template name="Module">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="'My'"/>
 </xsl:call-template>
