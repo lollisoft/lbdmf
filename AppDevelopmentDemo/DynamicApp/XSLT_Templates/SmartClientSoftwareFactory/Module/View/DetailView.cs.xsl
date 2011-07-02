@@ -1,7 +1,7 @@
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" extension-element-prefixes="exsl">
 <xsl:import href="../../exsl.xsl"/>
 
-<xsl:template name="ViewWorkItem.cs">
+<xsl:template name="DetailView.cs">
 <xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/><xsl:param name="FormularID"/>using System;
 using System.Collections.Generic;
 using System.ComponentModel;
