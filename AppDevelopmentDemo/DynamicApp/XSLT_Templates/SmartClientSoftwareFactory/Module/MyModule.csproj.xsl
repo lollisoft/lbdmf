@@ -90,7 +90,17 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.Designer.cs"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Main.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.resx"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Main.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
     &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Controller.cs" /&gt;
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\Browse<xsl:value-of select="$FormularName"/>WorkItem.cs" /&gt;
 </xsl:for-each>
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
