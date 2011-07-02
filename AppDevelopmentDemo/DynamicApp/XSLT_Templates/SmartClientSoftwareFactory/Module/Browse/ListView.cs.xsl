@@ -11,13 +11,14 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.ObjectBuilder;
+using ShellApplication.Entities;
 
 namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 {
 	/// &lt;summary&gt;
 	/// Provides a list fo <xsl:value-of select="$FormularName"/>.
 	/// &lt;/summary&gt;
-	public partial class CustomerListView : TitledSmartPart
+	public partial class <xsl:value-of select="$FormularName"/>ListView : TitledSmartPart
 	{
 		/// &lt;summary&gt;
 		/// The controller will get injected into the smartpart
@@ -34,18 +35,18 @@ namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 		/// &lt;summary&gt;
 		/// The <xsl:value-of select="$FormularName"/> list State will be injected into the view.
 		/// &lt;/summary&gt;
-		private List&lt;<xsl:value-of select="$FormularName"/>&gt; <xsl:value-of select="$FormularName"/> = null;
+		private List&lt;<xsl:value-of select="$FormularName"/>&gt; _<xsl:value-of select="$FormularName"/> = null;
 
 		[State]
 		public List&lt;<xsl:value-of select="$FormularName"/>&gt; <xsl:value-of select="$FormularName"/>
 		{
-			set { <xsl:value-of select="$FormularName"/> = value; }
+			set { _<xsl:value-of select="$FormularName"/> = value; }
 		}
 
 		/// &lt;summary&gt;
 		/// Constructor
 		/// &lt;/summary&gt;
-		public CustomerListView()
+		public <xsl:value-of select="$FormularName"/>ListView()
 		{
 			InitializeComponent();
 		}
@@ -61,8 +62,8 @@ namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 			{
 				controller.Populate<xsl:value-of select="$FormularName"/>Data();
 
-				<xsl:value-of select="$FormularName"/>ListBox.DataSource = <xsl:value-of select="$FormularName"/>;
-				<xsl:value-of select="$FormularName"/>ListBox.DisplayMember = <xsl:value-of select="$FormularName"/>.DisplayMember;
+				<xsl:value-of select="$FormularName"/>ListBox.DataSource = _<xsl:value-of select="$FormularName"/>;
+				<xsl:value-of select="$FormularName"/>ListBox.DisplayMember = ShellApplication.Entities.<xsl:value-of select="$FormularName"/>.DisplayMember;
 
 				this.<xsl:value-of select="$FormularName"/>ListBox.SelectedIndexChanged += 
 					new EventHandler(<xsl:value-of select="$FormularName"/>ListBox_SelectedIndexChanged);
