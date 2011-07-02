@@ -90,6 +90,12 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>ListView.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>ListView.Designer.cs"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>ListView.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
     &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.cs"&gt;
       &lt;SubType&gt;UserControl&lt;/SubType&gt;
     &lt;/Compile&gt;
@@ -132,16 +138,11 @@
 </xsl:for-each>
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-    &lt;Compile Include="IMyView.cs" /&gt;
-    &lt;Compile Include="MyPresenter.cs" /&gt;
-    &lt;Compile Include="MyView.cs"&gt;
+    &lt;Compile Include="TitledSmartPart.cs"&gt;
       &lt;SubType&gt;UserControl&lt;/SubType&gt;
     &lt;/Compile&gt;
-    &lt;Compile Include="MyView.Designer.cs"&gt;
-      &lt;DependentUpon&gt;MyView.cs&lt;/DependentUpon&gt;
-    &lt;/Compile&gt;
-    &lt;Compile Include="MyModuleInit.cs" /&gt;
-    &lt;Compile Include="MyWorkItem.cs"&gt;
+    &lt;Compile Include="TitledSmartPart.Designer.cs"&gt;
+      &lt;DependentUpon&gt;TitledSmartPart.cs&lt;/DependentUpon&gt;
     &lt;/Compile&gt;
     &lt;Compile Include="Properties\AssemblyInfo.cs" /&gt;
   &lt;/ItemGroup&gt;
