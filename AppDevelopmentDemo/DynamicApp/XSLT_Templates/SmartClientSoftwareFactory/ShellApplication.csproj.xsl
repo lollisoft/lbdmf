@@ -71,6 +71,7 @@
     &lt;Compile Include="CommandMap.cs"&gt;
       &lt;DependentUpon&gt;CommandMap.xsd&lt;/DependentUpon&gt;
     &lt;/Compile&gt;
+    &lt;Compile Include="MainController.cs" /&gt;
     &lt;Compile Include="ShellApplication.cs" /&gt;
     &lt;Compile Include="ShellForm.cs"&gt;
       &lt;SubType&gt;Form&lt;/SubType&gt;
