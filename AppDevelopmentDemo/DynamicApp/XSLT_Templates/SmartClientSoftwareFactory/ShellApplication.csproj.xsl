@@ -68,6 +68,9 @@
     &lt;Reference Include="System.Xml" /&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
+    &lt;Compile Include="CommandMap.cs"&gt;
+      &lt;DependentUpon&gt;CommandMap.xsd&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
     &lt;Compile Include="ShellApplication.cs" /&gt;
     &lt;Compile Include="ShellForm.cs"&gt;
       &lt;SubType&gt;Form&lt;/SubType&gt;
@@ -90,6 +93,10 @@
       &lt;DependentUpon&gt;Resources.resx&lt;/DependentUpon&gt;
       &lt;DesignTime&gt;True&lt;/DesignTime&gt;
     &lt;/Compile&gt;
+    &lt;None Include="CommandMap.xsd" /&gt;
+    &lt;None Include="CommandMap.xsx"&gt;
+      &lt;DependentUpon&gt;CommandMap.xsd&lt;/DependentUpon&gt;
+    &lt;/None&gt;
     &lt;None Include="Properties\Settings.settings"&gt;
       &lt;Generator&gt;SettingsSingleFileGenerator&lt;/Generator&gt;
       &lt;LastGenOutput&gt;Settings.Designer.cs&lt;/LastGenOutput&gt;

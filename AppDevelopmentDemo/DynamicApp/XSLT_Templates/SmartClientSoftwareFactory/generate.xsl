@@ -12,6 +12,11 @@
 <xsl:import href="ShellWorkItem.cs.xsl"/>
 
 <xsl:import href="ProfileCatalog.xml.xsl"/>
+<xsl:import href="CommandMap.cs.xsl"/>
+<xsl:import href="CommandMap.xsd.xsl"/>
+<xsl:import href="CommandMap.xsx.xsl"/>
+
+
 
 <xsl:import href="Properties/AssemblyInfo.cs.xsl"/>
 <xsl:import href="Properties/Resources.Designer.cs.xsl"/>
@@ -242,6 +247,28 @@ InternalDBName <xsl:value-of select="$InternalDBName"/>
 
 <exsl:document href="SmartClient/SmartClient.sln" method="text">
 <xsl:call-template name="SmartClient.sln">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+
+<exsl:document href="SmartClient/ShellApplication/CommandMap.cs" method="text">
+<xsl:call-template name="CommandMap.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/ShellApplication/CommandMap.xsd" method="text">
+<xsl:call-template name="CommandMap.xsd">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/ShellApplication/CommandMap.xsx" method="text">
+<xsl:call-template name="CommandMap.xsx">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
