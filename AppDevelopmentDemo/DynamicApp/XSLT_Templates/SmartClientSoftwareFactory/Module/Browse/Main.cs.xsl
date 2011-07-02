@@ -8,7 +8,7 @@ using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.SmartParts;
 using System.Collections.ObjectModel;
 
-namespace SmartPartQuickStart.Browse<xsl:value-of select="$FormularName"/>WorkItem
+namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 {
 	/// &lt;summary&gt;
 	/// The SmartPart attribute tells the SmartPartMonitor to add this view 
