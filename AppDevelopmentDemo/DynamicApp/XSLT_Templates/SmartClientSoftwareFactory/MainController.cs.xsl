@@ -2,18 +2,7 @@
 <xsl:import href="exsl.xsl"/>
 
 <xsl:template name="MainController.cs">
-<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/>//===============================================================================
-// Microsoft patterns &amp; practices
-// CompositeUI Application Block
-//===============================================================================
-// Copyright © Microsoft Corporation.  All rights reserved.
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY
-// OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT
-// LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-// FITNESS FOR A PARTICULAR PURPOSE.
-//===============================================================================
-
-using System;
+<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/>using System;
 using System.Windows.Forms;
 using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.Commands;

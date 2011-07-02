@@ -32,41 +32,44 @@
 		/// &lt;/summary&gt;
 		private void InitializeComponent()
 		{
-			  this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
-			  this.File = new System.Windows.Forms.ToolStripMenuItem();
-			  this.Exit = new System.Windows.Forms.ToolStripMenuItem();
-			  this.mainMenuStrip.SuspendLayout();
-			  this.SuspendLayout();
-			  // 
-			  // mainMenuStrip
-			  // 
-			  this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.File});
-			  this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
-			  this.mainMenuStrip.Name = "mainMenuStrip";
-			  this.mainMenuStrip.Size = new System.Drawing.Size(292, 24);
-			  this.mainMenuStrip.TabIndex = 0;
-			  this.mainMenuStrip.Text = "menuStrip1";
-			  // 
-			  // File
-			  // 
-			  this.File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Exit});
-			  this.File.Name = "File";
-			  this.File.Size = new System.Drawing.Size(35, 20);
-			  this.File.Text = "&amp;File";
-			  // 
-			  // Exit
-			  // 
-			  this.Exit.Name = "Exit";
-			  this.Exit.Size = new System.Drawing.Size(152, 22);
-			  this.Exit.Text = "E&amp;xit";
-			  this.Exit.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// The main menu
+			this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
+			this.File = new System.Windows.Forms.ToolStripMenuItem();
+			this.Exit = new System.Windows.Forms.ToolStripMenuItem();
+			this.mainMenuStrip.SuspendLayout();
+			//
+			// splitContainer1
+			//
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tabWorkspace1 = new Microsoft.Practices.CompositeUI.WinForms.TabWorkspace();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// mainMenuStrip
+			// 
+			this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.File});
+			this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.mainMenuStrip.Name = "mainMenuStrip";
+			this.mainMenuStrip.Size = new System.Drawing.Size(292, 24);
+			this.mainMenuStrip.TabIndex = 0;
+			this.mainMenuStrip.Text = "menuStrip1";
+			// 
+			// File
+			// 
+			this.File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Exit});
+			this.File.Name = "File";
+			this.File.Size = new System.Drawing.Size(35, 20);
+			this.File.Text = "&amp;File";
+			// 
+			// Exit
+			// 
+			this.Exit.Name = "Exit";
+			this.Exit.Size = new System.Drawing.Size(152, 22);
+			this.Exit.Text = "E&amp;xit";
+			this.Exit.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// splitContainer1
 			// 
