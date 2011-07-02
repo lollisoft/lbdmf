@@ -21,6 +21,11 @@ namespace ShellApplication
 		{
 			InitializeComponent();
 		}
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 	}
 }
 </xsl:template>
