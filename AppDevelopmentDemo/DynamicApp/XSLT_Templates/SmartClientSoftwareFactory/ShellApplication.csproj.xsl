@@ -109,6 +109,9 @@
     &lt;/Compile&gt;
     &lt;Compile Include="ShellWorkItem.cs"&gt;
     &lt;/Compile&gt;
+    &lt;Content Include="CommandMap.xml"&gt;
+      &lt;CopyToOutputDirectory&gt;PreserveNewest&lt;/CopyToOutputDirectory&gt;
+    &lt;/Content&gt;
     &lt;Content Include="ProfileCatalog.xml"&gt;
       &lt;CopyToOutputDirectory&gt;Always&lt;/CopyToOutputDirectory&gt;
     &lt;/Content&gt;
