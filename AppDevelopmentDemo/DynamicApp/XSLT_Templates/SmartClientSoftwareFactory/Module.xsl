@@ -12,11 +12,18 @@
 <xsl:import href="Module/MyView.resx.xsl"/>
 <xsl:import href="Module/IMyView.cs.xsl"/>
 
+<xsl:import href="Module/TitledSmartPart.cs.xsl"/>
+<xsl:import href="Module/TitledSmartPart.Designer.cs.xsl"/>
+<xsl:import href="Module/TitledSmartPart.resx.xsl"/>
+
 <xsl:import href="Module/Browse/Controller.cs.xsl"/>
 <xsl:import href="Module/Browse/BrowseWorkItem.cs.xsl"/>
 <xsl:import href="Module/Browse/Main.cs.xsl"/>
 <xsl:import href="Module/Browse/Main.resx.xsl"/>
 <xsl:import href="Module/Browse/Main.Designer.cs.xsl"/>
+<xsl:import href="Module/Browse/ListView.cs.xsl"/>
+<xsl:import href="Module/Browse/ListView.resx.xsl"/>
+<xsl:import href="Module/Browse/ListView.Designer.cs.xsl"/>
 <xsl:import href="Module/Entities/Entity.cs.xsl"/>
 
 
@@ -84,6 +91,27 @@
 </xsl:call-template>
 </exsl:document>
 
+<exsl:document href="SmartClient/{$ApplicationName}Module/TitledSmartPart.cs" method="text">
+<xsl:call-template name="TitledSmartPart.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}Module/TitledSmartPart.Designer.cs" method="text">
+<xsl:call-template name="TitledSmartPart.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+<!--
+<exsl:document href="SmartClient/{$ApplicationName}Module/TitledSmartPart.resx" method="text">
+<xsl:call-template name="TitledSmartPart.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</exsl:document>
+-->
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -108,6 +136,34 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+<!--
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}ListView.resx" method="text">
+<xsl:call-template name="ListView.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+-->
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}ListView.cs" method="text">
+<xsl:call-template name="ListView.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}ListView.Designer.cs" method="text">
+<xsl:call-template name="ListView.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
 <!--
 <exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}Main.resx" method="text">
 <xsl:call-template name="Main.resx">
