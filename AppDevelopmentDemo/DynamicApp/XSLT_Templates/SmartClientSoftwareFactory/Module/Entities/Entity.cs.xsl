@@ -14,6 +14,9 @@ namespace ShellApplication.Entities
 	/// &lt;/summary&gt;
 	public class <xsl:value-of select="$FormularName"/>
 	{
+		public static string DisplayMember {
+			get { throw new NotImplementedException("DisplayMember not implemented."); }
+		}
 		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
 <xsl:variable name="TableName" select="@tablename"/>
