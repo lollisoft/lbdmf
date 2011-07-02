@@ -17,12 +17,12 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 		/// &lt;summary&gt;
 		/// Has to have a <xsl:value-of select="$FormularName"/> workitem to work.
 		/// &lt;/summary&gt;
-		private View<xsl:value-of select="$FormularName"/>WorkItem <xsl:value-of select="$FormularName"/>WorkItem = null;
+		private View<xsl:value-of select="$FormularName"/>WorkItem _<xsl:value-of select="$FormularName"/>WorkItem = null;
 
 		[ServiceDependency(Type = typeof(WorkItem))]
 		public View<xsl:value-of select="$FormularName"/>WorkItem <xsl:value-of select="$FormularName"/>WorkItem
 		{
-			set { <xsl:value-of select="$FormularName"/>WorkItem = value; }
+			set { _<xsl:value-of select="$FormularName"/>WorkItem = value; }
 		}
 
 		/// &lt;summary&gt;

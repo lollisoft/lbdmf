@@ -100,7 +100,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>BindingSource
 			// 
-			this.<xsl:value-of select="$FormularName"/>BindingSource.DataSource = typeof(SmartPartQuickStart.<xsl:value-of select="$FormularName"/>);
+			this.<xsl:value-of select="$FormularName"/>BindingSource.DataSource = typeof(ShellApplication.Entities.<xsl:value-of select="$FormularName"/>);
 			// 
 			// lastNameTextBox
 			// 

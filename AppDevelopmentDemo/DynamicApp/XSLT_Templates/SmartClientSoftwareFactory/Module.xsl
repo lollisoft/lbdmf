@@ -30,6 +30,9 @@
 <xsl:import href="Module/View/TabView.cs.xsl"/>
 <xsl:import href="Module/View/TabView.Designer.cs.xsl"/>
 <xsl:import href="Module/View/TabView.resx.xsl"/>
+<xsl:import href="Module/View/DetailView.cs.xsl"/>
+<xsl:import href="Module/View/DetailView.Designer.cs.xsl"/>
+<xsl:import href="Module/View/DetailView.resx.xsl"/>
 <xsl:import href="Module/View/ViewWorkItem.cs.xsl"/>
 
 
@@ -272,6 +275,34 @@
 
 <exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}TabView.Designer.cs" method="text">
 <xsl:call-template name="TabView.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
+<!--
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}Details.resx" method="text">
+<xsl:call-template name="DetailView.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+-->
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}Details.cs" method="text">
+<xsl:call-template name="DetailView.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}Details.Designer.cs" method="text">
+<xsl:call-template name="DetailView.Designer.cs">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 		<xsl:with-param name="FormularID" select="$FormularID"/>

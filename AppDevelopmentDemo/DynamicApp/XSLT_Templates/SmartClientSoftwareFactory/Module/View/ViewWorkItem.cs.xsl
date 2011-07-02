@@ -5,6 +5,7 @@
 <xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/><xsl:param name="FormularID"/>using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.SmartParts;
 using Microsoft.Practices.CompositeUI.WinForms;
+using ShellApplication.Entities;
 
 namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 {
@@ -14,8 +15,8 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 	public class View<xsl:value-of select="$FormularName"/>WorkItem : WorkItem
 	{
 		private <xsl:value-of select="$FormularName"/>TabView tabView;
-		private <xsl:value-of select="$FormularName"/>CommentsView commentsView;
-		private <xsl:value-of select="$FormularName"/>SummaryView <xsl:value-of select="$FormularName"/>Summary;
+		//private <xsl:value-of select="$FormularName"/>CommentsView commentsView;
+		//private <xsl:value-of select="$FormularName"/>SummaryView <xsl:value-of select="$FormularName"/>Summary;
 
 		/// &lt;summary&gt;
 		/// Starts the workitem.
@@ -24,7 +25,7 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 		public void Run(IWorkspace workspace)
 		{
 			//Create views to be used by workitem
-			CreateSummaryView();
+			//CreateSummaryView();
 			CreateTabView();
 
 			//Make the tabview visible in the workspace.

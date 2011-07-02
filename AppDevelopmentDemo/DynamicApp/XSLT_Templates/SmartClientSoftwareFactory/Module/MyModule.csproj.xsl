@@ -139,13 +139,13 @@
     &lt;/Compile&gt;
     &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>TabView.Designer.cs"&gt;
       &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>TabView.cs&lt;/DependentUpon&gt;
-    &lt;/Compile&gt;<!--
+    &lt;/Compile&gt;
     &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.cs"&gt;
       &lt;SubType&gt;UserControl&lt;/SubType&gt;
     &lt;/Compile&gt;
     &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.Designer.cs"&gt;
       &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Details.cs&lt;/DependentUpon&gt;
-    &lt;/Compile&gt;--><!--
+    &lt;/Compile&gt;<!--
     &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.resx"&gt;
       &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Details.cs&lt;/DependentUpon&gt;
     &lt;/Compile&gt;

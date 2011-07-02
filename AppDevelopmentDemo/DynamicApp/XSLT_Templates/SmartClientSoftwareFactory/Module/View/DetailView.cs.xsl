@@ -23,12 +23,12 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 		/// &lt;summary&gt;
 		/// The <xsl:value-of select="$FormularName"/> State will be injected into the view.
 		/// &lt;/summary&gt;
-		private <xsl:value-of select="$FormularName"/> <xsl:value-of select="$FormularName"/> = null;
+		private <xsl:value-of select="$FormularName"/><xsl:value-of select="' '"/>_<xsl:value-of select="$FormularName"/> = null;
 
 		[State("<xsl:value-of select="$FormularName"/>")]
-		public <xsl:value-of select="$FormularName"/> <xsl:value-of select="$FormularName"/>
+		public <xsl:value-of select="$FormularName"/><xsl:value-of select="' '"/><xsl:value-of select="$FormularName"/>
 		{
-			set { <xsl:value-of select="$FormularName"/> = value; }
+			set { _<xsl:value-of select="$FormularName"/> = value; }
 		}
 
 		/// &lt;summary&gt;
@@ -58,9 +58,9 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 		{
 			base.OnLoad(e);
 
-			if (this.<xsl:value-of select="$FormularName"/> != null)
+			if (this._<xsl:value-of select="$FormularName"/> != null)
 			{
-				this.<xsl:value-of select="$FormularName"/>BindingSource.Add(this.<xsl:value-of select="$FormularName"/>);
+				this.<xsl:value-of select="$FormularName"/>BindingSource.Add(this._<xsl:value-of select="$FormularName"/>);
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 		{
 			//Calls to the controller to show the comments associated with
 			//the <xsl:value-of select="$FormularName"/>.
-			controller.Show<xsl:value-of select="$FormularName"/>Comments();
+			//controller.Show<xsl:value-of select="$FormularName"/>Comments();
 		}
 	}
 }
