@@ -72,16 +72,16 @@ namespace ShellApplication.Entities
 	<xsl:otherwise>
 		<xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-			/// &lt;param name="<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
+			/// &lt;param name="_<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
-			/// &lt;param name="<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
+			/// &lt;param name="_<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-			/// &lt;param name="<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
+			/// &lt;param name="_<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
-			/// &lt;param name="<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
+			/// &lt;param name="_<xsl:value-of select="@name"/>"&gt;Description of <xsl:value-of select="$FormularName"/>.&lt;/param&gt;
 			</xsl:when>
 			<xsl:when test="@dbtype='Binary'">
 			</xsl:when>
@@ -96,30 +96,30 @@ namespace ShellApplication.Entities
 <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose>
 	<xsl:when test="@isfk='1'">
-			<xsl:if test="position() != 1">,</xsl:if>int <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>int _<xsl:value-of select="@name"/>
     </xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
-			<xsl:if test="position() != 1">,</xsl:if>int <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>int _<xsl:value-of select="@name"/>
     </xsl:when>
 	<xsl:otherwise>
 		<xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-			<xsl:if test="position() != 1">,</xsl:if>bool <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>bool _<xsl:value-of select="@name"/>
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
-			<xsl:if test="position() != 1">,</xsl:if>float <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>float _<xsl:value-of select="@name"/>
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-			<xsl:if test="position() != 1">,</xsl:if>int <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>int _<xsl:value-of select="@name"/>
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
-			<xsl:if test="position() != 1">,</xsl:if>string <xsl:value-of select="@name"/>
+			<xsl:if test="position() != 1">,</xsl:if>string _<xsl:value-of select="@name"/>
 			</xsl:when>
 			<xsl:when test="@dbtype='Binary'">
-			/*<xsl:if test="position() != 1">,</xsl:if>binary <xsl:value-of select="@name"/>*/
+			/*<xsl:if test="position() != 1">,</xsl:if>binary _<xsl:value-of select="@name"/>*/
 			</xsl:when>
 			<xsl:otherwise>
-			/*<xsl:if test="position() != 1">,</xsl:if>unknown <xsl:value-of select="@name"/>*/
+			/*<xsl:if test="position() != 1">,</xsl:if>unknown _<xsl:value-of select="@name"/>*/
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -131,7 +131,7 @@ namespace ShellApplication.Entities
 <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose>
 	<xsl:when test="@isfk='1'">
-            this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
     </xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
 		// Special column <xsl:value-of select="@name"/>
@@ -139,22 +139,22 @@ namespace ShellApplication.Entities
 	<xsl:otherwise>
 		<xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-            this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
-            this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-            this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
-            this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:when>
 			<xsl:when test="@dbtype='Binary'">
-            //this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            //this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:when>
 			<xsl:otherwise>
-            //this._<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+            //this._<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -178,7 +178,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		public int <xsl:value-of select="@name"/>
+		public int <xsl:value-of select="@name"/>_
 		{
 			get { return _<xsl:value-of select="@name"/>; }
 			set
@@ -196,7 +196,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		public bool <xsl:value-of select="@name"/>
+		public bool <xsl:value-of select="@name"/>_
 		{
 			get { return _<xsl:value-of select="@name"/>; }
 			set
@@ -209,7 +209,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		public float <xsl:value-of select="@name"/>
+		public float <xsl:value-of select="@name"/>_
 		{
 			get { return _<xsl:value-of select="@name"/>; }
 			set
@@ -222,7 +222,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		public int <xsl:value-of select="@name"/>
+		public int <xsl:value-of select="@name"/>_
 		{
 			get { return _<xsl:value-of select="@name"/>; }
 			set
@@ -235,7 +235,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		public string <xsl:value-of select="@name"/>
+		public string <xsl:value-of select="@name"/>_
 		{
 			get { return _<xsl:value-of select="@name"/>; }
 			set
@@ -248,7 +248,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		//public binary _<xsl:value-of select="@name"/>
+		//public binary <xsl:value-of select="@name"/>_
 		//{
 		//	get { return _binary_<xsl:value-of select="@name"/>; }
 		//	set
@@ -261,7 +261,7 @@ namespace ShellApplication.Entities
 		/// &lt;summary&gt;
 		/// <xsl:value-of select="@name"/> of <xsl:value-of select="$FormularName"/>.
 		/// &lt;/summary&gt;
-		//public unknown_<xsl:value-of select="@dbtype"/>  _<xsl:value-of select="@name"/>
+		//public unknown_<xsl:value-of select="@dbtype"/>  <xsl:value-of select="@name"/>_
 		//{
 		//	get { return unknown_<xsl:value-of select="@dbtype"/>_<xsl:value-of select="@name"/>; }
 		//	set

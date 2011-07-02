@@ -6,6 +6,7 @@
 using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.SmartParts;
 using Microsoft.Practices.ObjectBuilder;
+using ShellApplication.Entities;
 
 namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 {

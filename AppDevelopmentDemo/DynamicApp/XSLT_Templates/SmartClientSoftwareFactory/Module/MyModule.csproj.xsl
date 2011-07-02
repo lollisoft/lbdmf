@@ -95,11 +95,11 @@
     &lt;/Compile&gt;
     &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.Designer.cs"&gt;
       &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Main.cs&lt;/DependentUpon&gt;
-    &lt;/Compile&gt;
+    &lt;/Compile&gt;<!--
     &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Main.resx"&gt;
       &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Main.cs&lt;/DependentUpon&gt;
     &lt;/Compile&gt;
-    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Controller.cs" /&gt;
+-->    &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Controller.cs" /&gt;
     &lt;Compile Include="Browse<xsl:value-of select="$FormularName"/>WorkItem\Browse<xsl:value-of select="$FormularName"/>WorkItem.cs" /&gt;
 </xsl:for-each>
   &lt;/ItemGroup&gt;

@@ -13,6 +13,10 @@
 <xsl:import href="Module/IMyView.cs.xsl"/>
 
 <xsl:import href="Module/Browse/Controller.cs.xsl"/>
+<xsl:import href="Module/Browse/BrowseWorkItem.cs.xsl"/>
+<xsl:import href="Module/Browse/Main.cs.xsl"/>
+<xsl:import href="Module/Browse/Main.resx.xsl"/>
+<xsl:import href="Module/Browse/Main.Designer.cs.xsl"/>
 <xsl:import href="Module/Entities/Entity.cs.xsl"/>
 
 
@@ -104,6 +108,42 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+<!--
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}Main.resx" method="text">
+<xsl:call-template name="Main.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+-->
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}Main.cs" method="text">
+<xsl:call-template name="Main.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}Main.Designer.cs" method="text">
+<xsl:call-template name="Main.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/Browse{$FormularName}WorkItem.cs" method="text">
+<xsl:call-template name="BrowseWorkItem.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
 
 <exsl:document href="SmartClient/{$ApplicationName}Module/Browse{$FormularName}WorkItem/{$FormularName}Controller.cs" method="text">
 <xsl:call-template name="Controller.cs">
