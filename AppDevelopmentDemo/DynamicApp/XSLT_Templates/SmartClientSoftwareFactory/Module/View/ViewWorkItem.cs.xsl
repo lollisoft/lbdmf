@@ -2,11 +2,11 @@
 <xsl:import href="../../exsl.xsl"/>
 
 <xsl:template name="ViewWorkItem.cs">
-<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/><xsl:param name="FormularID"/>namespace ShellApplication.View<xsl:value-of select="$FormularName"/>using Microsoft.Practices.CompositeUI;
+<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/><xsl:param name="FormularID"/>using Microsoft.Practices.CompositeUI;
 using Microsoft.Practices.CompositeUI.SmartParts;
 using Microsoft.Practices.CompositeUI.WinForms;
 
-namespace SmartPartQuickStart.View<xsl:value-of select="$FormularName"/>WorkItem
+namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 {
 	/// &lt;summary&gt;
 	/// A WorkItem to handle the viewing of one <xsl:value-of select="$FormularName"/>.
@@ -60,7 +60,7 @@ namespace SmartPartQuickStart.View<xsl:value-of select="$FormularName"/>WorkItem
 		/// The State is set this way so child items
 		/// can get inject with the state.
 		/// &lt;/summary&gt;
-		public <xsl:value-of select="$FormularName"/> <xsl:value-of select="$FormularName"/>
+		public <xsl:value-of select="$FormularName"/><xsl:value-of select="' '"/><xsl:value-of select="$FormularName"/>
 		{
 			get { return (<xsl:value-of select="$FormularName"/>)State["<xsl:value-of select="$FormularName"/>"]; }
 			set { State["<xsl:value-of select="$FormularName"/>"] = value; }
