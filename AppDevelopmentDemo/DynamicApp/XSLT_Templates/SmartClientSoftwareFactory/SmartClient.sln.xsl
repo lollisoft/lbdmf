@@ -7,7 +7,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellApplication", "ShellApplication\ShellApplication.csproj", "{27939947-5B62-4C4C-99FF-898BF0C71D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyModule", "Module\MyModule.csproj", "{97B7A004-2B34-462C-A055-4A02972A99A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyModule", "<xsl:value-of select="$ApplicationName"/>Module\<xsl:value-of select="$ApplicationName"/>Module.csproj", "{97B7A004-2B34-462C-A055-4A02972A99A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompositeUI", "..\Blocks\CAB\CS\Source\CompositeUI\CompositeUI.csproj", "{C478E40B-A05E-4C69-9AB3-7A3BB374243F}"
 EndProject
