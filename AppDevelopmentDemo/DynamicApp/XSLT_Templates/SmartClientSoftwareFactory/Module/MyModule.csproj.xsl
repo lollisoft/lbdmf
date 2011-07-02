@@ -182,6 +182,16 @@
 </xsl:for-each>
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
+    &lt;Compile Include="I<xsl:value-of select="$ApplicationName"/>View.cs" /&gt;
+    &lt;Compile Include="<xsl:value-of select="$ApplicationName"/>ModuleInit.cs" /&gt;
+    &lt;Compile Include="<xsl:value-of select="$ApplicationName"/>Presenter.cs" /&gt;
+    &lt;Compile Include="<xsl:value-of select="$ApplicationName"/>View.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="<xsl:value-of select="$ApplicationName"/>View.Designer.cs"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$ApplicationName"/>View.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="<xsl:value-of select="$ApplicationName"/>WorkItem.cs" /&gt;
     &lt;Compile Include="TitledSmartPart.cs"&gt;
       &lt;SubType&gt;UserControl&lt;/SubType&gt;
     &lt;/Compile&gt;
