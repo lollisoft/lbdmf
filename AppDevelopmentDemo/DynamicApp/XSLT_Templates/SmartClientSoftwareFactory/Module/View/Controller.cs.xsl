@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Practices.CompositeUI;
 
-namespace SmartPartQuickStart.View<xsl:value-of select="$FormularName"/>WorkItem
+namespace ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem
 {
 	/// &lt;summary&gt;
 	/// Controller for the <xsl:value-of select="$FormularName"/> comments view.
