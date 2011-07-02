@@ -12,7 +12,7 @@
     &lt;OutputType&gt;Library&lt;/OutputType&gt;
     &lt;AppDesignerFolder&gt;Properties&lt;/AppDesignerFolder&gt;
     &lt;RootNamespace&gt;<xsl:value-of select="$ApplicationName"/>Module&lt;/RootNamespace&gt;
-    &lt;AssemblyName&gt;MyModule&lt;/AssemblyName&gt;&lt;FileUpgradeFlags&gt;
+    &lt;AssemblyName&gt;<xsl:value-of select="$ApplicationName"/>Module&lt;/AssemblyName&gt;&lt;FileUpgradeFlags&gt;
     &lt;/FileUpgradeFlags&gt;
     &lt;OldToolsVersion&gt;2.0&lt;/OldToolsVersion&gt;
     &lt;UpgradeBackupLocation&gt;
