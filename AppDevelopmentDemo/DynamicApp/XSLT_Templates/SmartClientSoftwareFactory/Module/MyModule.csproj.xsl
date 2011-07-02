@@ -134,6 +134,50 @@
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>TabView.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>TabView.Designer.cs"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>TabView.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;<!--
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.cs"&gt;
+      &lt;SubType&gt;UserControl&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.Designer.cs"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Details.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;--><!--
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Details.resx"&gt;
+      &lt;DependentUpon&gt;<xsl:value-of select="$FormularName"/>Details.cs&lt;/DependentUpon&gt;
+    &lt;/Compile&gt;
+-->    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\<xsl:value-of select="$FormularName"/>Controller.cs" /&gt;
+    &lt;Compile Include="View<xsl:value-of select="$FormularName"/>WorkItem\View<xsl:value-of select="$FormularName"/>WorkItem.cs" /&gt;
+</xsl:for-each>
+  &lt;/ItemGroup&gt;
+  &lt;ItemGroup&gt;
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:variable name="FormularID" select="@ID"/>
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
     &lt;Compile Include="Entities\<xsl:value-of select="$FormularName"/>.cs" /&gt;
 </xsl:for-each>
   &lt;/ItemGroup&gt;
