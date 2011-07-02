@@ -32,138 +32,322 @@
 		/// &lt;/summary&gt;
 		private void InitializeComponent()
 		{
+			int tabIndex = 0;
+			int yPosStart = 40;
+			int yPos = yPosStart;
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.Label lastNameLabel;
-			System.Windows.Forms.Label idLabel;
-			System.Windows.Forms.Label fullNameLabel;
-			System.Windows.Forms.Label firstNameLabel;
-			System.Windows.Forms.Label addressLabel;
+            System.Windows.Forms.Label idLabel = new System.Windows.Forms.Label();
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+            System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+            System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+            System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+            System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+            System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label = new System.Windows.Forms.Label();
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
 			this.<xsl:value-of select="$FormularName"/>BindingSource = new System.Windows.Forms.BindingSource(this.components);
-			this.lastNameTextBox = new System.Windows.Forms.TextBox();
 			this.idTextBox = new System.Windows.Forms.TextBox();
-			this.fullNameTextBox = new System.Windows.Forms.TextBox();
-			this.firstNameTextBox = new System.Windows.Forms.TextBox();
-			this.addressTextBox = new System.Windows.Forms.TextBox();
-			this.commentsButton = new System.Windows.Forms.Button();
-			lastNameLabel = new System.Windows.Forms.Label();
-			idLabel = new System.Windows.Forms.Label();
-			fullNameLabel = new System.Windows.Forms.Label();
-			firstNameLabel = new System.Windows.Forms.Label();
-			addressLabel = new System.Windows.Forms.Label();
+			//this.commentsButton = new System.Windows.Forms.Button();
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+			this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+			this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+			this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+			this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+			//this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+			//this.<xsl:value-of select="@name"/>TextBox = new System.Windows.Forms.TextBox();
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
 			((System.ComponentModel.ISupportInitialize)(this.<xsl:value-of select="$FormularName"/>BindingSource)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// lastNameLabel
-			// 
-			lastNameLabel.AutoSize = true;
-			lastNameLabel.Location = new System.Drawing.Point(27, 154);
-			lastNameLabel.Name = "lastNameLabel";
-			lastNameLabel.Size = new System.Drawing.Size(57, 13);
-			lastNameLabel.TabIndex = 10;
-			lastNameLabel.Text = "Last Name:";
 			// 
 			// idLabel
 			// 
 			idLabel.AutoSize = true;
-			idLabel.Location = new System.Drawing.Point(27, 127);
+			idLabel.Location = new System.Drawing.Point(27, yPos);
 			idLabel.Name = "idLabel";
-			idLabel.Size = new System.Drawing.Size(15, 13);
-			idLabel.TabIndex = 8;
-			idLabel.Text = "Id:";
+			idLabel.Size = new System.Drawing.Size(100, 13);
+			idLabel.TabIndex = tabIndex++;
+			idLabel.Text = "ID:";
+			yPos += 30;
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
 			// 
-			// fullNameLabel
+			// <xsl:value-of select="@name"/>Label
 			// 
-			fullNameLabel.AutoSize = true;
-			fullNameLabel.Location = new System.Drawing.Point(27, 100);
-			fullNameLabel.Name = "fullNameLabel";
-			fullNameLabel.Size = new System.Drawing.Size(53, 13);
-			fullNameLabel.TabIndex = 6;
-			fullNameLabel.Text = "Full Name:";
+			<xsl:value-of select="@name"/>Label.AutoSize = true;
+			<xsl:value-of select="@name"/>Label.Location = new System.Drawing.Point(27, yPos);
+			<xsl:value-of select="@name"/>Label.Name = "<xsl:value-of select="@name"/>Label";
+			<xsl:value-of select="@name"/>Label.Size = new System.Drawing.Size(100, 13);
+			<xsl:value-of select="@name"/>Label.TabIndex = tabIndex++;
+			<xsl:value-of select="@name"/>Label.Text = "Last Name:";
+			yPos += 30;
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
 			// 
-			// firstNameLabel
+			// <xsl:value-of select="@name"/>Label
 			// 
-			firstNameLabel.AutoSize = true;
-			firstNameLabel.Location = new System.Drawing.Point(27, 73);
-			firstNameLabel.Name = "firstNameLabel";
-			firstNameLabel.Size = new System.Drawing.Size(56, 13);
-			firstNameLabel.TabIndex = 4;
-			firstNameLabel.Text = "First Name:";
+			<xsl:value-of select="@name"/>Label.AutoSize = true;
+			<xsl:value-of select="@name"/>Label.Location = new System.Drawing.Point(27, yPos);
+			<xsl:value-of select="@name"/>Label.Name = "<xsl:value-of select="@name"/>Label";
+			<xsl:value-of select="@name"/>Label.Size = new System.Drawing.Size(100, 13);
+			<xsl:value-of select="@name"/>Label.TabIndex = tabIndex++;
+			<xsl:value-of select="@name"/>Label.Text = "<xsl:value-of select="@name"/>:";
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
 			// 
-			// addressLabel
+			// <xsl:value-of select="@name"/>Label
 			// 
-			addressLabel.AutoSize = true;
-			addressLabel.Location = new System.Drawing.Point(27, 46);
-			addressLabel.Name = "addressLabel";
-			addressLabel.Size = new System.Drawing.Size(44, 13);
-			addressLabel.TabIndex = 2;
-			addressLabel.Text = "Address:";
+			<xsl:value-of select="@name"/>Label.AutoSize = true;
+			<xsl:value-of select="@name"/>Label.Location = new System.Drawing.Point(27, yPos);
+			<xsl:value-of select="@name"/>Label.Name = "<xsl:value-of select="@name"/>Label";
+			<xsl:value-of select="@name"/>Label.Size = new System.Drawing.Size(100, 13);
+			<xsl:value-of select="@name"/>Label.TabIndex = tabIndex++;
+			<xsl:value-of select="@name"/>Label.Text = "<xsl:value-of select="@name"/>:";
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			// 
+			// <xsl:value-of select="@name"/>Label
+			// 
+			<xsl:value-of select="@name"/>Label.AutoSize = true;
+			<xsl:value-of select="@name"/>Label.Location = new System.Drawing.Point(27, yPos);
+			<xsl:value-of select="@name"/>Label.Name = "<xsl:value-of select="@name"/>Label";
+			<xsl:value-of select="@name"/>Label.Size = new System.Drawing.Size(100, 13);
+			<xsl:value-of select="@name"/>Label.TabIndex = tabIndex++;
+			<xsl:value-of select="@name"/>Label.Text = "<xsl:value-of select="@name"/>:";
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+			// 
+			// <xsl:value-of select="@name"/>Label
+			// 
+			<xsl:value-of select="@name"/>Label.AutoSize = true;
+			<xsl:value-of select="@name"/>Label.Location = new System.Drawing.Point(27, yPos);
+			<xsl:value-of select="@name"/>Label.Name = "<xsl:value-of select="@name"/>Label";
+			<xsl:value-of select="@name"/>Label.Size = new System.Drawing.Size(100, 13);
+			<xsl:value-of select="@name"/>Label.TabIndex = tabIndex++;
+			<xsl:value-of select="@name"/>Label.Text = "<xsl:value-of select="@name"/>:";
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label;
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label;
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+			yPos = yPosStart;
 			// 
 			// <xsl:value-of select="$FormularName"/>BindingSource
 			// 
 			this.<xsl:value-of select="$FormularName"/>BindingSource.DataSource = typeof(ShellApplication.Entities.<xsl:value-of select="$FormularName"/>);
 			// 
-			// lastNameTextBox
+			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.lastNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "LastName", true));
-			this.lastNameTextBox.Location = new System.Drawing.Point(91, 151);
-			this.lastNameTextBox.Name = "lastNameTextBox";
-			this.lastNameTextBox.Size = new System.Drawing.Size(100, 20);
-			this.lastNameTextBox.TabIndex = 11;
-			// 
-			// idTextBox
-			// 
-			this.idTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "Id", true));
-			this.idTextBox.Location = new System.Drawing.Point(91, 124);
+			this.idTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "id", true));
+			this.idTextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.idTextBox.Name = "idTextBox";
 			this.idTextBox.Size = new System.Drawing.Size(100, 20);
-			this.idTextBox.TabIndex = 9;
+			this.idTextBox.TabIndex = tabIndex++;
+			yPos += 30;
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
 			// 
-			// fullNameTextBox
+			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.fullNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "FullName", true));
-			this.fullNameTextBox.Location = new System.Drawing.Point(91, 97);
-			this.fullNameTextBox.Name = "fullNameTextBox";
-			this.fullNameTextBox.Size = new System.Drawing.Size(100, 20);
-			this.fullNameTextBox.TabIndex = 7;
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
+			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
+			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
+			this.<xsl:value-of select="@name"/>TextBox.TabIndex = tabIndex++;
+			yPos += 30;
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
 			// 
-			// firstNameTextBox
+			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.firstNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "FirstName", true));
-			this.firstNameTextBox.Location = new System.Drawing.Point(91, 70);
-			this.firstNameTextBox.Name = "firstNameTextBox";
-			this.firstNameTextBox.Size = new System.Drawing.Size(100, 20);
-			this.firstNameTextBox.TabIndex = 5;
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
+			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
+			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
+			this.<xsl:value-of select="@name"/>TextBox.TabIndex = tabIndex++;
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
 			// 
-			// addressTextBox
+			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.addressTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "Address", true));
-			this.addressTextBox.Location = new System.Drawing.Point(91, 43);
-			this.addressTextBox.Name = "addressTextBox";
-			this.addressTextBox.Size = new System.Drawing.Size(100, 20);
-			this.addressTextBox.TabIndex = 3;
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
+			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
+			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
+			this.<xsl:value-of select="@name"/>TextBox.TabIndex = tabIndex++;
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			// 
+			// <xsl:value-of select="$FormularName"/>TextBox
+			// 
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
+			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
+			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
+			this.<xsl:value-of select="@name"/>TextBox.TabIndex = tabIndex++;
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+			// 
+			// <xsl:value-of select="$FormularName"/>TextBox
+			// 
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
+			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
+			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
+			this.<xsl:value-of select="@name"/>TextBox.TabIndex = tabIndex++;
+			yPos += 30;
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label;
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+            //System.Windows.Forms.Label <xsl:value-of select="@name"/>Label;
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
 			// 
 			// commentsButton
 			// 
-			this.commentsButton.Location = new System.Drawing.Point(18, 203);
-			this.commentsButton.Name = "commentsButton";
-			this.commentsButton.Size = new System.Drawing.Size(75, 23);
-			this.commentsButton.TabIndex = 12;
-			this.commentsButton.Text = "Comments";
-			this.commentsButton.Click += new System.EventHandler(this.commentsButton_Click);
+			//this.commentsButton.Location = new System.Drawing.Point(18, 203);
+			//this.commentsButton.Name = "commentsButton";
+			//this.commentsButton.Size = new System.Drawing.Size(75, 23);
+			//this.commentsButton.TabIndex = 12;
+			//this.commentsButton.Text = "Comments";
+			//this.commentsButton.Click += new System.EventHandler(this.commentsButton_Click);
 			// 
 			// <xsl:value-of select="$FormularName"/>DetailView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.commentsButton);
-			this.Controls.Add(this.lastNameTextBox);
-			this.Controls.Add(lastNameLabel);
-			this.Controls.Add(addressLabel);
-			this.Controls.Add(this.addressTextBox);
-			this.Controls.Add(firstNameLabel);
-			this.Controls.Add(this.firstNameTextBox);
-			this.Controls.Add(fullNameLabel);
-			this.Controls.Add(this.fullNameTextBox);
+			//this.Controls.Add(this.commentsButton);
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+			this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			this.Controls.Add(<xsl:value-of select="@name"/>Label);
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+			this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+			this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+			this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+			//this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			//this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+			//this.Controls.Add(this.<xsl:value-of select="@name"/>TextBox);
+			//this.Controls.Add(<xsl:value-of select="@name"/>Label);
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
 			this.Controls.Add(idLabel);
 			this.Controls.Add(this.idTextBox);
 			this.Name = "<xsl:value-of select="$FormularName"/>DetailView";
@@ -171,15 +355,49 @@
 			this.Title = "<xsl:value-of select="$FormularName"/> Details";
 			this.Controls.SetChildIndex(this.idTextBox, 0);
 			this.Controls.SetChildIndex(idLabel, 0);
-			this.Controls.SetChildIndex(this.fullNameTextBox, 0);
-			this.Controls.SetChildIndex(fullNameLabel, 0);
-			this.Controls.SetChildIndex(this.firstNameTextBox, 0);
-			this.Controls.SetChildIndex(firstNameLabel, 0);
-			this.Controls.SetChildIndex(this.addressTextBox, 0);
-			this.Controls.SetChildIndex(addressLabel, 0);
-			this.Controls.SetChildIndex(lastNameLabel, 0);
-			this.Controls.SetChildIndex(this.lastNameTextBox, 0);
-			this.Controls.SetChildIndex(this.commentsButton, 0);
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+			this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+			this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+			this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+			this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+			//this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			//this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+			//this.Controls.SetChildIndex(this.<xsl:value-of select="@name"/>TextBox, 0);
+			//this.Controls.SetChildIndex(<xsl:value-of select="@name"/>Label, 0);
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+			//this.Controls.SetChildIndex(this.commentsButton, 0);
 			((System.ComponentModel.ISupportInitialize)(this.<xsl:value-of select="$FormularName"/>BindingSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -189,12 +407,43 @@
 		#endregion
 
 		private System.Windows.Forms.BindingSource <xsl:value-of select="$FormularName"/>BindingSource;
-		private System.Windows.Forms.TextBox lastNameTextBox;
 		private System.Windows.Forms.TextBox idTextBox;
-		private System.Windows.Forms.TextBox fullNameTextBox;
-		private System.Windows.Forms.TextBox firstNameTextBox;
-		private System.Windows.Forms.TextBox addressTextBox;
-		private System.Windows.Forms.Button commentsButton;
+		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+		private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+		private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+		private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+		private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+		private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+		//private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:when>
+			<xsl:otherwise>
+			// Unknown typ <xsl:value-of select="@dbtype"/>
+		//private System.Windows.Forms.TextBox <xsl:value-of select="@name"/>TextBox;
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+		//private System.Windows.Forms.Button commentsButton;
 
 	}
 }
