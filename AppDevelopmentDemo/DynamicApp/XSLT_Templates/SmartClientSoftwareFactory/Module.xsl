@@ -26,6 +26,12 @@
 <xsl:import href="Module/Browse/ListView.Designer.cs.xsl"/>
 <xsl:import href="Module/Entities/Entity.cs.xsl"/>
 
+<xsl:import href="Module/View/Controller.cs.xsl"/>
+<xsl:import href="Module/View/TabView.cs.xsl"/>
+<xsl:import href="Module/View/TabView.Designer.cs.xsl"/>
+<xsl:import href="Module/View/TabView.resx.xsl"/>
+<xsl:import href="Module/View/ViewWorkItem.cs.xsl"/>
+
 
 <xsl:template name="Module">
 <xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/>
@@ -221,19 +227,77 @@
 
 </xsl:for-each>
 
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:variable name="FormularID" select="@ID"/>
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+<!--
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}TabView.resx" method="text">
+<xsl:call-template name="TabView.resx">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
+-->
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}TabView.cs" method="text">
+<xsl:call-template name="TabView.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
 
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}TabView.Designer.cs" method="text">
+<xsl:call-template name="TabView.Designer.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
 
-</xsl:template>
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/View{$FormularName}WorkItem.cs" method="text">
+<xsl:call-template name="ViewWorkItem.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
 
+<exsl:document href="SmartClient/{$ApplicationName}Module/View{$FormularName}WorkItem/{$FormularName}Controller.cs" method="text">
+<xsl:call-template name="ViewController.cs">
+		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$FormularID"/>
+		<xsl:with-param name="FormularName" select="$FormularName"/>
+</xsl:call-template>
+</exsl:document>
 
-<xsl:template name="View">
-<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/>
-
-
-</xsl:template>
-
-<xsl:template name="Browse">
-<xsl:param name="ApplicationID"/><xsl:param name="ApplicationName"/><xsl:param name="FormularName"/>
+</xsl:for-each>
 
 
 </xsl:template>
