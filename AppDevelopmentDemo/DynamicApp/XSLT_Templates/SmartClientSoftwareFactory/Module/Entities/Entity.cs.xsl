@@ -85,6 +85,7 @@ namespace ShellApplication.Entities
 </xsl:choose>
 </xsl:for-each>
 
+		static private int ids = 0;
 		private int id = 0;
 
 		/// &lt;summary&gt;
@@ -161,6 +162,7 @@ namespace ShellApplication.Entities
 </xsl:choose>
 </xsl:for-each>)
 		{
+			id = <xsl:value-of select="$FormularName"/>.ids++;
 		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
 <xsl:variable name="TableName" select="@tablename"/>

@@ -61,6 +61,10 @@ namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 			{
 				throw new ArgumentNullException("<xsl:value-of select="$FormularName"/>");
 			}
+			
+			// Only populate once.
+			if (<xsl:value-of select="$FormularName"/>.Count == 0) 
+			{
 			<xsl:call-template name="Mock">
 		<xsl:with-param name="ApplicationID" select="//lbDMF/@applicationid"/>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
@@ -82,7 +86,7 @@ namespace ShellApplication.Browse<xsl:value-of select="$FormularName"/>WorkItem
 		<xsl:with-param name="FormularID" select="$FormularID"/>
 		<xsl:with-param name="EntityID" select="'3'"/>
 			</xsl:call-template>
-
+			}
 		}
 
 		/// &lt;summary&gt;
