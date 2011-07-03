@@ -15,7 +15,39 @@ namespace ShellApplication.Entities
 	public class <xsl:value-of select="$FormularName"/>
 	{
 		public static string DisplayMember {
-			get { throw new NotImplementedException("DisplayMember not implemented."); }
+			get 
+			{
+				string dm = "";
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+    </xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+				if (dm == "") dm = "<xsl:value-of select="@name"/>";
+			</xsl:when>
+			<xsl:when test="@dbtype='Binary'">
+			</xsl:when>
+			<xsl:otherwise>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+				dm += "_";
+				return dm;
+			}
 		}
 		<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 

@@ -34,7 +34,7 @@
 		{
 			this.tabWorkspace1 = new Microsoft.Practices.CompositeUI.WinForms.TabWorkspace();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.<xsl:value-of select="$FormularName"/>DetailView1 = new ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem.<xsl:value-of select="$FormularName"/>DetailView();
+			this.<xsl:value-of select="$FormularName"/>Details = new ShellApplication.View<xsl:value-of select="$FormularName"/>WorkItem.<xsl:value-of select="$FormularName"/>DetailView();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.smartPartPlaceholder1 = new Microsoft.Practices.CompositeUI.WinForms.SmartPartPlaceholder();
 			this.tabWorkspace1.SuspendLayout();
@@ -55,7 +55,7 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.<xsl:value-of select="$FormularName"/>DetailView1);
+			this.tabPage1.Controls.Add(this.<xsl:value-of select="$FormularName"/>Details);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -63,15 +63,15 @@
 			this.tabPage1.TabIndex = 1;
 			this.tabPage1.Text = "<xsl:value-of select="$FormularName"/> Details";
 			// 
-			// <xsl:value-of select="$FormularName"/>DetailView1
+			// <xsl:value-of select="$FormularName"/>Details
 			// 
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Description = "";
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Location = new System.Drawing.Point(3, 3);
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Name = "<xsl:value-of select="$FormularName"/>DetailView1";
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Size = new System.Drawing.Size(450, 284);
-			this.<xsl:value-of select="$FormularName"/>DetailView1.TabIndex = 0;
-			this.<xsl:value-of select="$FormularName"/>DetailView1.Title = "<xsl:value-of select="$FormularName"/> Details";
+			this.<xsl:value-of select="$FormularName"/>Details.Description = "";
+			this.<xsl:value-of select="$FormularName"/>Details.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.<xsl:value-of select="$FormularName"/>Details.Location = new System.Drawing.Point(3, 3);
+			this.<xsl:value-of select="$FormularName"/>Details.Name = "<xsl:value-of select="$FormularName"/>Details";
+			this.<xsl:value-of select="$FormularName"/>Details.Size = new System.Drawing.Size(450, 284);
+			this.<xsl:value-of select="$FormularName"/>Details.TabIndex = 0;
+			this.<xsl:value-of select="$FormularName"/>Details.Title = "<xsl:value-of select="$FormularName"/> Details";
 			// 
 			// tabPage2
 			// 
@@ -110,7 +110,7 @@
 
 		private Microsoft.Practices.CompositeUI.WinForms.TabWorkspace tabWorkspace1;
 		private System.Windows.Forms.TabPage tabPage1;
-		private <xsl:value-of select="$FormularName"/>DetailView <xsl:value-of select="$FormularName"/>DetailView1;
+		private <xsl:value-of select="$FormularName"/>DetailView <xsl:value-of select="$FormularName"/>Details;
 		private System.Windows.Forms.TabPage tabPage2;
 		private Microsoft.Practices.CompositeUI.WinForms.SmartPartPlaceholder smartPartPlaceholder1;
 

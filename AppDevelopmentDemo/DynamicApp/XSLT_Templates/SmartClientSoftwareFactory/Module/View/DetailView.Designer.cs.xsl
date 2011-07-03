@@ -224,7 +224,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="@name"/>_", true));
 			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
 			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
@@ -240,7 +240,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="@name"/>_", true));
 			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
 			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
@@ -251,7 +251,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="@name"/>_", true));
 			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
 			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
@@ -262,7 +262,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="@name"/>_", true));
 			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
 			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
@@ -273,7 +273,7 @@
 			// 
 			// <xsl:value-of select="$FormularName"/>TextBox
 			// 
-			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="$FormularName"/>", true));
+			this.<xsl:value-of select="@name"/>TextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.<xsl:value-of select="$FormularName"/>BindingSource, "<xsl:value-of select="@name"/>_", true));
 			this.<xsl:value-of select="@name"/>TextBox.Location = new System.Drawing.Point(27 + 100 + 5, yPos);
 			this.<xsl:value-of select="@name"/>TextBox.Name = "<xsl:value-of select="@name"/>TextBox";
 			this.<xsl:value-of select="@name"/>TextBox.Size = new System.Drawing.Size(100, 20);
