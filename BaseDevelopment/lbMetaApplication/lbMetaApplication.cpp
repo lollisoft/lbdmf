@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.183 $
+ * $Revision: 1.184 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.183 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.184 2011/07/10 06:17:06 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.184  2011/07/10 06:17:06  lollisoft
+ * Changed some logging messages to be verbose only.
+ *
  * Revision 1.183  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -762,7 +765,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 
-	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
+	_CL_VERBOSE << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
 void LB_STDCALL lb_MetaApplication::disableStatusbar() {
@@ -770,7 +773,7 @@ void LB_STDCALL lb_MetaApplication::disableStatusbar() {
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
-	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
+	_CL_VERBOSE << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
 
 	lbErrCodes err = ERR_NONE;
 
@@ -788,9 +791,9 @@ lb_MetaApplication::~lb_MetaApplication() {
 	}
 
 	if (moduleName) {
-		_CL_LOG << "Unload module " << moduleName << "." LOG_
+		_CL_VERBOSE << "Unload module " << moduleName << "." LOG_
 		lbUnloadModule(moduleName);
-		_CL_LOG << "Unloaded module." LOG_
+		_CL_VERBOSE << "Unloaded module." LOG_
 
 		free(moduleName);
 	}
@@ -3550,7 +3553,7 @@ lb_EventManager::lb_EventManager() {
 }
 
 lb_EventManager::~lb_EventManager() {
-	_CL_LOG << "lb_EventManager::~lb_EventManager() called." LOG_
+	_CL_VERBOSE << "lb_EventManager::~lb_EventManager() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
@@ -3713,10 +3716,10 @@ lb_Dispatcher::lb_Dispatcher() {
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
-	_CL_LOG << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
+	_CL_VERBOSE << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
 
-	if (evManager != NULL) _CL_LOG << "Event manager in dispatcher has " << evManager->getRefCount() << " references." LOG_
-	if (dispatcher != NULL) _CL_LOG << "Dispatcher list has " << dispatcher->getRefCount() << " references." LOG_
+	if (evManager != NULL) _CL_VERBOSE << "Event manager in dispatcher has " << evManager->getRefCount() << " references." LOG_
+	if (dispatcher != NULL) _CL_VERBOSE << "Dispatcher list has " << dispatcher->getRefCount() << " references." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/

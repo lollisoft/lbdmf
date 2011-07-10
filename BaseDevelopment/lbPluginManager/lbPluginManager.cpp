@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.81 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.82 2011/07/10 06:18:58 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.82  2011/07/10 06:18:58  lollisoft
+ * Changed some logging messages to be verbose only.
+ *
  * Revision 1.81  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -521,11 +524,11 @@ lbPluginManager::lbPluginManager() {
 	isUnitTestInitialized = false;
 	isServerInitialized = false;
 	REQUEST(getModuleInstance(), lb_I_String, MyPluginDir)
-	_CL_LOG << "lbPluginManager::lbPluginManager() called." LOG_
+	_CL_VERBOSE << "lbPluginManager::lbPluginManager() called." LOG_
 }
 
 lbPluginManager::~lbPluginManager() {
-	_CL_LOG << "lbPluginManager::~lbPluginManager() called." LOG_
+	_CL_VERBOSE << "lbPluginManager::~lbPluginManager() called." LOG_
 }
 
 lb_I_String* LB_STDCALL lbPluginManager::getPluginDirectory() {
