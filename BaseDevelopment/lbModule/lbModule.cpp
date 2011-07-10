@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.134 $
+ * $Revision: 1.135 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.134 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.135 2011/07/10 06:18:20 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.135  2011/07/10 06:18:20  lollisoft
+ * Changed logging message to be verbose only.
+ *
  * Revision 1.134  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -2192,7 +2195,7 @@ lbHCInterfaceRepository::lbHCInterfaceRepository() {
 }
 
 lbHCInterfaceRepository::~lbHCInterfaceRepository() {
-	_CL_LOG << "lbHCInterfaceRepository::~lbHCInterfaceRepository() called." LOG_
+	_CL_VERBOSE << "lbHCInterfaceRepository::~lbHCInterfaceRepository() called." LOG_
 	free(searchArgument);
 }
 
