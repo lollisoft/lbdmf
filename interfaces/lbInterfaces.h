@@ -2194,9 +2194,9 @@ public: \
 	} \
 	virtual ~singletonHolder_##name() { \
 		setLogActivated(true); \
-		_CL_LOG << "~singletonHolder_" << #name << "() called." LOG_ \
+		_CL_VERBOSE << "~singletonHolder_" << #name << "() called." LOG_ \
 		destroy(); \
-		_CL_LOG << "~singletonHolder_" << #name << "() leaving." LOG_ \
+		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
 		setLogActivated(false); \
 	} \
 	void destroy() { \
