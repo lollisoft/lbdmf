@@ -464,9 +464,11 @@ lb_I_Socket* lbSocket::accept()
 #ifdef WINDOWS
     /* accept the connection request when one
        is received */
+	   
     clientSocket=::accept(serverSocket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-    if (clientSocket == SOCKET_ERROR) {
+    if (clientSocket == INVALID_SOCKET) {
 		_LOG << "Error while accepting on socket" LOG_
+		return NULL;
 	}
 #endif
 /*...e*/
