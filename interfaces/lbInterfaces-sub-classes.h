@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.100 $
+ * $Revision: 1.101 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.100 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.101 2011/07/10 06:13:36 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.101  2011/07/10 06:13:36  lollisoft
+ * Added stroring database query objects into the parameter container. Not yet tested.
+ *
  * Revision 1.100  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -962,6 +965,9 @@ public:
 
 	virtual void LB_STDCALL setUAPLong(lb_I_String*& parameter, lb_I_Long*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPLong(lb_I_String*& parameter, lb_I_Long*& p) = 0;
+	
+	virtual void LB_STDCALL setUAPQuery(lb_I_String*& parameter, lb_I_Query*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPQuery(lb_I_String*& parameter, lb_I_Query*& p) = 0;
 	
 	/**
 	 * /brief Returns the number of parameters
