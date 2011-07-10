@@ -50,6 +50,7 @@ ALLTARGETS = \
 	lbDMFDataModel \
 	lbXSLTTransformer \
 	lbFileOperationsPlugin \
+	lbBasicEventHandlers \
 	DatabaseReport
 endif
 
@@ -68,6 +69,7 @@ ALLTARGETS = \
 	lbDMFDataModel \
 	lbXSLTTransformer \
 	lbFileOperationsPlugin \
+	lbBasicEventHandlers \
 	DatabaseReport
 endif
 
@@ -86,6 +88,7 @@ ALLTARGETS = \
 	lbDMFDataModel \
 	lbXSLTTransformer \
 	lbFileOperationsPlugin \
+	lbBasicEventHandlers \
 	DatabaseReport
 endif
 
@@ -104,6 +107,7 @@ ALLTARGETS = \
 	lbDMFDataModel \
 	lbXSLTTransformer \
 	lbFileOperationsPlugin \
+	lbBasicEventHandlers \
 	DatabaseReport
 endif
 
@@ -126,6 +130,7 @@ ALLTARGETS = \
 	DatabaseLayerGateway \
 	lbXSLTTransformer \
 	lbFileOperationsPlugin \
+	lbBasicEventHandlers \
 	DatabaseReport
 endif
 
@@ -146,6 +151,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+lbBasicEventHandlers: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 lbFileOperationsPlugin: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
