@@ -210,7 +210,7 @@ extern "C" DLLEXPORT void		LB_CDECL _uninitLocale() { uninitLocale(); }
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
-extern "C" DLLEXPORT char*		LB_CDECL _getOsType() { return getOsType(); }
+extern "C" DLLEXPORT const char*	LB_CDECL _getOsType() { return getOsType(); }
 
 #endif
 
