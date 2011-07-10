@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbobject.h,v 1.55 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbobject.h,v 1.56 2011/07/10 06:14:41 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.56  2011/07/10 06:14:41  lollisoft
+ * Added stroring database query objects into the parameter container. Not yet ready.
+ *
  * Revision 1.55  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -380,6 +383,9 @@ public:
 	virtual void LB_STDCALL setUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
 	virtual lbErrCodes LB_STDCALL getUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
 	
+	virtual void LB_STDCALL setUAPQuery(lb_I_String*& parameter, lb_I_Query*& p);
+	virtual lbErrCodes LB_STDCALL getUAPQuery(lb_I_String*& parameter, lb_I_Query*& p);
+
 	virtual int LB_STDCALL Count();
 	virtual lb_I_Container* LB_STDCALL getParameterList();
 

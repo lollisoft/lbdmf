@@ -752,6 +752,55 @@ lbErrCodes LB_STDCALL lbParameter::getUAPBoolean(lb_I_String*& parameter, lb_I_B
 	return ERR_NONE;
 }
 
+void LB_STDCALL lbParameter::setUAPQuery(lb_I_String*& parameter, lb_I_Query*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}
+
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+
+
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPQuery(lb_I_String*& parameter, lb_I_Query*& p) {
+	lbErrCodes err = ERR_NONE;
+
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+
+	UAP(lb_I_Unknown, uk_p_query)
+
+	uk_p_query = parameters->getElement(&key);
+
+	if (uk_p_query == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Query, _query)
+	QI(uk_p_query, lb_I_Query, _query)
+
+	if (_query.getPtr() != NULL) {
+		lb_I_Unknown* uktemp;
+		p->release(__FILE__, __LINE__);
+		p = _query.getPtr();
+		p->queryInterface("lb_I_Unknown", (void**) &uktemp, __FILE__, __LINE__);
+	}
+
+	return ERR_NONE;
+}
+
+
 void LB_STDCALL lbParameter::delParameter(lb_I_String*& parameter) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters != NULL) {
