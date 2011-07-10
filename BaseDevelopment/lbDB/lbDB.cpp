@@ -5615,7 +5615,7 @@ lbDatabase::lbDatabase() {
 }
 
 lbDatabase::~lbDatabase() {
-	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+	_CL_VERBOSE << "lbDatabase::~lbDatabase() called." LOG_
 	if (user) free(user);
 	if (db) free(db);
 }
