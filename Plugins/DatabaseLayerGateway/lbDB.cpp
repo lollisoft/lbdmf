@@ -2219,6 +2219,9 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 			}
 		} else {
 			wxString theQuery = szSql;
+			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
+				return ERR_DB_QUERYFAILED;
+			}
 			if (theQuery.Upper().Contains("DELETE")) {
 				_CL_VERBOSE << "lbDatabaseLayerQuery::query() DELETE statement issued that not has resulted in a resultset." LOG_
 				return ERR_NONE;
@@ -4762,12 +4765,12 @@ lbConnection::lbConnection() {
 }
 
 lbConnection::~lbConnection() {
-	_CL_LOG << "lbConnection::~lbConnection() called." LOG_
+	_CL_VERBOSE << "lbConnection::~lbConnection() called." LOG_
 	if (dbl) {
 		if (_dbname) {
-			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: " << _dbname << ")" LOG_
+			_CL_VERBOSE << "lbConnection::~lbConnection() closes dbl connection. (Database: " << _dbname << ")" LOG_
 		} else {
-			_CL_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: -)" LOG_
+			_LOG << "lbConnection::~lbConnection() closes dbl connection. (Database: -)" LOG_
 		}
 		try {
 			dbl->Close();
@@ -4778,9 +4781,9 @@ lbConnection::~lbConnection() {
 		}
 	} else {
 		if (_dbname) {
-			_CL_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set (" << _dbname << ")" LOG_
+			_CL_VERBOSE << "lbConnection::~lbConnection() Warning: No dbl connection was set (" << _dbname << ")" LOG_
 		} else {
-			_CL_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set." LOG_
+			_LOG << "lbConnection::~lbConnection() Warning: No dbl connection was set." LOG_
 		}
 	}
 	if (_dbname) free(_dbname);
@@ -4936,23 +4939,23 @@ lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() {
 	connPooling = NULL;
 	connected = false;
 	dbl = NULL;
-	_LOG << "lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() called." LOG_
 }
 
 lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() {
-	_CL_LOG << "lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::~lbDatabaseLayerDatabase() called." LOG_
 	if (db) free(db);
 	close();
 }
 
 void	LB_STDCALL lbDatabaseLayerDatabase::close() {
-	_CL_LOG << "lbDatabaseLayerDatabase::close() called." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerDatabase::close() called." LOG_
 	if (connPooling != NULL) {
-		_CL_LOG << "lbDatabaseLayerDatabase::close() Info: Connection pool initialized." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerDatabase::close() Info: Connection pool initialized." LOG_
 		connPooling->deleteAll();
 		connPooling--;
 		connPooling.resetPtr();
-		_CL_LOG << "lbDatabaseLayerDatabase::close() Info: Connection pool cleaned up." LOG_
+		_CL_VERBOSE << "lbDatabaseLayerDatabase::close() Info: Connection pool cleaned up." LOG_
 	}
 	try {
 		if (dbl) dbl->Close();
