@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.142 $
+# * $Revision: 1.143 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.142 2011/04/02 10:44:17 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.143 2011/07/10 06:20:57 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.143  2011/07/10 06:20:57  lollisoft
+# * Compile release mode.
+# *
 # * Revision 1.142  2011/04/02 10:44:17  lollisoft
 # * Now the UML based activities are reworked and they work while testing it against postbooks database.
 # *
@@ -570,8 +573,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
