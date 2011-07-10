@@ -308,6 +308,8 @@ TestFixtureFactory::TestFixtureFactory() {
 
 }
 
+TestFixtureFactory* fact = NULL;
+
 #ifdef __MINGW32__
 TestFixtureFactory& __cdecl theInstance()
 #endif
@@ -315,8 +317,10 @@ TestFixtureFactory& __cdecl theInstance()
 TestFixtureFactory& theInstance()
 #endif
 {
-	static TestFixtureFactory theFactory;
-	return theFactory;
+	//static TestFixtureFactory theFactory;
+	if (fact == NULL) fact = new TestFixtureFactory();
+	//return theFactory;
+	return *fact;
 }
 
 bool TestFixtureFactory::runTests()

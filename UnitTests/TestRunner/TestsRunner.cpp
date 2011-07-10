@@ -51,23 +51,12 @@ int main()
 
 		result = theInstance().runTests() ? 0 : -1;
 
-        printf("Unregister meta application.\n");
-		//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-		//meta->uninitialize();
-
-        printf("Unregister unit tests.\n");
         theInstance().unregisterTests();
 
-        printf("Unload plugins.\n");
 		PM->unload();
 	}
 
-
-    //setVerbose(true);
-	printf("Unload all other modules.\n");
 	unHookAll();
-    //setVerbose(false);
-
 
 	return result;
 }

@@ -500,6 +500,34 @@ public: \
 }; \
 static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
 
+/**
+ * Macro a usar després de cada classe de test
+ */
+#define DECLARE_FIXTURE( ConcreteTestFixture ) \
+\
+Test* Creador##ConcreteTestFixture() { return new ConcreteTestFixture; } \
+\
+class Registrador##ConcreteTestFixture \
+{ \
+public: \
+	Registrador##ConcreteTestFixture() \
+	{ \
+		theInstance().addFixtureCreator(Creador##ConcreteTestFixture); \
+	} \
+}; \
+Registrador##ConcreteTestFixture* estatic##ConcreteTestFixture = NULL; \
+\
+void StaticCreate##ConcreteTestFixture() { \
+	if (estatic##ConcreteTestFixture == NULL) estatic##ConcreteTestFixture = new Registrador##ConcreteTestFixture(); \
+}
+
+
+
+//static Registrador##ConcreteTestFixture estatic##ConcreteTestFixture;
+
+#define USE_FIXTURE( ConcreteTestFixture ) \
+	StaticCreate##ConcreteTestFixture();
+
 
 /**
  * Assert macros to use in test methods. An assert is a test condition

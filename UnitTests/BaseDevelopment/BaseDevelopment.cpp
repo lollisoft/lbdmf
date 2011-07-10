@@ -261,10 +261,8 @@ public:
 	{
 		puts("test_Hook_lbstrirstr_with_backslash");
 
-        setVerbose(true);
         char* test = "Path\\To\\DLL\\Test.dll";
         char* result = lbstrristr(test, "\\");
-        setVerbose(false);
 
         ASSERT_EQUALS(false, result == NULL)
         printf("Test for lbstrristr:%s == %s\n", result, "\\Test.dll");
@@ -385,6 +383,7 @@ public:
 		//remove(s->charrep());
 		printf("%s\n", s->charrep());
 		//ASSERT_EQUALS(false, FileExists(s->charrep()))
+		setLogActivated(false);
 	}
 
 public:
@@ -1223,6 +1222,7 @@ public:
 	TEST_FIXTURE( BaseDevelopmentDatabase )
 	{
 		TEST_CASE(test_Instantiate)
+
 #ifdef WINDOWS
 		TEST_CASE(test_SQLSERVER_setUser)
 		TEST_CASE(test_SQLSERVER_setDB)
@@ -1231,6 +1231,7 @@ public:
 		TEST_CASE(test_createTable_SQLSERVER_UnitTest)
 		TEST_CASE(test_SQLSERVER_listTables)
 #endif
+
 		TEST_CASE(test_PostgreSQL_setUser)
 		TEST_CASE(test_PostgreSQL_setDB)
 		TEST_CASE(test_login_PostgreSQL_UnitTest_failure)
@@ -1238,7 +1239,7 @@ public:
 		TEST_CASE(test_PostgreSQL_createTable_PostgreSQL_UnitTest)
 		TEST_CASE(test_PostgreSQL_listTables)
 
-
+// The first Sqlite base test will cause an application crash at exit, but the second will suceed.
 		TEST_CASE(test_Sqlite_FailingQuery)
 		TEST_CASE(test_Sqlite_ForeignKey)
 	}
@@ -1730,16 +1731,28 @@ public:
 
 
 
+DECLARE_FIXTURE( BaseDevelopmentHook )
+DECLARE_FIXTURE( BaseDevelopmentString )
+DECLARE_FIXTURE( BaseDevelopmentLogger )
+DECLARE_FIXTURE( BaseDevelopmentInputStream )
+DECLARE_FIXTURE( BaseDevelopmentContainer )
+DECLARE_FIXTURE( BaseDevelopmentEventManager )
+DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
+// The database tests are faulting at exit of the test application (the Sqlite failing query test is the cause).
+DECLARE_FIXTURE( BaseDevelopmentDatabase )
+
+__attribute__ ((constructor)) void ct() {
+	USE_FIXTURE( BaseDevelopmentHook )
+	USE_FIXTURE( BaseDevelopmentString )
+	USE_FIXTURE( BaseDevelopmentLogger )
+	USE_FIXTURE( BaseDevelopmentInputStream )
+	USE_FIXTURE( BaseDevelopmentContainer )
+	USE_FIXTURE( BaseDevelopmentEventManager )
+	USE_FIXTURE( BaseDevelopmentMetaApplication )
+	USE_FIXTURE( BaseDevelopmentDatabase )
+}
 
 
 
 
-REGISTER_FIXTURE( BaseDevelopmentHook );
-REGISTER_FIXTURE( BaseDevelopmentLogger );
-REGISTER_FIXTURE( BaseDevelopmentString );
-REGISTER_FIXTURE( BaseDevelopmentInputStream );
-REGISTER_FIXTURE( BaseDevelopmentContainer );
-REGISTER_FIXTURE( BaseDevelopmentMetaApplication );
-REGISTER_FIXTURE( BaseDevelopmentDatabase );
-REGISTER_FIXTURE( BaseDevelopmentEventManager );
 

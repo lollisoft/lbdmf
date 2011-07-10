@@ -717,6 +717,9 @@ public:
 
 
 
+DECLARE_FIXTURE( TestActions )
 
+__attribute__ ((constructor)) void ct() {
+	USE_FIXTURE( TestActions )
+}
 
-REGISTER_FIXTURE( TestActions );
