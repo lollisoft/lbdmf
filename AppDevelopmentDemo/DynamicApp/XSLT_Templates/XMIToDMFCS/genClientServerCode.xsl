@@ -28,6 +28,7 @@
 -->
 <!-- Template to create base class file for fixed database forms -->
 <xsl:import href="Interface.h.xsl"/>
+<xsl:import href="ApplicationInterfaces.h.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -68,8 +69,69 @@
 		<xsl:if test="$_AppName!=''"><xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/xmi:Extension/stereotype[@name='form']/../../../@name"/></xsl:if>		
 		</xsl:variable>
 		
--- Application is <xsl:value-of select="$AppName"/>. Package is <xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/../@name"/>
-	
+
+<xsl:variable name="OrginalApplicationName" select="$AppName"/>
+<xsl:variable name="ApplicationName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$OrginalApplicationName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		
+		-- Application is <xsl:value-of select="$AppName"/>. Package is <xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/../@name"/>
+
+<exsl:document href="./Interfaces/I{$ApplicationName}_Entities.h" method="text">
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
+// Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="ApplicationInterfaces.h">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
+</exsl:document>
+
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
 
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -98,35 +160,16 @@
 		<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
-<exsl:document href="./Interfaces/I{$FormularName}.h" method="text">
+<exsl:document href="./Interfaces/{$ApplicationName}/I{$FormularName}.h" method="text">
 <xsl:call-template name="Interface.h">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>
-
-
-<!--
-					<xsl:call-template name="importDMFForm">
-						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
-						<xsl:with-param name="ApplicationName" select="../@name"/>
-						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
-						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
-					</xsl:call-template>
--->
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
-<!--
-					<xsl:call-template name="importDMFReport">
-						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
-						<xsl:with-param name="ApplicationName" select="../@name"/>
-						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
-						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
-						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
-					</xsl:call-template>
--->
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
