@@ -34,6 +34,8 @@
 <xsl:import href="Server.h.xsl"/>
 <xsl:import href="Proxy.cpp.xsl"/>
 <xsl:import href="Server.cpp.xsl"/>
+<xsl:import href="ProxyModul.cpp.xsl"/>
+<xsl:import href="ServerModul.cpp.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -135,6 +137,18 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
+</exsl:document>
+<exsl:document href="./ServerPlugins/{$ApplicationName}/ServerModul.cpp" method="text">
+<xsl:call-template name="ServerModul.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/ProxyModul.cpp" method="text">
+<xsl:call-template name="ProxyModul.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
 </exsl:document>
 
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
