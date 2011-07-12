@@ -42,6 +42,9 @@
 <xsl:import href="ServerCollection.h.xsl"/>
 <xsl:import href="ProxyCollection.cpp.xsl"/>
 <xsl:import href="ServerCollection.cpp.xsl"/>
+<xsl:import href="ProxyMakefileModule.xsl"/>
+<xsl:import href="ServerMakefileModule.xsl"/>
+
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -152,6 +155,18 @@
 </exsl:document>
 <exsl:document href="./ProxyPlugins/{$ApplicationName}/ProxyModul.cpp" method="text">
 <xsl:call-template name="ProxyModul.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerPlugins/{$ApplicationName}/makefile.module" method="text">
+<xsl:call-template name="ServerMakefileModule">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/makefile.module" method="text">
+<xsl:call-template name="ProxyMakefileModule">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
