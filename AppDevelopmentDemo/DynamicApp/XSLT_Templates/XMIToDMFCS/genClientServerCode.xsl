@@ -38,6 +38,10 @@
 <xsl:import href="ServerModul.cpp.xsl"/>
 <xsl:import href="ProxyPlugin.cpp.xsl"/>
 <xsl:import href="ServerPlugin.cpp.xsl"/>
+<xsl:import href="ProxyCollection.h.xsl"/>
+<xsl:import href="ServerCollection.h.xsl"/>
+<xsl:import href="ProxyCollection.cpp.xsl"/>
+<xsl:import href="ServerCollection.cpp.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -225,6 +229,34 @@
 </exsl:document>
 <exsl:document href="./ServerPlugins/{$ApplicationName}/ProxyPlugin.cpp" method="text">
 <xsl:call-template name="ProxyPlugin.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerCollections/{$ApplicationName}/ServerCollection.cpp" method="text">
+<xsl:call-template name="ServerCollection.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerCollections/{$ApplicationName}/ProxyCollection.cpp" method="text">
+<xsl:call-template name="ProxyCollection.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerCollections/{$ApplicationName}/ServerCollection.h" method="text">
+<xsl:call-template name="ServerCollection.h">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerCollections/{$ApplicationName}/ProxyCollection.h" method="text">
+<xsl:call-template name="ProxyCollection.h">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
