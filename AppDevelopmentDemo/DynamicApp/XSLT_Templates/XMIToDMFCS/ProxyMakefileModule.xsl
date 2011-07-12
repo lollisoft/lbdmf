@@ -77,89 +77,140 @@
 <xsl:template name="ProxyMakefileModule">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
-	<xsl:param name="FormName"/>
-///TODO: Implement proxy plugin registration code.	
-#ifdef bla	
-/** \brief class <xsl:value-of select="$FormName"/>.
- * Documentation for <xsl:value-of select="$FormName"/>
- */
-class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
-public:
+	<xsl:param name="FormName"/># Define your module based settings
 
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#			 Ginsterweg 4
+#
+#			 65760 Eschborn (germany)
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
 
-</xsl:for-each>
-};
+OBJDEP=
+SLASH=/
+WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
+wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib
+#	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26$(WX_DEBUG).lib
+	
+LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
+	libr $(WATCOMLIBS)$(SLASH)user32.lib \
+	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comdlg32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comctl32.lib \
+	libr $(WATCOMLIBS)$(SLASH)advapi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)shell32.lib \
+	libr $(WATCOMLIBS)$(SLASH)ole32.lib \
+	libr $(WATCOMLIBS)$(SLASH)oleaut32.lib \
+	libr $(WATCOMLIBS)$(SLASH)uuid.lib \
+	libr $(WATCOMLIBS)$(SLASH)rpcrt4.lib \
+	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
+	libr $(WATCOMLIBS)$(SLASH)winmm.lib
 
-/** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
- * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
- */
-class <xsl:value-of select="$FormName"/>_ProtocolTarget :
-public lb_I_ProtocolTarget {
-public:
 
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT) /I $(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT) /NODEFAULT:MSVCRTD
+MODULE=wxwrapper
+APPVER=3.50 # 4.0
+CPU=i386
+LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
+/pdb:"$(OUTDIR)\$(MODULE).pdb" \
+/out:"$(OUTDIR)\$(MODULE).exe" \
+/INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
+endif
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL=$(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include -i=$(DEVROOT_MAKE)\\Projects\\CPP\\BaseDevelopment\\lbcs -i=$(DEVROOT_MAKE)\\Projects\\CPP\\ServerPlugins\\ApplicationBus -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbcs -i=$(DEVROOT_MAKE)$(RELPATH)/ServerPlugins/ApplicationBus -I=$(DEVROOT_MAKE)$(RELPATH)/AppDevelopment/Interfaces
 
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
+		
+C_DLLOPS= $(C_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
+CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
+		
+CPP_DLLOPS= $(CPP_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
 
-</xsl:for-each>
-};
-#endif
+ifeq ($MODE), _DEBUG)
+C_EXEOPS+= /D__WXDEBUG__
+C_DLLOPS+= /D__WXDEBUG__
+CPP_EXEOPS+= /D__WXDEBUG__
+CPP_DLLOPS+= /D__WXDEBUG__
+endif
+		
+LINKFLAGS = $(L_EXEOPS)
+endif
+
+endif
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
+OBJDEP=
+C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
+OBJDEP=
+C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=
+L_OPS=$(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=$(HOME)/lib/lbHook.so 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+endif    
+
+endif
 </xsl:template>
 </xsl:stylesheet>
