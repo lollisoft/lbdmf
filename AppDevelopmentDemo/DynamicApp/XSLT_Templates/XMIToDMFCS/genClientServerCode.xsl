@@ -36,6 +36,8 @@
 <xsl:import href="Server.cpp.xsl"/>
 <xsl:import href="ProxyModul.cpp.xsl"/>
 <xsl:import href="ServerModul.cpp.xsl"/>
+<xsl:import href="ProxyPlugin.cpp.xsl"/>
+<xsl:import href="ServerPlugin.cpp.xsl"/>
 
 <xsl:import href="XMISettings.xsl"/>
 
@@ -209,6 +211,20 @@
 </exsl:document>
 <exsl:document href="./ServerPlugins/{$ApplicationName}/{$FormularName}Server.cpp" method="text">
 <xsl:call-template name="Server.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerPlugins/{$ApplicationName}/ServerPlugin.cpp" method="text">
+<xsl:call-template name="ServerPlugin.cpp">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+<exsl:document href="./ServerPlugins/{$ApplicationName}/ProxyPlugin.cpp" method="text">
+<xsl:call-template name="ProxyPlugin.cpp">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
