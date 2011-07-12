@@ -74,7 +74,7 @@
 </xsl:template>
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="Proxy.h">
+<xsl:template name="ProxyCollection.h">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
