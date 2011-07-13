@@ -92,10 +92,16 @@ public:
 <xsl:variable name="backendType">
 <xsl:if test="./type/@xmi:idref!=''">
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
 <xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
 </xsl:if>
 </xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
+</xsl:if>
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name='ForeignKey'">
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Integer</xsl:if>
+</xsl:if>
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Collection</xsl:if>
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 	<xsl:choose>
@@ -107,14 +113,15 @@ public:
 	</xsl:choose>
 </xsl:if>
 </xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
+<xsl:if test="@name!=''">
+<xsl:value-of select="'    '"/>/** \brief Get the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if> <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
+<xsl:value-of select="'    '"/>/** \brief Set the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if> <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
+</xsl:if>
 </xsl:for-each>
 };
 
@@ -132,10 +139,16 @@ public:
 <xsl:variable name="backendType">
 <xsl:if test="./type/@xmi:idref!=''">
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
 <xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
 </xsl:if>
 </xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
+</xsl:if>
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name='ForeignKey'">
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Integer</xsl:if>
+</xsl:if>
+<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Collection</xsl:if>
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 	<xsl:choose>
@@ -148,13 +161,15 @@ public:
 </xsl:if>
 </xsl:variable>
 
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
+<xsl:if test="@name!=''">
+<xsl:value-of select="'    '"/>/** \brief Get the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if><xsl:value-of select="' '"/><xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
+<xsl:value-of select="'    '"/>/** \brief Set the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if><xsl:value-of select="' '"/><xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
+</xsl:if>
 
 </xsl:for-each>
 };
