@@ -22,7 +22,8 @@
 IMPLEMENT_FUNCTOR(instanceOfFaxNumber, FaxNumber)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(FaxNumber)
-        ADD_INTERFACE(lb_I_FaxNumber_ProtocolTarget)
+	ADD_INTERFACE(lb_I_ProtocolTarget)
+	ADD_INTERFACE(lb_I_FaxNumber_ProtocolTarget)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL FaxNumber::setData(lb_I_Unknown* uk) {
@@ -34,6 +35,7 @@ lbErrCodes LB_STDCALL FaxNumber::setData(lb_I_Unknown* uk) {
 FaxNumber::FaxNumber() {
 	ref = STARTREF;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, connections)
+	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 }
 
 FaxNumber::~FaxNumber() {
@@ -44,9 +46,18 @@ char* FaxNumber::getServiceName() {
         return "localhost/FaxNumber";
 }
 
-lbErrCodes LB_STDCALL FaxNumber::registerProtocols(lb_I_ProtocolManager* protoMgr) {
+lbErrCodes LB_STDCALL FaxNumber::registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) {
 
-        protoMgr->addProtocolHandler("AskForFaxNumber", this, (lbProtocolCallback) &FaxNumber::_AskForFaxNumber);
+		UAP_REQUEST(getModuleInstance(), lb_I_String, protocolScope)
+		
+		*ServerInstance = serverInstance;
+		
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "AskForFaxNumber";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &FaxNumber::_AskForFaxNumber);
 
         return ERR_NONE;
 }

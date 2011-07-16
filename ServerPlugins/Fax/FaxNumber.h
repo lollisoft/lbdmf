@@ -16,11 +16,18 @@ public:
         DECLARE_LB_UNKNOWN()
 
         char* LB_STDCALL getServiceName();
-        lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr);
+        lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);
 
       
       lbErrCodes LB_STDCALL _AskForFaxNumber(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
       void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber);
+      
+private:
+        UAP(lb_I_Container, connections)
+        lbErrCodes LB_STDCALL HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
+        lbErrCodes LB_STDCALL HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
+		
+		UAP(lb_I_String, ServerInstance)
       
 };
 
