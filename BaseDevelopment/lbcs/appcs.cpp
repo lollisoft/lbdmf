@@ -1200,7 +1200,7 @@ char* LB_STDCALL lbAppServer::getServiceName() {
 	return "localhost/busmaster";
 }
 
-lbErrCodes LB_STDCALL lbAppServer::registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) {
+lbErrCodes LB_STDCALL lbAppServer::registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) {
 	protoMgr->addProtocolHandler("Connect", this, (lbProtocolCallback) &lbAppServer::HandleConnect);
 	protoMgr->addProtocolHandler("Disconnect", this, (lbProtocolCallback) &lbAppServer::HandleDisconnect);
 	return ERR_NONE;
@@ -1210,7 +1210,7 @@ void LB_STDCALL lbAppServer::autostartServerPlugins(bool start) {
 
 }
 
-lbErrCodes LB_STDCALL lbAppServer::activateServerPlugin(char* name) {
+lbErrCodes LB_STDCALL lbAppServer::activateServerPlugin(const char* name) {
 	return ERR_NONE;
 }
 

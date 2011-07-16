@@ -120,7 +120,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL autostartServerPlugins(bool start);
-	lbErrCodes LB_STDCALL activateServerPlugin(char* name);
+	lbErrCodes LB_STDCALL activateServerPlugin(const char* name);
 
 	void LB_STDCALL run(); // called from main or thread
 
@@ -141,7 +141,7 @@ public:
 	lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result);
 
 	char* LB_STDCALL getServiceName();
-	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance);	                  
+	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);	                  
 
 	/**
 	 * Called from run() and gives a lb_I_Transfer instance.
