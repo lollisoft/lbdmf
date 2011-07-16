@@ -387,7 +387,11 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) {
-
+<xsl:call-template name="RequestEntityByID">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FunctionName">last_<xsl:value-of select="@name"/></xsl:with-param>
+</xsl:call-template>
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) {
@@ -439,6 +443,90 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 	user_info-&gt;add(requestString-&gt;charrep());
 
 	// Code to map additional parameters
+
+	// Code to send the request
+	
+	ABSConnection-&gt;init(NULL);
+	
+	*ABSConnection &lt;&lt; *&amp;user_info;
+	
+	if (ABSConnection-&gt;getLastError() != ERR_NONE) {
+	    _LOG &lt;&lt; "Error in sending <xsl:value-of select="$FunctionName"/> data" LOG_
+	}
+	
+	*ABSConnection &gt;&gt; *&amp;result;
+
+	if (ABSConnection-&gt;getLastError() != ERR_NONE) {
+	    _LOG &lt;&lt; "Error in recieving <xsl:value-of select="$FunctionName"/> answer" LOG_
+	}
+
+	ABSConnection-&gt;close();
+	
+	// Code to read back data
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
+<xsl:if test="@name!=''">
+	UAP_REQUEST(getModuleInstance(), <xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
+</xsl:if>
+</xsl:if>
+</xsl:for-each>
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:choose>
+<xsl:when test="$backendType='lb_I_Collection'">
+</xsl:when>
+<xsl:when test="$backendType='lb_I_String'">
+<xsl:if test="@name!=''">
+	char* _<xsl:value-of select="@name"/> = NULL;
+	if (result-&gt;requestString("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
+		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
+	}
+</xsl:if>
+</xsl:when>
+<xsl:when test="$backendType='lb_I_Integer'">
+<xsl:if test="@name!=''">
+	int _<xsl:value-of select="@name"/> = NULL;
+	if (result-&gt;requestInteger("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
+		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
+	}
+</xsl:if>
+</xsl:when>
+</xsl:choose>
+
+</xsl:for-each>
+</xsl:template>
+
+<xsl:template name="RequestEntityByID">
+	<xsl:param name="ApplicationName"/>
+	<xsl:param name="FormularID"/>
+	<xsl:param name="FunctionName"/>
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	
+	
+	ABSConnection-&gt;gethostname(*&amp;temp);
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
+	
+	user_info-&gt;setServerSide(0);
+	result-&gt;setServerSide(0);
+	
+	
+	user_info-&gt;setClientPid(lbGetCurrentProcessId());
+	user_info-&gt;setClientTid(lbGetCurrentThreadId());
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
+	
+	*requestString = serverInstance-&gt;charrep();
+	*requestString += ".<xsl:value-of select="$ApplicationName"/>.<xsl:value-of select="$FunctionName"/>";
+	
+	user_info-&gt;add(requestString-&gt;charrep());
+
+	// Code to map additional parameters
+
+    user_info->add("id");
+    user_info->add(*&amp;ID);
 
 	// Code to send the request
 	
