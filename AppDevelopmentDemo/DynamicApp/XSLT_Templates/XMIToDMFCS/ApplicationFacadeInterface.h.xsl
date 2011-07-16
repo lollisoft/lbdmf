@@ -53,16 +53,14 @@
 </xsl:template>
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="ApplicationFacadeProxy.h">
+<xsl:template name="ApplicationFacadeInterface.h">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="ApplicationName"/>
-	<xsl:param name="FormularID"/>/** \brief class <xsl:value-of select="$ApplicationName"/>FacadeProxy.
- * The <xsl:value-of select="$ApplicationName"/>FacadeProxy defines a thin facade around the internals of the application.
+	<xsl:param name="FormularID"/>/** \brief class lb_I_<xsl:value-of select="$ApplicationName"/>.
+ * The lb_I_<xsl:value-of select="$ApplicationName"/> interface defines a thin facade around the internals of the application.
  */
-class <xsl:value-of select="$ApplicationName"/>FacadeProxy
-        : public 
-		lb_I_Proxy,
-		lb_I_<xsl:value-of select="$ApplicationName"/> {
+class lb_I_<xsl:value-of select="$ApplicationName"/> :
+public lb_I_Unknown {
 public:
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -94,58 +92,56 @@ public:
 	/** \brief Open a cursor <xsl:value-of select="@name"/>.
 	 * This will open a cursor based mode.
 	 */
-	lbErrCodes open_<xsl:value-of select="@name"/>();
+	lbErrCodes open_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Closes a cursor <xsl:value-of select="@name"/>.
 	 * This will close a cursor based mode.
 	 */
-	lbErrCodes close_<xsl:value-of select="@name"/>();
+	lbErrCodes close_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* first_<xsl:value-of select="@name"/>();
+	lb_I_<xsl:value-of select="@name"/>* first_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* previous_<xsl:value-of select="@name"/>();
+	lb_I_<xsl:value-of select="@name"/>* previous_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* next_<xsl:value-of select="@name"/>();
+	lb_I_<xsl:value-of select="@name"/>* next_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* last_<xsl:value-of select="@name"/>();
+	lb_I_<xsl:value-of select="@name"/>* last_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Get one <xsl:value-of select="@name"/> by their ID.
 	 * This will be used to edit a specific entiy by their id.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* get_<xsl:value-of select="@name"/>(lb_I_Integer* ID);
+	lb_I_<xsl:value-of select="@name"/>* get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
 
 	/** \brief Store this <xsl:value-of select="@name"/> entity.
 	 * This will save the entity.
 	 */
-	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity);
+	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
 
 	/** \brief Store these <xsl:value-of select="@name"/> entities.
 	 * This will save the entity.
 	 */
-	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_Container* entities);
+	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
 
 	/** \brief Get all <xsl:value-of select="@name"/> by offset and amount.
 	 * The entities are stored by their ID ad key.
 	 */
-	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount);
+	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
 
 	/** \brief Get all <xsl:value-of select="@name"/> by the given search criteria.
 	 * The entities are stored by their ID ad key.
 	 */
-	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria);
+	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
 };
-
-DECLARE_FUNCTOR(instanceOf<xsl:value-of select="$ApplicationName"/>FacadeProxy)
 </xsl:template>
 </xsl:stylesheet>

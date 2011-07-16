@@ -45,6 +45,7 @@
 <xsl:import href="ProxyMakefileModule.xsl"/>
 <xsl:import href="ServerMakefileModule.xsl"/>
 
+<xsl:import href="ApplicationFacadeInterface.h.xsl"/>
 <xsl:import href="ApplicationFacadeProxy.h.xsl"/>
 
 
@@ -113,7 +114,14 @@
 		
 		-- Application is <xsl:value-of select="$AppName"/>. Package is <xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/../@name"/>
 
-<exsl:document href="./Interfaces/I{$ApplicationName}_FacadeProry.h" method="text">
+<exsl:document href="./Interfaces/I{$ApplicationName}.h" method="text">
+<xsl:call-template name="ApplicationFacadeInterface.h">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_FacadeProry.h" method="text">
 <xsl:call-template name="ApplicationFacadeProxy.h">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
