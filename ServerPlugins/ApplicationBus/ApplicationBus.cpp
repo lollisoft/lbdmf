@@ -289,7 +289,9 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
       
 
 lb_I_String* LB_STDCALL ApplicationBus::findBackend(char* service) {
-	_LOG << "ApplicationBus::findBackend(" << service << ") called." LOG_
+	setLogActivated(true);
+	_CL_LOG << "ApplicationBus::findBackend(" << service << ") called." LOG_
+	setLogActivated(false);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	
 	*backend = "busmaster/lbDMFManager";
@@ -330,7 +332,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
 	backend = findBackend(service);
 
 
-	result->add("service");
+	result->add("backend");
 	result->add(backend->charrep());
 
     return err;
