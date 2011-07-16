@@ -328,7 +328,7 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
 	return backend.getPtr();
 }
       
-void LB_STDCALL ApplicationBusProxy::registerBackend(char* backend, char* server = NULL) {
+void LB_STDCALL ApplicationBusProxy::registerBackend(char* backend, char* server) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	
