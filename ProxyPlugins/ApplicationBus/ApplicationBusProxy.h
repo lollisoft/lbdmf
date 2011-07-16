@@ -31,7 +31,7 @@ public:
 		
 		lb_I_String* LB_STDCALL findBackend(char* service);
       
-
+		void LB_STDCALL registerBackend(char* backend, char* server = NULL);
 private:
 	int Connect();
 	int Disconnect();

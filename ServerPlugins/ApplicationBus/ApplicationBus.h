@@ -27,6 +27,9 @@ public:
 		lbErrCodes LB_STDCALL _findBackend(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lb_I_String* LB_STDCALL findBackend(char* services);
       
+		lbErrCodes LB_STDCALL _registerBackend(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
+		lb_I_String* LB_STDCALL registerBackend(char* backend, char* server)
+      
 private:
         UAP(lb_I_Container, connections)
         lbErrCodes LB_STDCALL HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);

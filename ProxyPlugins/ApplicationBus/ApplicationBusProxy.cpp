@@ -328,7 +328,56 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
 	return backend.getPtr();
 }
       
+void LB_STDCALL ApplicationBusProxy::registerBackend(char* backend, char* server = NULL) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	
+	
+	ABSConnection->gethostname(*&temp);
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
+	
+	user_info->setServerSide(0);
+	result->setServerSide(0);
+	
+	
+	user_info->setClientPid(lbGetCurrentProcessId());
+	user_info->setClientTid(lbGetCurrentThreadId());
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
+	
+	*requestString = serverInstance->charrep();
+	*requestString += ".ApplicationBus.registerBackend";
+	
+	user_info->add(requestString->charrep());
+	
+    user_info->add("backend");
+    user_info->add(backend);
+	
+    user_info->add("server");
+	if (server == NULL) {
+		user_info->add("");
+    } else {
+		user_info->add(server);
+	}
+	
+	ABSConnection->init(NULL);
+	
+	*ABSConnection << *&user_info;
+	
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in sending registerBackend data" LOG_
+	}
+	
+	*ABSConnection >> *&result;
+
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in recieving registerBackend answer" LOG_
+	}
+
+	ABSConnection->close();
+}
+	  
+	  
 class lbPluginApplicationBusProxy : public lb_I_PluginImpl {
 public:
 	lbPluginApplicationBusProxy();

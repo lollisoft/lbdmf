@@ -70,6 +70,13 @@ lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* pr
 		*protocolScope += "findBackend";
         protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_findBackend);
 
+		*protocolScope = serverInstance;
+		*protocolScope += ".";
+		*protocolScope += getClassName();
+		*protocolScope += ".";
+		*protocolScope += "registerBackend";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_registerBackend);
+
         return ERR_NONE;
 }
 
@@ -289,9 +296,6 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
       
 
 lb_I_String* LB_STDCALL ApplicationBus::findBackend(char* service) {
-	setLogActivated(true);
-	_CL_LOG << "ApplicationBus::findBackend(" << service << ") called." LOG_
-	setLogActivated(false);
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	
 	*backend = "busmaster/lbDMFManager";
@@ -334,6 +338,63 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
 
 	result->add("backend");
 	result->add(backend->charrep());
+
+    return err;
+}
+      
+
+lb_I_String* LB_STDCALL ApplicationBus::registerBackend(char* backend, char* server) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, _backend)
+	
+	if (server != NULL && strcmp(server, "") != 0) {
+		*_backend += server;
+		*_backend += "/";
+		*_backend += backend;
+	} else {
+		*_backend = "busmaster/";
+		*_backend += backend;
+	}
+	
+	backend++;
+	return backend.getPtr();
+}
+lbErrCodes LB_STDCALL ApplicationBus::_registerBackend(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
+	LB_PACKET_TYPE type;
+    lbErrCodes err = ERR_NONE;
+
+
+	unsigned long pid = 0;
+	unsigned long tid = 0;
+
+	char* backend;
+	char* server;
+	    
+
+/*...sfindBackend proto:0:*/
+/*
+	add("registerBackend")
+	add("Your registerBackend message");
+*/
+/*...e*/
+
+	if (request->requestString("BusMaster.ApplicationBus.registerBackend") != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: registerBackend function identifer not sent", "ApplicationBus::registerBackend(...)");
+		return ERR_TRANSFER_PROTOCOL;
+	}
+
+    // requestString allocates memory for the parameter
+	if (request->requestString("backend", backend) != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: backend parameter not sent", "ApplicationBus::registerBackend(...)");
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+    // requestString allocates memory for the parameter
+	if (request->requestString("server", server) != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: backend parameter not sent", "ApplicationBus::registerBackend(...)");
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+	registerBackend(backend, server);
 
     return err;
 }
