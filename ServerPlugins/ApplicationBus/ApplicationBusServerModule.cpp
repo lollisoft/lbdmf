@@ -176,6 +176,7 @@ public:
 	char* LB_STDCALL getServiceName();
 	void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr, char* serverInstance);
 
+	void LB_STDCALL install();
 private:
 	UAP(lb_I_Container, protocolHandlers)
 	UAP(lb_I_Container, protocolHandlerInstances)
@@ -203,6 +204,10 @@ lbServerModul::~lbServerModul() {
 
 void LB_STDCALL lbServerModul::initialize() {
 	enumPlugins();
+}
+
+void LB_STDCALL lbServerModul::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbServerModul::setData(lb_I_Unknown* uk) {

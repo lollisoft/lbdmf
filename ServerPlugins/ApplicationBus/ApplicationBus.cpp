@@ -42,27 +42,13 @@ char* ApplicationBus::getServiceName() {
         return "localhost/ApplicationBus";
 }
 
-lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr, char* serverInstance) {
+lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) {
 		_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, protocolScope)
 		
 		*ServerInstance = serverInstance;
 		
-		*protocolScope = serverInstance;
-		*protocolScope += ".";
-		*protocolScope += getClassName();
-		*protocolScope += ".";
-		*protocolScope += "getServerName";
-        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServerName);
-
-		*protocolScope = serverInstance;
-		*protocolScope += ".";
-		*protocolScope += getClassName();
-		*protocolScope += ".";
-		*protocolScope += "getServiceName";
-        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServiceName);
-
 		*protocolScope = serverInstance;
 		*protocolScope += ".";
 		*protocolScope += getClassName();
@@ -81,35 +67,11 @@ lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* pr
 		*protocolScope += ".";
 		*protocolScope += getClassName();
 		*protocolScope += ".";
-		*protocolScope += "getServices";
-        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServices);
-
-		*protocolScope = serverInstance;
-		*protocolScope += ".";
-		*protocolScope += getClassName();
-		*protocolScope += ".";
-		*protocolScope += "getServiceForProtocol";
-        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_getServiceForProtocol);
+		*protocolScope += "findBackend";
+        protoMgr->addProtocolHandler(protocolScope->charrep(), this, (lbProtocolCallback) &ApplicationBus::_findBackend);
 
         return ERR_NONE;
 }
-
-lbErrCodes LB_STDCALL ApplicationBus::_getServerName(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
-	return ERR_NONE;
-}
-
-lb_I_String* LB_STDCALL ApplicationBus::getServerName(char* applicationName) {
-	return NULL;
-}
-		
-lbErrCodes LB_STDCALL ApplicationBus::_getServiceName(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
-	return ERR_NONE;
-}
-
-lb_I_String* LB_STDCALL ApplicationBus::getServiceName(char* applicationName) {
-	return NULL;
-}
-
 
 lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
 	lbErrCodes err = ERR_NONE;
@@ -325,74 +287,53 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
     return err;
 }
       
-void LB_STDCALL ApplicationBus::getServices(char* services) {
 
+lb_I_String* LB_STDCALL ApplicationBus::findBackend(char* service) {
+	_LOG << "ApplicationBus::findBackend(" << service << ") called." LOG_
+	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
+	
+	*backend = "busmaster/lbDMFManager";
+	
+	backend++;
+	return backend.getPtr();
 }
-lbErrCodes LB_STDCALL ApplicationBus::_getServices(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
+lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
     lbErrCodes err = ERR_NONE;
+	UAP(lb_I_String, backend)
 
 
 	unsigned long pid = 0;
 	unsigned long tid = 0;
 
-char* services;
+	char* service;
 	    
 
-/*...sEcho proto:0:*/
+/*...sfindBackend proto:0:*/
 /*
-	add("Echo")
-	add("Your echo message");
+	add("findBackend")
+	add("Your findBackend message");
 */
 /*...e*/
 
-getServices(services);
-
-
-	result->add("services");
-	result->add(services);
-	free(services);
-	    
-
-    return err;
-}
-      
-void LB_STDCALL ApplicationBus::getServiceForProtocol(char* protocol, char* service) {
-
-}
-lbErrCodes LB_STDCALL ApplicationBus::_getServiceForProtocol(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
-	LB_PACKET_TYPE type;
-    lbErrCodes err = ERR_NONE;
-char* protocol;
-	    
-
-	unsigned long pid = 0;
-	unsigned long tid = 0;
-
-char* service;
-	    
-
-/*...sEcho proto:0:*/
-/*
-	add("Echo")
-	add("Your echo message");
-*/
-/*...e*/
-
-
-    // requestString allocates memory for the parameter
-	if (request->requestString("protocol", protocol) != ERR_NONE) {
-		result->makeProtoErrAnswer("Error: protocol parameter not sent", "ApplicationBus::getServiceForProtocol(...)");
+	if (request->requestString("BusMaster.ApplicationBus.findBackend") != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: findBackend function identifer not sent", "ApplicationBus::findBackend(...)");
 		return ERR_TRANSFER_PROTOCOL;
 	}
-	    getServiceForProtocol(protocol, service);
+
+    // requestString allocates memory for the parameter
+	if (request->requestString("service", service) != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: service parameter not sent", "ApplicationBus::findBackend(...)");
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+	backend = findBackend(service);
 
 
 	result->add("service");
-	result->add(service);
-	free(service);
-	    
+	result->add(backend->charrep());
 
     return err;
 }
       
+	  
