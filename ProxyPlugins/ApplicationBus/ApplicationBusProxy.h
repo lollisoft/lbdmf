@@ -17,21 +17,19 @@ public:
         DECLARE_LB_UNKNOWN()
 
 		// Lookup the server for a class name		
-		lb_I_String* LB_STDCALL getServerName(char* applicationName);
+		//lb_I_String* LB_STDCALL getServerName(char* applicationName);
 		
 		// Lookup the service for a class name		
-		lb_I_String* LB_STDCALL getServiceName(char* applicationName);
+		//lb_I_String* LB_STDCALL getServiceName(char* applicationName);
 		
 		// Return the server instance for the given class name.
-		lb_I_String* LB_STDCALL getServerInstance(char* className);
+		//lb_I_String* LB_STDCALL getServerInstance(char* className);
       
 		void LB_STDCALL AnounceUser(char* name, char* password);
       
 		void LB_STDCALL Echo(char* text);
-      
-		void LB_STDCALL getServices(char* services);
-      
-		void LB_STDCALL getServiceForProtocol(char* protocol, char* service);
+		
+		lb_I_String* LB_STDCALL findBackend(char* service);
       
 
 private:

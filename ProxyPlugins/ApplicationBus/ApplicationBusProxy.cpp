@@ -274,65 +274,58 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	
 }
       
-void LB_STDCALL ApplicationBusProxy::getServices(char* services) {
+lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
-
+	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
+	
+	
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
-		
-    user_info->add("ApplicationBus.getServices");
+	
+	user_info->setServerSide(0);
+	result->setServerSide(0);
+	
+	
+	user_info->setClientPid(lbGetCurrentProcessId());
+	user_info->setClientTid(lbGetCurrentThreadId());
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
+	
+	*requestString = serverInstance->charrep();
+	*requestString += ".ApplicationBus.findBackend";
+	
+	user_info->add(requestString->charrep());
+	
+    user_info->add("service");
+    user_info->add(service);
+	
 	ABSConnection->init(NULL);
+	
 	*ABSConnection << *&user_info;
-	if (ABSConnection->getLastError() != ERR_NONE) 
-	    _LOG << "Error in sending getServices data" LOG_
-
+	
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in sending Echo data" LOG_
+	}
+	
 	*ABSConnection >> *&result;
-	if (ABSConnection->getLastError() != ERR_NONE)
-	    _LOG << "Error in recieving getServices answer" LOG_
-	
 
-        if (result->requestString("services", services) != ERR_NONE) {
-            _LOG << "Error in recieving parameter from getServices. Parameter 'services' wrong or not given." LOG_
-            return;
-        } else {
-            _CL_LOG << "Parameter 'services' = '" << services << "'" LOG_
-        }
-	    
-	
-}
-      
-void LB_STDCALL ApplicationBusProxy::getServiceForProtocol(char* protocol, char* service) {
-	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	if (ABSConnection->getLastError() != ERR_NONE) {
+	    _LOG << "Error in recieving Echo answer" LOG_
+	}
 
-	ABSConnection->gethostname(*&temp);
-	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
-		
-    user_info->add("ApplicationBus.getServiceForProtocol");
-
-    user_info->add("protocol");
-    user_info->add(protocol);
-	    
-	ABSConnection->init(NULL);
-	*ABSConnection << *&user_info;
-	if (ABSConnection->getLastError() != ERR_NONE) 
-	    _LOG << "Error in sending getServiceForProtocol data" LOG_
-
-	*ABSConnection >> *&result;
-	if (ABSConnection->getLastError() != ERR_NONE)
-	    _LOG << "Error in recieving getServiceForProtocol answer" LOG_
-	
-
-        if (result->requestString("service", service) != ERR_NONE) {
-            _LOG << "Error in recieving parameter from getServiceForProtocol. Parameter 'service' wrong or not given." LOG_
-            return;
-        } else {
-            _CL_LOG << "Parameter 'service' = '" << service << "'" LOG_
-        }
-	    
-	
+	ABSConnection->close();
+	char* _backend = NULL;
+	if (result->requestString("backend", _backend) != ERR_NONE) {
+		_LOG << "Error in recieving parameter from Echo. Parameter 'backend' wrong or not given." LOG_
+		return NULL;
+	} else {
+		*backend = _backend;
+		free(_backend);
+		_CL_LOG << "Server returned backend = " << backend->charrep() LOG_
+	}
+	backend++;
+	return backend.getPtr();
 }
       
 
