@@ -10,10 +10,7 @@ public:
       
 	virtual void LB_STDCALL Echo(char* text) = 0;
       
-	virtual void LB_STDCALL getServices(char* services) = 0;
-      
-	virtual void LB_STDCALL getServiceForProtocol(char* protocol, char* service) = 0;
-      
+	virtual lb_I_String* LB_STDCALL findBackend(char* service) = 0;
 };
 
 /** \brief class ApplicationBus_ProtocolTarget.
@@ -27,9 +24,6 @@ public:
       
 	virtual void LB_STDCALL Echo(char* text) = 0;
       
-	virtual void LB_STDCALL getServices(char* services) = 0;
-      
-	virtual void LB_STDCALL getServiceForProtocol(char* protocol, char* service) = 0;
-      
+	virtual lb_I_String* LB_STDCALL findBackend(char* service) = 0;
 };
 		
