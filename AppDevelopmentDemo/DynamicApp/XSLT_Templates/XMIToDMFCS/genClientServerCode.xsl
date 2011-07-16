@@ -46,6 +46,7 @@
 <xsl:import href="ServerMakefileModule.xsl"/>
 
 <xsl:import href="ApplicationFacadeInterface.h.xsl"/>
+<xsl:import href="ApplicationFacadeProxy.cpp.xsl"/>
 <xsl:import href="ApplicationFacadeProxy.h.xsl"/>
 
 
@@ -123,6 +124,13 @@
 
 <exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_FacadeProry.h" method="text">
 <xsl:call-template name="ApplicationFacadeProxy.h">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_FacadeProry.cpp" method="text">
+<xsl:call-template name="ApplicationFacadeProxy.cpp">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
