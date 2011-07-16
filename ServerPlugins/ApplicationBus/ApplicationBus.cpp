@@ -343,7 +343,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
 }
       
 
-lb_I_String* LB_STDCALL ApplicationBus::registerBackend(char* backend, char* server) {
+void LB_STDCALL ApplicationBus::registerBackend(char* backend, char* server) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, _backend)
 	
 	if (server != NULL && strcmp(server, "") != 0) {
@@ -354,9 +354,6 @@ lb_I_String* LB_STDCALL ApplicationBus::registerBackend(char* backend, char* ser
 		*_backend = "busmaster/";
 		*_backend += backend;
 	}
-	
-	backend++;
-	return backend.getPtr();
 }
 lbErrCodes LB_STDCALL ApplicationBus::_registerBackend(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
