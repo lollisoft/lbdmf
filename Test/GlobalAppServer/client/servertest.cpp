@@ -29,8 +29,15 @@ int main(int argc, char** argv) {
 		char buf[100] = "";
 		_LOG << "Application bus instantiated." LOG_
 		while (count++ < 1) {
+			UAP(lb_I_String, backend)
 			char* text = "Hallo, dies ist eine Echo - Message";
 			client->Echo(text);
+			
+			backend = client->findBackend("lbDMFManager");
+			
+			setLogActivated(true);
+			_CL_LOG << "Backend is " << backend->charrep() LOG_
+			setLogActivated(false);
 		}
 	} else {
 		_CL_LOG << "Error: Can't find application bus." LOG_
