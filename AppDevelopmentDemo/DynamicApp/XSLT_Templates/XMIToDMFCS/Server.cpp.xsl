@@ -27,6 +27,7 @@
             65760 Eschborn (germany)
 -->
 <xsl:import href="../include/exsl.xsl"/>
+<xsl:import href="TypeMapping.xsl"/>
 <xsl:output method="text" indent="no"/>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
@@ -80,46 +81,6 @@
 	<xsl:param name="FormName"/>
 ///TODO: Implement server implementation code.	
 #ifdef bla	
-/** \brief class <xsl:value-of select="$FormName"/>.
- * Documentation for <xsl:value-of select="$FormName"/>
- */
-class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
-public:
-
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
-
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
-</xsl:for-each>
-};
-
 /** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
  * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
  */
@@ -128,28 +89,7 @@ public lb_I_ProtocolTarget {
 public:
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
 <xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;

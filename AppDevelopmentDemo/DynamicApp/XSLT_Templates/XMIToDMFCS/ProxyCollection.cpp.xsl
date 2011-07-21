@@ -27,6 +27,7 @@
             65760 Eschborn (germany)
 -->
 <xsl:import href="../include/exsl.xsl"/>
+<xsl:import href="TypeMapping.xsl"/>
 <xsl:output method="text" indent="no"/>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>

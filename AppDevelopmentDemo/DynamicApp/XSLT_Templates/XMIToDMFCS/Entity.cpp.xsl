@@ -75,30 +75,74 @@
 </xsl:template>
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="Proxy.h">
+<xsl:template name="Entity.cpp">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
-///TODO: Implement proxy header code.	
-
-/** \brief class <xsl:value-of select="$FormName"/>.
- * Documentation for <xsl:value-of select="$FormName"/>
+/*
+	Automatically created file. Do not modify.
  */
-class lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy : 
-public lb_I_<xsl:value-of select="$FormName"/> {
-public:
+ 
+#include &lt;lbConfigHook.hgt;
+#include &lt;lbInterfaces-sub-Project.hgt;
+
+#undef DLLEXPORT
+
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLEXPORT
+#endif
+#ifdef LINUX 
+#define DLLEXPORT
+#endif
+
+#include &lt;<xsl:value-of select="$FormName"/>Entity.h&gt;
+
+IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Entity, <xsl:value-of select="$FormName"/>Entity)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>Entity)
+        ADD_INTERFACE(lb_I_<xsl:value-of select="$FormName"/>)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Entity::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE &lt;&lt; "<xsl:value-of select="$FormName"/>Entity::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+<xsl:value-of select="$FormName"/>Entity::<xsl:value-of select="$FormName"/>Entity() {
+	ref = STARTREF;
+	_CL_LOG &lt;&lt; "Init <xsl:value-of select="$FormName"/>Entity" LOG_
+}
+
+<xsl:value-of select="$FormName"/>Entity::~<xsl:value-of select="$FormName"/>Entity() {
+
+}
+	
+lb_I_Integer* <xsl:value-of select="$FormName"/>Entity::get_id() {
+	id++;
+	return id.getPtr();
+}
+
+lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id(lb_I_Integer* value) {
+	id = value;
+	id++;
+}
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>();
+<xsl:if test="$backendType!='lb_I_Collection'">
+<xsl:if test="@name!=''">
+<xsl:value-of select="$backendType"/>* <xsl:value-of select="$FormName"/>Entity::get_<xsl:value-of select="@name"/>() {
+	<xsl:value-of select="@name"/>++;
+	return <xsl:value-of select="@name"/>.getPtr();
+}
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value);
+lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
+	<xsl:value-of select="@name"/> = value;
+	<xsl:value-of select="@name"/>++;
+}
+</xsl:if>
+</xsl:if>
 
 </xsl:for-each>
-};
 </xsl:template>
 </xsl:stylesheet>

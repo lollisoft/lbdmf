@@ -83,11 +83,19 @@
  * Documentation for <xsl:value-of select="$FormName"/>
  */
 class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
+public lb_I_VisitableHelper {
 public:
+<xsl:value-of select="'    '"/>/** \brief Get the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lb_I_Integer* get_id() = 0;
+
+<xsl:value-of select="'    '"/>/** \brief Set the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lbErrCodes set_id(lb_I_Integer* value) = 0;
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
 <xsl:if test="@name!=''">
 <xsl:value-of select="'    '"/>/** \brief Get the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if> <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
@@ -97,18 +105,29 @@ public:
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
 </xsl:if>
+</xsl:if>
 </xsl:for-each>
 };
 
-/** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
- * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
+// I think, this is currently not required
+#ifdef bla
+/** \brief class lb_I_<xsl:value-of select="$FormName"/>_ProtocolTarget.
+ * Documentation for lb_I_<xsl:value-of select="$FormName"/>_ProtocolTarget
  */
-class <xsl:value-of select="$FormName"/>_ProtocolTarget :
+class lb_I_<xsl:value-of select="$FormName"/>_ProtocolTarget :
 public lb_I_ProtocolTarget {
 public:
+<xsl:value-of select="'    '"/>/** \brief Get the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lb_I_Integer* get_id() = 0;
+
+<xsl:value-of select="'    '"/>/** \brief Set the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lbErrCodes set_id(lb_I_Integer* value) = 0;
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
 <xsl:if test="@name!=''">
 <xsl:value-of select="'    '"/>/** \brief Get the <xsl:if test="./type/@xmi:type='uml:Class'">collection of</xsl:if><xsl:if test="./type/@xmi:type='uml:PrimitiveType'">field</xsl:if><xsl:value-of select="' '"/><xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
@@ -118,8 +137,9 @@ public:
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
 </xsl:if>
+</xsl:if>
 </xsl:for-each>
 };
-		
+#endif		
 </xsl:template>
 </xsl:stylesheet>

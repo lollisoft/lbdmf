@@ -27,6 +27,7 @@
             65760 Eschborn (germany)
 -->
 <xsl:import href="../include/exsl.xsl"/>
+<xsl:import href="TypeMapping.xsl"/>
 <xsl:output method="text" indent="no"/>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
@@ -77,89 +78,200 @@
 <xsl:template name="Proxy.cpp">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
-	<xsl:param name="FormName"/>
-///TODO: Implement proxy implementation code.	
-#ifdef bla	
+	<xsl:param name="FormName"/>/*
+	Automatically created file. Do not modify.
+ */
+
+#include &lt;lbConfigHook.h&gt;
+#include &lt;lbInterfaces-sub-Project.h&gt;
+
+#undef DLLEXPORT
+
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLEXPORT
+#endif
+#ifdef LINUX 
+#define DLLEXPORT
+#endif
+
+
+
+#include &lt;I<xsl:value-of select="$FormName"/>.h&gt;
+
 /** \brief class <xsl:value-of select="$FormName"/>.
  * Documentation for <xsl:value-of select="$FormName"/>
  */
-class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
-public:
 
+IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Proxy, <xsl:value-of select="$FormName"/>)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>)
+        ADD_INTERFACE(lb_I_<xsl:value-of select="$FormName"/>)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE &lt;&lt; "lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy() {
+	ref = STARTREF;
+	_CL_LOG &lt;&lt; "Init lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy" LOG_
+	
+	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
+	
+    if (ABSConnection == NULL) {
+        /**
+         * Initialize the tcp connection...
+         */
+
+        REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
+        
+		// The name of the lbDMF Busmaster must be defined in hosts or DNS
+        ABSConnection-&gt;init("busmaster/busmaster");
+        Connect();
+		ABSConnection-&gt;close();
+    }
+    _LOG &lt;&lt; "lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy Initialized" LOG_
+}
+
+lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::~lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy() {
+
+}
+
+//\todo Remove as it is unused.
+int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Connect() {
+	char* answer;
+	char buf[100] = "";
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	client-&gt;setServerSide(0);
+	result-&gt;setServerSide(0);
+	
+	ABSConnection-&gt;gethostname(*&amp;temp);
+	
+	client-&gt;add("Connect");
+	client-&gt;add("Host");
+	client-&gt;add(temp-&gt;charrep());
+	client-&gt;add("Pid");
+	client-&gt;add(lbGetCurrentProcessId());
+	client-&gt;add("Tid");
+	client-&gt;add(lbGetCurrentThreadId());
+
+	_LOG &lt;&lt; "Client sends the packets..." LOG_
+    *ABSConnection &lt;&lt; *&amp;client;
+	_LOG &lt;&lt; "Client waits for answer..." LOG_
+    *ABSConnection &gt;&gt; *&amp;result;
+	_LOG &lt;&lt; "Connect returns with an answer..." LOG_
+	// Handle the request
+	int count = result-&gt;getPacketCount();
+
+	result-&gt;resetPositionCount();
+		
+	while (count--) {
+		LB_PACKET_TYPE type;
+		int i = 0;
+		char *buffer;
+		char msg[100];
+		result-&gt;getPacketType(type);
+
+		switch (type) {
+			case PACKET_LB_CHAR:
+				result-&gt;get(buffer);
+				
+				if (strcmp(buffer, "Accept") == 0) {
+					connected = true;
+					_LOG &lt;&lt; "Connection accepted." LOG_
+					result-&gt;incrementPosition();
+					result-&gt;get(buffer);
+					if (strcmp(buffer, "InstanceName") == 0) {
+						result-&gt;incrementPosition();
+						result-&gt;get(buffer);
+						*serverInstance = buffer;
+						_LOG &lt;&lt; "Have server instanve = " &lt;&lt; serverInstance-&gt;charrep() LOG_
+						return 1;
+					}
+				}
+				break;
+				
+			default:
+				_LOG &lt;&lt; "Unknown packet type!" LOG_
+				
+				break;
+		}
+			
+		result-&gt;incrementPosition();
+	}
+
+	_LOG &lt;&lt; "Connection failed!" LOG_
+	connected = false;
+                
+	return 0;
+}
+
+int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Disconnect() {
+	char* answer;
+	char buf[100] = "";
+	lb_I_Transfer_Data* result;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+
+	client-&gt;add("Disconnect");
+	client-&gt;add("Host");
+	client-&gt;add("anakin");
+
+    *ABSConnection &lt;&lt; *&amp;client;
+    *ABSConnection &gt;&gt; *&amp;result;
+
+	int count = result-&gt;getPacketCount();
+
+	result-&gt;resetPositionCount();
+		
+	while (count--) {
+		LB_PACKET_TYPE type;
+		int i = 0;
+		char *buffer;
+		char msg[100];
+		result-&gt;getPacketType(type);
+
+		switch (type) {
+			case PACKET_LB_CHAR:
+				result-&gt;get(buffer);
+				
+				if (strcmp(buffer, "Succeed") == 0) {
+					_CL_LOG &lt;&lt; "Disconnected successfull" LOG_
+					connected = 0;
+					return 1;
+				} else {
+					_CL_LOG &lt;&lt; "Disconnection failed!" LOG_
+					return 0;
+				}
+				
+				break;
+				
+			default:
+				_CL_LOG &lt;&lt; "Unknown packet type!" LOG_
+				
+				break;
+		}
+			
+		result-&gt;incrementPosition();
+	}
+                
+    return 1;
+}
+
+ 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:value-of select="$backendType"/>* lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::get_<xsl:value-of select="@name"/>() {
 
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
+}
+
+lbErrCodes lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
+
+}
 
 </xsl:for-each>
-};
-
-/** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
- * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
- */
-class <xsl:value-of select="$FormName"/>_ProtocolTarget :
-public lb_I_ProtocolTarget {
-public:
-
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
-
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
-</xsl:for-each>
-};
-#endif
 </xsl:template>
 </xsl:stylesheet>

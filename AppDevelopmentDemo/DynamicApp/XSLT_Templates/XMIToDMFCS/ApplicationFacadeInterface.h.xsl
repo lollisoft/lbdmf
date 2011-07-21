@@ -143,5 +143,75 @@ public:
 			</xsl:choose>
 		</xsl:for-each>
 };
+
+/** \brief class lb_I_<xsl:value-of select="$ApplicationName"/>_ProtocolTarget.
+ * The lb_I_<xsl:value-of select="$ApplicationName"/>_ProtocolTarget defines a thin facade around the internals of the application.
+ */
+class lb_I_<xsl:value-of select="$ApplicationName"/>_ProtocolTarget
+        : public lb_I_ProtocolTarget {
+public:
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
+		// API for <xsl:value-of select="@name"/>.
+	
+		lbErrCodes LB_STDCALL _open_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lbErrCodes LB_STDCALL open_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _close_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lbErrCodes LB_STDCALL close_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _first_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL first_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _previous_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL previous_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _next_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL next_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _last_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL last_<xsl:value-of select="@name"/>() = 0;
+
+		lbErrCodes LB_STDCALL _get_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
+
+		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
+
+		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
+
+		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
+
+		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
+};
 </xsl:template>
 </xsl:stylesheet>

@@ -75,92 +75,53 @@
 </xsl:template>
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="ProxyCollection.h">
+<xsl:template name="Entity.h">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
-///TODO: Implement proxy header code.	
-#ifdef bla	
-/** \brief class <xsl:value-of select="$FormName"/>.
- * Documentation for <xsl:value-of select="$FormName"/>
+///TODO: Implement entity header code.	
+/** \brief class <xsl:value-of select="$FormName"/>Entity.
+ * Documentation for <xsl:value-of select="$FormName"/>Entity
  */
-class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
+class <xsl:value-of select="$FormName"/>Entity :
+public lb_I_<xsl:value-of select="$FormName"/> {
 public:
+<xsl:value-of select="'    '"/>/** \brief Get the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lb_I_Integer* get_id();
+
+<xsl:value-of select="'    '"/>/** \brief Set the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lbErrCodes set_id(lb_I_Integer* value);
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
+<xsl:if test="@name!=''">
 <xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
+<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>();
 
 <xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
 <xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
+<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value);
+</xsl:if>
+</xsl:if>
 </xsl:for-each>
-};
 
-/** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
- * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
- */
-class <xsl:value-of select="$FormName"/>_ProtocolTarget :
-public lb_I_ProtocolTarget {
-public:
+protected:
 
+<xsl:value-of select="'    '"/>UAP(lb_I_Integer, id)
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
+<xsl:if test="@name!=''">
+<xsl:value-of select="'    '"/>UAP(<xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
 </xsl:if>
 </xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
-
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
 </xsl:for-each>
 };
-#endif
+
+DECLARE_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Entity)
 </xsl:template>
 </xsl:stylesheet>
