@@ -77,6 +77,6 @@
 <xsl:template name="ApplicationInterfaces.h">
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
-#include &lt;I<xsl:value-of select="$FormName"/>.h&gt;;
+#include &lt;I<xsl:value-of select="$FormName"/>.h&gt;
 </xsl:template>
 </xsl:stylesheet>

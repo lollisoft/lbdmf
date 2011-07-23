@@ -126,7 +126,7 @@
 </xsl:call-template>
 </exsl:document>
 
-<exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_FacadeProry.h" method="text">
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_FacadeProxy.h" method="text">
 <xsl:call-template name="ApplicationFacadeProxy.h">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
@@ -190,6 +190,73 @@
 			</xsl:choose>
 		</xsl:for-each>
 </exsl:document>
+
+<exsl:document href="./ProxyPlugins/{$ApplicationName}/{$ApplicationName}_Entities.h" method="text">
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
+// Class <xsl:value-of select="@name"/> of type FORM found.
+#include &lt;<xsl:value-of select="$FormularName"/>Entity.h&gt;
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
+</exsl:document>
+
+<exsl:document href="./ServerPlugins/{$ApplicationName}/{$ApplicationName}_Entities.h" method="text">
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
+// Class <xsl:value-of select="@name"/> of type FORM found.
+#include &lt;<xsl:value-of select="$FormularName"/>Entity.h&gt;
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
+</exsl:document>
+
 <exsl:document href="./ServerPlugins/{$ApplicationName}/ServerModul.cpp" method="text">
 <xsl:call-template name="ServerModul.cpp">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
@@ -202,15 +269,17 @@
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>
+
 <exsl:document href="./ServerPlugins/{$ApplicationName}/makefile.module" method="text">
 <xsl:call-template name="ServerMakefileModule">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>
+
 <exsl:document href="./ProxyPlugins/{$ApplicationName}/makefile.module" method="text">
 <xsl:call-template name="ProxyMakefileModule">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>
@@ -259,7 +328,7 @@
 </exsl:document>
 <exsl:document href="./ProxyPlugins/{$ApplicationName}/{$FormularName}Entity.cpp" method="text">
 <xsl:call-template name="Entity.cpp">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
 </xsl:call-template>
@@ -273,7 +342,7 @@
 </exsl:document>
 <exsl:document href="./ServerPlugins/{$ApplicationName}/{$FormularName}Entity.cpp" method="text">
 <xsl:call-template name="Entity.cpp">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 		<xsl:with-param name="FormName"><xsl:value-of select="$FormularName"/></xsl:with-param>
 </xsl:call-template>

@@ -84,10 +84,23 @@
 /** \brief class <xsl:value-of select="$FormName"/>.
  * Documentation for <xsl:value-of select="$FormName"/>
  */
-class lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy : 
+class <xsl:value-of select="$FormName"/>EntityProxy : 
 public lb_I_<xsl:value-of select="$FormName"/> {
 public:
+		<xsl:value-of select="$FormName"/>EntityProxy();
+		virtual ~<xsl:value-of select="$FormName"/>EntityProxy();
+		
+		DECLARE_LB_UNKNOWN()
 
+<xsl:value-of select="'    '"/>/** \brief Get the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lb_I_Integer* get_id();
+
+<xsl:value-of select="'    '"/>/** \brief Set the field id.
+<xsl:value-of select="'     '"/>*/
+<xsl:value-of select="'    '"/>virtual lbErrCodes set_id(lb_I_Integer* value);
+
+		
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
 <xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
@@ -99,6 +112,16 @@ public:
 <xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value);
 
 </xsl:for-each>
+private:
+		int Connect();
+		int Disconnect();
+
+		bool connected;
+		UAP(lb_I_Transfer, ABSConnection)
+
+		// The server instance name required to create a complete request name.
+		UAP(lb_I_String, ServerInstance)
+
 };
 </xsl:template>
 </xsl:stylesheet>

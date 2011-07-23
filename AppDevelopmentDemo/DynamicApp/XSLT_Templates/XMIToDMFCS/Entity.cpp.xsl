@@ -30,30 +30,6 @@
 <xsl:import href="TypeMapping.xsl"/>
 <xsl:output method="text" indent="no"/>
 
-<xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
-<xsl:variable name="OrginalApplicationName" select="//lbDMF/applications/application[@ID=$ApplicationID]/@name"/>
-<xsl:variable name="ApplicationName">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$OrginalApplicationName"/>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'-'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'>'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="' '"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-</xsl:variable>
-
 <!-- here is the template that does the replacement -->
 <xsl:template name="SubstringReplace">
 	<xsl:param name="stringIn"/>
@@ -76,15 +52,15 @@
 
 <!-- This template creates a pair of files per formular name -->
 <xsl:template name="Entity.cpp">
-	<xsl:param name="ApplicationID"/>
+	<xsl:param name="ApplicationName"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
 /*
 	Automatically created file. Do not modify.
  */
  
-#include &lt;lbConfigHook.hgt;
-#include &lt;lbInterfaces-sub-Project.hgt;
+#include &lt;lbConfigHook.h&gt;
+#include &lt;lbInterfaces-sub-Project.h&gt;
 
 #undef DLLEXPORT
 
@@ -95,6 +71,7 @@
 #define DLLEXPORT
 #endif
 
+#include &lt;I<xsl:value-of select="$FormName"/>.h&gt;
 #include &lt;<xsl:value-of select="$FormName"/>Entity.h&gt;
 
 IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Entity, <xsl:value-of select="$FormName"/>Entity)
@@ -118,13 +95,13 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Entity::setData(lb_I_Unk
 }
 	
 lb_I_Integer* <xsl:value-of select="$FormName"/>Entity::get_id() {
-	id++;
-	return id.getPtr();
+	m_id++;
+	return m_id.getPtr();
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id(lb_I_Integer* value) {
-	id = value;
-	id++;
+	m_id = value;
+	m_id++;
 }
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
@@ -132,13 +109,13 @@ lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id(lb_I_Integer* value)
 <xsl:if test="$backendType!='lb_I_Collection'">
 <xsl:if test="@name!=''">
 <xsl:value-of select="$backendType"/>* <xsl:value-of select="$FormName"/>Entity::get_<xsl:value-of select="@name"/>() {
-	<xsl:value-of select="@name"/>++;
-	return <xsl:value-of select="@name"/>.getPtr();
+	m_<xsl:value-of select="@name"/>++;
+	return m_<xsl:value-of select="@name"/>.getPtr();
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
-	<xsl:value-of select="@name"/> = value;
-	<xsl:value-of select="@name"/>++;
+	m_<xsl:value-of select="@name"/> = value;
+	m_<xsl:value-of select="@name"/>++;
 }
 </xsl:if>
 </xsl:if>

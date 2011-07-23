@@ -92,53 +92,53 @@ public:
 	/** \brief Open a cursor <xsl:value-of select="@name"/>.
 	 * This will open a cursor based mode.
 	 */
-	lbErrCodes open_<xsl:value-of select="@name"/>() = 0;
+	virtual lbErrCodes LB_STDCALL open_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Closes a cursor <xsl:value-of select="@name"/>.
 	 * This will close a cursor based mode.
 	 */
-	lbErrCodes close_<xsl:value-of select="@name"/>() = 0;
+	virtual lbErrCodes LB_STDCALL close_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* first_<xsl:value-of select="@name"/>() = 0;
+	virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL first_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* previous_<xsl:value-of select="@name"/>() = 0;
+	virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL previous_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* next_<xsl:value-of select="@name"/>() = 0;
+	virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL next_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Navigation <xsl:value-of select="@name"/>.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* last_<xsl:value-of select="@name"/>() = 0;
+	virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL last_<xsl:value-of select="@name"/>() = 0;
 
 	/** \brief Get one <xsl:value-of select="@name"/> by their ID.
 	 * This will be used to edit a specific entiy by their id.
 	 */
-	lb_I_<xsl:value-of select="@name"/>* get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
+	virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
 
 	/** \brief Store this <xsl:value-of select="@name"/> entity.
 	 * This will save the entity.
 	 */
-	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
+	virtual lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
 
 	/** \brief Store these <xsl:value-of select="@name"/> entities.
 	 * This will save the entity.
 	 */
-	lbErrCodes put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
+	virtual lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
 
 	/** \brief Get all <xsl:value-of select="@name"/> by offset and amount.
 	 * The entities are stored by their ID ad key.
 	 */
-	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
+	virtual lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
 
 	/** \brief Get all <xsl:value-of select="@name"/> by the given search criteria.
 	 * The entities are stored by their ID ad key.
 	 */
-	lb_I_Container* getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
+	virtual lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
@@ -177,38 +177,38 @@ public:
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 		// API for <xsl:value-of select="@name"/>.
 	
-		lbErrCodes LB_STDCALL _open_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lbErrCodes LB_STDCALL open_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _open_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lbErrCodes LB_STDCALL open_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _close_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lbErrCodes LB_STDCALL close_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _close_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lbErrCodes LB_STDCALL close_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _first_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL first_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _first_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL first_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _previous_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL previous_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _previous_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL previous_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _next_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL next_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _next_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL next_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _last_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL last_<xsl:value-of select="@name"/>() = 0;
+		//virtual lbErrCodes LB_STDCALL _last_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL last_<xsl:value-of select="@name"/>() = 0;
 
-		lbErrCodes LB_STDCALL _get_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
+		//virtual lbErrCodes LB_STDCALL _get_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_<xsl:value-of select="@name"/>* LB_STDCALL get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) = 0;
 
-		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
+		//virtual lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) = 0;
 
-		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
+		//virtual lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_Container* entities) = 0;
 
-		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
+		//virtual lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) = 0;
 
-		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
-		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
+		//virtual lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
+		virtual lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) = 0;
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>

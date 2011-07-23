@@ -86,6 +86,11 @@
 class <xsl:value-of select="$FormName"/>Entity :
 public lb_I_<xsl:value-of select="$FormName"/> {
 public:
+	<xsl:value-of select="$FormName"/>Entity();
+	virtual ~<xsl:value-of select="$FormName"/>Entity();
+	
+	DECLARE_LB_UNKNOWN()
+
 <xsl:value-of select="'    '"/>/** \brief Get the field id.
 <xsl:value-of select="'     '"/>*/
 <xsl:value-of select="'    '"/>virtual lb_I_Integer* get_id();
@@ -111,12 +116,12 @@ public:
 
 protected:
 
-<xsl:value-of select="'    '"/>UAP(lb_I_Integer, id)
+<xsl:value-of select="'    '"/>UAP(lb_I_Integer, m_id)
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
 <xsl:if test="$backendType!='lb_I_Collection'">
 <xsl:if test="@name!=''">
-<xsl:value-of select="'    '"/>UAP(<xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
+<xsl:value-of select="'    '"/>UAP(<xsl:value-of select="$backendType"/>, m_<xsl:value-of select="@name"/>)
 </xsl:if>
 </xsl:if>
 </xsl:for-each>

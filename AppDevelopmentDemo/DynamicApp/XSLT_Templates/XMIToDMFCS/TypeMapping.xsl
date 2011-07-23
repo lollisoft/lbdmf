@@ -44,7 +44,7 @@
 <xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Integer</xsl:if>
 </xsl:if>
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Collection</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Container</xsl:if>
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 	<xsl:choose>

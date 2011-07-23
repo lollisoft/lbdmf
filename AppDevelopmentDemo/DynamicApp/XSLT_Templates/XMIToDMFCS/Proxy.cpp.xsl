@@ -97,27 +97,28 @@
 
 
 #include &lt;I<xsl:value-of select="$FormName"/>.h&gt;
+#include &lt;<xsl:value-of select="$FormName"/>Proxy.h&gt;
 
 /** \brief class <xsl:value-of select="$FormName"/>.
  * Documentation for <xsl:value-of select="$FormName"/>
  */
 
-IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Proxy, <xsl:value-of select="$FormName"/>)
+IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>EntityProxy, <xsl:value-of select="$FormName"/>EntityProxy)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>)
+BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>EntityProxy)
         ADD_INTERFACE(lb_I_<xsl:value-of select="$FormName"/>)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbErrCodes LB_STDCALL lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE &lt;&lt; "lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::setData(...) not implemented yet" LOG_
+lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE &lt;&lt; "<xsl:value-of select="$FormName"/>EntityProxy::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
-lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy() {
+<xsl:value-of select="$FormName"/>EntityProxy::<xsl:value-of select="$FormName"/>EntityProxy() {
 	ref = STARTREF;
-	_CL_LOG &lt;&lt; "Init lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy" LOG_
+	_CL_LOG &lt;&lt; "Init <xsl:value-of select="$FormName"/>EntityProxy" LOG_
 	
-	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
+	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 	
     if (ABSConnection == NULL) {
         /**
@@ -131,15 +132,15 @@ lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::lbDMFCS_<xsl:value-of select="
         Connect();
 		ABSConnection-&gt;close();
     }
-    _LOG &lt;&lt; "lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy Initialized" LOG_
+    _LOG &lt;&lt; "<xsl:value-of select="$FormName"/>EntityProxy Initialized" LOG_
 }
 
-lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::~lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy() {
+<xsl:value-of select="$FormName"/>EntityProxy::~<xsl:value-of select="$FormName"/>EntityProxy() {
 
 }
 
 //\todo Remove as it is unused.
-int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Connect() {
+int <xsl:value-of select="$FormName"/>EntityProxy::Connect() {
 	char* answer;
 	char buf[100] = "";
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
@@ -187,8 +188,8 @@ int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Connect() {
 					if (strcmp(buffer, "InstanceName") == 0) {
 						result-&gt;incrementPosition();
 						result-&gt;get(buffer);
-						*serverInstance = buffer;
-						_LOG &lt;&lt; "Have server instanve = " &lt;&lt; serverInstance-&gt;charrep() LOG_
+						*ServerInstance = buffer;
+						_LOG &lt;&lt; "Have server instanve = " &lt;&lt; ServerInstance-&gt;charrep() LOG_
 						return 1;
 					}
 				}
@@ -209,7 +210,7 @@ int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Connect() {
 	return 0;
 }
 
-int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Disconnect() {
+int <xsl:value-of select="$FormName"/>EntityProxy::Disconnect() {
 	char* answer;
 	char buf[100] = "";
 	lb_I_Transfer_Data* result;
@@ -261,15 +262,23 @@ int lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::Disconnect() {
     return 1;
 }
 
+lb_I_Integer*  LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::get_id() {
+	return NULL;
+}
+
+lbErrCodes  LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::set_id(lb_I_Integer* value) {
+	return ERR_NONE;
+}
+
  
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:value-of select="$backendType"/>* lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::get_<xsl:value-of select="@name"/>() {
-
+<xsl:value-of select="$backendType"/>* LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::get_<xsl:value-of select="@name"/>() {
+	return NULL;
 }
 
-lbErrCodes lbDMFCS_<xsl:value-of select="$FormName"/>_Proxy::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
-
+lbErrCodes <xsl:value-of select="$FormName"/>EntityProxy::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
+	return ERR_NONE;
 }
 
 </xsl:for-each>

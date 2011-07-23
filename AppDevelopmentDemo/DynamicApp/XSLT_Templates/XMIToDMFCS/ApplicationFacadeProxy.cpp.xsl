@@ -61,8 +61,8 @@
 	Automatically created file. Do not modify.
  */
  
-#include &lt;lbConfigHook.hgt;
-#include &lt;lbInterfaces-sub-Project.hgt;
+#include &lt;lbConfigHook.h&gt;
+#include &lt;lbInterfaces-sub-Project.h&gt;
 
 #undef DLLEXPORT
 
@@ -73,35 +73,11 @@
 #define DLLEXPORT
 #endif
 
+#include &lt;I<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
+#include &lt;I<xsl:value-of select="$ApplicationName"/>.h&gt;
+
 #include &lt;<xsl:value-of select="$ApplicationName"/>_FacadeProxy.h&gt;
-<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'-'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'>'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="' '"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-</xsl:variable>
-<xsl:variable name="FormularID">
-<xsl:value-of select="./@xmi:id"/>
-</xsl:variable>
-#include &lt;<xsl:value-of select="$FormularName"/>Entity.h&gt;
-</xsl:for-each>
+#include &lt;<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
 
 IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$ApplicationName"/>FacadeProxy, <xsl:value-of select="$ApplicationName"/>FacadeProxy)
 
@@ -118,7 +94,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::setD
 	ref = STARTREF;
 	_CL_LOG &lt;&lt; "Init <xsl:value-of select="$ApplicationName"/>FacadeProxy" LOG_
 	
-	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
+	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 	
     if (ABSConnection == NULL) {
         /**
@@ -191,8 +167,8 @@ int <xsl:value-of select="$ApplicationName"/>FacadeProxy::Connect() {
 					if (strcmp(buffer, "InstanceName") == 0) {
 						result-&gt;incrementPosition();
 						result-&gt;get(buffer);
-						*serverInstance = buffer;
-						_LOG &lt;&lt; "Have server instanve = " &lt;&lt; serverInstance-&gt;charrep() LOG_
+						*ServerInstance = buffer;
+						_LOG &lt;&lt; "Have server instanve = " &lt;&lt; ServerInstance-&gt;charrep() LOG_
 						return 1;
 					}
 				}
@@ -313,7 +289,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::open
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
 	
-	*requestString = serverInstance-&gt;charrep();
+	*requestString = ServerInstance-&gt;charrep();
 	*requestString += ".<xsl:value-of select="$ApplicationName"/>.open_<xsl:value-of select="@name"/>";
 	
 	user_info-&gt;add(requestString-&gt;charrep());
@@ -356,7 +332,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::clos
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
 	
-	*requestString = serverInstance-&gt;charrep();
+	*requestString = ServerInstance-&gt;charrep();
 	*requestString += ".<xsl:value-of select="$ApplicationName"/>.close_<xsl:value-of select="@name"/>";
 	
 	user_info-&gt;add(requestString-&gt;charrep());
@@ -432,7 +408,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::put_
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
-		<xsl:with-param name="FunctionName">put_<xsl:value-of select="@name"/></xsl:with-param>
+		<xsl:with-param name="FunctionName">put_<xsl:value-of select="@name"/>Entity</xsl:with-param>
 </xsl:call-template>
 }
 
@@ -450,8 +426,6 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
-};
-
 </xsl:template>
 
 
@@ -476,7 +450,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
 	
-	*requestString = serverInstance-&gt;charrep();
+	*requestString = ServerInstance-&gt;charrep();
 	*requestString += ".<xsl:value-of select="$ApplicationName"/>.<xsl:value-of select="$FunctionName"/>";
 	
 	user_info-&gt;add(requestString-&gt;charrep());
@@ -485,7 +459,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
 <xsl:if test="$backendType!='lb_I_Collection'">
-<xsl:if test="@name!=''">	UAP(<xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
+<xsl:if test="@name!=''">	UAP(<xsl:value-of select="$backendType"/>, _<xsl:value-of select="@name"/>)
 </xsl:if>
 </xsl:if>
 </xsl:for-each>
@@ -498,21 +472,21 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 </xsl:when>
 <xsl:when test="$backendType='lb_I_String'">
 <xsl:if test="@name!=''">
-<xsl:value-of select="'    '"/><xsl:value-of select="@name"/> = entity-&gt;get_<xsl:value-of select="@name"/>();
+<xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/> = entity-&gt;get_<xsl:value-of select="@name"/>();
 	
-	if (<xsl:value-of select="@name"/> != NULL) {
+	if (_<xsl:value-of select="@name"/> != NULL) {
 		user_info-&gt;add("<xsl:value-of select="@name"/>");
-		user_info-&gt;add(<xsl:value-of select="@name"/>-&gt;charrep());
+		user_info-&gt;add(_<xsl:value-of select="@name"/>-&gt;charrep());
 	}
 </xsl:if>
 </xsl:when>
 <xsl:when test="$backendType='lb_I_Integer'">
 <xsl:if test="@name!=''">
-<xsl:value-of select="'    '"/><xsl:value-of select="@name"/> = entity-&gt;get_<xsl:value-of select="@name"/>();
+<xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/> = entity-&gt;get_<xsl:value-of select="@name"/>();
 	
-	if (<xsl:value-of select="@name"/> != NULL) {
+	if (_<xsl:value-of select="@name"/> != NULL) {
 		user_info-&gt;add("<xsl:value-of select="@name"/>");
-		user_info-&gt;add((int) <xsl:value-of select="@name"/>-&gt;getData());
+		user_info-&gt;add((int) _<xsl:value-of select="@name"/>-&gt;getData());
 	}
 </xsl:if>
 </xsl:when>
@@ -559,7 +533,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
 	
-	*requestString = serverInstance-&gt;charrep();
+	*requestString = ServerInstance-&gt;charrep();
 	*requestString += ".<xsl:value-of select="$ApplicationName"/>.<xsl:value-of select="$FunctionName"/>";
 	
 	user_info-&gt;add(requestString-&gt;charrep());
@@ -585,14 +559,6 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 	ABSConnection-&gt;close();
 	
 	// Code to read back data
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:if test="$backendType!='lb_I_Collection'">
-<xsl:if test="@name!=''">
-	UAP_REQUEST(getModuleInstance(), <xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
-</xsl:if>
-</xsl:if>
-</xsl:for-each>
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
@@ -620,8 +586,8 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 </xsl:for-each>
 	// Code to create the entity instance
 	<xsl:value-of select="$FormularName"/>Entity* entity = new <xsl:value-of select="$FormularName"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="$FormularName"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="$FormularName"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="$FormularName"/>", (void**) &amp;e, __FILE__, __LINE__);
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
@@ -676,7 +642,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
 	
-	*requestString = serverInstance-&gt;charrep();
+	*requestString = ServerInstance-&gt;charrep();
 	*requestString += ".<xsl:value-of select="$ApplicationName"/>.<xsl:value-of select="$FunctionName"/>";
 	
 	user_info-&gt;add(requestString-&gt;charrep());
@@ -684,7 +650,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 	// Code to map additional parameters
 
     user_info->add("id");
-    user_info->add(*&amp;ID);
+    user_info->add((int)ID-&gt;getData());
 
 	// Code to send the request
 	
@@ -706,14 +672,6 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 	
 	// Code to read back data
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:if test="$backendType!='lb_I_Collection'">
-<xsl:if test="@name!=''">
-	UAP_REQUEST(getModuleInstance(), <xsl:value-of select="$backendType"/>, <xsl:value-of select="@name"/>)
-</xsl:if>
-</xsl:if>
-</xsl:for-each>
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
 <xsl:choose>
@@ -729,7 +687,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 </xsl:when>
 <xsl:when test="$backendType='lb_I_Integer'">
 <xsl:if test="@name!=''">
-	int _<xsl:value-of select="@name"/> = NULL;
+	int _<xsl:value-of select="@name"/> = 0;
 	if (result-&gt;requestInteger("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
 		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
 	}
@@ -740,8 +698,8 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 </xsl:for-each>
 	// Code to create the entity instance
 	<xsl:value-of select="$FormularName"/>Entity* entity = new <xsl:value-of select="$FormularName"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="$FormularName"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="$FormularName"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="$FormularName"/>", (void**) &amp;e, __FILE__, __LINE__);
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">

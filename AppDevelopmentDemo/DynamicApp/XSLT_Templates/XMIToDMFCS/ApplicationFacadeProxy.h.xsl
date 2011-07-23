@@ -158,7 +158,7 @@ private:
 		UAP(lb_I_Transfer, ABSConnection)
 
 		// The server instance name required to create a complete request name.
-		UAP(lb_I_String, serverInstance)
+		UAP(lb_I_String, ServerInstance)
 };
 
 DECLARE_FUNCTOR(instanceOf<xsl:value-of select="$ApplicationName"/>FacadeProxy)

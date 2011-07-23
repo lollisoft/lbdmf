@@ -118,16 +118,16 @@ public:
 		lbErrCodes LB_STDCALL _get_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lb_I_<xsl:value-of select="@name"/>* LB_STDCALL get_<xsl:value-of select="@name"/>(lb_I_Integer* ID);
 
-		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
+		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>Entity(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity);
 
-		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
+		lbErrCodes LB_STDCALL _put_<xsl:value-of select="@name"/>List(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lbErrCodes LB_STDCALL put_<xsl:value-of select="@name"/>(lb_I_Container* entities);
 
-		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
+		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>ByOffset(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount);
 
-		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
+		lbErrCodes LB_STDCALL _getAll_<xsl:value-of select="@name"/>BySearch(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result);
 		lb_I_Container* LB_STDCALL getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria);
 				</xsl:when>
 			</xsl:choose>
