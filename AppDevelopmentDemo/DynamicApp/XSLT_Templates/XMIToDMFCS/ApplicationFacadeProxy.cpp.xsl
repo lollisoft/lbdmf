@@ -105,11 +105,18 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::setD
 
 		backend = applicationbus->findBackend("<xsl:value-of select="$ApplicationName"/>");
 		
-        REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        ABSConnection-&gt;init(backend->charrep());
-        Connect();
-		ABSConnection-&gt;close();
+        if (backend != NULL) {
+			REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
+			ABSConnection-&gt;init(backend->charrep());
+			Connect();
+			ABSConnection-&gt;close();
+		} else {
+			setLogActivated(true);
+			_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>FacadeProxy did not got backend address" LOG_
+			_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>FacadeProxy did not got backend address" LOG_
+			setLogActivated(false);
+		}
     }
     _LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>FacadeProxy Initialized" LOG_
 }
@@ -122,6 +129,10 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::setD
 int <xsl:value-of select="$ApplicationName"/>FacadeProxy::Connect() {
 	char* answer;
 	char buf[100] = "";
+	
+	if (ABSConnection == NULL)
+		return 0;
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
@@ -193,6 +204,9 @@ int <xsl:value-of select="$ApplicationName"/>FacadeProxy::Disconnect() {
 	char* answer;
 	char buf[100] = "";
 	lb_I_Transfer_Data* result;
+
+	if (ABSConnection == NULL)
+		return 0;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
 
@@ -276,7 +290,9 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::open
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	
-	
+	if (ABSConnection == NULL)
+		return ERR_NOT_CONNECTED;
+
 	ABSConnection-&gt;gethostname(*&amp;temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
 	
@@ -319,6 +335,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::clos
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	
+	if (ABSConnection == NULL)
+		return ERR_NOT_CONNECTED;
 	
 	ABSConnection-&gt;gethostname(*&amp;temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
@@ -359,6 +377,9 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::clos
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::first_<xsl:value-of select="@name"/>() {
+	if (ABSConnection == NULL)
+		return NULL;
+
 <xsl:call-template name="RequestEntity">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -368,6 +389,9 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::previous_<xsl:value-of select="@name"/>() {
+	if (ABSConnection == NULL)
+		return NULL;
+
 <xsl:call-template name="RequestEntity">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -377,6 +401,9 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::next_<xsl:value-of select="@name"/>() {
+	if (ABSConnection == NULL)
+		return NULL;
+
 <xsl:call-template name="RequestEntity">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -386,6 +413,9 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::last_<xsl:value-of select="@name"/>() {
+	if (ABSConnection == NULL)
+		return NULL;
+
 <xsl:call-template name="RequestEntity">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -395,6 +425,9 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) {
+	if (ABSConnection == NULL)
+		return NULL;
+
 <xsl:call-template name="RequestEntityByID">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -404,6 +437,9 @@ lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$Applicati
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::put_<xsl:value-of select="@name"/>(lb_I_<xsl:value-of select="@name"/>* entity) {
+	if (ABSConnection == NULL)
+		return ERR_NOT_CONNECTED;
+
 <xsl:call-template name="PutEntity">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
@@ -413,15 +449,23 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::put_
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::put_<xsl:value-of select="@name"/>(lb_I_Container* entities) {
-
+	if (ABSConnection == NULL)
+		return ERR_NOT_CONNECTED;
+	return ERR_NONE;
 }
 
 lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::getAll_<xsl:value-of select="@name"/>(lb_I_Integer* offset, lb_I_Integer* amount) {
+	if (ABSConnection == NULL)
+		return NULL;
 
+	return NULL;
 }
 
 lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::getAll_<xsl:value-of select="@name"/>(lb_I_String* searchOnColumn, lb_I_String* searchCriteria) {
+	if (ABSConnection == NULL)
+		return NULL;
 
+	return NULL;
 }
 				</xsl:when>
 			</xsl:choose>

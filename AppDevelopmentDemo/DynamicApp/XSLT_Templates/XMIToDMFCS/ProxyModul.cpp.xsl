@@ -82,15 +82,23 @@
 	Automatically created file. Do not modify.
  */
 
-#ifdef IMPLEMENT_PROXY_PLUGIN
-#define <xsl:value-of select="$ApplicationName"/>_DLL
-
-#include &lt;string.h&gt;
-#include &lt;conio.h&gt;
+//#ifdef IMPLEMENT_PROXY_PLUGIN
 #include &lt;lbConfigHook.h&gt;
+#include &lt;lbInterfaces-sub-Project.h&gt;
 
-#include &lt;appcs.h&gt;
-#include &lt;appbus.h&gt;
+#undef DLLEXPORT
+
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLEXPORT
+#endif
+#ifdef LINUX 
+#define DLLEXPORT
+#endif
+
+#include &lt;I<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
+#include &lt;I<xsl:value-of select="$ApplicationName"/>.h&gt;
+
+#include &lt;<xsl:value-of select="$ApplicationName"/>_FacadeProxy.h&gt;
 
 class lbProxyModul : public lb_I_PluginModule {
 public:
@@ -150,6 +158,10 @@ lbProxyModul::~lbProxyModul() {
 
 void LB_STDCALL lbProxyModul::initialize() {
 	enumPlugins();
+}
+
+void LB_STDCALL lbProxyModul::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbProxyModul::setData(lb_I_Unknown* uk) {
@@ -239,7 +251,7 @@ void LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::releaseImplem
 		uk<xsl:value-of select="$ApplicationName"/>.resetPtr();
 	}
 }
-#endif //IMPLEMENT_PROXY_PLUGIN
+//#endif //IMPLEMENT_PROXY_PLUGIN
 
 	</xsl:template>
 </xsl:stylesheet>

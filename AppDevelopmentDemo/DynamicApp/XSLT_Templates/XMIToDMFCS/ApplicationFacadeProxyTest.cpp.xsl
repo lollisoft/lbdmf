@@ -88,17 +88,52 @@ int main(int argc, char** argv) {
 		PM->initialize();
 	
 		UAP(lb_I_<xsl:value-of select="$ApplicationName"/>, client)
+		setLogActivated(true);
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_<xsl:value-of select="$ApplicationName"/>, "Proxy", client, "'application proxy'")
 	
 		if (client != NULL) {
-			setLogActivated(true);
 			_CL_LOG &lt;&lt; "Have got a proxy for lb_I_<xsl:value-of select="$ApplicationName"/>" LOG_
-			setLogActivated(false);
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
+
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+		<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
+<xsl:call-template name="BasicEntityTests">
+		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
 		} else {
-			setLogActivated(true);
 			_CL_LOG &lt;&lt; "Error: Can't find a proxy for lb_I_<xsl:value-of select="$ApplicationName"/>" LOG_
-			setLogActivated(false);
 		}
+		setLogActivated(false);
 		
 		PM-&gt;unload();
 	}
@@ -110,4 +145,30 @@ int main(int argc, char** argv) {
 	return 0;
 }
 </xsl:template>
+
+<xsl:template name="BasicEntityTests">
+	<xsl:param name="ApplicationName"/>
+	<xsl:param name="FormularName"/>
+	<xsl:param name="FormularID"/>
+	<xsl:param name="FunctionName"/>
+			UAP(lb_I_<xsl:value-of select="$FormularName"/>, _<xsl:value-of select="$FormularName"/>)
+			
+			setLogActivated(false);
+			if ((err = client->open_<xsl:value-of select="$FormularName"/>()) == ERR_NONE) {
+				_<xsl:value-of select="$FormularName"/> = client->first_<xsl:value-of select="$FormularName"/>();
+				if (_<xsl:value-of select="$FormularName"/> == NULL) {
+					setLogActivated(true);
+					_CL_LOG &lt;&lt; "Error: Can't get first of <xsl:value-of select="$FormularName"/>." LOG_
+					setLogActivated(false);
+				}
+			} else {
+				setLogActivated(true);
+				_CL_LOG &lt;&lt; "Error: Can't open <xsl:value-of select="$FormularName"/>." LOG_
+				if (err == ERR_NOT_CONNECTED) {
+					_CL_LOG &lt;&lt; "Error: <xsl:value-of select="$FormularName"/> is not connected." LOG_
+				}
+				setLogActivated(false);
+			}
+</xsl:template>
+
 </xsl:stylesheet>
