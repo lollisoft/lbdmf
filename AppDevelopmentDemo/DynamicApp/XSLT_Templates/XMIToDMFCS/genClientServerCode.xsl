@@ -54,6 +54,8 @@
 <xsl:import href="ApplicationFacadeServer.cpp.xsl"/>
 <xsl:import href="ApplicationFacadeServer.h.xsl"/>
 
+<xsl:import href="ApplicationFacadeProxyTest.cpp.xsl"/>
+
 <xsl:import href="XMISettings.xsl"/>
 
 <xsl:output method="text"/>
@@ -121,6 +123,13 @@
 
 <exsl:document href="./Interfaces/I{$ApplicationName}.h" method="text">
 <xsl:call-template name="ApplicationFacadeInterface.h">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="./Applications/{$ApplicationName}/{$ApplicationName}Test.cpp" method="text">
+<xsl:call-template name="ApplicationFacadeProxyTest.cpp">
 		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
@@ -265,7 +274,14 @@
 </exsl:document>
 <exsl:document href="./ProxyPlugins/{$ApplicationName}/ProxyModul.cpp" method="text">
 <xsl:call-template name="ProxyModul.cpp">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="./Applications/{$ApplicationName}/makefile.module" method="text">
+<xsl:call-template name="ProxyMakefileModule">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>

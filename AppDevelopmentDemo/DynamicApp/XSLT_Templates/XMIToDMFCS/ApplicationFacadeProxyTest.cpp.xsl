@@ -31,28 +31,6 @@
 <xsl:output method="text" indent="no"/>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
-<xsl:variable name="OrginalApplicationName" select="//lbDMF/applications/application[@ID=$ApplicationID]/@name"/>
-<xsl:variable name="ApplicationName">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$OrginalApplicationName"/>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'-'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'>'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="' '"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-</xsl:variable>
 
 <!-- here is the template that does the replacement -->
 <xsl:template name="SubstringReplace">
@@ -75,11 +53,61 @@
 </xsl:template>
 
 <!-- This template creates a pair of files per formular name -->
-<xsl:template name="ProxyPlugin.cpp">
+<xsl:template name="ApplicationFacadeProxyTest.cpp">
 	<xsl:param name="ApplicationID"/>
+	<xsl:param name="ApplicationName"/>
 	<xsl:param name="FormularID"/>
-	<xsl:param name="FormName"/>
-// Not yet required
+#include &lt;lbConfigHook.h&gt;
+#include &lt;lbinclude.h&gt;
+#include &lt;conio.h&gt;
+#include &lt;signal.h&gt;
 
+#include &lt;I<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
+#include &lt;I<xsl:value-of select="$ApplicationName"/>.h&gt;
+
+void handler(int sig) {
+	COUT &lt;&lt; "Oops..." &lt;&lt; ENDL;
+	exit(0);
+}
+
+int main(int argc, char** argv) {
+	lbErrCodes err = ERR_NONE;
+	int count = 0;
+	//setLogActivated(true);
+
+	/**
+	 * This let the app not crashing. But the handler simply
+	 * does exit(0), no cleanup yet ???
+	 */
+	signal(SIGINT, handler);
+	signal(SIGILL, handler);
+
+	{
+		UAP_REQUEST(getModuleInstance(), lb_I_String, pre)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		PM->initialize();
+	
+		UAP(lb_I_<xsl:value-of select="$ApplicationName"/>, client)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_<xsl:value-of select="$ApplicationName"/>, "Proxy", client, "'application proxy'")
+	
+		if (client != NULL) {
+			setLogActivated(true);
+			_CL_LOG &lt;&lt; "Have got a proxy for lb_I_<xsl:value-of select="$ApplicationName"/>" LOG_
+			setLogActivated(false);
+		} else {
+			setLogActivated(true);
+			_CL_LOG &lt;&lt; "Error: Can't find a proxy for lb_I_<xsl:value-of select="$ApplicationName"/>" LOG_
+			setLogActivated(false);
+		}
+		
+		PM-&gt;unload();
+	}
+	
+	unHookAll();
+
+	_CL_LOG &lt;&lt; "Ending server test thread" LOG_
+	exit(0);
+	return 0;
+}
 </xsl:template>
 </xsl:stylesheet>

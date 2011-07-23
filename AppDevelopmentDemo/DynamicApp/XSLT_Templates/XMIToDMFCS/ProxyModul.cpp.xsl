@@ -76,91 +76,170 @@
 
 <!-- This template creates a pair of files per formular name -->
 <xsl:template name="ProxyModul.cpp">
-	<xsl:param name="ApplicationID"/>
+	<xsl:param name="ApplicationName"/>
 	<xsl:param name="FormularID"/>
-	<xsl:param name="FormName"/>
-///TODO: Implement proxy plugin registration code.	
-#ifdef bla	
-/** \brief class <xsl:value-of select="$FormName"/>.
- * Documentation for <xsl:value-of select="$FormName"/>
+	<xsl:param name="FormName"/>/*
+	Automatically created file. Do not modify.
  */
-class lb_I_<xsl:value-of select="$FormName"/> :
-public lb_I_Unknown {
+
+#ifdef IMPLEMENT_PROXY_PLUGIN
+#define <xsl:value-of select="$ApplicationName"/>_DLL
+
+#include &lt;string.h&gt;
+#include &lt;conio.h&gt;
+#include &lt;lbConfigHook.h&gt;
+
+#include &lt;appcs.h&gt;
+#include &lt;appbus.h&gt;
+
+class lbProxyModul : public lb_I_PluginModule {
 public:
-
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
-
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
-</xsl:for-each>
+	
+	lbProxyModul();
+	virtual ~lbProxyModul();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
+	
+	DECLARE_PLUGINS()
 };
 
-/** \brief class <xsl:value-of select="$FormName"/>_ProtocolTarget.
- * Documentation for <xsl:value-of select="$FormName"/>_ProtocolTarget
- */
-class <xsl:value-of select="$FormName"/>_ProtocolTarget :
-public lb_I_ProtocolTarget {
+class lbPlugin<xsl:value-of select="$ApplicationName"/> : public lb_I_PluginImpl {
 public:
-
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="DatatypeID">
-	<xsl:value-of select="./type/@xmi:idref"/>
-</xsl:variable>
-<xsl:variable name="backendType">
-<xsl:if test="./type/@xmi:idref!=''">
-<xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@xmi:type='uml:DataType'">
-<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_<xsl:value-of select="//packagedElement[@xmi:id=$DatatypeID]/@name"/>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-	<xsl:choose>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
-		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:if>
-</xsl:variable>
-
-<xsl:value-of select="'    '"/>/** \brief Get the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual <xsl:value-of select="$backendType"/>* get_<xsl:value-of select="@name"/>() = 0;
-
-<xsl:value-of select="'    '"/>/** \brief Set the field <xsl:value-of select="@name"/>.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual lbErrCodes set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) = 0;
-
-</xsl:for-each>
+	lbPlugin<xsl:value-of select="$ApplicationName"/>();
+	
+	virtual ~lbPlugin<xsl:value-of select="$ApplicationName"/>();
+	
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+	/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+	
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+	/*...e*/
+	
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, uk<xsl:value-of select="$ApplicationName"/>)
 };
-#endif
-</xsl:template>
+
+
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbProxyModul)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbProxyModul)
+	ADD_INTERFACE(lb_I_PluginModule)
+END_IMPLEMENT_LB_UNKNOWN()
+
+BEGIN_PLUGINS(lbProxyModul)
+ADD_PLUGIN(lbPlugin<xsl:value-of select="$ApplicationName"/>,			Proxy)
+END_PLUGINS()
+
+lbProxyModul::lbProxyModul() {
+	ref = STARTREF;
+}
+
+lbProxyModul::~lbProxyModul() {
+
+}
+
+void LB_STDCALL lbProxyModul::initialize() {
+	enumPlugins();
+}
+
+lbErrCodes LB_STDCALL lbProxyModul::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE &lt;&lt; "lbProxyModul::setData(...) for ApplicationBus not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPlugin<xsl:value-of select="$ApplicationName"/>)
+ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPlugin<xsl:value-of select="$ApplicationName"/>, lbPlugin<xsl:value-of select="$ApplicationName"/>)
+
+lbErrCodes LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_VERBOSE &lt;&lt; "lbPlugin<xsl:value-of select="$ApplicationName"/>::setData(...) called.\n" LOG_
+	
+	return ERR_NOT_IMPLEMENTED;
+}
+
+lbPlugin<xsl:value-of select="$ApplicationName"/>::lbPlugin<xsl:value-of select="$ApplicationName"/>() {
+	_CL_VERBOSE &lt;&lt; "lbPlugin<xsl:value-of select="$ApplicationName"/>::lbPlugin<xsl:value-of select="$ApplicationName"/>() called.\n" LOG_
+	ref = STARTREF;
+}
+
+lbPlugin<xsl:value-of select="$ApplicationName"/>::~lbPlugin<xsl:value-of select="$ApplicationName"/>() {
+	_CL_VERBOSE &lt;&lt; "lbPlugin<xsl:value-of select="$ApplicationName"/>::~lbPlugin<xsl:value-of select="$ApplicationName"/>() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::autorun() {
+	lbErrCodes err = ERR_NONE;
+	
+	return err;
+}
+
+void LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::initialize() {
+}
+
+bool LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::run() {
+	return true;
+}
+
+lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (uk<xsl:value-of select="$ApplicationName"/> == NULL) {
+		<xsl:value-of select="$ApplicationName"/>FacadeProxy* transformer = new <xsl:value-of select="$ApplicationName"/>FacadeProxy();
+		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		QI(transformer, lb_I_Unknown, uk<xsl:value-of select="$ApplicationName"/>)
+	} else {
+		_CL_VERBOSE &lt;&lt; "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return uk<xsl:value-of select="$ApplicationName"/>.getPtr();
+}
+
+lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (uk<xsl:value-of select="$ApplicationName"/> == NULL) {
+		
+		_CL_VERBOSE &lt;&lt; "Warning: peekImplementation() has not been used prior.\n" LOG_
+		
+		<xsl:value-of select="$ApplicationName"/>FacadeProxy* transformer = new <xsl:value-of select="$ApplicationName"/>FacadeProxy();
+		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
+		QI(transformer, lb_I_Unknown, uk<xsl:value-of select="$ApplicationName"/>)
+	}
+	
+	lb_I_Unknown* r = uk<xsl:value-of select="$ApplicationName"/>.getPtr();
+	uk<xsl:value-of select="$ApplicationName"/>.resetPtr();
+	return r;
+}
+
+void LB_STDCALL lbPlugin<xsl:value-of select="$ApplicationName"/>::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (uk<xsl:value-of select="$ApplicationName"/> != NULL) {
+		uk<xsl:value-of select="$ApplicationName"/>--;
+		uk<xsl:value-of select="$ApplicationName"/>.resetPtr();
+	}
+}
+#endif //IMPLEMENT_PROXY_PLUGIN
+
+	</xsl:template>
 </xsl:stylesheet>
