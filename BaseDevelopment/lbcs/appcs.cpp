@@ -1467,6 +1467,8 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 			QI(s, lb_I_KeyBase, key)
 			*s = buffer;
 			
+			_CL_LOG << "lbAppServer::dispatch(...): handle '" << key->charrep() << "'." LOG_
+			
 			uk = dispatchTable->getElement(&key);
 			if (uk == NULL) {
 				_LOG << "lbAppServer::dispatch(...) Error: Failed to lookup protocol handler for '" << key->charrep() << "'." LOG_
@@ -1706,9 +1708,14 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 		
 		connections->insert(&uk, &keybase);
 	} else {
-		result->add("Deny");
-		result->add("Already connected");
-		_LOG << "lbAppServer::HandleConnect(...) Error: Client "  << keybase->charrep() << " already connected!" LOG_
+		//result->add("Deny");
+		//result->add("Already connected");
+		result->add("Accept");
+		result->add("InstanceName");
+		result->add("BusMaster");
+		setLogActivated(true);
+		_CL_LOG << "lbAppServer::HandleConnect(...) Error: Client "  << keybase->charrep() << " already connected!" LOG_
+		setLogActivated(false);
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 
