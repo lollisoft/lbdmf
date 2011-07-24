@@ -198,12 +198,17 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
+MOD_INCL=$(STD_INCL) \
+        -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces \
+        -I $(DEVROOT)$(RELPATH)/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces \
+        -I $(DEVROOT)$(RELPATH)/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces/<xsl:value-of select="$ApplicationName"/> \
+        -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
+
 OBJDEP=
 C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
-L_OPS=$(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook
+LIBS=$(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
