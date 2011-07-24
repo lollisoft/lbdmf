@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.45 2011/01/21 07:53:15 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.46 2011/07/24 13:42:56 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.46  2011/07/24 13:42:56  lollisoft
+ * Added an error code for not connected proxies.
+ *
  * Revision 1.45  2011/01/21 07:53:15  lollisoft
  * Returning error codes to better detect failures.
  *
@@ -369,7 +372,8 @@ enum lbErrCodes {
 /* Dynamic app storage */
 	ERR_DOCUMENTELEMENT_MISSING,
 
-
+	ERR_NOT_CONNECTED,
+	
 /* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
 	ERR_LAST_ENUM = 0x7fffffff
 };
