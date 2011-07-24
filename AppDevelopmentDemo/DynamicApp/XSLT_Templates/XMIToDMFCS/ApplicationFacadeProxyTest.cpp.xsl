@@ -160,7 +160,49 @@ int main(int argc, char** argv) {
 					setLogActivated(true);
 					_CL_LOG &lt;&lt; "Error: Can't get first of <xsl:value-of select="$FormularName"/>." LOG_
 					setLogActivated(false);
-				}
+				} else {
+					setLogActivated(true);
+					_CL_LOG &lt;&lt; "The entity <xsl:value-of select="$FormularName"/> has these values:" LOG_
+					setLogActivated(false);
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:choose>
+<xsl:when test="$backendType='lb_I_Collection'">
+</xsl:when>
+<xsl:when test="$backendType='lb_I_String'">
+<xsl:if test="@name!=''">
+					UAP(lb_I_String, _<xsl:value-of select="@name"/>)
+					if (!_<xsl:value-of select="$FormularName"/>-&gt;is_<xsl:value-of select="@name"/>_Null()) {
+						_<xsl:value-of select="@name"/> = _<xsl:value-of select="$FormularName"/>-&gt;get_<xsl:value-of select="@name"/>();
+						setLogActivated(true);
+						_CL_LOG &lt;&lt; "Field <xsl:value-of select="@name"/> = " &lt;&lt; _<xsl:value-of select="@name"/>-&gt;charrep() LOG_
+						setLogActivated(false);
+					} else {
+						setLogActivated(true);
+						_CL_LOG &lt;&lt; "Field <xsl:value-of select="@name"/> = NULL" LOG_
+						setLogActivated(false);
+					}
+</xsl:if>
+</xsl:when>
+<xsl:when test="$backendType='lb_I_Integer'">
+<xsl:if test="@name!=''">
+					UAP(lb_I_Integer, _<xsl:value-of select="@name"/>)
+					if (!_<xsl:value-of select="$FormularName"/>-&gt;is_<xsl:value-of select="@name"/>_Null()) {
+						_<xsl:value-of select="@name"/> = _<xsl:value-of select="$FormularName"/>-&gt;get_<xsl:value-of select="@name"/>();
+						setLogActivated(true);
+						_CL_LOG &lt;&lt; "Field <xsl:value-of select="@name"/> = " &lt;&lt; _<xsl:value-of select="@name"/>-&gt;charrep() LOG_
+						setLogActivated(false);
+					} else {
+						setLogActivated(true);
+						_CL_LOG &lt;&lt; "Field <xsl:value-of select="@name"/> = NULL" LOG_
+						setLogActivated(false);
+					}
+</xsl:if>
+</xsl:when>
+</xsl:choose>
+
+</xsl:for-each>				}
 			} else {
 				setLogActivated(true);
 				_CL_LOG &lt;&lt; "Error: Can't open <xsl:value-of select="$FormularName"/>." LOG_

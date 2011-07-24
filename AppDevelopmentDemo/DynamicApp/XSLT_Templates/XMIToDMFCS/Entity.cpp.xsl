@@ -135,7 +135,7 @@ lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id_Null() {
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
-	m_id_Null = false;
+	m_<xsl:value-of select="@name"/>_Null = false;
 	m_<xsl:value-of select="@name"/> = value;
 	m_<xsl:value-of select="@name"/>++;
 	return ERR_NONE;

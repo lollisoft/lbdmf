@@ -276,9 +276,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_open_<xsl:valu
 
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 	
 	return ERR_NONE;
 }
@@ -297,9 +295,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_close_<xsl:val
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::close_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::close_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 	
 	return ERR_NONE;
 }
@@ -325,14 +321,40 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_first_<xsl:val
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::first_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::first_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
 	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, fieldCount)
+	
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:choose>
+<xsl:when test="$backendType='lb_I_Collection'">
+</xsl:when>
+<xsl:when test="$backendType='lb_I_String'">
+<xsl:if test="@name!=''">
+	fieldCount-&gt;setData((int)fieldCount-&gt;getData() + 1);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, _<xsl:value-of select="@name"/>)
+	*_<xsl:value-of select="@name"/> = "<xsl:value-of select="@name"/> ";
+	*_<xsl:value-of select="@name"/> += fieldCount->charrep();
+	entity-&gt;set_<xsl:value-of select="@name"/>(*&amp;_<xsl:value-of select="@name"/>);
+</xsl:if>
+</xsl:when>
+<xsl:when test="$backendType='lb_I_Integer'">
+<xsl:if test="@name!=''">
+	fieldCount-&gt;setData((int)fieldCount-&gt;getData() + 1);
+	entity-&gt;set_<xsl:value-of select="@name"/>(*&amp;fieldCount);
+</xsl:if>
+</xsl:when>
+</xsl:choose>
+
+</xsl:for-each>
+	
 	
 	return e;
 }
@@ -358,9 +380,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_previous_<xsl:
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::previous_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::previous_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
 	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
@@ -391,9 +411,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_next_<xsl:valu
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::next_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::next_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
 	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
@@ -424,9 +442,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_last_<xsl:valu
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::last_<xsl:value-of select="@name"/>() {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::last_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
 	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
@@ -467,9 +483,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_get_<xsl:value
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) {
-	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() called." LOG_
-	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
 	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
