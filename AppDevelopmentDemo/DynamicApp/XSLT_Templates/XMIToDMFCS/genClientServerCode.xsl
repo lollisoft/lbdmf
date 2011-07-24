@@ -268,7 +268,7 @@
 
 <exsl:document href="./ServerPlugins/{$ApplicationName}/ServerModul.cpp" method="text">
 <xsl:call-template name="ServerModul.cpp">
-		<xsl:with-param name="ApplicationID"><xsl:value-of select="$AppName"/></xsl:with-param>
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
 </xsl:call-template>
 </exsl:document>

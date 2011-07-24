@@ -63,8 +63,6 @@
 #include &lt;lbConfigHook.h&gt;
 #include &lt;lbInterfaces-sub-Project.h&gt;
 
-#include &lt;I<xsl:value-of select="$ApplicationName"/>.h&gt;
-
 #undef DLLEXPORT
 
 #ifdef WINDOWS
@@ -74,35 +72,11 @@
 #define DLLEXPORT
 #endif
 
+#include &lt;I<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
+#include &lt;I<xsl:value-of select="$ApplicationName"/>.h&gt;
+
 #include &lt;<xsl:value-of select="$ApplicationName"/>_FacadeServer.h&gt;
-<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'-'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'>'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="' '"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-</xsl:variable>
-<xsl:variable name="FormularID">
-<xsl:value-of select="./@xmi:id"/>
-</xsl:variable>
-#include &lt;<xsl:value-of select="$FormularName"/>Entity.h&gt;
-</xsl:for-each>
+#include &lt;<xsl:value-of select="$ApplicationName"/>_Entities.h&gt;
 
 IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$ApplicationName"/>, <xsl:value-of select="$ApplicationName"/>)
 
@@ -302,9 +276,9 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_open_<xsl:valu
 
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 	
 	return ERR_NONE;
 }
@@ -323,9 +297,9 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_close_<xsl:val
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::close_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::close_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 	
 	return ERR_NONE;
 }
@@ -338,19 +312,26 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_first_<xsl:val
 		<xsl:with-param name="FunctionName">first_<xsl:value-of select="@name"/></xsl:with-param>
 </xsl:call-template>
 
-	first_<xsl:value-of select="@name"/>();
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
+	
+	e = first_<xsl:value-of select="@name"/>();
+
+<xsl:call-template name="SendBackData">
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="EntityName"><xsl:value-of select="'e'"/></xsl:with-param>
+</xsl:call-template>
 
     return err;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::first_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::first_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 	
 	return e;
@@ -364,19 +345,26 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_previous_<xsl:
 		<xsl:with-param name="FunctionName">previous_<xsl:value-of select="@name"/></xsl:with-param>
 </xsl:call-template>
 
-	previous_<xsl:value-of select="@name"/>();
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
+	
+	e = previous_<xsl:value-of select="@name"/>();
+
+<xsl:call-template name="SendBackData">
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="EntityName"><xsl:value-of select="'e'"/></xsl:with-param>
+</xsl:call-template>
 
     return err;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::previous_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::previous_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 	
 	return e;
@@ -390,19 +378,26 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_next_<xsl:valu
 		<xsl:with-param name="FunctionName">next_<xsl:value-of select="@name"/></xsl:with-param>
 </xsl:call-template>
 
-	next_<xsl:value-of select="@name"/>();
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
+	
+	e = next_<xsl:value-of select="@name"/>();
+
+<xsl:call-template name="SendBackData">
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="EntityName"><xsl:value-of select="'e'"/></xsl:with-param>
+</xsl:call-template>
 
     return err;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::next_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::next_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 	
 	return e;
@@ -416,19 +411,26 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_last_<xsl:valu
 		<xsl:with-param name="FunctionName">last_<xsl:value-of select="@name"/></xsl:with-param>
 </xsl:call-template>
 
-	last_<xsl:value-of select="@name"/>();
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
+	
+	e = last_<xsl:value-of select="@name"/>();
+
+<xsl:call-template name="SendBackData">
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="EntityName"><xsl:value-of select="'e'"/></xsl:with-param>
+</xsl:call-template>
 
     return err;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::last_<xsl:value-of select="@name"/>() {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::last_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 	
 	return e;
@@ -442,19 +444,36 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_get_<xsl:value
 		<xsl:with-param name="FunctionName">get_<xsl:value-of select="@name"/></xsl:with-param>
 </xsl:call-template>
 
-	get_<xsl:value-of select="@name"/>();
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, ID)
+	int _id;
 
+	if (request->requestInteger("Pid", _id) != ERR_NONE) {
+		result->makeProtoErrAnswer("Error: No pid in request", "lbAppServer::HandleConnect(...)");
+		return ERR_APP_SERVER_HANDLECONNECT;
+	}
+
+	ID-&gt;setData(_id);
+
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
+	
+	e = get_<xsl:value-of select="@name"/>(*&amp;ID);
+
+<xsl:call-template name="SendBackData">
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="EntityName"><xsl:value-of select="'e'"/></xsl:with-param>
+</xsl:call-template>
+	
     return err;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::get_<xsl:value-of select="@name"/>(lb_I_Integer* ID) {
-	setLogEnabled(true);
+	setLogActivated(true);
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$ApplicationName"/>::open_<xsl:value-of select="@name"/>() called." LOG_
-	setLogEnabled(false);
+	setLogActivated(false);
 
 	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	lb_I_<xsl:value-of select="@name"/>* e;
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 	
 	return e;
@@ -468,9 +487,9 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_put_<xsl:value
 		<xsl:with-param name="FunctionName">put_<xsl:value-of select="@name"/>Entity</xsl:with-param>
 </xsl:call-template>
 
-	<xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
-	entity-&gt;setManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="@name"/>Entity* e;
+    <xsl:value-of select="@name"/>Entity* entity = new <xsl:value-of select="@name"/>Entity();
+	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	UAP(lb_I_<xsl:value-of select="@name"/>, e)
 	entity->queryInterface("lb_I_<xsl:value-of select="@name"/>", (void**) &amp;e, __FILE__, __LINE__);
 
 	put_<xsl:value-of select="@name"/>(*&amp;e);
@@ -491,7 +510,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_put_<xsl:value
 		<xsl:with-param name="FunctionName">put_<xsl:value-of select="@name"/>List</xsl:with-param>
 </xsl:call-template>
 
-	put_<xsl:value-of select="@name"/>();
+	//put_<xsl:value-of select="@name"/>();
 
     return err;
 
@@ -509,7 +528,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_getAll_<xsl:va
 		<xsl:with-param name="FunctionName">getAll_<xsl:value-of select="@name"/>ByOffset</xsl:with-param>
 </xsl:call-template>
 
-	getAll_<xsl:value-of select="@name"/>();
+	//getAll_<xsl:value-of select="@name"/>();
 
     return err;
 }
@@ -526,7 +545,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>::_getAll_<xsl:va
 		<xsl:with-param name="FunctionName">getAll_<xsl:value-of select="@name"/>BySearch</xsl:with-param>
 </xsl:call-template>
 
-	getAll_<xsl:value-of select="@name"/>();
+	//getAll_<xsl:value-of select="@name"/>();
 
     return err;
 }
@@ -634,7 +653,7 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::getAll_<xs
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, protocolScope)
 		
-	*protocolScope = ServerInstance;
+	*protocolScope = ServerInstance-&gt;charrep();
 	*protocolScope += ".<xsl:value-of select="$ApplicationName"/>";
 	*protocolScope += ".<xsl:value-of select="$FunctionName"/>";
 
@@ -657,6 +676,41 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::getAll_<xs
 		return ERR_TRANSFER_PROTOCOL;
 	}
 
+</xsl:template>
+
+<xsl:template name="SendBackData">
+	<xsl:param name="FormularID"/>
+	<xsl:param name="EntityName"/>
+	// Code to send back data
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:choose>
+<xsl:when test="$backendType='lb_I_Collection'">
+</xsl:when>
+<xsl:when test="$backendType='lb_I_String'">
+<xsl:if test="@name!=''">
+	UAP(lb_I_String, _<xsl:value-of select="@name"/>)
+	
+	result-&gt;add("<xsl:value-of select="@name"/>");
+	_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
+	result-&gt;add(_<xsl:value-of select="@name"/>-&gt;charrep());
+
+</xsl:if>
+</xsl:when>
+<xsl:when test="$backendType='lb_I_Integer'">
+<xsl:if test="@name!=''">
+	UAP(lb_I_Integer, _<xsl:value-of select="@name"/>)
+	
+	result-&gt;add("<xsl:value-of select="@name"/>");
+	_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
+	result-&gt;add((int) _<xsl:value-of select="@name"/>-&gt;getData());
+
+</xsl:if>
+</xsl:when>
+</xsl:choose>
+
+</xsl:for-each>
 </xsl:template>
 
 </xsl:stylesheet>

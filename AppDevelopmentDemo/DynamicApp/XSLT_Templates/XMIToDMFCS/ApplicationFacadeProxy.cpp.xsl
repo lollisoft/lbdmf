@@ -56,8 +56,7 @@
 <xsl:template name="ApplicationFacadeProxy.cpp">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="ApplicationName"/>
-	<xsl:param name="FormularID"/>
-/*
+	<xsl:param name="FormularID"/>/*
 	Automatically created file. Do not modify.
  */
  
