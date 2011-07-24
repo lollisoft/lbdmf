@@ -328,6 +328,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::open
 	}
 
 	ABSConnection-&gt;close();
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::close_<xsl:value-of select="@name"/>() {
@@ -373,6 +374,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::clos
 	}
 
 	ABSConnection-&gt;close();
+	return ERR_NONE;
 }
 
 lb_I_<xsl:value-of select="@name"/>* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy::first_<xsl:value-of select="@name"/>() {
@@ -601,7 +603,23 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 	ABSConnection-&gt;close();
 	
-	// Code to read back data
+<xsl:call-template name="ReadBackData">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FunctionName"><xsl:value-of select="$FunctionName"/></xsl:with-param>
+</xsl:call-template>
+
+	return e;
+</xsl:template>
+
+<xsl:template name="ReadBackData">
+	<xsl:param name="ApplicationName"/>
+	<xsl:param name="FormularName"/>
+	<xsl:param name="FormularID"/>
+	<xsl:param name="FunctionName"/>
+
+		// Code to read back data
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
@@ -611,7 +629,11 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 <xsl:when test="$backendType='lb_I_String'">
 <xsl:if test="@name!=''">
 	char* _<xsl:value-of select="@name"/> = NULL;
-	if (result-&gt;requestString("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
+	char* _<xsl:value-of select="@name"/>_Null = NULL;
+	if (result-&gt;requestString("IsNull", _<xsl:value-of select="@name"/>_Null) != ERR_NONE) {
+		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
+	}
+	if ((strcmp(_<xsl:value-of select="@name"/>_Null, "NotNull") == 0) &amp;&amp; result-&gt;requestString("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
 		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
 	}
 </xsl:if>
@@ -619,7 +641,11 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 <xsl:when test="$backendType='lb_I_Integer'">
 <xsl:if test="@name!=''">
 	int _<xsl:value-of select="@name"/> = NULL;
-	if (result-&gt;requestInteger("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
+	char* _<xsl:value-of select="@name"/>_Null = NULL;
+	if (result-&gt;requestString("IsNull", _<xsl:value-of select="@name"/>_Null) != ERR_NONE) {
+		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
+	}
+	if ((strcmp(_<xsl:value-of select="@name"/>_Null, "NotNull") == 0) &amp;&amp; result-&gt;requestInteger("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
 		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
 	}
 </xsl:if>
@@ -642,18 +668,22 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 <xsl:when test="$backendType='lb_I_String'">
 <xsl:if test="@name!=''">
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s_<xsl:value-of select="@name"/>)
-	*s_<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
-	if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*s_<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
+	if (strcmp(_<xsl:value-of select="@name"/>_Null, "NotNull") == 0) {
+		*s_<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
+		if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*s_<xsl:value-of select="@name"/>) != ERR_NONE) {
+			_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
+		}
 	}
 </xsl:if>
 </xsl:when>
 <xsl:when test="$backendType='lb_I_Integer'">
 <xsl:if test="@name!=''">
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i_<xsl:value-of select="@name"/>)
-	i_<xsl:value-of select="@name"/>-&gt;setData((int) _<xsl:value-of select="@name"/>);
-	if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*i_<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
+	if (strcmp(_<xsl:value-of select="@name"/>_Null, "NotNull") == 0) {
+		i_<xsl:value-of select="@name"/>-&gt;setData((int) _<xsl:value-of select="@name"/>);
+		if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*i_<xsl:value-of select="@name"/>) != ERR_NONE) {
+			_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
+		}
 	}
 </xsl:if>
 </xsl:when>
@@ -661,7 +691,6 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 </xsl:for-each>
 
-	return e;
 </xsl:template>
 
 <xsl:template name="RequestEntityByID">
@@ -713,65 +742,12 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>FacadeProxy:
 
 	ABSConnection-&gt;close();
 	
-	// Code to read back data
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-
-<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:choose>
-<xsl:when test="$backendType='lb_I_Collection'">
-</xsl:when>
-<xsl:when test="$backendType='lb_I_String'">
-<xsl:if test="@name!=''">
-	char* _<xsl:value-of select="@name"/> = NULL;
-	if (result-&gt;requestString("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
-	}
-</xsl:if>
-</xsl:when>
-<xsl:when test="$backendType='lb_I_Integer'">
-<xsl:if test="@name!=''">
-	int _<xsl:value-of select="@name"/> = 0;
-	if (result-&gt;requestInteger("<xsl:value-of select="@name"/>", _<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Error in recieving parameter from <xsl:value-of select="$FunctionName"/>. Parameter '<xsl:value-of select="@name"/>' wrong or not given." LOG_
-	}
-</xsl:if>
-</xsl:when>
-</xsl:choose>
-
-</xsl:for-each>
-	// Code to create the entity instance
-	<xsl:value-of select="$FormularName"/>Entity* entity = new <xsl:value-of select="$FormularName"/>Entity();
-	entity-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-	lb_I_<xsl:value-of select="$FormularName"/>* e;
-	entity->queryInterface("lb_I_<xsl:value-of select="$FormularName"/>", (void**) &amp;e, __FILE__, __LINE__);
-
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-
-<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:choose>
-<xsl:when test="$backendType='lb_I_Collection'">
-</xsl:when>
-<xsl:when test="$backendType='lb_I_String'">
-<xsl:if test="@name!=''">
-	UAP_REQUEST(getModuleInstance(), lb_I_String, s_<xsl:value-of select="@name"/>)
-	*s_<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
-	if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*s_<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
-	}
-</xsl:if>
-</xsl:when>
-<xsl:when test="$backendType='lb_I_Integer'">
-<xsl:if test="@name!=''">
-	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i_<xsl:value-of select="@name"/>)
-	i_<xsl:value-of select="@name"/>-&gt;setData((int) _<xsl:value-of select="@name"/>);
-	if (e-&gt;set_<xsl:value-of select="@name"/>(&amp;*i_<xsl:value-of select="@name"/>) != ERR_NONE) {
-		_LOG &lt;&lt; "Failed to set value for <xsl:value-of select="@name"/>." LOG_
-	}
-</xsl:if>
-</xsl:when>
-</xsl:choose>
-
-</xsl:for-each>
+<xsl:call-template name="ReadBackData">
+		<xsl:with-param name="ApplicationName"><xsl:value-of select="$ApplicationName"/></xsl:with-param>
+		<xsl:with-param name="FormularName"><xsl:value-of select="$FormularName"/></xsl:with-param>
+		<xsl:with-param name="FormularID"><xsl:value-of select="./@xmi:id"/></xsl:with-param>
+		<xsl:with-param name="FunctionName"><xsl:value-of select="$FunctionName"/></xsl:with-param>
+</xsl:call-template>
 
 	return e;
 </xsl:template>

@@ -270,6 +270,15 @@ lbErrCodes  LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::set_id(lb_
 	return ERR_NONE;
 }
 
+
+bool <xsl:value-of select="$FormName"/>EntityProxy::is_id_Null() {
+	return false; //return m_id_Null;
+}
+
+lbErrCodes <xsl:value-of select="$FormName"/>EntityProxy::set_id_Null() {
+	//m_id_Null = true;
+	return ERR_NONE;
+}
  
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
@@ -278,6 +287,15 @@ lbErrCodes  LB_STDCALL <xsl:value-of select="$FormName"/>EntityProxy::set_id(lb_
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>EntityProxy::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
+	return ERR_NONE;
+}
+
+bool <xsl:value-of select="$FormName"/>EntityProxy::is_<xsl:value-of select="@name"/>_Null() {
+	return false; //return m_<xsl:value-of select="@name"/>_Null;
+}
+
+lbErrCodes <xsl:value-of select="$FormName"/>EntityProxy::set_<xsl:value-of select="@name"/>_Null() {
+	//m_<xsl:value-of select="@name"/>_Null = true;
 	return ERR_NONE;
 }
 

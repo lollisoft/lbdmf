@@ -692,19 +692,30 @@ lb_I_Container* LB_STDCALL <xsl:value-of select="$ApplicationName"/>::getAll_<xs
 <xsl:if test="@name!=''">
 	UAP(lb_I_String, _<xsl:value-of select="@name"/>)
 	
-	result-&gt;add("<xsl:value-of select="@name"/>");
-	_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
-	result-&gt;add(_<xsl:value-of select="@name"/>-&gt;charrep());
-
+	result-&gt;add("IsNull");
+	if (!<xsl:value-of select="$EntityName"/>-&gt;is_<xsl:value-of select="@name"/>_Null()) {
+		result-&gt;add("NotNull");
+		result-&gt;add("<xsl:value-of select="@name"/>");
+		_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
+		result-&gt;add(_<xsl:value-of select="@name"/>-&gt;charrep());
+	} else {
+		result-&gt;add("Null");
+	}
 </xsl:if>
 </xsl:when>
 <xsl:when test="$backendType='lb_I_Integer'">
 <xsl:if test="@name!=''">
 	UAP(lb_I_Integer, _<xsl:value-of select="@name"/>)
 	
-	result-&gt;add("<xsl:value-of select="@name"/>");
-	_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
-	result-&gt;add((int) _<xsl:value-of select="@name"/>-&gt;getData());
+	result-&gt;add("IsNull");
+	if (!<xsl:value-of select="$EntityName"/>-&gt;is_<xsl:value-of select="@name"/>_Null()) {
+		result-&gt;add("NotNull");
+		result-&gt;add("<xsl:value-of select="@name"/>");
+		_<xsl:value-of select="@name"/> = <xsl:value-of select="$EntityName"/>-&gt;get_<xsl:value-of select="@name"/>();
+		result-&gt;add((int) _<xsl:value-of select="@name"/>-&gt;getData());
+	} else {
+		result-&gt;add("Null");
+	}
 
 </xsl:if>
 </xsl:when>

@@ -88,6 +88,17 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Entity::setData(lb_I_Unk
 <xsl:value-of select="$FormName"/>Entity::<xsl:value-of select="$FormName"/>Entity() {
 	ref = STARTREF;
 	_CL_LOG &lt;&lt; "Init <xsl:value-of select="$FormName"/>Entity" LOG_
+	m_id_Null = true;
+<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
+<xsl:if test="$backendType!='lb_I_Collection'">
+<xsl:if test="@name!=''">
+	m_<xsl:value-of select="@name"/>_Null = true;
+</xsl:if>
+</xsl:if>
+
+</xsl:for-each>
+
 }
 
 <xsl:value-of select="$FormName"/>Entity::~<xsl:value-of select="$FormName"/>Entity() {
@@ -100,8 +111,18 @@ lb_I_Integer* <xsl:value-of select="$FormName"/>Entity::get_id() {
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id(lb_I_Integer* value) {
+	m_id_Null = false;
 	m_id = value;
 	m_id++;
+}
+
+bool <xsl:value-of select="$FormName"/>Entity::is_id_Null() {
+	return m_id_Null;
+}
+
+lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id_Null() {
+	m_id_Null = true;
+	return ERR_NONE;
 }
 
 <xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
@@ -114,9 +135,21 @@ lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_id(lb_I_Integer* value)
 }
 
 lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_<xsl:value-of select="@name"/>(<xsl:value-of select="$backendType"/>* value) {
+	m_id_Null = false;
 	m_<xsl:value-of select="@name"/> = value;
 	m_<xsl:value-of select="@name"/>++;
+	return ERR_NONE;
 }
+
+bool <xsl:value-of select="$FormName"/>Entity::is_<xsl:value-of select="@name"/>_Null() {
+	return m_<xsl:value-of select="@name"/>_Null;
+}
+
+lbErrCodes <xsl:value-of select="$FormName"/>Entity::set_<xsl:value-of select="@name"/>_Null() {
+	m_<xsl:value-of select="@name"/>_Null = true;
+	return ERR_NONE;
+}
+
 </xsl:if>
 </xsl:if>
 
