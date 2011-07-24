@@ -1130,7 +1130,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 	UAP(lb_I_ApplicationServerThread, thread_impl)
 	UAP(lb_I_ThreadImplementation, ti)
 	
-	setLogActivated(true);
+	//setLogActivated(true);
 	*servicename = servermodule->getServiceName();
 	
 	_LOG << "initServerModul() called with " << servicename->charrep() LOG_
@@ -1713,9 +1713,7 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 		result->add("Accept");
 		result->add("InstanceName");
 		result->add("BusMaster");
-		setLogActivated(true);
 		_CL_LOG << "lbAppServer::HandleConnect(...) Error: Client "  << keybase->charrep() << " already connected!" LOG_
-		setLogActivated(false);
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 
