@@ -298,7 +298,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
 lb_I_String* LB_STDCALL ApplicationBus::findBackend(char* service) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 	
-	*backend = "busmaster/lbDMFManager";
+	*backend = "busmaster/busmaster";
 	
 	backend++;
 	return backend.getPtr();
