@@ -13,7 +13,7 @@
 
 #include <ApplicationBus.h>
 
-      
+     
 
 IMPLEMENT_FUNCTOR(instanceOfApplicationBus, ApplicationBus)
 
@@ -82,6 +82,7 @@ lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* pr
 
 lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) {
 	lbErrCodes err = ERR_NONE;
+    _CL_LOG << "lbAppServer::HandleConnect(...) Called." LOG_
 
 	LB_PACKET_TYPE type;
 	char *clienthost = NULL;
@@ -136,7 +137,7 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
 	*key = clienthost;
 	*key += Pid->charrep();
 	*key += Tid->charrep();
-		
+	
 	if (connections->exists(&keybase)) {
 		result->add("Accept");
 		result->add("InstanceName");
@@ -158,6 +159,7 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
 		
 		connections->insert(&uk, &keybase);
 	} else {
+		_CL_LOG << "lbAppServer::HandleConnect(...) Not accepted." LOG_
 		result->add("Deny");
 		result->add("Already connected");
 		return ERR_APP_SERVER_HANDLECONNECT;
@@ -253,7 +255,10 @@ char* name;
 }
       
 void LB_STDCALL ApplicationBus::Echo(char* text) {
-	_LOG << "ApplicationBus::Echo(" << text << ") called." LOG_
+	_CL_LOG << "ApplicationBus::Echo(" << text << ") called." LOG_
+	text[0] = 0;
+               //"Hallo, dies ist eine Echo - Message"	
+	strcpy(text, "ApplicationBus::Echo(char* text) called.");
 }
 lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
