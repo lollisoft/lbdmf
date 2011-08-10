@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.135 $
+ * $Revision: 1.136 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.135 2011/07/10 06:18:20 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.136 2011/08/10 06:12:52 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.136  2011/08/10 06:12:52  lollisoft
+ * Changed to use ACE wrapper instead of my own tcp wrappers.
+ * The old are more than ten years old and makes too much roundtrips.
+ * The new one are hopefully much faster.
+ *
  * Revision 1.135  2011/07/10 06:18:20  lollisoft
  * Changed logging message to be verbose only.
  *
@@ -2401,25 +2406,25 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	if (strcmp(searchArgument, "lb_I_Socket") == 0) {
 		functor = PREFIX "instanceOflbSocket";
-		module = "lbtransfer";
+		module = "lbDMF_ACEWrapper";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
 		functor = PREFIX "instanceOflbTransfer";
-		module = "lbtransfer";
+		module = "lbDMF_ACEWrapper";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
 		functor = PREFIX "instanceOflbTransferDataObject";
-		module = "lbtransfer";
+		module = "lbDMF_ACEWrapper";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
 		functor = PREFIX "instanceOflbTransferData";
-		module = "lbtransfer";
+		module = "lbDMF_ACEWrapper";
 		found = true;
 	}
 
