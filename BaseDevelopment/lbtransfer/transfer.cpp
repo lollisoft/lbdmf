@@ -123,7 +123,7 @@ lbTransfer::~lbTransfer() {
  * The machine name has to be resolved to a IP address
  * A service has to be resolved to a port number
  */
-lbErrCodes lbTransfer::init(char *target) {
+lbErrCodes lbTransfer::init(char *target, bool asServer) {
         u_short port;
         char *mysockaddr;
         char token[100];

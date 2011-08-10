@@ -46,6 +46,7 @@ typedef enum {
         PACKET_LB_VOID,
 
         PACKET_LB_OBJECT,       // The basic type of lbObject
+		PACKET_LB_UNKNOWN = 0x7fffffff
 } LB_PACKET_TYPE;
 /*...e*/
 
@@ -353,7 +354,7 @@ public:
 	/** \brief Open the connection.
 	 * This function opens the connection to the given hostname and protocol name.
 	 */
-	virtual lbErrCodes LB_STDCALL init(char *target) = 0;
+	virtual lbErrCodes LB_STDCALL init(char *target, bool asServer = false) = 0;
 	/** \brief Close the connection.
 	 * This function currently must be called after the transmission has been done and the answe has been recieved..
 	 */
