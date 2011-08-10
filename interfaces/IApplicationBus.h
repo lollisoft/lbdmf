@@ -39,6 +39,6 @@ public:
       
 	virtual lb_I_String* LB_STDCALL findBackend(char* service) = 0;
 
-	virtual void LB_STDCALL registerBackend(char* backend, char* server = NULL) = 0;
+	virtual void LB_STDCALL registerBackend(char* backend, char* server) = 0;
 };
 		
