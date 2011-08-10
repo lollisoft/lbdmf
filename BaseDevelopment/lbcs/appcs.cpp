@@ -1130,7 +1130,6 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 	UAP(lb_I_ApplicationServerThread, thread_impl)
 	UAP(lb_I_ThreadImplementation, ti)
 	
-	//setLogActivated(true);
 	*servicename = servermodule->getServiceName();
 	
 	_LOG << "initServerModul() called with " << servicename->charrep() LOG_
@@ -1190,7 +1189,6 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 		}
 	}
 #endif
-	setLogActivated(false);
 	
 	return 1;
 }
@@ -1256,7 +1254,8 @@ void LB_STDCALL lbAppServer::run() {
 
 	_LOG << "lbAppServer::lbAppServer(): Initialize lb_I_Transfer object" LOG_
 	REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
-	if (transfer->init("localhost/busmaster") != ERR_NONE) {
+
+	if (transfer->init("localhost/busmaster", true) != ERR_NONE) {
 		_CL_LOG << "Can't initialize communication channel." LOG_
 		return;
 	}
@@ -1276,8 +1275,10 @@ void LB_STDCALL lbAppServer::run() {
 		
 		if ((clt = transfer->accept()) == 0) 
 		{
+			setLogActivated(true);
 			_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
 			_CL_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
+			setLogActivated(false);
 			return;
 		}
 
@@ -1447,6 +1448,8 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 	 * a further request is from. So the server can block one thread from
 	 * other thread using one request->
 	 */
+	_CL_LOG << "lbAppServer: Check for not connected request." LOG_
+
 	if (isConnected(request) == 0) {
 		err = HandleConnect(request, result);
 		_CL_LOG << "lbAppServer: Handled a nonconnected request." LOG_
@@ -1687,7 +1690,7 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 	*key += Tid->charrep();
 
 	if (!connections->exists(&keybase)) {
-		_LOG << "Connect client: " << keybase->charrep() LOG_
+		_CL_LOG << "Connect client: " << keybase->charrep() LOG_
 		result->add("Accept");
 		result->add("InstanceName");
 		result->add("BusMaster");
@@ -1760,9 +1763,7 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
 	}
 /*...e*/
 
-	setLogActivated(true);
 	_CL_LOG << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid LOG_
-	setLogActivated(false);
 	
 	result->add("Accept");
 	result->add(clienthost);
