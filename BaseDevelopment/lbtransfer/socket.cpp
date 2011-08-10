@@ -193,14 +193,7 @@ lbErrCodes mapWSAErrcode(int lastError, int isServer) {
 
 
 lbSocket::lbSocket() {
-/// \todo Implement lock
-	//lbLock lock(socketSection, "socketSection");
-/*...sSOCKET_VERBOSE:0:*/
-#ifdef SOCKET_VERBOSE
-LOGENABLE("lbSocket::lbSocket()");
-#endif
-/*...e*/
-
+	ref = STARTREF;
 #ifdef WINDOWS
 	startupflag = 0;
 #endif
