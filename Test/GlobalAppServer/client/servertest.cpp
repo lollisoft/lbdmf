@@ -24,14 +24,21 @@ int main(int argc, char** argv) {
 
 	signal(SIGILL, handler);
 
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, client)
+	
 	if (client != NULL) {
 		char buf[100] = "";
-		_LOG << "Application bus instantiated." LOG_
+		setLogActivated(true);
+		_CL_LOG << "Application bus instantiated." LOG_
+		setLogActivated(false);
 		while (count++ < 1) {
 			UAP(lb_I_String, backend)
-			char* text = "Hallo, dies ist eine Echo - Message";
+			char* text = "Hallo Server, dies ist eine Echo - Message";
 			client->Echo(text);
+			setLogActivated(true);
+			_CL_LOG << "Echo result is: " << text LOG_
+			setLogActivated(false);
 			
 			backend = client->findBackend("lbDMFManager");
 			
