@@ -44,7 +44,7 @@ ApplicationBusProxy::ApplicationBusProxy() {
         /**
          * Initialize the tcp connection...
          */
-
+		_CL_LOG << "Initialize the tcp connection..." LOG_
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
 		// The name of the lbDMF Busmaster must be defined in hosts or DNS
@@ -70,6 +70,8 @@ int ApplicationBusProxy::Connect() {
 	result->setServerSide(0);
 	
 	ABSConnection->gethostname(*&temp);
+		
+	_CL_LOG << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
 	
 	client->add("Connect");
 	client->add("Host");
@@ -79,11 +81,9 @@ int ApplicationBusProxy::Connect() {
 	client->add("Tid");
 	client->add(lbGetCurrentThreadId());
 
-	_LOG << "Client sends the packets..." LOG_
     *ABSConnection << *&client;
-	_LOG << "Client waits for answer..." LOG_
     *ABSConnection >> *&result;
-	_LOG << "Connect returns with an answer..." LOG_
+
 	// Handle the request
 	int count = result->getPacketCount();
 
@@ -102,21 +102,21 @@ int ApplicationBusProxy::Connect() {
 				
 				if (strcmp(buffer, "Accept") == 0) {
 					connected = true;
-					_LOG << "Connection accepted." LOG_
+					_CL_LOG << "Connection accepted." LOG_
 					result->incrementPosition();
 					result->get(buffer);
 					if (strcmp(buffer, "InstanceName") == 0) {
 						result->incrementPosition();
 						result->get(buffer);
 						*serverInstance = buffer;
-						_LOG << "Have server instanve = " << serverInstance->charrep() LOG_
+						_CL_LOG << "Have server instanve = " << serverInstance->charrep() LOG_
 						return 1;
 					}
 				}
 				break;
 				
 			default:
-				_LOG << "Unknown packet type!" LOG_
+				_CL_LOG << "Unknown packet type!" LOG_
 				
 				break;
 		}
@@ -124,7 +124,7 @@ int ApplicationBusProxy::Connect() {
 		result->incrementPosition();
 	}
 
-	_LOG << "Connection failed!" LOG_
+	_CL_LOG << "Connection failed!" LOG_
 	connected = false;
                 
 	return 0;
@@ -262,13 +262,15 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 
 	ABSConnection->close();
 	
-	if (result->requestString("text", text) != ERR_NONE) {
+	char* temptext;
+	
+	if (result->requestString("text", temptext) != ERR_NONE) {
 		_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
 		return;
 	} else {
-		setLogActivated(true);
-		_CL_LOG << "Parameter result: 'text' = '" << text << "'" LOG_
-		setLogActivated(false);
+		_CL_LOG << "Parameter result: 'text' = '" << temptext << "'" LOG_
+		text[0] = 0;
+		strcpy(text, temptext);
 	}
 	
 	
