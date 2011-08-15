@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.136 $
+ * $Revision: 1.137 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.136 2011/08/10 06:12:52 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.137 2011/08/15 07:46:58 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.137  2011/08/15 07:46:58  lollisoft
+ * Reverted back to my tcp implementation, as it seems that ACE has problems with TCP_NODELAY.
+ *
  * Revision 1.136  2011/08/10 06:12:52  lollisoft
  * Changed to use ACE wrapper instead of my own tcp wrappers.
  * The old are more than ten years old and makes too much roundtrips.
@@ -2406,25 +2409,25 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	if (strcmp(searchArgument, "lb_I_Socket") == 0) {
 		functor = PREFIX "instanceOflbSocket";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
-
+	// lbDMF_ACEWrapper instead of lbtransfer when paying with ACE version. But currently it has problems between Mac OS X and Windows XP. (Maybe TCP_NODELAY doesn't work).
 	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
 		functor = PREFIX "instanceOflbTransfer";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
 		functor = PREFIX "instanceOflbTransferDataObject";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
 		functor = PREFIX "instanceOflbTransferData";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
