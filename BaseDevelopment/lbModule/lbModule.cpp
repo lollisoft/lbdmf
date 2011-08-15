@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.139 $
+ * $Revision: 1.140 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.139 2011/08/15 08:44:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.140 2011/08/15 13:44:44 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.140  2011/08/15 13:44:44  lollisoft
+ * Reverted to lbtransfer. ACE is currently no solution.
+ *
  * Revision 1.139  2011/08/15 08:44:07  lollisoft
  * Fixed missing switch to ACE version also for the socket class.
  *
@@ -2415,25 +2418,25 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	if (strcmp(searchArgument, "lb_I_Socket") == 0) {
 		functor = PREFIX "instanceOflbSocket";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 	// lbDMF_ACEWrapper instead of lbtransfer when paying with ACE version. But currently it has problems between Mac OS X and Windows XP. (Maybe TCP_NODELAY doesn't work).
 	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
 		functor = PREFIX "instanceOflbTransfer";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
 		functor = PREFIX "instanceOflbTransferDataObject";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
 		functor = PREFIX "instanceOflbTransferData";
-		module = "lbDMF_ACEWrapper";
+		module = "lbtransfer";
 		found = true;
 	}
 
