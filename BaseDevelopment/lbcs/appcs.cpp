@@ -1296,6 +1296,7 @@ void LB_STDCALL lbAppServer::run() {
 		dispatch(*&request, *&result);
 
 		*clt << *&result;
+		clt->close();
 #endif		
 
 #ifdef USE_MULTITHREAD_CODE
