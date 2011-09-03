@@ -16,6 +16,8 @@ using Microsoft.Practices.CompositeUI.UIElements;
 
 namespace ShellApplication
 {
+	// There is a Ribbon based sample that may be of interest: http://social.msdn.microsoft.com/Forums/da-DK/outlookdev/thread/846d64bd-5995-4bf3-8cfe-c3746e3fbf41
+	// Also there is a DevExpress CAB Extension Kit: http://cabdevexpress.codeplex.com/
 	public class ShellApplication : FormShellApplication&lt;ShellWorkItem, ShellForm&gt;
 	{
 		[STAThread]
