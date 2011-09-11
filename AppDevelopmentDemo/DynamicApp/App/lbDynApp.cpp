@@ -304,13 +304,32 @@ lbDynamicApplication::lbDynamicApplication() {
         REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
         REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProjectExport)
 
+#ifdef WINDOWS
+        XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
+        XMIFileUMLProjectExport->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\Export.xmi");
+        XSLFileImportSettings->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\XMISettings.xsl");
+        XSLFileExportSettings->setData("c:\\lbDMF\\XSLT\\DMFToXMI\\XMISettings.xsl");
+        XSLFileSystemDatabase->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\ImportUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\ImportUML-ApplicationDB.xsl");
+#endif
+#ifdef LINUX
+#ifndef OSX
         XMIFileUMLProject->setData("");
         XMIFileUMLProjectExport->setData("");
         XSLFileImportSettings->setData("");
         XSLFileExportSettings->setData("");
         XSLFileSystemDatabase->setData("");
         XSLFileApplicationDatabase->setData("");
-
+#endif
+#endif
+#ifdef OSX
+        XMIFileUMLProject->setData("");
+        XMIFileUMLProjectExport->setData("");
+        XSLFileImportSettings->setData("");
+        XSLFileExportSettings->setData("");
+        XSLFileSystemDatabase->setData("");
+        XSLFileApplicationDatabase->setData("");
+#endif
         *GeneralDBSchemaname = "public";
 
         *lastExportedApp = "";
@@ -1306,6 +1325,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                         }
                 }
         }
+		
+		metaapp->setLoadFromDatabase(true);
+		editProperties(NULL);
+		
         return err;
 }
 
