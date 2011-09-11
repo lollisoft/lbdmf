@@ -1298,12 +1298,33 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		UsePlugin->setData(false);
 		//UseOtherXSLFile->setData(true);
 
-		XSLFileImportSettings->setData("<settings>");
-		XSLFileExportSettings->setData("<settings>");
-		XSLFileSystemDatabase->setData("<system>");
-		XSLFileApplicationDatabase->setData("<application>");
-		XMIFileUMLProject->setData("<UML XMI file>");
-		XSLFileUMLExport->setData("<UML XMI file>");
+#ifdef WINDOWS
+        XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
+        XMIFileUMLProjectExport->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\Export.xmi");
+		XSLFileUMLExport->setData("c:\\lbDMF\\XSLT\\DMFToXMI\\gen_DMFToXMI.xsl");
+        XSLFileImportSettings->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\XMISettings.xsl");
+        XSLFileExportSettings->setData("c:\\lbDMF\\XSLT\\DMFToXMI\\XMISettings.xsl");
+        XSLFileSystemDatabase->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\ImportUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("c:\\lbDMF\\XSLT\\XMIToDMF\\ImportUML-ApplicationDB.xsl");
+#endif
+#ifdef LINUX
+#ifndef OSX
+        XMIFileUMLProject->setData("");
+        XMIFileUMLProjectExport->setData("");
+        XSLFileImportSettings->setData("");
+        XSLFileExportSettings->setData("");
+        XSLFileSystemDatabase->setData("");
+        XSLFileApplicationDatabase->setData("");
+#endif
+#endif
+#ifdef OSX
+        XMIFileUMLProject->setData("");
+        XMIFileUMLProjectExport->setData("");
+        XSLFileImportSettings->setData("");
+        XSLFileExportSettings->setData("");
+        XSLFileSystemDatabase->setData("");
+        XSLFileApplicationDatabase->setData("");
+#endif
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
 		*name = "UMLImportDBName";
