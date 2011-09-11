@@ -1461,9 +1461,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 				*dbuser = "";
 				*dbpass = "";
 
-				char* dbbackend = metaapp->getApplicationDatabaseBackend();
-				char* sysdbbackend = metaapp->getSystemDatabaseBackend();
-				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+///\todo There is a strange bug in overwriting the string anyhow within the call to setStatusText below.
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbbackend)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, sysdbbackend)
+				
+				*sysdbbackend = metaapp->getSystemDatabaseBackend();
+				*dbbackend = metaapp->getApplicationDatabaseBackend();
+
+				if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
 					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
 				} else {
 					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
@@ -1479,9 +1484,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 				if (strcmp(dbname->charrep(), "lbDMF") == 0) {
 					// It is the system database
-					if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
+					if (sysdbbackend->charrep() != NULL && strcmp(sysdbbackend->charrep(), "") != 0) {
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend, customDB, "'database plugin'")
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend->charrep(), customDB, "'database plugin'")
 						_LOG << "Using plugin database backend for UML import operation..." LOG_
 					} else {
 						// Use built in
@@ -1489,9 +1494,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 						_LOG << "Using built in database backend for UML import operation..." LOG_
 					}
 				} else {
-					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend->charrep(), customDB, "'database plugin'")
 						_LOG << "Using plugin database backend for UML import operation..." LOG_
 					} else {
 						// Use built in
@@ -1503,14 +1508,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 
 				if (customDB == NULL) {
-					_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+					_LOGERROR << "Error: Could not load database backend, either plugin or built in version. The sysdbbackend value was: " << sysdbbackend->charrep() LOG_
 					return;
 				}
 
 				customDB->init();
 				/************/
 
-				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
 					// It is the plugin that currently only supports local Sqlite
 					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
@@ -1613,6 +1618,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 										case lb_I_Query::lbDBColumnBigInteger:
 										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model. (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
 											formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnUnknown:
@@ -1640,6 +1646,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 										case lb_I_Query::lbDBColumnBigInteger:
 										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model (no mapping). (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
 											formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", false, "", "", FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnUnknown:
@@ -1882,6 +1889,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 										case lb_I_Query::lbDBColumnBigInteger:
 										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model. (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
 											formularfields->addField(name->charrep(), tablename->charrep(), "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnUnknown:
