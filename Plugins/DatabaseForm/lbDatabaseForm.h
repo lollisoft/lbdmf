@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.69 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.70 2011/09/11 10:42:42 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.70  2011/09/11 10:42:42  lollisoft
+ * Started some refactoring.
+ *
  * Revision 1.69  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -323,7 +326,7 @@ public:
 	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
 	 */
 	lbConfigure_FK_PK_MappingDialog();
-	lbConfigure_FK_PK_MappingDialog(long FormularID);
+	lbConfigure_FK_PK_MappingDialog(lb_I_Formulars* _forms, lb_I_Formular_Fields* _fields);
 
 	/**
 	 * Destructor
@@ -364,6 +367,8 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 	lb_I_Unknown* LB_STDCALL getUnknown();
 		
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
+		
 	void OnDispatch(wxCommandEvent& event);
 
 	DECLARE_LB_UNKNOWN()
@@ -388,6 +393,9 @@ public:
 	// l and buf are therefore as a bugfix.
 	long l;
 	char buf[100];
+
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
 
 	wxWindow* firstButton;
 
@@ -977,6 +985,8 @@ public:
     void LB_STDCALL addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
 	bool LB_STDCALL checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns);
+	
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
 		
 	DECLARE_LB_UNKNOWN()
 

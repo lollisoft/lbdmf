@@ -103,16 +103,20 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
         _DBName = NULL;
 }
 
-lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(long FormularID) 
+lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(lb_I_Formulars* _forms, lb_I_Formular_Fields* _fields) 
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-        ref = STARTREF;
-        pass = 0;
-        _FoimularID = FormularID; 
-        _DBUser = NULL;
-        _DBPass = NULL;
-        _DBName = NULL;
+	ref = STARTREF;
+	pass = 0;
+	_FoimularID = _forms->getFormularID(); 
+	_DBUser = NULL;
+	_DBPass = NULL;
+	_DBName = NULL;
+	forms = _forms;
+	forms++;
+	formularfields = _fields;
+	formularfields++;
 }
 
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
@@ -127,6 +131,61 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk)
 
         return ERR_NOT_IMPLEMENTED;
 }
+
+bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(const char* formName, const char* fieldName) {
+	bool definitionFound = false;
+	bool formFound = false;
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
+	ID->setData(meta->getApplicationID());
+	
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		FID->setData(forms->getApplicationID());
+		
+		if (FID->equals(*&ID)) {
+			if (strcmp(formName, forms->getName()) == 0) {
+				forms->finishFormularIteration();
+				formFound = true;
+				_LOG << "Found formular name in datamodel." LOG_
+				break;
+			}
+		}
+	}
+	
+	if (formFound == false) {
+		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
+	}
+	
+	long FormID = forms->getFormularID();
+	
+	formularfields->finishFieldsIteration();
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
+		
+		if (formularfields->getFormularID() == FormID) {
+			if (strcmp(formularfields->getName(), fieldName) == 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
+				
+				*fkt = formularfields->getFKTable();
+				*fkn = formularfields->getFKName();
+				
+				if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
+				
+				definitionFound = true;
+				formularfields->finishFieldsIteration();
+				break;
+			}
+		}
+	}
+	return definitionFound;
+}
+
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
         lbErrCodes err = ERR_NONE;
@@ -229,7 +288,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         QI(uk, lb_I_Formular_Fields, formularfields)
 
 
-        if (formularfields != NULL) {
+        if (formularfields != NULL) {			
                 UAP(lb_I_String, PKTable)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
@@ -247,21 +306,26 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
                 free(p);
 
                 switch (coltype) {
-                        case lb_I_Query::lbDBColumnBit:                                                                                                                                                                                                   // Force replace
+                        case lb_I_Query::lbDBColumnBit: // Force replace
+								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
                                 formularfields->addField(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnFloat:
+								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
                                 formularfields->addField(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnChar:
+								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
                                 formularfields->addField(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnBinary:
+								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
                                 formularfields->addField(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                                 
                         case lb_I_Query::lbDBColumnBigInteger:
                         case lb_I_Query::lbDBColumnInteger:
+								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
                                 formularfields->addField(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnUnknown:
@@ -284,7 +348,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         }
 
         if (database == NULL) {
-                _LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+                _LOGERROR << "Error: Could not load database backend, either plugin or built in version." LOG_
                 return;
         }
         
@@ -337,7 +401,10 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         query = database->getQuery("lbDMF", 0);
         
         query->skipFKCollecting();
-        query->query(buffer);
+		_LOG << "Also save the visible column into the databse. (" << FKName.c_str() << " in " << fkTable << " to " << PKName.c_str() << " in " << PKTable->charrep() << ")" LOG_
+		if (query->query(buffer) != ERR_NONE) {
+			_LOG << "Saving the visible column into the databse failed!" LOG_
+		}
         query->enableFKCollecting();
         query->close();
 
@@ -400,16 +467,8 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
         this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
                         &lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
-/*
-        this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-                        &lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
 
-        this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
-                        &lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
-*/
-        return SelectedColumn;
+	return SelectedColumn;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
@@ -479,7 +538,7 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, const c
                 UAP(lb_I_String, name)
                 name = query->getColumnName(i);
                 
-                if (query->hasFKColumn(name->charrep()) == 1) {
+                if (query->hasFKColumn(name->charrep()) == 1 && !haveNotMappedForeignKeyFields(forms->getName(), name->charrep())) {
                         cBoxFKNames->Append(wxString(name->charrep()));
                 }
         }

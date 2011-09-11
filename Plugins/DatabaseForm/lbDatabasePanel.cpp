@@ -528,6 +528,60 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 /*...e*/
 }
 
+bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formName, const char* fieldName) {
+	bool definitionFound = false;
+	bool formFound = false;
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
+	ID->setData(meta->getApplicationID());
+	
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		FID->setData(forms->getApplicationID());
+		
+		if (FID->equals(*&ID)) {
+			if (strcmp(formName, forms->getName()) == 0) {
+				forms->finishFormularIteration();
+				formFound = true;
+				_LOG << "Found formular name in datamodel." LOG_
+				break;
+			}
+		}
+	}
+	
+	if (formFound == false) {
+		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
+	}
+	
+	long FormID = forms->getFormularID();
+	
+	formularfields->finishFieldsIteration();
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
+		
+		if (formularfields->getFormularID() == FormID) {
+			if (strcmp(formularfields->getName(), fieldName) == 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
+				
+				*fkt = formularfields->getFKTable();
+				*fkn = formularfields->getFKName();
+				
+				if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
+				
+				definitionFound = true;
+				formularfields->finishFieldsIteration();
+				break;
+			}
+		}
+	}
+	return definitionFound;
+}
+
 void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 			lbErrCodes err = ERR_NONE;
             UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
@@ -568,58 +622,10 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-			bool definitionFound = false;
-			bool formFound = false;
 
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-			ID->setData(meta->getApplicationID());
-
-			forms->finishFormularIteration();
-			while (forms->hasMoreFormulars()) {
-				forms->setNextFormular();
-				FID->setData(forms->getApplicationID());
-
-				if (FID->equals(*&ID)) {
-					if (strcmp(formName, forms->getName()) == 0) {
-						forms->finishFormularIteration();
-						formFound = true;
-						_LOG << "Found formular name in datamodel." LOG_
-						break;
-					}
-				}
-			}
-
-			if (formFound == false) {
-						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
-			}
-
-			long FormID = forms->getFormularID();
-
-			formularfields->finishFieldsIteration();
-			while (formularfields->hasMoreFields()) {
-				formularfields->setNextField();
-
-				if (formularfields->getFormularID() == FormID) {
-					if (strcmp(formularfields->getName(), name) == 0) {
-						UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
-						UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
-
-						*fkt = formularfields->getFKTable();
-						*fkn = formularfields->getFKName();
-
-						if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
-
-						definitionFound = true;
-						formularfields->finishFieldsIteration();
-						break;
-					}
-				}
-			}
-
-			if (definitionFound == false) {
+			if (!haveNotMappedForeignKeyFields(formName, name)) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
@@ -627,40 +633,10 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 				fkpkPanel->destroy();
 				meta->setLoadFromDatabase(true);
 
-				long ID = meta->getApplicationID();
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
-
-					if (forms->getApplicationID() == ID) {
-						if (strcmp(formName, forms->getName()) == 0) {
-							forms->finishFormularIteration();
-							break;
-						}
-					}
-				}
-
-				long FormID = forms->getFormularID();
-
-				while (formularfields->hasMoreFields()) {
-					formularfields->setNextField();
-
-					if (formularfields->getFormularID() == FormID) {
-						if (strcmp(formularfields->getName(), name) == 0) {
-							UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
-							UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
-
-							*fkt = formularfields->getFKTable();
-							*fkn = formularfields->getFKName();
-
-							if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
-
-							definitionFound = true;
-							formularfields->finishFieldsIteration();
-							break;
-						}
-					}
-				}
-
+				// Why do I this twice?
+				// Refactored
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, name);
+				
 				UAP(lb_I_Unknown, uk)
                 UAP(lb_I_Parameter, params)
                 uk = meta->getActiveDocument();
@@ -758,7 +734,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
@@ -2207,50 +2183,9 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-			bool definitionFound = false;
-			bool formFound = false;
-
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-			ID->setData(meta->getApplicationID());
-
-			forms->finishFormularIteration();
-			while (forms->hasMoreFormulars()) {
-				forms->setNextFormular();
-				FID->setData(forms->getApplicationID());
-
-				if (FID->equals(*&ID)) {
-					if (strcmp(base_formName, forms->getName()) == 0) {
-						forms->finishFormularIteration();
-						formFound = true;
-						_LOG << "Found formular name in datamodel." LOG_
-						break;
-					}
-				}
-			}
-
-			if (formFound == false) {
-				_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
-			}
-
-			long FormID = forms->getFormularID();
-
-			formularfields->finishFieldsIteration();
-			while (formularfields->hasMoreFields()) {
-				formularfields->setNextField();
-
-				if (formularfields->getFormularID() == FormID) {
-					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
-						definitionFound = true;
-						formularfields->finishFieldsIteration();
-						break;
-					}
-				}
-			}
-
-			if (definitionFound == false) {
+			if (!haveNotMappedForeignKeyFields(formName, name->charrep())) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query
@@ -2305,32 +2240,9 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 					meta->msgBox(_trans("Error"), msg->charrep());
 					return ERR_DB_NODATA;
 				}
-
-				long ID = meta->getApplicationID();
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
-
-					if (forms->getApplicationID() == ID) {
-						if (strcmp(formName, forms->getName()) == 0) {
-							forms->finishFormularIteration();
-							break;
-						}
-					}
-				}
-
-				long FormID = forms->getFormularID();
-
-				while (formularfields->hasMoreFields()) {
-					formularfields->setNextField();
-
-					if (formularfields->getFormularID() == FormID) {
-						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
-							definitionFound = true;
-							formularfields->finishFieldsIteration();
-							break;
-						}
-					}
-				}
+				
+				// Why was this coded here before refactoring?
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, name->charrep());
 			}
 
 #ifdef USE_FKPK_QUERY
@@ -2382,7 +2294,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
