@@ -253,7 +253,6 @@ extern "C" DLLEXPORT void LB_CDECL createLogInstance() {
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, const char *f, int level) {
                 FILE *fp;
-				if (!isLogActivated()) return;
 				if (!DirectoryExists(getLogDirectory())) createDirectory(getLogDirectory());
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
