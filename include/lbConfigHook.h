@@ -242,17 +242,30 @@
 #ifdef LOG_IMPROVED
 
 #define _LOG \
-        if (isInitializing() != 0) { \
+        if (!isLogActivated() || isInitializing() != 0) { \
         } else { \
-                time_t Zeitstempel; \
-                        tm *nun; \
-                        Zeitstempel = time(0); \
-                        nun = localtime(&Zeitstempel); \
-                        createLogInstance(); \
-                        char tmstring[100] = ""; \
-                        sprintf(tmstring, "%4d.%2d.2%d - %2d:%2d:%2d", \
-                        nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
-                        *(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+			time_t Zeitstempel; \
+			tm *nun; \
+			Zeitstempel = time(0); \
+			nun = localtime(&Zeitstempel); \
+			createLogInstance(); \
+			char tmstring[100] = ""; \
+			sprintf(tmstring, "%4d.%2d.%2d - %2d:%2d:%2d", \
+			nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
+			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+
+#define _LOGERROR \
+		if (isInitializing() != 0) { \
+		} else { \
+			time_t Zeitstempel; \
+			tm *nun; \
+			Zeitstempel = time(0); \
+			nun = localtime(&Zeitstempel); \
+			createLogInstance(); \
+			char tmstring[100] = ""; \
+			sprintf(tmstring, "%4d.%2d.%2d - %2d:%2d:%2d", \
+			nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
+			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 #endif
 
