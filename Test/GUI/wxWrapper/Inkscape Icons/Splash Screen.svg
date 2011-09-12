@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,13 +14,13 @@
    height="1052.3622047"
    id="svg7255"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docbase="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="Splash Screen.svg"
    inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
    inkscape:export-xdpi="27.999004"
    inkscape:export-ydpi="27.999004"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1">
   <defs
      id="defs7257">
     <inkscape:perspective
@@ -1193,16 +1194,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.6373307"
-     inkscape:cx="369.53892"
-     inkscape:cy="652.75517"
+     inkscape:zoom="0.79820428"
+     inkscape:cx="372.04724"
+     inkscape:cy="526.18109"
      inkscape:document-units="px"
      inkscape:current-layer="g3200"
-     inkscape:window-width="1244"
-     inkscape:window-height="864"
-     inkscape:window-x="11"
-     inkscape:window-y="14"
-     showgrid="false" />
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     inkscape:window-x="0"
+     inkscape:window-y="778"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7260">
     <rdf:RDF>
@@ -1211,6 +1213,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1253,7 +1256,7 @@
            inkscape:export-ydpi="34.710899">
           <path
              transform="matrix(0.479653,3.866152e-3,-3.724469e-3,0.461999,899.3227,-259.237)"
-             d="M 533.63243,1211.5447 A 88.938736,110.2067 0 1 1 355.75496,1211.5447 A 88.938736,110.2067 0 1 1 533.63243,1211.5447 z"
+             d="m 533.63243,1211.5447 c 0,60.8655 -39.81923,110.2067 -88.93873,110.2067 -49.11951,0 -88.93874,-49.3412 -88.93874,-110.2067 0,-60.8655 39.81923,-110.2067 88.93874,-110.2067 49.1195,0 88.93873,49.3412 88.93873,110.2067 z"
              sodipodi:ry="110.2067"
              sodipodi:rx="88.938736"
              sodipodi:cy="1211.5447"
@@ -1272,7 +1275,7 @@
                transform="matrix(0.691474,0,0,0.691474,194.6521,226.2037)">
               <path
                  transform="matrix(0.595377,0,0,0.595377,484.3515,236.1627)"
-                 d="M 654.28571,648.07648 A 392.85715,392.85715 0 1 1 -131.42859,648.07648 A 392.85715,392.85715 0 1 1 654.28571,648.07648 z"
+                 d="m 654.28571,648.07648 c 0,216.96901 -175.88814,392.85712 -392.85715,392.85712 -216.969013,0 -392.85715,-175.88811 -392.85715,-392.85712 0,-216.96901 175.888137,-392.85715 392.85715,-392.85715 216.96901,0 392.85715,175.88814 392.85715,392.85715 z"
                  sodipodi:ry="392.85715"
                  sodipodi:rx="392.85715"
                  sodipodi:cy="648.07648"
@@ -1293,7 +1296,7 @@
               </g>
               <path
                  transform="matrix(0.595377,0,0,0.595377,484.3515,236.1627)"
-                 d="M 654.28571,648.07648 A 392.85715,392.85715 0 1 1 -131.42859,648.07648 A 392.85715,392.85715 0 1 1 654.28571,648.07648 z"
+                 d="m 654.28571,648.07648 c 0,216.96901 -175.88814,392.85712 -392.85715,392.85712 -216.969013,0 -392.85715,-175.88811 -392.85715,-392.85712 0,-216.96901 175.888137,-392.85715 392.85715,-392.85715 216.96901,0 392.85715,175.88814 392.85715,392.85715 z"
                  sodipodi:ry="392.85715"
                  sodipodi:rx="392.85715"
                  sodipodi:cy="648.07648"
@@ -1446,7 +1449,7 @@
              sodipodi:cy="253.85521"
              sodipodi:cx="260.68973"
              id="path568"
-             d="M 495.64613,253.85521 A 234.95641,236.07524 0 1 1 25.733322,253.85521 A 234.95641,236.07524 0 1 1 495.64613,253.85521 z" />
+             d="m 495.64613,253.85521 c 0,130.38075 -105.19356,236.07524 -234.9564,236.07524 -129.76284,0 -234.956408,-105.69449 -234.956408,-236.07524 0,-130.38076 105.193568,-236.075242 234.956408,-236.075242 129.76284,0 234.9564,105.694482 234.9564,236.075242 z" />
           <path
              transform="matrix(0,-0.169729,0.807961,0,758.2749,362.1033)"
              style="font-size:12px;fill:#eaf536;fill-opacity:1;fill-rule:evenodd;stroke-width:3.75"
@@ -1456,7 +1459,7 @@
              sodipodi:cy="253.85521"
              sodipodi:cx="260.68973"
              id="path566"
-             d="M 495.64613,253.85521 A 234.95641,236.07524 0 1 1 25.733322,253.85521 A 234.95641,236.07524 0 1 1 495.64613,253.85521 z" />
+             d="m 495.64613,253.85521 c 0,130.38075 -105.19356,236.07524 -234.9564,236.07524 -129.76284,0 -234.956408,-105.69449 -234.956408,-236.07524 0,-130.38076 105.193568,-236.075242 234.956408,-236.075242 129.76284,0 234.9564,105.694482 234.9564,236.075242 z" />
         </g>
         <image
            id="image10470"
@@ -1597,7 +1600,7 @@
                  style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke-linecap:round;stroke-linejoin:round" />
             </g>
             <path
-               d="M 385.80392,41.066441 A 279.27597,259.84183 0 1 1 -172.74802,41.066441 A 279.27597,259.84183 0 1 1 385.80392,41.066441 z"
+               d="m 385.80392,41.066441 c 0,143.506679 -125.03611,259.841829 -279.27597,259.841829 -154.239863,0 -279.27597,-116.33515 -279.27597,-259.841829 0,-143.506681 125.036107,-259.841831 279.27597,-259.841831 154.23986,0 279.27597,116.33515 279.27597,259.841831 z"
                id="path1953"
                sodipodi:cx="106.52795"
                sodipodi:cy="41.066441"
@@ -1714,7 +1717,7 @@
              sodipodi:role="line"
              x="10.262201"
              y="66.510239"
-             id="tspan2293">wxWrapper 1.0.2</tspan><tspan
+             id="tspan2293">wxWrapper 1.0.3</tspan><tspan
              sodipodi:role="line"
              x="10.262201"
              y="173.72321"
