@@ -16,7 +16,7 @@ using Microsoft.Practices.CompositeUI.UIElements;
 
 namespace ShellApplication
 {
-	// Searched for CompositeUI and Ribbon: http://www.google.de/#sclient=psy&hl=de&source=hp&q=CompositeUI+Ribbon&pbx=1&oq=CompositeUI+Ribbon&aq=f&aqi=&aql=&gs_sm=e&gs_upl=3631l13071l0l13519l18l17l0l1l1l0l391l2351l6.8.2.1l17l0&bav=on.2,or.r_gc.r_pw.&fp=1b14abf9aeab93e7&biw=1920&bih=953
+	// Searched for CompositeUI and Ribbon: http://www.google.de/#sclient=psy&amp;hl=de&amp;source=hp&amp;q=CompositeUI+Ribbon&amp;pbx=1&amp;oq=CompositeUI+Ribbon&amp;aq=f&amp;aqi=&amp;aql=&amp;gs_sm=e&amp;gs_upl=3631l13071l0l13519l18l17l0l1l1l0l391l2351l6.8.2.1l17l0&amp;bav=on.2,or.r_gc.r_pw.&amp;fp=1b14abf9aeab93e7&amp;biw=1920&amp;bih=953
 	// There is a Ribbon based sample that may be of interest: http://social.msdn.microsoft.com/Forums/da-DK/outlookdev/thread/846d64bd-5995-4bf3-8cfe-c3746e3fbf41
 	// Also there is a DevExpress CAB Extension Kit: http://cabdevexpress.codeplex.com/ and some improvements: http://devlynx.livejournal.com/6801.html
 	public class ShellApplication : FormShellApplication&lt;ShellWorkItem, ShellForm&gt;
