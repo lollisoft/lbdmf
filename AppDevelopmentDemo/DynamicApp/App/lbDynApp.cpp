@@ -1132,7 +1132,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
         if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
                 exportfile = metaapp->askOpenFileReadStream("xmi");
-                XMIFileUMLProject->setData((char*) exportfile->getFileName());
+                
+		if (exportfile == NULL) {
+			return err;
+		}
+
+		XMIFileUMLProject->setData((char*) exportfile->getFileName());
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
@@ -1249,6 +1254,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
         if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
                 importfile = metaapp->askOpenFileReadStream("xmi");
+
+		if (importfile == NULL) {
+			return err;
+		}
+
                 XMIFileUMLProject->setData((char*)importfile->getFileName());
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
