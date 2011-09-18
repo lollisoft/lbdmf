@@ -269,6 +269,8 @@
 
 #endif
 
+#define _LOGALWAYS _LOGERROR
+
 
 #ifndef LOG_IMPROVED
 #define _LOG \
