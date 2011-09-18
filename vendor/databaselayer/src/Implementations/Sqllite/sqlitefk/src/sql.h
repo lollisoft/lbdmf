@@ -73,6 +73,8 @@ typedef struct table
 extern "C" {
 #endif
 
+int getParseResult();
+
 List* getForeignKeyList(char* _table, char* sql_ddl);
 
 char* rewriteSchemaOfDDL(char* sql_ddl);

@@ -53,6 +53,14 @@ int buffersize = 0;
 int stringsize = 0;
 int allocationsize = 0;
 
+// Indicate parser error, not 'no foreign keys found'.
+int yyparse_result = 0;
+
+int getParseResult() {
+	return yyparse_result;
+}
+
+
 char* strrealloccat(char* toAppend) {
 	char* temp = rewrittenSchemaDDL;
 
@@ -598,12 +606,12 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 	if (sql_ddl == NULL) {
 		yyin = fopen("test.sql", "rb");
 		if (yyin == NULL) printf("Error: Can't open file.\n");
-		yyparse();
+		yyparse_result = yyparse();
 		scanner_finish();
 	} else {
 		YY_BUFFER_STATE mybuf;
 		mybuf = yy_scan_string(sql_ddl);
-		yyparse();
+		yyparse_result = yyparse();
 		scanner_finish();
 		//yy_delete_buffer(mybuf);
 	}
@@ -649,10 +657,19 @@ table_next:
 		tabitem = list_next(tabitem);
 	}
 
-    list_destroy(schema);
-    MemPoolDestroy(&mempool);
-	if (haveItems) return foreign_keys;
-	else return NULL;
+	if (yyparse_result != 0) {
+		fprintf(stderr, "getForeignKeyList(): Parser error."); 
+	}
+
+	list_destroy(schema);
+	MemPoolDestroy(&mempool);
+	if (haveItems) {
+                //fprintf(stderr, "getForeignKeyList(): %s at or near \"%s\"", message, yytext);
+		return foreign_keys;
+	} else {
+                fprintf(stderr, "getForeignKeyList(): Did not found foreign keys."); 
+		return NULL;
+	}
 #endif
 
 #ifndef BUILD_LIBRARY
