@@ -1338,23 +1338,23 @@ public:
 
     void test_Sqlite_ForeignKey( void )
     {
-        lbErrCodes err = ERR_NONE;
-		puts("test_Sqlite_ForeignKey");
+	lbErrCodes err = ERR_NONE;
+	puts("test_Sqlite_ForeignKey");
 
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Database, db)
-        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Database, db)
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
 
 
-		ASSERT_EQUALS( true, db.getPtr() != NULL );
+	ASSERT_EQUALS( true, db.getPtr() != NULL );
 
-		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+	ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
 
-		UAP(lb_I_Query, query)
+	UAP(lb_I_Query, query)
 
-		query = db->getQuery("UnitTestSqlite", 0);
+	query = db->getQuery("UnitTestSqlite", 0);
 
-		ASSERT_EQUALS( true, query != NULL);
+	ASSERT_EQUALS( true, query != NULL);
 
 
         lbErrCodes err1;
