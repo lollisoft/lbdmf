@@ -3,11 +3,11 @@ public lb_I_EventHandler
 {
 public:
 	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	lbErrCodes LB_STDCALL setUserName(char* user);
-	lbErrCodes LB_STDCALL setApplicationName(char* app);
+	lbErrCodes LB_STDCALL setUserName(const char* user);
+	lbErrCodes LB_STDCALL setApplicationName(const char* app);
     lbErrCodes LB_STDCALL save();
     lbErrCodes LB_STDCALL load();
-	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
 	lbErrCodes LB_STDCALL uninitialize();
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);

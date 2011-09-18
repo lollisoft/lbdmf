@@ -18,11 +18,11 @@ public lb_I_EventHandler
 {
 public:
 	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	lbErrCodes LB_STDCALL setUserName(char* user);
-	lbErrCodes LB_STDCALL setApplicationName(char* app);
-    lbErrCodes LB_STDCALL save();
-    lbErrCodes LB_STDCALL load();
-	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL setUserName(const char* user);
+	lbErrCodes LB_STDCALL setApplicationName(const char* app);
+	lbErrCodes LB_STDCALL save();
+	lbErrCodes LB_STDCALL load();
+	lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
 	lbErrCodes LB_STDCALL uninitialize();
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
@@ -192,7 +192,7 @@ lbErrCodes LB_STDCALL UIWrapper::uninitialize() {
 	return ERR_NONE;
 }
 /*...slbErrCodes LB_STDCALL lbApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
-lbErrCodes LB_STDCALL UIWrapper::initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 
 	// To be implemented in a separate application module
 
@@ -219,7 +219,7 @@ lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
 	(*app)->setData(LogonApplication->charrep());
 	return ERR_NONE;
 }
-lbErrCodes LB_STDCALL UIWrapper::setUserName(char* user) {
+lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 	if (LogonUser == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
@@ -228,7 +228,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(char* user) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL UIWrapper::setApplicationName(char* app) {
+lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
 	if (LogonApplication == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 	}
