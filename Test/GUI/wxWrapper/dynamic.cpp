@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.171 2011/02/27 10:34:00 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.172 2011/09/20 06:58:29 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.171 $
+ * $Revision: 1.172 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.171 2011/02/27 10:34:00 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.172 2011/09/20 06:58:29 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.172  2011/09/20 06:58:29  lollisoft
+ * Added optional logging control via environment variable.
+ *
  * Revision 1.171  2011/02/27 10:34:00  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -3348,7 +3351,18 @@ int PASCAL WinMain(HINSTANCE hInstance,
 	//wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
 
 	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
+	char* LOGGING = getenv("LOGGING");
 
+	if (LOGGING != NULL) {
+		if ((strcmp(LOGGING, "no") != 0) &&
+			(strcmp(LOGGING, "NO") != 0) &&
+			(strcmp(LOGGING, "No") != 0) &&
+			(strcmp(LOGGING, "nO") != 0)) 
+			setLogActivated(false);
+		else
+			setLogActivated(true);
+	}
+	
 	if (CONSOLE_DETACH == NULL) FreeConsole();
 	if ((CONSOLE_DETACH != NULL) &&
 	    (strcmp(CONSOLE_DETACH, "no") != 0) &&
