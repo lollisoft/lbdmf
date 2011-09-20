@@ -1,7 +1,7 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
-export VERSION=1.0.2
+export VERSION=1.0.3
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
@@ -17,7 +17,7 @@ cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.d
 
 # Creating a new diskimage
 
-hdiutil create -ov -size 80m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+
+hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+
 
 sleep 5
 
