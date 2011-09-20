@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.143 $
+# * $Revision: 1.144 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.143 2011/07/10 06:20:57 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.144 2011/09/20 04:05:33 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.144  2011/09/20 04:05:33  lollisoft
+# * Switch to release.
+# *
 # * Revision 1.143  2011/07/10 06:20:57  lollisoft
 # * Compile release mode.
 # *
@@ -1404,7 +1407,7 @@ COMPILER_VERSION=
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=yes
+DEBUG=no
 
 
 STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
