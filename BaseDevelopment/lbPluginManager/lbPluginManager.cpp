@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.82 $
+ * $Revision: 1.83 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.82 2011/07/10 06:18:58 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.83 2011/09/21 04:59:03 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.83  2011/09/21 04:59:03  lollisoft
+ * Removed temporary log activation.
+ *
  * Revision 1.82  2011/07/10 06:18:58  lollisoft
  * Changed some logging messages to be verbose only.
  *
@@ -1357,10 +1360,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					PluginContainer.resetPtr();
 				}
 
-				bool bLog = isLogActivated();
-				setLogActivated(true);
 				_LOG << "Initialize plugin " << plM->getModule()->charrep() LOG_
-				setLogActivated(bLog);
 				
 				PluginContainer = plM->getPlugins();
 
