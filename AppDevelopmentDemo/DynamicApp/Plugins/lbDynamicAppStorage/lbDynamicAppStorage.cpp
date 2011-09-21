@@ -1299,6 +1299,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		//UseOtherXSLFile->setData(true);
 
 #ifdef WINDOWS
+		///\todo Change the used files to refer the HOME versions.
+		//installXMIFilesToHome();
+		//installXSLFilesToHome();
         XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
         XMIFileUMLProjectExport->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\Export.xmi");
 		XSLFileUMLExport->setData("c:\\lbDMF\\XSLT\\DMFToXMI\\gen_DMFToXMI.xsl");
@@ -1309,21 +1312,26 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 #endif
 #ifdef LINUX
 #ifndef OSX
-        XMIFileUMLProject->setData("");
-        XMIFileUMLProjectExport->setData("");
-        XSLFileImportSettings->setData("");
-        XSLFileExportSettings->setData("");
-        XSLFileSystemDatabase->setData("");
-        XSLFileApplicationDatabase->setData("");
+		///\todo Change the used files to refer the HOME versions.
+		//installXMIFilesToHome();
+		//installXSLFilesToHome();
+        XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi");
+        XMIFileUMLProjectExport->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/Export.xmi");
+		XSLFileUMLExport->setData("/usr/share/lbdmf/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
+        XSLFileImportSettings->setData("/usr/share/lbdmf/XSLT/XMIToDMF/XMISettings.xsl");
+        XSLFileExportSettings->setData("/usr/share/lbdmf/XSLT/DMFToXMI/XMISettings.xsl");
+        XSLFileSystemDatabase->setData("/usr/share/lbdmf/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("/usr/share/lbdmf/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
 #endif
 #endif
 #ifdef OSX
-        XMIFileUMLProject->setData("");
-        XMIFileUMLProjectExport->setData("");
-        XSLFileImportSettings->setData("");
-        XSLFileExportSettings->setData("");
-        XSLFileSystemDatabase->setData("");
-        XSLFileApplicationDatabase->setData("");
+        XMIFileUMLProject->setData("./wxWrapper.app/Contents/Resources/UMLSamples/SecondStageModels/lbDMF Manager.xmi");
+        XMIFileUMLProjectExport->setData("./wxWrapper.app/Contents/Resources/UMLSamples/SecondStageModels/Export.xmi");
+		XSLFileUMLExport->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
+        XSLFileImportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl");
+        XSLFileExportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/XMISettings.xsl");
+        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
 #endif
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
