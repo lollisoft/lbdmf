@@ -17,6 +17,7 @@ exit
 
 rem set TARGET_APPLICATION=Application
 
+set LOGGING=no
 set CONSOLE_DETACH=yes
 
 rem set lbDMFPasswd=
