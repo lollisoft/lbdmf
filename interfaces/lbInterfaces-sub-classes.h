@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.101 $
+ * $Revision: 1.102 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.101 2011/07/10 06:13:36 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.102 2011/09/21 06:44:18 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.102  2011/09/21 06:44:18  lollisoft
+ * Changed some log messages to become error log messages.
+ *
  * Revision 1.101  2011/07/10 06:13:36  lollisoft
  * Added stroring database query objects into the parameter container. Not yet tested.
  *
@@ -1109,13 +1112,13 @@ classname::~classname() { \
 lb_I_Unknown* classname::getObject() const { \
     lb_I_Unknown* uk = NULL; \
     if(data == NULL) { \
-    	_CL_LOG << "FATAL: Element has no data. Could not return from NULL pointer!!" LOG_ \
+    	_LOGERROR << "FATAL: Element has no data. Could not return from NULL pointer!!" LOG_ \
     	return NULL; \
     } \
     if(!_TRMemValidate(data)) { \
     	char buf[20] = ""; \
     	sprintf(buf, "%p", data); \
-    	_LOG << "Error: Skiplist element data pointer is invalid! (" << buf << ", classname: " << data->getClassName() << ")" LOG_ \
+    	_LOGERROR << "Error: Skiplist element data pointer is invalid! (" << buf << ", classname: " << data->getClassName() << ")" LOG_ \
     } \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
     _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
