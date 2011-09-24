@@ -1315,7 +1315,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		///\todo Change the used files to refer the HOME versions.
 		//installXMIFilesToHome();
 		//installXSLFilesToHome();
-        XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi");
+        XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi");
         XMIFileUMLProjectExport->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/Export.xmi");
 	XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("/usr/share/lbdmf/XMIToDMF/XMISettings.xsl");
