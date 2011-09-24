@@ -1320,8 +1320,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("/usr/share/lbdmf/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("/usr/share/lbdmf/DMFToXMI/XMISettings.xsl");
-        XSLFileSystemDatabase->setData("/usr/share/lbdmf/XMIToDMF/ImportUML-SystemDB.xsl");
-        XSLFileApplicationDatabase->setData("/usr/share/lbdmf/XMIToDMF/ImportUML-ApplicationDB.xsl");
+        XSLFileSystemDatabase->setData("/usr/share/lbdmf/XMIToDMF/importUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("/usr/share/lbdmf/XMIToDMF/importUML-ApplicationDB.xsl");
 #endif
 #endif
 #ifdef OSX
