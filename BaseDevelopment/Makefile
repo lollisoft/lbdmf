@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.227 $
+# * $Revision: 1.228 $
 # * $Name:  $
-# * $Id: Makefile,v 1.227 2011/06/12 18:51:55 lollisoft Exp $
+# * $Id: Makefile,v 1.228 2011/09/24 11:37:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.228  2011/09/24 11:37:31  lollisoft
+# * Deactivated databaselayer for ODBC variant.
+# *
 # * Revision 1.227  2011/06/12 18:51:55  lollisoft
 # * Hack for the RPM space in file issue.
 # *
@@ -1010,7 +1013,6 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
 	../Test/Console/XML \
@@ -1020,6 +1022,7 @@ ALLTARGETS = \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	../vendor/wxARG/src \
+#	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols \
 #	../vendor/databaselayer/tests \
@@ -1234,7 +1237,6 @@ ALLDIRS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
@@ -1246,6 +1248,7 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/dbwrapcontrols
 endif
 
@@ -1261,7 +1264,6 @@ ALLDIRS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
@@ -1275,6 +1277,7 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/databaselayer/src/Implementations/ODBC \
 
 endif
 
@@ -1325,7 +1328,6 @@ ALLTARGETS = \
 	../vendor/wxaui-0.9.1/src \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
@@ -1342,6 +1344,7 @@ ALLTARGETS = \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	lbcs \
+#	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
@@ -1408,7 +1411,6 @@ ALLTARGETS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
@@ -1425,6 +1427,7 @@ ALLTARGETS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
 # When including this target, the include path for sql.h must pount to ./sqlite/src
