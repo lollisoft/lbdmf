@@ -1317,11 +1317,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		//installXSLFilesToHome();
         XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi");
         XMIFileUMLProjectExport->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/Export.xmi");
-		XSLFileUMLExport->setData("/usr/share/lbdmf/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
-        XSLFileImportSettings->setData("/usr/share/lbdmf/XSLT/XMIToDMF/XMISettings.xsl");
-        XSLFileExportSettings->setData("/usr/share/lbdmf/XSLT/DMFToXMI/XMISettings.xsl");
-        XSLFileSystemDatabase->setData("/usr/share/lbdmf/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
-        XSLFileApplicationDatabase->setData("/usr/share/lbdmf/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
+	XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
+        XSLFileImportSettings->setData("/usr/share/lbdmf/XMIToDMF/XMISettings.xsl");
+        XSLFileExportSettings->setData("/usr/share/lbdmf/DMFToXMI/XMISettings.xsl");
+        XSLFileSystemDatabase->setData("/usr/share/lbdmf/XMIToDMF/ImportUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("/usr/share/lbdmf/XMIToDMF/ImportUML-ApplicationDB.xsl");
 #endif
 #endif
 #ifdef OSX
