@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.83 2011/09/21 04:59:03 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.84 2011/09/24 06:52:27 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.84  2011/09/24 06:52:27  lollisoft
+ * Problem with RPM installation on a non development machine. Changed default plugin location for non Windows systems.
+ *
  * Revision 1.83  2011/09/21 04:59:03  lollisoft
  * Removed temporary log activation.
  *
@@ -1025,13 +1028,13 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 /*...sPrepare plugin directory to scan:0:*/
 	char* pluginDir = getenv("PLUGIN_DIR");
-
+///\todo Change the plugin path to user share lbdmf plugins.
 	if (pluginDir == NULL) {
-		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+		_LOGERROR << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
 		#ifndef WINDOWS
-		pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
+		pluginDir = (char*) malloc(strlen("/usr")+strlen("/plugins")+1);
 		pluginDir[0] = 0;
-		strcat(pluginDir, getenv("HOME"));
+		strcat(pluginDir, "/usr");
 		#endif
 		#ifdef WINDOWS
 		pluginDir = (char*) malloc(strlen(getenv("USERPROFILE"))+strlen("/plugins")+1);
