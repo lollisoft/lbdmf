@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.144 $
+# * $Revision: 1.145 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.144 2011/09/20 04:05:33 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.145 2011/09/25 11:47:02 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.145  2011/09/25 11:47:02  lollisoft
+# * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
+# *
 # * Revision 1.144  2011/09/20 04:05:33  lollisoft
 # * Switch to release.
 # *
@@ -1427,7 +1430,7 @@ endif
 
 OBJ =o
 ifeq ($(DEBUG), no)
-C_OPS   = -c -DUNIX -DLINUX -DOSX $(OSX_ARCH)
+C_OPS   = -c -g -DUNIX -DLINUX -DOSX $(OSX_ARCH)
 endif
 ifeq ($(DEBUG), yes)
 C_OPS   = -c -g -DUNIX -DLINUX -DOSX $(OSX_ARCH)

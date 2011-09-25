@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.143 $
+ * $Revision: 1.144 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.143 2011/09/25 09:30:13 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.144 2011/09/25 11:47:02 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.144  2011/09/25 11:47:02  lollisoft
+ * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
+ *
  * Revision 1.143  2011/09/25 09:30:13  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -2956,7 +2959,6 @@ lbModule::~lbModule() {
 #endif
 /*...e*/
 }
-
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {

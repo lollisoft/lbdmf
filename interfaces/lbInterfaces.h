@@ -1318,6 +1318,8 @@ public:
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
 		virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
+	
+	virtual void LB_STDCALL traceObject() const = 0;
 };
 /*...e*/
 
@@ -1689,6 +1691,7 @@ public: \
 	    further_lock = state; \
 	} \
 	void 		LB_STDCALL resetRefcount(); \
+	void		LB_STDCALL traceObject() const; \
 protected: \
 	UAP(lb_I_Module, manager) \
 	mutable int ref; \
@@ -1713,6 +1716,16 @@ public:
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
 char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
+} \
+void LB_STDCALL classname::traceObject() const { \
+\
+_LOGALWAYS << #classname << "::traceObject(): References = " << ref LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastSMFile = " << lastQIFile.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastSMLine = " << lastQILine.get() LOG_ \
+\
 } \
 char const* LB_STDCALL classname::_queryInterface(const char* name, void** unknown, const char* file, int line) { \
 	char* ID = (char*) malloc(strlen(name)+strlen(#classname)+strlen(file)+1); \
@@ -1943,6 +1956,16 @@ lbErrCodes LB_STDCALL classname::queryInterface(const char* name, void** unknown
 #define BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(classname) \
 char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
+} \
+void LB_STDCALL classname::traceObject() const { \
+\
+_LOGALWAYS << #classname << "::traceObject(): References = " << ref LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastSMFile = " << lastQIFile.get() LOG_ \
+_LOGALWAYS << #classname << "::traceObject(): lastSMLine = " << lastQILine.get() LOG_ \
+\
 } \
 char const* LB_STDCALL classname::_queryInterface(char const* name, void** unknown, char const* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \

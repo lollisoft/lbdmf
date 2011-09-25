@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.62 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.63 2011/09/25 11:47:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.63  2011/09/25 11:47:02  lollisoft
+ * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
+ *
  * Revision 1.62  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -326,24 +329,6 @@ IMPLEMENT_FUNCTOR(instanceOfSkipList, SkipList)
 #endif
 /*...e*/
 
-lbSkipListElement::lbSkipListElement() { 
-    	ref = STARTREF; 
-    	next = NULL; 
-    	data = NULL; 
-    	key = NULL; 
-    	manager = NULL;
-		further_lock = 1;
-    }
-
-lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
-	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
-	ref = STARTREF; 
-	next = e.getNext(); 
-	data = e.getObject();
-	key = e.getKey();
-	manager = NULL;
-}
-
 SkipNode::SkipNode(const SkipNode &s) {
    	myLevel = MAXLEVEL;
    	value = NULL;
@@ -369,7 +354,7 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
     myLevel = level;
     value = r;
 	
-    if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
+    if (value == NULL) printf("ERROR: Constructor got a NULL pointer as datan");
     forward = new SkipNode* [level+1];
 	
     for (int i=0; i<=level; i++)
@@ -455,7 +440,7 @@ SkipList::SkipList() {
 	container_data = NULL;
 }
 
-/// \todo Cleanup problem, when key used multiple times.
+///todo Cleanup problem, when key used multiple times.
 SkipList::~SkipList() {
 	// Bugfix. If any search leave the container in any position not at start, 
 	// the container wouldn't delete all elements.
@@ -477,7 +462,7 @@ SkipList::~SkipList() {
 		if (head) delete head;
 	}
 }
-/*...sSkipList\58\\58\Count\40\\41\:0:*/
+/*...sSkipList5858Count4041:0:*/
 int LB_STDCALL SkipList::Count() { 
         return count; 
 } 
@@ -485,7 +470,7 @@ int LB_STDCALL SkipList::Count() {
 void LB_STDCALL SkipList::detachAll() {
 	canDeleteObjects = false;
 }
-/*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
+/*...sSkipList5858deleteAll4041:0:*/
 void LB_STDCALL SkipList::deleteAll() {
 	if (can_dump() == 1) {
 		while (skipiterator) {
@@ -510,7 +495,7 @@ void LB_STDCALL SkipList::deleteAll() {
 	count = 0;
 } 
 /*...e*/
-/*...sSkipList\58\\58\exists\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858exists40lb_I_KeyBase4242 const key41:0:*/
 int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) { 
     UAP(lb_I_Unknown, s)
     
@@ -521,7 +506,7 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
     return 1; 
 } 
 /*...e*/
-/*...sSkipList\58\\58\insert\40\lb_I_Unknown\42\\42\ const e\44\ lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858insert40lb_I_Unknown4242 const e44 lb_I_KeyBase4242 const key41:0:*/
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
 
@@ -535,7 +520,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
         return err; 
 } 
 /*...e*/
-/*...sSkipList\58\\58\remove\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858remove40lb_I_KeyBase4242 const key41:0:*/
 lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
         
@@ -548,7 +533,7 @@ lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) {
         return err; 
 } 
 /*...e*/
-/*...sSkipList\58\\58\_insert\40\lb_I_Unknown\42\\42\ const e\44\ lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858_insert40lb_I_Unknown4242 const e44 lb_I_KeyBase4242 const key41:0:*/
 lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
 /*...sbla:0:*/
 #ifdef bla
@@ -591,7 +576,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
     return ERR_NONE; 
 } 
 /*...e*/
-/*...sSkipList\58\\58\_remove\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858_remove40lb_I_KeyBase4242 const key41:0:*/
 lbErrCodes LB_STDCALL SkipList::_remove(lb_I_KeyBase** const key) { 
 /*...sbla:0:*/
     _LOG << "SkipList::_remove(lb_I_KeyBase** const key) is Obsolete" LOG_ 
@@ -599,12 +584,12 @@ lbErrCodes LB_STDCALL SkipList::_remove(lb_I_KeyBase** const key) {
     return ERR_CONTAINER_REMOVE; 
 } 
 /*...e*/
-/*...sSkipList\58\\58\hasMoreElements\40\\41\:0:*/
+/*...sSkipList5858hasMoreElements4041:0:*/
 int LB_STDCALL SkipList::hasMoreElements() { 
     return can_dump();
 } 
 /*...e*/
-/*...sSkipList\58\\58\nextElement\40\\41\:0:*/
+/*...sSkipList5858nextElement4041:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::nextElement() { 
 	Elem e = dump_next();
 	
@@ -656,7 +641,7 @@ lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
 	return _currentKey;
 }
 
-/*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
+/*...sSkipList5858getElement40lb_I_KeyBase4242 const key41:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
     lb_I_Unknown* e = search(*key);
     
@@ -669,13 +654,13 @@ lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) {
     return e;
 } 
 /*...e*/
-/*...sSkipList\58\\58\setElement\40\lb_I_KeyBase\42\\42\ key\44\ lb_I_Unknown \42\\42\ const e\41\:0:*/
+/*...sSkipList5858setElement40lb_I_KeyBase4242 key44 lb_I_Unknown4242 const e41:0:*/
 void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e) { 
     remove(key); 
     insert(e, key); 
 }
 /*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL SkipList\58\\58\getElementAt\40\int i\41\:0:*/
+/*...slb_I_Unknown42 LB_STDCALL SkipList5858getElementAt40int i41:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
         int ii = 1;
 
@@ -697,7 +682,7 @@ lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
 	return NULL;
 }
 /*...e*/
-/*...slb_I_KeyBase\42\ LB_STDCALL SkipList\58\\58\getKeyAt\40\int i\41\:0:*/
+/*...slb_I_KeyBase42 LB_STDCALL SkipList5858getKeyAt40int i41:0:*/
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
 	int ii = 1;
 
@@ -726,14 +711,14 @@ lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
 }
 /*...e*/
 
-/*...srandomLevel\40\void\41\:0:*/
+/*...srandomLevel40void41:0:*/
 int randomLevel(void) { // Pick a level on exponential distribution
   int level;
   for (level=0; (rand()%2) == 0; level++); // Do nothing
   return level;
 }
 /*...e*/
-/*...sSkipList\58\\58\search\40\lb_I_KeyBase\42\ searchKey\41\:0:*/
+/*...sSkipList5858search40lb_I_KeyBase42 searchKey41:0:*/
 lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
 
@@ -760,7 +745,7 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // S
   }
 }
 /*...e*/
-/*...sSkipList\58\\58\insert\40\Elem newValue\41\:0:*/
+/*...sSkipList5858insert40Elem newValue41:0:*/
 void SkipList::insert(Elem newValue) { // Insert into skiplist
   if (head == NULL) head = new SkipNode();
   SkipNode *x = head;           // Start at header node
@@ -811,7 +796,7 @@ void SkipList::insert(Elem newValue) { // Insert into skiplist
   }
 }
 /*...e*/
-/*...sSkipList\58\\58\remove\40\Elem searchKey\41\:0:*/
+/*...sSkipList5858remove40Elem searchKey41:0:*/
 void SkipList::remove(Elem searchKey) {
     // update holds pointers to next elements of each level
     SkipNode** update = NULL;    // Update tracks end of each level
@@ -874,12 +859,12 @@ void SkipList::remove(Elem searchKey) {
 
 
 /*...e*/
-/*...sSkipList\58\\58\finishIteration\40\\41\:0:*/
+/*...sSkipList5858finishIteration4041:0:*/
 void SkipList::finishIteration() {
 	iteration = 0;
 }
 /*...e*/
-/*...sSkipList\58\\58\can_dump\40\\41\:0:*/
+/*...sSkipList5858can_dump4041:0:*/
 int SkipList::can_dump() {
 	if (count == 0) return 0;
 	if (iteration == 0) { 
@@ -899,7 +884,7 @@ int SkipList::can_dump() {
 	return 1;
 }
 /*...e*/
-/*...sSkipList\58\\58\dump_next\40\\41\:0:*/
+/*...sSkipList5858dump_next4041:0:*/
 Elem SkipList::dump_next() {
 	if (skipiterator != NULL) {
 		Elem e = skipiterator->value.getPtr();
@@ -915,14 +900,14 @@ Elem SkipList::dump_next() {
 #ifdef bla		
 		for(int i=0; i<=skipiterator->myLevel && flag != 0; i++)
 			if (skipiterator->forward[i] == NULL){
-				printf("No more elements in skiplist\n");
+				printf("No more elements in skiplistn");
 		        	flag = 0;
 			}
 #endif		
 /*...e*/
 		return e;
 	} else {
-		printf("Return NULL because skipiterator is NULL\n");
+		printf("Return NULL because skipiterator is NULLn");
 		return NULL;
 	}
 }
@@ -932,7 +917,130 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
         ADD_INTERFACE(lb_I_Element)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_LB_ELEMENT(lbSkipListElement)
+lbSkipListElement::lbSkipListElement() { 
+	ref = STARTREF; 
+	next = NULL; 
+	data = NULL; 
+	key = NULL; 
+	manager = NULL;
+	further_lock = 1;
+}
+
+lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
+	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
+	ref = STARTREF; 
+	next = e.getNext(); 
+	data = e.getObject();
+	key = e.getKey();
+	manager = NULL;
+}
+
+//IMPLEMENT_LB_ELEMENT(lbSkipListElement)
+void LB_STDCALL lbSkipListElement::detachData() {
+	data = NULL;
+}
+lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) {
+    ref = STARTREF;
+	data = NULL;
+    manager = NULL;
+    next = _next;
+    if (_next != NULL) {
+        _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__);
+    }
+    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_
+		if (o != NULL) {
+			if (doClone) {
+				data = o->clone(__FILE__, __LINE__);
+				if (data->getRefCount() > 1) {
+					_CL_VERBOSE << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_
+				}
+			} else {
+				o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__);
+				
+			}
+		}
+    lb_I_Unknown* uk_key = NULL;
+    key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__);
+	_CL_VERBOSE << "Added an element with key value of " << key->charrep() LOG_
+    if (key != NULL) {
+    	if (key->getRefCount() > 1) {
+			_CL_VERBOSE << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_
+        }
+    }
+    if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_
+		}
+
+lbSkipListElement::~lbSkipListElement() {
+	char ptr[20] = "";
+	char ptr1[20] = "";
+	sprintf(ptr, "%p", this);
+	sprintf(ptr1, "%p", data);
+	if (key != NULL) {
+		if (key->getRefCount() > 1) {
+			_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_
+		}
+		if (key->deleteState() != 1) {
+			_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_
+		}
+		RELEASE(key);
+	}
+	if (data != NULL) {
+		if (data->getRefCount() > 1) {
+			_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_
+		}
+		if (data->deleteState() != 1) {
+			_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_
+		}
+		RELEASE(data);
+	}
+	key = NULL;
+	data = NULL;
+}
+
+lb_I_Unknown* lbSkipListElement::getObject() const {
+    lb_I_Unknown* uk = NULL;
+    if(data == NULL) {
+    	_LOGERROR << "FATAL: Element has no data. Could not return from NULL pointer!!" LOG_
+    	return NULL;
+    }
+    if(!_TRMemValidate(data)) {
+    	char buf[20] = "";
+    	sprintf(buf, "%p", data);
+    	_LOGERROR << "Error: Skiplist element data pointer is invalid! (" << buf << ", lbSkipListElement: " << data->getClassName() << ")" LOG_
+    }
+    data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+    _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_
+    return uk;
+}
+
+lb_I_KeyBase* LB_STDCALL lbSkipListElement::getKey() const {
+	lb_I_KeyBase* kbase = NULL;
+	if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_
+        key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__);
+	_CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references. Value is " << kbase->charrep() LOG_
+	key->release(__FILE__, __LINE__);
+	return kbase;
+}
+
+void LB_STDCALL lbSkipListElement::setNext(lb_I_Element *e) {
+	e->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__);
+}
+
+lb_I_Element* LB_STDCALL lbSkipListElement::getNext() const {
+	return next;
+}
+int LB_STDCALL lbSkipListElement::equals(const lb_I_Element* a) const {
+	return 0;
+}
+
+int LB_STDCALL lbSkipListElement::equals(const lb_I_KeyBase* _key) const {
+	return (*key == _key);
+}
+int LB_STDCALL lbSkipListElement::lessthan(const lb_I_KeyBase* _key) const {
+	return (*key < _key);
+}
+
+
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.103 $
+ * $Revision: 1.104 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.103 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.104 2011/09/25 11:47:02 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.104  2011/09/25 11:47:02  lollisoft
+ * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
+ *
  * Revision 1.103  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -1047,12 +1050,12 @@ void LB_STDCALL classname::detachData() { \
 } \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) { \
     ref = STARTREF; \
+	data = NULL; \
     manager = NULL; \
-    if (_next == NULL) next = _next; \
+    next = _next; \
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
     } \
-    data = NULL; \
     if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ \
     if (o != NULL) { \
 		if (doClone) { \

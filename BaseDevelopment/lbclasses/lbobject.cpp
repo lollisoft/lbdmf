@@ -1426,9 +1426,13 @@ int LB_STDCALL lbString::greater(const lb_I_KeyBase* _key) const {
 }
 
 int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
-    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
-	return strcmp(stringdata, ((const lbString*) _key)->stringdata) < 0 ? 1 : 0;
-    else {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0) {
+		if (stringdata == NULL) {
+			_LOGERROR << "FATAL: String has an uninitialized buffer!" LOG_
+			traceObject();
+		}
+		return strcmp(stringdata, ((const lbString*) _key)->stringdata) < 0 ? 1 : 0;
+	} else {
     	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
     }
