@@ -36,10 +36,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.34 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.35 2011/09/25 09:30:14 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.35  2011/09/25 09:30:14  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.34  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -221,6 +226,10 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbContainer::lbContainer() {
     iteration = 0;
     ref = STARTREF;
+	cloning = true;
+	canDeleteObjects = true;
+	data = NULL;
+	further_lock = 1;
     iterator = NULL;
     count = 0;
     container_data = NULL;

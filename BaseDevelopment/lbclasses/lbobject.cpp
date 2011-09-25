@@ -104,6 +104,8 @@ lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
 /// \todo Use environment variable to select language.
 lbLocale::lbLocale() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
 	strcpy(_lang, "german");
@@ -844,6 +846,8 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 lbString::lbString() {
 	if (isVerbose() == true) printf("lbString::lbString()\n");
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	stringdata = NULL;
 	buffersize = stringsize = 0L;
 	allocationsize = 1; // Memory management may be do more.
@@ -1439,6 +1443,8 @@ char* LB_STDCALL lbString::charrep() const {
 /*...slbFileLocation:0:*/
 lbFileLocation::lbFileLocation() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	_path = NULL;
 }
 
@@ -1528,6 +1534,8 @@ char* LB_STDCALL lbFileLocation::charrep() const {
 /*...slbFileLocation:0:*/
 lbDirLocation::lbDirLocation() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	_path = NULL;
 }
 
@@ -1614,6 +1622,8 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	integerdata = 0;
 	key = NULL;
 }
@@ -1676,6 +1686,8 @@ char* LB_STDCALL lbInteger::charrep() const {
 /*...slbBoolean:0:*/
 lbBoolean::lbBoolean() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	integerdata = 0;
 	key = (char*) "false";
 }
@@ -1734,7 +1746,10 @@ char* LB_STDCALL lbBoolean::charrep() const {
 /*...e*/
 lbBinaryData::lbBinaryData() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	blob = NULL;
+	size = 0L;
 }
 
 lbBinaryData::~lbBinaryData() {
@@ -1818,9 +1833,10 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 /*...slbLong:0:*/
 lbLong::lbLong() {
 	ref = STARTREF;
+   	data = NULL;
+	further_lock = 1;
 	longdata = 0;
 	key = NULL;
-	strcpy(keyType, "UL");
 }
 
 lbLong::~lbLong() {

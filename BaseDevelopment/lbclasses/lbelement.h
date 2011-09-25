@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbelement.h,v 1.15 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbelement.h,v 1.16 2011/09/25 09:30:14 lollisoft Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.16  2011/09/25 09:30:14  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.15  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -108,17 +113,21 @@ private:
 public:
     lbElement() { 
     	ref = STARTREF; 
-    	next = NULL; 
     	data = NULL; 
+    	next = NULL; 
     	key = NULL; 
     	manager = NULL;
+		further_lock = 1;
     }
     virtual ~lbElement();
 	
     lbElement(const lb_I_Element &e) { 
-    	ref = STARTREF; 
-    	next = e.getNext(); 
-	manager = NULL;
+		ref = STARTREF;
+		data = NULL;
+		next = e.getNext(); 
+		manager = NULL;
+    	key = NULL; 
+		further_lock = 1;
     }
 
     DECLARE_LB_UNKNOWN()

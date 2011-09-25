@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.102 $
+ * $Revision: 1.103 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.102 2011/09/21 06:44:18 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.103 2011/09/25 09:30:14 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.103  2011/09/25 09:30:14  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.102  2011/09/21 06:44:18  lollisoft
  * Changed some log messages to become error log messages.
  *
@@ -702,17 +707,6 @@ public:
          * This member is used in lb_I_Container implementation via clone.
          */
     virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
-
-protected:
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        lb_I_String() {}
-	/**
-	 * \deprecated Pure abstract class has no ctor/dtor's
-	 */
-        virtual ~lb_I_String() {}
-
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/

@@ -168,6 +168,18 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbMutex::lbMutex()
 {
 	ref = STARTREF;
+	MyMutexNumber = 0;
+	data = NULL;
+	further_lock = 1;
+#ifdef WINDOWS
+	mutex = NULL;
+#endif
+#ifdef __WXGTK__
+	mutex = 0;
+#endif
+#ifdef OSX
+	mutex = 0;
+#endif
 }
 
 lbMutex::~lbMutex()
@@ -279,6 +291,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 ///\todo Implement
 lbCritSect::lbCritSect() {
 	ref = STARTREF;
+	critsect = NULL;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbCritSect::~lbCritSect() {
@@ -309,7 +324,17 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbLock::lbLock() {
 	ref = STARTREF;
-	cso = NULL;
+	name = NULL; 
+	cso = NULL; 
+	data = NULL;
+	further_lock = 1;
+	instance_counted = 0;
+	lastQIFile = miniString();
+	lastQILine = 0;
+	lastSMFile = miniString();
+	lastSMLine = 0;
+	manager = NULL;
+	debug_macro = 0;
 }
 
 lbErrCodes lbLock::setData(lb_I_Unknown* uk) {
@@ -457,6 +482,7 @@ class lbThreadInternal {
 public:
     lbThreadInternal()
     {
+		lb_ThreadId = 0;
         lb_hThread = 0;
     }
 	
@@ -532,6 +558,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 int lbThread::threadCount = 0;
 /*...slbThread:0:*/
 lbThread::lbThread() {
+	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
+	lb_ThreadId = 0x00000000;
+	
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOGENABLE("lbThread::lbThread()");

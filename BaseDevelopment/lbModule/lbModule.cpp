@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.142 $
+ * $Revision: 1.143 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.142 2011/08/16 11:22:57 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.143 2011/09/25 09:30:13 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.143  2011/09/25 09:30:13  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.142  2011/08/16 11:22:57  lollisoft
  * The trial failed. The performance test from ACE uses a * reactor implementation.
  * It seems that I have to write a complete server using ACE.
@@ -917,7 +922,10 @@ int randomLevel(void) { // Pick a level on exponential distribution
 lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
   
-  if (x == NULL) _CL_VERBOSE << "Error: NULL pointer while searching in skiplist" LOG_
+  if (x == NULL) {
+	_CL_VERBOSE << "Error: NULL pointer while searching in skiplist" LOG_
+	return NULL;
+  }
   
   for (int i=level; i>=0; i--) {
     while ((x->forward[i] != NULL) && (*(x->forward[i]->value) < searchKey)) {
@@ -2939,9 +2947,9 @@ lbModule::lbModule() {
 }
         
 lbModule::~lbModule() {
-                if (ref != STARTREF && isLogActivated()) COUT << "Error: Reference count mismatch" << ENDL;
+	if (ref != STARTREF && isLogActivated()) COUT << "lbModule::~lbModule() Error: Reference count mismatch: " << ref << ENDL;
 
-                if (moduleList != NULL) moduleList->release(__FILE__, __LINE__);
+	if (moduleList != NULL) moduleList->release(__FILE__, __LINE__);
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
                 _CL_VERBOSE << "lbModule::~lbModule() called" LOG_

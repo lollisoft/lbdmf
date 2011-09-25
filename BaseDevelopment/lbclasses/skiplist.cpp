@@ -38,11 +38,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.61 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.62 2011/09/25 09:30:14 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.62  2011/09/25 09:30:14  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.61  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -327,22 +332,33 @@ lbSkipListElement::lbSkipListElement() {
     	data = NULL; 
     	key = NULL; 
     	manager = NULL;
+		further_lock = 1;
     }
 
 lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
-    	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
-    	ref = STARTREF; 
-    	next = e.getNext(); 
-    	data = e.getObject();
-    	key = e.getKey();
+	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
+	ref = STARTREF; 
+	next = e.getNext(); 
+	data = e.getObject();
+	key = e.getKey();
 	manager = NULL;
-    }
+}
+
+SkipNode::SkipNode(const SkipNode &s) {
+   	myLevel = MAXLEVEL;
+   	value = NULL;
+    	
+   	forward = new SkipNode* [myLevel+1];
+   	for (int i=0; i<=myLevel; i++)
+  	    forward[i] = NULL;
+	_LOGERROR << "Copy constructor of SkipNode called!" LOG_
+}
 
 
 /*...sSkipNode implementation:0:*/
 SkipNode::SkipNode() {
    	myLevel = MAXLEVEL;
-   	//value = NULL;
+   	value = NULL;
     	
    	forward = new SkipNode* [myLevel+1];
    	for (int i=0; i<=myLevel; i++)
@@ -371,30 +387,6 @@ SkipNode::~SkipNode() {
 		    forward[i] = NULL;
 		delete [] forward; 
 	}
-	
-	
-/*
-	if (value != NULL) {
-	      	// getObject() increases the refcount for uk.
-	      	// So call release twice ! :-!
-
-      		lb_I_Unknown* uk = value->getObject();
-      		
-      		if (_TRMemValidate(uk) == 0) {
-      			_CL_LOG << "ERROR: Have an invalid pointer!" LOG_
-      		}
-
-      		if (uk->getRefCount() < 2) {
-      			_CL_LOG << "ERROR: Reference count is not as expected!" LOG_
-      		} else {
-	      		uk->release(__FILE__, __LINE__);
-      		}
-
-		uk->release(__FILE__, __LINE__);
-		
-		//value.resetPtr();
-	}
-*/
 }
 
 void SkipNode::detach() {
@@ -448,6 +440,9 @@ void LB_STDCALL SkipList::setCloning(bool doClone) {
 
 SkipList::SkipList() {
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
+	iterator = NULL;
 	iteration = 0;
 	canDeleteObjects = true;
 	head = NULL; //new SkipNode();
@@ -457,6 +452,7 @@ SkipList::SkipList() {
 	count = 0;
 	cloning = true;
 	_currentKey = NULL;
+	container_data = NULL;
 }
 
 /// \todo Cleanup problem, when key used multiple times.
@@ -610,17 +606,14 @@ int LB_STDCALL SkipList::hasMoreElements() {
 /*...e*/
 /*...sSkipList\58\\58\nextElement\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::nextElement() { 
-
 	Elem e = dump_next();
 	
-	//if (_currentKey) _currentKey->release(__FILE__, __LINE__);
-	_currentKey = e->getKey();
-	
 	if(e != NULL) {
+		_currentKey = e->getKey();
 		return e->getObject();
 	} else {
-	        _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
-	        return NULL; 
+        _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
+        return NULL; 
 	}
 } 
 /*...e*/
@@ -748,8 +741,10 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey, bool setIterator) { // S
 	  _CL_VERBOSE << "lb_I_Unknown* SkipList::search(...) Error: head is NULL!" LOG_
 	  return NULL;
   }
-  if (x == NULL) _LOG << "Error: NULL pointer while searching in skiplist" LOG_
-  
+  if (x == NULL) {
+	_LOG << "Error: NULL pointer while searching in skiplist" LOG_
+	return NULL;
+  }
   for (int i=level; i>=0; i--) {
     while ((x->forward[i] != NULL) && (x->forward[i]->value != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
       x = x->forward[i];
@@ -931,26 +926,6 @@ Elem SkipList::dump_next() {
 		return NULL;
 	}
 }
-
-/*...sbla:0:*/
-#ifdef bla
-void dump() {
-    SkipNode* temp = head;
-    int flag = 1;
-
-    for ( ; temp!= NULL; temp = temp->forward[0]) {
-        COUT << "temp->value is " << temp->value << ENDL;
-        for(int i=0; i<=temp->myLevel && flag != 0; i++)
-            if (temp->forward[i] == NULL){
-                COUT << " rest of list is empty" << ENDL;
-                flag = 0;
-            }
-            else
-                COUT<<"  point to "<<temp->forward[i]->value<<"\n";
-    }
-}
-#endif
-/*...e*/
 /*...e*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)

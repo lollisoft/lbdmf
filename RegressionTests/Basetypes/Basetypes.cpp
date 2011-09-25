@@ -268,5 +268,13 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "Produced this string: " << testappend->charrep() LOG_
 
-        return 0;
+	
+	UAP(lb_I_String, memLeak1)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, memLeak2)
+	*memLeak2 = "";
+	memLeak2++;
+	//memLeak1 = *&memLeak2;
+	memLeak1 = *&memLeak2;
+	
+	return 0;
 }

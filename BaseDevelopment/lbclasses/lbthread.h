@@ -114,7 +114,21 @@ public:
 	void LB_STDCALL with(lb_I_CriticalSection* _cso, char* _name);
 
 protected:
-	lbLock(const lbLock&) {}
+	lbLock(const lbLock&) 
+	{ 
+		name = NULL; 
+		cso = NULL; 
+		data = NULL;
+		ref = STARTREF;
+		further_lock = 1;
+		instance_counted = 0;
+		lastQIFile = miniString();
+		lastQILine = 0;
+		lastSMFile = miniString();
+		lastSMLine = 0;
+		manager = NULL;
+		debug_macro = 0;
+	}
 
 	char* name;
 	lb_I_CriticalSection* cso;
@@ -182,20 +196,4 @@ DECLARE_FUNCTOR(instanceOflbLock)
 DECLARE_FUNCTOR(instanceOflbThread)
 
 /*...e*/
-
-#ifdef bla
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId();
-DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId();
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-
 #endif

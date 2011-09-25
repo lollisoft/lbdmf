@@ -1,30 +1,30 @@
 /*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+	DMF Distributed Multiplatform Framework (the initial goal of this library)
+	This file is part of lbDMF.
+	Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-    The author of this work will be reached by e-Mail or paper mail.
-    e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
-            Ginsterweg 4
+	The author of this work will be reached by e-Mail or paper mail.
+	e-Mail: lothar.behrens@lollisoft.de
+	p-Mail: Lothar Behrens
+			Ginsterweg 4
 
-            65760 Eschborn (germany)
+			65760 Eschborn (germany)
 */
 /*...e*/
 
@@ -38,23 +38,23 @@
 // Where should I define standard switches to choose the correct code ?
 
 #ifdef WINDOWS
-  #include <windows.h>
+#include <windows.h>
 #endif
 #ifdef OSX
-  #include <CoreFoundation/CFBase.h>
+#include <CoreFoundation/CFBase.h>
 #endif
 #ifdef LINUX
-  #include <dlfcn.h>
-  #include <signal.h>
-  #ifdef __cplusplus
-    extern "C" {
-  #endif
+#include <dlfcn.h>
+#include <signal.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-//  #include <conio.h>
+	//  #include <conio.h>
 
-  #ifdef __cplusplus
-    }
-  #endif
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /*...e*/
@@ -67,7 +67,7 @@
 #endif
 /*...e*/
 
-	/*...sLB_HOOK_DLL scope:0:*/
+/*...sLB_HOOK_DLL scope:0:*/
 #define HOOK_DLL
 #define LB_HOOK_DLL
 #include <lbhook-module.h>
@@ -143,6 +143,7 @@ typedef struct Module {
 		next = NULL;
 		lib = NULL;
 		skip = false;
+		libreferences = 0;
 	}
 	~Module() {
 		countModules--;
@@ -220,66 +221,66 @@ extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf) { return new 
 
 /*...sDLLEXPORT void createLogInstance\40\\41\:0:*/
 extern "C" DLLEXPORT void LB_CDECL createLogInstance() {
-			if (getLoggerInstance() == NULL) {
-				setInitializing(1);
-				lb_I_Module* modMan = getModuleInstance();
+	if (getLoggerInstance() == NULL) {
+		setInitializing(1);
+		lb_I_Module* modMan = getModuleInstance();
 
-				if (modMan != NULL) {
-					lb_I_Unknown *Unknown = NULL;
-					modMan->initialize();
-					lbErrCodes err = modMan->request("lb_I_Log", &Unknown);
-					\
-					if (Unknown != NULL) {
-						lb_I_Log* log;
-						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__);
-						setLoggerInstance(log);
-						Unknown->release(__FILE__, __LINE__);
-						if (log == NULL) {
-							exit (1);
-						} else {
-						}
-					} else {
-						exit(1);
-					}
-					modMan->release(__FILE__, __LINE__);
+		if (modMan != NULL) {
+			lb_I_Unknown *Unknown = NULL;
+			modMan->initialize();
+			modMan->request("lb_I_Log", &Unknown);
+			\
+			if (Unknown != NULL) {
+				lb_I_Log* log;
+				Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__);
+				setLoggerInstance(log);
+				Unknown->release(__FILE__, __LINE__);
+				if (log == NULL) {
+					exit (1);
 				} else {
-					exit(1);
 				}
+			} else {
+				exit(1);
 			}
-			setInitializing(0);
+			modMan->release(__FILE__, __LINE__);
+		} else {
+			exit(1);
+		}
+	}
+	setInitializing(0);
 }
 /*...e*/
 
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, const char *f, int level) {
-                FILE *fp;
-				if (!DirectoryExists(getLogDirectory())) createDirectory(getLogDirectory());
-                fp = fopen( f, "a" );
-                if( fp != NULL ) {
-                        char* buf = (char*) malloc(strlen(msg)+100);
-                        buf[0] = 0;
+	FILE *fp;
+	if (!DirectoryExists(getLogDirectory())) createDirectory(getLogDirectory());
+	fp = fopen( f, "a" );
+	if( fp != NULL ) {
+		char* buf = (char*) malloc(strlen(msg)+100);
+		buf[0] = 0;
 
-                        int l = level;
+		int l = level;
 
-                        while (l > 0) {
-                                sprintf(buf, "%s%s", buf, "    ");
-                                l--;
-                        }
+		while (l > 0) {
+			strcat(buf, "    ");
+			l--;
+		}
 
 #ifdef WINDOWS
-                        fprintf( fp, "Pid %d\t:%s%s", ::GetCurrentProcessId(), buf, msg);
+		fprintf( fp, "Pid %d\t:%s%s", ::GetCurrentProcessId(), buf, msg);
 #endif
 #if defined (OSX) || defined (LINUX) || defined(UNIX)
-                        fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
+		fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
 #endif
 
-						if (isVerbose()) {
-							// Also copy the log entry to console.
-							_CL_VERBOSE << msg LOG_
-						}
-						fclose( fp );
-						free(buf);
-                }
+		if (isVerbose()) {
+			// Also copy the log entry to console.
+			_CL_VERBOSE << msg LOG_
+		}
+		fclose( fp );
+		free(buf);
+	}
 }
 /*...e*/
 /*...svoid logMessage\40\const char \42\msg\41\:0:*/
@@ -334,10 +335,10 @@ DLLEXPORT char* LB_CDECL getLogDirectory() {
 /*...e*/
 
 /** \brief Return the operating system type.
- * On windows it will return "Windows".
- * On Mac it will return "Mac".
- * On Linux, Solaris and other Unix flavour systems it will return "Unix".
- */
+* On windows it will return "Windows".
+* On Mac it will return "Mac".
+* On Linux, Solaris and other Unix flavour systems it will return "Unix".
+*/
 extern "C" DLLEXPORT const char* LB_CDECL getOsType() {
 	static const char* osIsMac = "Mac";
 	static const char* osIsWindows = "Windows";
@@ -362,29 +363,29 @@ extern "C" DLLEXPORT const char* LB_CDECL getOsType() {
 
 
 DLLEXPORT void LB_CDECL deleteDirectory(const char* name) {
-		#ifdef __MINGW32__
-		rmdir(name);
-		#endif
-		#ifdef __WATCOMC__
-		rmdir(name);
-		#endif
-		#if defined(OSX) || defined(LINUX) || defined(UNIX)
-        rmdir(name);
-		#endif
+	#ifdef __MINGW32__
+	rmdir(name);
+	#endif
+	#ifdef __WATCOMC__
+	rmdir(name);
+	#endif
+	#if defined(OSX) || defined(LINUX) || defined(UNIX)
+	rmdir(name);
+	#endif
 }
 
 
 /*...sDLLEXPORT void LB_CDECL createDirectory\40\const char\42\ name\41\:0:*/
 DLLEXPORT void LB_CDECL createDirectory(const char* name) {
-		#ifdef __MINGW32__
-		mkdir(name);
-		#endif
-		#ifdef __WATCOMC__
-		mkdir(name);
-		#endif
-		#if defined(OSX) || defined(LINUX) || defined(UNIX)
-        mkdir(name, S_IRWXU);
-		#endif
+	#ifdef __MINGW32__
+	mkdir(name);
+	#endif
+	#ifdef __WATCOMC__
+	mkdir(name);
+	#endif
+	#if defined(OSX) || defined(LINUX) || defined(UNIX)
+	mkdir(name, S_IRWXU);
+	#endif
 }
 /*...e*/
 
@@ -400,12 +401,12 @@ DLLEXPORT void LB_CDECL Instances() {
 /*...e*/
 /*...sDLLEXPORT void LB_CDECL setVerbose\40\bool what\41\:0:*/
 DLLEXPORT void LB_CDECL setVerbose(bool what) {
-    lbVerbose = what;
+	lbVerbose = what;
 }
 /*...e*/
 /*...sDLLEXPORT void LB_CDECL setVerbose\40\bool what\41\:0:*/
 DLLEXPORT void LB_CDECL setLogActivated(bool what) {
-    lbLogActivated = what;
+	lbLogActivated = what;
 }
 /*...e*/
 /*...sDLLEXPORT bool LB_CDECL isVerbose\40\\41\:0:*/
@@ -440,30 +441,30 @@ DLLEXPORT void LB_CDECL setLoggerInstance(lb_I_Log* l) {
 char* trackObject = NULL;
 
 DLLEXPORT char* LB_CDECL lb_itoa(int ptr) {
-        static char buf[20] = "";
-        sprintf(buf, "%d", ptr);
-        return buf;
+	static char buf[20] = "";
+	sprintf(buf, "%d", ptr);
+	return buf;
 }
 
 DLLEXPORT char* LB_CDECL lb_ltoa(const long ptr) {
-        static char buf[20] = "";
-        sprintf(buf, "%ld", ptr);
-        return buf;
+	static char buf[20] = "";
+	sprintf(buf, "%ld", ptr);
+	return buf;
 }
 
 DLLEXPORT char* LB_CDECL lb_ptoa(void* ptr) {
-        static char buf[20] = "";
+	static char buf[20] = "";
 	sprintf(buf, "%p", ptr);
-        return buf;
+	return buf;
 }
 
 DLLEXPORT void LB_CDECL CL_doLog(char* f, char* msg) {
-                FILE *fp;
-                fp = fopen( f, "a" );
-                if( fp != NULL ) {
-                        fprintf( fp, "%s", msg);
-                }
-                fclose( fp );
+	FILE *fp;
+	fp = fopen( f, "a" );
+	if( fp != NULL ) {
+		fprintf( fp, "%s", msg);
+		fclose( fp );
+	}
 }
 
 DLLEXPORT void LB_CDECL set_trackObject(char* track) {
@@ -498,21 +499,21 @@ DLLEXPORT void LB_CDECL setLBModuleHandle(HINSTANCE h) {
 
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
-    const char* moduleName = NULL;
-    const char* copyOfName = NULL;
+	const char* moduleName = NULL;
+	const char* copyOfName = NULL;
 
 	copyOfName = strdup(name);
 	
-    moduleName = lbstrristr(copyOfName, "\\");
-    if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
-    if (moduleName == NULL) moduleName = copyOfName;
+	moduleName = lbstrristr(copyOfName, "\\");
+	if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
+	if (moduleName == NULL) moduleName = copyOfName;
 
-    char* cutoff = lbstristr(moduleName, ".");
-    if (cutoff != NULL) cutoff[0] = 0;
+	char* cutoff = lbstristr(moduleName, ".");
+	if (cutoff != NULL) cutoff[0] = 0;
 
-    if (moduleName[0] == '\\') moduleName++;
-    if (moduleName[0] == '/') moduleName++;
-    if (isVerbose()) printf("Create a module entry: %s\n", moduleName);
+	if (moduleName[0] == '\\') moduleName++;
+	if (moduleName[0] == '/') moduleName++;
+	if (isVerbose()) printf("Create a module entry: %s\n", moduleName);
 
 	countModules++;
 	_Modules* temp = NULL;
@@ -545,20 +546,20 @@ _Modules *findModule(const char* name) {
 	int count = 0;
 
 
-    const char* moduleName = NULL;
-    const char* copyOfName = NULL;
+	const char* moduleName = NULL;
+	const char* copyOfName = NULL;
 	
 	copyOfName = strdup(name);
 	
-    moduleName = lbstrristr(copyOfName, "\\");
-    if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
-    if (moduleName == NULL) moduleName = copyOfName;
+	moduleName = lbstrristr(copyOfName, "\\");
+	if (moduleName == NULL) moduleName = lbstrristr(copyOfName, "/");
+	if (moduleName == NULL) moduleName = copyOfName;
 	
-    char* cutoff = lbstristr(moduleName, ".");
-    if (cutoff != NULL) cutoff[0] = 0;
+	char* cutoff = lbstristr(moduleName, ".");
+	if (cutoff != NULL) cutoff[0] = 0;
 
-    if (moduleName[0] == '\\') moduleName++;
-    if (moduleName[0] == '/') moduleName++;
+	if (moduleName[0] == '\\') moduleName++;
+	if (moduleName[0] == '/') moduleName++;
 
 
 	while (temp != NULL) {
@@ -592,14 +593,14 @@ DLLEXPORT void LB_CDECL lbBreak() {
 
 #ifdef LINUX
 #ifndef OSX
-    raise(SIGTRAP);
+	raise(SIGTRAP);
 #endif
 #endif
 #ifdef OSX
-    Debugger();
+	Debugger();
 #endif
 #ifdef WINDOWS
-    DebugBreak();
+	DebugBreak();
 #endif
 
 }
@@ -620,9 +621,9 @@ DLLEXPORT bool LB_CDECL lbPtrValidate(void* ptr) {
 bool LB_CDECL OSXMemValidate(void* ptr) {
 #ifdef DEBUG_MALLOC
 	if (malloc_zone_check(0) == 1) {
-			return true;
+		return true;
 	} else {
-			_CL_LOG << "FATAL: Heap corruption detected!" LOG_
+		_CL_LOG << "FATAL: Heap corruption detected!" LOG_
 	}
 #endif
 #ifndef DEBUG_MALLOC
@@ -707,15 +708,15 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		LPVOID lpMsgBuf;
 		if (isVerbose()) {
 			if (!FormatMessage(
-								FORMAT_MESSAGE_ALLOCATE_BUFFER |
-								FORMAT_MESSAGE_FROM_SYSTEM |
-								FORMAT_MESSAGE_IGNORE_INSERTS,
-								NULL,
-								GetLastError(),
-								MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-								(LPTSTR) &lpMsgBuf,
-								0,
-								NULL))
+						FORMAT_MESSAGE_ALLOCATE_BUFFER |
+						FORMAT_MESSAGE_FROM_SYSTEM |
+						FORMAT_MESSAGE_IGNORE_INSERTS,
+						NULL,
+						GetLastError(),
+						MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+						(LPTSTR) &lpMsgBuf,
+						0,
+						NULL))
 			{
 				// Handle the error.
 				return ERR_MODULE_NOT_FOUND;
@@ -761,43 +762,8 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
 		home = ".";//getcwd(home, 100);
 
-			if (home != NULL) {
-				newname = (char*) malloc(strlen(home)+strlen(name)+6);
-				newname[0] = 0;
-				strcat(newname, home);
-				strcat(newname, SLASH);
-				strcat(newname, "lib");
-				strcat(newname, SLASH);
-				strcat(newname, name);
-
-				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-					m->lib = hinst;
-					m->skip = skipAutoUnload;
-					free(newname);
-
-					return ERR_NONE;
-				} else {
-					char* errmsg = dlerror();
-
-					if (errmsg != NULL) {
-						printf("DLERROR: %s\n", errmsg);
-					}
-				}
-
-				free(newname);
-			}
-#endif
-
-			home =
-#if defined(WINDOWS)
-			getenv("USERPROFILE");
-#endif
-#if defined(UNIX) || defined(LINUX) || defined(OSX)
-			getenv("HOME");
-#endif
-
+		if (home != NULL) {
 			newname = (char*) malloc(strlen(home)+strlen(name)+6);
-
 			newname[0] = 0;
 			strcat(newname, home);
 			strcat(newname, SLASH);
@@ -812,31 +778,6 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 
 				return ERR_NONE;
 			} else {
-				free(newname);
-
-				newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
-				//newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("Resources")+strlen("lib")+strlen(name)+6);
-				newname[0] = 0;
-
-				strcat(newname, ".");
-				strcat(newname, SLASH);
-				strcat(newname, "wxWrapper.app");
-				strcat(newname, SLASH);
-				strcat(newname, "Contents");
-				//strcat(newname, SLASH);
-				//strcat(newname, "Resources");
-				strcat(newname, SLASH);
-				strcat(newname, "lib");
-				strcat(newname, SLASH);
-				strcat(newname, name);
-
-				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-					m->lib = hinst;
-					m->skip = skipAutoUnload;
-					free(newname);
-
-					return ERR_NONE;
-				}
 				char* errmsg = dlerror();
 
 				if (errmsg != NULL) {
@@ -845,14 +786,74 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 			}
 
 			free(newname);
+		}
+#endif
 
-			newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
+		home =
+#if defined(WINDOWS)
+		getenv("USERPROFILE");
+#endif
+#if defined(UNIX) || defined(LINUX) || defined(OSX)
+		getenv("HOME");
+#endif
+
+		newname = (char*) malloc(strlen(home)+strlen(name)+6);
+
+		newname[0] = 0;
+		strcat(newname, home);
+		strcat(newname, SLASH);
+		strcat(newname, "lib");
+		strcat(newname, SLASH);
+		strcat(newname, name);
+
+		if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+			m->lib = hinst;
+			m->skip = skipAutoUnload;
+			free(newname);
+
+			return ERR_NONE;
+		} else {
+			free(newname);
+
+			newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
+			//newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("Resources")+strlen("lib")+strlen(name)+6);
 			newname[0] = 0;
-			strcat(newname, "..");
+
+			strcat(newname, ".");
 			strcat(newname, SLASH);
-			strcat(newname, "plugins");
+			strcat(newname, "wxWrapper.app");
+			strcat(newname, SLASH);
+			strcat(newname, "Contents");
+			//strcat(newname, SLASH);
+			//strcat(newname, "Resources");
+			strcat(newname, SLASH);
+			strcat(newname, "lib");
 			strcat(newname, SLASH);
 			strcat(newname, name);
+
+			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				m->lib = hinst;
+				m->skip = skipAutoUnload;
+				free(newname);
+
+				return ERR_NONE;
+			}
+			char* errmsg = dlerror();
+
+			if (errmsg != NULL) {
+				printf("DLERROR: %s\n", errmsg);
+			}
+		}
+
+		free(newname);
+
+		newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
+		newname[0] = 0;
+		strcat(newname, "..");
+		strcat(newname, SLASH);
+		strcat(newname, "plugins");
+		strcat(newname, SLASH);
+		strcat(newname, name);
 
 #ifndef __WATCOMC__
 		// Quick hack
@@ -860,41 +861,41 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 #endif
 
 		// Try a trick
-			char oldcwd[MAX_PATH+1] = "";
-			char newcwd[MAX_PATH+1] = "";
-			getcwd(oldcwd, sizeof(oldcwd));
-			strcat(newcwd, ".");
-			strcat(newcwd, SLASH);
-			strcat(newcwd, "wxWrapper.app");
-			strcat(newcwd, SLASH);
-			strcat(newcwd, "Contents");
-			strcat(newcwd, SLASH);
-			strcat(newcwd, "lib");
+		char oldcwd[MAX_PATH+1] = "";
+		char newcwd[MAX_PATH+1] = "";
+		getcwd(oldcwd, sizeof(oldcwd));
+		strcat(newcwd, ".");
+		strcat(newcwd, SLASH);
+		strcat(newcwd, "wxWrapper.app");
+		strcat(newcwd, SLASH);
+		strcat(newcwd, "Contents");
+		strcat(newcwd, SLASH);
+		strcat(newcwd, "lib");
 
-			chdir(newcwd);
-			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-				m->lib = hinst;
-				m->skip = skipAutoUnload;
-				free(newname);
+		chdir(newcwd);
+		if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+			m->lib = hinst;
+			m->skip = skipAutoUnload;
+			free(newname);
 
-				chdir(oldcwd);
-				return ERR_NONE;
-			}
 			chdir(oldcwd);
-			errmsg = dlerror();
+			return ERR_NONE;
+		}
+		chdir(oldcwd);
+		errmsg = dlerror();
 
-			if (errmsg != NULL) {
-				printf("DLERROR: %s\n", errmsg);
-			}
+		if (errmsg != NULL) {
+			printf("DLERROR: %s\n", errmsg);
+		}
 
-			char *buffer = (char*) malloc(strlen(name)+strlen(__FILE__)+100);
-			buffer[0] = 0;
+		char *buffer = (char*) malloc(strlen(name)+strlen(__FILE__)+100);
+		buffer[0] = 0;
 
-			sprintf(buffer, "%s:%d Kann SO module '%s' nicht laden.\n", __FILE__, __LINE__, name);
+		sprintf(buffer, "%s:%d Kann SO module '%s' nicht laden.\n", __FILE__, __LINE__, name);
 
-			logMessage(buffer);
-			free(buffer);
-			return ERR_MODULE_NOT_FOUND;
+		logMessage(buffer);
+		free(buffer);
+		return ERR_MODULE_NOT_FOUND;
 	}
 
 	m->lib = hinst;
@@ -906,33 +907,32 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 /*...e*/
 /*...slbErrCodes LB_CDECL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 DLLEXPORT lbErrCodes LB_CDECL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
-		if (name == NULL) {
-			_LOG << "Erro: lbGetFunctionPtr() called with an invalid parameter!" LOG_
-			return ERR_MODULE_INVALID_PARAMETER;
-		}
+	if (name == NULL) {
+		_LOG << "Erro: lbGetFunctionPtr() called with an invalid parameter!" LOG_
+		return ERR_MODULE_INVALID_PARAMETER;
+	}
 
 #ifdef WINDOWS
-        if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
-        {
-            _CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
-            return ERR_FUNCTION_NOT_FOUND;
-        }
+	if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
+	{
+		_CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
+		return ERR_FUNCTION_NOT_FOUND;
+	}
 #endif
 #ifdef LINUX
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
-            _CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
-            return ERR_FUNCTION_NOT_FOUND;
+		_CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
+		return ERR_FUNCTION_NOT_FOUND;
 	}
 #endif
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 /*...sDLLEXPORT lb_I_Module\42\ LB_CDECL getModuleInstance\40\\41\:0:*/
 DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance() {
-typedef lbErrCodes (LB_CDECL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, const char* file, int line);
-T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
-	lbErrCodes err = ERR_NONE;
+	typedef lbErrCodes (LB_CDECL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, const char* file, int line);
+	T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	UAP(lb_I_Module, module)
 
 	if (memTrackerInit == 0) {
@@ -949,25 +949,25 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 	if (libname == NULL) {
 		#ifdef OSX
-			libname = "lbModule.so";
+		libname = "lbModule.so";
 		#endif
 		#ifdef LINUX
-			libname = "lbModule.so";
+		libname = "lbModule.so";
 		#endif
 		#ifdef WINDOWS
-			libname = "lbModule.dll";
+		libname = "lbModule.dll";
 		#endif
 	}
 
 	if (functor == NULL) {
 		#ifdef OSX
-			functor = "getlb_ModuleInstance";
+		functor = "getlb_ModuleInstance";
 		#endif
 		#ifdef LINUX
-			functor = "getlb_ModuleInstance";
+		functor = "getlb_ModuleInstance";
 		#endif
 		#ifdef WINDOWS
-			functor = "getlb_ModuleInstance";
+		functor = "getlb_ModuleInstance";
 		#endif
 	}
 
@@ -1000,8 +1000,8 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	}
 
 	if (lbGetFunctionPtr(functor,
-			     LB_Module_Handle,
-			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
+				LB_Module_Handle,
+				(void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
 		logMessage("Fatal: Could not get functor for the module manager!\n");
 		return NULL;
 	}
@@ -1015,13 +1015,30 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 #endif
 #endif
 
-	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
+	if (DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__) == ERR_STATE_FURTHER_LOCK) {
 		logMessage("Instance is locked. Must set module manager first\n");
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	}
 	UAP(lb_I_Module, inst)
 	QI(module, lb_I_Module, inst)
 
+	///\todo Create unit tests for the case here, if they fail, the changes for CPPCheck to pass this will be wrong.
+#ifdef bla
+	UAP(lb_I_Module, module1)
+	module1 = *&inst;
+	if (inst.getPtr() == module1.getPtr())
+		printf("Pass.\n");
+	else
+		printf("Fail.\n");
+#endif
+	// Even the operator exists this does not work due to the fact of macro design. They are two different types
+/*
+	if (inst == module1)
+		printf("UAP Pass.\n");
+	else
+		printf("UAP Fail.\n");
+*/
+	
 	return inst.getPtr();
 }
 /*...e*/
@@ -1043,9 +1060,9 @@ lbErrCodes LB_CDECL releaseInstance(lb_I_Unknown* inst) {
 DLLEXPORT bool LB_CDECL isSetTRMemTrackBreak() {
 #ifdef MEMTRACK
 	char breakPoint[100] = "";
-	int count = 0;
 
 	if (!b_isSetTRMemTrackBreak) {
+		int count = 0;
 		COUT << "Please enter any memory address to be break at: ";
 		CIN >> breakPoint ;
 
@@ -1096,8 +1113,6 @@ DLLEXPORT void LB_CDECL uninitLocale() {
 }
 
 DLLEXPORT char* LB_CDECL translateText(const char* text) {
-	lbErrCodes err = ERR_NONE;
-
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
 
@@ -1186,9 +1201,9 @@ char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 	{
 		/* find start of pattern in string */
 		for ( ; ((*start!=NUL) && (toupper(*start) != toupper(*Pattern))); start++)
-			;
+		;
 		if (NUL == *start)
-			return NULL;
+		return NULL;
 
 		pptr = (char *)Pattern;
 		sptr = (char *)start;
@@ -1201,7 +1216,7 @@ char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 			/* if end of pattern then pattern was found */
 
 			if (NUL == *pptr)
-				return (start);
+			return (start);
 		}
 	}
 	return NULL;
@@ -1212,11 +1227,11 @@ char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
 	char *r = NULL;
 
 	if (!Pattern[0])
-		return (char*)String + strlen(String);
+	return (char*)String + strlen(String);
 	while (1) {
 		char *p = lbstristr(String, Pattern);
 		if (!p)
-			return r;
+		return r;
 		r = p;
 		String = p + 1;
 	}
@@ -1227,89 +1242,88 @@ char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
 DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 
 #ifdef WINDOWS
-		_Modules* temp = loadedModules;
-		_Modules* lastMod = NULL;
+	_Modules* temp = loadedModules;
+	_Modules* lastMod = NULL;
 
-		while (temp) {
-			if (temp->name == NULL) {
-				lastMod = temp;
-				temp = temp->next;
-				continue;
-			}
+	while (temp) {
+		if (temp->name == NULL) {
+			lastMod = temp;
+			temp = temp->next;
+			continue;
+		}
 
-			if (temp->name != NULL) {
-				if (strcmp(temp->name, name) == 0) {
-					_Modules* delMod = temp;
+		if (temp->name != NULL) {
+			if (strcmp(temp->name, name) == 0) {
+				_Modules* delMod = temp;
 
-					if (loadedModules == temp) {
-						lastMod = temp;
-						temp = temp->next;
-						loadedModules = temp;
-					} else {
-						lastMod = temp;
-						temp = temp->next;
-					}
-
-                    if (isVerbose()) printf("Unloading module %s\n", delMod->name);
-					if (FreeLibrary(delMod->lib) == 0) {
-						printf("ERROR: Library could not be unloaded!\n");
-					}
-
-					free(delMod->name);
-					lastMod->next = delMod->next;
-					delete delMod;
+				if (loadedModules == temp) {
+					lastMod = temp;
+					temp = temp->next;
+					loadedModules = temp;
 				} else {
 					lastMod = temp;
 					temp = temp->next;
 				}
+
+				if (isVerbose()) printf("Unloading module %s\n", delMod->name);
+				if (FreeLibrary(delMod->lib) == 0) {
+					printf("ERROR: Library could not be unloaded!\n");
+				}
+
+				free(delMod->name);
+				lastMod->next = delMod->next;
+				delete delMod;
+			} else {
+				lastMod = temp;
+				temp = temp->next;
 			}
 		}
+	}
 #endif
 #ifdef LINUX
-		_Modules* temp = loadedModules;
-		_Modules* lastMod = NULL;
+	_Modules* temp = loadedModules;
+	_Modules* lastMod = NULL;
 
-		if (name == NULL) _CL_LOG << "ERROR: Could not unload unknown module.\n" LOG_
+	if (name == NULL) _CL_LOG << "ERROR: Could not unload unknown module.\n" LOG_
 
-		while (temp) {
-			if (temp->name == NULL) {
+	while (temp) {
+		if (temp->name == NULL) {
+			lastMod = temp;
+			temp = temp->next;
+			continue;
+		}
+
+		if (temp->name != NULL) {
+			if (isVerbose()) printf("Test if module %s is %s.\n", temp->name, name);
+			if (lbstristr(temp->name, name) != 0) {
+				_Modules* delMod = temp;
+				temp = temp->next;
+
+				if (lastMod != NULL) {
+					lastMod->next = delMod->next;
+				}
+
+				if (loadedModules == delMod) {
+					loadedModules = delMod->next;
+				}
+				printf("Unload module %s with %d references.\n", name, delMod->libreferences);
+				while (dlclose(delMod->lib) == 0) {
+					//if (isVerbose())
+					printf("Unloaded module %s.\n", name);
+				}
+				{
+					printf("Error while unloading module: %s\n", dlerror());
+					if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
+				}
+
+				free(delMod->name);
+				delete delMod;
+			} else {
 				lastMod = temp;
 				temp = temp->next;
-				continue;
-			}
-
-			if (temp->name != NULL) {
-				if (isVerbose()) printf("Test if module %s is %s.\n", temp->name, name);
-				if (lbstristr(temp->name, name) != 0) {
-					_Modules* delMod = temp;
-					temp = temp->next;
-
-					if (lastMod != NULL) {
-						lastMod->next = delMod->next;
-					}
-
-					if (loadedModules == delMod) {
-						loadedModules = delMod->next;
-					}
-					int errCode = 0;
-					printf("Unload module %s with %d references.\n", name, delMod->libreferences);
-					while ((errCode = dlclose(delMod->lib)) == 0) {
-						//if (isVerbose())
-							printf("Unloaded module %s.\n", name);
-					}
-					{
-						printf("Error while unloading module: %s\n", dlerror());
-						if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
-					}
-
-					free(delMod->name);
-					delete delMod;
-				} else {
-					lastMod = temp;
-					temp = temp->next;
-				}
 			}
 		}
+	}
 #endif
 
 	return ERR_NONE;
@@ -1317,32 +1331,29 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 /*...e*/
 
 void unloadModule(_Modules* m) {
-    while(loadedModules) {
-        if (strcmp(loadedModules->name, "lbModule") != 0) {
-            lbUnloadModule(loadedModules->name);
-        } else {
-            if (loadedModules->next != NULL) {
-                loadedModules = loadedModules->next;
-            } else {
-                if (strcmp(loadedModules->name, "lbModule") == 0) break;
-            }
-        }
+	while(loadedModules) {
+		if (strcmp(loadedModules->name, "lbModule") != 0) {
+			lbUnloadModule(loadedModules->name);
+		} else {
+			if (loadedModules->next != NULL) {
+				loadedModules = loadedModules->next;
+			} else {
+				if (strcmp(loadedModules->name, "lbModule") == 0) break;
+			}
+		}
 
-    }
+	}
 }
 
 /*...svoid LB_CDECL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_CDECL unHookAll() {
-    uninitLocale();
+	uninitLocale();
 
-    if (loadedModules)
-        unloadModule(loadedModules);
+	if (loadedModules)
+	unloadModule(loadedModules);
 }
 
 DLLEXPORT void LB_CDECL unHookAll_old() {
-	_Modules* skipped = NULL;
-	_Modules* temp_skipped = NULL;
-
 	if (lb_log) {
 #ifndef __MINGW32__
 		_LOG << "unHookAll() releases log instance. This should be the last entry for this process." LOG_
@@ -1356,96 +1367,98 @@ DLLEXPORT void LB_CDECL unHookAll_old() {
 	}
 
 #ifndef WINDOWS
-		_Modules* temp = loadedModules;
-		while (temp) {
-			if (temp->name == NULL) {
-				_Modules* delMod = temp;
-				_CL_LOG << "ERROR: Found a module without a stored name!" LOG_
-				if (dlclose(temp->lib) != 0) {
-					char* msg = dlerror();
-					if (msg) printf("%s\n", msg);
-					temp = temp->next;
-				} else {
-					temp = temp->next;
-					if (delMod == loadedModules) loadedModules = loadedModules->next;
-					delete delMod;
-					//if (temp == NULL) temp = loadedModules;
-				}
-			}
-			if (temp->name != NULL) {
-				_Modules* delMod = temp;
-
-				if (strcmp(temp->name, "lbModule") == 0) {
-					temp = temp->next;
-					if (delMod == loadedModules) loadedModules = loadedModules->next;
-					delete delMod;
-					//if(temp == NULL) temp = loadedModules;
-					continue;
-				}
-
-				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
-
-				if (dlclose(temp->lib) != 0) {
-					char* msg = dlerror();
-					if (msg) printf("%s\n", msg);
-					temp = temp->next;
-				} else {
-					temp = temp->next;
-					if (delMod == loadedModules) loadedModules = loadedModules->next;
-					delete delMod;
-					//if (temp == NULL) temp = loadedModules;
-				}
+	_Modules* temp = loadedModules;
+	while (temp) {
+		if (temp->name == NULL) {
+			_Modules* delMod = temp;
+			_CL_LOG << "ERROR: Found a module without a stored name!" LOG_
+			if (dlclose(temp->lib) != 0) {
+				char* msg = dlerror();
+				if (msg) printf("%s\n", msg);
+				temp = temp->next;
+			} else {
+				temp = temp->next;
+				if (delMod == loadedModules) loadedModules = loadedModules->next;
+				delete delMod;
+				//if (temp == NULL) temp = loadedModules;
 			}
 		}
+		if (temp->name != NULL) {
+			_Modules* delMod = temp;
+
+			if (strcmp(temp->name, "lbModule") == 0) {
+				temp = temp->next;
+				if (delMod == loadedModules) loadedModules = loadedModules->next;
+				delete delMod;
+				//if(temp == NULL) temp = loadedModules;
+				continue;
+			}
+
+			_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
+
+			if (dlclose(temp->lib) != 0) {
+				char* msg = dlerror();
+				if (msg) printf("%s\n", msg);
+				temp = temp->next;
+			} else {
+				temp = temp->next;
+				if (delMod == loadedModules) loadedModules = loadedModules->next;
+				delete delMod;
+				//if (temp == NULL) temp = loadedModules;
+			}
+		}
+	}
 #endif
 #ifdef WINDOWS
-		_Modules* temp = loadedModules;
-		while (temp) {
-			if (temp->name != NULL) {
-				_Modules* delMod = temp;
+	_Modules* skipped = NULL;
+	_Modules* temp_skipped = NULL;
+	_Modules* temp = loadedModules;
+	while (temp) {
+		if (temp->name != NULL) {
+			_Modules* delMod = temp;
 
-				if (strcmp(temp->name, "lbModule") == 0) {
+			if (strcmp(temp->name, "lbModule") == 0) {
+				temp = temp->next;
+				if (delMod == loadedModules) loadedModules = loadedModules->next;
+				free(delMod->name);
+				delete delMod;
+				if (temp) temp = loadedModules;
+				continue;
+			}
+
+			if (temp->skip) {
+				if (skipped == NULL)
+				{
+					skipped = temp;
 					temp = temp->next;
-					if (delMod == loadedModules) loadedModules = loadedModules->next;
-					free(delMod->name);
-					delete delMod;
-					if (temp) temp = loadedModules;
-					continue;
-				}
-
-				if (temp->skip) {
-					if (skipped == NULL)
-					{
-						skipped = temp;
-						temp = temp->next;
-						skipped->next = NULL;
-					} else {
-						temp_skipped = temp;
-						temp = temp->next;
-						temp_skipped->next = skipped;
-						skipped = temp_skipped;
-					}
-
-					continue;
-				}
-
-				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
-
-				if (FreeLibrary(temp->lib) == 0) {
-					printf("ERROR: Library could not be unloaded!\n");
-					temp = temp->next;
+					skipped->next = NULL;
 				} else {
+					temp_skipped = temp;
 					temp = temp->next;
-					if (delMod == loadedModules) loadedModules = loadedModules->next;
-					free(delMod->name);
-					delete delMod;
+					temp_skipped->next = skipped;
+					skipped = temp_skipped;
 				}
+
+				continue;
+			}
+
+			_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
+
+			if (FreeLibrary(temp->lib) == 0) {
+				printf("ERROR: Library could not be unloaded!\n");
+				temp = temp->next;
+			} else {
+				temp = temp->next;
+				if (delMod == loadedModules) loadedModules = loadedModules->next;
+				free(delMod->name);
+				delete delMod;
 			}
 		}
+	}
 
-		// Restore list of skipped modules -> loadedModules
+	// Restore list of skipped modules -> loadedModules
 
-		loadedModules = skipped;
+	loadedModules = skipped;
 #endif
 
 	loadedModules = NULL;
@@ -1484,27 +1497,27 @@ public:
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
 lbKey::lbKey(char* file, int line) {
-        key = 0;
-        strcpy(keyType, "int");
+	key = 0;
+	strcpy(keyType, "int");
 }
 #endif
 lbKey::lbKey() {
-    ref = STARTREF;
-    key = 0;
+	ref = STARTREF;
+	key = 0;
 	manager = NULL;
-    strcpy(keyType, "int");
+	strcpy(keyType, "int");
 }
 
 lbKey::lbKey(int _key) {
-    ref = STARTREF;
-    key = _key;
-    strcpy(keyType, "int");
+	ref = STARTREF;
+	key = _key;
+	strcpy(keyType, "int");
 	manager = NULL;
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
-    ref = STARTREF;
-    key = ((lbKey) k).key;
+	ref = STARTREF;
+	key = ((lbKey) k).key;
 }
 
 lbKey::~lbKey(){
@@ -1513,7 +1526,7 @@ lbKey::~lbKey(){
 
 /*...simplement lb_I_Unknown:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey)
-	ADD_INTERFACE(lb_I_KeyBase)
+ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
@@ -1523,25 +1536,25 @@ lbErrCodes LB_CDECL lbKey::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 char const* LB_CDECL lbKey::getKeyType() const {
-    return "int";
+	return "int";
 }
 
 int LB_CDECL lbKey::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbKey*) _key)->key;
+	return key == ((lbKey*) _key)->key;
 }
 
 int LB_CDECL lbKey::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbKey*) _key)->key;
+	return key > ((lbKey*) _key)->key;
 }
 
 int LB_CDECL lbKey::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbKey*) _key)->key;
+	return key < ((lbKey*) _key)->key;
 }
 
 char* LB_CDECL lbKey::charrep() const {
-    char buf[100];
-    sprintf(buf, "%d", key);
-    return strdup(buf);
+	char buf[100];
+	sprintf(buf, "%d", key);
+	return strdup(buf);
 }
 /*...e*/
 #ifndef OSX
@@ -1549,27 +1562,27 @@ char* LB_CDECL lbKey::charrep() const {
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
 lbKey_::lbKey_(char* file, int line) {
-        key = 0;
-        strcpy(keyType, "int");
+	key = 0;
+	strcpy(keyType, "int");
 }
 #endif
 lbKey_::lbKey_() {
-    ref = STARTREF;
-    key = 0;
+	ref = STARTREF;
+	key = 0;
 	manager = NULL;
-    strcpy(keyType, "int");
+	strcpy(keyType, "int");
 }
 
 lbKey_::lbKey_(int _key) {
-    ref = STARTREF;
-    key = _key;
-    strcpy(keyType, "int");
+	ref = STARTREF;
+	key = _key;
+	strcpy(keyType, "int");
 	manager = NULL;
 }
 
 lbKey_::lbKey_(const lb_I_KeyBase* k) {
-    ref = STARTREF;
-    key = ((lbKey_) k).key;
+	ref = STARTREF;
+	key = ((lbKey_) k).key;
 }
 
 lbKey_::~lbKey_(){
@@ -1578,7 +1591,7 @@ lbKey_::~lbKey_(){
 
 /*...simplement lb_I_Unknown:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey_)
-	ADD_INTERFACE(lb_I_KeyBase)
+ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
@@ -1588,42 +1601,42 @@ lbErrCodes LB_CDECL lbKey_::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 char const* LB_CDECL lbKey_::getKeyType() const {
-    return "int";
+	return "int";
 }
 
 int LB_CDECL lbKey_::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbKey_*) _key)->key;
+	return key == ((lbKey_*) _key)->key;
 }
 
 int LB_CDECL lbKey_::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbKey_*) _key)->key;
+	return key > ((lbKey_*) _key)->key;
 }
 
 int LB_CDECL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbKey_*) _key)->key;
+	return key < ((lbKey_*) _key)->key;
 }
 
 char* LB_CDECL lbKey_::charrep() const {
-    char buf[100];
-    sprintf(buf, "%d", key);
-    return strdup(buf);
+	char buf[100];
+	sprintf(buf, "%d", key);
+	return strdup(buf);
 }
 /*...e*/
 #endif
 /*...slbStringKey:0:*/
 DLLEXPORT lbStringKey::lbStringKey() {
-    ref = STARTREF;
-    key = strdup("");
+	ref = STARTREF;
+	key = strdup("");
 }
 
 DLLEXPORT lbStringKey::lbStringKey(const char* _key) {
-    ref = STARTREF;
-    key = strdup(_key);
+	ref = STARTREF;
+	key = strdup(_key);
 }
 
 DLLEXPORT lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
-    ref = STARTREF;
-    key = strdup(((lbStringKey*) k)->key);
+	ref = STARTREF;
+	key = strdup(((lbStringKey*) k)->key);
 }
 
 
@@ -1634,7 +1647,7 @@ DLLEXPORT lbStringKey::~lbStringKey(){
 }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
-	ADD_INTERFACE(lb_I_KeyBase)
+ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_CDECL lbStringKey::setData(lb_I_Unknown* uk) {
@@ -1654,23 +1667,23 @@ lbErrCodes LB_CDECL lbStringKey::setData(lb_I_Unknown* uk) {
 }
 
 char const * LB_CDECL lbStringKey::getKeyType() const {
-    return "string";
+	return "string";
 }
 
 int LB_CDECL lbStringKey::equals(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
+	return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
 }
 
 int LB_CDECL lbStringKey::greater(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
+	return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
 }
 
 int LB_CDECL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
+	return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
 }
 
 char* LB_CDECL lbStringKey::charrep() const {
-    return key;
+	return key;
 }
 /*...e*/
 
@@ -1715,11 +1728,11 @@ LB_CDECL lbGetCurrentProcessId() {
 #ifdef __WXGTK__
 void delay(long mikrosek)
 {
-        struct timeval timeout;
+	struct timeval timeout;
 
-        timeout.tv_sec = mikrosek / 1000000;
-        timeout.tv_usec = mikrosek % 1000000;
-        select (0, NULL, NULL, NULL, &timeout);
+	timeout.tv_sec = mikrosek / 1000000;
+	timeout.tv_usec = mikrosek % 1000000;
+	select (0, NULL, NULL, NULL, &timeout);
 }
 #endif
 
@@ -1727,10 +1740,10 @@ void delay(long mikrosek)
 DLLEXPORT void LB_CDECL lb_sleep(int ms)
 {
 #ifdef WINDOWS
-        ::Sleep(ms);
+	::Sleep(ms);
 #endif
 #ifdef __WXGTK__
-        delay(ms * 1000);
+	delay(ms * 1000);
 #endif
 }
 
@@ -1738,51 +1751,51 @@ DLLEXPORT void LB_CDECL lb_sleep(int ms)
 #ifdef WINDOWS
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
-        char buf[100]="";
+	//char buf[100]="";
 
-        switch (reason) {
-                case DLL_PROCESS_ATTACH:
-                	TRMemOpen();
+	switch (reason) {
+	case DLL_PROCESS_ATTACH:
+		TRMemOpen();
 
-			if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak(), 0);
+		if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak(), 0);
 
-                	TRMemSetModuleName(__FILE__);
+		TRMemSetModuleName(__FILE__);
 
-                        if (situation) {
-                                _CL_VERBOSE << "DLL statically loaded." LOG_
-                        }
-                        else {
-                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
-                        }
-                        break;
-                case DLL_THREAD_ATTACH:
-                        _CL_VERBOSE << "New thread starting.\n" LOG_
-                        break;
-                case DLL_PROCESS_DETACH:
+		if (situation) {
+			_CL_VERBOSE << "DLL statically loaded." LOG_
+		}
+		else {
+			_CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+		}
+		break;
+	case DLL_THREAD_ATTACH:
+		_CL_VERBOSE << "New thread starting.\n" LOG_
+		break;
+	case DLL_PROCESS_DETACH:
 
-			if (translated) free(translated);
-			if (lbLogDirectory) free(lbLogDirectory);
-			if (lbLogFile) free(lbLogFile);
+		if (translated) free(translated);
+		if (lbLogDirectory) free(lbLogDirectory);
+		if (lbLogFile) free(lbLogFile);
 
-			if (loadedModules) destroyModuleStructure(loadedModules);
+		if (loadedModules) destroyModuleStructure(loadedModules);
 
-                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
-                        if (situation)
-                        {
-                                _CL_LOG << "DLL " << __FILE__ << " released by system." LOG_
-                        }
-                        else
-                        {
-                                _CL_LOG << "DLL " << __FILE__ << " released by program.\n" LOG_
-                        }
-                        break;
-                case DLL_THREAD_DETACH:
-                        _CL_VERBOSE << "Thread terminating.\n" LOG_
-                default:
-                        return FALSE;
-        }
+		_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+		if (situation)
+		{
+			_CL_LOG << "DLL " << __FILE__ << " released by system." LOG_
+		}
+		else
+		{
+			_CL_LOG << "DLL " << __FILE__ << " released by program.\n" LOG_
+		}
+		break;
+	case DLL_THREAD_DETACH:
+		_CL_VERBOSE << "Thread terminating.\n" LOG_
+	default:
+		return FALSE;
+	}
 
-        return TRUE;
+	return TRUE;
 }
 /*...e*/
 #endif

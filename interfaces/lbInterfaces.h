@@ -946,7 +946,7 @@ PRIMARY KEY (id),
 	typedef unsigned long DWORD;
 #endif
 	typedef unsigned short LB_DATA;
-	typedef unsigned short u_short;
+	//typedef unsigned short u_short;
 	/*...e*/
 #endif // __BASE_TYPES_DEFINED__
 
@@ -1087,10 +1087,18 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 
 	/*...e*/
 	/*...sdefine QI\40\source\44\ interface\44\ target\41\:0:*/
-#define QI(source, interface, target) { \
-		target.setFile(__FILE__); \
-		target.setLine(__LINE__); \
-		err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__); \
+#define QI(source, interface, target) \
+{ \
+	target.setFile(__FILE__); \
+	target.setLine(__LINE__); \
+	if (source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__) != ERR_NONE) \
+	{ \
+		_LOGERROR << "QI: Failed to get interface without errors (" << #interface << ")" LOG_ \
+	} \
+	if (target == NULL) \
+	{ \
+		_LOGERROR << "QI: Failed to get instance of interface (" << #interface << ")" LOG_ \
+	} \
 }
 	/*...e*/
 	/*...e*/
@@ -1374,6 +1382,8 @@ public:
 			char const* empty = ""; \
 			attachedClassName = NULL; \
 			initialized = false; \
+        	allowDelete = 1; \
+			locked = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
 				attachedClassName = strdup(_ref->getClassName()); \
 			else \
@@ -1386,7 +1396,10 @@ public:
 			_line = _ref._line; \
 			_autoPtr = NULL; \
 		} \
-		void operator=(const UAP##Unknown_Reference& _ref) { \
+		UAP##Unknown_Reference& operator=(const UAP##Unknown_Reference& _ref) { \
+			if (this == &_ref) return *this; \
+        	allowDelete = 1; \
+			locked = false; \
 			char const* empty = ""; \
 			if (_file != NULL) free(_file); \
 			_file = NULL; \
@@ -1403,6 +1416,7 @@ public:
 	                attachedClassName = strdup(empty); \
 			_line = _ref._line; \
 			_autoPtr = _ref._autoPtr; \
+			return *this; \
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
@@ -1507,8 +1521,9 @@ public:
 			return &_autoPtr; \
 		} \
 		\
-		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
-			if (locked) return *this; \
+		interface* LB_STDCALL operator = (interface* autoPtr) { \
+			if (*this == autoPtr) return this->_autoPtr; \
+			if (locked) return this->_autoPtr; \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid old object pointer") \
 			if (_autoPtr != NULL) { \
 				_autoPtr->release(__FILE__, __LINE__); \
@@ -1522,11 +1537,15 @@ public:
 				attachedClassName = strdup(autoPtr->getClassName()); \
 			else \
 				attachedClassName = strdup(""); \
-			return *this; \
+			return this->_autoPtr; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer") \
 			return _autoPtr == b; \
+		} \
+		int LB_STDCALL operator == (const UAP##Unknown_Reference& b) const { \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer") \
+			return *this == b; \
 		} \
 		int LB_STDCALL operator != (const interface* b) const { \
 			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator != on invalid object pointer") \
@@ -1544,8 +1563,10 @@ public:
 	        mutable char* attachedClassName; \
 		}; \
 	\
-        interface* _UAP##Unknown_Reference; \
         UAP##Unknown_Reference Unknown_Reference;
+
+// Probably unused.
+//interface* _UAP##Unknown_Reference;
 
 
 /*...sbla \40\geht nicht\41\:0:*/
@@ -1659,9 +1680,10 @@ public: \
 	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
 	void		LB_STDCALL accept(lb_I_Aspect* v) { \
 	    if (v == NULL) {\
-		_LOG << "Error: Accept method couldn't forward with a NULL pointer." LOG_\
-	    }\
-	    v->visit(this);\
+			_LOG << "Error: Accept method couldn't forward with a NULL pointer." LOG_\
+	    } else { \
+		    v->visit(this);\
+		} \
 	} \
 	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
 	    further_lock = state; \
@@ -1693,7 +1715,7 @@ char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
 char const* LB_STDCALL classname::_queryInterface(const char* name, void** unknown, const char* file, int line) { \
-	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	char* ID = (char*) malloc(strlen(name)+strlen(#classname)+strlen(file)+1); \
 	ID[0] = 0; \
 	strcat(ID, name); \
 	strcat(ID, #classname); \
@@ -1701,6 +1723,7 @@ char const* LB_STDCALL classname::_queryInterface(const char* name, void** unkno
 	lbErrCodes err = ERR_NONE; \
 	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { \
 		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_ \
+		free(ID); \
 		return ""; \
 	} \
 	\

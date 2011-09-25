@@ -137,11 +137,11 @@ public:
 
 	char f[PATH_MAX];
 	char* logmessage;
-	int pre_lastsize;
+	//int pre_lastsize;
 	int lastsize;
 	FILE*	fout;
 	bool	isOpen;
-	int	offset;
+	//int	offset;
 
 	std::ofstream* _ostream;
 	bool _binary;

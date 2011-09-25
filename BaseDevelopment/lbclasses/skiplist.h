@@ -41,9 +41,7 @@ class SkipNode {
   public:
     SkipNode();
     SkipNode(lb_I_Element* r, int level);
-    SkipNode(const SkipNode &s) {
-    	printf("SkipNode(const SkipNode &s) called.\n");
-    }
+    SkipNode(const SkipNode &s);
     virtual ~SkipNode();
 
     void detach();

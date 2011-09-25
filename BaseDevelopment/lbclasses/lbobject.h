@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbobject.h,v 1.56 2011/07/10 06:14:41 lollisoft Exp $
+ * $Id: lbobject.h,v 1.57 2011/09/25 09:30:14 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.57  2011/09/25 09:30:14  lollisoft
+ * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
+ * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
+ * fixed. Other modules will follow.
+ *
  * Revision 1.56  2011/07/10 06:14:41  lollisoft
  * Added stroring database query objects into the parameter container. Not yet ready.
  *
@@ -283,54 +288,6 @@
 #include <stdio.h>
 #include <lbInterfaces.h>
 
-#ifdef bla
-/*...sclass lbObject:0:*/
-class lbObject : public lb_I_Object {
-public:
-    lbObject() {
-		name = NULL;
-		// Set to undefined state
-		OTyp = LB_OBJECT;
-	}
-
-	lbObject(const lbObject &o) {
-		setName(o.getName());
-	}
-    
-    virtual ~lbObject() {}
-
-
-    DECLARE_LB_UNKNOWN()
-    DECLARE_LB_OBJECT()
-
-	/**
-	 * The type of an object
-	 */
-
-    ObjectTyp getType() const;
-
-	/**
-	 * A object has a name
-	 */
-    void setName(const char* d);
-    const char* getName() const;
-
-	/**
-	 * Abstract functions
-	 */
-//	virtual void setType() = 0;
-//	virtual lb_I_Unknown* clone() const = 0;
-
-	
-
-protected:
-
-  //  char *name;
-//	ObjectTyp OTyp;
-};
-/*...e*/
-#endif
-
 /*...sclass lbLocale:0:*/
 class lbLocale : public lb_I_Locale
 {
@@ -399,8 +356,10 @@ public:
 
 public:
 	lbParameter() {
-		cloning = true;
 		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		cloning = true;
 	}
 	virtual ~lbParameter() {}
 
@@ -413,7 +372,13 @@ protected:
 #ifndef _MSC_VER
 class lbReference : public lb_I_Reference {
 public:
-	lbReference() { _r = NULL; }
+	lbReference()
+	{ 
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		_r = NULL; 
+	}
 	virtual ~lbReference() {}
 
 	DECLARE_LB_UNKNOWN()
@@ -479,8 +444,6 @@ public:
 	virtual ~lbString();
 
 private:
-
-	char keyType[10];
 	char* stringdata;
 	/// \brief Size of the buffer, not the length of the string.
 	long buffersize;
@@ -505,8 +468,6 @@ public:
 	virtual char* LB_STDCALL getData() const;
 	
 private:
-
-    char keyType[10];
     char* _path;
 };
 /*...e*/
@@ -525,8 +486,6 @@ public:
 	virtual char* LB_STDCALL getData() const;
 	
 private:
-
-    char keyType[10];
     char* _path;
 };
 /*...e*/
@@ -545,8 +504,6 @@ public:
 	virtual int LB_STDCALL getData() const;
 	
 private:
-
-    char keyType[10];
     char* key;
     int integerdata;
 };
@@ -566,8 +523,6 @@ public:
 	virtual bool LB_STDCALL getData() const;
 	
 private:
-
-    char keyType[10];
     char* key;
     bool integerdata;
 };
@@ -604,34 +559,10 @@ public:
 	virtual long LB_STDCALL getData() const;
 	
 private:
-
-    char keyType[10];
     char* key;
 	long longdata;
 };
 /*...e*/
-#ifdef bla
-/*...sclass lbStringList:0:*/
-class lbStringList : public lbObject {
-public:
-        lbStringList();
-        virtual ~lbStringList();
-
-        virtual void setType();
-        virtual lb_I_Unknown* clone() const;
-
-	void insert(lb_I_String* s);
-	int remove(const lb_I_String* s);
-	int exists(const lb_I_String* s);
-	
-	int hasMoreElements();
-	lb_I_String* nextElement();
-private:
-	lb_I_Container* list;
-	int count;
-};
-/*...e*/
-#endif
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {
@@ -651,26 +582,6 @@ DECLARE_FUNCTOR(instanceOfLocale)
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
 }
-#endif
-/*...e*/
-
-
-/*...sbla:0:*/
-#ifdef bla
-/*...s\35\ifdef __cplusplus \123\:0:*/
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*...e*/
-
-lbErrCodes DLLEXPORT __cdecl queryInterface(lb_I_Unknown*& inst, const char* _name);
-lbErrCodes DLLEXPORT __cdecl releaseInstance(lb_I_Unknown * inst);
-
-/*...s\35\ifdef __cplusplus \125\:0:*/
-#ifdef __cplusplus
-}
-#endif
-/*...e*/
 #endif
 /*...e*/
 

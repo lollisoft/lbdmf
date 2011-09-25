@@ -172,6 +172,8 @@ lbErrCodes LB_STDCALL lbInputStream::setData(lb_I_Unknown* uk) {
 lbInputStream::lbInputStream() {
 //lbLock lbLock(sect);
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 	manager = NULL;
 	fin = NULL;
 	readBuffer = NULL;
