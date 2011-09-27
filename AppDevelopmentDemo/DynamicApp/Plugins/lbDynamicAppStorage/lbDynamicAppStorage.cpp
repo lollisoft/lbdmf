@@ -168,6 +168,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, writeXMISettings)
 
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileExportSettings)
@@ -196,30 +197,51 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 			_LOG << "Warning: The overwriteDatabase parameter was not passed. Set it to no." LOG_
 			*overwrite = "no";
 		}
+		
+		*param = "writeXMISettings";
+		activedocument->getUAPString(*&param, *&writeXMISettings);
+		if (writeXMISettings->charrep() == NULL) {
+			_LOG << "Warning: The writeXMISettings parameter was not passed. Set it to no." LOG_
+			*writeXMISettings = "no";
+		}
 	}
 	
 	// Write the settings file for the application database here ...
-	
-	if (XSLFileExportSettings->charrep() != NULL) {
-		if (strcmp(XSLFileExportSettings->charrep(), "<settings>") != 0) {
-			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-			
-			oStream->setFileName(XSLFileExportSettings->charrep());
-			if (oStream->open()) {
-				oStream->setBinary();
-				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
-				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
+	if (*writeXMISettings == "yes") {
+		if (XSLFileExportSettings->charrep() != NULL) {
+			if (strcmp(XSLFileExportSettings->charrep(), "<settings>") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 				
-				/// \todo Write additional XMI settings here.				
-				
-				
-				*oStream << "</xsl:stylesheet>\n";
-				oStream->close();
+				oStream->setFileName(XSLFileExportSettings->charrep());
+				if (oStream->open()) {
+					oStream->setBinary();
+					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
+					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
+					
+					DBName->replace(">", "&gt;");
+					DBName->replace("<", "&lt;");
+					DBUser->replace(">", "&gt;");
+					DBUser->replace("<", "&lt;");
+					DBPass->replace(">", "&gt;");
+					DBPass->replace("<", "&lt;");
+					
+					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+					
+					/// \todo Write additional XMI settings here.				
+					
+					
+					*oStream << "</xsl:stylesheet>\n";
+					oStream->close();
+				}
 			}
 		}
 	}
@@ -1607,6 +1629,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileImportSettings)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, writeXMISettings)
 
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_Parameter, document)
@@ -1632,41 +1655,55 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 
 		*param = "overwriteDatabase";
 		document->getUAPString(*&param, *&overwrite);
+		
+		*param = "writeXMISettings";
+		document->getUAPString(*&param, *&writeXMISettings);
+		if (writeXMISettings->charrep() == NULL) {
+			_LOG << "Warning: The writeXMISettings parameter was not passed. Set it to no." LOG_
+			*writeXMISettings = "no";
+		}
     }
 
 	// Write the settings file for the application database here ...
 	
-	if (XSLFileImportSettings->charrep() != NULL) {
-		if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
-			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-			
-			oStream->setFileName(XSLFileImportSettings->charrep());
-			if (oStream->open()) {
-				oStream->setBinary();
-				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+	
+	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
+	if (*writeXMISettings == "yes") {
+		if (XSLFileImportSettings->charrep() != NULL) {
+			if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 				
-				DBName->replace(">", "&gt;");
-				DBName->replace("<", "&lt;");
-				DBUser->replace(">", "&gt;");
-				DBUser->replace("<", "&lt;");
-				DBPass->replace(">", "&gt;");
-				DBPass->replace("<", "&lt;");
-				
-				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
-				
-/// \todo Write additional XMI settings here.				
-				
-				
-				*oStream << "</xsl:stylesheet>\n";
-				oStream->close();
+				oStream->setFileName(XSLFileImportSettings->charrep());
+				if (oStream->open()) {
+					oStream->setBinary();
+					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
+					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+					
+					DBName->replace(">", "&gt;");
+					DBName->replace("<", "&lt;");
+					DBUser->replace(">", "&gt;");
+					DBUser->replace("<", "&lt;");
+					DBPass->replace(">", "&gt;");
+					DBPass->replace("<", "&lt;");
+					
+					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+					
+					/// \todo Write additional XMI settings here.				
+					
+					
+					*oStream << "</xsl:stylesheet>\n";
+					oStream->close();
+				}
 			}
 		}
 	}
-	
 	xmlSubstituteEntitiesDefault(1);
 #ifndef __WATCOMC__	
     xmlLoadExtDtdDefaultValue = 1;
@@ -1879,33 +1916,39 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 
 	// Write the settings file for the application database here ...
 	
-	if (XSLFileImportSettings->charrep() != NULL) {
-		if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
-			UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-			
-			oStream->setFileName(XSLFileImportSettings->charrep());
-			if (oStream->open()) {
-				oStream->setBinary();
-				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
+	if (*writeXMISettings == "yes") {
+		if (XSLFileImportSettings->charrep() != NULL) {
+			if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+				
+				oStream->setFileName(XSLFileImportSettings->charrep());
+				if (oStream->open()) {
+					oStream->setBinary();
+					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
+					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
 
-				DBName->replace(">", "&gt;");
-				DBName->replace("<", "&lt;");
-				DBUser->replace(">", "&gt;");
-				DBUser->replace("<", "&lt;");
-				DBPass->replace(">", "&gt;");
-				DBPass->replace("<", "&lt;");
+					DBName->replace(">", "&gt;");
+					DBName->replace("<", "&lt;");
+					DBUser->replace(">", "&gt;");
+					DBUser->replace("<", "&lt;");
+					DBPass->replace(">", "&gt;");
+					DBPass->replace("<", "&lt;");
 
-				*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
-				*oStream << "</xsl:stylesheet>\n";
-				oStream->close();
+					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+					*oStream << "</xsl:stylesheet>\n";
+					oStream->close();
+				}
 			}
 		}
 	}
-
 
 	if (metaapp->askYesNo("Would you create the application definition for the application to be imported into the system database ?")) {
 		UAP(lb_I_String, styledoc)
