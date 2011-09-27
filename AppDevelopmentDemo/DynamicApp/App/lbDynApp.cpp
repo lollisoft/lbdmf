@@ -180,6 +180,7 @@ public:
         lbErrCodes LB_STDCALL executeQueryFromFile(lb_I_Unknown* uk);
 
         lbErrCodes LB_STDCALL overwriteDatabase(lb_I_Unknown* uk);
+        lbErrCodes LB_STDCALL writeXMISettings(lb_I_Unknown* uk);
 protected:
 
         /** \brief Load the database forms.
@@ -193,6 +194,7 @@ protected:
         UAP(lb_I_String, lastExportedApp)
 
         bool _overwriteDatabase;
+		bool _writeXMISettings;
 
         lb_I_GUI* gui;
         UAP(lb_I_EventManager, eman)
@@ -280,6 +282,7 @@ lbDynamicApplication::lbDynamicApplication() {
         gui = NULL;
 
         _overwriteDatabase = false;
+		_writeXMISettings = false;
         
         dirty = false;
 
@@ -358,12 +361,20 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 }
 /*...e*/
 
+
+
 lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
         
         _overwriteDatabase = !_overwriteDatabase;
+        
+        return err;
+}
 
-        //if (_overwriteDatabase) metaapp->toggleEvent("overwriteDatabase");
+lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
+        lbErrCodes err = ERR_NONE;
+        
+        _writeXMISettings = !_writeXMISettings;
         
         return err;
 }
@@ -1187,11 +1198,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
                 AppID->setData(metaapp->getApplicationID());
                 *param = "SaveApplicationID";
                 document->setUAPInteger(*&param, *&AppID);
-                
+ 
                 UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
                 *overwrite = (_overwriteDatabase) ? "yes" : "no";
                 *param = "overwriteDatabase";
                 document->setUAPString(*&param, *&overwrite);
+
+                UAP_REQUEST(getModuleInstance(), lb_I_String, writeXMISettings)
+                *writeXMISettings = (_writeXMISettings) ? "yes" : "no";
+                *param = "writeXMISettings";
+                document->setUAPString(*&param, *&writeXMISettings);
         }
 
         pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
@@ -1307,7 +1323,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 *overwrite = (_overwriteDatabase) ? "yes" : "no";
                 *param = "overwriteDatabase";
                 document->setUAPString(*&param, *&overwrite);
-        }
+
+                UAP_REQUEST(getModuleInstance(), lb_I_String, writeXMISettings)
+                *writeXMISettings = (_writeXMISettings) ? "yes" : "no";
+                *param = "writeXMISettings";
+                document->setUAPString(*&param, *&writeXMISettings);
+		}
 
         pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 
@@ -3024,6 +3045,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
         eman->registerEvent("overwriteDatabase", unused);
         dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::overwriteDatabase, "overwriteDatabase");
         metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "overwriteDatabase", "");
+        
+        *editMenu = _trans("&Edit");
+        *menuEntry = _trans("write default XMISettings file");
+        eman->registerEvent("writeXMISettings", unused);
+        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::writeXMISettings, "writeXMISettings");
+        metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "writeXMISettings", "");
         
         return ERR_NONE;
 }
