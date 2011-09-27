@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.184 $
+ * $Revision: 1.185 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.184 2011/07/10 06:17:06 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.185 2011/09/27 06:29:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.185  2011/09/27 06:29:42  lollisoft
+ * Fixed some issues reported by CppCheck.
+ *
  * Revision 1.184  2011/07/10 06:17:06  lollisoft
  * Changed some logging messages to be verbose only.
  *
@@ -735,6 +738,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	gui = NULL;
 	moduleName = NULL;
 
+	_GUIMaximized = true;
 	_loaded = false;
 
 	_autoload = true;
@@ -3504,9 +3508,11 @@ lb_EventMapper::lb_EventMapper() {
 	ref = STARTREF;
 	_CL_LOG << "Instance of lb_I_EventMapper created" LOG_
 	_name = NULL;
+	_id = 0;
 }
 
 lb_EventMapper::~lb_EventMapper() {
+	if (_name) free(_name);
 }
 
 
@@ -3550,6 +3556,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 lb_EventManager::lb_EventManager() {
 	maxEvId = 12000;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lb_EventManager::~lb_EventManager() {
@@ -4128,11 +4136,14 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EvHandler::lb_EvHandler() {
 	ref = STARTREF;
+	further_lock = 1;
+	data = NULL;
 	_evHandlerInstance = NULL;
 	ev = NULL;
 	_evHandlerInstance_interceptor = NULL;
 	ev_interceptor_Before = NULL;
 	ev_interceptor_After = NULL;
+	interceptorRequired = false;
 }
 
 lb_EvHandler::~lb_EvHandler() {

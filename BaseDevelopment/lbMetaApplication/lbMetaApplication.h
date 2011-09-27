@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.76 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.77 2011/09/27 06:29:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.77  2011/09/27 06:29:42  lollisoft
+ * Fixed some issues reported by CppCheck.
+ *
  * Revision 1.76  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -527,8 +530,6 @@ protected:
 	
 	
 	bool _loaded;
-	
-	char gwedgd[100];
 };
 /*...e*/
 /*...sclass lb_EventMapper:0:*/
