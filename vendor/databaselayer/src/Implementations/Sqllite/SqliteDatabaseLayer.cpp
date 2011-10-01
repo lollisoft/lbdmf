@@ -343,7 +343,11 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 
     // Create a Prepared statement for the last SQL statement and get a result set from it
     SqlitePreparedStatement* pStatement = (SqlitePreparedStatement*)PrepareStatement(QueryArray[QueryArray.size()-1], false);
-    SqliteResultSet* pResultSet = new SqliteResultSet(pStatement, true);
+	if (pStatement == NULL) {
+	  printf("Error: SqliteDatabaseLayer::PrepareStatement() did not return a prepared statement!\n");
+      return NULL;
+	}
+	SqliteResultSet* pResultSet = new SqliteResultSet(pStatement, true);
     if (pResultSet) {
       pResultSet->SetEncoding(GetEncoding());
 	}

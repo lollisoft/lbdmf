@@ -166,7 +166,7 @@ ifeq ($(DEBUG), yes)
 L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
 ifeq ($(DEBUG), no)
-L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+L_OPS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 endif
 

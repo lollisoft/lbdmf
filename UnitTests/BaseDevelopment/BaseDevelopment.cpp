@@ -817,8 +817,95 @@ public:
 		TEST_CASE(test_Instanciate_lbContainer)
 		TEST_CASE(test_lbContainer_InsertString_with_Integer_Key)
 		TEST_CASE(test_lbContainer_lookup_byKey)
+		TEST_CASE(test_lbContainer_lookupNI_byExists)
+		TEST_CASE(test_lbContainer_lookupPostFreed_byExists)
+		TEST_CASE(test_lbContainer_lookupNotInitializedString_byExists)
 	}
+	
+	void test_lbContainer_lookupNotInitializedString_byExists( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_lookupNotInitializedString_byExists");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, notInserted)
+		
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+		
+		
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_KeyBase, nIkey)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(s, lb_I_KeyBase, key)
+		QI(notInserted, lb_I_KeyBase, nIkey)
+		
+		//*s = "Testvalue1";
+		c->insert(&uk, &key);
+		
+		*notInserted = "notInserted";
+		
+		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+	}
+	
+	void test_lbContainer_lookupNI_byExists( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_lookupNI_byExists");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, notInserted)
+		
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+		
+		
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_KeyBase, nIkey)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(s, lb_I_KeyBase, key)
+		QI(notInserted, lb_I_KeyBase, nIkey)
+		
+		*s = "Testvalue1";
+		c->insert(&uk, &key);
+		
+		*notInserted = "notInserted";
+		
+		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+	}
+	
+	void test_lbContainer_lookupPostFreed_byExists( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_lookupPostFreed_byExists");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, notInserted)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+		
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+		
+		
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_KeyBase, nIkey)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(i, lb_I_KeyBase, key)
+		QI(notInserted, lb_I_KeyBase, nIkey)
+		
+		*s = "Testvalue1";
+		i->setData(1);
+		c->insert(&uk, &key);
+		
+		*notInserted = "Testvalue1";
+		
+		*s = (char*)NULL;
 
+		ASSERT_EQUALS( (char*) NULL, s->charrep());
+		
+		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+	}
+	
 	void test_Instanciate_lbContainer( void )
 	{
 		puts("test_Instanciate_lbContainer");

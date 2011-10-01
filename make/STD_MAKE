@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.145 $
+# * $Revision: 1.146 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.145 2011/09/25 11:47:02 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.146 2011/10/01 05:37:03 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.146  2011/10/01 05:37:03  lollisoft
+# * Fixed many memory leaks. Fixed followup crash due to lbString replace issue.
+# *
 # * Revision 1.145  2011/09/25 11:47:02  lollisoft
 # * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
 # *
@@ -1412,8 +1415,31 @@ LB_USE_FRAMEWORKS=yes
 
 DEBUG=no
 
+# If this is activated, also activate the inclusion of mpatrol.h in include/lbConfigHook.h
+# Search within that file for MPATROL_MAC
+DEBUG_MEMORY=no
+#DEBUG_MEMORY=yes
+
+DEBUG_MEMORY_TYPE=mpatrol
+#DEBUG_MEMORY_TYPE=trmem
+
+
+ifeq ($(DEBUG_MEMORY), yes)
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+INCLDEBUGMEM= -I $(DEVROOT)/Projects/CPP/vendor/mpatrol/src
+endif
+endif
+
 
 STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
+	-I /usr/include \
+	$(INCLDEBUGMEM) \
+	-I . 
+
+STD_INCL_NODBGMEM = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/interfaces \
 	-I $(DEVROOT)$(RELPATH)/include \
 	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
@@ -1426,6 +1452,15 @@ endif
 
 ifneq ($(OSPLATFORM_), powerpc)
 OSX_ARCH=-arch i386
+endif
+
+ifeq ($(DEBUG_MEMORY), no)
+MPATROL =
+endif
+ifeq ($(DEBUG_MEMORY), yes)
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+MPATROL= -L$(prefix)/lib -lmpatrol
+endif
 endif
 
 OBJ =o

@@ -191,6 +191,10 @@
 
 #ifdef OSX
  #ifndef MEMTRACK
+//MPATROL_MAC
+ //#define USE_MPATROL
+ //#include <mpatrol.h>
+
   #define _TRMemValidate(name) OSXMemValidate(name)
    #define TRMemStartLocalCount()
    #define TRMemStopLocalCount()

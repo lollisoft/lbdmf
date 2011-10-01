@@ -1319,7 +1319,7 @@ public:
 
 		virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); }
 	
-	virtual void LB_STDCALL traceObject() const = 0;
+	virtual void LB_STDCALL traceObject(const char* why, const char* file, int line) const = 0;
 };
 /*...e*/
 
@@ -1422,7 +1422,6 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
 				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer") \
 				if (allowDelete != 1) { \
@@ -1433,9 +1432,10 @@ public:
 				if (_line == -1) { \
 				} \
 				_autoPtr->release(_file, _line); \
-				if (_file) free(_file); \
 				_autoPtr = NULL; \
 			} \
+			if (attachedClassName != NULL) free(attachedClassName); \
+			if (_file) free(_file); \
 		} \
 		void LB_STDCALL setFile(char const* __file) { \
 			if (_file != NULL) { \
@@ -1691,7 +1691,7 @@ public: \
 	    further_lock = state; \
 	} \
 	void 		LB_STDCALL resetRefcount(); \
-	void		LB_STDCALL traceObject() const; \
+	void		LB_STDCALL traceObject(const char* why, const char* file, int line) const; \
 protected: \
 	UAP(lb_I_Module, manager) \
 	mutable int ref; \
@@ -1717,9 +1717,9 @@ public:
 char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
-void LB_STDCALL classname::traceObject() const { \
+void LB_STDCALL classname::traceObject(const char* why, const char* file, int line) const { \
 \
-_LOGALWAYS << #classname << "::traceObject(): References = " << ref LOG_ \
+_LOGALWAYS << #classname << "::traceObject(" << why << ", " << file << ", " << line << ") called: References = " << ref LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
@@ -1957,9 +1957,9 @@ lbErrCodes LB_STDCALL classname::queryInterface(const char* name, void** unknown
 char const* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
-void LB_STDCALL classname::traceObject() const { \
+void LB_STDCALL classname::traceObject(const char* why, const char* file, int line) const { \
 \
-_LOGALWAYS << #classname << "::traceObject(): References = " << ref LOG_ \
+_LOGALWAYS << #classname << "::traceObject(" << why << ", " << file << ", " << line << ") called: References = " << ref LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
@@ -2248,8 +2248,10 @@ public: \
 	void destroy() { \
 		if (singleton != NULL) { \
 			if (_TRMemValidate(singleton)) { \
+				printf("Information: singletonHolder_" #name " will be destroyed now.\n"); \
 				delete singleton; \
 				singleton = NULL; \
+				printf("Information: singletonHolder_" #name " is destroyed now.\n"); \
 			} \
 			else \
 				/*if (isLogActivated())*/ printf("ERROR: Sinleton object has been deleted prior!\n"); \

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.144 $
+ * $Revision: 1.145 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.144 2011/09/25 11:47:02 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.145 2011/10/01 05:37:03 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.145  2011/10/01 05:37:03  lollisoft
+ * Fixed many memory leaks. Fixed followup crash due to lbString replace issue.
+ *
  * Revision 1.144  2011/09/25 11:47:02  lollisoft
  * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
  *
@@ -2950,14 +2953,17 @@ lbModule::lbModule() {
 }
         
 lbModule::~lbModule() {
+	_CL_LOG << "lbModule::~lbModule() called" LOG_
+	bool a = isLogActivated();
+	setLogActivated(true);
 	if (ref != STARTREF && isLogActivated()) COUT << "lbModule::~lbModule() Error: Reference count mismatch: " << ref << ENDL;
 
-	if (moduleList != NULL) moduleList->release(__FILE__, __LINE__);
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-                _CL_VERBOSE << "lbModule::~lbModule() called" LOG_
-#endif
-/*...e*/
+	if (moduleList != NULL) {
+		moduleList->deleteAll();
+		moduleList->release(__FILE__, __LINE__);
+	}
+	_CL_LOG << "lbModule::~lbModule() ready" LOG_
+	setLogActivated(a);
 }
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -3443,6 +3449,12 @@ lbErrCodes LB_STDCALL lbModule::makeInstance(const char* functor, const char* mo
 		
 //	_LOG << "Allocate " << (int) strlen(module) << " bytes memory for " << module LOG_
 	char* _module = (char*) malloc(strlen(module)+10);
+	
+	if (_module == NULL) {
+		printf("Error: Malloc failed.\n");
+		return ERR_MEMORY_ALLOC;
+	}
+	
 	_module[0] = 0;
 	strcpy(_module, module);
 		
@@ -3690,14 +3702,18 @@ typedef struct instances_of_module {
 lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** result) {
         lbErrCodes err = ERR_NONE;
         char* buf = (char*) malloc(1000);
-        buf[0] = 0;
+        if (buf == NULL) {
+			printf("Error: Malloc failed.\n");
+			return ERR_MEMORY_ALLOC;
+		}
+		buf[0] = 0;
         if (moduleList == NULL) {
         	_CL_VERBOSE << "lbModule::request(...) calls initialize()." LOG_
                 initialize();
         }
 	
         char* functorName = NULL;
-	buf[0] = 0;
+		buf[0] = 0;
         UAP(lb_I_ConfigObject, config)
         UAP(lb_I_ConfigObject, impl)
 
@@ -3726,8 +3742,13 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		}
 		
 		UAP(lb_I_Unknown, _result)
-		makeInstance(functor, module, &_result);
+		err = makeInstance(functor, module, &_result);
 
+		if (err == ERR_MEMORY_ALLOC) {
+			free(buf);
+			return err;
+		}
+		
 		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository)		
 		*result = _result.getPtr();
 		

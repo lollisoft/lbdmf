@@ -100,7 +100,7 @@ C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 L_OPS=$(OSX_ARCH) -lc /usr/lib/libgcc_s.1.dylib -L$(HOME)/lib -llbsqlite3
 #L_OPS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+LIBS=$(L_SOOPS) $(MPATROL) -F$(HOME)/lib -framework lbHook
 endif    
 
 endif

@@ -70,7 +70,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-LIBS = #-F$(prefix)/Library/Frameworks -framework lbHook
+LIBS = $(MPATROL) #-F$(prefix)/Library/Frameworks -framework lbHook
 VENDORLIBS=`odbc_config --prefix`/lib/libodbc.dylib
 endif    
 

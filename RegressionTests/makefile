@@ -92,6 +92,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	UAPLeakTest \
 	Database/FKTest \
 	Database/DatabaseLayerWrapperTest \
 	Database/Plain-ODBC-Test \
@@ -202,6 +203,10 @@ Database: dummy
 
 Memory: dummy
 	$(MAKE) -C $@ -e MODULE=memTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+UAPLeakTest: dummy
+	$(MAKE) -C $@ -e MODULE=UAPLeakTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 Basetypes: dummy

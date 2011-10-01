@@ -1035,10 +1035,10 @@ char *str_replace(char *str, const char *sub_str1, const char *sub_str2, bool no
 	unsigned long count = 0;
 	if (nocase) {
 		if ( (p=strcasestr(str, sub_str1)) == NULL )
-			return str;
+			return strdup(str); // Always dup in case when sub_str1 was allocated on stack
 	} else {
 		if ( (p=strstr(str, sub_str1)) == NULL )
-			return str;
+			return strdup(str); // Always dup in case when sub_str1 was allocated on stack
 	}
 
 	++count;
@@ -1154,55 +1154,14 @@ lb_I_String& LB_STDCALL lbString::substitutePlaceholder(lb_I_Parameter* params) 
 }
 
 lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with, bool nocase) {
-	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
-
-	*rep = str_replace(stringdata, toReplace, with, nocase);
-	if (rep->charrep() != NULL) {
-		setData(rep->charrep());
+	char* replaced = str_replace(stringdata, toReplace, with, nocase);
+	if (replaced != NULL) {
+		setData(replaced);
+		free(replaced);
 	} else {
 		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
 	}
 
-#ifdef bla
-	if ((stringdata != NULL) && (strcmp(stringdata, "") == 0)) return *this;
-
-	bool trailing = false;
-
-	char* temp = (char*) malloc(strlen(stringdata)+1);
-
-	temp[0] = 0;
-	int ii = 0;
-
-	for (int i = strlen(stringdata)-1; i >= 0; i--) {
-		temp[ii++] = stringdata[i];
-	}
-
-	if (strncmp(temp, toReplace, strlen(toReplace)) == 0) trailing = true;
-
-	free(temp);
-
-	char* token = strtok(stringdata, toReplace);
-
-	if ((token != NULL) && (token != stringdata)) {
-		*rep += with;
-	}
-
-	while(token != NULL)
-	{
-		*rep += token;
-		token = strtok(NULL, toReplace);
-		if (token != NULL) *rep += with;
-	}
-
-	if (trailing) *rep += with;
-
-	if (rep->charrep() != NULL) {
-		if (stringdata != NULL) _LOG << "Info: Replacement sets " << rep->charrep() << " (stringdata was '" << stringdata << "')!" LOG_
-		setData(rep->charrep());
-	} else {
-		if (stringdata != NULL) _LOG << "Error: Replacement sets a NULL pointer (stringdata = '" << stringdata << "')!" LOG_
-	}
-#endif
 	return *this;
 }
 
@@ -1429,7 +1388,8 @@ int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
     if (strcmp(getKeyType(), _key->getKeyType()) == 0) {
 		if (stringdata == NULL) {
 			_LOGERROR << "FATAL: String has an uninitialized buffer!" LOG_
-			traceObject();
+			_LOGERROR << "Called with " << _key->charrep() LOG_
+			traceObject("lbString::lessthan()", "?", 0);
 		}
 		return strcmp(stringdata, ((const lbString*) _key)->stringdata) < 0 ? 1 : 0;
 	} else {

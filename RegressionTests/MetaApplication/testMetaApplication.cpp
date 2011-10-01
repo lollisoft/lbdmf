@@ -106,6 +106,7 @@ int main(int argc, char *argv[]) {
 		PM->unload();
 	}
 
+	///\todo Crashing using mpatrol (may also crash without - untested).
 	unHookAll();
 
 	return 0;

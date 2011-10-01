@@ -520,21 +520,18 @@ _Modules *createModule(const char* name) {
 	if (loadedModules == NULL) {
 		loadedModules = new _Modules;
 		loadedModules->number = 1;
-		loadedModules->name = (char*) malloc(strlen(moduleName)+1);
-		loadedModules->name[0] = 0;
+		loadedModules->name = strdup(moduleName);
 		loadedModules->next = NULL;
-		strcpy(loadedModules->name, moduleName);
+		free((void*)copyOfName);
 		return loadedModules;
 	} else {
 		temp = new _Modules;
 		temp->number = loadedModules->number+1;
-		temp->name = (char*) malloc(strlen(moduleName)+1);
-		temp->name[0] = 0;
-		strcpy(temp->name, moduleName);
+		temp->name = (char*) strdup(moduleName);
 
 		temp->next = loadedModules;
 		loadedModules = temp;
-
+		free((void*)copyOfName);
 		return temp;
 	}
 }
@@ -574,6 +571,8 @@ _Modules *findModule(const char* name) {
 		_CL_LOG << "ERROR: Count of loaded modules disagree with count value." LOG_
 	}
 
+	free((void*)copyOfName);
+	
 	return found;
 }
 /*...e*/
@@ -1241,6 +1240,12 @@ char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
 /*...sDLLEXPORT lbErrCodes LB_CDECL lbUnloadModule\40\const char\42\ name\41\:0:*/
 DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 
+	if (name == NULL || strcmp("", name) == 0) {
+		printf("Cannot unload a module that has no name!\n");
+		loadedModules = loadedModules->next;
+		return ERR_NONE;
+	}
+	
 #ifdef WINDOWS
 	_Modules* temp = loadedModules;
 	_Modules* lastMod = NULL;
@@ -1290,6 +1295,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 		if (temp->name == NULL) {
 			lastMod = temp;
 			temp = temp->next;
+			//delete lastMod;
 			continue;
 		}
 
@@ -1332,6 +1338,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 
 void unloadModule(_Modules* m) {
 	while(loadedModules) {
+		lbUnloadModule(loadedModules->name);
+		//loadedModules = loadedModules->next;
+	}
+/*
+	while(loadedModules) {
 		if (strcmp(loadedModules->name, "lbModule") != 0) {
 			lbUnloadModule(loadedModules->name);
 		} else {
@@ -1341,8 +1352,8 @@ void unloadModule(_Modules* m) {
 				if (strcmp(loadedModules->name, "lbModule") == 0) break;
 			}
 		}
-
 	}
+*/
 }
 
 /*...svoid LB_CDECL unHookAll\40\\41\:0:*/
@@ -1350,7 +1361,7 @@ DLLEXPORT void LB_CDECL unHookAll() {
 	uninitLocale();
 
 	if (loadedModules)
-	unloadModule(loadedModules);
+		unloadModule(loadedModules);
 }
 
 DLLEXPORT void LB_CDECL unHookAll_old() {
