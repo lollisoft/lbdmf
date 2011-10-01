@@ -571,7 +571,13 @@ class DLLEXPORT
 lbStringKey : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-     lbStringKey(char* file, int line) { key = ""; strcpy(keyType, "string"); }
+     lbStringKey(char* file, int line)
+	 {
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		key = "";
+	}
 #endif
     lbStringKey();
     lbStringKey(const char* _key);
