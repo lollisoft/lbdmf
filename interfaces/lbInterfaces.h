@@ -1968,7 +1968,7 @@ _LOGALWAYS << #classname << "::traceObject(): lastSMLine = " << lastQILine.get()
 \
 } \
 char const* LB_STDCALL classname::_queryInterface(char const* name, void** unknown, char const* file, int line) { \
-	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	char* ID = (char*) malloc(strlen(name)+strlen(#classname)+strlen(file)+1); \
 	ID[0] = 0; \
 	strcat(ID, name); \
 	strcat(ID, #classname); \
@@ -1976,6 +1976,7 @@ char const* LB_STDCALL classname::_queryInterface(char const* name, void** unkno
 	lbErrCodes err = ERR_NONE; \
 	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { \
 		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_ \
+		free(ID); \
 		return ""; \
 	} \
 	\
