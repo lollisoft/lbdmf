@@ -895,7 +895,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
                 if (d != NULL) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
 
-                        d->reopen(); // Avoid invalid database object while closing.
+                        //d->reopen(); // Avoid invalid database object while closing.
                         d->destroy();
                         d.resetPtr();
                         _LOG << "Destroyed the dynamic form." LOG_
