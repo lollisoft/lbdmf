@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.63 2011/09/25 11:47:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.64 2011/10/02 10:45:13 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.64  2011/10/02 10:45:13  lollisoft
+ * Removed a possible sporadic crash cause.
+ *
  * Revision 1.63  2011/09/25 11:47:02  lollisoft
  * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
  *
@@ -1009,7 +1012,7 @@ lb_I_Unknown* lbSkipListElement::getObject() const {
     	_LOGERROR << "Error: Skiplist element data pointer is invalid! (" << buf << ", lbSkipListElement: " << data->getClassName() << ")" LOG_
     }
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
-    _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_
+    //_CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_
     return uk;
 }
 

@@ -149,18 +149,18 @@ void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
 			_LOG << "Using built in database backend for translation..." LOG_
-			
-			if (database == NULL) {
-				dbAvailable = false;
-				char* temp = *text;
-				*text = (char*) malloc(strlen(to_translate)+1);
-				*text[0] = 0;
-				strcpy(*text, to_translate);
-				if (temp) free(temp);
-				return;
-			}
 		}
 
+		if (database == NULL) {
+			dbAvailable = false;
+			char* temp = *text;
+			*text = (char*) malloc(strlen(to_translate)+1);
+			*text[0] = 0;
+			strcpy(*text, to_translate);
+			if (temp) free(temp);
+			return;
+		}
+		
 		_LOG << "Translate text with SQL statements..." LOG_
 
 		database->init();
