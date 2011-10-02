@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.146 $
+# * $Revision: 1.147 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.146 2011/10/01 05:37:03 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.147 2011/10/02 09:17:57 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.147  2011/10/02 09:17:57  lollisoft
+# * Switched all to release build.
+# *
 # * Revision 1.146  2011/10/01 05:37:03  lollisoft
 # * Fixed many memory leaks. Fixed followup crash due to lbString replace issue.
 # *
@@ -1181,7 +1184,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
@@ -1254,7 +1257,7 @@ endif
 ifeq ($(OSTYPE), solaris)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
@@ -1309,7 +1312,7 @@ endif
 ifeq ($(OSTYPE), linux-debian-ppc)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
