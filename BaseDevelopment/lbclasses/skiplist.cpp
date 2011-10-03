@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.64 2011/10/02 10:45:13 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.65 2011/10/03 04:43:07 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.65  2011/10/03 04:43:07  lollisoft
+ * Fixes to try cope with rare application crash.
+ *
  * Revision 1.64  2011/10/02 10:45:13  lollisoft
  * Removed a possible sporadic crash cause.
  *
@@ -598,6 +601,10 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 	
 	if(e != NULL) {
 		_currentKey = e->getKey();
+		if (e == NULL) {
+			_LOGERROR << "FARAL: Object went to NULL, but not expected." LOG_
+			return NULL;
+		}
 		return e->getObject();
 	} else {
         _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_

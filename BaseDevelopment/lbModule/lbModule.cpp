@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.145 $
+ * $Revision: 1.146 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.145 2011/10/01 05:37:03 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.146 2011/10/03 04:43:07 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.146  2011/10/03 04:43:07  lollisoft
+ * Fixes to try cope with rare application crash.
+ *
  * Revision 1.145  2011/10/01 05:37:03  lollisoft
  * Fixed many memory leaks. Fixed followup crash due to lbString replace issue.
  *
@@ -2120,29 +2123,30 @@ public:
 public:
 
         virtual void LB_STDCALL setFunctor(const char* functor) {
-        	if (_functor)
+        	if (_functor) {
         		free(_functor);
-		if (functor == NULL) return;
-        	_functor = (char*) malloc(strlen(functor)+1);
-        	_functor[0] = 0;
-        	strcpy(_functor, functor);
+				_functor = NULL;
+			}
+			if (functor == NULL) return;
+        	_functor = strdup(functor);
         }
         
         virtual void LB_STDCALL setModule(const char* module) {
-        	if (_module != NULL)
-        		free(_module);
-		if (module == NULL) return;
-        	_module = (char*) malloc(strlen(module)+1);
-        	_module[0] = 0;
-        	strcpy(_module, module);
+        	if (_module != NULL) {
+				free(_module);
+				_module = NULL;
+			}
+			if (module == NULL) return;
+        	_module = strdup(module);
         }
         
         virtual void LB_STDCALL setInterface(const char* iface) {
-        	if (_interface != NULL)
- 			free(_interface);
-        	_interface = (char*) malloc(strlen(iface)+1);
-        	_interface[0] = 0;
-        	strcpy(_interface, iface);
+			if (_interface != NULL) {
+				free(_interface);
+				_interface = NULL;
+			}
+			if (iface == NULL) return;
+        	_interface = strdup(iface);
         }
 
 	

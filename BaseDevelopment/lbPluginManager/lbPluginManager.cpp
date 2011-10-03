@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.85 $
+* $Revision: 1.86 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.85 2011/10/01 07:20:58 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.86 2011/10/03 04:43:07 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.86  2011/10/03 04:43:07  lollisoft
+* Fixes to try cope with rare application crash.
+*
 * Revision 1.85  2011/10/01 07:20:58  lollisoft
 * Splitted up code  to define blocks per platform to resolve editor issues in correct code folding.
 *
@@ -1526,7 +1529,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				uk = PluginModules->nextElement();
 
 				if (uk == NULL) {
-					_LOG << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+					_LOGERROR << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
 					return NULL;
 				}
 
@@ -1554,6 +1557,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					UAP(lb_I_Unknown, uk)
 					uk = PluginContainer->nextElement();
 
+					if (uk == NULL) {
+						_LOGERROR << "FATAL: Plugin container reported having at least one more element, but it may be corrupted." LOG_
+						return NULL;
+					}
+					
 					UAP(lb_I_Plugin, plugin)
 					QI(uk, lb_I_Plugin, plugin)
 					plugin++;
@@ -1570,6 +1578,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					UAP(lb_I_Unknown, uk)
 					uk = PluginContainer->nextElement();
 
+					if (uk == NULL) {
+						_LOGERROR << "FATAL: Plugin container reported having at least one more element, but it may be corrupted." LOG_
+						return NULL;
+					}
+					
 					UAP(lb_I_Plugin, plugin)
 					QI(uk, lb_I_Plugin, plugin)
 					plugin++;
@@ -1597,7 +1610,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* matc
 		while (true) {
 			UAP(lb_I_Plugin, pl)
 			pl = nextPlugin();
-			if (pl == NULL) break;
+			
+			if (pl == NULL) {
+				_LOGERROR "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_
+				return NULL;
+			}
 
 			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {

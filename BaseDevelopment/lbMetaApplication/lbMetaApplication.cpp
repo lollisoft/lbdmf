@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.185 $
+ * $Revision: 1.186 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.185 2011/09/27 06:29:42 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.186 2011/10/03 04:43:07 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.186  2011/10/03 04:43:07  lollisoft
+ * Fixes to try cope with rare application crash.
+ *
  * Revision 1.185  2011/09/27 06:29:42  lollisoft
  * Fixed some issues reported by CppCheck.
  *
@@ -1230,7 +1233,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
 		}
 	} else {
-		_LOG << "Error: Could not load stream operator classes!" LOG_
+		_LOGERROR << "Error: Could not load stream operator classes!" LOG_
 	}
 	return ERR_FILE_READ;
 }
