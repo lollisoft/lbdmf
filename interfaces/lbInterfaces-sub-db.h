@@ -651,33 +651,6 @@ protected:
 	 * The clone get's the pointer to the memory area.
 	 */
 	virtual lbErrCodes LB_STDCALL leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner) = 0;
-
-/*...s:0:*/
-#ifdef bla	
-	virtual lbErrCodes LB_STDCALL bindColumn(
-	SQLSMALLINT	stmt,
-	SQLCHAR		column,
-	SQLSMALLINT	name,
-	SQLSMALLINT	length,
-	SQLSMALLINT
-	SQLUINTEGER
-	SQLSMALLINT
-	SQLSMALLINT
-
-hstmt, 
-i, 
-ColumnName,
-BufferLength, 
-&NameLength, 
-&DataType,
-&ColumnSize, 
-&DecimalDigits, 
-&Nullable
-
-#endif
-/*...e*/
-
-
 };
 /*...e*/
 /*...sclass lb_I_ColumnBinding:0:*/
