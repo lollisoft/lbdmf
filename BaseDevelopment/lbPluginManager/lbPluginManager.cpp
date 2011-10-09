@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.86 $
+* $Revision: 1.87 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.86 2011/10/03 04:43:07 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.87 2011/10/09 07:26:34 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.87  2011/10/09 07:26:34  lollisoft
+* Fixed possible memory leak.
+*
 * Revision 1.86  2011/10/03 04:43:07  lollisoft
 * Fixes to try cope with rare application crash.
 *
@@ -1187,7 +1190,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 					_LOG << "Plugin directory not found." LOG_
 
 					free(pluginDir);
-
+					pluginDir = NULL;
 					return;
 				}
 			}
@@ -1343,7 +1346,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 					_LOG << "Plugin directory not found." LOG_
 
 					free(pluginDir);
-
+					pluginDir = NULL;
 					return;
 				}
 			}
