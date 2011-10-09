@@ -292,6 +292,8 @@ lbErrCodes LB_STDCALL lbPluginFormularActionsModel::setData(lb_I_Unknown* uk) {
 lbPluginFormularActionsModel::lbPluginFormularActionsModel() {
 	_CL_VERBOSE << "lbPluginFormularActionsModel::lbPluginFormularActionsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginFormularActionsModel::~lbPluginFormularActionsModel() {

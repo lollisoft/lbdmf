@@ -316,6 +316,8 @@ lbErrCodes LB_STDCALL lbPluginDBTableModel::setData(lb_I_Unknown* uk) {
 lbPluginDBTableModel::lbPluginDBTableModel() {
 	_CL_VERBOSE << "lbPluginDBTableModel::lbPluginDBTableModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDBTableModel::~lbPluginDBTableModel() {
@@ -840,6 +842,8 @@ lbErrCodes LB_STDCALL lbPluginDBColumnsModel::setData(lb_I_Unknown* uk) {
 lbPluginDBColumnsModel::lbPluginDBColumnsModel() {
 	_CL_VERBOSE << "lbPluginDBColumnsModel::lbPluginDBColumnsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDBColumnsModel::~lbPluginDBColumnsModel() {
@@ -1275,6 +1279,8 @@ lbErrCodes LB_STDCALL lbPluginDBForeignKeysModel::setData(lb_I_Unknown* uk) {
 lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() {
 	_CL_VERBOSE << "lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDBForeignKeysModel::~lbPluginDBForeignKeysModel() {
@@ -1653,6 +1659,8 @@ lbErrCodes LB_STDCALL lbPluginDBPrimaryKeysModel::setData(lb_I_Unknown* uk) {
 lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() {
 	_CL_VERBOSE << "lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDBPrimaryKeysModel::~lbPluginDBPrimaryKeysModel() {

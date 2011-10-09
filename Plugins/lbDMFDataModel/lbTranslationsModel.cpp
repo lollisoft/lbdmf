@@ -335,6 +335,8 @@ lbErrCodes LB_STDCALL lbPluginTranslationsModel::setData(lb_I_Unknown* uk) {
 lbPluginTranslationsModel::lbPluginTranslationsModel() {
 	_LOG << "lbPluginTranslationsModel::lbPluginTranslationsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginTranslationsModel::~lbPluginTranslationsModel() {

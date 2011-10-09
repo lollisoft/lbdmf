@@ -324,6 +324,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepsModel::setData(lb_I_Unknown* uk) {
 lbPluginActionStepsModel::lbPluginActionStepsModel() {
 	_CL_VERBOSE << "lbPluginActionStepsModel::lbPluginActionStepsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionStepsModel::~lbPluginActionStepsModel() {
@@ -648,6 +650,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepTransitionsModel::setData(lb_I_Unknown* 
 lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() {
 	_LOG << "lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() called." LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionStepTransitionsModel::~lbPluginActionStepTransitionsModel() {

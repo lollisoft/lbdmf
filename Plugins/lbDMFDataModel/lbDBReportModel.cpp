@@ -247,6 +247,8 @@ lbErrCodes LB_STDCALL lbPluginReportsModel::setData(lb_I_Unknown* uk) {
 lbPluginReportsModel::lbPluginReportsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginReportsModel::~lbPluginReportsModel() {
@@ -486,6 +488,8 @@ lbErrCodes LB_STDCALL lbPluginReportParametersModel::setData(lb_I_Unknown* uk) {
 lbPluginReportParametersModel::lbPluginReportParametersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginReportParametersModel::~lbPluginReportParametersModel() {
@@ -791,6 +795,8 @@ lbErrCodes LB_STDCALL lbPluginReportElementsModel::setData(lb_I_Unknown* uk) {
 lbPluginReportElementsModel::lbPluginReportElementsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginReportElementsModel::~lbPluginReportElementsModel() {
@@ -1019,6 +1025,8 @@ lbErrCodes LB_STDCALL lbPluginReportElementTypesModel::setData(lb_I_Unknown* uk)
 lbPluginReportElementTypesModel::lbPluginReportElementTypesModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginReportElementTypesModel::~lbPluginReportElementTypesModel() {
@@ -1261,6 +1269,8 @@ lbErrCodes LB_STDCALL lbPluginReportTextsModel::setData(lb_I_Unknown* uk) {
 lbPluginReportTextsModel::lbPluginReportTextsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginReportTextsModel::~lbPluginReportTextsModel() {

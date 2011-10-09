@@ -307,6 +307,8 @@ lbErrCodes LB_STDCALL lbPluginActionsModel::setData(lb_I_Unknown* uk) {
 lbPluginActionsModel::lbPluginActionsModel() {
 	_CL_VERBOSE << "lbPluginActionsModel::lbPluginActionsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionsModel::~lbPluginActionsModel() {

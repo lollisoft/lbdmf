@@ -296,6 +296,8 @@ lbErrCodes LB_STDCALL lbPluginUsersModel::setData(lb_I_Unknown* uk) {
 lbPluginUsersModel::lbPluginUsersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginUsersModel::~lbPluginUsersModel() {

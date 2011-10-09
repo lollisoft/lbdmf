@@ -527,6 +527,8 @@ lbErrCodes LB_STDCALL lbPluginActionParameters::setData(lb_I_Unknown* uk) {
 lbPluginActionParameters::lbPluginActionParameters() {
 	_CL_VERBOSE << "lbPluginActionParameters::lbPluginActionParameters() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionParameters::~lbPluginActionParameters() {
@@ -639,6 +641,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepParameters::setData(lb_I_Unknown* uk) {
 lbPluginActionStepParameters::lbPluginActionStepParameters() {
 	_CL_VERBOSE << "lbPluginActionStepParameters::lbPluginActionStepParameters() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionStepParameters::~lbPluginActionStepParameters() {

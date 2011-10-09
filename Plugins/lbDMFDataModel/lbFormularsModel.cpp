@@ -346,6 +346,8 @@ lbErrCodes LB_STDCALL lbPluginFormularsModel::setData(lb_I_Unknown* uk) {
 lbPluginFormularsModel::lbPluginFormularsModel() {
 	_CL_VERBOSE << "lbPluginFormularsModel::lbPluginFormularsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginFormularsModel::~lbPluginFormularsModel() {
@@ -737,6 +739,8 @@ lbErrCodes LB_STDCALL lbPluginFormularFieldsModel::setData(lb_I_Unknown* uk) {
 lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() {
 	_CL_VERBOSE << "lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginFormularFieldsModel::~lbPluginFormularFieldsModel() {

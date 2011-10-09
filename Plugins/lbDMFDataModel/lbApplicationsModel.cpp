@@ -360,6 +360,8 @@ lbErrCodes LB_STDCALL lbPluginApplications::setData(lb_I_Unknown* uk) {
 lbPluginApplications::lbPluginApplications() {
 	_CL_VERBOSE << "lbPluginApplications::lbPluginApplications() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginApplications::~lbPluginApplications() {

@@ -293,6 +293,8 @@ lbErrCodes LB_STDCALL lbPluginActionTypesModel::setData(lb_I_Unknown* uk) {
 lbPluginActionTypesModel::lbPluginActionTypesModel() {
 	_CL_VERBOSE << "lbPluginActionTypesModel::lbPluginActionTypesModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginActionTypesModel::~lbPluginActionTypesModel() {

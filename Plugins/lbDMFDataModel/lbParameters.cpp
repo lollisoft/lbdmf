@@ -733,6 +733,8 @@ lbErrCodes LB_STDCALL lbPluginColumnTypes::setData(lb_I_Unknown* uk) {
 lbPluginColumnTypes::lbPluginColumnTypes() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginColumnTypes::~lbPluginColumnTypes() {
@@ -846,6 +848,8 @@ lbErrCodes LB_STDCALL lbPluginFormularParameters::setData(lb_I_Unknown* uk) {
 lbPluginFormularParameters::lbPluginFormularParameters() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginFormularParameters::~lbPluginFormularParameters() {
@@ -958,6 +962,8 @@ lbErrCodes LB_STDCALL lbPluginApplicationParameters::setData(lb_I_Unknown* uk) {
 lbPluginApplicationParameters::lbPluginApplicationParameters() {
 	_CL_VERBOSE << "lbPluginApplicationParameters::lbPluginApplicationParameters() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginApplicationParameters::~lbPluginApplicationParameters() {

@@ -302,6 +302,8 @@ lbErrCodes LB_STDCALL lbPluginUserApplicationRelationModel::setData(lb_I_Unknown
 lbPluginUserApplicationRelationModel::lbPluginUserApplicationRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginUserApplicationRelationModel::~lbPluginUserApplicationRelationModel() {
@@ -628,6 +630,8 @@ lbErrCodes LB_STDCALL lbPluginApplicationFormularsRelationModel::setData(lb_I_Un
 lbPluginApplicationFormularsRelationModel::lbPluginApplicationFormularsRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginApplicationFormularsRelationModel::~lbPluginApplicationFormularsRelationModel() {
