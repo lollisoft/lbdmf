@@ -176,6 +176,8 @@ lbDatabaseDialog::lbDatabaseDialog()
 	ref = STARTREF;
 	panel = new lbDatabasePanel();
 	_created = true;
+	data = NULL;
+	further_lock = 1;
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
@@ -514,6 +516,8 @@ lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
 	_CL_VERBOSE << "lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n" LOG_
 	dbForm = NULL;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {

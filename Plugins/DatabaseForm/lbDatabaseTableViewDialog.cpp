@@ -177,6 +177,8 @@ lbDatabaseTableViewDialog::lbDatabaseTableViewDialog()
 	ref = STARTREF;
 	panel = new lbDatabaseTableViewPanel();
 	_created = true;
+	data = NULL;
+	further_lock = 1;
 }
 /*...e*/
 /*...slbDatabaseTableViewDialog\58\\58\\126\lbDatabaseTableViewDialog\40\\41\:0:*/
@@ -517,6 +519,8 @@ lbPluginDatabaseTableViewDialog::lbPluginDatabaseTableViewDialog() {
 	_CL_VERBOSE << "lbPluginDatabaseTableViewDialog::lbPluginDatabaseTableViewDialog() called.\n" LOG_
 	dbForm = NULL;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDatabaseTableViewDialog::~lbPluginDatabaseTableViewDialog() {

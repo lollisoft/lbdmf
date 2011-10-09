@@ -95,12 +95,19 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog()
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-        ref = STARTREF;
-        pass = 0;
-        _FoimularID = -1; 
-        _DBUser = NULL;
-        _DBPass = NULL;
-        _DBName = NULL;
+	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
+	pass = 0;
+	_FoimularID = -1; 
+	_DBUser = NULL;
+	_DBPass = NULL;
+	_DBName = NULL;
+	firstButton = NULL;
+	cBoxFKNames = NULL;
+	cBoxPKNames = NULL;
+	label = NULL;
+	labelF = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(lb_I_Formulars* _forms, lb_I_Formular_Fields* _fields) 
@@ -108,6 +115,8 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(lb_I_Formulars*
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 	pass = 0;
 	_FoimularID = _forms->getFormularID(); 
 	_DBUser = NULL;
@@ -117,6 +126,11 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	forms++;
 	formularfields = _fields;
 	formularfields++;
+	firstButton = NULL;
+	cBoxFKNames = NULL;
+	cBoxPKNames = NULL;
+	label = NULL;
+	labelF = NULL;
 }
 
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
@@ -422,6 +436,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
                 
                 firstButton->Enable();          
         }
+		free(fkTable);
 }
 /*...e*/
 

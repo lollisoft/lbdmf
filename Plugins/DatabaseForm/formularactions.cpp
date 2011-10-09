@@ -337,12 +337,13 @@ char* FormularActions::getActionSourceDataField(const char* reversed_event) {
 	char buf[] = "select source from actions where id = %s";
 	
 	char* buffer = (char*) malloc(strlen(buf)+20);
-	
-	sprintf(buffer, buf, getActionTargetID(reversed_event));
+	char* targetID = getActionTargetID(reversed_event);
+	sprintf(buffer, buf, targetID);
 
 	query->query(buffer);
 
 	free(buffer);
+	free(targetID);
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	

@@ -5547,6 +5547,8 @@ lbPluginDatabasePanel::lbPluginDatabasePanel() {
 	_CL_VERBOSE << "lbPluginDatabasePanel::lbPluginDatabasePanel() called.\n" LOG_
 	dbForm = NULL;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDatabasePanel::~lbPluginDatabasePanel() {

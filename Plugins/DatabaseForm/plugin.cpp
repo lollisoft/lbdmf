@@ -132,6 +132,8 @@ END_PLUGINS()
 lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
 	_CL_VERBOSE << "lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() called." LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {

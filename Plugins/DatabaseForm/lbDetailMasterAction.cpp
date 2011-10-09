@@ -112,6 +112,8 @@ lbMasterFormAction::lbMasterFormAction() {
 	ref = STARTREF;
 	myActionID = -1;
 	masterForm = NULL;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbMasterFormAction::~lbMasterFormAction() {

@@ -112,6 +112,8 @@ lbDetailFormAction::lbDetailFormAction() {
 	ref = STARTREF;
 	myActionID = -1;
 	detailForm = NULL;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbDetailFormAction::~lbDetailFormAction() {

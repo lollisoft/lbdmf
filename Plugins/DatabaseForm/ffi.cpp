@@ -112,6 +112,8 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	UAP(lb_I_Unknown, ukParams)
 	UAP(lb_I_Parameter, params)
 
+	_query = NULL;
+	
 	ukParams = meta->getActiveDocument();
 	QI(ukParams, lb_I_Parameter, params)
 

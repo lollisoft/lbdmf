@@ -111,6 +111,8 @@ lbErrCodes LB_STDCALL lbOpAqueOperation::setData(lb_I_Unknown* uk) {
 lbOpAqueOperation::lbOpAqueOperation() {
 	ref = STARTREF;
 	myActionID = -1;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbOpAqueOperation::~lbOpAqueOperation() {

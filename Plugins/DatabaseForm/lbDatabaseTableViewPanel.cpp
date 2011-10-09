@@ -140,6 +140,18 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 	FFI = NULL;
     numRows = 30;
     page = 0;
+	
+	buttonSizer = NULL;
+	TableView = NULL;
+	_params = NULL;
+	_master = NULL;
+	_detail = NULL;
+	isAdding = false;
+	allNaviDisabled = false;
+	deleteButton = lastButton = prevButton = firstButton = refreshButton = NULL;
+	buf[0] = 0;
+	
+	
 	REQUEST(getModuleInstance(), lb_I_Parameter, currentRow)
 	if (SQLWhere == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, SQLWhere)
@@ -4465,6 +4477,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 		sampleQuery->first();
 		lbDBRead();
 		DISABLE_FOR_ONE_DATA()
+		
+		if (foreignkey_value) free(foreignkey_value);
+		if (foreignkey) free(foreignkey);
 		return ERR_NONE;
 	}
 
@@ -4673,9 +4688,9 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
         return ERR_NONE;
 
 
-        int row = TableView->Get
+        //int row = TableView->Get
 
-        GetCellValue(row, col
+        //GetCellValue(row, col
 
 #endif
 					 
@@ -5058,6 +5073,8 @@ lbPluginDatabaseTableViewPanel::lbPluginDatabaseTableViewPanel() {
 	_CL_VERBOSE << "lbPluginDatabaseTableViewPanel::lbPluginDatabaseTableViewPanel() called.\n" LOG_
 	dbForm = NULL;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDatabaseTableViewPanel::~lbPluginDatabaseTableViewPanel() {

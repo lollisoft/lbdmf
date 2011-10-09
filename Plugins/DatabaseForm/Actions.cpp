@@ -124,6 +124,8 @@ lbAction::lbAction() {
 	ref = STARTREF;
 	myActionID = -1;
 	initialized = false;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbAction::~lbAction() {

@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.70 2011/09/11 10:42:42 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71 2011/10/09 15:22:54 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71  2011/10/09 15:22:54  lollisoft
+ * Fixed possible issues due to not initialized variables.
+ *
  * Revision 1.70  2011/09/11 10:42:42  lollisoft
  * Started some refactoring.
  *
@@ -391,8 +394,8 @@ public:
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
+	//long l;
+	//char buf[100];
 
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
@@ -405,9 +408,9 @@ public:
 	wxStaticText *label;
 	wxStaticText *labelF;
 
-	wxWindow* prevButton;
-	wxWindow* nextButton;
-	wxWindow* lastButton;
+	//wxWindow* prevButton;
+	//wxWindow* nextButton;
+	//wxWindow* lastButton;
 	int pass;
 	char* _DBUser;
 	char* _DBName;
@@ -658,7 +661,6 @@ protected:
 	UAP(lb_I_Container, eventmapping)
 	UAP(lb_I_Container, actions)
 	UAP(lb_I_Actions, appActions)
-	char buffer[100];
 };
 /*...e*/
 

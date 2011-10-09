@@ -111,6 +111,8 @@ lbErrCodes LB_STDCALL lbSQLQueryAction::setData(lb_I_Unknown* uk) {
 lbSQLQueryAction::lbSQLQueryAction() {
 	ref = STARTREF;
 	myActionID = -1;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbSQLQueryAction::~lbSQLQueryAction() {
@@ -312,6 +314,7 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	db->init();
 	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+		free(q);
 		return 0;
 	}
 
