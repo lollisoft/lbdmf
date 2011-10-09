@@ -77,12 +77,12 @@ extern "C" {
 
 /*...e*/
 
-/*...sclass lbPluginModuleTest:0:*/
-class lbPluginModule : public lb_I_PluginModule {
+/*...sclass lbPluginModuleDMFBasicActionStepsTest:0:*/
+class lbPluginModuleDMFBasicActionSteps : public lb_I_PluginModule {
 public:
 
-	lbPluginModule();
-	virtual ~lbPluginModule();
+	lbPluginModuleDMFBasicActionSteps();
+	virtual ~lbPluginModuleDMFBasicActionSteps();
 
 	DECLARE_LB_UNKNOWN()
 
@@ -93,27 +93,27 @@ public:
 };
 /*...e*/
 
-/*...sclass lbPluginModuleTest implementation:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModule)
+/*...sclass lbPluginModuleDMFBasicActionStepsTest implementation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleDMFBasicActionSteps)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModule)
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDMFBasicActionSteps)
 
-BEGIN_PLUGINS(lbPluginModule)
+BEGIN_PLUGINS(lbPluginModuleDMFBasicActionSteps)
 	ADD_PLUGIN(lbPluginDMFIdForFormValue, BasicActionSteps)
 	ADD_PLUGIN(lbPluginCallActivityHandler, BasicActionSteps)
 END_PLUGINS()
 
-lbPluginModule::lbPluginModule() {
+lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() {
 	ref = STARTREF;
 	data = NULL;
 	further_lock = 1;
-	_LOG << "lbPluginModule::lbPluginModule() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
+	_LOG << "lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 
-lbPluginModule::~lbPluginModule() {
-	_LOG << "lbPluginModule::~lbPluginModule() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
+lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() {
+	_LOG << "lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 
 // The failure code is not late binding the columns, thus a primary key
@@ -123,14 +123,14 @@ lbPluginModule::~lbPluginModule() {
 // The query does not cause the stack corrupption either failure or not
 //#define FAILURE_QUERY
 
-void LB_STDCALL lbPluginModule::initialize() {
+void LB_STDCALL lbPluginModuleDMFBasicActionSteps::initialize() {
 	lbErrCodes err = ERR_NONE;
 	
-	_LOG << "lbPluginModule::initialize() lbPluginDMFIdForFormValue called." LOG_
+	_LOG << "lbPluginModuleDMFBasicActionSteps::initialize() lbPluginDMFIdForFormValue called." LOG_
 	enumPlugins();
 }
 
-void LB_STDCALL lbPluginModule::install() {
+void LB_STDCALL lbPluginModuleDMFBasicActionSteps::install() {
 	lbErrCodes err = ERR_NONE;
 
 	UAP(lb_I_Database, database)
@@ -140,7 +140,7 @@ void LB_STDCALL lbPluginModule::install() {
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-		_LOG << "Using plugin database backend for lbPluginModule::initialize() operation..." LOG_
+		_LOG << "Using plugin database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
 	} else {
 		// Use built in
 		REQUEST(getModuleInstance(), lb_I_Database, database)
@@ -150,7 +150,7 @@ void LB_STDCALL lbPluginModule::install() {
 			return;
 		}
 		
-		_LOG << "Using built in database backend for lbPluginModule::initialize() operation..." LOG_
+		_LOG << "Using built in database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
 	}
 
 	const char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -341,8 +341,8 @@ void LB_STDCALL lbPluginModule::install() {
 	}
 }
 
-lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
+lbErrCodes LB_STDCALL lbPluginModuleDMFBasicActionSteps::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbPluginModuleDMFBasicActionStepsTest::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
