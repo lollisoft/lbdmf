@@ -91,6 +91,8 @@ lbErrCodes LB_STDCALL lbDecisionAction::setData(lb_I_Unknown* uk) {
 lbDecisionAction::lbDecisionAction() {
 	ref = STARTREF;
 	myActionID = -1;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbDecisionAction::~lbDecisionAction() {

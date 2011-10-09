@@ -67,6 +67,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbDMFIdForFormValue::lbDMFIdForFormValue() {
 	ref = STARTREF;
 	myActionID = -1;
+	data = NULL;
+	further_lock = 1;
 
 	_CL_LOG << "lbDMFIdForFormValue::lbDMFIdForFormValue() called." LOG_
 }
@@ -370,6 +372,8 @@ lbErrCodes LB_STDCALL lbPluginDMFIdForFormValue::setData(lb_I_Unknown* uk) {
 lbPluginDMFIdForFormValue::lbPluginDMFIdForFormValue() {
 	_CL_VERBOSE << "lbPluginDMFIdForFormValue::lbPluginDMFIdForFormValue() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginDMFIdForFormValue::~lbPluginDMFIdForFormValue() {

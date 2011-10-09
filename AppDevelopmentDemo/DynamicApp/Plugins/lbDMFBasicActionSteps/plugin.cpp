@@ -107,6 +107,8 @@ END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 	_LOG << "lbPluginModule::lbPluginModule() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 
