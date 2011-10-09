@@ -94,6 +94,8 @@ END_PLUGINS()
 
 lbPluginModuleCryptoStream::lbPluginModuleCryptoStream() {
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginModuleCryptoStream::~lbPluginModuleCryptoStream() {
@@ -227,6 +229,8 @@ lbErrCodes LB_STDCALL lbPluginCryptoStream::setData(lb_I_Unknown* uk) {
 lbPluginCryptoStream::lbPluginCryptoStream() {
 	_CL_VERBOSE << "lbPluginCryptoStream::lbPluginCryptoStream() called.\n" LOG_
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginCryptoStream::~lbPluginCryptoStream() {
