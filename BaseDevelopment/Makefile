@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.228 $
+# * $Revision: 1.229 $
 # * $Name:  $
-# * $Id: Makefile,v 1.228 2011/09/24 11:37:31 lollisoft Exp $
+# * $Id: Makefile,v 1.229 2011/10/15 06:36:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229  2011/10/15 06:36:11  lollisoft
+# * All current changes including interfaces (starting mass changes).
+# *
 # * Revision 1.228  2011/09/24 11:37:31  lollisoft
 # * Deactivated databaselayer for ODBC variant.
 # *
@@ -826,6 +829,10 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.7.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 10.8.0)
 OSNAME=Leopard
 endif
 

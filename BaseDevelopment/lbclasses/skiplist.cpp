@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.65 2011/10/03 04:43:07 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.66 2011/10/15 06:36:12 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.66  2011/10/15 06:36:12  lollisoft
+ * All current changes including interfaces (starting mass changes).
+ *
  * Revision 1.65  2011/10/03 04:43:07  lollisoft
  * Fixes to try cope with rare application crash.
  *
@@ -516,6 +519,8 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
 
+		_TRMemValidate(e);
+	
         lbSkipListElement* el = new lbSkipListElement(*e, *key, cloning);
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
@@ -605,7 +610,9 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 			_LOGERROR << "FARAL: Object went to NULL, but not expected." LOG_
 			return NULL;
 		}
-		return e->getObject();
+		lb_I_Unknown* u = e->getObject();
+		_TRMemValidate(u);
+		return u;
 	} else {
         _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
         return NULL; 

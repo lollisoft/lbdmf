@@ -1122,10 +1122,10 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 				l = _l.l;
 			}
 
-			~miniLong() {
-			}
+		virtual ~miniLong() {
+		}
 
-			operator long() { return l; }
+		operator long() { return l; }
 
 		miniLong& LB_STDCALL operator = (const long _l) {
 			l = _l;
@@ -1136,7 +1136,27 @@ typedef lbErrCodes ( lb_I_DispatchInterceptor::*lbInterceptor)(lb_I_Unknown* uk)
 			l = (long)_l;
 			return *this;
 		}
-
+		
+		miniLong& LB_STDCALL operator ++ () {
+			l++;
+			return *this;
+		}
+		
+		miniLong& LB_STDCALL operator -- () {
+			l--;
+			return *this;
+		}
+		
+		miniLong& LB_STDCALL operator ++ (int) {
+			l++;
+			return *this;
+		}
+		
+		miniLong& LB_STDCALL operator -- (int) {
+			l--;
+			return *this;
+		}
+		
 		bool LB_STDCALL operator == (const miniLong& _l) const {
 			return l == _l.get();
 		}
@@ -1201,7 +1221,6 @@ class miniString {
 /* setData must check the type of this ! */
 /* = may also be possible */
 /*...sclass lb_I_Unknown:0:*/
-#define STARTREF 0
 
 
 /*...sclass lb_I_Unknown:0:*/
@@ -1693,16 +1712,15 @@ public: \
 	void 		LB_STDCALL resetRefcount(); \
 	void		LB_STDCALL traceObject(const char* why, const char* file, int line) const; \
 protected: \
-	UAP(lb_I_Module, manager) \
-	mutable int ref; \
-	lb_I_Unknown* data; \
-	mutable miniLong debug_macro; \
-	mutable int further_lock; \
-	mutable miniLong instance_counted; \
-	mutable miniString lastQIFile; \
-	mutable miniLong   lastQILine; \
-	mutable miniString lastSMFile; \
-	mutable miniLong   lastSMLine; \
+	UAP(lb_I_Module,	manager) \
+	mutable miniLong	ref; \
+	mutable miniLong	debug_macro; \
+	mutable int			further_lock; \
+	mutable miniLong	instance_counted; \
+	mutable miniString	lastQIFile; \
+	mutable miniLong	lastQILine; \
+	mutable miniString	lastSMFile; \
+	mutable miniLong	lastSMLine; \
 public:
 
 /*...e*/
@@ -1781,9 +1799,9 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, const char* file, in
 	} \
 } \
 \
-void LB_STDCALL classname::resetRefcount() { ref = STARTREF; } \
+void LB_STDCALL classname::resetRefcount() { ref = 0; } \
 int LB_STDCALL classname::deleteState() { \
-	return (ref-1 == STARTREF) ? 1 : 0; \
+	return (ref-1 == 0) ? 1 : 0; \
 } \
 char*      LB_STDCALL classname::getCreationLoc() const { \
 	char buf[20] = ""; \
@@ -1801,14 +1819,14 @@ lbErrCodes LB_STDCALL classname::release(const char* file, int line) { \
 	ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
-	if (((lb_I_Unknown*) manager.getPtr() == (lb_I_Unknown*) this) && (getRefCount() == STARTREF+1)) { \
+	if (((lb_I_Unknown*) manager.getPtr() == (lb_I_Unknown*) this) && (getRefCount() == 0+1)) { \
 		manager--; \
 	} \
         if (manager != NULL) { \
         	manager->notify_release(this, (char*) #classname, file, line); \
         } \
 	\
-        if (ref == STARTREF) { \
+        if (ref == 0) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
         			manager->notify_destroy(this, (char*) #classname, file, line); \
@@ -1830,11 +1848,11 @@ lbErrCodes LB_STDCALL classname::release(const char* file, int line) { \
         	} \
         	return ERR_NONE; \
         } \
-        if (ref < STARTREF) { \
+        if (ref < 0) { \
         	_CL_LOG << "Error: Reference count of instance " << ptr << " in last query interface " << \
         	lastQIFile.get() << " at " << lastQILine << " and in last setModuleManager in " << \
         	lastSMFile.get() << " at " << lastSMLine << \
-        	" of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	" of object type " << #classname << " is less than " << 0 << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \
@@ -1922,7 +1940,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(const char* name, void** unknown
 	} \
 \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
-        	if (ref < STARTREF) { \
+        	if (ref < 0) { \
         		_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
         	} \
                 ref++; \
@@ -2018,9 +2036,9 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char const* file, in
 	} \
 } \
 \
-void LB_STDCALL classname::resetRefcount() { ref = STARTREF; } \
+void LB_STDCALL classname::resetRefcount() { ref = 0; } \
 int LB_STDCALL classname::deleteState() { \
-	return (ref-1 == STARTREF) ? 1 : 0; \
+	return (ref-1 == 0) ? 1 : 0; \
 } \
 char*      LB_STDCALL classname::getCreationLoc() const { \
 	char buf[20] = ""; \
@@ -2037,11 +2055,11 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         	manager->notify_release(this, (char*) #classname, file, line); \
         } \
 	\
-        if (ref == STARTREF) { \
+        if (ref == 0) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, (char*) #classname) == 1)	{ \
         			manager->notify_destroy(this, (char*) #classname, file, line); \
-        			if (isLogActivated()) printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", STARTREF); \
+        			if (isLogActivated()) printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", 0); \
         			ref++; \
         			return ERR_RELEASED; \
         		} \
@@ -2050,8 +2068,8 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         	} \
         	return ERR_NONE; \
         } \
-        if (ref < STARTREF) { \
-        	if (isLogActivated()) printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, STARTREF, ref); \
+        if (ref < 0) { \
+        	if (isLogActivated()) printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, 0, ref); \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \
@@ -2112,7 +2130,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
 	} \
 \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
-        	if (ref < STARTREF) { \
+        	if (ref < 0) { \
         		_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
         	} \
                 ref++; \
@@ -2392,7 +2410,7 @@ lbErrCodes LB_STDCALL TestMethod##TF::setData(lb_I_Unknown* uk) { \
 } \
 TestMethod##TF::TestMethod##TF() { \
 	instance = NULL; \
-	ref = STARTREF; \
+	ref = 0; \
 } \
 TestMethod##TF::~TestMethod##TF() { \
 \

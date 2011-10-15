@@ -443,7 +443,11 @@ public:
 		for( it=_testCases.begin(); it!=_testCases.end(); it++)
 		{
 			setUp();
-			(*it)->runTest();
+			if (*it != NULL)
+				(*it)->runTest();
+			else
+				std::cout << "No test case in "<< _name << "\n";
+
 			tearDown();
 		}
 	}

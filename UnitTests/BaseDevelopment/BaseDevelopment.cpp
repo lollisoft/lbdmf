@@ -255,20 +255,30 @@ public:
 	{
 		TEST_CASE(test_Hook_lbstrirstr_with_backslash)
 		TEST_CASE(test_Hook_lbstrirstr_with_uppercase_pattern)
+		TEST_CASE(test_Hook__TRMemValidate_Returns_False)
 	}
 
+	void test_Hook__TRMemValidate_Returns_False( void )
+	{
+		puts("test_Hook__TRMemValidate_Returns_False");
+		
+		void* invalid = (void*) 0x7;
+		
+        ASSERT_EQUALS(true, _TRMemValidate(invalid))
+	}
+	
 	void test_Hook_lbstrirstr_with_backslash( void )
 	{
 		puts("test_Hook_lbstrirstr_with_backslash");
-
+		
         char* test = "Path\\To\\DLL\\Test.dll";
         char* result = lbstrristr(test, "\\");
-
+		
         ASSERT_EQUALS(false, result == NULL)
         printf("Test for lbstrristr:%s == %s\n", result, "\\Test.dll");
 		ASSERT_EQUALS("\\Test.dll", result)
 	}
-
+	
 	void test_Hook_lbstrirstr_with_uppercase_pattern( void )
 	{
 		puts("test_Hook_lbstrirstr_with_uppercase_pattern");

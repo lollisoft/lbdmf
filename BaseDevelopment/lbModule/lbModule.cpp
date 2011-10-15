@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.146 $
+ * $Revision: 1.147 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.146 2011/10/03 04:43:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.147 2011/10/15 06:36:12 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.147  2011/10/15 06:36:12  lollisoft
+ * All current changes including interfaces (starting mass changes).
+ *
  * Revision 1.146  2011/10/03 04:43:07  lollisoft
  * Fixes to try cope with rare application crash.
  *
@@ -2106,6 +2109,8 @@ public:
         
         
         	ref = STARTREF;
+			data = NULL;
+			further_lock = 1;
         	_functor = NULL;
         	_module = NULL;
         	_interface = NULL;

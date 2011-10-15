@@ -208,6 +208,10 @@
 
 #define _trans(text) translateText(text)
 
+#ifdef OSX
+#define valid_ptr(p)  ((access((const char*)p, R_OK)==-1)? (errno != EFAULT):1) 
+#endif
+
 /*...sLogging macros:0:*/
 
 /*...sLOG_INSTANCE:0:*/

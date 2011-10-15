@@ -42,6 +42,8 @@
 #endif
 #ifdef OSX
 #include <CoreFoundation/CFBase.h>
+#include <unistd.h>
+#include <errno.h>
 #endif
 #ifdef LINUX
 #include <dlfcn.h>
@@ -626,7 +628,13 @@ bool LB_CDECL OSXMemValidate(void* ptr) {
 	}
 #endif
 #ifndef DEBUG_MALLOC
-	return true;
+	if (valid_ptr(ptr) == 1 && ptr != (void*)0x7) {		
+		return true;
+	} else {
+		//lbBreak();
+		printf("OSXMemValidate() Catched a bogus pointer!\n");
+		return false;
+	}
 #endif
 }
 #endif
@@ -1513,21 +1521,18 @@ lbKey::lbKey(char* file, int line) {
 }
 #endif
 lbKey::lbKey() {
-	ref = STARTREF;
 	key = 0;
 	manager = NULL;
 	strcpy(keyType, "int");
 }
 
 lbKey::lbKey(int _key) {
-	ref = STARTREF;
 	key = _key;
 	strcpy(keyType, "int");
 	manager = NULL;
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
-	ref = STARTREF;
 	key = ((lbKey) k).key;
 }
 
@@ -1578,21 +1583,18 @@ lbKey_::lbKey_(char* file, int line) {
 }
 #endif
 lbKey_::lbKey_() {
-	ref = STARTREF;
 	key = 0;
 	manager = NULL;
 	strcpy(keyType, "int");
 }
 
 lbKey_::lbKey_(int _key) {
-	ref = STARTREF;
 	key = _key;
 	strcpy(keyType, "int");
 	manager = NULL;
 }
 
 lbKey_::lbKey_(const lb_I_KeyBase* k) {
-	ref = STARTREF;
 	key = ((lbKey_) k).key;
 }
 
@@ -1636,17 +1638,14 @@ char* LB_CDECL lbKey_::charrep() const {
 #endif
 /*...slbStringKey:0:*/
 DLLEXPORT lbStringKey::lbStringKey() {
-	ref = STARTREF;
 	key = strdup("");
 }
 
 DLLEXPORT lbStringKey::lbStringKey(const char* _key) {
-	ref = STARTREF;
 	key = strdup(_key);
 }
 
 DLLEXPORT lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
-	ref = STARTREF;
 	key = strdup(((lbStringKey*) k)->key);
 }
 

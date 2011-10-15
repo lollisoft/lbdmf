@@ -76,6 +76,10 @@ ifeq ($(OSVERSION_), 10.7.0)
 OSNAME=Leopard
 endif
 
+ifeq ($(OSVERSION_), 10.8.0)
+OSNAME=Leopard
+endif
+
 Path=$(PATH)
 
 ifeq ($(OSTYPE), solaris)

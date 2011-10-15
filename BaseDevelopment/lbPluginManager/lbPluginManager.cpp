@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.87 $
+* $Revision: 1.88 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.87 2011/10/09 07:26:34 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.88 2011/10/15 06:36:12 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.88  2011/10/15 06:36:12  lollisoft
+* All current changes including interfaces (starting mass changes).
+*
 * Revision 1.87  2011/10/09 07:26:34  lollisoft
 * Fixed possible memory leak.
 *
@@ -1261,7 +1264,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginModules != NULL) {
 			PluginModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
 
 	if (!firstServerEnumerate) {
@@ -1270,7 +1272,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginServerModules != NULL) {
 			PluginServerModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
 	}
 
 	if (!firstUnitTestEnumerate) {
@@ -1279,6 +1280,16 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginUnitTestModules != NULL) {
 			PluginUnitTestModules--;
 		}
+	}
+
+	if (PluginModules == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
+	}
+
+	if (PluginServerModules == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
+	}
+	if (PluginUnitTestModules == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, PluginUnitTestModules)
 	}
 
@@ -1579,8 +1590,14 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
-					uk = PluginContainer->nextElement();
+					lb_I_Unknown* u = PluginContainer->nextElement();
 
+					if (u != NULL && u != (void*)0x7) {
+						uk = u;
+					} else {
+						lbBreak();
+					}
+					
 					if (uk == NULL) {
 						_LOGERROR << "FATAL: Plugin container reported having at least one more element, but it may be corrupted." LOG_
 						return NULL;
