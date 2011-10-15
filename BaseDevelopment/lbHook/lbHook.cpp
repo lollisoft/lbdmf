@@ -1024,7 +1024,6 @@ DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance() {
 
 	if (DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__) == ERR_STATE_FURTHER_LOCK) {
 		logMessage("Instance is locked. Must set module manager first\n");
-		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	}
 	UAP(lb_I_Module, inst)
 	QI(module, lb_I_Module, inst)
@@ -1522,14 +1521,12 @@ lbKey::lbKey(char* file, int line) {
 #endif
 lbKey::lbKey() {
 	key = 0;
-	manager = NULL;
 	strcpy(keyType, "int");
 }
 
 lbKey::lbKey(int _key) {
 	key = _key;
 	strcpy(keyType, "int");
-	manager = NULL;
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
@@ -1584,14 +1581,12 @@ lbKey_::lbKey_(char* file, int line) {
 #endif
 lbKey_::lbKey_() {
 	key = 0;
-	manager = NULL;
 	strcpy(keyType, "int");
 }
 
 lbKey_::lbKey_(int _key) {
 	key = _key;
 	strcpy(keyType, "int");
-	manager = NULL;
 }
 
 lbKey_::lbKey_(const lb_I_KeyBase* k) {

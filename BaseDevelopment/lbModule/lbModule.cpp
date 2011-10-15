@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.148 $
+ * $Revision: 1.149 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.148 2011/10/15 13:14:04 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149 2011/10/15 16:33:26 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149  2011/10/15 16:33:26  lollisoft
+ * Removed some unused code and no more required code. Current version does not compile at all.
+ *
  * Revision 1.148  2011/10/15 13:14:04  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -645,13 +648,11 @@ public:
     lbSkipListElement() { 
     	next = NULL; 
     	key = NULL; 
-    	manager = NULL;
     }
     virtual ~lbSkipListElement();
 	
     lbSkipListElement(const lb_I_Element &e) { 
     	next = e.getNext(); 
-		manager = NULL;
     }
 
     DECLARE_LB_UNKNOWN()
@@ -766,44 +767,6 @@ lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) {
 /*...e*/
 /*...sSkipList\58\\58\_insert\40\lb_I_Unknown\42\\42\ const e\44\ lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
-/*...sbla:0:*/
-#ifdef bla
-    if (container_data == NULL) { 
-        lbElement* _data = new lbElement(*e, *key); 
-        _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
-
-        _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); 
-        if (container_data == NULL) _CL_VERBOSE << "Could not get unknown interface of lbElement!" LOG_ 
-
-        lb_I_Unknown* uk_o = NULL; 
-        if ((uk_o = container_data->getObject()) == NULL) { 
-                _CL_VERBOSE << "Failed to insert first element in SkipList::insert" LOG_ 
-                return ERR_CONTAINER_INSERT; 
-        } else RELEASE(uk_o); 
-    } 
-    else { 
-        lb_I_Element* temp; 
-        for (temp = container_data; temp != NULL; temp = temp->getNext()) { 
-            lb_I_Element* next = temp->getNext(); 
-
-            if (next != NULL) { 
-                if (next->getKey() < *key) { 
-                    lbElement* el = new lbElement(*e, *key, next); 
-                    el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
-                    temp->setNext(el); 
-                    return ERR_NONE; 
-                } 
-            } 
-            else { 
-            	lbElement* el = new lbElement(*e, *key, next); 
-            	el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
-                temp->setNext(el); 
-                return ERR_NONE; 
-            } 
-        } 
-    } 
-#endif    
-/*...e*/
     return ERR_NONE; 
 } 
 /*...e*/
@@ -1109,7 +1072,6 @@ IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 /*...sIMPLEMENT_LB_ELEMENT\40\lbSkipListElement\41\:0:*/
 
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { 
-    manager = NULL; 
     if (_next == NULL) next = _next; 
     if (_next != NULL) { 
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); 
@@ -1130,38 +1092,14 @@ lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* 
 } 
 
 lbSkipListElement::~lbSkipListElement() { 
-        if (key != NULL) { 
-                if (key->deleteState() != 1) _CL_VERBOSE << "Key wouldn't deleted in container element!" LOG_ 
-                RELEASE(key); 
-        } 
-        if (data != NULL) { 
-                if (data->deleteState() != 1) { 
-                        lb_I_ConfigObject* node; 
-                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__, __LINE__); 
-                        if (node != NULL) { 
-	                        _CL_VERBOSE << "Data (lb_I_Unknown at " << 
-	                        ltoa((void*) data) << 
-	                        ") (created at: " << data->getCreationLoc() << 
-	                        ") (refcount=" << data->getRefCount() << 
-	                        ") (lbSkipListElement='" << data->getClassName() << 
-	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ 
-        	                node->release(__FILE__, __LINE__); 
-                        } else { 
-	                        _CL_VERBOSE << "Data (lb_I_Unknown at " << 
-	                        ltoa((void*) data) << 
-	                        ") (created at: " << data->getCreationLoc() << 
-	                        ") (refcount=" << data->getRefCount() << 
-	                        ") (lbSkipListElement='" << data->getClassName() << 
-	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ 
-        	        } 
-                        char ptr[20] = ""; 
-                        sprintf(ptr, "%p", (void*) data); 
-                        manager->printReferences(ptr); 
-                } 
-                RELEASE(data); 
-        } 
-        key = NULL; 
-         
+	if (key != NULL) { 
+		if (key->deleteState() != 1) _CL_VERBOSE << "Key wouldn't deleted in container element!" LOG_ 
+		RELEASE(key); 
+	} 
+	if (data != null) 
+		RELEASE(data); 
+	DATA = NULL;
+	key = NULL; 
 } 
 
 lb_I_Unknown* lbSkipListElement::getObject() const { 
@@ -1298,7 +1236,7 @@ lbInstance::~lbInstance() {
 /*...svoid LB_STDCALL lbInstance\58\\58\addReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbInstance::addReference(const char* classname, const char* file, int line) {
 	if (references == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, references)
+		REQUEST(getModuleInstance(), lb_I_Container, references)
 	}
 	char* buf = new char[strlen(classname)+strlen(file)+10];
 	buf[0] = 0;
@@ -1307,8 +1245,6 @@ void LB_STDCALL lbInstance::addReference(const char* classname, const char* file
 	
 	lbStringKey* key = getStringKey(buf);
 
-	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	UAP(lb_I_KeyBase, _key)
 	QI(key, lb_I_KeyBase, _key)
 
@@ -1329,7 +1265,7 @@ void LB_STDCALL lbInstance::addReference(const char* classname, const char* file
 /*...svoid LB_STDCALL lbInstance\58\\58\delReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbInstance::delReference(const char* classname, const char* file, int line) {
         if (references == NULL) {
-                REQUEST(manager.getPtr(), lb_I_Container, references)
+                REQUEST(getModuleInstance(), lb_I_Container, references)
         }
 
 	char* buf = new char[strlen(classname)+strlen(file)+10];
@@ -1339,8 +1275,6 @@ void LB_STDCALL lbInstance::delReference(const char* classname, const char* file
 	
 	lbStringKey* key = getStringKey(buf);
 
-	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	UAP(lb_I_KeyBase, _key)
 	QI(key, lb_I_KeyBase, _key)
 
@@ -1567,23 +1501,21 @@ private:
 	int instances;
 	int maxinstances;
 	int references;
-	lb_I_Module* manager;
 	int skip;
 	int skipreference;
 };
 /*...e*/
 /*...sInstanceRepository\58\\58\InstanceRepository\40\lb_I_Module\42\ m\41\:0:*/
 InstanceRepository::InstanceRepository(lb_I_Module* m) {
-	manager = m;
-        iList = NULL;
-        cList = NULL;
-        loadedContainer = 0;
-        instances = 0;
-        maxinstances = 1000;
-        references = 0;
-        skip = 0;
-        skipreference = 0;
-        lb_iList = NULL;
+	iList = NULL;
+	cList = NULL;
+	loadedContainer = 0;
+	instances = 0;
+	maxinstances = 1000;
+	references = 0;
+	skip = 0;
+	skipreference = 0;
+	lb_iList = NULL;
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\\126\InstanceRepository\40\\41\:0:*/
@@ -1623,7 +1555,6 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 	if (loadedContainer == 1) {
 /*...sprepare instance entry:16:*/
 		lbInstance* inst = new lbInstance();
-		inst->setModuleManager(manager, __FILE__, __LINE__);
 	
 		inst->setAddress(addr);
 		inst->setClassname(classname);
@@ -1634,8 +1565,6 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 /*...sprepare key:16:*/
 		lbStringKey *key = getStringKey(addr);
 
-		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-		key->setModuleManager(manager, __FILE__, __LINE__);
 /*...e*/
 
 		//Stack overflow, because key get's cloned.
@@ -1649,8 +1578,6 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		lbErrCodes err = ERR_NONE;
 		lbStringKey *key = getStringKey(addr);
 		
-		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-		key->setModuleManager(manager, __FILE__, __LINE__);
 		UAP(lb_I_KeyBase, _key)
 		QI(key, lb_I_KeyBase, _key)
 		
@@ -1721,8 +1648,6 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 	if (loadedContainer == 1) {
 		lbStringKey *key = getStringKey(addr);
 		
-		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-		key->setModuleManager(manager, __FILE__, __LINE__);
 		UAP(lb_I_KeyBase, _key)
 		QI(key, lb_I_KeyBase, _key)
 		
@@ -1791,8 +1716,6 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
         if (loadedContainer == 1) {
                 lbStringKey *key = getStringKey(addr);
 
-                if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-                key->setModuleManager(manager, __FILE__, __LINE__);
                 UAP(lb_I_KeyBase, _key)
                 QI(key, lb_I_KeyBase, _key)
 
@@ -1892,12 +1815,7 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 	instanceList* prev = NULL;
 
 	if (loadedContainer == 1) {
-/*...sprepare key:16:*/
 		lbStringKey *key = getStringKey(addr);
-
-		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
-		key->setModuleManager(manager, __FILE__, __LINE__);
-/*...e*/
 
 		//Stack overflow, because key get's cloned.
 		skip++;		
@@ -2231,7 +2149,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfHCInterfaceRepository, lbHCInterfaceRepository)
 
 lbHCInterfaceRepository::lbHCInterfaceRepository() {	
-	manager = NULL;
 	searchArgument = NULL;
 	_CL_VERBOSE << "lbHCInterfaceRepository::lbHCInterfaceRepository() called." LOG_
 }
@@ -2486,7 +2403,6 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 
 	lbFunctorEntity* fe = new lbFunctorEntity;
-	fe->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
 	lb_I_FunctorEntity* _fe = NULL;
 	fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
@@ -2952,7 +2868,6 @@ lbModule::lbModule() {
                 _CL_VERBOSE << "lbModule init manager" LOG_
 #endif
 /*...e*/
-		setModuleManager(this, __FILE__, __LINE__);
 }
         
 lbModule::~lbModule() {
@@ -3009,8 +2924,6 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
         }
 #endif
         lbModuleContainer* MList = new lbModuleContainer();
-
-        MList->setModuleManager(this, __FILE__, __LINE__);
 
         if (isVerbose()) Instances();
 
@@ -3760,8 +3673,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 			free(buf);
 			return ERR_MODULE_NOT_FOUND;
 		}
-		
-		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
 		if (isVerbose()) Instances();
 	} else {
@@ -3891,7 +3802,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         	request << "', '" << functorName << "', '" << moduleName << "'" LOG_
 				printf("Error: Instance is a NULL pointer %s\n", functorName);
                         }
-                        (*result)->setModuleManager(this, __FILE__, __LINE__);
                         notify_create(*result, (*result)->getClassName());
                         if (moduleName != NULL) impl->deleteValue(moduleName);
                         if (functorName != NULL) impl->deleteValue(functorName);

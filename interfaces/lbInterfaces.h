@@ -1275,18 +1275,6 @@ public:
 	virtual char const* LB_STDCALL getClassName() = 0;
 
 	/**
-	 * Set the module manager. This is the - so called - object hook to get new
-	 * instances of any kint of interface.
-	 */
-	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, const char* file, int line) = 0;
-
-	/**
-	 * This returns the module manager, if you like to use it. It may not be set up
-	 * in this instance. Better use the global function getModuleInstance().
-	 */
-	virtual lb_I_Module*   LB_STDCALL getModuleManager() = 0;
-
-	/**
 	 * Query this instance for any interfaces it may support. A real implementation, derived
 	 * from this, has a supported interface.
 	 *
@@ -1612,7 +1600,6 @@ public:
   	UAP(lb_I_Unknown, uk##variable) \
   	mm->request(#interface, &uk##variable); \
   	if (uk##variable != NULL) { \
-	  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
 	  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
 		uk##variable.setFile(__FILE__); \
 		uk##variable.setLine(__LINE__); \
@@ -1631,7 +1618,6 @@ public:
 	printf("Step 1\n"); \
   	mm->request(#interface, &uk##variable); \
 	printf("Step 2\n"); \
-  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
 	printf("Step 3\n"); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
 	printf("Step 4\n"); \
@@ -1660,7 +1646,6 @@ public:
 		} else if (err##variable == ERR_MODULE_NOT_FOUND) { \
 			_CL_LOG << "Error: Module for interface '" << #interface << "' could not be loaded or was not found." LOG_ \
 		} else { \
-			uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
 			uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
 		}
 
@@ -1675,7 +1660,6 @@ public:
   	mm->request(#interface, &uk##variable); \
   	_CL_LOG << "STATIC_REQUEST: Have an instance" LOG_ \
   	interface* variable; \
-  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	_CL_LOG << "STATIC_REQUEST: Set module manager" LOG_ \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
 
@@ -1693,8 +1677,6 @@ public: \
 	void 		LB_STDCALL setDebug(long i) { debug_macro = i; } \
 	int 		LB_STDCALL getRefCount() { return ref; } \
 	char const*	LB_STDCALL getClassName(); \
-	void 		LB_STDCALL setModuleManager(lb_I_Module* m, const char* file, int line); \
-	lb_I_Module*    LB_STDCALL getModuleManager(); \
 	lbErrCodes 	LB_STDCALL queryInterface(const char* name, void** unknown, const char* file, int line) const; \
 	char const*	LB_STDCALL _queryInterface(const char* name, void** unknown, const char* file, int line); \
 	lb_I_Unknown* 	LB_STDCALL clone(const char* file, int line) const; \
@@ -1706,16 +1688,11 @@ public: \
 		    v->visit(this);\
 		} \
 	} \
-	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
-	    further_lock = state; \
-	} \
 	void 		LB_STDCALL resetRefcount(); \
 	void		LB_STDCALL traceObject(const char* why, const char* file, int line) const; \
 protected: \
-	UAP(lb_I_Module,	manager) \
 	mutable miniLong	ref; \
 	mutable miniLong	debug_macro; \
-	mutable int			further_lock; \
 	mutable miniLong	instance_counted; \
 	mutable miniString	lastQIFile; \
 	mutable miniLong	lastQILine; \
@@ -1738,7 +1715,6 @@ char const* LB_STDCALL classname::getClassName() { \
 void LB_STDCALL classname::traceObject(const char* why, const char* file, int line) const { \
 \
 _LOGALWAYS << #classname << "::traceObject(" << why << ", " << file << ", " << line << ") called: References = " << ref LOG_ \
-_LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastSMFile = " << lastQIFile.get() LOG_ \
@@ -1760,44 +1736,6 @@ char const* LB_STDCALL classname::_queryInterface(const char* name, void** unkno
 	\
 	return ID; \
 } \
-lb_I_Module* LB_STDCALL classname::getModuleManager() { \
-		lbErrCodes err = ERR_NONE; \
-		UAP(lb_I_Module, _mm) \
-		if (manager == NULL) { \
-			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ \
-			return NULL; \
-		} \
-		QI(manager, lb_I_Module, _mm) \
-		return _mm.getPtr(); \
-} \
-\
-void LB_STDCALL classname::setModuleManager(lb_I_Module* m, const char* file, int line) { \
-	lastSMFile.set(file); \
-	lastSMLine = line; \
-	if (m == NULL) { \
-		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
-		return; \
-	} \
-	\
-	further_lock = 0; \
-	if (m != manager.getPtr()) { \
-	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
-	} \
-	manager.setLine(__LINE__); \
-	manager.setFile(__FILE__); \
-	\
-	\
-	if (manager != NULL) { \
-		char *datei = strrchr(file, '\\'); \
-		if (datei == NULL) \
-			datei = (char*) file; \
-		else \
-			datei++; \
-		m->notify_create(this, #classname, datei, line); \
-	} else { \
-		_CL_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \
-	} \
-} \
 \
 void LB_STDCALL classname::resetRefcount() { ref = 0; } \
 int LB_STDCALL classname::deleteState() { \
@@ -1805,62 +1743,41 @@ int LB_STDCALL classname::deleteState() { \
 } \
 char*      LB_STDCALL classname::getCreationLoc() const { \
 	char buf[20] = ""; \
-	sprintf(buf, "%p", (void*) this); \
-	if (manager != NULL) return manager->getCreationLoc(buf); \
-	return strdup("Have no manager - location can't be found"); \
+	return strdup("getCreationLoc not supported."); \
 } \
 lbErrCodes LB_STDCALL classname::release(const char* file, int line) { \
-	if (_TRMemValidate(this)) { \
-	if (debug_macro == 1) { \
-		_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
-	} else { \
-		_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
-	} \
-	ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
-	if (((lb_I_Unknown*) manager.getPtr() == (lb_I_Unknown*) this) && (getRefCount() == 0+1)) { \
-		manager--; \
+	if (_TRMemValidate(this)) { \
+		if (debug_macro == 1) { \
+			_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+		} else {\
+			_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+		} \
+		ref--; \
+		if (ref == 0) { \
+			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
+			delete this; \
+			_CL_VERBOSE << "Deleted" LOG_ \
+			return ERR_RELEASED; \
+		} \
+		else { \
+			if (isLogActivated()) printf("Error: Instance %s has been deleted prior!\n", #classname); \
+			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
+		} \
+		return ERR_NONE; \
 	} \
-        if (manager != NULL) { \
-        	manager->notify_release(this, (char*) #classname, file, line); \
-        } \
-	\
-        if (ref == 0) { \
-        	if (manager != NULL) { \
-        		if (manager->can_delete(this, #classname) == 1)	{ \
-        			manager->notify_destroy(this, (char*) #classname, file, line); \
-        			\
-        			if (instance_counted.get() == 112233) { \
-        				InstanceCount(-1); \
-        			} else { \
-        				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
-        			} \
-        			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
-        			delete this; \
-        			_CL_VERBOSE << "Deleted" LOG_ \
-        			return ERR_RELEASED; \
-        		} \
-        		else { \
-        			if (isLogActivated()) printf("Error: Instance %s has been deleted prior!\n", #classname); \
-        			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
-        		} \
-        	} \
-        	return ERR_NONE; \
-        } \
-        if (ref < 0) { \
-        	_CL_LOG << "Error: Reference count of instance " << ptr << " in last query interface " << \
-        	lastQIFile.get() << " at " << lastQILine << " and in last setModuleManager in " << \
-        	lastSMFile.get() << " at " << lastSMLine << \
-        	" of object type " << #classname << " is less than " << 0 << " (" << ref << ") !!!" LOG_ \
-        	return ERR_REFERENCE_COUNTING; \
-        } \
-        } else { \
-        	char buf[20] = ""; \
-        	sprintf(buf, "%p", this); \
-        	_LOG << "Error: Instance " << buf << " of object type " << #classname << " was deleted prior (At: " << file << ":" << line << ") !!!" LOG_ \
-        } \
-        return ERR_INSTANCE_STILL_USED; \
+	if (ref < 0) { \
+		_CL_LOG << "Error: Reference count of instance " << ptr << " in last query interface " << \
+		lastQIFile.get() << " at " << lastQILine << \
+		" of object type " << #classname << " is less than " << 0 << " (" << ref << ") !!!" LOG_ \
+		return ERR_REFERENCE_COUNTING; \
+	} else { \
+		char buf[20] = ""; \
+		sprintf(buf, "%p", this); \
+		_LOG << "Error: Instance " << buf << " of object type " << #classname << " was deleted prior (At: " << file << ":" << line << ") !!!" LOG_ \
+	} \
+	return ERR_INSTANCE_STILL_USED; \
 } \
 \
 lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
@@ -1876,11 +1793,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
 \
-	cloned->setFurtherLock(0); \
-	if (manager == NULL) { \
-		_CL_LOG << #classname << "::clone() can't be used because manager is a NULL pointer!" LOG_ \
-	} \
-	cloned->setModuleManager(manager.getPtr(), file, line); \
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { \
 		_CL_LOG << "Error while getting interface" LOG_ \
 	} \
@@ -1888,15 +1800,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 	uk_cloned->setData((lb_I_Unknown*) this); \
 \
 	cloned->resetRefcount(); \
-	\
-	if (manager != NULL) { \
-		lb_I_Unknown* that = (lb_I_Unknown*) cloned; \
-	        manager->notify_add(that, cloned->getClassName(), file, line); \
-	} \
-        else \
-		if (debug_macro >= 1) { \
-                	_CL_LOG << "Module manager was not set!" LOG_ \
-		} \
 	\
 	lb_I_Unknown* uk = NULL; \
 	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { \
@@ -1928,39 +1831,23 @@ lbErrCodes LB_STDCALL classname::queryInterface(const char* name, void** unknown
 		instance_counted.set(112233); \
 		InstanceCount(1); \
 	} \
-	\
-	if (further_lock == 1) { \
-		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
-		return ERR_STATE_FURTHER_LOCK; \
-	} else { \
-	} \
 	if (unknown == NULL) { \
 		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << \
 		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ \
 	} \
 \
-        if (strcmp(name, "lb_I_Unknown") == 0) { \
-        	if (ref < 0) { \
-        		_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
-        	} \
-                ref++; \
-                *unknown = (lb_I_Unknown*) this; \
-                \
-                if (*unknown != (void*) this) { \
-                	TRMemSetPointerValid(*unknown, (void*) this); \
-                } \
-                \
-                if (manager != NULL) { \
-                	lb_I_Unknown* that = (lb_I_Unknown*) this; \
-		        manager->notify_add(that, _classname, file, line); \
+	if (strcmp(name, "lb_I_Unknown") == 0) { \
+		if (ref < 0) { \
+			_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
 		} \
-		else { \
-	        	setFurtherLock(1); \
-	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
-	        	return ERR_STATE_FURTHER_LOCK; \
+		ref++; \
+		*unknown = (lb_I_Unknown*) this; \
+\
+		if (*unknown != (void*) this) { \
+			TRMemSetPointerValid(*unknown, (void*) this); \
 		} \
-                return ERR_NONE; \
-}
+		return ERR_NONE; \
+	}
 
 /*...e*/
 /*...sBEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN:0:*/
@@ -1978,7 +1865,6 @@ char const* LB_STDCALL classname::getClassName() { \
 void LB_STDCALL classname::traceObject(const char* why, const char* file, int line) const { \
 \
 _LOGALWAYS << #classname << "::traceObject(" << why << ", " << file << ", " << line << ") called: References = " << ref LOG_ \
-_LOGALWAYS << #classname << "::traceObject(): further_lock = " << further_lock LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQIFile = " << lastQIFile.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastQILine = " << lastQILine.get() LOG_ \
 _LOGALWAYS << #classname << "::traceObject(): lastSMFile = " << lastQIFile.get() LOG_ \
@@ -2000,41 +1886,6 @@ char const* LB_STDCALL classname::_queryInterface(char const* name, void** unkno
 	\
 	return ID; \
 } \
-lb_I_Module* LB_STDCALL classname::getModuleManager() { \
-		lbErrCodes err = ERR_NONE; \
-		UAP(lb_I_Module, _mm) \
-		if (manager == NULL) { \
-			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ \
-			return NULL; \
-		} \
-		QI(manager, lb_I_Module, _mm) \
-		return _mm.getPtr(); \
-} \
-\
-void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char const* file, int line) { \
-	if (m == NULL) { \
-		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
-		return; \
-	} \
-	\
-	further_lock = 0; \
-	if (m != manager.getPtr()) { \
-	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
-	} \
-	manager.setLine(__LINE__); \
-	manager.setFile(__FILE__); \
-	\
-	if (manager != NULL) { \
-		char *datei = strrchr(file, '\\'); \
-		if (datei == NULL) \
-			datei = (char*) file; \
-		else \
-			datei++; \
-		manager->notify_create(this, #classname, datei, line); \
-	} else { \
-		_CL_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \
-	} \
-} \
 \
 void LB_STDCALL classname::resetRefcount() { ref = 0; } \
 int LB_STDCALL classname::deleteState() { \
@@ -2043,29 +1894,16 @@ int LB_STDCALL classname::deleteState() { \
 char*      LB_STDCALL classname::getCreationLoc() const { \
 	char buf[20] = ""; \
 	sprintf(buf, "%p", (void*) this); \
-	if (manager != NULL) return manager->getCreationLoc(buf); \
-	return strdup("Have no manager - location can't be found"); \
+	return strdup("getCreationLoc() not supported."); \
 } \
 lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
 	if (_TRMemValidate(this)) { \
         ref--; \
-	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
-        if (manager != NULL) { \
-        	manager->notify_release(this, (char*) #classname, file, line); \
-        } \
+		char ptr[20] = ""; \
+		sprintf(ptr, "%p", this); \
 	\
         if (ref == 0) { \
-        	if (manager != NULL) { \
-        		if (manager->can_delete(this, (char*) #classname) == 1)	{ \
-        			manager->notify_destroy(this, (char*) #classname, file, line); \
-        			if (isLogActivated()) printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", 0); \
-        			ref++; \
-        			return ERR_RELEASED; \
-        		} \
-        		else \
-        			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
-        	} \
+			ref++; \
         	return ERR_NONE; \
         } \
         if (ref < 0) { \
@@ -2086,9 +1924,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
 \
-	cloned->setFurtherLock(0); \
-	if (manager == NULL) _CL_LOG << #classname << "::clone() can't be used because manager is a NULL pointer!" LOG_ \
-	cloned->setModuleManager(manager.getPtr(), file, line); \
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { \
 		_CL_LOG << "Error while getting interface" LOG_ \
 	} \
@@ -2096,15 +1931,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 	uk_cloned->setData((lb_I_Unknown*) this); \
 \
 	cloned->resetRefcount(); \
-	\
-	if (manager != NULL) { \
-		lb_I_Unknown* that = (lb_I_Unknown*) cloned; \
-	        manager->notify_add(that, cloned->getClassName(), file, line); \
-	} \
-        else \
-		if (debug_macro >= 1) { \
-                	_CL_LOG << "Module manager was not set!" LOG_ \
-		} \
 	\
 	lb_I_Unknown* uk = NULL; \
 	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { \
@@ -2120,10 +1946,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(const char* file, int line) const { \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown, char const* file, int line) const { \
 	char _classname[100] = #classname; \
-	if (further_lock == 1) { \
-		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
-		return ERR_STATE_FURTHER_LOCK; \
-	} \
 	if (unknown == NULL) { \
 		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << \
 		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ \
@@ -2138,15 +1960,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
                 if (*unknown != (void*) this) { \
                         TRMemSetPointerValid(*unknown, (void*) this); \
                 } \
-                if (manager != NULL) { \
-                	lb_I_Unknown* that = (lb_I_Unknown*) this; \
-		        manager->notify_add(that, _classname, file, line); \
-		} \
-		else { \
-	        	setFurtherLock(1); \
-	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
-	        	return ERR_STATE_FURTHER_LOCK; \
-		} \
                 return ERR_NONE; \
         }
 
@@ -2162,16 +1975,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char const* name, void** unknown
                 if (*unknown != (void*) this) { \
                         TRMemSetPointerValid(*unknown, (void*) this); \
                 } \
-                if (manager != NULL) { \
-                	interfaceName* that = (interfaceName*) this; \
-                	lb_I_Unknown* uk = (lb_I_Unknown*) this; \
-                	manager->notify_add(uk, _classname, file, line); \
-                } else { \
-					setFurtherLock(1); \
-					_CL_LOG << "Error: QueryInterface can't add a reference. No manager. File: " << \
-					file << ", Line: " << line LOG_ \
-					return ERR_STATE_FURTHER_LOCK; \
-				} \
                 return ERR_NONE; \
         }
 
@@ -2218,13 +2021,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, cons
 		_LOG << "Error: Functor " << #name << " doesn't use TRMem's operator new !" LOG_ \
 	} \
         *uk = NULL; \
-        instance->setFurtherLock(0); \
-        if (m != NULL) { \
-        	instance->setModuleManager(m, __FILE__, __LINE__); \
-        } else { \
-        	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
-        } \
-        \
         if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
                 _CL_LOG << "Failed to create unknown reference to instance of " << \
                 #clsname << ". Errcode is " << err LOG_ \
@@ -2306,15 +2102,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, cons
 	        *uk = NULL; \
 	        char buf[100] = ""; \
 	        track_Object(instance, "IMPLEMENT_SINGLETON_FUNCTOR - Instantiating"); \
-	        \
-	        instance->setFurtherLock(0); \
-	        if (m != NULL) { \
-	        	instance->setModuleManager(m, __FILE__, __LINE__); \
-	        } else { \
-	        	if (strcmp(instance->getClassName(), "lbModule") != 0) { \
-	        		_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
-	        	} \
-	        } \
 	        \
 	        singleton_##name.set(instance); \
 	        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
@@ -2438,7 +2225,6 @@ void LB_STDCALL TF::addTestMethod(TestMethod methodFn, const char* _testname) { 
 	QI(testname, lb_I_KeyBase, tmkey) \
 	UAP(lb_I_TestMethod, m) \
 	TestMethod##TF* method = new TestMethod##TF(); \
-	method->setModuleManager(getModuleInstance(), __FILE__, __LINE__); \
 	QI(method, lb_I_TestMethod, m) \
 	m->setMethod(this, methodFn); \
 	QI(m, lb_I_Unknown, ukMethod) \

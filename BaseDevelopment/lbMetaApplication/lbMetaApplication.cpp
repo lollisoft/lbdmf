@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.187 $
+ * $Revision: 1.188 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.187 2011/10/15 13:14:04 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188 2011/10/15 16:33:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188  2011/10/15 16:33:26  lollisoft
+ * Removed some unused code and no more required code. Current version does not compile at all.
+ *
  * Revision 1.187  2011/10/15 13:14:04  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -1365,8 +1368,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 		* Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
 	 */
 
-	lb_I_Module* m = *&manager;
-
 /*...e*/
 
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
@@ -1973,13 +1974,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 
 
 #ifdef WINDOWS
-					manager->preload(appl);
-					manager->makeInstance(f, appl, &a);
+					getModuleInstance()->preload(appl);
+					getModuleInstance()->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
 					strcat(appl, ".so");
-					manager->preload(appl);
-					manager->makeInstance(f, appl, &a);
+					getModuleInstance()->preload(appl);
+					getModuleInstance()->makeInstance(f, appl, &a);
 #endif
 
 					if (a == NULL) {
@@ -1994,8 +1995,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 					} else {
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
-
-					a->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 					QI(a, lb_I_Application, app)
 
@@ -2096,13 +2095,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 
 
 #ifdef WINDOWS
-					manager->preload(appl);
-					manager->makeInstance(f, appl, &a);
+					getModuleInstance()->preload(appl);
+					getModuleInstance()->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
 					strcat(appl, ".so");
-					manager->preload(appl);
-					manager->makeInstance(f, appl, &a);
+					getModuleInstance()->preload(appl);
+					getModuleInstance()->makeInstance(f, appl, &a);
 #endif
 
 					if (a == NULL) {
@@ -2117,8 +2116,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 					} else {
 						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
 					}
-
-					a->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 					QI(a, lb_I_Application, app)
 
@@ -2155,15 +2152,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 
 
 #ifdef WINDOWS
-		manager->preload(applicationName);
-		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
+		getModuleInstance()->preload(applicationName);
+		getModuleInstance()->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
 #endif
 #ifdef LINUX
 		char name[80] = "";
 		strcpy(name, applicationName);
 		strcat(name, ".so");
-		manager->preload(name);
-		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
+		getModuleInstance()->preload(name);
+		getModuleInstance()->makeInstance(PREFIX "instanceOfApplication", name, &a);
 #endif
 		if (a == NULL) {
 			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
@@ -3562,9 +3559,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
 	maxEvId = 12000;
-	
-	
-	further_lock = 1;
 }
 
 lb_EventManager::~lb_EventManager() {
@@ -3664,7 +3658,6 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(const char* EvName, int & ev
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-	stringKey->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	stringKey->setData(EvName);
 
 	UAP(lb_I_KeyBase, kk)
@@ -3697,7 +3690,6 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, ID)
-	//ID->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	ID->setData(evNr);
 
 	UAP(lb_I_KeyBase, kk)
@@ -3792,7 +3784,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	if (dispatcher == NULL) {
 		// Create the instance, that holds the events mapping
 		REQUEST(getModuleInstance(), lb_I_Container, dispatcher)
-		dispatcher->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	}
 
 	evH->setHandler(evHandlerInstance, evHandler);
@@ -4142,9 +4133,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EvHandler::lb_EvHandler() {
-	
-	further_lock = 1;
-	
 	_evHandlerInstance = NULL;
 	ev = NULL;
 	_evHandlerInstance_interceptor = NULL;

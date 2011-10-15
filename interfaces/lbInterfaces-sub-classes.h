@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.105 $
+ * $Revision: 1.106 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.105 2011/10/15 13:13:37 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106 2011/10/15 16:33:26 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106  2011/10/15 16:33:26  lollisoft
+ * Removed some unused code and no more required code. Current version does not compile at all.
+ *
  * Revision 1.105  2011/10/15 13:13:37  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -159,7 +162,7 @@
  * This is also a sync.
  *
  * Revision 1.70  2006/07/17 17:40:41  lollisoft
- * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Changes dueto bugfix in plugin getModuleInstance(). Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
  * be found any more after first query.
  *
@@ -915,11 +918,11 @@ public:
 		_LOG << "MyApp::lbEvHandler3 called" LOG_
 		lbErrCodes err = ERR_NONE;
 
-		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, menubar)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+		UAP_REQUEST(getModuleInstance().getPtr(), lb_I_EventManager, ev_getModuleInstance())
+		UAP_REQUEST(getModuleInstance().getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance().getPtr(), lb_I_String, menubar)
+		UAP_REQUEST(getModuleInstance().getPtr(), lb_I_String, menuname)
+		UAP_REQUEST(getModuleInstance().getPtr(), lb_I_String, handlername)
 	
 		UAP(lb_I_Parameter, param)
 
@@ -935,7 +938,7 @@ public:
 		param->getUAPString(*&parameter, *&handlername);
 	
 		int EvNr = 0;
-		ev_manager->resolveEvent(handlername->getData(), EvNr);
+		ev_getModuleInstance()->resolveEvent(handlername->getData(), EvNr);
 
 		wxMenuBar* mbar = frame_peer->getMenuBar();
 		wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
@@ -1055,7 +1058,6 @@ void LB_STDCALL classname::detachData() { \
 } \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) { \
 	data = NULL; \
-    manager = NULL; \
     next = _next; \
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
@@ -1518,7 +1520,6 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
 \
     if (container_data == NULL) { \
         lbElement* _data = new lbElement(*e, *key, cloning); \
-        _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); \
         if (container_data == NULL) _CL_LOG << "Could not get unknown interface of lbElement!" LOG_ \
@@ -1537,14 +1538,12 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
             if (next != NULL) { \
                 if (next->getKey() < *key) { \
                     lbElement* el = new lbElement(*e, *key, cloning, next); \
-                    el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                     temp->setNext(el); \
                     return ERR_NONE; \
                 } \
             } \
             else { \
             	lbElement* el = new lbElement(*e, *key, cloning, next); \
-            	el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                 temp->setNext(el); \
                 return ERR_NONE; \
             } \
@@ -1664,7 +1663,7 @@ public:
 	virtual void LB_STDCALL printReferences(const char* addr) = 0;        
         
         /**
-         * The module manager is responsible for creating any instances, that are
+         * The module getModuleInstance() is responsible for creating any instances, that are
          * available. This implementation knows that the directory of functors
          * for instances are stored in an XML file (DTD file v1.3).
          *
