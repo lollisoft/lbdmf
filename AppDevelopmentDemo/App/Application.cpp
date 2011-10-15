@@ -279,16 +279,15 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
 
         // Get the event manager
 
-        lb_I_Module* m = *&manager;
         printf("Get an event manager\n");
-        REQUEST(m, lb_I_EventManager, eman)
+        REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 
 
         if (user == NULL) {
                 _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
         } else
                 if (LogonUser == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+                REQUEST(getModuleInstance(), lb_I_String, LogonUser)
                 LogonUser->setData(user);
         }
 
@@ -296,7 +295,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
                 _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
         } else
         if (LogonApplication == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+                REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
                 LogonApplication->setData(app);
         }
 
@@ -310,7 +309,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
 
         // Attach to the dispatcher
 
-        REQUEST(m, lb_I_Dispatcher, dispatcher)
+        REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
         dispatcher->setEventManager(eman.getPtr());
 
         // Register my handlers to the dispatcher
@@ -348,7 +347,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
          */
 /*...e*/
 
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 
         metaapp->addMenuBar("Kunden", "Edit");
         metaapp->addMenuBar("Reservierungen", "Kunden");
@@ -374,7 +373,7 @@ lbErrCodes LB_STDCALL lbApplication::getApplicationName(lb_I_String** app) {
 }
 lbErrCodes LB_STDCALL lbApplication::setUserName(const char* user) {
         if (LogonUser == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+                REQUEST(getModuleInstance(), lb_I_String, LogonUser)
         }
 
         LogonUser->setData(user);
@@ -383,7 +382,7 @@ lbErrCodes LB_STDCALL lbApplication::setUserName(const char* user) {
 
 lbErrCodes LB_STDCALL lbApplication::setApplicationName(const char* app) {
         if (LogonApplication == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+                REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
         LogonApplication->setData(app);

@@ -165,17 +165,17 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbExecuteAction::execute()" LOG_
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, app)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFormName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, app)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);
@@ -385,7 +385,7 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 		
 		if (err == WARN_DB_NODATA) {
 			/*...sOpen the detail form with given params:24:*/
-			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, what)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 			what = query->getAsString(1);
 			what->trim();

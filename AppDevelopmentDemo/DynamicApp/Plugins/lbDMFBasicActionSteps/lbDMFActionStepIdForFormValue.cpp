@@ -68,7 +68,7 @@ lbDMFIdForFormValue::lbDMFIdForFormValue() {
 	
 	myActionID = -1;
 	
-	further_lock = 1;
+	;
 
 	_CL_LOG << "lbDMFIdForFormValue::lbDMFIdForFormValue() called." LOG_
 }
@@ -449,7 +449,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFIdForFormValue::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbDMFIdForFormValue* DMFXslt = new lbDMFIdForFormValue();
-		DMFXslt->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(DMFXslt, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -467,7 +467,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFIdForFormValue::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDMFIdForFormValue* xslt = new lbDMFIdForFormValue();
-		xslt->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(xslt, lb_I_Unknown, ukActions)
 	}

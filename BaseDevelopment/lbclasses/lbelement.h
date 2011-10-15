@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbelement.h,v 1.17 2011/10/15 13:14:05 lollisoft Exp $
+ * $Id: lbelement.h,v 1.18 2011/10/15 21:47:12 lollisoft Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.18  2011/10/15 21:47:12  lollisoft
+ * Removed all code that is obsolete. Current code compiles but still does not run.
+ *
  * Revision 1.17  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -118,13 +121,13 @@ public:
     lbElement() { 
     	next = NULL; 
     	key = NULL; 
-    	manager = NULL;
+    	
     }
     virtual ~lbElement();
 	
     lbElement(const lb_I_Element &e) { 
 		next = e.getNext(); 
-		manager = NULL;
+		
     	key = NULL; 
     }
 

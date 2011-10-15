@@ -86,7 +86,7 @@ void		LB_STDCALL lbActionTypesModel::deleteUnmarked() {
 	while (hasMoreActionTypes()) {
 		setNextActionType();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionTypeID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -104,7 +104,7 @@ void		LB_STDCALL lbActionTypesModel::deleteMarked() {
 	while (hasMoreActionTypes()) {
 		setNextActionType();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionTypeID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -157,7 +157,7 @@ long  LB_STDCALL lbActionTypesModel::addActionTypes(const char* bezeichnung, con
 
 bool  LB_STDCALL lbActionTypesModel::selectActionType(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -166,7 +166,7 @@ bool  LB_STDCALL lbActionTypesModel::selectActionType(long _id) {
 	uk = ActionTypes->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -210,7 +210,7 @@ bool  LB_STDCALL lbActionTypesModel::hasMoreActionTypes() {
 
 void  LB_STDCALL lbActionTypesModel::setNextActionType() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -294,7 +294,7 @@ lbPluginActionTypesModel::lbPluginActionTypesModel() {
 	_CL_VERBOSE << "lbPluginActionTypesModel::lbPluginActionTypesModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionTypesModel::~lbPluginActionTypesModel() {
@@ -323,7 +323,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionTypesModel::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbActionTypesModel* ActionsModel = new lbActionTypesModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	} else {
@@ -342,7 +342,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionTypesModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbActionTypesModel* ActionsModel = new lbActionTypesModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	}

@@ -337,7 +337,7 @@ int main(int argc, char *argv[]) {
 	
 	{
 		mm = getModuleInstance();
-		mm->setModuleManager(mm, __FILE__, __LINE__);
+		
 		
 		_CL_LOG << "Test MetaApplication" LOG_
 		

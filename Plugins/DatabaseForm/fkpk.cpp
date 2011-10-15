@@ -97,7 +97,7 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	
 	
-	further_lock = 1;
+	;
 	pass = 0;
 	_FoimularID = -1; 
 	_DBUser = NULL;
@@ -116,7 +116,7 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	
 	
-	further_lock = 1;
+	;
 	pass = 0;
 	_FoimularID = _forms->getFormularID(); 
 	_DBUser = NULL;
@@ -150,7 +150,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	bool definitionFound = false;
 	bool formFound = false;
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
@@ -455,8 +455,8 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
         int cbFKSel;
         int cbPKSel;
         
-        UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-        UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+        UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+        UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 
         char eventName[100] = "";
                 

@@ -81,13 +81,13 @@ lbErrCodes LB_STDCALL lbFormularParameters::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbFormularParameters::addParameter(const char* name, const char* value, long formular_id, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbFormularParameters: " << name LOG_
 
@@ -117,7 +117,7 @@ long  LB_STDCALL lbFormularParameters::addParameter(const char* name, const char
 
 bool  LB_STDCALL lbFormularParameters::selectParameter(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -126,7 +126,7 @@ bool  LB_STDCALL lbFormularParameters::selectParameter(long _id) {
 	uk = Parameters->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -170,7 +170,7 @@ void		LB_STDCALL lbFormularParameters::deleteUnmarked() {
 	while (hasMoreParameters()) {
 		setNextParameter();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getParameterID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -188,7 +188,7 @@ void		LB_STDCALL lbFormularParameters::deleteMarked() {
 	while (hasMoreParameters()) {
 		setNextParameter();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getParameterID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -206,7 +206,7 @@ bool  LB_STDCALL lbFormularParameters::hasMoreParameters() {
 
 void  LB_STDCALL lbFormularParameters::setNextParameter() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -291,14 +291,14 @@ lbErrCodes LB_STDCALL lbColumnTypes::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbColumnTypes::addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, TableName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SpecialColumn)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, ControlType)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Readonly)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SpecialColumn)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ControlType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Readonly)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 	_CL_VERBOSE << "Add a parameter to lbColumnTypes: " << name LOG_
 
@@ -338,7 +338,7 @@ long  LB_STDCALL lbColumnTypes::addType(const char* tablename, const char* name,
 
 bool  LB_STDCALL lbColumnTypes::selectType(const char* tablename, const char* name) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, sKey)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, sKey)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	*sKey = tablename;
@@ -348,7 +348,7 @@ bool  LB_STDCALL lbColumnTypes::selectType(const char* tablename, const char* na
 	uk = ColumnTypes->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -394,7 +394,7 @@ void		LB_STDCALL lbColumnTypes::deleteUnmarked() {
 	while (hasMoreTypes()) {
 		setNextType();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, ID)
 			*ID = getTableName();
 			*ID += getName();
 			
@@ -413,7 +413,7 @@ void		LB_STDCALL lbColumnTypes::deleteMarked() {
 	while (hasMoreTypes()) {
 		setNextType();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, ID)
 			*ID = getTableName();
 			*ID += getName();
 			
@@ -432,7 +432,7 @@ bool  LB_STDCALL lbColumnTypes::hasMoreTypes() {
 
 void  LB_STDCALL lbColumnTypes::setNextType() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -508,13 +508,13 @@ lbErrCodes LB_STDCALL lbApplicationParameters::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbApplicationParameters::addParameter(const char* name, const char* value, long application_id, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ApplicationID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ApplicationID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbApplicationParameters: " << name LOG_
 
@@ -546,7 +546,7 @@ long  LB_STDCALL lbApplicationParameters::addParameter(const char* name, const c
 
 bool  LB_STDCALL lbApplicationParameters::selectParameter(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -555,7 +555,7 @@ bool  LB_STDCALL lbApplicationParameters::selectParameter(long _id) {
 	uk = Parameters->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -586,7 +586,7 @@ void		LB_STDCALL lbApplicationParameters::deleteUnmarked() {
 	while (hasMoreParameters()) {
 		setNextParameter();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getParameterID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -604,7 +604,7 @@ void		LB_STDCALL lbApplicationParameters::deleteMarked() {
 	while (hasMoreParameters()) {
 		setNextParameter();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getParameterID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -622,7 +622,7 @@ bool  LB_STDCALL lbApplicationParameters::hasMoreParameters() {
 
 void  LB_STDCALL lbApplicationParameters::setNextParameter() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -734,7 +734,7 @@ lbPluginColumnTypes::lbPluginColumnTypes() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginColumnTypes::~lbPluginColumnTypes() {
@@ -763,7 +763,7 @@ lb_I_Unknown* LB_STDCALL lbPluginColumnTypes::peekImplementation() {
 
 	if (ukColumnTypes == NULL) {
 		lbColumnTypes* Users_ApplicationModel = new lbColumnTypes();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukColumnTypes)
 	} else {
@@ -782,7 +782,7 @@ lb_I_Unknown* LB_STDCALL lbPluginColumnTypes::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbColumnTypes* Users_ApplicationModel = new lbColumnTypes();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukColumnTypes)
 	}
@@ -849,7 +849,7 @@ lbPluginFormularParameters::lbPluginFormularParameters() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginFormularParameters::~lbPluginFormularParameters() {
@@ -878,7 +878,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularParameters::peekImplementation() {
 
 	if (ukFormularParameters == NULL) {
 		lbFormularParameters* Users_ApplicationModel = new lbFormularParameters();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukFormularParameters)
 	} else {
@@ -897,7 +897,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularParameters::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbFormularParameters* Users_ApplicationModel = new lbFormularParameters();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukFormularParameters)
 	}
@@ -963,7 +963,7 @@ lbPluginApplicationParameters::lbPluginApplicationParameters() {
 	_CL_VERBOSE << "lbPluginApplicationParameters::lbPluginApplicationParameters() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginApplicationParameters::~lbPluginApplicationParameters() {
@@ -992,7 +992,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationParameters::peekImplementation() {
 
 	if (ukApplicationParameters == NULL) {
 		lbApplicationParameters* ApplicationParameters = new lbApplicationParameters();
-		ApplicationParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ApplicationParameters, lb_I_Unknown, ukApplicationParameters)
 	} else {
@@ -1011,7 +1011,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationParameters::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbApplicationParameters* ApplicationParameters = new lbApplicationParameters();
-		ApplicationParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ApplicationParameters, lb_I_Unknown, ukApplicationParameters)
 	}

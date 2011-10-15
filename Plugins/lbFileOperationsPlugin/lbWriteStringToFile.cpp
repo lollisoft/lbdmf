@@ -233,7 +233,7 @@ lbErrCodes LB_STDCALL lbPluginWriteStringToFile::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
 	lbWriteStringToFile* XSLTTransformer = new lbWriteStringToFile();
-	XSLTTransformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);	
+		
 	QI(XSLTTransformer, lb_I_Unknown, ukTransformer) 
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
@@ -256,7 +256,7 @@ lb_I_Unknown* LB_STDCALL lbPluginWriteStringToFile::peekImplementation() {
 	
 	if (ukTransformer == NULL) {
 		lbWriteStringToFile* transformer = new lbWriteStringToFile();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -274,7 +274,7 @@ lb_I_Unknown* LB_STDCALL lbPluginWriteStringToFile::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
 		lbWriteStringToFile* transformer = new lbWriteStringToFile();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	}

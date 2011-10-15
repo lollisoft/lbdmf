@@ -79,7 +79,7 @@ extern "C" {
  lb_I_Module* mm = NULL;
  
  mm = getModuleInstance();
- mm->setModuleManager(mm, __FILE__, __LINE__);
+ 
  
  _CL_LOG << "Test basetypes" LOG_
  
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 	
 	{
 		mm = getModuleInstance();
-		mm->setModuleManager(mm, __FILE__, __LINE__);
+		
 		
 		_CL_LOG << "Test basetypes" LOG_
 		

@@ -372,9 +372,9 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 				char* type = FFI->getControlType(name);
 
 				if (strcmp(type, "toolbarimagefile") == 0) {
-					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+					UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, images)
 
 					*file = app->getDirLocation();
 
@@ -432,8 +432,8 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 					sizerControl->Add(imagebutton, 1, wxALL, GAP);
 					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 
-					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, elementname)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, element)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, elementname)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 
@@ -451,7 +451,7 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 
 				if (strcmp(type, "ownerdraw") == 0) {
 					lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
-					ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					
 					ownerdraw->init(this);
 
 					ownerdraw->SetName(name);
@@ -466,9 +466,9 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 				}
 
 				if (strcmp(type, "image") == 0) {
-					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+					UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, images)
 
 					*file = app->getDirLocation();
 
@@ -532,7 +532,7 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 	bool definitionFound = false;
 	bool formFound = false;
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
@@ -584,13 +584,13 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 
 void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
 			lbErrCodes err = ERR_NONE;
-            UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+            UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 			// Create a mapping instance for this combo box
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, _ComboboxMapper)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, ComboboxMapper)
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 			UAP(lb_I_KeyBase, key_cbName)
 
 			QI(cbName, lb_I_KeyBase, key_cbName)
@@ -600,7 +600,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 			*cbName = name;
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 			UAP(lb_I_KeyBase, key)
 
 			UAP(lb_I_String, t)
@@ -626,7 +626,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			if (!haveNotMappedForeignKeyFields(formName, name)) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
 				fkpkPanel->show();
@@ -642,8 +642,8 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
                 uk = meta->getActiveDocument();
                 QI(uk, lb_I_Parameter, params)
 
-				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
 
 				QI(name, lb_I_KeyBase, key)
@@ -725,7 +725,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			err = FKColumnQuery->first();
 /*...e*/
 
-			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
+			//UAP_REQUEST(getModuleInstance(), lb_I_String, VColumn)
 
 			// Define this function in my data model
 			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
@@ -735,7 +735,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
 				fkpkPanel->show();
@@ -755,10 +755,10 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 #endif
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sHave mapping to visible data for the combobox:64:*/
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, PKName)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable)
 
-				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, TargetPKColumn)
 
 				UAP(lb_I_Long, l)
 
@@ -802,8 +802,8 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 /*...sHave data to fill into the combobox and create mappings:104:*/
-					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, data)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk)
 
 					data = ReplacementColumnQuery->getAsString(1);
 
@@ -818,7 +818,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 					cbox->Append(wxString(data->charrep()));
 
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
 
 					UAP(lb_I_Unknown, uk_possible_fk)
 					UAP(lb_I_KeyBase, key_cbox_pos)
@@ -829,7 +829,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 					cbox_pos++;
 
 					QI(key, lb_I_KeyBase, key_cbox_pos)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk_long)
 
 					possible_fk_long->setData(possible_fk_pos);
 
@@ -840,7 +840,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 					if (DBerr != WARN_DB_NODATA)
 					// Only if not WARN_DB_NODATA
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+						UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk)
 						UAP(lb_I_Unknown, uk_possible_fk)
 						UAP(lb_I_KeyBase, key_cbox_pos)
 
@@ -868,7 +868,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 						cbox_pos++;
 
 						QI(key, lb_I_KeyBase, key_cbox_pos)
-						UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+						UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk_long)
 
 						possible_fk_long->setData(possible_fk_pos);
 
@@ -1249,16 +1249,16 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
-	REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-	REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, params)
 
 	if (ImageButtonMapperList == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ImageButtonMapperList)
+		REQUEST(getModuleInstance(), lb_I_Container, ImageButtonMapperList)
 	}
 
 	uk = meta->getActiveDocument();
@@ -1273,8 +1273,8 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 
 	if (params != NULL) {
 		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
-		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
 
@@ -1341,7 +1341,7 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 	//TRMemStartLocalCount();
 
 	if (ignoredPKTables == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
+		REQUEST(getModuleInstance(), lb_I_Container, ignoredPKTables)
 	}
 
 	SetName(formName);
@@ -1381,15 +1381,15 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 	}
 
 	if (_DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBName)
+		REQUEST(getModuleInstance(), lb_I_String, _DBName)
 		_DBName->setData(DBName);
 	}
 	if (_DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, _DBUser)
 		_DBUser->setData(DBUser);
 	}
 	if (_DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, _DBPass)
 		_DBPass->setData(DBPass);
 	}
 
@@ -1452,7 +1452,7 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 	sampleQuery->setAutoRefresh(meta->getAutorefreshData());
 
 	if (SQLString == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SQLString)
+		REQUEST(getModuleInstance(), lb_I_String, SQLString)
 		SQLString->setData(_SQLString);
 	}
 
@@ -1546,7 +1546,7 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 	sampleQuery->first();
 
 /*...screate database form elements:8:*/
-	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
+	REQUEST(getModuleInstance(), lb_I_Container, ComboboxMapperList)
 
     bool multiColumn = false;
 
@@ -2006,7 +2006,7 @@ void  LB_STDCALL lbDatabasePanel::reopen() {
 
 lbErrCodes  LB_STDCALL lbDatabasePanel::close() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::close() called." LOG_
 
 	if (database == NULL) {
@@ -2050,7 +2050,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::close() {
  */
 lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::open() called." LOG_
 
 	if (database == NULL) {
@@ -2125,7 +2125,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 		}
 	}
 
-	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
+	REQUEST(getModuleInstance(), lb_I_Container, ComboboxMapperList)
 
 	for(int i = 1; i <= columns; i++) {
 		UAP(lb_I_String, name)
@@ -2144,10 +2144,10 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			lbErrCodes err = ERR_NONE;
 
 			// Create a mapping instance for this combo box
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, _ComboboxMapper)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, ComboboxMapper)
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 			UAP(lb_I_KeyBase, key_cbName)
 
 			QI(cbName, lb_I_KeyBase, key_cbName)
@@ -2157,7 +2157,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 
 			*cbName = name->charrep();
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 			UAP(lb_I_KeyBase, key)
 
 			UAP(lb_I_String, t)
@@ -2187,7 +2187,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
 				fkpkPanel->show();
@@ -2198,8 +2198,8 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				uk = meta->getActiveDocument();
 				QI(uk, lb_I_Parameter, params)
 
-				UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 				UAP(lb_I_KeyBase, key)
 
 				QI(name, lb_I_KeyBase, key)
@@ -2285,7 +2285,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			err = FKColumnQuery->first();
 			/*...e*/
 
-			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
+			//UAP_REQUEST(getModuleInstance(), lb_I_String, VColumn)
 
 			// Define this function in my data model
 			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
@@ -2295,7 +2295,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
-				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				
 				// Pass through the target connection and the current query
 				fkpkPanel->init(sampleQuery.getPtr(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 				fkpkPanel->show();
@@ -2312,10 +2312,10 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 #endif
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				/*...sHave mapping to visible data for the combobox:64:*/
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, PKName)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable)
 
-				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, TargetPKColumn)
 
 				UAP(lb_I_Long, l)
 
@@ -2359,8 +2359,8 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 					/*...sHave data to fill into the combobox and create mappings:104:*/
-					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, data)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk)
 
 					data = ReplacementColumnQuery->getAsString(1);
 
@@ -2375,7 +2375,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 
 					cbox->Append(wxString(data->charrep()));
 
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
 
 					UAP(lb_I_Unknown, uk_possible_fk)
 					UAP(lb_I_KeyBase, key_cbox_pos)
@@ -2386,7 +2386,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 					cbox_pos++;
 
 					QI(key, lb_I_KeyBase, key_cbox_pos)
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk_long)
 
 					possible_fk_long->setData(possible_fk_pos);
 
@@ -2397,7 +2397,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 					if (DBerr != WARN_DB_NODATA)
 						// Only if not WARN_DB_NODATA
 						while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk)
+							UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk)
 							UAP(lb_I_Unknown, uk_possible_fk)
 							UAP(lb_I_KeyBase, key_cbox_pos)
 
@@ -2425,7 +2425,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 							cbox_pos++;
 
 							QI(key, lb_I_KeyBase, key_cbox_pos)
-							UAP_REQUEST(manager.getPtr(), lb_I_Long, possible_fk_long)
+							UAP_REQUEST(getModuleInstance(), lb_I_Long, possible_fk_long)
 
 							possible_fk_long->setData(possible_fk_pos);
 
@@ -2523,25 +2523,25 @@ void LB_STDCALL lbDatabasePanel::setMasterForm(lb_I_DatabaseForm* master, lb_I_P
 	_params = params;
 
 	if (masterForm == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, masterForm)
+		REQUEST(getModuleInstance(), lb_I_String, masterForm)
 	}
 	if (SourceFieldName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
 	}
 	if (SourceFieldValue == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
 	}
 	if (app == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, app)
+		REQUEST(getModuleInstance(), lb_I_String, app)
 	}
 	if (DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBName)
+		REQUEST(getModuleInstance(), lb_I_String, DBName)
 	}
 	if (DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	}
 	if (DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, DBPass)
 	}
 
 
@@ -2557,25 +2557,25 @@ void LB_STDCALL lbDatabasePanel::setDetailForm(lb_I_DatabaseForm* detail, lb_I_P
 	_params = params;
 
 	if (detailForm == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, detailForm)
+		REQUEST(getModuleInstance(), lb_I_String, detailForm)
 	}
 	if (SourceFieldName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
 	}
 	if (SourceFieldValue == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
 	}
 	if (app == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, app)
+		REQUEST(getModuleInstance(), lb_I_String, app)
 	}
 	if (DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBName)
+		REQUEST(getModuleInstance(), lb_I_String, DBName)
 	}
 	if (DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	}
 	if (DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, DBPass)
 	}
 
 
@@ -2613,8 +2613,8 @@ const char* LB_STDCALL lbDatabasePanel::getControlValue(const char* name) {
 		if (pos != -1) {
 			err = ERR_NONE;
 
-			UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+			UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
 			cbName->setData(name);
 
@@ -2708,10 +2708,10 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(const char* toTable) {
 	lbErrCodes err = ERR_NONE;
 
 	if (ignoredPKTables == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
+		REQUEST(getModuleInstance(), lb_I_Container, ignoredPKTables)
 	}
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 
@@ -2727,15 +2727,15 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(const char* toTable) {
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	_LOG << "lbDatabasePanel::updateFromMaster() called." LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newWhereClause)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newMasterIDQuery)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, actionID)
 
 	// Using the new = and += operators of the string interface.
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
@@ -2748,7 +2748,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	// Add the primary key names from the table, that are related to *&SourceFieldName
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 /*...sRetrieve parameter values:8:*/
 	parameter->setData("DBName");
@@ -2768,8 +2768,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	parameter->setData("actionID");
 	_params->getUAPLong(*&parameter, *&actionID);
 	if (actionID->getData() == -1) {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 
 		*msg = _trans("No action ID has been transferred!");
 
@@ -2823,7 +2823,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 				return;
 			}
 			UAP(lb_I_Query, correctionQuery)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 
 			database->init();
 			database->connect("lbDMF", "lbDMF", DBUser->charrep(), DBPass->charrep());
@@ -2882,7 +2882,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, MasterDetailRelationData)
+		REQUEST(getModuleInstance(), lb_I_Container, MasterDetailRelationData)
 	} else {
 		MasterDetailRelationData->deleteAll();
 	}
@@ -2930,7 +2930,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	UAP(lb_I_String, c)
 	if (err == ERR_NONE) {
 
-		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 		UAP(lb_I_Long, colValue)
 
 		err = PKQuery->first();
@@ -3257,13 +3257,13 @@ SkipHandleSimpleFilter:
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromDetail\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newWhereClause)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newMasterIDQuery)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, actionID)
 
 	_LOG << "lbDatabasePanel::updateFromDetail() called." LOG_
 
@@ -3279,7 +3279,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	// Add the primary key names from the table, that are related to *&SourceFieldName
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 /*...sRetrieve parameter values:8:*/
 	parameter->setData("DBName");
@@ -3318,7 +3318,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	int columns = _detail->getForeignColumns();
 
 	if (columns == 0) {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
 			/// \todo Fixing code.
@@ -3338,7 +3338,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				return;
 			}
 			UAP(lb_I_Query, correctionQuery)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 
 			database->init();
 			database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
@@ -3403,7 +3403,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, MasterDetailRelationData)
+		REQUEST(getModuleInstance(), lb_I_Container, MasterDetailRelationData)
 	} else {
 		MasterDetailRelationData->deleteAll();
 	}
@@ -3453,7 +3453,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	}
 
 	if (err == ERR_NONE) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 		UAP(lb_I_Long, colValue)
 
 		err = PKQuery->first();
@@ -3843,7 +3843,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	if (!database->isConnected()) {
 		sampleQuery = database->getQuery(_DBName->charrep(), 0);
@@ -3858,8 +3858,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	int columns = sampleQuery->getColumns();
 
 	for (int i = 1; i <= columns; i++) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, val)
 		UAP(lb_I_String, name)
 		name = sampleQuery->getColumnName(i);
 
@@ -3878,8 +3878,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				if (pos != -1) {
 					err = ERR_NONE;
 
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
 					cbName->setData(name->charrep());
 
@@ -3946,8 +3946,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					char* type = FFI->getControlType(name->charrep());
 
 					if (strcmp(type, "toolbarimagefile") == 0) {
-						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, controlname)
 						*controlname = name->charrep();
 						UAP(lb_I_KeyBase, key)
 						QI(controlname, lb_I_KeyBase, key)
@@ -4071,7 +4071,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	}
 
 	if (sampleQuery->update() != ERR_NONE) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
 		newTitle->setData(formName);
 
@@ -4116,8 +4116,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 				lbErrCodes err = ERR_NONE;
 
-				UAP_REQUEST(manager.getPtr(), lb_I_Long, key)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, key)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
 				cbName->setData(name->charrep());
 
@@ -4167,10 +4167,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 					char* type = FFI->getControlType(name->charrep());
 
 					if (strcmp(type, "toolbarimagefile") == 0) {
-						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, controlname)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, images)
 
 						*controlname = name->charrep();
 						UAP(lb_I_KeyBase, key)
@@ -4187,7 +4187,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 						if (strcmp(s->charrep(), "") == 0) {
 						} else {
-							UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
+							UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 							*toolbarfile += app->getDirLocation();
 
 #ifdef OSX
@@ -4537,7 +4537,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFormInitialized(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	lbErrCodes errUpdate = ERR_NONE;
 	_CL_LOG << "lbDatabasePanel::lbDBAdd() called. Have query: " << getQuery() LOG_
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	if (sampleQuery->isAdding() == 0) {
 		if (sampleQuery->dataFetched()) {
@@ -4547,7 +4547,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		}
 
 		if (sampleQuery->add() != ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
 			newTitle->setData(formName);
 
@@ -4658,8 +4658,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 					lbErrCodes err = ERR_NONE;
 
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key1)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
 					cbName->setData(key->charrep());
 
@@ -4786,7 +4786,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	_CL_LOG << "Determine update failed..." LOG_
 
 	if (errUpdate == ERR_UPDATE_FAILED) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 		_CL_LOG << "Updating after add failed." LOG_
 
 		newTitle->setData(formName);
@@ -4809,8 +4809,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				if (foreignkey != NULL) {
 					if (sampleQuery->isNull(foreignkey)) {
 						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
-						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, val)
 
 						*col = foreignkey;
 						*val = foreignkey_value;
@@ -4839,8 +4839,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				if (foreignkey != NULL) {
 					if (sampleQuery->isNull(foreignkey)) {
 						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
-						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, val)
 
 						*col = foreignkey;
 						*val = foreignkey_value;
@@ -4865,7 +4865,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 					if (meta->askYesNo("Error: Adding new record failed!\n\nDo you want to retry ?")) {
 						lbDBClear();
 						if (sampleQuery->update() != ERR_NONE) {
-							UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 							newTitle->setData(formName);
 							*newTitle += ": Add failed !";
 							_LOG << newTitle->charrep() LOG_
@@ -4890,7 +4890,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 	err = sampleQuery->remove();
 
 	if (err == ERR_DB_ROWDELETED) {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		meta->msgBox("Error", "Could not delete entry. It is in use.");
 		return ERR_NONE;
 	}
@@ -4991,9 +4991,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 				action = fa->getAction(fa->getActionID(formActions->getFormularActionEvent()));
 
 				/*...sBuild up parameter list:16:*/
-				UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, v)
+				UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, v)
 
 				parameter->setData("DBName");
 				v->setData(_DBName->charrep());
@@ -5011,7 +5011,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 				v->setData(base_formName);
 				param->setUAPString(*&parameter, *&v);
 
-				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+				UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 				parameter->setData("application");
 
 				_LOG << "Put parameters for configured action parameter list into container." LOG_
@@ -5073,7 +5073,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		char* reversedEvent = NULL;
 		UAP(lb_I_Integer, eventID)
 		QI(uk, lb_I_Integer, eventID)
-		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 		meta->setStatusText("Info", "Reversing event name to ID ...");
 		char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
 		if (strchr(eventName, '(') != NULL) {
@@ -5123,8 +5123,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 				int pos = cbox->GetSelection();
 				if (pos != -1) {
 					lbErrCodes err = ERR_NONE;
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 					cbName->setData(s->charrep());
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
@@ -5218,9 +5218,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		action = fa->getAction(fa->getActionID(reversedEvent));
 
 /*...sBuild up parameter list:16:*/
-		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, v)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, v)
 
 		parameter->setData("DBName");
 		v->setData(_DBName->charrep());
@@ -5248,7 +5248,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 			param->setUAPString(*&parameter, *&v);
 		}
 
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		parameter->setData("application");
 
 
@@ -5295,11 +5295,11 @@ void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 
 	if (o != NULL) {
 		lbErrCodes err = ERR_NONE;
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newfilename)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newfilename)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, controlname)
 
 		wxBitmapButton* bmb = (wxBitmapButton*) o;
 		*controlname = bmb->GetName().c_str();
@@ -5548,7 +5548,7 @@ lbPluginDatabasePanel::lbPluginDatabasePanel() {
 	dbForm = NULL;
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDatabasePanel::~lbPluginDatabasePanel() {
@@ -5582,7 +5582,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::peekImplementation() {
 
 	if (dbForm == NULL) {
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
-		dbPanel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	} else {
@@ -5601,7 +5601,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
-		dbPanel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 
 		QI(dbPanel, lb_I_Unknown, dbForm)
 	}

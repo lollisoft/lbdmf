@@ -392,7 +392,7 @@ lbErrCodes LB_STDCALL lbCallActivityHandler::CallActivity(lb_I_Unknown* uk) {
 lbCallActivityHandler::lbCallActivityHandler() {
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbCallActivityHandler::~lbCallActivityHandler() {
@@ -459,7 +459,7 @@ lbErrCodes LB_STDCALL lbPluginCallActivityHandler::setData(lb_I_Unknown* uk) {
 lbPluginCallActivityHandler::lbPluginCallActivityHandler() {
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginCallActivityHandler::~lbPluginCallActivityHandler() {
@@ -480,7 +480,7 @@ lbErrCodes LB_STDCALL lbPluginCallActivityHandler::autorun() {
 	
 	
 	lbCallActivityHandler* hdl = new lbCallActivityHandler();
-	hdl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	
 	
 	QI(hdl, lb_I_Unknown, ukCallActivity)
 	

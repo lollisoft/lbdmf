@@ -89,12 +89,12 @@ void LB_STDCALL UIWrapper::setAnswer(char* what) {
 lbErrCodes LB_STDCALL UIWrapper::askOpenFileReadStream(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, filepath)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, filepath)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, defaultdir)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, after)
 
 	UAP(lb_I_Parameter, param)
 
@@ -121,10 +121,10 @@ lbErrCodes LB_STDCALL UIWrapper::setStatusText(lb_I_Unknown* uk) {
         QI(uk, lb_I_Parameter, params)
 
         if (params != NULL) {
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, CallYield)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, CallYield)
 
                 *parameter = "Name";
                 params->getUAPString(*&parameter, *&name);
@@ -261,7 +261,7 @@ lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
 }
 lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 	if (LogonUser == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
        	LogonUser->setData(user);
@@ -270,7 +270,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 
 lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
 	if (LogonApplication == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
        	LogonApplication->setData(app);

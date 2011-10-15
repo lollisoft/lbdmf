@@ -133,7 +133,7 @@ lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
 	_CL_VERBOSE << "lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() called." LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {

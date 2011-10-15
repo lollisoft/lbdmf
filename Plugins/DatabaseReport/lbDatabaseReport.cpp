@@ -403,7 +403,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		_CL_VERBOSE << "Show previously created form." LOG_
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 		
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
@@ -415,7 +415,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		report->setName(reportname->charrep(), parameter->charrep());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
@@ -430,7 +430,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		report->show();	
 	} else {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 		
 		parameter->setData("DBName");
 		params->getUAPString(*&parameter, *&DBName);
@@ -455,14 +455,14 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		params->getUAPString(*&parameter, *&app);
 		
 		/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		
 		// Do I only print the report for current row (SourceFieldValue) ?
 		
 		// This report needs it's parent form. (Unsave cast)
 		//lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, user)
 		meta->getUserName(&user);		
 		
 		const char* b =
@@ -483,7 +483,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		sprintf(buffer, b, user->charrep(), app->charrep(), reportname->charrep());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 		UAP(lb_I_Query, query)
 		
 		database->init();
@@ -505,7 +505,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 			lbErrCodes err = query->first();
 			
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, id)
 				
 				/*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
@@ -527,9 +527,9 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				
 				if (err == ERR_NONE) {
 					/*...sTake result as the SQL query parameter for the report data:40:*/
-					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 					UAP(lb_I_Plugin, pl)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
 					
 					err = query1->first();
 					
@@ -566,7 +566,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						 The only way may be any kind of temporal default value.
 						 */
 						
-						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 						UAP(lb_I_GUI, gui)
 						
 						meta->getGUI(&gui);
@@ -621,29 +621,29 @@ void LB_STDCALL lbDBReportAction::setParameter(lb_I_ActionStep_Parameters* myPar
 long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 	/*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, masterForm)
+		REQUEST(getModuleInstance(), lb_I_String, masterForm)
 	}
 	if (SourceFieldName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
 	}
 	if (SourceFieldValue == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
 	}
 	if (app == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, app)
+		REQUEST(getModuleInstance(), lb_I_String, app)
 	}
 	if (DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBName)
+		REQUEST(getModuleInstance(), lb_I_String, DBName)
 	}
 	if (DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	}
 	if (DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, DBPass)
 	}
 	/*...e*/
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
 	
 	database->init();
@@ -670,7 +670,7 @@ long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		while(err == ERR_NONE) {
 			_CL_LOG << "Open report in while loop." LOG_
 			/*...sFor each row open the report with given params:24:*/
-			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, what)
 			
 			what = query->getAsString(1);
 			what->trim();
@@ -684,7 +684,7 @@ long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		if (err == WARN_DB_NODATA) {
 			_CL_LOG << "Open report in WARN_DB_NODATA." LOG_
 			/*...sOpen the report with given params:24:*/
-			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, what)
 			
 			what = query->getAsString(1);
 			what->trim();
@@ -815,7 +815,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() {
 	
 	if (dbReport == NULL) {
 		lbDatabaseReport* _dbReport = new lbDatabaseReport();
-		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(_dbReport, lb_I_Unknown, dbReport)
 	} else {
@@ -836,7 +836,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
 		lbDatabaseReport* _dbReport = new lbDatabaseReport();
-		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(_dbReport, lb_I_Unknown, dbReport)
 	}
@@ -1294,7 +1294,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	int ii = 1;
 	
 	/*...sPrepare query:8:*/
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
 	
 	database->init();
@@ -1310,7 +1310,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 	/*...sRebuild query\44\ if there are conditions:16:*/
 	if ((hasConditions) && (query->hasColumnName(AndConditionColumn->charrep())) && (err == ERR_NONE)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newQuery)
 		
 		skipFilterColumn = true;
 		
@@ -1709,8 +1709,8 @@ void LB_STDCALL lbDatabaseReport::addAndCondition(char* column, char* value) {
 	hasConditions = true;
 	
 	if (AndConditionColumn == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, AndConditionColumn)
-		REQUEST(manager.getPtr(), lb_I_String, AndConditionValue)
+		REQUEST(getModuleInstance(), lb_I_String, AndConditionColumn)
+		REQUEST(getModuleInstance(), lb_I_String, AndConditionValue)
 	}
 	
 	*AndConditionColumn = column;

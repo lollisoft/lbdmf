@@ -69,7 +69,7 @@ public:
 	virtual int LB_STDCALL getRefCount() = 0;
 	virtual char const* LB_STDCALL getClassName() = 0;
 	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, const char* file, int line) = 0;
-	virtual lb_I_Module*   LB_STDCALL getModuleManager() = 0;
+	virtual lb_I_Module*   LB_STDCALL getModuleInstance() = 0;
 	virtual lbErrCodes LB_STDCALL queryInterface(const char* name, void** unknown, const char* file, int line) const = 0;
 	virtual char const* LB_STDCALL _queryInterface(const char* name, void** unknown, const char* file, int line) = 0;
 	virtual lb_I_Unknown* LB_STDCALL clone(const char* file, int line) const = 0;

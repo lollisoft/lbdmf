@@ -83,14 +83,14 @@ lbErrCodes LB_STDCALL lbFormularActionsModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbFormularActionsModel::addFormularAction(long formular, long action,  const char* event, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Formular)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionID)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Event)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Formular)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Event)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	*Event = event;
 	Formular->setData(formular);
@@ -120,7 +120,7 @@ long  LB_STDCALL lbFormularActionsModel::addFormularAction(long formular, long a
 
 bool  LB_STDCALL lbFormularActionsModel::selectFormularAction(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -129,7 +129,7 @@ bool  LB_STDCALL lbFormularActionsModel::selectFormularAction(long _id) {
 	uk = FormularActions->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 	
@@ -169,7 +169,7 @@ void		LB_STDCALL lbFormularActionsModel::deleteUnmarked() {
 	while (hasMoreFormularActions()) {
 		setNextFormularAction();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularActionID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -187,7 +187,7 @@ void		LB_STDCALL lbFormularActionsModel::deleteMarked() {
 	while (hasMoreFormularActions()) {
 		setNextFormularAction();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularActionID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -209,7 +209,7 @@ bool  LB_STDCALL lbFormularActionsModel::hasMoreFormularActions() {
 
 void  LB_STDCALL lbFormularActionsModel::setNextFormularAction() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -293,7 +293,7 @@ lbPluginFormularActionsModel::lbPluginFormularActionsModel() {
 	_CL_VERBOSE << "lbPluginFormularActionsModel::lbPluginFormularActionsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginFormularActionsModel::~lbPluginFormularActionsModel() {
@@ -322,7 +322,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularActionsModel::peekImplementation() {
 
 	if (ukFormularActions == NULL) {
 		lbFormularActionsModel* ActionsModel = new lbFormularActionsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukFormularActions)
 	} else {
@@ -341,7 +341,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularActionsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbFormularActionsModel* ActionsModel = new lbFormularActionsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukFormularActions)
 	}

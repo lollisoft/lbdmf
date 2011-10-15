@@ -113,7 +113,7 @@ lbMasterFormAction::lbMasterFormAction() {
 	myActionID = -1;
 	masterForm = NULL;
 	
-	further_lock = 1;
+	;
 }
 
 lbMasterFormAction::~lbMasterFormAction() {
@@ -132,10 +132,10 @@ void LB_STDCALL lbMasterFormAction::setActionID(long id) {
 bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 	_LOG "lbMasterFormAction::openMasterForm() called." LOG_
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, actionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);
@@ -271,7 +271,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		}
 
 		/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
-		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, user)
 		meta->getUserName(&user);
 
 		const char* b =
@@ -327,7 +327,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 			lbErrCodes err = query->first();
 
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, id)
 
 				/*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
@@ -347,9 +347,9 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 				if (err == ERR_NONE) {
 					/*...sTake result as the SQL query parameter for the detail form:40:*/
-					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 					UAP(lb_I_Plugin, pl)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
 
 					err = query->first();
 
@@ -360,7 +360,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						sql = query->getAsString(1);
 
 						UAP(lb_I_DatabaseForm, form)
-						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 						UAP(lb_I_GUI, gui)
 
 						meta->getGUI(&gui);
@@ -395,8 +395,8 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 						QI(f, lb_I_DatabaseForm, detail)
 
-						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 
 						detail->getPrimaryColumns();
 
@@ -461,29 +461,29 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	_LOG "lbMasterFormAction::execute() called" LOG_
 	/*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, detailForm)
+		REQUEST(getModuleInstance(), lb_I_String, detailForm)
 	}
 	if (SourceFieldName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
 	}
 	if (SourceFieldValue == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+		REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
 	}
 	if (app == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, app)
+		REQUEST(getModuleInstance(), lb_I_String, app)
 	}
 	if (DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBName)
+		REQUEST(getModuleInstance(), lb_I_String, DBName)
 	}
 	if (DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	}
 	if (DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, DBPass)
 	}
 	/*...e*/
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
@@ -571,7 +571,7 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 
 		while(err == ERR_NONE) {
 			/*...sFor each row open the detail form with given params:24:*/
-			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, what)
 
 			what = query->getAsString(1);
 			what->trim();
@@ -584,7 +584,7 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 
 		if (err == WARN_DB_NODATA) {
 			/*...sOpen the detail form with given params:24:*/
-			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, what)
 
 			what = query->getAsString(1);
 			what->trim();

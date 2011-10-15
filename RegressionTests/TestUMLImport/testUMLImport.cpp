@@ -130,10 +130,10 @@ UIWrapper::~UIWrapper() {
 lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 
 	UAP(lb_I_Parameter, param)
 
@@ -232,16 +232,15 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 
 	// Get the event manager
 
-	lb_I_Module* m = *&manager;
 	printf("Get an event manager\n");
-	REQUEST(m, lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 
 
 	if (user == NULL) {
 	        _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
 		if (LogonUser == NULL) {
-	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	        REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	        LogonUser->setData(user);
 	}
 
@@ -249,13 +248,13 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
 	if (LogonApplication == NULL) {
-	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	        REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	        LogonApplication->setData(app);
 	}
 
 	eman->registerEvent("askYesNo", askYesNo);
 
-	REQUEST(m, lb_I_Dispatcher, dispatcher)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 
 	registerEventHandler(dispatcher.getPtr());
@@ -274,7 +273,7 @@ lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
 }
 lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 	if (LogonUser == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
        	LogonUser->setData(user);
@@ -283,7 +282,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 
 lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
 	if (LogonApplication == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
        	LogonApplication->setData(app);
@@ -349,7 +348,7 @@ int main(int argc, char *argv[]) {
 		PM->initialize();
 
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 
         myUIWrapper->initialize();
 

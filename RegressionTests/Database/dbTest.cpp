@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 	lb_I_Module* mm = NULL;
 
 	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+	
 
 	_CL_LOG << "Database regression tests..." LOG_
 

@@ -88,7 +88,7 @@ void		LB_STDCALL lbActionsModel::deleteUnmarked() {
 	while (hasMoreActions()) {
 		setNextAction();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -106,7 +106,7 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 	while (hasMoreActions()) {
 		setNextAction();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -121,14 +121,14 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 
 long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, long target, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Source)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Target)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Source)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Target)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_CL_VERBOSE << "Add a parameter to lbActionsModel: " << name LOG_
 
@@ -163,7 +163,7 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 
 bool  LB_STDCALL lbActionsModel::selectAction(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -172,7 +172,7 @@ bool  LB_STDCALL lbActionsModel::selectAction(long _id) {
 	uk = Actions->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -218,7 +218,7 @@ bool  LB_STDCALL lbActionsModel::hasMoreActions() {
 
 void  LB_STDCALL lbActionsModel::setNextAction() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -308,7 +308,7 @@ lbPluginActionsModel::lbPluginActionsModel() {
 	_CL_VERBOSE << "lbPluginActionsModel::lbPluginActionsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionsModel::~lbPluginActionsModel() {
@@ -337,7 +337,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionsModel::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbActionsModel* ActionsModel = new lbActionsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	} else {
@@ -356,7 +356,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbActionsModel* ActionsModel = new lbActionsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	}

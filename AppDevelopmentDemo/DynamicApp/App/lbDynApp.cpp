@@ -2986,11 +2986,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
 
         // Get the event manager
 
-        lb_I_Module* m = *&manager;
+        REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 
-        REQUEST(m, lb_I_EventManager, eman)
-
-        REQUEST(m, lb_I_Dispatcher, dispatcher)
+        REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
         dispatcher->setEventManager(eman.getPtr());
 
         if (metaapp == NULL) {

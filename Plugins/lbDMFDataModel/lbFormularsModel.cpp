@@ -84,17 +84,17 @@ lbErrCodes LB_STDCALL lbFormularsModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, FormularName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, ToolbarImage)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuHilfe)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, AnwendungID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, FormularName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ToolbarImage)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, EventName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuHilfe)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, AnwendungID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	*FormularName = name;
 	*ToolbarImage = toolbarimage;
@@ -143,7 +143,7 @@ void		LB_STDCALL lbFormularsModel::deleteUnmarked() {
 	while (hasMoreFormulars()) {
 		setNextFormular();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -161,7 +161,7 @@ void		LB_STDCALL lbFormularsModel::deleteMarked() {
 	while (hasMoreFormulars()) {
 		setNextFormular();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -176,8 +176,8 @@ void		LB_STDCALL lbFormularsModel::deleteMarked() {
 bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -238,7 +238,7 @@ bool  LB_STDCALL lbFormularsModel::hasMoreFormulars() {
 
 void  LB_STDCALL lbFormularsModel::setNextFormular() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 		
@@ -347,7 +347,7 @@ lbPluginFormularsModel::lbPluginFormularsModel() {
 	_CL_VERBOSE << "lbPluginFormularsModel::lbPluginFormularsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginFormularsModel::~lbPluginFormularsModel() {
@@ -376,7 +376,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularsModel::peekImplementation() {
 
 	if (ukFormularsModel == NULL) {
 		lbFormularsModel* FormularsModel = new lbFormularsModel();
-		FormularsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(FormularsModel, lb_I_Unknown, ukFormularsModel)
 	} else {
@@ -395,7 +395,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbFormularsModel* FormularsModel = new lbFormularsModel();
-		FormularsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(FormularsModel, lb_I_Unknown, ukFormularsModel)
 	}
@@ -451,17 +451,17 @@ lbErrCodes LB_STDCALL lbFormularFieldsModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* tablename, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, TableName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, dbType)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, IsFK)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, fkName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, fkTable)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, dbType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, IsFK)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	*Name = name;
 	*TableName = tablename;
@@ -533,7 +533,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteUnmarked() {
 	while (hasMoreFields()) {
 		setNextField();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -551,7 +551,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteMarked() {
 	while (hasMoreFields()) {
 		setNextField();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -566,8 +566,8 @@ void		LB_STDCALL lbFormularFieldsModel::deleteMarked() {
 bool LB_STDCALL lbFormularFieldsModel::selectField(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -628,7 +628,7 @@ bool  LB_STDCALL lbFormularFieldsModel::hasMoreFields() {
 
 void  LB_STDCALL lbFormularFieldsModel::setNextField() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 		
@@ -740,7 +740,7 @@ lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() {
 	_CL_VERBOSE << "lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginFormularFieldsModel::~lbPluginFormularFieldsModel() {
@@ -769,7 +769,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularFieldsModel::peekImplementation() {
 
 	if (ukFormularsModel == NULL) {
 		lbFormularFieldsModel* FormularsModel = new lbFormularFieldsModel();
-		FormularsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(FormularsModel, lb_I_Unknown, ukFormularsModel)
 	} else {
@@ -788,7 +788,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularFieldsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbFormularFieldsModel* FormularsModel = new lbFormularFieldsModel();
-		FormularsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(FormularsModel, lb_I_Unknown, ukFormularsModel)
 	}

@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.67 2011/10/15 13:14:05 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.68 2011/10/15 21:47:12 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.68  2011/10/15 21:47:12  lollisoft
+ * Removed all code that is obsolete. Current code compiles but still does not run.
+ *
  * Revision 1.67  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -523,7 +526,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
 		_TRMemValidate(e);
 	
         lbSkipListElement* el = new lbSkipListElement(*e, *key, cloning);
-        el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+        
 
         insert(el);
 
@@ -551,7 +554,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
 #ifdef bla
     if (container_data == NULL) { 
         lbElement* _data = new lbElement(*e, *key, cloning); 
-        _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
+         
 
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); 
         if (container_data == NULL) _LOG << "Could not get unknown interface of lbElement!" LOG_
@@ -570,14 +573,14 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
             if (next != NULL) { 
                 if (next->getKey() < *key) { 
                     lbElement* el = new lbElement(*e, *key, cloning, next); 
-                    el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
+                     
                     temp->setNext(el); 
                     return ERR_NONE; 
                 } 
             } 
             else { 
             	lbElement* el = new lbElement(*e, *key, next); 
-            	el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
+            	 
                 temp->setNext(el); 
                 return ERR_NONE; 
             } 
@@ -940,8 +943,8 @@ lbSkipListElement::lbSkipListElement() {
 	next = NULL; 
 	 
 	key = NULL; 
-	manager = NULL;
-	further_lock = 1;
+	
+	;
 }
 
 lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
@@ -950,7 +953,7 @@ lbSkipListElement::lbSkipListElement(const lb_I_Element &e) {
 	next = e.getNext(); 
 	data = e.getObject();
 	key = e.getKey();
-	manager = NULL;
+	
 }
 
 //IMPLEMENT_LB_ELEMENT(lbSkipListElement)
@@ -960,7 +963,7 @@ void LB_STDCALL lbSkipListElement::detachData() {
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) {
     
 	
-    manager = NULL;
+    
     next = _next;
     if (_next != NULL) {
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__);

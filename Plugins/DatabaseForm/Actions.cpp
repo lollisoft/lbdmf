@@ -125,7 +125,7 @@ lbAction::lbAction() {
 	myActionID = -1;
 	initialized = false;
 	
-	further_lock = 1;
+	;
 }
 
 lbAction::~lbAction() {
@@ -601,7 +601,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 	if (actions == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, actions)
+		REQUEST(getModuleInstance(), lb_I_Container, actions)
 	}
 
 	parameter->setData("id");
@@ -660,7 +660,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 			makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 			_LOG << "Try to load a plugin at: " << pluginModule LOG_
-			if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+			if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 				_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 			}
 			free(pluginModule);
@@ -675,7 +675,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				meta->msgBox("Error", errmsg->charrep());
 				return 0;
 			}
-			result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
 			actions->insert(&result, &keybase);
 /*...e*/
 		}
@@ -712,14 +712,14 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 		if (query->query(q) == ERR_NONE) {
 			lbErrCodes err = ERR_NONE;
-			UAP_REQUEST(manager.getPtr(), lb_I_String, key)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, key)
 			UAP(lb_I_KeyBase, ukey)
 
 			err = query->first();
 
 			while (err == ERR_NONE) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, action_handler)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, module)
 				UAP(lb_I_DelegatedAction, action)
 
 				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in while block." LOG_
@@ -751,7 +751,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
-						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+						if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 						}
 
@@ -770,7 +770,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						}
 
 
-						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+						
 						actions->insert(&result, &ukey);
 						/*...e*/
 					}
@@ -802,8 +802,8 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			}
 
 			if (err == WARN_DB_NODATA) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, action_handler)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, module)
 				UAP(lb_I_DelegatedAction, action)
 
 				_LOG << "lbAction::delegate() executes action step ID: " << id->charrep() << " in if block." LOG_
@@ -833,7 +833,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 						makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 						_LOG << "Try to load a plugin at: " << pluginModule LOG_
-						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+						if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 							_LOG << "Error: Plugin not found. (" << pluginModule << ")" LOG_
 						}
 
@@ -851,7 +851,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 							return 0;
 						}
 
-						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+						
 						actions->insert(&result, &ukey);
 						/*...e*/
 					}
@@ -893,7 +893,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, initialNode)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 	loadDataModel();
 
@@ -1023,7 +1023,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				lbErrCodes err = query->first();
 
 				while(err == ERR_NONE) {
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 
 					id = query->getAsLong(1);
 
@@ -1052,7 +1052,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				}
 
 				if (err == WARN_DB_NODATA) {
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 
 					id = query->getAsLong(1);
 

@@ -241,7 +241,7 @@ lbErrCodes LB_STDCALL lbPluginReadTextFileToString::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
 	lbReadTextFileToString* r = new lbReadTextFileToString();
-	r->setModuleManager(manager.getPtr(), __FILE__, __LINE__);	
+		
 	QI(r, lb_I_Unknown, ukReadFileToString) 
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
@@ -264,7 +264,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReadTextFileToString::peekImplementation() {
 	
 	if (ukReadFileToString == NULL) {
 		lbReadTextFileToString* r = new lbReadTextFileToString();
-		r->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(r, lb_I_Unknown, ukReadFileToString)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -282,7 +282,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReadTextFileToString::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
 		lbReadTextFileToString* r = new lbReadTextFileToString();
-		r->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(r, lb_I_Unknown, ukReadFileToString)
 	}

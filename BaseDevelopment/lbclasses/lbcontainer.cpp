@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.36 2011/10/15 13:14:05 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.37 2011/10/15 21:47:12 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.37  2011/10/15 21:47:12  lollisoft
+ * Removed all code that is obsolete. Current code compiles but still does not run.
+ *
  * Revision 1.36  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -234,7 +237,7 @@ lbContainer::lbContainer() {
     iterator = NULL;
     count = 0;
     container_data = NULL;
-    manager = NULL;
+    
 }
 
 lbContainer::~lbContainer() {

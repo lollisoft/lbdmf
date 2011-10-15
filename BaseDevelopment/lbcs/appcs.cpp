@@ -536,7 +536,7 @@ lbErrCodes LB_STDCALL lbAppServerThread::addProtocolHandler(const char* handlern
 
 	if (dispatchTable->exists(&hkey) == 0) {
 		lbDispatchProto* proto = new lbDispatchProto();
-		proto->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		proto->setProto(handlername, handlerInstance, cbFn);
 		UAP(lb_I_Unknown, uk)
 		QI(proto, lb_I_Unknown, uk)
@@ -683,7 +683,7 @@ void lbAppServerChildThread::ThreadFunction(lb_I_Thread* threadHost) {
 
 			lbProtocolThread* threadimpl = new lbProtocolThread();
 
-			threadimpl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
 
 			threadimpl->init(*&clt, this);
 
@@ -910,7 +910,7 @@ lbErrCodes LB_STDCALL lbAppServerChildThread::addProtocolHandler(const char* han
 
 	if (dispatchTable->exists(&hkey) == 0) {
 		lbDispatchProto* proto = new lbDispatchProto();
-		proto->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		proto->setProto(handlername, handlerInstance, cbFn);
 		UAP(lb_I_Unknown, uk)
 		QI(proto, lb_I_Unknown, uk)
@@ -1151,7 +1151,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 		QI(moduleThread, lb_I_Unknown, ukThread)
 
 		lbAppServerChildThread* impl = new lbAppServerChildThread();
-		impl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		QI(impl, lb_I_ApplicationServerThread, thread_impl)	
 		QI(impl, lb_I_ThreadImplementation, ti)
 
@@ -1321,7 +1321,7 @@ void LB_STDCALL lbAppServer::run() {
 
 			lbAppServerThread* threadimpl = new lbAppServerThread();
 
-			threadimpl->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
 
 			threadimpl->init(*&clt, this);
 
@@ -1546,7 +1546,7 @@ lbErrCodes LB_STDCALL lbAppServer::addProtocolHandler(const char* handlername, l
 
 	if (dispatchTable->exists(&hkey) == 0) {
 		lbDispatchProto* proto = new lbDispatchProto();
-		proto->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		proto->setProto(handlername, handlerInstance, cbFn);
 		UAP(lb_I_Unknown, uk)
 		QI(proto, lb_I_Unknown, uk)
@@ -1849,7 +1849,7 @@ lbErrCodes LB_STDCALL lbAppClient::addCallbackHandler(const char* handlername,
 	*s = handlername;
 
 	lbDispatchFn* dfn = new lbDispatchFn();
-	dfn->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	
 	UAP(lb_I_Unknown, ukDfn)
 	
 	dfn->setFunction(handlername, NULL, cbFn);

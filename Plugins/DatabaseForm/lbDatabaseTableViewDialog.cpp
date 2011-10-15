@@ -178,7 +178,7 @@ lbDatabaseTableViewDialog::lbDatabaseTableViewDialog()
 	panel = new lbDatabaseTableViewPanel();
 	_created = true;
 	
-	further_lock = 1;
+	;
 }
 /*...e*/
 /*...slbDatabaseTableViewDialog\58\\58\\126\lbDatabaseTableViewDialog\40\\41\:0:*/
@@ -233,7 +233,7 @@ void LB_STDCALL lbDatabaseTableViewDialog::init(const char* _SQLString, const ch
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* sizerPanel  = new wxBoxSizer(wxHORIZONTAL);
 
-	panel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 
 	panel->create(this->GetId());
 
@@ -520,7 +520,7 @@ lbPluginDatabaseTableViewDialog::lbPluginDatabaseTableViewDialog() {
 	dbForm = NULL;
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDatabaseTableViewDialog::~lbPluginDatabaseTableViewDialog() {
@@ -554,7 +554,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewDialog::peekImplementation() {
 
 	if (dbForm == NULL) {
 		lbDatabaseTableViewDialog* dbDialog = new lbDatabaseTableViewDialog();
-		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(dbDialog, lb_I_Unknown, dbForm)
 	} else {
@@ -573,7 +573,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseTableViewDialog::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDatabaseTableViewDialog* dbDialog = new lbDatabaseTableViewDialog();
-		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(dbDialog, lb_I_Unknown, dbForm)
 	}

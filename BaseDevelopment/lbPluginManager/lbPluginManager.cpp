@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.89 $
+* $Revision: 1.90 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.89 2011/10/15 13:14:04 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.90 2011/10/15 21:47:12 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.90  2011/10/15 21:47:12  lollisoft
+* Removed all code that is obsolete. Current code compiles but still does not run.
+*
 * Revision 1.89  2011/10/15 13:14:04  lollisoft
 * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
 * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -691,7 +694,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 	strcat(pluginModule, module);
 
 	UAP(lb_I_Unknown, ukPlugin)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
 	pluginName->setData(module);
 
 	UAP(lb_I_KeyBase, key)
@@ -703,12 +706,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 		free(pluginModule);
 		free(pluginDir);
 	} else {
-		if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
+		if (getModuleInstance()->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
 
 			// It may be a Microsoft compiled plugin...
-			if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
+			if (getModuleInstance()->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
 
-				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+				
 
 				PluginModules->insert(&ukPlugin, &key);
 
@@ -733,7 +736,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 			return false;
 
 		} else {
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+			
 			PluginModules->insert(&ukPlugin, &key);
 
 			UAP(lb_I_Unknown, ukPlugin1)
@@ -806,7 +809,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 	strcat(pluginModule, module);
 
 	UAP(lb_I_Unknown, ukPlugin)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
 	pluginName->setData(module);
 
 	UAP(lb_I_KeyBase, key)
@@ -818,15 +821,15 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 		free(pluginModule);
 		free(pluginDir);
 	} else {
-		if (manager->makeInstance(PREFIX "instanceOfPluginServerModule", pluginModule, &ukPlugin) != ERR_NONE) {
+		if (getModuleInstance()->makeInstance(PREFIX "instanceOfPluginServerModule", pluginModule, &ukPlugin) != ERR_NONE) {
 
 			// It may be a Microsoft compiled plugin...
-			if (manager->makeInstance("instanceOfPluginServerModule", pluginModule, &ukPlugin) == ERR_NONE) {
+			if (getModuleInstance()->makeInstance("instanceOfPluginServerModule", pluginModule, &ukPlugin) == ERR_NONE) {
 				UAP(lb_I_Unknown, ukPlugin1)
 				UAP(lb_I_ApplicationServerModul, plM)
 				UAP(lb_I_ApplicationServerModul, plMTest)
 
-				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+				
 
 				QI(ukPlugin, lb_I_ApplicationServerModul, plMTest)
 
@@ -852,7 +855,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 			UAP(lb_I_ApplicationServerModul, plM)
 			UAP(lb_I_ApplicationServerModul, plMTest)
 
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+			
 
 			QI(ukPlugin, lb_I_ApplicationServerModul, plMTest)
 
@@ -924,7 +927,7 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 	strcat(pluginModule, module);
 
 	UAP(lb_I_Unknown, ukPlugin)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
 	pluginName->setData(module);
 
 	UAP(lb_I_KeyBase, key)
@@ -936,12 +939,12 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 		free(pluginModule);
 		free(pluginDir);
 	} else {
-		if (manager->makeInstance(PREFIX "instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) != ERR_NONE) {
+		if (getModuleInstance()->makeInstance(PREFIX "instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) != ERR_NONE) {
 
 			// It may be a Microsoft compiled plugin...
-			if (manager->makeInstance("instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) == ERR_NONE) {
+			if (getModuleInstance()->makeInstance("instanceOfPluginUnitTestModule", pluginModule, &ukPlugin) == ERR_NONE) {
 
-				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+				
 
 				PluginUnitTestModules->insert(&ukPlugin, &key);
 
@@ -965,7 +968,7 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 			return false;
 
 		} else {
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+			
 			PluginUnitTestModules->insert(&ukPlugin, &key);
 
 			UAP(lb_I_Unknown, ukPlugin1)
@@ -1004,7 +1007,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginModules != NULL) {
 			PluginModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginModules)
 	}
 
 	if (!firstServerEnumerate) {
@@ -1013,7 +1016,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginServerModules != NULL) {
 			PluginServerModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginServerModules)
 	}
 
 	if (!firstUnitTestEnumerate) {
@@ -1022,7 +1025,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginUnitTestModules != NULL) {
 			PluginUnitTestModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginUnitTestModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginUnitTestModules)
 	}
 
 	_finddata_t find;
@@ -1112,7 +1115,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginModules != NULL) {
 			PluginModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginModules)
 	}
 
 	if (!firstServerEnumerate) {
@@ -1121,7 +1124,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginServerModules != NULL) {
 			PluginServerModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginServerModules)
 	}
 
 	if (!firstUnitTestEnumerate) {
@@ -1130,7 +1133,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		if (PluginUnitTestModules != NULL) {
 			PluginUnitTestModules--;
 		}
-		REQUEST(manager.getPtr(), lb_I_Container, PluginUnitTestModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginUnitTestModules)
 	}
 
 	const char* mask = "*.so";
@@ -1287,14 +1290,14 @@ void LB_STDCALL lbPluginManager::initialize() {
 	}
 
 	if (PluginModules == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginModules)
 	}
 
 	if (PluginServerModules == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, PluginServerModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginServerModules)
 	}
 	if (PluginUnitTestModules == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, PluginUnitTestModules)
+		REQUEST(getModuleInstance(), lb_I_Container, PluginUnitTestModules)
 	}
 
 	const char* mask = "*.so";
@@ -2059,7 +2062,7 @@ lbPlugin::lbPlugin() {
 	_version = NULL;
 	
 	
-	further_lock = 1;
+	;
 	postInitialized = false;
 	
 	//	implementation = NULL;
@@ -2204,9 +2207,9 @@ void LB_STDCALL lbPlugin::preinitialize() {
 	
 	_CL_VERBOSE << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
 	
-	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+	if (getModuleInstance()->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
 		
-		ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(ukPlugin, lb_I_Unknown, implementation)
 		
@@ -2217,10 +2220,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		strcat(name, "instanceOf");
 		strcat(name, _name);
 		
-		if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
-			
-			ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);;
-			
+		if (getModuleInstance()->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
 			QI(ukPlugin, lb_I_Unknown, implementation)
 			
 			isPreInitialized = true;

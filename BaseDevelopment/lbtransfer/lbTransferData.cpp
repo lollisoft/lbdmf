@@ -218,7 +218,7 @@ int lbTransferData::incrementPosition() {
 int lbTransferData::getPacketType(LB_PACKET_TYPE & type) {
 	lbErrCodes err = ERR_NONE;
 	char buf[100] = "";
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 	UAP(lb_I_KeyBase, k)
 	integerKey->setData(currentPos);
 	QI(integerKey, lb_I_KeyBase, k)
@@ -555,7 +555,7 @@ void lbTransferData::add(const void* buf, int len, LB_PACKET_TYPE type) {
 		data->packet_type = type;
 		data->packet_no = ++packet_count;
 		memcpy(&(data->data), buf, len);
-		UAP_REQUEST(manager.getPtr(), lb_I_Transfer_DataObject, o)
+		UAP_REQUEST(getModuleInstance(), lb_I_Transfer_DataObject, o)
 		o->setTransferData(data);
 
 		if (o->getTransferData() == NULL) {
@@ -567,7 +567,7 @@ void lbTransferData::add(const void* buf, int len, LB_PACKET_TYPE type) {
 		}
 				
 		UAP(lb_I_KeyBase, key)
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer,  integerkey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer,  integerkey)
 		integerkey->setData(packet_count);
 		QI(integerkey, lb_I_KeyBase, key)
 

@@ -170,7 +170,7 @@ lbMutex::lbMutex()
 	
 	MyMutexNumber = 0;
 	
-	further_lock = 1;
+	;
 #ifdef WINDOWS
 	mutex = NULL;
 #endif
@@ -293,7 +293,7 @@ lbCritSect::lbCritSect() {
 	
 	critsect = NULL;
 	
-	further_lock = 1;
+	;
 }
 
 lbCritSect::~lbCritSect() {
@@ -327,13 +327,13 @@ lbLock::lbLock() {
 	name = NULL; 
 	cso = NULL; 
 	
-	further_lock = 1;
+	;
 	instance_counted = 0;
 	lastQIFile = miniString();
 	lastQILine = 0;
 	lastSMFile = miniString();
 	lastSMLine = 0;
-	manager = NULL;
+	
 	debug_macro = 0;
 }
 
@@ -560,7 +560,7 @@ int lbThread::threadCount = 0;
 lbThread::lbThread() {
 	
 	
-	further_lock = 1;
+	;
 	lb_ThreadId = 0x00000000;
 	
 /*...sTHREAD_VERBOSE:0:*/

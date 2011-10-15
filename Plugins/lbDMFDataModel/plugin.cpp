@@ -125,7 +125,7 @@ END_PLUGINS()
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {
 	
 	
-	further_lock = 1;
+	;
 	_CL_VERBOSE << "lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() called." LOG_
 }
 

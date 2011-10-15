@@ -173,8 +173,8 @@ lbInputStream::lbInputStream() {
 //lbLock lbLock(sect);
 	
 	
-	further_lock = 1;
-	manager = NULL;
+	;
+	
 	fin = NULL;
 	readBuffer = NULL;
 	readBufferSize = 0;

@@ -368,7 +368,7 @@ int main(int argc, char *argv[]) {
 
 			if (plM != NULL) {
 			        COUT << "Call initialize of plugin module." << ENDL;
-			        plM->setModuleManager(mm, __FILE__, __LINE__);
+			        
 			        plM->setModule(moduleName);
 			        plM->initialize();
 			}
@@ -389,7 +389,7 @@ int main(int argc, char *argv[]) {
 
 	                if (plM != NULL) {
 	                	COUT << "Call initialize of plugin module." << ENDL;
-	                	plM->setModuleManager(mm, __FILE__, __LINE__);
+	                	
 	                	plM->setModule(moduleName);
 	                	plM->initialize();
 	                }

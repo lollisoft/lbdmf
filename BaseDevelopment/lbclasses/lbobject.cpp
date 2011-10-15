@@ -105,7 +105,7 @@ lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
 lbLocale::lbLocale() {
 	
    	
-	further_lock = 1;
+	;
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
 	strcpy(_lang, "german");
@@ -136,7 +136,7 @@ void LB_STDCALL lbLocale::setTranslationData(lb_I_Unknown* uk) {
 void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if (translations == NULL) {
 		UAP(lb_I_Database, database)
 
@@ -199,7 +199,7 @@ void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 
-	        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, s1)
 
 	        s1 = sampleQuery->getAsString(1);
 
@@ -297,7 +297,7 @@ void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
 
 			strcpy(*text, to_translate);
 		} else {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, s1)
 			char* temp = *text;
 
 			*s1 = translations->getTranslationTranslated();
@@ -324,7 +324,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 void LB_STDCALL lbParameter::copyFrom(lb_I_Parameter* source) {
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -387,7 +387,7 @@ int LB_STDCALL lbParameter::Count() {
 void LB_STDCALL lbParameter::setCloning(bool doClone) {
 	cloning = doClone;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -400,7 +400,7 @@ void LB_STDCALL lbParameter::setCloning(bool doClone) {
 void LB_STDCALL lbParameter::setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -449,7 +449,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPContainer(lb_I_String*& parameter, lb_I
 void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -495,7 +495,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 void LB_STDCALL lbParameter::setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -534,7 +534,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPParameter(lb_I_String*& parameter, lb_I
 void LB_STDCALL lbParameter::setUAPLong(lb_I_String*& parameter, lb_I_Long*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -578,7 +578,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPLong(lb_I_String*& parameter, lb_I_Long
 void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -622,7 +622,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 void LB_STDCALL lbParameter::setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -669,7 +669,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPFileLocation(lb_I_String*& parameter, l
 void LB_STDCALL lbParameter::setUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -713,7 +713,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPDirLocation(lb_I_String*& parameter, lb
 void LB_STDCALL lbParameter::setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -757,7 +757,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPBoolean(lb_I_String*& parameter, lb_I_B
 void LB_STDCALL lbParameter::setUAPQuery(lb_I_String*& parameter, lb_I_Query*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		REQUEST(getModuleInstance(), lb_I_Container, parameters)
 		if (parameters == NULL) {
 			_LOG << "Error: Could not get container instance for parameres" LOG_
 			return;
@@ -1405,7 +1405,7 @@ char* LB_STDCALL lbString::charrep() const {
 lbFileLocation::lbFileLocation() {
 	
    	
-	further_lock = 1;
+	;
 	_path = NULL;
 }
 
@@ -1496,7 +1496,7 @@ char* LB_STDCALL lbFileLocation::charrep() const {
 lbDirLocation::lbDirLocation() {
 	
    	
-	further_lock = 1;
+	;
 	_path = NULL;
 }
 
@@ -1584,7 +1584,7 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 lbInteger::lbInteger() {
 	
    	
-	further_lock = 1;
+	;
 	integerdata = 0;
 	key = NULL;
 }
@@ -1648,7 +1648,7 @@ char* LB_STDCALL lbInteger::charrep() const {
 lbBoolean::lbBoolean() {
 	
    	
-	further_lock = 1;
+	;
 	integerdata = 0;
 	key = (char*) "false";
 }
@@ -1708,7 +1708,7 @@ char* LB_STDCALL lbBoolean::charrep() const {
 lbBinaryData::lbBinaryData() {
 	
    	
-	further_lock = 1;
+	;
 	blob = NULL;
 	size = 0L;
 }
@@ -1795,7 +1795,7 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 lbLong::lbLong() {
 	
    	
-	further_lock = 1;
+	;
 	longdata = 0;
 	key = NULL;
 }

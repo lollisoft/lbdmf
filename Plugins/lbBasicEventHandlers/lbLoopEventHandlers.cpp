@@ -306,7 +306,7 @@ lbErrCodes LB_STDCALL lbPluginLoopEventHandlers::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
 	lbLoopEventHandlers* XSLTTransformer = new lbLoopEventHandlers();
-	XSLTTransformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);	
+		
 	QI(XSLTTransformer, lb_I_Unknown, ukTransformer) 
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
@@ -329,7 +329,7 @@ lb_I_Unknown* LB_STDCALL lbPluginLoopEventHandlers::peekImplementation() {
 	
 	if (ukTransformer == NULL) {
 		lbLoopEventHandlers* transformer = new lbLoopEventHandlers();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -347,7 +347,7 @@ lb_I_Unknown* LB_STDCALL lbPluginLoopEventHandlers::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
 		lbLoopEventHandlers* transformer = new lbLoopEventHandlers();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	}

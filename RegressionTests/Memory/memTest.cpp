@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 	TRMemSetModuleName(__FILE__);
 
 	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+	
 
 #define MEM_TEST
 #define CONTAINER_TEST

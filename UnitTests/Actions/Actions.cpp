@@ -75,7 +75,7 @@ public:
 		
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
         myUIWrapper->initialize();
 		
 		// Be sure to not autoload
@@ -252,13 +252,10 @@ public:
 
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, module)
-		UAP(lb_I_Module, manager)
 		UAP(lb_I_Unknown, result)
 		UAP(lb_I_String, pluginPath)
 
-		manager = getModuleInstance();
-
-		ASSERT_EQUALS(true, manager != NULL)
+		ASSERT_EQUALS(true, getModuleInstance() != NULL)
 
 		char* pluginModule = NULL;
 		char* ah = (char*) malloc(strlen(PREFIX)+strlen(name)+1);
@@ -281,7 +278,7 @@ public:
 
 		ASSERT_EQUALS(true, result != NULL)
 
-		result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 
 		UAP(lb_I_DelegatedAction, action)
 		QI(result, lb_I_DelegatedAction, action)
@@ -528,7 +525,7 @@ public:
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
         myUIWrapper->initialize();
 
 		// Be sure to not autoload
@@ -601,7 +598,7 @@ public:
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
         myUIWrapper->initialize();
 
 		// Be sure to not autoload

@@ -248,7 +248,7 @@ lbPluginReportsModel::lbPluginReportsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginReportsModel::~lbPluginReportsModel() {
@@ -277,7 +277,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReports* Users_ApplicationModel = new lbReports();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -296,7 +296,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReports* Users_ApplicationModel = new lbReports();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -489,7 +489,7 @@ lbPluginReportParametersModel::lbPluginReportParametersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginReportParametersModel::~lbPluginReportParametersModel() {
@@ -518,7 +518,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportParameters* Users_ApplicationModel = new lbReportParameters();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -537,7 +537,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportParameters* Users_ApplicationModel = new lbReportParameters();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -796,7 +796,7 @@ lbPluginReportElementsModel::lbPluginReportElementsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginReportElementsModel::~lbPluginReportElementsModel() {
@@ -825,7 +825,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportElements* Users_ApplicationModel = new lbReportElements();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -844,7 +844,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportElements* Users_ApplicationModel = new lbReportElements();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -1026,7 +1026,7 @@ lbPluginReportElementTypesModel::lbPluginReportElementTypesModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginReportElementTypesModel::~lbPluginReportElementTypesModel() {
@@ -1055,7 +1055,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportElementTypes* Users_ApplicationModel = new lbReportElementTypes();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -1074,7 +1074,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportElementTypes* Users_ApplicationModel = new lbReportElementTypes();
-		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -1270,7 +1270,7 @@ lbPluginReportTextsModel::lbPluginReportTextsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginReportTextsModel::~lbPluginReportTextsModel() {
@@ -1299,7 +1299,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportTexts* reporttexts = new lbReportTexts();
-		reporttexts->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(reporttexts, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -1318,7 +1318,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportTexts* reporttexts = new lbReportTexts();
-		reporttexts->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(reporttexts, lb_I_Unknown, ukUserApplicationRelationModel)
 	}

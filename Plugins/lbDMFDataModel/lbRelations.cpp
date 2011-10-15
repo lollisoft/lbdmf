@@ -85,12 +85,12 @@ lbErrCodes LB_STDCALL lbUserApplicationRelationModel::setData(lb_I_Unknown*) {
 /*...slong  LB_STDCALL lbUserApplicationRelationModel\58\\58\addRelation\40\long app_id\44\ long user_id\44\ long _id\41\:0:*/
 long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long user_id, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, UserID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, AppID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, UserID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	UserID->setData(user_id);
 	AppID->setData(app_id);
@@ -118,7 +118,7 @@ long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long u
 /*...sbool  LB_STDCALL lbUserApplicationRelationModel\58\\58\selectRelation\40\long _id\41\:0:*/
 bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -127,7 +127,7 @@ bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 	uk = Relations->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -181,7 +181,7 @@ void		LB_STDCALL lbUserApplicationRelationModel::deleteUnmarked() {
 	while (hasMoreRelations()) {
 		setNextRelation();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -199,7 +199,7 @@ void		LB_STDCALL lbUserApplicationRelationModel::deleteMarked() {
 	while (hasMoreRelations()) {
 		setNextRelation();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -220,7 +220,7 @@ bool  LB_STDCALL lbUserApplicationRelationModel::hasMoreRelations() {
 /*...svoid  LB_STDCALL lbUserApplicationRelationModel\58\\58\setNextRelation\40\\41\:0:*/
 void  LB_STDCALL lbUserApplicationRelationModel::setNextRelation() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -303,7 +303,7 @@ lbPluginUserApplicationRelationModel::lbPluginUserApplicationRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginUserApplicationRelationModel::~lbPluginUserApplicationRelationModel() {
@@ -332,7 +332,7 @@ lb_I_Unknown* LB_STDCALL lbPluginUserApplicationRelationModel::peekImplementatio
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbUserApplicationRelationModel* Users_ApplicationModel = new lbUserApplicationRelationModel();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -351,7 +351,7 @@ lb_I_Unknown* LB_STDCALL lbPluginUserApplicationRelationModel::getImplementation
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbUserApplicationRelationModel* Users_ApplicationModel = new lbUserApplicationRelationModel();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -411,12 +411,12 @@ lbErrCodes LB_STDCALL lbApplicationFormularsRelationModel::setData(lb_I_Unknown*
 /*...slong  LB_STDCALL lbApplicationFormularsRelationModel\58\\58\addRelation\40\long app_id\44\ long user_id\44\ long _id\41\:0:*/
 long  LB_STDCALL lbApplicationFormularsRelationModel::addRelation(long app_id, long user_id, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, AppID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_LOG << "lbApplicationFormularsRelationModel::addRelation(" << app_id << ", " << user_id << ", " << _id << ")." LOG_
 	
@@ -446,7 +446,7 @@ long  LB_STDCALL lbApplicationFormularsRelationModel::addRelation(long app_id, l
 /*...sbool  LB_STDCALL lbApplicationFormularsRelationModel\58\\58\selectRelation\40\long _id\41\:0:*/
 bool  LB_STDCALL lbApplicationFormularsRelationModel::selectRelation(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -455,7 +455,7 @@ bool  LB_STDCALL lbApplicationFormularsRelationModel::selectRelation(long _id) {
 	uk = Relations->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -509,7 +509,7 @@ void		LB_STDCALL lbApplicationFormularsRelationModel::deleteUnmarked() {
 	while (hasMoreRelations()) {
 		setNextRelation();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -527,7 +527,7 @@ void		LB_STDCALL lbApplicationFormularsRelationModel::deleteMarked() {
 	while (hasMoreRelations()) {
 		setNextRelation();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -548,7 +548,7 @@ bool  LB_STDCALL lbApplicationFormularsRelationModel::hasMoreRelations() {
 /*...svoid  LB_STDCALL lbApplicationFormularsRelationModel\58\\58\setNextRelation\40\\41\:0:*/
 void  LB_STDCALL lbApplicationFormularsRelationModel::setNextRelation() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -631,7 +631,7 @@ lbPluginApplicationFormularsRelationModel::lbPluginApplicationFormularsRelationM
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginApplicationFormularsRelationModel::~lbPluginApplicationFormularsRelationModel() {
@@ -660,7 +660,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationFormularsRelationModel::peekImplemen
 
 	if (ukApplicationFormularsRelationModel == NULL) {
 		lbApplicationFormularsRelationModel* Users_ApplicationModel = new lbApplicationFormularsRelationModel();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukApplicationFormularsRelationModel)
 	} else {
@@ -679,7 +679,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationFormularsRelationModel::getImplement
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbApplicationFormularsRelationModel* Users_ApplicationModel = new lbApplicationFormularsRelationModel();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukApplicationFormularsRelationModel)
 	}

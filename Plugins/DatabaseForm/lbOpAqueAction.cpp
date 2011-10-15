@@ -112,7 +112,7 @@ lbOpAqueOperation::lbOpAqueOperation() {
 	
 	myActionID = -1;
 	
-	further_lock = 1;
+	;
 }
 
 lbOpAqueOperation::~lbOpAqueOperation() {
@@ -140,17 +140,17 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	long first_dst_actionid = 0;
 	_CL_LOG << "lbDecisionAction::execute()" LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, app)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFormName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFieldName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SourceFieldValue)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, app)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
 	params->getUAPString(*&parameter, *&DBName);

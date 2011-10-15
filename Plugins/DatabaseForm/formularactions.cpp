@@ -134,7 +134,7 @@ lb_I_Action* FormularActions::getAction(long id) {
 	
 	if (actions->exists(&key) == 0) {
 		lbAction* _action = new lbAction();
-		_action->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		_action->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 
 		actions->insert(&uk, &key);

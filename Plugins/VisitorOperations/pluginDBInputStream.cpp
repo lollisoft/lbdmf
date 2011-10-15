@@ -239,7 +239,7 @@ lbDatabaseInputStream::~lbDatabaseInputStream() {
 /*...e*/
 
 bool LB_STDCALL lbDatabaseInputStream::begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass) {
-	REQUEST(manager.getPtr(), lb_I_Database, db)
+	REQUEST(getModuleInstance(), lb_I_Database, db)
 
 	bool ret = true;
 
@@ -2176,10 +2176,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Application*) {
 	// Get the document via the active document from meta application.
 	// This way no extra interface is needed (container with named elements)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -2309,7 +2309,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::peekImplementation() {
 
 	if (impl == NULL) {
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -2328,7 +2328,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(InputStream, lb_I_Unknown, impl)
 	}

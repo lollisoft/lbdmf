@@ -92,7 +92,7 @@ void		LB_STDCALL lbActionStepsModel::deleteUnmarked() {
 	while (hasMoreActionSteps()) {
 		setNextActionStep();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionStepID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -110,7 +110,7 @@ void		LB_STDCALL lbActionStepsModel::deleteMarked() {
 	while (hasMoreActionSteps()) {
 		setNextActionStep();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionStepID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -125,16 +125,16 @@ void		LB_STDCALL lbActionStepsModel::deleteMarked() {
 
 long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Bezeichnung)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionId)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, OrderNo)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, What)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Bezeichnung)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionId)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, OrderNo)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_CL_VERBOSE << "Add a parameter to lbActionStepsModel: Bezeichnung: " << bezeichnung << ", ActionID = " << actionid LOG_
 
@@ -185,7 +185,7 @@ void LB_STDCALL lbActionStepsModel::unmark() {
 
 bool  LB_STDCALL lbActionStepsModel::selectActionStep(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -194,7 +194,7 @@ bool  LB_STDCALL lbActionStepsModel::selectActionStep(long _id) {
 	uk = Actions->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -229,7 +229,7 @@ bool  LB_STDCALL lbActionStepsModel::hasMoreActionSteps() {
 
 void  LB_STDCALL lbActionStepsModel::setNextActionStep() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -325,7 +325,7 @@ lbPluginActionStepsModel::lbPluginActionStepsModel() {
 	_CL_VERBOSE << "lbPluginActionStepsModel::lbPluginActionStepsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionStepsModel::~lbPluginActionStepsModel() {
@@ -354,7 +354,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepsModel::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbActionStepsModel* ActionsModel = new lbActionStepsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	} else {
@@ -373,7 +373,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbActionStepsModel* ActionsModel = new lbActionStepsModel();
-		ActionsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	}
@@ -462,7 +462,7 @@ void		LB_STDCALL lbActionStepTransitionsModel::deleteMarked() {
 
 long  LB_STDCALL lbActionStepTransitionsModel::addTransition(const char* expression, long src_actionid, long dst_actionid, const char* description, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, SrcActionId)
@@ -519,7 +519,7 @@ void LB_STDCALL lbActionStepTransitionsModel::unmark() {
 
 bool  LB_STDCALL lbActionStepTransitionsModel::selectTransition(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -528,7 +528,7 @@ bool  LB_STDCALL lbActionStepTransitionsModel::selectTransition(long _id) {
 	uk = Actions->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -561,7 +561,7 @@ bool  LB_STDCALL lbActionStepTransitionsModel::hasMoreActionStepTransitions() {
 
 void  LB_STDCALL lbActionStepTransitionsModel::setNextActionStepTransition() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -651,7 +651,7 @@ lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() {
 	_LOG << "lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() called." LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionStepTransitionsModel::~lbPluginActionStepTransitionsModel() {
@@ -680,7 +680,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepTransitionsModel::peekImplementation(
 
 	if (ukActions == NULL) {
 		lbActionStepTransitionsModel* ActionsModel = new lbActionStepTransitionsModel();
-		ActionsModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	} else {
@@ -699,7 +699,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepTransitionsModel::getImplementation()
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbActionStepTransitionsModel* ActionsModel = new lbActionStepTransitionsModel();
-		ActionsModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 	
 		QI(ActionsModel, lb_I_Unknown, ukActions)
 	}

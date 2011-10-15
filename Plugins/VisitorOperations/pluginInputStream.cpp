@@ -241,7 +241,7 @@ lbInputStreamOpr::~lbInputStreamOpr() {
 /*...e*/
 
 bool LB_STDCALL lbInputStreamOpr::begin(const char* file) {
-	REQUEST(manager.getPtr(), lb_I_InputStream, iStream)
+	REQUEST(getModuleInstance(), lb_I_InputStream, iStream)
 	
 	iStream->setFileName(file);
 	bool ret = iStream->open();
@@ -1065,10 +1065,10 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 	// Get the document via the active document from meta application.
 	// This way no extra interface is needed (container with named elements)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -1201,7 +1201,7 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::peekImplementation() {
 
 	if (impl == NULL) {
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -1220,7 +1220,7 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 	
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	}

@@ -250,7 +250,7 @@ lbXMLOutputStream::~lbXMLOutputStream() {
 
 bool LB_STDCALL lbXMLOutputStream::begin(const char* file) {
 	if (oStream == NULL) { 
-		REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
+		REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
 		
 		oStream->setFileName(file);
 		bool ret = oStream->open();
@@ -505,8 +505,8 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 	*oStream << "<dbcolumns>" << "\n";
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(getModuleManager(), lb_I_String, msg)
-	UAP_REQUEST(getModuleManager(), lb_I_Long, All)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, All)
 	
 	long columns = 0L;
 	long allcolumns = 0L;
@@ -783,7 +783,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_User_Applications* app) {
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_MetaApplication* app) {
 	*oStream << "<metaapplication>" << "\n";
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 	bool  b;
 	int count;
 
@@ -814,10 +814,10 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Application*) {
 	// Get the document via the active document from meta application.
 	// This way no extra interface is needed (container with named elements)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -953,7 +953,7 @@ lb_I_Unknown* LB_STDCALL lbPluginXMLOutputStream::peekImplementation() {
 
 	if (impl == NULL) {
 		lbXMLOutputStream* InputStream = new lbXMLOutputStream();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -972,7 +972,7 @@ lb_I_Unknown* LB_STDCALL lbPluginXMLOutputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 	
 		lbXMLOutputStream* InputStream = new lbXMLOutputStream();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	}

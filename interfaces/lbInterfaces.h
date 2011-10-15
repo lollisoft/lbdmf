@@ -4374,7 +4374,7 @@ protected:
 \
 void LB_STDCALL cls::setModule(const char* module) { \
 	if (_module == NULL) { \
-		REQUEST(manager.getPtr(), lb_I_String, _module) \
+		REQUEST(getModuleInstance(), lb_I_String, _module) \
 	} \
 	*_module = module; \
 } \
@@ -4394,17 +4394,17 @@ void LB_STDCALL cls::enumPlugins() { \
 	if (Plugins != NULL) { \
 		Plugins--; \
 	} \
-	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
+	REQUEST(getModuleInstance(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \
-	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
+	UAP_REQUEST(getModuleInstance(), lb_I_Plugin, P##plugin##namespace) \
 	\
 	P##plugin##namespace->setModule(_module->charrep()); \
 	P##plugin##namespace->setName(#plugin); \
 	P##plugin##namespace->setNamespace(#namespace); \
 	P##plugin##namespace->setVersion("1.0"); \
 	\
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s##plugin##namespace) \
 	UAP(lb_I_KeyBase, Key##plugin##namespace) \
 	UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
 	\
@@ -4426,14 +4426,14 @@ void LB_STDCALL cls::enumPlugins() { \
 //	_LOG << "Plugin '" << #plugin << "' with namespace '" << #namespace << ", version '" << "1.0" << "' in '" << _module->charrep() << "' added." LOG_
 
 #define ADD_PLUGIN_V(plugin, namespace, version) \
-	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
+	UAP_REQUEST(getModuleInstance(), lb_I_Plugin, P##plugin##namespace) \
 	\
 	P##plugin##namespace->setModule(_module->charrep()); \
 	P##plugin##namespace->setName(#plugin); \
 	P##plugin##namespace->setNamespace(#namespace); \
 	P##plugin##namespace->setVersion(#version); \
 	\
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s##plugin##namespace) \
 	UAP(lb_I_KeyBase, Key##plugin##namespace) \
 	UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
 	\

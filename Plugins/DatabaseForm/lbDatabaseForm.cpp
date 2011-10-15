@@ -157,7 +157,7 @@ IMPLEMENT_FUNCTOR(instanceOflbOwnerDrawControl, lbOwnerDrawControl)
 lbOwnerDrawControl::lbOwnerDrawControl() : wxControl() {
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbOwnerDrawControl::~lbOwnerDrawControl() {

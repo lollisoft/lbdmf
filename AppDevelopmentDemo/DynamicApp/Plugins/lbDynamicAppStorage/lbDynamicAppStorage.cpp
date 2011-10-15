@@ -1750,15 +1750,15 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			XSLFileApplicationDatabase->setData((char*) input->getFileName());
 			
-			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 			
 			parameter->setData("UML import settings");
 			//--------------------------------------------
@@ -1973,15 +1973,15 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			XSLFileSystemDatabase->setData((char*) input->getFileName());
-			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-			UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+			UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 			
 			parameter->setData("UML import settings");
 			//--------------------------------------------
@@ -2188,7 +2188,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 	UAP(lb_I_Unknown, uk)
 	QI(exportparams, lb_I_Unknown, uk)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result) // Result is not filled (inconsistent). The function exportApplicationToXMLBuffer returns it in the parameter given.
 	
@@ -2199,8 +2199,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		return err;
 	}
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
 	param->setData("memorybuffer");
 	exportparams->getUAPString(*&param, *&value);
 	param->setData("filename");
@@ -2267,15 +2267,15 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 		XSLFileUMLExport->setData((char*) input->getFileName());
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
-		UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
-		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramXSL)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameterXSL)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, valueXSL)
+		UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 		
 		parameter->setData("UML export settings");
 		//--------------------------------------------
@@ -2457,7 +2457,7 @@ lbErrCodes err = ERR_NONE;
 
 if (ukActions == NULL) {
 lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
-DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
 QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 } else {
 _CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -2475,7 +2475,7 @@ if (ukActions == NULL) {
 _CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 lbDynamicAppXMLStorage* DynamicAppStorage = new lbDynamicAppXMLStorage();
-DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
 
 QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 }
@@ -2570,7 +2570,7 @@ lbErrCodes err = ERR_NONE;
 
 if (ukActions == NULL) {
 lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
-DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
 QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -2588,7 +2588,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppInternalStorage::getImplementation() 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	}
@@ -2682,7 +2682,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbDynamicAppBoUMLImportExport* DynamicAppStorage = new lbDynamicAppBoUMLImportExport();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -2700,7 +2700,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbDynamicAppBoUMLImportExport* DynamicAppStorage = new lbDynamicAppBoUMLImportExport();
-		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
 	}

@@ -91,7 +91,7 @@ void		LB_STDCALL lbApplications::deleteUnmarked() {
 	while (hasMoreApplications()) {
 		setNextApplication();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getApplicationID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -109,7 +109,7 @@ void		LB_STDCALL lbApplications::deleteMarked() {
 	while (hasMoreApplications()) {
 		setNextApplication();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getApplicationID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -125,16 +125,16 @@ void		LB_STDCALL lbApplications::deleteMarked() {
 /*...slong    LB_STDCALL lbApplications\58\\58\addApplication\40\\46\\46\\46\\41\:0:*/
 long	LB_STDCALL lbApplications::addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, _ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Application)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Titel)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Interface)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, _ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Application)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Titel)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ModuleName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Functor)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Interface)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_ID->setData(_id);
 	*Application = application;
@@ -189,8 +189,8 @@ bool	LB_STDCALL lbApplications::selectApplication(const char* application) {
 bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -257,7 +257,7 @@ bool	LB_STDCALL lbApplications::hasMoreApplications() {
 /*...svoid    LB_STDCALL lbApplications\58\\58\setNextApplication\40\\41\:0:*/
 void	LB_STDCALL lbApplications::setNextApplication() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -361,7 +361,7 @@ lbPluginApplications::lbPluginApplications() {
 	_CL_VERBOSE << "lbPluginApplications::lbPluginApplications() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginApplications::~lbPluginApplications() {
@@ -390,7 +390,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications::peekImplementation() {
 
 	if (ukApplications == NULL) {
 		lbApplications* Applications = new lbApplications();
-		Applications->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Applications, lb_I_Unknown, ukApplications)
 	} else {
@@ -409,7 +409,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbApplications* Applications = new lbApplications();
-		Applications->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(Applications, lb_I_Unknown, ukApplications)
 	}

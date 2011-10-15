@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.30 2011/10/15 13:14:05 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.31 2011/10/15 21:47:12 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.31  2011/10/15 21:47:12  lollisoft
+ * Removed all code that is obsolete. Current code compiles but still does not run.
+ *
  * Revision 1.30  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -271,7 +274,7 @@ lbKeyUL::lbKeyUL(char* file, int line) {
 lbKeyUL::lbKeyUL() {
 	
 	
-	further_lock = 1;
+	;
     key = 0;
     strcpy(keyType, "UL");
 }
@@ -279,7 +282,7 @@ lbKeyUL::lbKeyUL() {
 lbKeyUL::lbKeyUL(unsigned long _key) {
 	
 	
-	further_lock = 1;
+	;
     key = _key;
     strcpy(keyType, "UL");
 }
@@ -287,7 +290,7 @@ lbKeyUL::lbKeyUL(unsigned long _key) {
 lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
 	
 	
-	further_lock = 1;
+	;
     key = ((lbKeyUL*) k)->key;
     strcpy(keyType, "UL");
 }

@@ -340,7 +340,7 @@ lbJSONOutputStream::~lbJSONOutputStream() {
 
 bool LB_STDCALL lbJSONOutputStream::begin(const char* file) {
         if (oStream == NULL) { 
-                REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
+                REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
                 
                 oStream->setFileName(file);
                 bool ret = oStream->open();
@@ -1177,7 +1177,7 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_User_Applications* app) {
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_MetaApplication* app) {
         _LOG << "Save a lb_I_MetaApplication object." LOG_
 
-        UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         bool  b;
         int count;
 
@@ -1218,7 +1218,7 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_MetaApplication* app) {
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Dispatcher* disp) {
-        UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         temp = disp->getInterceptorDefinitions();
         *oStream << temp->charrep();
 }
@@ -1231,10 +1231,10 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Application*) {
         // Get the document via the active document from meta application.
         // This way no extra interface is needed (container with named elements)
         
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
         
         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
@@ -1376,7 +1376,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::peekImplementation() {
 	
 	if (impl == NULL) {
 		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
-		OutputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(OutputStream, lb_I_Unknown, impl)
 	} else {
@@ -1395,7 +1395,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 		
 		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
-		OutputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(OutputStream, lb_I_Unknown, impl)
 	}

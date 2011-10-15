@@ -236,7 +236,7 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
                         app = box->GetString(sel);
 
                         if (!app.IsEmpty()) {
-                                UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+                                UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
                                 char* _app = strdup(app.c_str());
 
@@ -256,7 +256,7 @@ void wxAppSelectPage::setLoggedOnUser(const char* user) {
                 if (userid != NULL) free(userid);
                 userid = strdup(user);
 
-                UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+                UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
                 UAP(lb_I_Container, apps)
 
                 _CL_LOG << "Set Logged on user to '" << userid << "'" LOG_
@@ -436,7 +436,7 @@ bool wxLogonPage::TransferDataFromWindow() {
         const char* pass = strdup(getTextValue("Passwort:"));
         const char* user = strdup(getTextValue("Benutzer:"));
 
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
         if (meta->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
@@ -474,8 +474,8 @@ void wxLogonPage::init(wxWindow* parent) {
         int LoginOk;
         int LoginCancel;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-        UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+        UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+        UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 
         char eventName[100] = "";
 
@@ -930,12 +930,9 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wxLogonPage *page2 = new wxLogonPage(wizard);
 
-        page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
-
         page2->init(frame);
 
         wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
-        page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 
         page2->setAppSelectPage(page3);
 
@@ -969,13 +966,13 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
         lbLoginDialog* _dialog = NULL;
 
         if (forms == NULL) {
-                REQUEST(getModuleManager(), lb_I_Container, forms)
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
         }
 
         UAP(lb_I_Unknown, uk)
         UAP(lb_I_KeyBase, key)
 
-        UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
         fName->setData("LoginForm");
 
         QI(fName, lb_I_KeyBase, key)
@@ -990,7 +987,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
                 _dialog->Show(TRUE);
         } else {
                 _dialog = new lbLoginDialog();
-                _dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+                
 
                 QI(_dialog, lb_I_Unknown, uk)
 
@@ -1040,13 +1037,13 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
         UAP(lb_I_FixedDatabaseForm, _dialog)
 
         if (forms == NULL) {
-                REQUEST(getModuleManager(), lb_I_Container, forms)
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
         }
 
         UAP(lb_I_Unknown, uk)
         UAP(lb_I_KeyBase, key)
 
-        UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
         fName->setData(form->getFormName());
 
         QI(fName, lb_I_KeyBase, key)
@@ -1121,7 +1118,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
 
         _dialog++;
 
-        UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
         app->enableEvent("ShowPropertyPanel");
 
         return _dialog.getPtr();
@@ -1142,7 +1139,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
                 (strcmp(DBName, "") == 0) ||
                 (strcmp(DBUser, "") == 0) ||
                 (strcmp(DBPass, "") == 0)) {
-                UAP_REQUEST(getModuleManager(), lb_I_String, msg)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 
                 *msg = _trans("Database SQL query, name, user or password is NULL or empty. Could not use database forms without proper parameters!");
                 if (formName != NULL) {
@@ -1178,13 +1175,13 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
         UAP(lb_I_DatabaseForm, _dialog)
 
         if (forms == NULL) {
-                REQUEST(getModuleManager(), lb_I_Container, forms)
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
         }
 
         UAP(lb_I_Unknown, uk)
         UAP(lb_I_KeyBase, key)
 
-        UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
         fName->setData(formName);
 
         QI(fName, lb_I_KeyBase, key)
@@ -1198,7 +1195,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 /*...sCheck for recreation of the form:8:*/
 //      if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
         if (_dialog.getPtr() != NULL) {
-                UAP_REQUEST(getModuleManager(), lb_I_String, ClassName)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, ClassName)
                 // SQL query from database has been changed. Recreate the dialog from scratch.
 
                 // Don't delete any forms inside the container
@@ -1250,7 +1247,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
                  * framework.
                  */
 
-                UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+                UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
                 UAP(lb_I_Plugin, pl)
 
                 TRMemStartLocalCount();
@@ -1352,7 +1349,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 
         _dialog++;
 
-        UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
         app->enableEvent("ShowPropertyPanel");
 
         return _dialog.getPtr();
@@ -1364,7 +1361,7 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
 
         frame->Create(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(600, 500));
 
-        frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+        
         frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
 
         frame->setGUI(this);
@@ -1401,7 +1398,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(const char* entry) {
          */
 
 
-        UAP_REQUEST(manager.getPtr(), lb_I_DispatchRequest, d_req)
+        UAP_REQUEST(getModuleInstance(), lb_I_DispatchRequest, d_req)
 
         /**
          * We get a dispatch responce
@@ -1458,7 +1455,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(const char* name) 
                 return NULL;
         }
 
-        UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
         UAP(lb_I_KeyBase, key)
         UAP(lb_I_Unknown, uk)
 
@@ -1491,7 +1488,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
                 return NULL;
         }
 
-        UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
         UAP(lb_I_KeyBase, key)
         UAP(lb_I_Unknown, uk)
 
@@ -1870,7 +1867,7 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
          * problem, if it is not destroyed here.
          */
 /*
-        UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
         PM->initialize();
         PM->unload();
@@ -1884,7 +1881,7 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
                 guiCleanedUp = 1;
         }
 
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
         meta->unloadApplication();
 
@@ -2060,7 +2057,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 
                                         UAP(lb_I_Unknown, ukName)
                                         UAP(lb_I_String, evName)
-                                        UAP_REQUEST(getModuleManager(), lb_I_String, evKeyName)
+                                        UAP_REQUEST(getModuleInstance(), lb_I_String, evKeyName)
                                         UAP(lb_I_KeyBase, evKey)
 
                                         UAP(lb_I_Unknown, ukEventObject)
@@ -2163,15 +2160,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
         lbErrCodes err = ERR_NONE;
 
         UAP(lb_I_Parameter, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, _namespace)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, _namespace)
         QI(uk, lb_I_Parameter, param)
 
         parameter->setData("namespace");
         param->getUAPString(*&parameter, *&_namespace);
 
         if (PanelNamespace == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, PanelNamespace)
+                REQUEST(getModuleInstance(), lb_I_String, PanelNamespace)
         }
 
         *PanelNamespace = _namespace->charrep();
@@ -2184,9 +2181,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
         UAP(lb_I_Parameter, param)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, title)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, title)
         QI(uk, lb_I_Parameter, param)
 
         parameter->setData("msg");
@@ -2242,7 +2239,7 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_FileLocation, s)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, category_name)
         QI(uk, lb_I_FileLocation, s)
 
         if (category) *category_name = category;
@@ -2265,7 +2262,7 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_DirLocation, s)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, category_name)
         QI(uk, lb_I_DirLocation, s)
 
         if (category) *category_name = category;
@@ -2288,7 +2285,7 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
 void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_String, s)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, category_name)
         QI(uk, lb_I_String, s)
 
         if (category) *category_name = category;
@@ -2311,7 +2308,7 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_Boolean, s)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, category_name)
         QI(uk, lb_I_Boolean, s)
 
         if (category) *category_name = category;
@@ -2334,7 +2331,7 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
         lbErrCodes err = ERR_NONE;
         UAP(lb_I_Integer, i)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, category_name)
         QI(uk, lb_I_Integer, i)
 
         _LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
@@ -2465,8 +2462,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
         wxToolBar* tb;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
         UAP(lb_I_Parameter, params)
         QI(uk, lb_I_Parameter, params)
@@ -2493,8 +2490,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
         wxToolBar* tb;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
         UAP(lb_I_Parameter, params)
         QI(uk, lb_I_Parameter, params)
@@ -2528,9 +2525,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
                 maintb->SetToolBitmapSize(wxSize(32, 32));
 
-                UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-                UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+                UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 
                 *toolbarfile += app->getDirLocation();
 
@@ -2655,12 +2652,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
         QI(uk, lb_I_Parameter, params)
 
         if (params != NULL) {
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, tooltype)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, entry)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, evHandler)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarimage)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, tooltype)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, entry)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, evHandler)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarimage)
 
                 *parameter = "toolbarName";
                 params->getUAPString(*&parameter, *&name);
@@ -2690,7 +2687,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #endif
 
                 if (tb != NULL) {
-                        UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+                        UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
 
                         int EvNr = 0;
 
@@ -2700,10 +2697,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
                                 return ERR_EVENT_NOTREGISTERED;
                         }
 
-                        UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+                        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 
-                        UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
-                        UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, images)
 
                         *toolbarfile = app->getDirLocation();
 
@@ -2845,16 +2842,16 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
         int* new_stb_withs = new int [stb_areas];
         int* old_stb_withs;
 
-        UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-        UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
         UAP(lb_I_Parameter, param)
         UAP(lb_I_KeyBase, key)
         UAP(lb_I_Unknown, value)
 
         if (statusbar_name_mappings == NULL) {
-                REQUEST(manager.getPtr(), lb_I_Container, statusbar_name_mappings)
+                REQUEST(getModuleInstance(), lb_I_Container, statusbar_name_mappings)
         }
 
         QI(uk, lb_I_Parameter, param)
@@ -2903,10 +2900,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 	if (statusbar_name_mappings == NULL) return ERR_NONE;
 
         if (params != NULL) {
-                UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-                UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, CallYield)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, CallYield)
 
                 *parameter = "Name";
                 params->getUAPString(*&parameter, *&name);
@@ -2954,7 +2951,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::postEvent(lb_I_Unknown* uk) {
                 // Get the event name to be used when the event has been triggered.
                 UAP(lb_I_Unknown, ukName)
                 UAP(lb_I_String, evName)
-                UAP_REQUEST(getModuleManager(), lb_I_String, evKeyName)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, evKeyName)
                 UAP(lb_I_KeyBase, evKey)
 
                 UAP(lb_I_Unknown, ukEventObject)
@@ -3008,9 +3005,9 @@ wxTreeItemId* lb_wxFrame::lookupTreeItemId(lb_I_String* name) {
 lbErrCodes LB_STDCALL lb_wxFrame::addTreeViewNode(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_KeyBase, key)
@@ -3106,7 +3103,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
         if (currentProperties == NULL) {
-                REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
+                REQUEST(getModuleInstance(), lb_I_Parameter, currentProperties)
         }
 
         // Fill optionally given bunch of parameters
@@ -3117,13 +3114,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
                 if (params->Count() > 0) {
                         currentProperties--;
                         currentProperties.resetPtr();
-                        REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
+                        REQUEST(getModuleInstance(), lb_I_Parameter, currentProperties)
 
                         currentProperties->setData(uk);
 
                         // Fill up the properties from meta application
-                        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-                        UAP_REQUEST(manager.getPtr(), lb_I_String, group)
+                        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, group)
                         UAP(lb_I_Parameter, param)
 
                         param = meta->getParameter();

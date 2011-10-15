@@ -83,12 +83,12 @@ lbErrCodes LB_STDCALL lbUsersModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbUsersModel::addAccount(const char* _user, const char* _pass, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, User)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Pass)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, User)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Pass)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	*User = _user;
 	*Pass = _pass;
@@ -130,8 +130,8 @@ bool LB_STDCALL lbUsersModel::selectAccount(const char* _user) {
 bool LB_STDCALL lbUsersModel::selectAccount(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -182,7 +182,7 @@ void		LB_STDCALL lbUsersModel::deleteUnmarked() {
 	while (hasMoreUsers()) {
 		setNextUser();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getUserID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -200,7 +200,7 @@ void		LB_STDCALL lbUsersModel::deleteMarked() {
 	while (hasMoreUsers()) {
 		setNextUser();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getUserID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -218,7 +218,7 @@ bool  LB_STDCALL lbUsersModel::hasMoreUsers() {
 
 void  LB_STDCALL lbUsersModel::setNextUser() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -297,7 +297,7 @@ lbPluginUsersModel::lbPluginUsersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginUsersModel::~lbPluginUsersModel() {
@@ -326,7 +326,7 @@ lb_I_Unknown* LB_STDCALL lbPluginUsersModel::peekImplementation() {
 
 	if (ukUsersModel == NULL) {
 		lbUsersModel* UsersModel = new lbUsersModel();
-		UsersModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(UsersModel, lb_I_Unknown, ukUsersModel)
 	} else {
@@ -345,7 +345,7 @@ lb_I_Unknown* LB_STDCALL lbPluginUsersModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbUsersModel* UsersModel = new lbUsersModel();
-		UsersModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(UsersModel, lb_I_Unknown, ukUsersModel)
 	}

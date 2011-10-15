@@ -99,7 +99,7 @@ END_PLUGINS()
 lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
 		
 		
-		further_lock = 1;
+		;
 }
 
 lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
@@ -134,7 +134,7 @@ public:
 		app = wxString("");
 		
 		
-		further_lock = 1;
+		;
 		sizerMain = NULL;
 		box = NULL;
 		userid = NULL;
@@ -182,7 +182,7 @@ public:
 		if (userid != NULL) free(userid);
 		userid = strdup(user);
 
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP(lb_I_Container, apps)
 
 		meta->setUserName(user);
@@ -224,7 +224,7 @@ public:
 			app = box->GetString(sel);
 
 			if (!app.IsEmpty()) {
-				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+				UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 				char* _app = strdup(app.c_str());
 
@@ -293,7 +293,7 @@ DECLARE_LB_UNKNOWN()
 	wxLogonPage() {
 		
 		
-		further_lock = 1;
+		;
 		OkButton = NULL;
 		CancelButton = NULL;
 		sizerMain = NULL;
@@ -311,7 +311,7 @@ DECLARE_LB_UNKNOWN()
 	{
 		
 		
-		further_lock = 1;
+		;
 		OkButton = NULL;
 		CancelButton = NULL;
 		sizerMain = NULL;
@@ -375,7 +375,7 @@ DECLARE_LB_UNKNOWN()
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 			if (meta->login(user, pass)) {
 				appselect->setLoggedOnUser(user);
@@ -543,13 +543,11 @@ lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 
 	wxLogonPage *page2 = new wxLogonPage(wizard);
 
-	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 
 	//page2->init(frame);
 	page2->init(NULL);
 
 	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
-	page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 
 	page2->setAppSelectPage(page3);
 
@@ -574,9 +572,6 @@ lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 lbLoginHandler::lbLoginHandler() {
 	wizard = NULL;
 	page1 = NULL;
-	
-	
-	further_lock = 1;
 }
 
 lbLoginHandler::~lbLoginHandler() {
@@ -641,9 +636,6 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 }
 
 lbPluginLoginWizard::lbPluginLoginWizard() {
-	
-	
-	further_lock = 1;
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
@@ -657,22 +649,22 @@ bool LB_STDCALL lbPluginLoginWizard::canAutorun() {
 lbErrCodes LB_STDCALL lbPluginLoginWizard::autorun() {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev)
 
 	int lEvent;
 
 	ev->registerEvent("RunLogin", lEvent);
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, disp)
+	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 
 	lbLoginHandler* hdl = new lbLoginHandler();
-	hdl->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 
 	QI(hdl, lb_I_Unknown, loginHandler)
 
 	hdl->registerEventHandler(*&disp);
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	char* file = strdup(_trans("&File"));
 	char* entry = strdup(_trans("Login via &Plugin\tCtrl-P"));

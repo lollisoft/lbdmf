@@ -526,7 +526,7 @@ lb_I_Socket* lbSocket::accept()
     }
 
     lbSocket* socket = new lbSocket();
-	socket->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	
     socket->setSockConnection(clientSocket);
     
     // Be secure clientSocket of this instance is INVALID_SOCKET

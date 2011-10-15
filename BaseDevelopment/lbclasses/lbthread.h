@@ -123,7 +123,7 @@ protected:
 		lastQILine = 0;
 		lastSMFile = miniString();
 		lastSMLine = 0;
-		manager = NULL;
+		
 		debug_macro = 0;
 	}
 

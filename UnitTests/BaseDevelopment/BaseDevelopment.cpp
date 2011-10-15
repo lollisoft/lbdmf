@@ -221,7 +221,7 @@ lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
 }
 lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 	if (LogonUser == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
        	LogonUser->setData(user);
@@ -230,7 +230,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
 
 lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
 	if (LogonApplication == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
        	LogonApplication->setData(app);
@@ -1058,7 +1058,7 @@ public:
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		myUIWrapper->initialize();
 
 		lbErrCodes err = ERR_NONE;
@@ -1107,7 +1107,7 @@ public:
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
-		myUIWrapper->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		
 		myUIWrapper->initialize();
 
 		lbErrCodes err = ERR_NONE;

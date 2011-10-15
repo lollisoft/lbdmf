@@ -81,15 +81,15 @@ lbErrCodes LB_STDCALL lbDBTableModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Catalog)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Schema)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Type)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Remarks)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Catalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Schema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Type)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Remarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	*Catalog = catalog;
 	*Schema = schema;
@@ -129,7 +129,7 @@ void		LB_STDCALL lbDBTableModel::deleteUnmarked() {
 	while (hasMoreTables()) {
 		setNextTable();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getTableID());
 
 			UAP(lb_I_KeyBase, key)
@@ -147,7 +147,7 @@ void		LB_STDCALL lbDBTableModel::deleteMarked() {
 	while (hasMoreTables()) {
 		setNextTable();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getTableID());
 
 			UAP(lb_I_KeyBase, key)
@@ -162,8 +162,8 @@ void		LB_STDCALL lbDBTableModel::deleteMarked() {
 bool LB_STDCALL lbDBTableModel::selectTable(long id) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -220,7 +220,7 @@ bool  LB_STDCALL lbDBTableModel::hasMoreTables() {
 
 void  LB_STDCALL lbDBTableModel::setNextTable() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -317,7 +317,7 @@ lbPluginDBTableModel::lbPluginDBTableModel() {
 	_CL_VERBOSE << "lbPluginDBTableModel::lbPluginDBTableModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDBTableModel::~lbPluginDBTableModel() {
@@ -346,7 +346,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBTableModel::peekImplementation() {
 
 	if (ukDBTableModel == NULL) {
 		lbDBTableModel* DBTableModel = new lbDBTableModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
@@ -365,7 +365,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBTableModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDBTableModel* DBTableModel = new lbDBTableModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
@@ -555,7 +555,7 @@ void LB_STDCALL lbDBColumnsModel::lookupPage(int index) {
 
 long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 	// Get the corresponding container page.
 	lookupPage(_id);
@@ -601,7 +601,7 @@ void		LB_STDCALL lbDBColumnsModel::deleteUnmarked() {
 	while (hasMoreColumns()) {
 		setNextColumn();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getColumnID());
 
 			UAP(lb_I_KeyBase, key)
@@ -621,7 +621,7 @@ void		LB_STDCALL lbDBColumnsModel::deleteMarked() {
 	while (hasMoreColumns()) {
 		setNextColumn();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getColumnID());
 
 			UAP(lb_I_KeyBase, key)
@@ -639,8 +639,8 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 
 	lookupPage(user_id);
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -738,7 +738,7 @@ bool  LB_STDCALL lbDBColumnsModel::hasMoreColumns() {
 
 void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -843,7 +843,7 @@ lbPluginDBColumnsModel::lbPluginDBColumnsModel() {
 	_CL_VERBOSE << "lbPluginDBColumnsModel::lbPluginDBColumnsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDBColumnsModel::~lbPluginDBColumnsModel() {
@@ -872,7 +872,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBColumnsModel::peekImplementation() {
 
 	if (ukDBTableModel == NULL) {
 		lbDBColumnsModel* DBTableModel = new lbDBColumnsModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
@@ -891,7 +891,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBColumnsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDBColumnsModel* DBTableModel = new lbDBColumnsModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
@@ -968,8 +968,8 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, UpdateRule)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, DeleteRule)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 
 	*PKTableCatalog = pktable_cat;
@@ -1036,7 +1036,7 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteUnmarked() {
 	while (hasMoreForeignKeys()) {
 		setNextForeignKey();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getForeignKeyID());
 
 			UAP(lb_I_KeyBase, key)
@@ -1054,7 +1054,7 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteMarked() {
 	while (hasMoreForeignKeys()) {
 		setNextForeignKey();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getForeignKeyID());
 
 			UAP(lb_I_KeyBase, key)
@@ -1069,8 +1069,8 @@ void		LB_STDCALL lbDBForeignKeysModel::deleteMarked() {
 bool LB_STDCALL lbDBForeignKeysModel::selectForeignKey(long user_id) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -1143,7 +1143,7 @@ bool  LB_STDCALL lbDBForeignKeysModel::hasMoreForeignKeys() {
 
 void  LB_STDCALL lbDBForeignKeysModel::setNextForeignKey() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -1280,7 +1280,7 @@ lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() {
 	_CL_VERBOSE << "lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDBForeignKeysModel::~lbPluginDBForeignKeysModel() {
@@ -1309,7 +1309,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBForeignKeysModel::peekImplementation() {
 
 	if (ukDBTableModel == NULL) {
 		lbDBForeignKeysModel* DBTableModel = new lbDBForeignKeysModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
@@ -1328,7 +1328,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBForeignKeysModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDBForeignKeysModel* DBTableModel = new lbDBForeignKeysModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}
@@ -1409,8 +1409,8 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, KeySequence)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	*TableCatalog = pktable_cat;
 	*TableSchema = pktable_schem;
@@ -1458,7 +1458,7 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteUnmarked() {
 	while (hasMorePrimaryKeys()) {
 		setNextPrimaryKey();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getPrimaryKeyID());
 
 			UAP(lb_I_KeyBase, key)
@@ -1476,7 +1476,7 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteMarked() {
 	while (hasMorePrimaryKeys()) {
 		setNextPrimaryKey();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getPrimaryKeyID());
 
 			UAP(lb_I_KeyBase, key)
@@ -1491,8 +1491,8 @@ void		LB_STDCALL lbDBPrimaryKeysModel::deleteMarked() {
 bool LB_STDCALL lbDBPrimaryKeysModel::selectPrimaryKey(long user_id) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -1554,7 +1554,7 @@ bool  LB_STDCALL lbDBPrimaryKeysModel::hasMorePrimaryKeys() {
 
 void  LB_STDCALL lbDBPrimaryKeysModel::setNextPrimaryKey() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -1660,7 +1660,7 @@ lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() {
 	_CL_VERBOSE << "lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginDBPrimaryKeysModel::~lbPluginDBPrimaryKeysModel() {
@@ -1689,7 +1689,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBPrimaryKeysModel::peekImplementation() {
 
 	if (ukDBTableModel == NULL) {
 		lbDBPrimaryKeysModel* DBTableModel = new lbDBPrimaryKeysModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	} else {
@@ -1708,7 +1708,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDBPrimaryKeysModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDBPrimaryKeysModel* DBTableModel = new lbDBPrimaryKeysModel();
-		DBTableModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(DBTableModel, lb_I_Unknown, ukDBTableModel)
 	}

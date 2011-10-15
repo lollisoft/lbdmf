@@ -143,7 +143,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (impl == NULL) {
-		instanceOflbDatabaseLayerDatabase(&impl, manager.getPtr(), __FILE__, __LINE__);
+		instanceOflbDatabaseLayerDatabase(&impl, getModuleInstance(), __FILE__, __LINE__);
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -156,7 +156,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabase::getImplementation() {
 
 	if (impl == NULL) {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
-		instanceOflbDatabaseLayerDatabase(&impl, manager.getPtr(), __FILE__, __LINE__);
+		instanceOflbDatabaseLayerDatabase(&impl, getModuleInstance(), __FILE__, __LINE__);
 	}
 
 	lb_I_Unknown* r = impl.getPtr();

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.57 2011/10/15 13:14:04 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.58 2011/10/15 21:47:12 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.58  2011/10/15 21:47:12  lollisoft
+ * Removed all code that is obsolete. Current code compiles but still does not run.
+ *
  * Revision 1.57  2011/10/15 13:14:04  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -312,7 +315,7 @@ class lbDOMContainer;
 lbKey::lbKey() {
     
     key = 0;
-	manager = NULL;
+	
     strcpy(keyType, "int");
 }
 
@@ -320,7 +323,7 @@ lbKey::lbKey(int _key) {
     
     key = _key;
     strcpy(keyType, "int");
-	manager = NULL;
+	
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
@@ -739,14 +742,14 @@ public:
     	next = NULL;
     	
     	key = NULL;
-    	manager = NULL;
+    	
     }
     lbElement(char* file, int line) {
     	
     	next = NULL;
     	
     	key = NULL;
-    	manager = NULL;
+    	
     }
     virtual ~lbElement();
 	
@@ -754,7 +757,7 @@ public:
     lbElement(const lb_I_Element &e) {
     	
     	next = e.getNext();
-    	manager = NULL;
+    	
     }
 
     DECLARE_LB_UNKNOWN()
@@ -775,7 +778,7 @@ lbDOMContainer::lbDOMContainer() {
     iterator = NULL;
     count = 0;
     container_
-    manager = NULL;
+    
 }
 
 lbDOMContainer::lbDOMContainer(char* file, int line) {
@@ -784,7 +787,7 @@ lbDOMContainer::lbDOMContainer(char* file, int line) {
     iterator = NULL;
     count = 0;
     container_
-    manager = NULL;
+    
 }
 
 lbDOMContainer::~lbDOMContainer() {
@@ -925,7 +928,7 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 
 	parent = NULL;
 	
-	manager = NULL;
+	
 
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
@@ -953,7 +956,7 @@ lbDOMNode::lbDOMNode() {
 
 	c = NULL;
 	
-	manager = NULL;
+	
 
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
@@ -1059,11 +1062,6 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 			_CL_VERBOSE << "Previous parent node will be overwritten!" LOG_
 		}
 		lbDOMNode* _parent = new lbDOMNode(__FILE__, __LINE__);
-		
-		_parent->setFurtherLock(0);
-		if (manager == NULL) _LOG << "Error: Set manager in parent with a NULL pointer!" LOG_
-		_parent->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-		
 		_parent->setNode(pnode);
 		parent = _parent;
 		parent++;
@@ -1194,7 +1192,7 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 
 	if (manager == NULL) _LOG << "Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager" LOG_
 	
-	list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 	
 	// Create an instance and create one reference. Then give it out.	
 	// This is the bug - see in lbDOMNode destructor
@@ -1209,7 +1207,7 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 		lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
 		
 		lbNode->setFurtherLock(0);
-		lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		lbNode->node = child;
 		
 		UAP(lb_I_Unknown, unknown)
@@ -1225,7 +1223,7 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 		UAP(lb_I_KeyBase, key)
 		key = new lbKey(i);
 
-		key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		key++;
 		if (unknown == NULL) _LOG << "Error: Inserting a null pointer!" LOG_
 		list->insert(&unknown, &key);
@@ -1416,7 +1414,7 @@ char* LB_STDCALL lbDOMConfig::_queryInterface(char* name, void** unknown, char* 
 	
 	return ID;
 }
-lb_I_Module* LB_STDCALL lbDOMConfig::getModuleManager() {
+lb_I_Module* LB_STDCALL lbDOMConfig::getModuleInstance() {
 		lbErrCodes err = ERR_NONE;
 		UAP(lb_I_Module, _mm)
 		if (manager == NULL) {
@@ -1424,7 +1422,7 @@ lb_I_Module* LB_STDCALL lbDOMConfig::getModuleManager() {
 			return NULL;
 		}
 		QI(manager, lb_I_Module, _mm)
-		return _mm.getPtr();
+		return _getModuleInstance();
 }
 
 void LB_STDCALL lbDOMConfig::setModuleManager(lb_I_Module* m, char* file, int line) {
@@ -1437,7 +1435,7 @@ void LB_STDCALL lbDOMConfig::setModuleManager(lb_I_Module* m, char* file, int li
 	if (debug_macro == 1) {
 		_CL_VERBOSE << "Warning: setModuleManager() must be enhanced by module manager use" LOG_
 	}
-	if (m != manager.getPtr()) {
+	if (m != getModuleInstance()) {
 	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line);
 	}
 	manager.setLine(__LINE__);
@@ -1504,7 +1502,6 @@ lb_I_Unknown* LB_STDCALL lbDOMConfig::clone(char* file, int line) const {
 
 	cloned->setFurtherLock(0);
 	if (manager == NULL) _CL_VERBOSE << "lbDOMConfig" << "::clone() can't be used because manager is a NULL pointer!" LOG_
-	cloned->setModuleManager(manager.getPtr(), file, line);
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) {
 		_CL_VERBOSE << "Error while getting interface" LOG_
 	}
@@ -1579,7 +1576,7 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMConfig::lbDOMConfig(char* file, int line) {
 	_CL_VERBOSE << "lbDOMConfig::lbDOMConfig(char* file, int line) called" LOG_
-	manager = NULL;
+	
 	
 	lastResult = NULL;
 	haveFunctorList = 0;
@@ -1609,7 +1606,7 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
 	_CL_VERBOSE << "lbDOMConfig::lbDOMConfig() called" LOG_
-	manager = NULL;
+	
 	
 	lastResult = NULL;
 	haveFunctorList = 0;
@@ -1713,7 +1710,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	 */
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
-	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
 		_CL_VERBOSE << "Error: Could not generate a reference with interface lb_I_Container" LOG_
 		if (list != NULL) _LOG << "Obviously failed queryInterface, instance pointer is not NULL!!!!" LOG_
@@ -1773,7 +1770,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 */
 			
 			lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
-			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+			
 			lbNode->setNode(currentnode);
 
 			
@@ -1792,7 +1789,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			key.setLine(__LINE__);
 			key.setFile(__FILE__);
 			
-			key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+			
 			key++;
 			
 			list->insert(&unknown, &key);
@@ -1843,16 +1840,16 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	
 	lb_I_Container* c = NULL;
 	
-	if (manager.getPtr() == NULL) _LOG << "Error: Manager in lbDOMConfig is a NULL pointer!" LOG_
+	if (getModuleInstance() == NULL) _LOG << "Error: Manager in lbDOMConfig is a NULL pointer!" LOG_
 
-	node->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 	
 	if (lastResult == NULL) {
 		_CL_VERBOSE << "Error: Function sequence may be wrong. Please call hasConfigObject first!" LOG_
 		return ERR_FUNCTION_SEQUENCE;
 	}
 	
-	lastResult->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
 	
 	if ((lastResult != NULL) && (lastResult->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__)) != ERR_NONE) {
 		_CL_VERBOSE << "Error: Could not get interface lb_I_Container" LOG_
@@ -1994,7 +1991,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfInterfaceRepository, lbInterfaceRepository
 lbInterfaceRepository::lbInterfaceRepository() {	
 	printf("lbInterfaceRepository::lbInterfaceRepository() called\n");
 	_CL_VERBOSE << "lbInterfaceRepository::lbInterfaceRepository() called" LOG_
-	manager = NULL;
+	
 	
 	errReporter = new DOMTreeErrorReporter();
 	_CL_VERBOSE << "DOMTreeErrorReporter() created" LOG_
@@ -2132,7 +2129,6 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 			
 			
 			lbFunctorEntity* fe = new lbFunctorEntity;
-			fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
 			lb_I_FunctorEntity* _fe = NULL;
 			fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
 			
@@ -2329,7 +2325,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb
         instance->setFurtherLock(0);
         if (m != NULL) {
         	_CL_VERBOSE << "Try to set module manager" LOG_
-        	instance->setModuleManager(m, __FILE__, __LINE__);
+        	
 		_CL_VERBOSE << "Functor called setModuleManager" LOG_
         } else {
         	_CL_VERBOSE << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_

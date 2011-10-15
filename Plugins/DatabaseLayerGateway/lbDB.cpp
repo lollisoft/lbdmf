@@ -734,7 +734,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setBoundColumns(lb_I_Con
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isBound(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -767,7 +767,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(const char* name) {
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isNull(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -795,7 +795,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(const char* name) {
 bool LB_STDCALL lbDatabaseLayerBoundColumns::isNullable(int pos) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -950,7 +950,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(const char* name, bool b) {
 bool LB_STDCALL lbDatabaseLayerBoundColumns::setNull(int pos, bool b) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1006,7 +1006,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1031,7 +1031,7 @@ int LB_STDCALL lbDatabaseLayerBoundColumns::getColumnIndex(const char* name) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
 		stringKey->setData(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1059,7 +1059,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
 		stringKey->setData(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1088,7 +1088,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(const char* column, boo
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
 		stringKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1102,7 +1102,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(const char* column, boo
 
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos.getPtr());
 		UAP(lb_I_Unknown, ukdata1)
 		UAP(lb_I_KeyBase, key1)
@@ -1122,7 +1122,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(const char* column, boo
 bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(const char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
 		stringKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1138,7 +1138,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(const char* column) {
 
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(pos.getPtr());
 		UAP(lb_I_Unknown, ukdata1)
 		UAP(lb_I_KeyBase, key1)
@@ -1159,7 +1159,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(const char* column) {
 lb_I_BoundColumn* LB_STDCALL lbDatabaseLayerBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		integerKey->setData(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
@@ -1194,23 +1194,23 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 	SQLRETURN sqlreturn = 0;//SQLNumResultCols(hstmt, &num);
 
 	if (boundColumns == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+		REQUEST(getModuleInstance(), lb_I_Container, boundColumns)
 	} else {
 		boundColumns->deleteAll();
 	}
 
 	for (int i = 1; i <= num; i++) {
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerKey)
 		lbErrCodes err = ERR_NONE;
 
 		// Create the instance ...
 
 		lbDatabaseLayerBoundColumn* bc = new lbDatabaseLayerBoundColumn();
 
-		lb_I_Module* m = getModuleManager();
+		lb_I_Module* m = getModuleInstance();
 
 
-		bc->setModuleManager(m, __FILE__, __LINE__);
+		
 
 		bc->prepareBoundColumn(q, i);
 
@@ -1227,7 +1227,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 		UAP(lb_I_BoundColumn, bc1)
 		bc1 = getBoundColumn(i);
 
-		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 		UAP(lb_I_KeyBase, key1)
 		colName->setData(qq->getColumnName(i));
 		QI(colName, lb_I_KeyBase, key1)
@@ -1242,7 +1242,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setQuery(lb_I_Query* q, 
 		if (ColumnNameMapping == NULL) {
 			// Create the index mapping instnce
 
-			REQUEST(manager.getPtr(), lb_I_Container, ColumnNameMapping)
+			REQUEST(getModuleInstance(), lb_I_Container, ColumnNameMapping)
 		}
 
 		UAP(lb_I_KeyBase, skey)
@@ -1308,7 +1308,7 @@ lbErrCodes      LB_STDCALL lbDatabaseLayerBoundColumns::setString(const char* co
 	UAP(lb_I_Unknown, ukdata)
 	UAP(lb_I_KeyBase, key)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Column)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
 
 	Column->setData(column);
 
@@ -1441,10 +1441,10 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 			count = metadata->GetColumnCount();
 
 			for(int i=1;i<=count;i++) {
-				UAP_REQUEST(getModuleManager(), lb_I_String, name)
-				UAP_REQUEST(getModuleManager(), lb_I_String, tablename)
-				UAP_REQUEST(getModuleManager(), lb_I_Integer, type)
-				UAP_REQUEST(getModuleManager(), lb_I_Integer, columnIndex)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
+				UAP_REQUEST(getModuleInstance(), lb_I_Integer, type)
+				UAP_REQUEST(getModuleInstance(), lb_I_Integer, columnIndex)
 				UAP(lb_I_KeyBase, key)
 				UAP(lb_I_KeyBase, reverse_key)
 				UAP(lb_I_Unknown, uk)
@@ -1487,7 +1487,7 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 					if (currentdbLayer->GetForeignKeyFKColumn(ifk) == column) {
 						UAP(lb_I_Unknown, ukPK)
 						UAP(lb_I_KeyBase, keyForeign)
-						UAP_REQUEST(getModuleManager(), lb_I_String, pkColumn)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, pkColumn)
 						*pkColumn = currentdbLayer->GetForeignKeyPKColumn(ifk).c_str();
 
 						QI(name, lb_I_KeyBase, keyForeign)
@@ -1649,21 +1649,21 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 				break;
 			case lbDBColumnInteger:
 			{
-				REQUEST(getModuleManager(), lb_I_String, s)
+				REQUEST(getModuleInstance(), lb_I_String, s)
 				l = getAsLong(i);
 				*s = l->charrep();
 			}
 				break;
 			case lbDBColumnBigInteger:
 			{
-				REQUEST(getModuleManager(), lb_I_String, s)
+				REQUEST(getModuleInstance(), lb_I_String, s)
 				l = getAsLong(i);
 				*s = l->charrep();
 			}
 				break;
 			case lbDBColumnBinary:
 			{
-				REQUEST(getModuleManager(), lb_I_String, s)
+				REQUEST(getModuleInstance(), lb_I_String, s)
 				*s = "Binary column";
 			}
 				break;
@@ -1674,7 +1674,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 				s = getAsString(i);
 				break;
 			default:
-				REQUEST(getModuleManager(), lb_I_String, s)
+				REQUEST(getModuleInstance(), lb_I_String, s)
 				*s = "Unknown column";
 		}
 		s->trim();
@@ -1690,21 +1690,21 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 			break;
 		case lbDBColumnInteger:
 		{
-			REQUEST(getModuleManager(), lb_I_String, s)
+			REQUEST(getModuleInstance(), lb_I_String, s)
 			l = getAsLong(cols);
 			*s = l->charrep();
 		}
 			break;
 		case lbDBColumnBigInteger:
 		{
-			REQUEST(getModuleManager(), lb_I_String, s)
+			REQUEST(getModuleInstance(), lb_I_String, s)
 			l = getAsLong(cols);
 			*s = l->charrep();
 		}
 			break;
 		case lbDBColumnBinary:
 		{
-			REQUEST(getModuleManager(), lb_I_String, s)
+			REQUEST(getModuleInstance(), lb_I_String, s)
 			*s = "Binary column";
 		}
 			break;
@@ -1715,7 +1715,7 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintCurrent() {
 			s = getAsString(cols);
 			break;
 		default:
-			REQUEST(getModuleManager(), lb_I_String, s)
+			REQUEST(getModuleInstance(), lb_I_String, s)
 			*s = "Unknown column";
 	}
 	s->trim();
@@ -1776,12 +1776,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::bind() {
 /// \todo Add support for joined tables.
 char* LB_STDCALL lbDatabaseLayerQuery::setWhereClause(const char* query, const char* where) {
 	char* temp = NULL;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, orginal)
 
 	*orginal = query;
 
 	if (where != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, order)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, order)
 		char* orderClause = orginal->stristr(orginal->charrep(), "ORDER BY");
 
 		if (orderClause != NULL) {
@@ -2071,14 +2071,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 								break;
 							case lbDBColumnInteger:
 							{
-								UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+								UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 								value->setData(theResult->GetResultLong(i_cache));
 								QI(value, lb_I_Unknown, uk)
 							}
 								break;
 							case lbDBColumnBigInteger:
 							{
-								UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+								UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 								value->setData(theResult->GetResultLong(i_cache));
 								QI(value, lb_I_Unknown, uk)
 							}
@@ -2161,14 +2161,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 									break;
 								case lbDBColumnInteger:
 								{
-									UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+									UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 									value->setData(theResult->GetResultLong(i_cache));
 									QI(value, lb_I_Unknown, uk)
 								}
 									break;
 								case lbDBColumnBigInteger:
 								{
-									UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+									UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 									value->setData(theResult->GetResultLong(i_cache));
 									QI(value, lb_I_Unknown, uk)
 								}
@@ -2291,7 +2291,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 }
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(const char* column) {
-	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
 
 	// Caller get's an owner
 	string++;
@@ -2514,7 +2514,7 @@ int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(const char* FKName) {
 		}
 
 		UAP(lb_I_KeyBase, key)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
 		s->setData(FKName);
 		//s->toLower();
@@ -2581,7 +2581,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getFKColumn(const char* table, con
 
 	_CL_VERBOSE << "lbDatabaseLayerQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable_PKName)
 	UAP(lb_I_KeyBase, key_PKTable_PKName)
 
 	*PKTable_PKName = table;
@@ -2633,7 +2633,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(const char* FKName) {
 	}
 
 	UAP(lb_I_KeyBase, key)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
 	s->setData(FKName);
 	//s->toLower();
@@ -2734,12 +2734,12 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	try {
 		int count = currentdbLayer->GetForeignKeys(table);
 		for (int i = 0; i < count; i++) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, FKName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, PKName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable_PKName)
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, PKColumn)
 
 			wxString fkEntry = currentdbLayer->GetForeignKeyFKColumn(i);
 			wxString pkEntry = currentdbLayer->GetForeignKeyPKColumn(i);
@@ -2907,7 +2907,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 	}
 
 	UAP(lb_I_Integer, type)
-	UAP_REQUEST(getModuleManager(), lb_I_Integer, index)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
 
@@ -2942,7 +2942,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(int p
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnType\40\char\42\ name\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerQuery::getColumnType(const char* name) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleManager(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
 
 	*Name = name;
 
@@ -2981,7 +2981,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(const char* column, bool updat
 	else
 		_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(" << column << ", FALSE)" LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
@@ -2992,7 +2992,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(const char* column, bool updat
 	col->setData(column);
 
 	if (ReadOnlyColumns == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ReadOnlyColumns)
+		REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
 	}
 
 	if (!ReadOnlyColumns->exists(&key) && updateable == true) {
@@ -3180,7 +3180,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		UAP(lb_I_Database, database)
 		if (uk == NULL) {
 			_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
-			instanceOflbDatabaseLayerDatabase(&uk, manager.getPtr(), __FILE__, __LINE__);
+			instanceOflbDatabaseLayerDatabase(&uk, getModuleInstance(), __FILE__, __LINE__);
 		}
 		uk->queryInterface("lb_I_Database", (void**) &database, __FILE__, __LINE__);
 		currentdbLayer = ((lbDatabaseLayerDatabase*) database.getPtr())->getBackend(dbName); // Internally open is called, thus .db3 is appended.
@@ -3467,14 +3467,14 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 					break;
 				case lbDBColumnInteger:
 				{
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 					value->setData(theResult->GetResultLong(i_cache));
 					QI(value, lb_I_Unknown, uk)
 				}
 					break;
 				case lbDBColumnBigInteger:
 				{
-					UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 					value->setData(theResult->GetResultLong(i_cache));
 					QI(value, lb_I_Unknown, uk)
 				}
@@ -4706,7 +4706,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumn::rebind() {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerBoundColumn::getColumnName() {
-	UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 	colName->setData(columnName);
 	colName++;
 
@@ -4872,7 +4872,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbDatabaseLayerDatabase, lbDatabaseLayerDatabase)
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverName() {
-	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s);
 	s++;
 
 	SQLSMALLINT bufferSize = 255;
@@ -4884,7 +4884,7 @@ lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverName() {
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverVersion() {
-	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s);
 	s++;
 
 	SQLSMALLINT bufferSize = 255;
@@ -4896,7 +4896,7 @@ lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDriverVersion() {
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDatabaseName() {
-	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s);
 	s++;
 
 	SQLSMALLINT bufferSize = 255;
@@ -4907,7 +4907,7 @@ lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDatabaseName() {
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSName() {
-	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s);
 	s++;
 
 	SQLSMALLINT bufferSize = 255;
@@ -4919,7 +4919,7 @@ lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSName() {
 }
 
 lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSVersion() {
-	UAP_REQUEST(getModuleManager(), lb_I_String, s);
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s);
 	s++;
 
 	SQLSMALLINT bufferSize = 255;
@@ -5016,7 +5016,7 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(const char* connectionname) {
 	} else {
 		dbl = new SqliteDatabaseLayer();
 		lbConnection* conn = new lbConnection();
-		conn->setModuleManager(*&manager, __FILE__, __LINE__);
+		
 		conn->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 
 		conn->setDBName(connName->charrep());
@@ -5082,7 +5082,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerDatabase::connect(const char* connectionnam
 lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(const char* connectionname, int readonly) {
 	lbErrCodes err = ERR_NONE;
 	lbDatabaseLayerQuery* query = new lbDatabaseLayerQuery;
-	query->setModuleManager(*&manager, __FILE__, __LINE__);
+	
 
 	open(connectionname);
 
@@ -5647,7 +5647,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
 
 lbDBInterfaceRepository::lbDBInterfaceRepository() {
-	manager = NULL;
+	
 	
 	henv = 0;
 	hdbc = 0;
@@ -5844,7 +5844,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 
 
 			lbFunctorEntity* fe = new lbFunctorEntity;
-			fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
+			\\object->setModuleManager(this->getModuleInstance(), __FILE__, __LINE__);
 			lb_I_FunctorEntity* _fe = NULL;
 			fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
 

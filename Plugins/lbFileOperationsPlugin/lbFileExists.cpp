@@ -263,7 +263,7 @@ lbErrCodes LB_STDCALL lbPluginFileExists::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
 	lbFileExists* XSLTTransformer = new lbFileExists();
-	XSLTTransformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);	
+		
 	QI(XSLTTransformer, lb_I_Unknown, ukTransformer) 
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
@@ -286,7 +286,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFileExists::peekImplementation() {
 	
 	if (ukTransformer == NULL) {
 		lbFileExists* transformer = new lbFileExists();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -304,7 +304,7 @@ lb_I_Unknown* LB_STDCALL lbPluginFileExists::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
 		lbFileExists* transformer = new lbFileExists();
-		transformer->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	}

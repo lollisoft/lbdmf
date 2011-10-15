@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.55 $
+* $Revision: 1.56 $
 * $Name:  $
-* $Id: misc.cpp,v 1.55 2011/10/15 13:14:05 lollisoft Exp $
+* $Id: misc.cpp,v 1.56 2011/10/15 21:47:12 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.56  2011/10/15 21:47:12  lollisoft
+* Removed all code that is obsolete. Current code compiles but still does not run.
+*
 * Revision 1.55  2011/10/15 13:14:05  lollisoft
 * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
 * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -416,8 +419,8 @@ lbLog::lbLog() {
 	
 	
 	
-	further_lock = 1;
-	manager = NULL;
+	;
+	
 	
 	f[0] = 0;
 	strcat(f, getLogDirectory());
@@ -447,7 +450,7 @@ lbLog::lbLog() {
 lbLog::lbLog(int l) {
 	
 	
-	further_lock = 1;
+	;
 	//lbLock lbLock(sect);
 	logmessage = NULL;
 	lastsize = 0;

@@ -95,7 +95,7 @@ END_PLUGINS()
 lbPluginModuleCryptoStream::lbPluginModuleCryptoStream() {
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginModuleCryptoStream::~lbPluginModuleCryptoStream() {
@@ -157,7 +157,7 @@ lbErrCodes LB_STDCALL lbCryptoStream::setData(lb_I_Unknown* uk) {
 lbCryptoStream::lbCryptoStream() {
 	//lbLock lbLock(sect);
 	
-	manager = NULL;
+	
 	algorythm = NULL;
 	REQUEST(getModuleInstance(), lb_I_String, cryptobuffer)
 }
@@ -230,7 +230,7 @@ lbPluginCryptoStream::lbPluginCryptoStream() {
 	_CL_VERBOSE << "lbPluginCryptoStream::lbPluginCryptoStream() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginCryptoStream::~lbPluginCryptoStream() {
@@ -259,7 +259,7 @@ lb_I_Unknown* LB_STDCALL lbPluginCryptoStream::peekImplementation() {
 	
 	if (impl == NULL) {
 		lbCryptoStream* CryptoStream = new lbCryptoStream();
-		CryptoStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(CryptoStream, lb_I_Unknown, impl)
 	} else {
@@ -278,7 +278,7 @@ lb_I_Unknown* LB_STDCALL lbPluginCryptoStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 		
 		lbCryptoStream* CryptoStream = new lbCryptoStream();
-		CryptoStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		
 		QI(CryptoStream, lb_I_Unknown, impl)
 	}

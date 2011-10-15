@@ -87,13 +87,13 @@ lbErrCodes LB_STDCALL lbTranslationsModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const char* translated, const char* language, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Text)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Translated)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Language)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Text)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Translated)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Language)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	UAP(lb_I_KeyBase, keyText)
 
@@ -122,7 +122,7 @@ long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const cha
 	QI(ID, lb_I_Unknown, ukKey)
 	QI(param, lb_I_Unknown, ukParam)
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, lookupKey)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, lookupKey)
 	*lookupKey = Text->charrep();
 	*lookupKey += "-";
 	*lookupKey += Language->charrep();
@@ -139,7 +139,7 @@ bool  LB_STDCALL lbTranslationsModel::selectText(const char* text, const char* l
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, ukKey)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, lookupKey)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, lookupKey)
 	*lookupKey = text;
 	*lookupKey += "-";
 	*lookupKey += language;
@@ -163,7 +163,7 @@ bool  LB_STDCALL lbTranslationsModel::selectText(const char* text, const char* l
 
 bool  LB_STDCALL lbTranslationsModel::selectTranslation(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -172,7 +172,7 @@ bool  LB_STDCALL lbTranslationsModel::selectTranslation(long _id) {
 	uk = Translations->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
@@ -216,7 +216,7 @@ void		LB_STDCALL lbTranslationsModel::deleteUnmarked() {
 	while (hasMoreTranslations()) {
 		setNextTranslation();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getTranslationID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -234,7 +234,7 @@ void		LB_STDCALL lbTranslationsModel::deleteMarked() {
 	while (hasMoreTranslations()) {
 		setNextTranslation();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getTranslationID());
 			
 			UAP(lb_I_KeyBase, key)
@@ -252,7 +252,7 @@ bool  LB_STDCALL lbTranslationsModel::hasMoreTranslations() {
 
 void  LB_STDCALL lbTranslationsModel::setNextTranslation() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -336,7 +336,7 @@ lbPluginTranslationsModel::lbPluginTranslationsModel() {
 	_LOG << "lbPluginTranslationsModel::lbPluginTranslationsModel() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginTranslationsModel::~lbPluginTranslationsModel() {
@@ -365,7 +365,7 @@ lb_I_Unknown* LB_STDCALL lbPluginTranslationsModel::peekImplementation() {
 
 	if (ukTranslations == NULL) {
 		lbTranslationsModel* TranslationsModel = new lbTranslationsModel();
-		TranslationsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(TranslationsModel, lb_I_Unknown, ukTranslations)
 	} else {
@@ -384,7 +384,7 @@ lb_I_Unknown* LB_STDCALL lbPluginTranslationsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbTranslationsModel* TranslationsModel = new lbTranslationsModel();
-		TranslationsModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(TranslationsModel, lb_I_Unknown, ukTranslations)
 	}

@@ -406,15 +406,15 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	// Dispatch the function call, or better let the meta application provide a direct call
 	// for saving XML application data.
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
 
 	UAP(lb_I_Unknown, uk)
 	QI(param, lb_I_Unknown, uk)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
@@ -703,7 +703,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFXslt::peekImplementation() {
 
 	if (ukActions == NULL) {
 		lbDMFXslt* DMFXslt = new lbDMFXslt();
-		DMFXslt->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 		QI(DMFXslt, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
@@ -721,7 +721,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFXslt::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbDMFXslt* xslt = new lbDMFXslt();
-		xslt->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(xslt, lb_I_Unknown, ukActions)
 	}

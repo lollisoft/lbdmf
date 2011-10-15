@@ -75,15 +75,15 @@ lbErrCodes LB_STDCALL lbActionParameters::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbActionParameters::addActionParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Description)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Interface)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Interface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbActionParameters: " << name LOG_
 
@@ -119,7 +119,7 @@ long  LB_STDCALL lbActionParameters::addActionParameter(const char* description,
 
 bool  LB_STDCALL lbActionParameters::selectActionParameter(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -128,7 +128,7 @@ bool  LB_STDCALL lbActionParameters::selectActionParameter(long _id) {
 	uk = Parameters->getElement(&key);
 
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 
@@ -176,7 +176,7 @@ void		LB_STDCALL lbActionParameters::deleteUnmarked() {
 	while (hasMoreActionParameters()) {
 		setNextActionParameter();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionParameterID());
 
 			UAP(lb_I_KeyBase, key)
@@ -194,7 +194,7 @@ void		LB_STDCALL lbActionParameters::deleteMarked() {
 	while (hasMoreActionParameters()) {
 		setNextActionParameter();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionParameterID());
 
 			UAP(lb_I_KeyBase, key)
@@ -212,7 +212,7 @@ bool  LB_STDCALL lbActionParameters::hasMoreActionParameters() {
 
 void  LB_STDCALL lbActionParameters::setNextActionParameter() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -295,15 +295,15 @@ lbErrCodes LB_STDCALL lbActionStepParameters::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbActionStepParameters::addActionStepParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Description)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Interface)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Interface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbActionStepParameters: " << name LOG_
 
@@ -339,7 +339,7 @@ long  LB_STDCALL lbActionStepParameters::addActionStepParameter(const char* desc
 
 bool  LB_STDCALL lbActionStepParameters::selectActionStepParameter(long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	id->setData(_id);
@@ -348,7 +348,7 @@ bool  LB_STDCALL lbActionStepParameters::selectActionStepParameter(long _id) {
 	uk = Parameters->getElement(&key);
 
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 
@@ -396,7 +396,7 @@ void		LB_STDCALL lbActionStepParameters::deleteUnmarked() {
 	while (hasMoreActionStepParameters()) {
 		setNextActionStepParameter();
 		if (!ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionStepParameterID());
 
 			UAP(lb_I_KeyBase, key)
@@ -414,7 +414,7 @@ void		LB_STDCALL lbActionStepParameters::deleteMarked() {
 	while (hasMoreActionStepParameters()) {
 		setNextActionStepParameter();
 		if (ismarked()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(getActionStepParameterID());
 
 			UAP(lb_I_KeyBase, key)
@@ -432,7 +432,7 @@ bool  LB_STDCALL lbActionStepParameters::hasMoreActionStepParameters() {
 
 void  LB_STDCALL lbActionStepParameters::setNextActionStepParameter() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 
@@ -528,7 +528,7 @@ lbPluginActionParameters::lbPluginActionParameters() {
 	_CL_VERBOSE << "lbPluginActionParameters::lbPluginActionParameters() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionParameters::~lbPluginActionParameters() {
@@ -557,7 +557,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionParameters::peekImplementation() {
 
 	if (ukActionParameters == NULL) {
 		lbActionParameters* ActionParameters = new lbActionParameters();
-		ActionParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(ActionParameters, lb_I_Unknown, ukActionParameters)
 	} else {
@@ -576,7 +576,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionParameters::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbActionParameters* ActionParameters = new lbActionParameters();
-		ActionParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(ActionParameters, lb_I_Unknown, ukActionParameters)
 	}
@@ -642,7 +642,7 @@ lbPluginActionStepParameters::lbPluginActionStepParameters() {
 	_CL_VERBOSE << "lbPluginActionStepParameters::lbPluginActionStepParameters() called.\n" LOG_
 	
 	
-	further_lock = 1;
+	;
 }
 
 lbPluginActionStepParameters::~lbPluginActionStepParameters() {
@@ -671,7 +671,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepParameters::peekImplementation() {
 
 	if (ukActionStepParameters == NULL) {
 		lbActionStepParameters* ActionStepParameters = new lbActionStepParameters();
-		ActionStepParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(ActionStepParameters, lb_I_Unknown, ukActionStepParameters)
 	} else {
@@ -690,7 +690,7 @@ lb_I_Unknown* LB_STDCALL lbPluginActionStepParameters::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 
 		lbActionStepParameters* ActionStepParameters = new lbActionStepParameters();
-		ActionStepParameters->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 
 		QI(ActionStepParameters, lb_I_Unknown, ukActionStepParameters)
 	}

@@ -252,7 +252,7 @@ lb_I_Unknown* LB_STDCALL lbPluginTest::peekImplementation() {
 
 	if (impl == NULL) {
 		lbTest* test = new lbTest();
-		test->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(test, lb_I_Unknown, impl)
 	} else {
@@ -271,7 +271,7 @@ lb_I_Unknown* LB_STDCALL lbPluginTest::getImplementation() {
 
 	if (impl == NULL) {
 		lbTest* test = new lbTest();
-		test->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
 	
 		QI(test, lb_I_Unknown, impl)
 	}
