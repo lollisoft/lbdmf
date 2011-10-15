@@ -33,7 +33,7 @@ lbErrCodes LB_STDCALL FaxNumber::setData(lb_I_Unknown* uk) {
 
 
 FaxNumber::FaxNumber() {
-	ref = STARTREF;
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, connections)
 	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 }

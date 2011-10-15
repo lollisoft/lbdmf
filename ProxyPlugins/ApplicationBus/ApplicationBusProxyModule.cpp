@@ -49,7 +49,7 @@ BEGIN_PLUGINS(lbServerModul)
 END_PLUGINS()
 
 lbServerModul::lbServerModul() {
-	ref = STARTREF;
+	
 }
 
 lbServerModul::~lbServerModul() {

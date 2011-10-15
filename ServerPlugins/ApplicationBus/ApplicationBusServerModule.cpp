@@ -90,7 +90,7 @@ lbErrCodes LB_STDCALL lbPluginApplicationBus::setData(lb_I_Unknown* uk) {
 
 lbPluginApplicationBus::lbPluginApplicationBus() {
 	_LOG << "lbPluginApplicationBus::lbPluginApplicationBus() called." LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginApplicationBus::~lbPluginApplicationBus() {
@@ -195,7 +195,7 @@ BEGIN_PLUGINS(lbServerModul)
 END_PLUGINS()
 
 lbServerModul::lbServerModul() {
-	ref = STARTREF;
+	
 }
 
 lbServerModul::~lbServerModul() {

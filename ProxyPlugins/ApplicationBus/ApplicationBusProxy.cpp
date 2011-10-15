@@ -35,7 +35,7 @@ lbErrCodes LB_STDCALL ApplicationBusProxy::setData(lb_I_Unknown* uk) {
 }
 
 ApplicationBusProxy::ApplicationBusProxy() {
-	ref = STARTREF;
+	
 	_CL_LOG << "Init ApplicationBusProxy" LOG_
 	
 	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
@@ -423,7 +423,7 @@ lbErrCodes LB_STDCALL lbPluginApplicationBusProxy::setData(lb_I_Unknown* uk) {
 lbPluginApplicationBusProxy::lbPluginApplicationBusProxy() {
 	_CL_VERBOSE << "lbPluginApplicationBusProxy::lbPluginApplicationBusProxy() called.\n" LOG_
 	ukApplicationBusProxy = NULL;
-	ref = STARTREF;
+	
 }
 
 lbPluginApplicationBusProxy::~lbPluginApplicationBusProxy() {

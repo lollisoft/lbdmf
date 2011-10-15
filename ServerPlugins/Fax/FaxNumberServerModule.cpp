@@ -92,7 +92,7 @@ lbErrCodes LB_STDCALL lbPluginFaxNumber::setData(lb_I_Unknown* uk) {
 
 lbPluginFaxNumber::lbPluginFaxNumber() {
 	_LOG << "lbPluginFaxNumber::lbPluginFaxNumber() called." LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginFaxNumber::~lbPluginFaxNumber() {
@@ -197,7 +197,7 @@ BEGIN_PLUGINS(lbServerModul)
 END_PLUGINS()
 
 lbServerModul::lbServerModul() {
-	ref = STARTREF;
+	
 }
 
 lbServerModul::~lbServerModul() {

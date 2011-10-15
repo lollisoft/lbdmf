@@ -29,7 +29,7 @@ lbErrCodes LB_STDCALL ApplicationBus::setData(lb_I_Unknown* uk) {
 
 
 ApplicationBus::ApplicationBus() {
-	ref = STARTREF;
+	
 	//UAP_REQUEST(getModuleInstance(), lb_I_Container, connections)
 	REQUEST(getModuleInstance(), lb_I_String, ServerInstance)
 }

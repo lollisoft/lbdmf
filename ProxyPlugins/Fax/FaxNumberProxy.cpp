@@ -35,7 +35,7 @@ lbErrCodes LB_STDCALL FaxNumberProxy::setData(lb_I_Unknown* uk) {
 }
 
 FaxNumberProxy::FaxNumberProxy() {
-	ref = STARTREF;
+	
 	_CL_LOG << "Init FaxNumberProxy" LOG_
 
     if (ABSConnection == NULL) {
@@ -244,7 +244,7 @@ lbErrCodes LB_STDCALL lbPluginFaxNumberProxy::setData(lb_I_Unknown* uk) {
 lbPluginFaxNumberProxy::lbPluginFaxNumberProxy() {
 	_CL_VERBOSE << "lbPluginFaxNumberProxy::lbPluginFaxNumberProxy() called.\n" LOG_
 	ukFaxNumberProxy = NULL;
-	ref = STARTREF;
+	
 }
 
 lbPluginFaxNumberProxy::~lbPluginFaxNumberProxy() {
