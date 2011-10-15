@@ -155,7 +155,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...slbMutex:0:*/
 lbMutex::lbMutex()
 {
-	ref = STARTREF;
+	
 }
 
 lbMutex::~lbMutex()
@@ -262,7 +262,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 ///\todo Implement
 lbCritSect::lbCritSect() {
-	ref = STARTREF;
+	
 }
 
 lbCritSect::~lbCritSect() {
@@ -289,7 +289,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbLock::lbLock() {
-	ref = STARTREF;
+	
 	cso = NULL;
 }
 

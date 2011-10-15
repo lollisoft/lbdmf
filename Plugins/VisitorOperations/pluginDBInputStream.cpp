@@ -229,7 +229,7 @@ lbErrCodes LB_STDCALL lbDatabaseInputStream::setData(lb_I_Unknown* uk) {
 lbDatabaseInputStream::lbDatabaseInputStream()
 {
 	_CL_VERBOSE << "lbDatabaseInputStream::lbDatabaseInputStream() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbDatabaseInputStream\58\\58\\126\lbDatabaseInputStream\40\\41\:0:*/
@@ -2280,7 +2280,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseInputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() {
 	_CL_VERBOSE << "lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginDatabaseInputStream::~lbPluginDatabaseInputStream() {

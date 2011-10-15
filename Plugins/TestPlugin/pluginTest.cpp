@@ -166,7 +166,7 @@ lbErrCodes LB_STDCALL lbTest::setData(lb_I_Unknown* uk) {
 lbTest::lbTest() 
 {
 	_CL_LOG << "lbTest::lbTest() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbTest\58\\58\\126\lbTest\40\\41\:0:*/
@@ -223,7 +223,7 @@ lbErrCodes LB_STDCALL lbPluginTest::setData(lb_I_Unknown* uk) {
 
 lbPluginTest::lbPluginTest() {
 	_CL_VERBOSE << "lbPluginTest::lbPluginTest() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginTest::~lbPluginTest() {

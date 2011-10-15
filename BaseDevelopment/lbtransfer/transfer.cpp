@@ -99,7 +99,7 @@ lbErrCodes LB_STDCALL lbTransfer::setData(lb_I_Unknown* uk) {
 
 /*...slbTransfer\58\\58\lbTransfer\40\\41\:0:*/
 lbTransfer::lbTransfer() {
-	ref = STARTREF;
+	
 	// Moved to init(...)
 	//REQUEST(getModuleInstance(), lb_I_Socket, sock)
 	laststate = 1;

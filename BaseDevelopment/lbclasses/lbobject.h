@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbobject.h,v 1.57 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: lbobject.h,v 1.58 2011/10/15 13:14:05 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.58  2011/10/15 13:14:05  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.57  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -356,9 +360,6 @@ public:
 
 public:
 	lbParameter() {
-		ref = STARTREF;
-		data = NULL;
-		further_lock = 1;
 		cloning = true;
 	}
 	virtual ~lbParameter() {}
@@ -374,9 +375,6 @@ class lbReference : public lb_I_Reference {
 public:
 	lbReference()
 	{ 
-		ref = STARTREF;
-		data = NULL;
-		further_lock = 1;
 		_r = NULL; 
 	}
 	virtual ~lbReference() {}

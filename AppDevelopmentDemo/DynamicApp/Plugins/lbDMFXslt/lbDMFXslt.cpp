@@ -103,7 +103,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDMFXslt::lbDMFXslt() {
-	ref = STARTREF;
+	
 	myActionID = -1;
 
 	_CL_LOG << "lbDMFXslt::lbDMFXslt() called." LOG_
@@ -624,7 +624,7 @@ lbErrCodes LB_STDCALL lbPluginDMFXslt::setData(lb_I_Unknown* uk) {
 
 lbPluginDMFXslt::lbPluginDMFXslt() {
 	_CL_VERBOSE << "lbPluginDMFXslt::lbPluginDMFXslt() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginDMFXslt::~lbPluginDMFXslt() {

@@ -60,7 +60,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbApplications\58\\58\lbApplications\40\\41\:0:*/
 lbApplications::lbApplications() {
-	ref = STARTREF;
+	
 	_CL_VERBOSE << "lbApplications::lbApplications() called." LOG_
 	REQUEST(getModuleInstance(), lb_I_Container, Applications)
 	REQUEST(getModuleInstance(), lb_I_String, currentApplication)
@@ -359,8 +359,8 @@ lbErrCodes LB_STDCALL lbPluginApplications::setData(lb_I_Unknown* uk) {
 
 lbPluginApplications::lbPluginApplications() {
 	_CL_VERBOSE << "lbPluginApplications::lbPluginApplications() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

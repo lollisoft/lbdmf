@@ -80,7 +80,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbProtocolThread)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbProtocolThread::lbProtocolThread() {
-	ref = STARTREF;
+	
 	finished = true;
 }
 /*...slbProtocolThread\58\\58\\126\lbProtocolThread\40\\41\:0:*/
@@ -275,7 +275,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServerThread)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbAppServerThread::lbAppServerThread() {
-	ref = STARTREF;
+	
 }
 
 lbErrCodes LB_STDCALL lbAppServerThread::setData(lb_I_Unknown* uk) {
@@ -645,7 +645,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServerChildThread)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbAppServerChildThread::lbAppServerChildThread() {
-	ref = STARTREF;
+	
 }
 
 lbErrCodes LB_STDCALL lbAppServerChildThread::setData(lb_I_Unknown* uk) {
@@ -986,7 +986,7 @@ lbErrCodes LB_STDCALL lbDispatchFn::setData(lb_I_Unknown* uk) {
 
 
 lbDispatchFn::lbDispatchFn() {
-	ref = STARTREF;
+	
 }
 
 lbDispatchFn::~lbDispatchFn() {
@@ -1028,7 +1028,7 @@ lbErrCodes LB_STDCALL lbDispatchProto::setData(lb_I_Unknown* uk) {
 }
 
 lbDispatchProto::lbDispatchProto() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_String, service)
 }
 

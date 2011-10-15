@@ -193,7 +193,7 @@ lbErrCodes mapWSAErrcode(int lastError, int isServer) {
 
 
 lbSocket::lbSocket() {
-	ref = STARTREF;
+	
 #ifdef WINDOWS
 	startupflag = 0;
 #endif

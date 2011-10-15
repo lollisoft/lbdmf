@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.54 $
+* $Revision: 1.55 $
 * $Name:  $
-* $Id: misc.cpp,v 1.54 2011/09/25 09:30:14 lollisoft Exp $
+* $Id: misc.cpp,v 1.55 2011/10/15 13:14:05 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.55  2011/10/15 13:14:05  lollisoft
+* Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+* Currently the code crashes on windows, but lets see how it is working on Mac.
+*
 * Revision 1.54  2011/09/25 09:30:14  lollisoft
 * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
 * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -409,9 +413,9 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
 	//lbLock lbLock(sect);
-	ref = STARTREF;
-	ref = STARTREF;
-	data = NULL;
+	
+	
+	
 	further_lock = 1;
 	manager = NULL;
 	
@@ -441,8 +445,8 @@ lbLog::lbLog() {
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
 lbLog::lbLog(int l) {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 	//lbLock lbLock(sect);
 	logmessage = NULL;

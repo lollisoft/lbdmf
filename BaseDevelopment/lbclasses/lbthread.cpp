@@ -167,9 +167,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...slbMutex:0:*/
 lbMutex::lbMutex()
 {
-	ref = STARTREF;
+	
 	MyMutexNumber = 0;
-	data = NULL;
+	
 	further_lock = 1;
 #ifdef WINDOWS
 	mutex = NULL;
@@ -290,9 +290,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 ///\todo Implement
 lbCritSect::lbCritSect() {
-	ref = STARTREF;
+	
 	critsect = NULL;
-	data = NULL;
+	
 	further_lock = 1;
 }
 
@@ -323,10 +323,10 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbLock::lbLock() {
-	ref = STARTREF;
+	
 	name = NULL; 
 	cso = NULL; 
-	data = NULL;
+	
 	further_lock = 1;
 	instance_counted = 0;
 	lastQIFile = miniString();
@@ -558,8 +558,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 int lbThread::threadCount = 0;
 /*...slbThread:0:*/
 lbThread::lbThread() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 	lb_ThreadId = 0x00000000;
 	

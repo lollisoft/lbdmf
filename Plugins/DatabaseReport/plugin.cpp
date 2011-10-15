@@ -132,7 +132,7 @@ END_PLUGINS()
 
 lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() {
 	_CL_VERBOSE << "lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() called." LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() {

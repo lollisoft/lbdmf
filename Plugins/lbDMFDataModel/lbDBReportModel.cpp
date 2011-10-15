@@ -90,7 +90,7 @@ lbErrCodes lbReports::setData(lb_I_Unknown* uk) {
 
 
 lbReports::lbReports() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Reports)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
@@ -246,8 +246,8 @@ lbErrCodes LB_STDCALL lbPluginReportsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginReportsModel::lbPluginReportsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -319,7 +319,7 @@ void LB_STDCALL lbPluginReportsModel::releaseImplementation() {
 
 
 lbReportParameters::lbReportParameters() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportParameters)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentReportID)
@@ -487,8 +487,8 @@ lbErrCodes LB_STDCALL lbPluginReportParametersModel::setData(lb_I_Unknown* uk) {
 
 lbPluginReportParametersModel::lbPluginReportParametersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -561,7 +561,7 @@ void LB_STDCALL lbPluginReportParametersModel::releaseImplementation() {
 
 
 lbReportElements::lbReportElements() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportElements)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentReportID)
@@ -794,8 +794,8 @@ lbErrCodes LB_STDCALL lbPluginReportElementsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginReportElementsModel::lbPluginReportElementsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -867,7 +867,7 @@ void LB_STDCALL lbPluginReportElementsModel::releaseImplementation() {
 
 
 lbReportElementTypes::lbReportElementTypes() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ElementTypes)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
@@ -1024,8 +1024,8 @@ lbErrCodes LB_STDCALL lbPluginReportElementTypesModel::setData(lb_I_Unknown* uk)
 
 lbPluginReportElementTypesModel::lbPluginReportElementTypesModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -1098,7 +1098,7 @@ void LB_STDCALL lbPluginReportElementTypesModel::releaseImplementation() {
 
 
 lbReportTexts::lbReportTexts() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportTexts)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentElementID)
@@ -1268,8 +1268,8 @@ lbErrCodes LB_STDCALL lbPluginReportTextsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginReportTextsModel::lbPluginReportTextsModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

@@ -92,7 +92,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDynamicAppXMLStorage::lbDynamicAppXMLStorage() {
-	ref = STARTREF;
+	
 
 	_CL_LOG << "lbDynamicAppStorage::lbDynamicAppStorage() called." LOG_
 }
@@ -502,7 +502,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDynamicAppInternalStorage::lbDynamicAppInternalStorage() {
-	ref = STARTREF;
+	
 
 	_CL_LOG << "lbDynamicAppInternalStorage::lbDynamicAppInternalStorage() called." LOG_
 }
@@ -1592,7 +1592,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDynamicAppBoUMLImportExport::lbDynamicAppBoUMLImportExport() {
-	ref = STARTREF;
+	
 
 	_CL_LOG << "lbDynamicAppBoUMLImportExport::lbDynamicAppBoUMLImportExport() called." LOG_
 }
@@ -2428,7 +2428,7 @@ return ERR_NOT_IMPLEMENTED;
 
 lbPluginDynamicAppXMLStorage::lbPluginDynamicAppXMLStorage() {
 _CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
-ref = STARTREF;
+
 }
 
 lbPluginDynamicAppXMLStorage::~lbPluginDynamicAppXMLStorage() {
@@ -2541,7 +2541,7 @@ return ERR_NOT_IMPLEMENTED;
 
 lbPluginDynamicAppInternalStorage::lbPluginDynamicAppInternalStorage() {
 _CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
-ref = STARTREF;
+
 }
 
 lbPluginDynamicAppInternalStorage::~lbPluginDynamicAppInternalStorage() {
@@ -2653,7 +2653,7 @@ lbErrCodes LB_STDCALL lbPluginDynamicAppBoUMLImport::setData(lb_I_Unknown* uk) {
 
 lbPluginDynamicAppBoUMLImport::lbPluginDynamicAppBoUMLImport() {
 	_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginDynamicAppBoUMLImport::~lbPluginDynamicAppBoUMLImport() {

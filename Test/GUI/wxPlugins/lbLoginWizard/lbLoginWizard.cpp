@@ -97,8 +97,8 @@ BEGIN_PLUGINS(lbPluginModuleLoginWizard)
 END_PLUGINS()
 
 lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
-		ref = STARTREF;
-		data = NULL;
+		
+		
 		further_lock = 1;
 }
 
@@ -132,8 +132,8 @@ public:
 
 	wxAppSelectPage() {
 		app = wxString("");
-		ref = STARTREF;
-		data = NULL;
+		
+		
 		further_lock = 1;
 		sizerMain = NULL;
 		box = NULL;
@@ -291,8 +291,8 @@ public:
 DECLARE_LB_UNKNOWN()
 
 	wxLogonPage() {
-		ref = STARTREF;
-		data = NULL;
+		
+		
 		further_lock = 1;
 		OkButton = NULL;
 		CancelButton = NULL;
@@ -309,8 +309,8 @@ DECLARE_LB_UNKNOWN()
 
 	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
-		ref = STARTREF;
-		data = NULL;
+		
+		
 		further_lock = 1;
 		OkButton = NULL;
 		CancelButton = NULL;
@@ -574,8 +574,8 @@ lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 lbLoginHandler::lbLoginHandler() {
 	wizard = NULL;
 	page1 = NULL;
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -641,8 +641,8 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 }
 
 lbPluginLoginWizard::lbPluginLoginWizard() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

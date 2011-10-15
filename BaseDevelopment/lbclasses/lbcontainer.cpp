@@ -36,10 +36,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.35 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.36 2011/10/15 13:14:05 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.36  2011/10/15 13:14:05  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.35  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -225,19 +229,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbContainer::lbContainer() {
     iteration = 0;
-    ref = STARTREF;
 	cloning = true;
 	canDeleteObjects = true;
-	data = NULL;
-	further_lock = 1;
     iterator = NULL;
     count = 0;
     container_data = NULL;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-    _LOG << "Set manager to NULL must be done automatically!" LOG_
-#endif
-/*...e*/
     manager = NULL;
 }
 

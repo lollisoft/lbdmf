@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.147 $
+ * $Revision: 1.148 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.147 2011/10/15 06:36:12 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.148 2011/10/15 13:14:04 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.148  2011/10/15 13:14:04  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.147  2011/10/15 06:36:12  lollisoft
  * All current changes including interfaces (starting mass changes).
  *
@@ -639,18 +643,15 @@ public:
 class lbSkipListElement : public lb_I_Element {
 public:
     lbSkipListElement() { 
-    	ref = STARTREF; 
     	next = NULL; 
-    	data = NULL; 
     	key = NULL; 
     	manager = NULL;
     }
     virtual ~lbSkipListElement();
 	
     lbSkipListElement(const lb_I_Element &e) { 
-    	ref = STARTREF; 
     	next = e.getNext(); 
-	manager = NULL;
+		manager = NULL;
     }
 
     DECLARE_LB_UNKNOWN()
@@ -1108,7 +1109,6 @@ IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 /*...sIMPLEMENT_LB_ELEMENT\40\lbSkipListElement\41\:0:*/
 
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { 
-    ref = STARTREF; 
     manager = NULL; 
     if (_next == NULL) next = _next; 
     if (_next != NULL) { 
@@ -1161,7 +1161,7 @@ lbSkipListElement::~lbSkipListElement() {
                 RELEASE(data); 
         } 
         key = NULL; 
-        data = NULL; 
+         
 } 
 
 lb_I_Unknown* lbSkipListElement::getObject() const { 
@@ -2106,11 +2106,7 @@ public:
         	// ref should go into a simple integer class with ++ and -- operators
         	// to handle refcounting correctly, even the ref is not setup like this
         	// construct.
-        
-        
-        	ref = STARTREF;
-			data = NULL;
-			further_lock = 1;
+
         	_functor = NULL;
         	_module = NULL;
         	_interface = NULL;
@@ -2236,7 +2232,6 @@ IMPLEMENT_FUNCTOR(instanceOfHCInterfaceRepository, lbHCInterfaceRepository)
 
 lbHCInterfaceRepository::lbHCInterfaceRepository() {	
 	manager = NULL;
-	ref = STARTREF;
 	searchArgument = NULL;
 	_CL_VERBOSE << "lbHCInterfaceRepository::lbHCInterfaceRepository() called." LOG_
 }
@@ -2946,7 +2941,7 @@ int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, const char* implName, c
 /*...e*/
 
 lbModule::lbModule() {
-                ref = STARTREF;
+                
                 loadedModules = NULL;
                 internalInstanceRequest = 0;
                 xml_Instance = NULL;
@@ -2958,14 +2953,13 @@ lbModule::lbModule() {
 #endif
 /*...e*/
 		setModuleManager(this, __FILE__, __LINE__);
-		ref = STARTREF;
 }
         
 lbModule::~lbModule() {
 	_CL_LOG << "lbModule::~lbModule() called" LOG_
 	bool a = isLogActivated();
 	setLogActivated(true);
-	if (ref != STARTREF && isLogActivated()) COUT << "lbModule::~lbModule() Error: Reference count mismatch: " << ref << ENDL;
+	if (ref != 0 && isLogActivated()) COUT << "lbModule::~lbModule() Error: Reference count mismatch: " << ref << ENDL;
 
 	if (moduleList != NULL) {
 		moduleList->deleteAll();
@@ -3551,10 +3545,10 @@ class lbElement : public lb_I_Element {
 private:
 
 public:
-    lbElement() { ref = STARTREF; next = NULL; data = NULL; key = NULL; }
+    lbElement() {  next = NULL;  key = NULL; }
     virtual ~lbElement();
         
-    lbElement(const lb_I_Element &e) { ref = STARTREF; next = e.getNext(); }
+    lbElement(const lb_I_Element &e) {  next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 
@@ -3574,7 +3568,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbModuleContainer::lbModuleContainer() {
     iteration = 0;
-    ref = STARTREF;
+    
     iterator = NULL;
     count = 0;
     container_data = NULL;

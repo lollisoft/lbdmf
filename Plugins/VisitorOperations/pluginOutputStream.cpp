@@ -240,7 +240,7 @@ lbErrCodes LB_STDCALL lbOutputStream::setData(lb_I_Unknown* uk) {
 lbOutputStream::lbOutputStream() 
 {
 	_CL_LOG << "lbOutputStream::lbOutputStream() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbOutputStream\58\\58\\126\lbOutputStream\40\\41\:0:*/
@@ -1068,7 +1068,7 @@ lbErrCodes LB_STDCALL lbPluginOutputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginOutputStream::lbPluginOutputStream() {
 	_CL_VERBOSE << "lbPluginOutputStream::lbPluginOutputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginOutputStream::~lbPluginOutputStream() {

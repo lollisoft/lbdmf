@@ -173,10 +173,10 @@ lbDatabaseDialog::lbDatabaseDialog()
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
-	ref = STARTREF;
+	
 	panel = new lbDatabasePanel();
 	_created = true;
-	data = NULL;
+	
 	further_lock = 1;
 }
 /*...e*/
@@ -515,8 +515,8 @@ lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
 	_CL_VERBOSE << "lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n" LOG_
 	dbForm = NULL;
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

@@ -91,7 +91,7 @@ BEGIN_PLUGINS(lbPluginModule)
 END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
-	ref = STARTREF;
+	
 	_LOG << "lbPluginModule::lbPluginModule() lbPluginDMFXslt with namespace XsltTransformer called." LOG_
 }
 

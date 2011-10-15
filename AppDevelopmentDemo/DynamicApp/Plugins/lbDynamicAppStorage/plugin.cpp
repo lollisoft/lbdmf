@@ -576,7 +576,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 
 
 lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
-	ref = STARTREF;
+	
 	// Nothing checked yet.
 	_check_for_databases_failure_step = -1;
 

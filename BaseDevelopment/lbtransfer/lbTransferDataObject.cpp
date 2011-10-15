@@ -78,7 +78,7 @@ lbErrCodes LB_STDCALL lbTransferDataObject::setData(lb_I_Unknown* uk) {
 
 /*...slbTransferDataObject:0:*/
 lbTransferDataObject::lbTransferDataObject() {
-	ref = STARTREF;
+	
 	setType();
 }
 

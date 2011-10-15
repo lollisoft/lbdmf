@@ -239,7 +239,7 @@ lbErrCodes LB_STDCALL lbXMLOutputStream::setData(lb_I_Unknown* uk) {
 lbXMLOutputStream::lbXMLOutputStream() 
 {
 	_CL_LOG << "lbXMLOutputStream::lbXMLOutputStream() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbXMLOutputStream\58\\58\\126\lbXMLOutputStream\40\\41\:0:*/
@@ -924,7 +924,7 @@ lbErrCodes LB_STDCALL lbPluginXMLOutputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginXMLOutputStream::lbPluginXMLOutputStream() {
 	_CL_VERBOSE << "lbPluginXMLOutputStream::lbPluginXMLOutputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginXMLOutputStream::~lbPluginXMLOutputStream() {

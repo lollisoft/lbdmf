@@ -62,7 +62,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbUsersModel::lbUsersModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Users)
 	REQUEST(getModuleInstance(), lb_I_String, currentUserName)
 	REQUEST(getModuleInstance(), lb_I_String, currentUserPassword)
@@ -295,8 +295,8 @@ lbErrCodes LB_STDCALL lbPluginUsersModel::setData(lb_I_Unknown* uk) {
 
 lbPluginUsersModel::lbPluginUsersModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

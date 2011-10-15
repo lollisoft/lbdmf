@@ -231,7 +231,7 @@ lbErrCodes LB_STDCALL lbInputStreamOpr::setData(lb_I_Unknown* uk) {
 lbInputStreamOpr::lbInputStreamOpr() 
 {
 	_CL_LOG << "lbInputStreamOpr::lbInputStreamOpr() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbInputStreamOpr\58\\58\\126\lbInputStreamOpr\40\\41\:0:*/
@@ -1172,7 +1172,7 @@ lbErrCodes LB_STDCALL lbPluginInputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginInputStream::lbPluginInputStream() {
 	_CL_VERBOSE << "lbPluginInputStream::lbPluginInputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginInputStream::~lbPluginInputStream() {

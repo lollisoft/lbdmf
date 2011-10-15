@@ -32,11 +32,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.88 $
+* $Revision: 1.89 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.88 2011/10/15 06:36:12 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.89 2011/10/15 13:14:04 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.89  2011/10/15 13:14:04  lollisoft
+* Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+* Currently the code crashes on windows, but lets see how it is working on Mac.
+*
 * Revision 1.88  2011/10/15 06:36:12  lollisoft
 * All current changes including interfaces (starting mass changes).
 *
@@ -529,7 +533,7 @@ lb_I_Unknown* LB_STDCALL lbPluginManager::getUnknown() {
 
 
 lbPluginManager::lbPluginManager() {
-	ref = STARTREF;
+	
 	begunEnumerate = firstEnumerate = begunUnitTestEnumerate = false;
 	begunServerEnumerate = firstServerEnumerate = firstUnitTestEnumerate = false;
 	firstUnitTestPlugin = false;
@@ -2053,8 +2057,8 @@ lbPlugin::lbPlugin() {
 	_name = NULL;
 	_namespace = NULL;
 	_version = NULL;
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 	postInitialized = false;
 	

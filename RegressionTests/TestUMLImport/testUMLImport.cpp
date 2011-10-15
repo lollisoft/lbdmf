@@ -116,7 +116,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 //IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
 
 UIWrapper::UIWrapper() {
-	ref = STARTREF;
+	
 	gui = NULL;
 	printf("Instance of lb_I_Application created\n");
 	_LOG << "Instance of lb_I_Application created" LOG_

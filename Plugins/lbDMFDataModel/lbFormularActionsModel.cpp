@@ -58,7 +58,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbFormularActionsModel::lbFormularActionsModel() {
-	ref = STARTREF;
+	
 
 	REQUEST(getModuleInstance(), lb_I_Container, FormularActions)
 	
@@ -291,8 +291,8 @@ lbErrCodes LB_STDCALL lbPluginFormularActionsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginFormularActionsModel::lbPluginFormularActionsModel() {
 	_CL_VERBOSE << "lbPluginFormularActionsModel::lbPluginFormularActionsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

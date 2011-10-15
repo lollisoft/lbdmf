@@ -231,7 +231,7 @@ lbErrCodes LB_STDCALL lbJSONInputStream::setData(lb_I_Unknown* uk) {
 lbJSONInputStream::lbJSONInputStream() 
 {
 	_CL_LOG << "lbJSONInputStream::lbJSONInputStream() called." LOG_
-	ref = STARTREF;
+	
 }
 /*...e*/
 /*...slbJSONInputStream\58\\58\\126\lbJSONInputStream\40\\41\:0:*/
@@ -1172,7 +1172,7 @@ lbErrCodes LB_STDCALL lbPluginJSONInputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginJSONInputStream::lbPluginJSONInputStream() {
 	_CL_VERBOSE << "lbPluginJSONInputStream::lbPluginJSONInputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginJSONInputStream::~lbPluginJSONInputStream() {

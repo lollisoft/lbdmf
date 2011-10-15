@@ -66,7 +66,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 //IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
 
 UIWrapper::UIWrapper() {
-	ref = STARTREF;
+	
 	gui = NULL;
 	REQUEST(getModuleInstance(), lb_I_String, answer)
 	REQUEST(getModuleInstance(), lb_I_String, fileanswer)

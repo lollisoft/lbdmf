@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbelement.h,v 1.16 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: lbelement.h,v 1.17 2011/10/15 13:14:05 lollisoft Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.17  2011/10/15 13:14:05  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.16  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -112,22 +116,16 @@ private:
 
 public:
     lbElement() { 
-    	ref = STARTREF; 
-    	data = NULL; 
     	next = NULL; 
     	key = NULL; 
     	manager = NULL;
-		further_lock = 1;
     }
     virtual ~lbElement();
 	
     lbElement(const lb_I_Element &e) { 
-		ref = STARTREF;
-		data = NULL;
 		next = e.getNext(); 
 		manager = NULL;
     	key = NULL; 
-		further_lock = 1;
     }
 
     DECLARE_LB_UNKNOWN()

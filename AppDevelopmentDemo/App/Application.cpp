@@ -85,7 +85,7 @@ protected:
 /*...slbApplication:0:*/
 /*...sctors\47\dtors:0:*/
 lbApplication::lbApplication() {
-        ref = STARTREF;
+        
         gui = NULL;
         printf("Instance of lb_I_Application created\n");
         _LOG << "Instance of lb_I_Application created" LOG_

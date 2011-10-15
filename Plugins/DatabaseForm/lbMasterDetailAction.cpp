@@ -109,10 +109,10 @@ lbErrCodes LB_STDCALL lbDetailFormAction::setData(lb_I_Unknown* uk) {
 }
 
 lbDetailFormAction::lbDetailFormAction() {
-	ref = STARTREF;
+	
 	myActionID = -1;
 	detailForm = NULL;
-	data = NULL;
+	
 	further_lock = 1;
 }
 

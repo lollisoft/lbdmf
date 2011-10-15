@@ -121,10 +121,10 @@ lbErrCodes LB_STDCALL lbAction::setData(lb_I_Unknown* uk) {
 
 lbAction::lbAction() {
 	lbErrCodes err = ERR_NONE;
-	ref = STARTREF;
+	
 	myActionID = -1;
 	initialized = false;
-	data = NULL;
+	
 	further_lock = 1;
 }
 

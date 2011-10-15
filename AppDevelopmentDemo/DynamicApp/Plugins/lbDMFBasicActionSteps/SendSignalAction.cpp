@@ -89,10 +89,7 @@ lbErrCodes LB_STDCALL lbSendSignalAction::setData(lb_I_Unknown* uk) {
 }
 
 lbSendSignalAction::lbSendSignalAction() {
-	ref = STARTREF;
 	myActionID = -1;
-	data = NULL;
-	further_lock = 1;
 }
 
 lbSendSignalAction::~lbSendSignalAction() {
@@ -393,8 +390,8 @@ lbErrCodes LB_STDCALL lbCallActivityHandler::CallActivity(lb_I_Unknown* uk) {
 }
 
 lbCallActivityHandler::lbCallActivityHandler() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -460,8 +457,8 @@ lbErrCodes LB_STDCALL lbPluginCallActivityHandler::setData(lb_I_Unknown* uk) {
 }
 
 lbPluginCallActivityHandler::lbPluginCallActivityHandler() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

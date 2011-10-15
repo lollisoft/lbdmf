@@ -58,7 +58,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDBTableModel::lbDBTableModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Tables)
 	REQUEST(getModuleInstance(), lb_I_String, currentCatalog)
 	REQUEST(getModuleInstance(), lb_I_String, currentSchema)
@@ -315,8 +315,8 @@ lbErrCodes LB_STDCALL lbPluginDBTableModel::setData(lb_I_Unknown* uk) {
 
 lbPluginDBTableModel::lbPluginDBTableModel() {
 	_CL_VERBOSE << "lbPluginDBTableModel::lbPluginDBTableModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -394,7 +394,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDBColumnsModel::lbDBColumnsModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Columns)
 	REQUEST(getModuleInstance(), lb_I_Container, ColumnsPages)
 
@@ -841,8 +841,8 @@ lbErrCodes LB_STDCALL lbPluginDBColumnsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginDBColumnsModel::lbPluginDBColumnsModel() {
 	_CL_VERBOSE << "lbPluginDBColumnsModel::lbPluginDBColumnsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -920,7 +920,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDBForeignKeysModel::lbDBForeignKeysModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ForeignKeys)
 	REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
 	REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
@@ -1278,8 +1278,8 @@ lbErrCodes LB_STDCALL lbPluginDBForeignKeysModel::setData(lb_I_Unknown* uk) {
 
 lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() {
 	_CL_VERBOSE << "lbPluginDBForeignKeysModel::lbPluginDBForeignKeysModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -1373,7 +1373,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
@@ -1658,8 +1658,8 @@ lbErrCodes LB_STDCALL lbPluginDBPrimaryKeysModel::setData(lb_I_Unknown* uk) {
 
 lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() {
 	_CL_VERBOSE << "lbPluginDBPrimaryKeysModel::lbPluginDBPrimaryKeysModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

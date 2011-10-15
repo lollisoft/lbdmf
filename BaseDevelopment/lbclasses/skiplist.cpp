@@ -38,11 +38,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.66 2011/10/15 06:36:12 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.67 2011/10/15 13:14:05 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.67  2011/10/15 13:14:05  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.66  2011/10/15 06:36:12  lollisoft
  * All current changes including interfaces (starting mass changes).
  *
@@ -433,9 +437,6 @@ void LB_STDCALL SkipList::setCloning(bool doClone) {
 }
 
 SkipList::SkipList() {
-	ref = STARTREF;
-	data = NULL;
-	further_lock = 1;
 	iterator = NULL;
 	iteration = 0;
 	canDeleteObjects = true;
@@ -935,9 +936,9 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbSkipListElement::lbSkipListElement() { 
-	ref = STARTREF; 
+	 
 	next = NULL; 
-	data = NULL; 
+	 
 	key = NULL; 
 	manager = NULL;
 	further_lock = 1;
@@ -945,7 +946,7 @@ lbSkipListElement::lbSkipListElement() {
 
 lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
 	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
-	ref = STARTREF; 
+	 
 	next = e.getNext(); 
 	data = e.getObject();
 	key = e.getKey();
@@ -954,11 +955,11 @@ lbSkipListElement::lbSkipListElement(const lb_I_Element &e) {
 
 //IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 void LB_STDCALL lbSkipListElement::detachData() {
-	data = NULL;
+	
 }
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) {
-    ref = STARTREF;
-	data = NULL;
+    
+	
     manager = NULL;
     next = _next;
     if (_next != NULL) {
@@ -1011,7 +1012,7 @@ lbSkipListElement::~lbSkipListElement() {
 		RELEASE(data);
 	}
 	key = NULL;
-	data = NULL;
+	
 }
 
 lb_I_Unknown* lbSkipListElement::getObject() const {

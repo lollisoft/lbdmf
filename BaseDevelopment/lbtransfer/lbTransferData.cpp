@@ -76,7 +76,7 @@ lbErrCodes LB_STDCALL lbTransferData::setData(lb_I_Unknown* uk) {
 }
 
 lbTransferData::lbTransferData() {
-	ref = STARTREF;
+	
 }
 
 void LB_STDCALL lbTransferData::setServerSide(int _serverside) {

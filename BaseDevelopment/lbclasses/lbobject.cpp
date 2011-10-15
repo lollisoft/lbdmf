@@ -103,8 +103,8 @@ lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
 
 /// \todo Use environment variable to select language.
 lbLocale::lbLocale() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
@@ -845,9 +845,7 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 /*...slbString:0:*/
 lbString::lbString() {
 	if (isVerbose() == true) printf("lbString::lbString()\n");
-	ref = STARTREF;
-   	data = NULL;
-	further_lock = 1;
+
 	stringdata = NULL;
 	buffersize = stringsize = 0L;
 	allocationsize = 1; // Memory management may be do more.
@@ -861,7 +859,6 @@ lbString::lbString() {
 }
 
 lbString::~lbString() {
-
 	char ptr[20] = "";
 	sprintf(ptr, "%p", this);
 
@@ -1406,8 +1403,8 @@ char* LB_STDCALL lbString::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbFileLocation::lbFileLocation() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	_path = NULL;
 }
@@ -1497,8 +1494,8 @@ char* LB_STDCALL lbFileLocation::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbDirLocation::lbDirLocation() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	_path = NULL;
 }
@@ -1585,8 +1582,8 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	integerdata = 0;
 	key = NULL;
@@ -1649,8 +1646,8 @@ char* LB_STDCALL lbInteger::charrep() const {
 /*...e*/
 /*...slbBoolean:0:*/
 lbBoolean::lbBoolean() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	integerdata = 0;
 	key = (char*) "false";
@@ -1709,8 +1706,8 @@ char* LB_STDCALL lbBoolean::charrep() const {
 /*...e*/
 /*...e*/
 lbBinaryData::lbBinaryData() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	blob = NULL;
 	size = 0L;
@@ -1796,8 +1793,8 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 
 /*...slbLong:0:*/
 lbLong::lbLong() {
-	ref = STARTREF;
-   	data = NULL;
+	
+   	
 	further_lock = 1;
 	longdata = 0;
 	key = NULL;

@@ -106,9 +106,6 @@ BEGIN_PLUGINS(lbPluginModuleDMFBasicActionSteps)
 END_PLUGINS()
 
 lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() {
-	ref = STARTREF;
-	data = NULL;
-	further_lock = 1;
 	_LOG << "lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 

@@ -109,9 +109,9 @@ lbErrCodes LB_STDCALL lbSQLQueryAction::setData(lb_I_Unknown* uk) {
 }
 
 lbSQLQueryAction::lbSQLQueryAction() {
-	ref = STARTREF;
+	
 	myActionID = -1;
-	data = NULL;
+	
 	further_lock = 1;
 }
 

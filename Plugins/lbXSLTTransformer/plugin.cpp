@@ -98,7 +98,7 @@ END_PLUGINS()
 
 
 lbPluginModuleXSLTTransformer::lbPluginModuleXSLTTransformer() {
-	ref = STARTREF;
+	
 }
 
 lbPluginModuleXSLTTransformer::~lbPluginModuleXSLTTransformer() {

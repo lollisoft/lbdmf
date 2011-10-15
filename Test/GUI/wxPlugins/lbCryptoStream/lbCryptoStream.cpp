@@ -93,8 +93,8 @@ BEGIN_PLUGINS(lbPluginModuleCryptoStream)
 END_PLUGINS()
 
 lbPluginModuleCryptoStream::lbPluginModuleCryptoStream() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -156,7 +156,7 @@ lbErrCodes LB_STDCALL lbCryptoStream::setData(lb_I_Unknown* uk) {
 /*...slbInputStream\58\\58\lbInputStream\40\\41\:0:*/
 lbCryptoStream::lbCryptoStream() {
 	//lbLock lbLock(sect);
-	ref = STARTREF;
+	
 	manager = NULL;
 	algorythm = NULL;
 	REQUEST(getModuleInstance(), lb_I_String, cryptobuffer)
@@ -228,8 +228,8 @@ lbErrCodes LB_STDCALL lbPluginCryptoStream::setData(lb_I_Unknown* uk) {
 
 lbPluginCryptoStream::lbPluginCryptoStream() {
 	_CL_VERBOSE << "lbPluginCryptoStream::lbPluginCryptoStream() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

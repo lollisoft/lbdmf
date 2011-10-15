@@ -60,7 +60,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbFileExists::lbFileExists() {
-	ref = STARTREF;
+	
 }
 
 lbFileExists::~lbFileExists() {
@@ -248,7 +248,7 @@ lbErrCodes LB_STDCALL lbPluginFileExists::setData(lb_I_Unknown* uk) {
 
 lbPluginFileExists::lbPluginFileExists() {
 	_CL_VERBOSE << "lbPluginFileExists::lbPluginFileExists() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginFileExists::~lbPluginFileExists() {

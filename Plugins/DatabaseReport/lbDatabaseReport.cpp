@@ -371,7 +371,7 @@ lbErrCodes LB_STDCALL lbDBReportAction::setData(lb_I_Unknown* uk) {
 }
 
 lbDBReportAction::lbDBReportAction() {
-	ref = STARTREF;
+	
 	myActionID = -1;
 	report = NULL;
 }
@@ -779,7 +779,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseReport::setData(lb_I_Unknown* uk) {
 lbPluginDatabaseReport::lbPluginDatabaseReport() {
 	_CL_LOG << "lbPluginDatabaseReport::lbPluginDatabaseReport() called.\n" LOG_
 	dbReport = NULL;
-	ref = STARTREF;
+	
 }
 
 lbPluginDatabaseReport::~lbPluginDatabaseReport() {
@@ -887,7 +887,7 @@ lbErrCodes LB_STDCALL lbDatabaseReport::setData(lb_I_Unknown* uk) {
 
 /*...slbDatabaseReport\58\\58\lbDatabaseReport\40\\41\:0:*/
 lbDatabaseReport::lbDatabaseReport() {
-	ref = STARTREF;
+	
 	frame = NULL;
 	ReportName = NULL;
 	ReportFileName = NULL;

@@ -116,7 +116,7 @@ lbErrCodes LB_STDCALL lbPluginDatabase::setData(lb_I_Unknown* uk) {
 
 lbPluginDatabase::lbPluginDatabase() {
 	_CL_VERBOSE << "lbPluginDatabase::lbPluginDatabase() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginDatabase::~lbPluginDatabase() {

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.104 $
+ * $Revision: 1.105 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.104 2011/09/25 11:47:02 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.105 2011/10/15 13:13:37 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.105  2011/10/15 13:13:37  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.104  2011/09/25 11:47:02  lollisoft
  * There are still random crashes, but with a new trace function to try log the crash at a null pointer in a string, the crashes again get more rare. Probably still need more cppcheck runs.
  *
@@ -1040,6 +1044,7 @@ void LB_STDCALL detachData(); \
 lb_I_KeyBase* LB_STDCALL getKey() const; \
 private: \
 \
+    lb_I_Unknown* data; \
     lb_I_Element* next; \
     lb_I_KeyBase* key;
 
@@ -1049,7 +1054,6 @@ void LB_STDCALL classname::detachData() { \
 	data = NULL; \
 } \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) { \
-    ref = STARTREF; \
 	data = NULL; \
     manager = NULL; \
     next = _next; \
@@ -1080,30 +1084,26 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
 } \
 \
 classname::~classname() { \
-	char ptr[20] = ""; \
-	char ptr1[20] = ""; \
-	sprintf(ptr, "%p", this); \
-        sprintf(ptr1, "%p", data); \
-        if (key != NULL) { \
-            if (key->getRefCount() > 1) { \
-            	_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
-            } \
-            if (key->deleteState() != 1) { \
-            	_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
-            } \
-            RELEASE(key); \
-        } \
-        if (data != NULL) { \
-        	if (data->getRefCount() > 1) { \
-        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
-        	} \
-        	if (data->deleteState() != 1) { \
-        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
-        	} \
+	if (key != NULL) { \
+		if (key->getRefCount() > 1) { \
+			_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+		} \
+		if (key->deleteState() != 1) { \
+			_CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+		} \
+		RELEASE(key); \
+	} \
+	if (data != NULL) { \
+		if (data->getRefCount() > 1) { \
+			_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
+		} \
+		if (data->deleteState() != 1) { \
+			_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
+		} \
 		RELEASE(data); \
-        } \
-        key = NULL; \
-        data = NULL; \
+	} \
+	key = NULL; \
+	data = NULL; \
 } \
 \
 lb_I_Unknown* classname::getObject() const { \
@@ -1118,25 +1118,27 @@ lb_I_Unknown* classname::getObject() const { \
     	_LOGERROR << "Error: Skiplist element data pointer is invalid! (" << buf << ", classname: " << data->getClassName() << ")" LOG_ \
     } \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
-    _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
+    if(uk == NULL) { \
+    	_LOGERROR << #classname "::getObject() FATAL: Data instance given, but can't get a reference!!" LOG_ \
+    } \
     return uk; \
 } \
 \
 lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
-        lb_I_KeyBase* kbase = NULL; \
-        if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_ \
-        key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__); \
-        _CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references. Value is " << kbase->charrep() LOG_ \
-        key->release(__FILE__, __LINE__); \
-        return kbase; \
+	lb_I_KeyBase* kbase = NULL; \
+	if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_ \
+	key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__); \
+	_CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references. Value is " << kbase->charrep() LOG_ \
+	key->release(__FILE__, __LINE__); \
+	return kbase; \
 } \
 \
 void LB_STDCALL classname::setNext(lb_I_Element *e) { \
-        e->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
+	e->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
 } \
 \
 lb_I_Element* LB_STDCALL classname::getNext() const { \
-        return next; \
+	return next; \
 } \
 int LB_STDCALL classname::equals(const lb_I_Element* a) const { \
 	return 0; \

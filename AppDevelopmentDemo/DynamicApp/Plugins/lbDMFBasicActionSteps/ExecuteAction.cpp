@@ -88,10 +88,7 @@ lbErrCodes LB_STDCALL lbExecuteAction::setData(lb_I_Unknown* uk) {
 }
 
 lbExecuteAction::lbExecuteAction() {
-	ref = STARTREF;
 	myActionID = -1;
-	data = NULL;
-	further_lock = 1;
 }
 
 lbExecuteAction::~lbExecuteAction() {

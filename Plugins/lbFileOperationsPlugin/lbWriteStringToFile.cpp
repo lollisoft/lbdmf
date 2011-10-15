@@ -60,7 +60,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbWriteStringToFile::lbWriteStringToFile() {
-	ref = STARTREF;
+	
 }
 
 lbWriteStringToFile::~lbWriteStringToFile() {
@@ -218,7 +218,7 @@ lbErrCodes LB_STDCALL lbPluginWriteStringToFile::setData(lb_I_Unknown* uk) {
 
 lbPluginWriteStringToFile::lbPluginWriteStringToFile() {
 	_CL_VERBOSE << "lbPluginWriteStringToFile::lbPluginWriteStringToFile() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginWriteStringToFile::~lbPluginWriteStringToFile() {

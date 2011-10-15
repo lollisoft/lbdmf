@@ -194,7 +194,7 @@ class lbDatabaseLayerBoundColumn;
 
 class lbDatabaseLayerBoundColumns: public lb_I_ColumnBinding {
 public:
-	lbDatabaseLayerBoundColumns() { ref = STARTREF; ArraySize = 1; }
+	lbDatabaseLayerBoundColumns() {  ArraySize = 1; }
 	virtual ~lbDatabaseLayerBoundColumns() {
 		_CL_VERBOSE << "lbDatabaseLayerBoundColumns::~lbDatabaseLayerBoundColumns() called." LOG_
 	}
@@ -552,7 +552,7 @@ int lbDatabaseLayerQuery::skipFKCollections = 0;
 class lbDatabaseLayerBoundColumn: public lb_I_BoundColumn {
 public:
 	lbDatabaseLayerBoundColumn() {
-		ref = STARTREF;
+		
 		bound = 0;
 		buffer = NULL;
 		//colName = NULL;
@@ -1348,7 +1348,7 @@ UAP(lb_I_Integer, key)
 
 lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
 	peeking = true;
-	ref = STARTREF;
+	
 	_readonly = readonly;
 	hdbc = 0;
 	hstmt = 0;
@@ -4758,7 +4758,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 
 lbConnection::lbConnection() {
-	ref = STARTREF;
+	
 	_dbname = NULL;
 	_dbuser = NULL;
 	dbl = NULL;
@@ -4931,7 +4931,7 @@ lb_I_String*	LB_STDCALL lbDatabaseLayerDatabase::getDBMSVersion() {
 }
 
 lbDatabaseLayerDatabase::lbDatabaseLayerDatabase() {
-	ref = STARTREF;
+	
 	henv = 0;
 	hdbc = 0;
 	user = NULL;
@@ -5648,7 +5648,7 @@ IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
 
 lbDBInterfaceRepository::lbDBInterfaceRepository() {
 	manager = NULL;
-	ref = STARTREF;
+	
 	henv = 0;
 	hdbc = 0;
 

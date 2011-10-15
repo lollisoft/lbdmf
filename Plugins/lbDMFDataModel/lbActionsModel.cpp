@@ -59,7 +59,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbActionsModel::lbActionsModel() {
-	ref = STARTREF;
+	
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
@@ -306,8 +306,8 @@ lbErrCodes LB_STDCALL lbPluginActionsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginActionsModel::lbPluginActionsModel() {
 	_CL_VERBOSE << "lbPluginActionsModel::lbPluginActionsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

@@ -166,7 +166,7 @@ public:
 /*...sclass def lbBoundColumns:0:*/
 class lbBoundColumns: public lb_I_ColumnBinding {
 public:
-	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
+	lbBoundColumns() {  ArraySize = 1; }
 	virtual ~lbBoundColumns() {
 		_CL_VERBOSE << "lbBoundColumns::~lbBoundColumns() called." LOG_
 	}
@@ -377,7 +377,7 @@ public:
 public:
 	lbQuery(int readonly = 1) {
 		peeking = true;
-		ref = STARTREF;
+		
 		_readonly = readonly;
 		hdbc = 0;
 		hstmt = 0;
@@ -484,7 +484,7 @@ int lbQuery::skipFKCollections = 0;
 class lbBoundColumn: public lb_I_BoundColumn {
 public:
 	lbBoundColumn() {
-		ref = STARTREF;
+		
 		bound = 0;
 		buffer = NULL;
 		//colName = NULL;
@@ -5389,7 +5389,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 
 lbConnection::lbConnection()  {
-	    ref = STARTREF;
+	    
 	    _dbname = NULL;
 	    _dbuser = NULL;
 }
@@ -5603,7 +5603,7 @@ lb_I_String*	LB_STDCALL lbDatabase::getDBMSVersion() {
 
 
 lbDatabase::lbDatabase() {
-	ref = STARTREF;
+	
 	henv = 0;
 	hdbc = 0;
 	user = NULL;
@@ -6934,7 +6934,7 @@ IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
 
 lbDBInterfaceRepository::lbDBInterfaceRepository() {
 	manager = NULL;
-	ref = STARTREF;
+	
 	henv = 0;
 	hdbc = 0;
 

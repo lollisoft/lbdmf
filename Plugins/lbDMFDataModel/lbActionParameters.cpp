@@ -51,7 +51,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbActionParameters::lbActionParameters() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
@@ -271,7 +271,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbActionStepParameters::lbActionStepParameters() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
@@ -526,8 +526,8 @@ lbErrCodes LB_STDCALL lbPluginActionParameters::setData(lb_I_Unknown* uk) {
 
 lbPluginActionParameters::lbPluginActionParameters() {
 	_CL_VERBOSE << "lbPluginActionParameters::lbPluginActionParameters() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -640,8 +640,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepParameters::setData(lb_I_Unknown* uk) {
 
 lbPluginActionStepParameters::lbPluginActionStepParameters() {
 	_CL_VERBOSE << "lbPluginActionStepParameters::lbPluginActionStepParameters() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

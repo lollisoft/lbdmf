@@ -58,7 +58,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbFormularsModel::lbFormularsModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Formulars)
 	REQUEST(getModuleInstance(), lb_I_String, currentFormularName)
 	REQUEST(getModuleInstance(), lb_I_String, currentMenuName)
@@ -345,8 +345,8 @@ lbErrCodes LB_STDCALL lbPluginFormularsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginFormularsModel::lbPluginFormularsModel() {
 	_CL_VERBOSE << "lbPluginFormularsModel::lbPluginFormularsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -424,7 +424,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbFormularFieldsModel::lbFormularFieldsModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, FormularFields)
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
@@ -738,8 +738,8 @@ lbErrCodes LB_STDCALL lbPluginFormularFieldsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() {
 	_CL_VERBOSE << "lbPluginFormularFieldsModel::lbPluginFormularFieldsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

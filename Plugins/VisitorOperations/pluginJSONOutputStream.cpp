@@ -324,7 +324,7 @@ lbErrCodes LB_STDCALL lbJSONOutputStream::setData(lb_I_Unknown* uk) {
 lbJSONOutputStream::lbJSONOutputStream() 
 {
         _CL_LOG << "lbJSONOutputStream::lbJSONOutputStream() called." LOG_
-        ref = STARTREF;
+        
 #ifndef __WATCOMC__
         setlocale (LC_ALL, ""); /// \todo Check is all platforms support this.
 #endif
@@ -1347,7 +1347,7 @@ lbErrCodes LB_STDCALL lbPluginJSONOutputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginJSONOutputStream::lbPluginJSONOutputStream() {
 	_CL_VERBOSE << "lbPluginJSONOutputStream::lbPluginJSONOutputStream() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginJSONOutputStream::~lbPluginJSONOutputStream() {

@@ -118,9 +118,6 @@ protected:
 	{ 
 		name = NULL; 
 		cso = NULL; 
-		data = NULL;
-		ref = STARTREF;
-		further_lock = 1;
 		instance_counted = 0;
 		lastQIFile = miniString();
 		lastQILine = 0;

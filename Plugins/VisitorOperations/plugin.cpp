@@ -104,7 +104,7 @@ END_PLUGINS()
 
 
 lbPluginModuleVisitors::lbPluginModuleVisitors() {
-	ref = STARTREF;
+	
 }
 
 lbPluginModuleVisitors::~lbPluginModuleVisitors() {

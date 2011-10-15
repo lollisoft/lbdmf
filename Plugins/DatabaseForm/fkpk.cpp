@@ -95,8 +95,8 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog()
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 	pass = 0;
 	_FoimularID = -1; 
@@ -114,8 +114,8 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(lb_I_Formulars*
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 	pass = 0;
 	_FoimularID = _forms->getFormularID(); 

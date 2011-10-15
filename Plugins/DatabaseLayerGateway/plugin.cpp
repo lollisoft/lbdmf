@@ -104,7 +104,7 @@ END_PLUGINS()
 
 
 lbPluginModuleDatabaseLayerGateway::lbPluginModuleDatabaseLayerGateway() {
-	ref = STARTREF;
+	
 }
 
 lbPluginModuleDatabaseLayerGateway::~lbPluginModuleDatabaseLayerGateway() {

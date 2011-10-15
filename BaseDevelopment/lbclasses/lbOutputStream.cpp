@@ -184,7 +184,7 @@ lbErrCodes LB_STDCALL lbOutputStream::setData(lb_I_Unknown* uk) {
 /*...slbOutputStream\58\\58\lbOutputStream\40\\41\:0:*/
 lbOutputStream::lbOutputStream() {
 //lbLock lbLock(sect);
-	ref = STARTREF;
+	
 	manager = NULL;
 	fout = NULL;
 	isOpen = false;

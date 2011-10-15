@@ -60,7 +60,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbLoopEventHandlers::lbLoopEventHandlers() {
-	ref = STARTREF;
+	
 }
 
 lbLoopEventHandlers::~lbLoopEventHandlers() {
@@ -291,7 +291,7 @@ lbErrCodes LB_STDCALL lbPluginLoopEventHandlers::setData(lb_I_Unknown* uk) {
 
 lbPluginLoopEventHandlers::lbPluginLoopEventHandlers() {
 	_CL_VERBOSE << "lbPluginLoopEventHandlers::lbPluginLoopEventHandlers() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginLoopEventHandlers::~lbPluginLoopEventHandlers() {

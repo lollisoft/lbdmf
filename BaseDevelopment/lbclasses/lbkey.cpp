@@ -37,10 +37,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.29 2011/09/25 09:30:14 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.30 2011/10/15 13:14:05 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.30  2011/10/15 13:14:05  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.29  2011/09/25 09:30:14  lollisoft
  * Many bugfixes like missing variable initialization. Used CppCheck for this to get rid of the random crashes.
  * Only lbHook, lbModule, lbclasses and the Basetypes regression test (including headers and interfaces) are
@@ -265,24 +269,24 @@ lbKeyUL::lbKeyUL(char* file, int line) {
 #endif
 
 lbKeyUL::lbKeyUL() {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
     key = 0;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(unsigned long _key) {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
     key = _key;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
     key = ((lbKeyUL*) k)->key;
     strcpy(keyType, "UL");

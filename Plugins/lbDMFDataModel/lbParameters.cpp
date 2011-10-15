@@ -59,7 +59,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbFormularParameters::lbFormularParameters() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
@@ -268,7 +268,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbColumnTypes::lbColumnTypes() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, ColumnTypes)
 	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
@@ -485,7 +485,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbApplicationParameters::lbApplicationParameters() {
-	ref = STARTREF;
+	
 
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
@@ -732,8 +732,8 @@ lbErrCodes LB_STDCALL lbPluginColumnTypes::setData(lb_I_Unknown* uk) {
 
 lbPluginColumnTypes::lbPluginColumnTypes() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -847,8 +847,8 @@ lbErrCodes LB_STDCALL lbPluginFormularParameters::setData(lb_I_Unknown* uk) {
 
 lbPluginFormularParameters::lbPluginFormularParameters() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -961,8 +961,8 @@ lbErrCodes LB_STDCALL lbPluginApplicationParameters::setData(lb_I_Unknown* uk) {
 
 lbPluginApplicationParameters::lbPluginApplicationParameters() {
 	_CL_VERBOSE << "lbPluginApplicationParameters::lbPluginApplicationParameters() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

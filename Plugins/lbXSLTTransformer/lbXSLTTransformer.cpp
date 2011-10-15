@@ -98,7 +98,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbXSLTTransformer::lbXSLTTransformer() {
-	ref = STARTREF;
+	
 }
 
 lbXSLTTransformer::~lbXSLTTransformer() {
@@ -347,7 +347,7 @@ lbErrCodes LB_STDCALL lbPluginXSLTTransformer::setData(lb_I_Unknown* uk) {
 
 lbPluginXSLTTransformer::lbPluginXSLTTransformer() {
 	_CL_VERBOSE << "lbPluginXSLTTransformer::lbPluginXSLTTransformer() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginXSLTTransformer::~lbPluginXSLTTransformer() {

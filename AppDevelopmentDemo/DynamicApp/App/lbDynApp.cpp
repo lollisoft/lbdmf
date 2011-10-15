@@ -278,7 +278,7 @@ protected:
 /*...slbDynamicApplication:0:*/
 /*...sctors\47\dtors:0:*/
 lbDynamicApplication::lbDynamicApplication() {
-        ref = STARTREF;
+        
         gui = NULL;
 
         _overwriteDatabase = false;

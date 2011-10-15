@@ -100,7 +100,7 @@ END_PLUGINS()
 
 
 lbPluginModuleFileOperations::lbPluginModuleFileOperations() {
-	ref = STARTREF;
+	
 }
 
 lbPluginModuleFileOperations::~lbPluginModuleFileOperations() {

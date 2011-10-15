@@ -49,7 +49,7 @@ public:
 	lbXMLConfig();
 	virtual ~lbXMLConfig();
 	lbXMLConfig(const lbXMLConfig & t) {
-		ref = STARTREF;
+		
 		handler = NULL;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -78,7 +78,7 @@ protected:
 
 /*...slbXMLConfig\58\\58\lbXMLConfig\40\\41\:0:*/
 lbXMLConfig::lbXMLConfig() {
-	ref = STARTREF;
+	
 	interface_used = 0;
 	gTopLevel = new TopLevel;
 	handler = NULL;
@@ -91,7 +91,7 @@ lbXMLConfig::~lbXMLConfig() {
 	cout << "lbXMLConfig::~lbXMLConfig() called" << endl;
 #endif
 /*...e*/
-	if (ref != STARTREF) cout << "Error: Reference count mismatch!" << endl;
+	if (ref != 0) cout << "Error: Reference count mismatch!" << endl;
 	
 	if (gTopLevel != NULL) {
 /*...sVERBOSE:0:*/
@@ -118,7 +118,7 @@ lbErrCodes LB_STDCALL lbXMLConfig::release() {
 cout << "lbXMLConfig::release() called (ref is now " << ref << ")" << endl;	
 #endif
 /*...e*/
-	if (ref == STARTREF) {
+	if (ref == 0) {
 		cout << "Delete lbXMLConfig object" << endl;
 		delete this;
 	}
@@ -354,7 +354,7 @@ lbConfigObject::lbConfigObject(lbConfigObject* _parent) {
 ocount++;
 	int count = 0;
 	interface_used = 0;
-	ref = STARTREF;
+	
 
 /*...sMEMTEST:0:*/
 #ifdef MEMTEST
@@ -415,7 +415,7 @@ ocount--;
 cout << "lbConfigObject::~lbConfigObject() called (" << ((_name) ? _name : "?") << ")" << endl;
 #endif
 /*...e*/
-	if (ref != STARTREF) cout << "Reference count mismatch!" << endl;
+	if (ref != 0) cout << "Reference count mismatch!" << endl;
 
 	if (_name != NULL) free(_name);
 
@@ -478,7 +478,7 @@ lbErrCodes LB_STDCALL lbConfigObject::release() {
 	cout << "lbConfigObject::release() called (ref now is " << ref << ")" << endl;
 #endif
 /*...e*/
-	if (ref == STARTREF) {
+	if (ref == 0) {
 #ifdef bla	
 /*...scleanup:16:*/
 		if (all_elements != NULL) {

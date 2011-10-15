@@ -62,7 +62,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbTranslationsModel::lbTranslationsModel() {
-	ref = STARTREF;
+	
 
 	REQUEST(getModuleInstance(), lb_I_Container, Translations)
 	REQUEST(getModuleInstance(), lb_I_Container, Lookup)
@@ -334,8 +334,8 @@ lbErrCodes LB_STDCALL lbPluginTranslationsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginTranslationsModel::lbPluginTranslationsModel() {
 	_LOG << "lbPluginTranslationsModel::lbPluginTranslationsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

@@ -64,7 +64,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbActionStepsModel::lbActionStepsModel() {
-	ref = STARTREF;
+	
 	_CL_VERBOSE << "lbActionStepsModel::lbActionStepsModel() called." LOG_
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
@@ -323,8 +323,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepsModel::setData(lb_I_Unknown* uk) {
 
 lbPluginActionStepsModel::lbPluginActionStepsModel() {
 	_CL_VERBOSE << "lbPluginActionStepsModel::lbPluginActionStepsModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -401,7 +401,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOflbActionStepTransitionsModel, lbActionStepTransitionsModel)
 
 lbActionStepTransitionsModel::lbActionStepTransitionsModel() {
-	ref = STARTREF;
+	
 	_CL_VERBOSE << "lbActionStepTransitionsModel::lbActionStepTransitionsModel() called." LOG_
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
@@ -649,8 +649,8 @@ lbErrCodes LB_STDCALL lbPluginActionStepTransitionsModel::setData(lb_I_Unknown* 
 
 lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() {
 	_LOG << "lbPluginActionStepTransitionsModel::lbPluginActionStepTransitionsModel() called." LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

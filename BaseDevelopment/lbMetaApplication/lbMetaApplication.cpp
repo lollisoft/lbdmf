@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.186 $
+ * $Revision: 1.187 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.186 2011/10/03 04:43:07 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.187 2011/10/15 13:14:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.187  2011/10/15 13:14:04  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.186  2011/10/03 04:43:07  lollisoft
  * Fixes to try cope with rare application crash.
  *
@@ -737,7 +741,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 /*...slb_MetaApplication:0:*/
 /*...sctors\47\dtors:0:*/
 lb_MetaApplication::lb_MetaApplication() {
-	ref = STARTREF;
+	
 	gui = NULL;
 	moduleName = NULL;
 
@@ -3508,7 +3512,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
-	ref = STARTREF;
+	
 	_CL_LOG << "Instance of lb_I_EventMapper created" LOG_
 	_name = NULL;
 	_id = 0;
@@ -3558,8 +3562,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
 	maxEvId = 12000;
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -3722,7 +3726,7 @@ BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_Dispatcher)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_Dispatcher::lb_Dispatcher() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, interceptorevents)
 }
 
@@ -4138,9 +4142,9 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EvHandler::lb_EvHandler() {
-	ref = STARTREF;
+	
 	further_lock = 1;
-	data = NULL;
+	
 	_evHandlerInstance = NULL;
 	ev = NULL;
 	_evHandlerInstance_interceptor = NULL;

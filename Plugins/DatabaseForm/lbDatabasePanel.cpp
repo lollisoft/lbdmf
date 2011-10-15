@@ -181,7 +181,7 @@ lbDatabasePanel::lbDatabasePanel()
 //	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_LOG << "lbDatabasePanel::lbDatabasePanel() called." LOG_
-	ref = STARTREF;
+	
 	formName = strdup("Database table view");
 	untranslated_formName = NULL;
 	base_formName = NULL;
@@ -5546,8 +5546,8 @@ lbErrCodes LB_STDCALL lbPluginDatabasePanel::setData(lb_I_Unknown* uk) {
 lbPluginDatabasePanel::lbPluginDatabasePanel() {
 	_CL_VERBOSE << "lbPluginDatabasePanel::lbPluginDatabasePanel() called.\n" LOG_
 	dbForm = NULL;
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

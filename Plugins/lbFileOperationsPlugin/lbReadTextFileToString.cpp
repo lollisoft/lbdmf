@@ -60,7 +60,7 @@ ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbReadTextFileToString::lbReadTextFileToString() {
-	ref = STARTREF;
+	
 }
 
 lbReadTextFileToString::~lbReadTextFileToString() {
@@ -226,7 +226,7 @@ lbErrCodes LB_STDCALL lbPluginReadTextFileToString::setData(lb_I_Unknown* uk) {
 
 lbPluginReadTextFileToString::lbPluginReadTextFileToString() {
 	_CL_VERBOSE << "lbPluginReadTextFileToString::lbPluginReadTextFileToString() called.\n" LOG_
-	ref = STARTREF;
+	
 }
 
 lbPluginReadTextFileToString::~lbPluginReadTextFileToString() {

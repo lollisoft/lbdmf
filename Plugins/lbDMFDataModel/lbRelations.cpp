@@ -61,7 +61,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbUserApplicationRelationModel\58\\58\lbUserApplicationRelationModel\40\\41\:0:*/
 lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Relations)
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentAppID)
@@ -301,8 +301,8 @@ lbErrCodes LB_STDCALL lbPluginUserApplicationRelationModel::setData(lb_I_Unknown
 
 lbPluginUserApplicationRelationModel::lbPluginUserApplicationRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 
@@ -387,7 +387,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbApplicationFormularsRelationModel\58\\58\lbApplicationFormularsRelationModel\40\\41\:0:*/
 lbApplicationFormularsRelationModel::lbApplicationFormularsRelationModel() {
-	ref = STARTREF;
+	
 	REQUEST(getModuleInstance(), lb_I_Container, Relations)
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentAppID)
@@ -629,8 +629,8 @@ lbErrCodes LB_STDCALL lbPluginApplicationFormularsRelationModel::setData(lb_I_Un
 
 lbPluginApplicationFormularsRelationModel::lbPluginApplicationFormularsRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
-	ref = STARTREF;
-	data = NULL;
+	
+	
 	further_lock = 1;
 }
 

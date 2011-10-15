@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.56 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.57 2011/10/15 13:14:04 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.57  2011/10/15 13:14:04  lollisoft
+ * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
+ * Currently the code crashes on windows, but lets see how it is working on Mac.
+ *
  * Revision 1.56  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -306,21 +310,21 @@ class lbDOMContainer;
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 lbKey::lbKey() {
-    ref = STARTREF;
+    
     key = 0;
 	manager = NULL;
     strcpy(keyType, "int");
 }
 
 lbKey::lbKey(int _key) {
-    ref = STARTREF;
+    
     key = _key;
     strcpy(keyType, "int");
 	manager = NULL;
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
-    ref = STARTREF;
+    
     key = ((lbKey) k).key;
 }
 
@@ -370,19 +374,19 @@ char* LB_STDCALL lbKey::charrep() const {
 
 
 lbKeyUL::lbKeyUL() {
-    ref = STARTREF;
+    
     key = 0;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(unsigned long _key) {
-    ref = STARTREF;
+    
     key = _key;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
-    ref = STARTREF;
+    
     key = ((lbKeyUL*) k)->key;
 }
 
@@ -431,17 +435,17 @@ char* LB_STDCALL lbKeyUL::charrep() const {
 /*...e*/
 /*...slbStringKey:0:*/
 lbStringKey::lbStringKey() {
-    ref = STARTREF;
+    
     key = "";
 }
 
 lbStringKey::lbStringKey(const char* _key) {
-    ref = STARTREF;
+    
     key = strdup(_key);
 }
 
 lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
-    ref = STARTREF;
+    
     key = strdup(((lbStringKey*) k)->key);
 }
 
@@ -731,16 +735,16 @@ public:
 class lbElement : public lb_I_Element {
 public:
     lbElement() {
-    	ref = STARTREF;
+    	
     	next = NULL;
-    	data = NULL;
+    	
     	key = NULL;
     	manager = NULL;
     }
     lbElement(char* file, int line) {
-    	ref = STARTREF;
+    	
     	next = NULL;
-    	data = NULL;
+    	
     	key = NULL;
     	manager = NULL;
     }
@@ -748,7 +752,7 @@ public:
 	
 //    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
     lbElement(const lb_I_Element &e) {
-    	ref = STARTREF;
+    	
     	next = e.getNext();
     	manager = NULL;
     }
@@ -767,19 +771,19 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbDOMContainer::lbDOMContainer() {
     iteration = 0;
-    ref = STARTREF;
+    
     iterator = NULL;
     count = 0;
-    container_data = NULL;
+    container_
     manager = NULL;
 }
 
 lbDOMContainer::lbDOMContainer(char* file, int line) {
     iteration = 0;
-    ref = STARTREF;
+    
     iterator = NULL;
     count = 0;
-    container_data = NULL;
+    container_
     manager = NULL;
 }
 
@@ -975,7 +979,7 @@ lbDOMNode::~lbDOMNode() {
 		getNameValue = NULL;
 	}
 
-	if (ref != STARTREF)
+	if (ref != 0)
 		_CL_VERBOSE << "Error: Reference count mismatch" LOG_
 
 
@@ -1346,7 +1350,7 @@ class lbDOMConfig :
 protected:
 	lbDOMConfig(const lbDOMConfig & t) {
 		_CL_VERBOSE << "lbDOMConfig::lbDOMConfig(const lbDOMConfig & t) called !!!" LOG_
-		ref = STARTREF;
+		
 		errReporter = NULL;
 		lastResult = NULL;
 		haveFunctorList = 0;
@@ -1451,9 +1455,9 @@ void LB_STDCALL lbDOMConfig::setModuleManager(lb_I_Module* m, char* file, int li
 	}
 }
 
-void LB_STDCALL lbDOMConfig::resetRefcount() { ref = STARTREF; }
+void LB_STDCALL lbDOMConfig::resetRefcount() {  }
 int LB_STDCALL lbDOMConfig::deleteState() {
-	return (ref-1 == STARTREF) ? 1 : 0;
+	return (ref-1 == 0) ? 1 : 0;
 }
 char*      LB_STDCALL lbDOMConfig::getCreationLoc() const {
 	char buf[20] = "";
@@ -1471,7 +1475,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::release(char* file, int line) {
         	manager->notify_release(this, "lbDOMConfig", file, line);
         }
 	
-        if (ref == STARTREF) {
+        if (ref == 0) {
         	if (manager != NULL) {
         		if (manager->can_delete(this, "lbDOMConfig") == 1)	{
         			manager->notify_destroy(this, "lbDOMConfig", file, line);
@@ -1483,8 +1487,8 @@ lbErrCodes LB_STDCALL lbDOMConfig::release(char* file, int line) {
         	}
         	return ERR_NONE;
         }
-        if (ref < STARTREF) {
-        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << "lbDOMConfig" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_
+        if (ref < 0) {
+        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << "lbDOMConfig" << " is less than " << 0 << " (" << ref << ") !!!" LOG_
         	return ERR_REFERENCE_COUNTING;
         }
         return ERR_INSTANCE_STILL_USED;
@@ -1545,7 +1549,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::queryInterface(char* name, void** unknown, ch
 
 	strcat(iFaces, "lb_I_Unknown, ");
         if (strcmp(name, "lb_I_Unknown") == 0) {
-        	if (ref < STARTREF) {
+        	if (ref < 0) {
         		_CL_VERBOSE << "Reference count error in queryInterface (" "lbDOMConfig" ")" LOG_
         	}
                 ref++;
@@ -1576,7 +1580,7 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 lbDOMConfig::lbDOMConfig(char* file, int line) {
 	_CL_VERBOSE << "lbDOMConfig::lbDOMConfig(char* file, int line) called" LOG_
 	manager = NULL;
-	ref = STARTREF;
+	
 	lastResult = NULL;
 	haveFunctorList = 0;
 	interface_used = 0;
@@ -1606,7 +1610,7 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 lbDOMConfig::lbDOMConfig() {
 	_CL_VERBOSE << "lbDOMConfig::lbDOMConfig() called" LOG_
 	manager = NULL;
-	ref = STARTREF;
+	
 	lastResult = NULL;
 	haveFunctorList = 0;
 	interface_used = 0;
@@ -1638,7 +1642,7 @@ lbDOMConfig::~lbDOMConfig() {
 	COUT << "lbDOMConfig::~lbDOMConfig() called" << ENDL;
 /*...e*/
 
-	if (ref != STARTREF) COUT << "Error: Reference count mismatch!" << ENDL;
+	if (ref != 0) COUT << "Error: Reference count mismatch!" << ENDL;
 	if (errReporter != NULL) {
 		delete errReporter;
 	}
@@ -1991,7 +1995,7 @@ lbInterfaceRepository::lbInterfaceRepository() {
 	printf("lbInterfaceRepository::lbInterfaceRepository() called\n");
 	_CL_VERBOSE << "lbInterfaceRepository::lbInterfaceRepository() called" LOG_
 	manager = NULL;
-	ref = STARTREF;
+	
 	errReporter = new DOMTreeErrorReporter();
 	_CL_VERBOSE << "DOMTreeErrorReporter() created" LOG_
 
