@@ -39,7 +39,7 @@ wxSFShapeBase::wxSFShapeBase(void)
 	m_fMouseOver = false;
 	m_fFirstMove = false;
 	m_fHighlighParent = false;
-	m_pUserData = NULL;
+	m_pUser
 
 	// archived properties
 	m_fVisible = sfdvBASESHAPE_VISIBILITY;
@@ -66,7 +66,7 @@ wxSFShapeBase::wxSFShapeBase(const wxRealPoint& pos, wxSFDiagramManager* manager
 
 	// initialize data members
 	SetParentManager(manager);
-    m_pUserData = NULL;
+    m_pUser
 
 	if(m_pParentManager)
 	{
@@ -136,7 +136,7 @@ wxSFShapeBase::wxSFShapeBase(const wxSFShapeBase& obj) : xsSerializable(obj)
 		SetUserData((xsSerializable*)obj.m_pUserData->Clone());
 	}
 	else
-		m_pUserData = NULL;
+		m_pUser
 
 	// copy handles
 	wxSFShapeHandle *pHandle;

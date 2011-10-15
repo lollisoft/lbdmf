@@ -14,7 +14,7 @@
 
 wxFileVersion::wxFileVersion()
 {
-	m_lpVersionData = NULL;
+	m_lpVersion
 	m_dwLangCharset = 0;
 }
 
@@ -26,7 +26,7 @@ wxFileVersion::~wxFileVersion()
 void wxFileVersion::Close()
 {
 	delete[] m_lpVersionData;
-	m_lpVersionData = NULL;
+	m_lpVersion
 	m_dwLangCharset = 0;
 }
 
@@ -187,7 +187,7 @@ wxString wxFileVersion::GetFixedProductVersion( bool HumanlyReadable /*= false *
 
 wxFileVersion::wxFileVersion()
 {
-	m_lpVersionData = NULL;
+	m_lpVersion
 	m_dwLangCharset = 0;
 }
 
@@ -199,7 +199,7 @@ wxFileVersion::~wxFileVersion()
 void wxFileVersion::Close()
 {
 	delete[] m_lpVersionData;
-	m_lpVersionData = NULL;
+	m_lpVersion
 	m_dwLangCharset = 0;
 }
 
