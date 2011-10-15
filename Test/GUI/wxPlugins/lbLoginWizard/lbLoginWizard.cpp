@@ -97,7 +97,9 @@ BEGIN_PLUGINS(lbPluginModuleLoginWizard)
 END_PLUGINS()
 
 lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
-	ref = STARTREF;
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
 }
 
 lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
@@ -130,6 +132,14 @@ public:
 
 	wxAppSelectPage() {
 		app = wxString("");
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		sizerMain = NULL;
+		box = NULL;
+		userid = NULL;
+		loggingin = false;
+		m_checkbox = NULL;
 	}
 
 	virtual ~wxAppSelectPage();
@@ -244,8 +254,8 @@ private:
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
+	//long l;
+	//char buf[100];
 };
 
 
@@ -281,7 +291,17 @@ public:
 DECLARE_LB_UNKNOWN()
 
 	wxLogonPage() {
-
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		OkButton = NULL;
+		CancelButton = NULL;
+		sizerMain = NULL;
+		sizerHor = NULL;
+		sizerAddRem = NULL;
+		sizerLeft = NULL;
+		sizerRight = NULL;
+		appselect = NULL;
 	}
 
 	virtual ~wxLogonPage() {
@@ -289,7 +309,17 @@ DECLARE_LB_UNKNOWN()
 
 	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
-	        //m_bitmap = wxBITMAP(wiztest2);
+		ref = STARTREF;
+		data = NULL;
+		further_lock = 1;
+		OkButton = NULL;
+		CancelButton = NULL;
+		sizerMain = NULL;
+		sizerHor = NULL;
+		sizerAddRem = NULL;
+		sizerLeft = NULL;
+		sizerRight = NULL;
+		appselect = NULL;
 	}
 
 	char const * LB_STDCALL getTextValue(char* _name);
@@ -416,8 +446,8 @@ DECLARE_LB_UNKNOWN()
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
+	//long l;
+	//char buf[100];
 
 	wxWindow* OkButton;
 	wxWindow* CancelButton;
@@ -545,6 +575,8 @@ lbLoginHandler::lbLoginHandler() {
 	wizard = NULL;
 	page1 = NULL;
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbLoginHandler::~lbLoginHandler() {
@@ -610,6 +642,8 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 
 lbPluginLoginWizard::lbPluginLoginWizard() {
 	ref = STARTREF;
+	data = NULL;
+	further_lock = 1;
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
