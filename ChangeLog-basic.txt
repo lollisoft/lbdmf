@@ -1,117 +1,137 @@
-2011-10-03 06:43  lollisoft
+2011-10-16 19:30  lollisoft
 
-	* BaseDevelopment/: lbMetaApplication/lbMetaApplication.cpp,
-	  lbModule/lbModule.cpp, lbPluginManager/lbPluginManager.cpp,
-	  lbclasses/skiplist.cpp: Fixes to try cope with rare application
-	  crash.
+	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
+	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Changed
+	  splash screen.
 
-2011-10-02 12:45  lollisoft
+2011-10-16 14:36  lollisoft
 
-	* BaseDevelopment/lbclasses/: lbobject.cpp, skiplist.cpp: Removed a
-	  possible sporadic crash cause.
+	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
+	  interfaces/lbInterfaces.h: Changes to package new release (1.0.4
+	  stable rc1)
 
-2011-10-02 11:49  lollisoft
+2011-10-16 12:01  lollisoft
 
-	* RegressionTests/UAPLeakTest/: UAPLeakTest.cpp, makefile.module: A
-	  test detecting leaking UAP implementation.
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Fixed a
+	  buffer overflow.
 
-2011-10-02 11:17  lollisoft
+2011-10-16 10:40  lollisoft
 
-	* make/STD_MAKE: Switched all to release build.
+	* BaseDevelopment/lbclasses/skiplist.cpp,
+	  Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  UnitTests/Actions/Actions.cpp, UnitTests/Actions/UIWrapper.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Refactoring
+	  produced again some uninitialized variables that havs been fixed
+	  now. The app seems to start and esit without errors.
 
-2011-10-02 11:03  lollisoft
+2011-10-15 23:47  lollisoft
 
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Commented out the call to
-	  reopen panels as this may lead to not required visible column for
-	  foreign keys setup dialogs.
-
-2011-10-01 10:12  lollisoft
-
-	* interfaces/lbInterfaces.h: Fixed a memory leak.
-
-2011-10-01 10:11  lollisoft
-
-	* include/lbConfigHook.h: Corrected constructor.
-
-2011-10-01 09:20  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Splitted up
-	  code  to define blocks per platform to resolve editor issues in
-	  correct code folding.
-
-2011-10-01 07:37  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/makefile.module,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/makefile.module,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/makefile.module,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
-	  BaseDevelopment/lbDB/makefile.module,
-	  BaseDevelopment/lbHook/lbHook.cpp,
-	  BaseDevelopment/lbHook/makefile.module,
-	  BaseDevelopment/lbMetaApplication/makefile.module,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbModule/makefile.module,
-	  BaseDevelopment/lbPluginManager/makefile.module,
+	* AppDevelopmentDemo/App/Application.cpp,
+	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/DecisionAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/ExecuteAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/SendSignalAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/lbDMFActionStepIdForFormValue.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
+	  BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  BaseDevelopment/lbXMLConfig/lbDOMConfig/lbDOMConfig.cpp,
+	  BaseDevelopment/lbclasses/lbInputStream.cpp,
+	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
+	  BaseDevelopment/lbclasses/lbcontainer.cpp,
+	  BaseDevelopment/lbclasses/lbelement.h,
+	  BaseDevelopment/lbclasses/lbkey.cpp,
 	  BaseDevelopment/lbclasses/lbobject.cpp,
-	  BaseDevelopment/lbclasses/makefile.module,
-	  BaseDevelopment/lbcs/makefile.module,
-	  BaseDevelopment/lbtransfer/makefile.module,
-	  include/lbConfigHook.h, interfaces/lbInterfaces.h, make/STD_MAKE,
-	  Plugins/DatabaseForm/makefile.module,
-	  Plugins/DatabaseLayerGateway/makefile.module,
-	  Plugins/DatabaseReport/makefile.module,
-	  Plugins/TestPlugin/makefile.module,
-	  Plugins/lbBasicEventHandlers/makefile.module,
-	  Plugins/lbDMFDataModel/makefile.module,
-	  Plugins/lbFileOperationsPlugin/makefile.module,
-	  Plugins/lbXSLTTransformer/makefile.module,
-	  RegressionTests/makefile,
+	  BaseDevelopment/lbclasses/lbthread.cpp,
+	  BaseDevelopment/lbclasses/lbthread.h,
+	  BaseDevelopment/lbclasses/misc.cpp,
+	  BaseDevelopment/lbclasses/skiplist.cpp,
+	  BaseDevelopment/lbcs/appcs.cpp,
+	  BaseDevelopment/lbtransfer/lbTransferData.cpp,
+	  BaseDevelopment/lbtransfer/socket.cpp,
+	  Plugins/DatabaseForm/Actions.cpp, Plugins/DatabaseForm/fkpk.cpp,
+	  Plugins/DatabaseForm/formularactions.cpp,
+	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseForm.cpp,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
+	  Plugins/DatabaseForm/lbDetailMasterAction.cpp,
+	  Plugins/DatabaseForm/lbMasterDetailAction.cpp,
+	  Plugins/DatabaseForm/lbOpAqueAction.cpp,
+	  Plugins/DatabaseForm/lbSqlQueryAction.cpp,
+	  Plugins/DatabaseForm/plugin.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/DatabaseLayerGateway/pluginDatabaseLayerGateway.cpp,
+	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
+	  Plugins/TestPlugin/pluginTest.cpp,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
+	  Plugins/VisitorOperations/pluginJSONOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbBasicEventHandlers/lbBasicEventHandlers.cpp,
+	  Plugins/lbBasicEventHandlers/lbLoopEventHandlers.cpp,
+	  Plugins/lbDMFDataModel/lbActionParameters.cpp,
+	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionTypesModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbApplicationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbDBReportModel.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularsModel.cpp,
+	  Plugins/lbDMFDataModel/lbParameters.cpp,
+	  Plugins/lbDMFDataModel/lbRelations.cpp,
+	  Plugins/lbDMFDataModel/lbTranslationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbUsersModel.cpp,
+	  Plugins/lbDMFDataModel/plugin.cpp,
+	  Plugins/lbFileOperationsPlugin/lbFileExists.cpp,
+	  Plugins/lbFileOperationsPlugin/lbReadTextFileToString.cpp,
+	  Plugins/lbFileOperationsPlugin/lbWriteStringToFile.cpp,
+	  Plugins/lbXSLTTransformer/lbXSLTTransformer.cpp,
 	  RegressionTests/Basetypes/Basetypes.cpp,
 	  RegressionTests/ContainerTest/containerTest.cpp,
-	  RegressionTests/Database/Plain-ODBC-Test/makefile.module,
-	  RegressionTests/Database/Plain-ODBC-Test-Blob/makefile.module,
-	  RegressionTests/Database/Plain-ODBC-Test-Refresh/makefile.module,
-	  RegressionTests/MetaApplication/testMetaApplication.cpp,
-	  Test/GUI/wxWrapper/makefile.module,
-	  Test/GUI/wxWrapperDLL/makefile.module,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Fixed many memory
-	  leaks. Fixed followup crash due to lbString replace issue.
+	  RegressionTests/Database/dbTest.cpp,
+	  RegressionTests/Events/testEvents.cpp,
+	  RegressionTests/Memory/memTest.cpp,
+	  RegressionTests/Parameter/Parameter.cpp,
+	  RegressionTests/PluginTest/PluginTest.cpp,
+	  RegressionTests/PluginTranslationsModel/test.cpp,
+	  RegressionTests/TestUMLImport/testUMLImport.cpp,
+	  RegressionTests/Translation/testTranslation.cpp,
+	  RegressionTests/UAPLeakTest/UAPLeakTest.cpp,
+	  Samples/HelloWorld/helloworld.cpp, Test/Console/XML/test.cpp,
+	  Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp,
+	  Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
+	  Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  UnitTests/Actions/Actions.cpp, interfaces/lbInterfaces.h,
+	  UnitTests/Actions/UIWrapper.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Removed all code
+	  that is obsolete. Current code compiles but still does not run.
 
-2011-09-27 08:32  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Added code to react about the switch of writing the XMISettings file
-	  or not.
-
-2011-09-27 08:31  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Added menu entry
-	  to enable deactivation of writing the XMISettings file.
-
-2011-09-27 08:29  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/: lbMetaApplication.cpp,
-	  lbMetaApplication.h: Fixed some issues reported by CppCheck.
-
-2011-09-25 13:47  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.odt,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbclasses/lbobject.cpp,
-	  BaseDevelopment/lbclasses/skiplist.cpp,
-	  interfaces/lbInterfaces-sub-classes.h, interfaces/lbInterfaces.h,
-	  make/STD_MAKE: There are still random crashes, but with a new
-	  trace function to try log the crash at a null pointer in a string,
-	  the crashes again get more rare. Probably still need more cppcheck
-	  runs.
-
-2011-09-25 11:30  lollisoft
+2011-10-15 18:33  lollisoft
 
 	* BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
 	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbclasses/dllmain.cpp,
+	  interfaces/lbInterfaces-sub-classes.h, interfaces/lbInterfaces.h:
+	  Removed some unused code and no more required code. Current version
+	  does not compile at all.
+
+2011-10-15 15:13  lollisoft
+
+	* interfaces/lbInterfaces-sub-classes.h,
+	  BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  BaseDevelopment/lbModule/lbModule.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  BaseDevelopment/lbXMLConfig/lbDOMConfig/lbDOMConfig.cpp,
+	  BaseDevelopment/lbXMLConfig/lbXMLConfig/lbXMLConfig.cpp,
 	  BaseDevelopment/lbclasses/lbInputStream.cpp,
 	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
 	  BaseDevelopment/lbclasses/lbcontainer.cpp,
@@ -123,1014 +143,150 @@
 	  BaseDevelopment/lbclasses/lbthread.h,
 	  BaseDevelopment/lbclasses/misc.cpp,
 	  BaseDevelopment/lbclasses/skiplist.cpp,
-	  BaseDevelopment/lbclasses/skiplist.h,
-	  interfaces/lbInterfaces-sub-classes.h,
-	  RegressionTests/Basetypes/Basetypes.cpp,
-	  interfaces/lbInterfaces.h: Many bugfixes like missing variable
-	  initialization. Used CppCheck for this to get rid of the random
-	  crashes.  Only lbHook, lbModule, lbclasses and the Basetypes
-	  regression test (including headers and interfaces) are fixed. Other
-	  modules will follow.
-
-2011-09-24 13:37  lollisoft
-
-	* BaseDevelopment/Makefile: Deactivated databaselayer for ODBC
-	  variant.
-
-2011-09-24 11:01  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Small typo.
-
-2011-09-24 10:31  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Remoced the space in the xmi file.
-
-2011-09-24 09:52  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Removed XSLT part in path on Linux.
-
-2011-09-24 08:52  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Problem with
-	  RPM installation on a non development machine. Changed default
-	  plugin location for non Windows systems.
-
-2011-09-24 06:15  lollisoft
-
-	* lbdmf.spec: Changed rpm spec to new version.
-
-2011-09-21 08:44  lollisoft
-
-	* interfaces/lbInterfaces-sub-classes.h: Changed some log messages
-	  to become error log messages.
-
-2011-09-21 08:41  lollisoft
-
-	* BaseDevelopment/environment-osx.sh,
-	  Test/GUI/wxWrapper/postlink-mac.sh: Changed location of templates
-	  and sample UML files to reside in the application bundle.
-
-2011-09-21 08:40  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Added initial properties to enable easy UML import and export. The
-	  code generator workflow has been worked once, but not at a second
-	  run (on Mac).
-
-2011-09-21 07:08  lollisoft
-
-	* watcomenv.bat: Added setting for LOGGING setup.
-
-2011-09-21 06:59  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Removed
-	  temporary log activation.
-
-2011-09-20 08:58  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp: Added optional logging control
-	  via environment variable.
-
-2011-09-20 06:08  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Added more size to the image.
-
-2011-09-20 06:05  lollisoft
-
-	* make/STD_MAKE: Switch to release.
-
-2011-09-18 17:35  lollisoft
-
-	* UnitTests/BaseDevelopment/BaseDevelopment.cpp: Some pretty print
-	  stuff.
-
-2011-09-18 17:33  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
-	  Changed some logging messages to be error log messages and other
-	  corrections related to logging.
-
-2011-09-18 17:30  lollisoft
-
-	* Database/lbDMF-Sqlite-ApplicationDB.sql: Put the columns into
-	  double quotes.
-
-2011-09-18 17:29  lollisoft
-
-	* Database/lbDMF-PostgreSQL.sql: Fixed no new line.
-
-2011-09-18 17:27  lollisoft
-
-	* include/lbConfigHook.h: Added a new log macro to indicate always
-	  logging is preferred instead of activatable.
-
-2011-09-18 17:25  lollisoft
-
-	* Plugins/DatabaseLayerGateway/makefile.module: Fixed the bootstrap
-	  issue on Debian (PPC).
-
-2011-09-18 09:04  lollisoft
-
-	* UnitTests/: Actions/UIWrapper.cpp, Actions/UIWrapper.h,
-	  BaseDevelopment/BaseDevelopment.cpp: Fixed unit test code (const
-	  char changes).
-
-2011-09-17 07:23  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/: App/lbDynApp.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp: Application
-	  no longer crashes when user cancels file selection dialog.
-
-2011-09-14 09:14  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Added a new chapter.
-
-2011-09-14 08:36  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.cs.xsl:
-	  Fixed the & in the link :-)
-
-2011-09-12 08:13  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Updated revision number.
-
-2011-09-12 08:08  lollisoft
-
-	* Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
-	  Icons/Splash Screen.svg,
-	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.odt,
-	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf:
-	  Version change and little typo fixes.
-
-2011-09-11 20:42  lollisoft
-
-	* bindist.iss, dist.iss, docdist.iss, bin-buildtools-dist.iss:
-	  Changed to new release version number.
-
-2011-09-11 19:56  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Set up initially
-	  choosen XSL and XMI files to create an experience of a working
-	  application including UML import.  But these here are not working
-	  due to overwriting from the storage plugin.
-
-2011-09-11 19:47  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Set up initially choosen XSL and XMI files to create an experience
-	  of a working application including UML import.
-
-2011-09-11 12:42  lollisoft
-
-	* Plugins/DatabaseForm/: fkpk.cpp, lbDatabaseForm.h,
-	  lbDatabasePanel.cpp, lbDatabaseTableViewPanel.cpp: Started some
-	  refactoring.
-
-2011-09-11 12:41  lollisoft
-
-	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Fixed long
-	  existing bug with visible field mapping on foreign key fields that
-	  only happens when SQLite is used.
-
-2011-09-11 12:39  lollisoft
-
-	* BaseDevelopment/lbHook/lbHook.cpp: Removed check for
-	  isLogActivated() in logger class. Moved to _LOG macro.
-
-2011-09-11 12:38  lollisoft
-
-	* include/lbConfigHook.h: Added a _LOGERRRE macro that ignores
-	  isLogActivated() settings. Added check in _LOG if logging is
-	  enabled.
-
-2011-09-03 10:01  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.cs.xsl:
-	  Also added another improvement link and the origin search link.
-
-2011-09-03 09:02  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.cs.xsl:
-	  Done little research about ribbon support. Yes there is :-)
-
-2011-08-19 09:58  lollisoft
-
-	* BaseDevelopment/lbcs/appcs.cpp: Close the connection after a
-	  request.
-
-2011-08-16 13:22  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: The trial failed. The
-	  performance test from ACE uses a * reactor implementation.  It seems
-	  that I have to write a complete server using ACE.
-
-2011-08-16 12:49  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Reactivated ACE due to
-	  possibly missed close on server side.
-
-2011-08-15 15:44  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Reverted to lbtransfer.
-	  ACE is currently no solution.
-
-2011-08-15 10:44  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Fixed missing switch to
-	  ACE version also for the socket class.
-
-2011-08-15 10:39  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Again try ACE version.
-
-2011-08-15 09:46  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Reverted back to my tcp
-	  implementation, as it seems that ACE has problems with TCP_NODELAY.
-
-2011-08-10 08:19  lollisoft
-
-	* interfaces/lbInterfaces-sub-transfer.h: Added a flag to better
-	  help detecting server mode. This was required due to the new ACE
-	  wrappers.
-
-2011-08-10 08:16  lollisoft
-
-	* BaseDevelopment/lbtransfer/: transfer.cpp, transfer.h: Added a
-	  flag to better help detecting server mode. This was required due to
-	  the new ACE wrappers.
-
-2011-08-10 08:15  lollisoft
-
-	* BaseDevelopment/lbtransfer/socket.cpp: Missed a ref = STARTREF in
-	  ctor.
-
-2011-08-10 08:14  lollisoft
-
-	* BaseDevelopment/lbcs/appcs.cpp: The new ACE wrapper are working
-	  well and faster. Also changed some log messages.
-
-2011-08-10 08:12  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Changed to use ACE wrapper
-	  instead of my own tcp wrappers.  The old are more than ten years old
-	  and makes too much roundtrips.  The new one are hopefully much
-	  faster.
-
-2011-07-24 19:58  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyMakefileModule.xsl, ServerMakefileModule.xsl: Corrected OSX
-	  related build sceme.
-
-2011-07-24 15:42  lollisoft
-
-	* include/lbErrcodes.h: Added an error code for not connected
-	  proxies.
-
-2011-07-24 15:39  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxyTest.cpp.xsl,
-	  ApplicationFacadeServer.cpp.xsl, Entity.cpp.xsl: The client
-	  server code works well. Not yet really using database but the entity
-	  transmission is ok.
-
-2011-07-24 15:37  lollisoft
-
-	* BaseDevelopment/lbcs/appcs.cpp: Removed some console message
-	  activations.
-
-2011-07-24 15:29  lollisoft
-
-	* BaseDevelopment/lbcs/appcs.cpp: Accept repeated connection trials
-	  as there may be several server plugins available.
-
-2011-07-24 11:20  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxy.cpp.xsl, ApplicationFacadeServer.cpp.xsl,
-	  Entity.cpp.xsl, Entity.h.xsl, Interface.h.xsl, Proxy.cpp.xsl,
-	  Proxy.h.xsl: Current code seems to cope with NULL values in
-	  entities.
-
-2011-07-24 09:42  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxy.cpp.xsl, ApplicationFacadeServer.cpp.xsl,
-	  ServerMakefileModule.xsl, ServerModul.cpp.xsl,
-	  genClientServerCode.xsl: Added more stuff on the server side.
-	  Basic communication through the dispatcher works and server API gets
-	  called.
-
-2011-07-23 13:23  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxy.cpp.xsl,
-	  ApplicationFacadeProxyTest.cpp.xsl, ProxyModul.cpp.xsl: First
-	  tests with client test application are working.
-
-2011-07-23 11:04  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxyTest.cpp.xsl, ProxyModul.cpp.xsl,
-	  ProxyPlugin.cpp.xsl, genClientServerCode.xsl: Some fixes and
-	  added a console test application to be created.
-
-2011-07-23 09:13  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeInterface.h.xsl, ApplicationFacadeProxy.cpp.xsl,
-	  ApplicationFacadeProxy.h.xsl, ApplicationFacadeServer.cpp.xsl,
-	  ApplicationFacadeServer.h.xsl, ApplicationInterfaces.h.xsl,
-	  Entity.cpp.xsl, Entity.h.xsl, Proxy.cpp.xsl, Proxy.h.xsl,
-	  ProxyMakefileModule.xsl, TypeMapping.xsl,
-	  genClientServerCode.xsl: Now the proxy code fully compiles, but
-	  it is not ready.
-
-2011-07-21 07:19  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeInterface.h.xsl, ApplicationFacadeProxy.cpp.xsl,
-	  ApplicationFacadeServer.cpp.xsl, ApplicationFacadeServer.h.xsl,
-	  Entity.cpp.xsl, Entity.h.xsl, Interface.h.xsl, Proxy.cpp.xsl,
-	  Proxy.h.xsl, ProxyCollection.cpp.xsl, ProxyCollection.h.xsl,
-	  ProxyModul.cpp.xsl, ProxyPlugin.cpp.xsl, Server.cpp.xsl,
-	  Server.h.xsl, genClientServerCode.xsl: Many changes and
-	  corrections. While this there was a CVS server outage.
-
-2011-07-16 20:15  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/ApplicationFacadeProxy.cpp.xsl:
-	  Added generating code for getting entity by identifer.
-
-2011-07-16 15:30  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/ApplicationFacadeProxy.cpp.xsl:
-	  Implemented the CRUD navigation API.
-
-2011-07-16 12:21  lollisoft
-
-	* BaseDevelopment/lbcs/: appcs.cpp, appcs.h: Made a char parameter
-	  const.
-
-2011-07-16 09:32  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/ApplicationFacadeProxy.h.xsl:
-	  Added prixy interface declarations.
-
-2011-07-16 09:21  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxy.cpp.xsl, ApplicationFacadeProxy.h.xsl,
-	  genClientServerCode.xsl: Added generating the proxy code (empty
-	  methods) and added LB_STDCALL.
-
-2011-07-16 09:00  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeInterface.h.xsl, ApplicationFacadeProxy.h.xsl,
-	  genClientServerCode.xsl: Corrected code generation and added
-	  application facade interface.
-
-2011-07-16 08:39  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationFacadeProxy.h.xsl, genClientServerCode.xsl: Added
-	  application facade and included it in generation.
-
-2011-07-13 07:52  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  Interface.h.xsl, TypeMapping.xsl: Refactored out the type
-	  mapping.
-
-2011-07-13 07:28  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/Interface.h.xsl:
-	  Corrected type detection to create a better matching sourcecode
-	  compared.
-
-2011-07-12 08:07  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyMakefileModule.xsl, ServerMakefileModule.xsl: Copied
-	  makefile from prototype.
-
-2011-07-12 07:58  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/genClientServerCode.xsl:
-	  Corrected another copy & paste bug to get correct file names.
-
-2011-07-12 07:48  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyCollection.cpp.xsl, ProxyCollection.h.xsl,
-	  ProxyMakefileModule.xsl, ServerCollection.cpp.xsl,
-	  ServerCollection.h.xsl, ServerMakefileModule.xsl,
-	  genClientServerCode.xsl: Corrected some template names
-	  (copy&paste bug)
-
-2011-07-12 07:39  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyMakefileModule.xsl, ServerMakefileModule.xsl,
-	  genClientServerCode.xsl: Added dummies for makefile generation.
-
-2011-07-12 07:36  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyCollection.cpp.xsl, ProxyCollection.h.xsl,
-	  ServerCollection.cpp.xsl, ServerCollection.h.xsl,
-	  genClientServerCode.xsl: Added collection dummies for server and
-	  proxy.
-
-2011-07-12 07:25  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyPlugin.cpp.xsl, ServerPlugin.cpp.xsl,
-	  genClientServerCode.xsl: Added dummies for server plugin and
-	  proxy plugin.
-
-2011-07-11 08:48  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ProxyModul.cpp.xsl, ServerModul.cpp.xsl, genClientServerCode.xsl:
-	  Added dummies for creating plugin registration code.
-
-2011-07-11 07:54  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  Proxy.cpp.xsl, Proxy.h.xsl, Server.cpp.xsl, Server.h.xsl,
-	  genClientServerCode.xsl: Added dummy code generators (TODO's) for
-	  proxy and server headers and code.
-
-2011-07-11 07:36  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  ApplicationInterfaces.h.xsl, genClientServerCode.xsl: Added
-	  creating a common include file per package.
-
-2011-07-10 17:57  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
-	  Interface.h.xsl, XMISettings.xsl, genClientServerCode.xsl:
-	  Initial attempt to generate some kind of client server code for
-	  forms.
-
-2011-07-10 12:26  lollisoft
-
-	* BaseDevelopment/lbtransfer/socket.cpp: Some samples are using
-	  INVALID_SOCKET, so I will do too.
-
-2011-07-10 08:36  lollisoft
-
-	* Plugins/DatabaseLayerGateway/lbDB.cpp: Fixed a bug found with
-	  unit tests after switching off throwing exceptions in the underlying
-	  database API.
-
-2011-07-10 08:30  lollisoft
-
-	* UnitTests/: Actions/Actions.cpp,
-	  BaseDevelopment/BaseDevelopment.cpp, MiniCppUnit/MiniCppUnit.cpp,
-	  MiniCppUnit/MiniCppUnit.hxx, TestRunner/TestsRunner.cpp: Fixed
-	  unit test trouble that may be caused from static objects.
-
-2011-07-10 08:27  lollisoft
-
-	* Test/GUI/wxWrapper/makefile.module: Mage __WXDEBUG__ switch
-	  optional and depending on _DEBUG switch.
-
-2011-07-10 08:24  lollisoft
-
-	* Plugins/: lbBasicEventHandlers/lbBasicEventHandlers.cpp,
-	  lbBasicEventHandlers/lbBasicEventHandlers.h,
-	  lbBasicEventHandlers/lbLoopEventHandlers.cpp,
-	  lbBasicEventHandlers/lbLoopEventHandlers.h,
-	  lbBasicEventHandlers/makefile.module,
-	  lbBasicEventHandlers/plugin.cpp, makefile: Begun with basic
-	  evehnt handlers including looping throuough database queries and
-	  containers.
-
-2011-07-10 08:20  lollisoft
-
-	* make/STD_MAKE: Compile release mode.
-
-2011-07-10 08:18  lollisoft
-
-	* BaseDevelopment/lbModule/lbModule.cpp: Changed logging message to
-	  be verbose only.
-
-2011-07-10 08:17  lollisoft
-
-	* BaseDevelopment/: lbMetaApplication/lbMetaApplication.cpp,
-	  lbPluginManager/lbPluginManager.cpp: Changed some logging
-	  messages to be verbose only.
-
-2011-07-10 08:15  lollisoft
-
-	* BaseDevelopment/lbDB/lbDB.cpp: Made lbDatabase destructor logging
-	  verbose only.
-
-2011-07-10 08:14  lollisoft
-
-	* BaseDevelopment/lbclasses/: lbobject.cpp, lbobject.h: Added
-	  stroring database query objects into the parameter container. Not
-	  yet ready.
-
-2011-07-10 08:13  lollisoft
-
-	* interfaces/lbInterfaces-sub-classes.h: Added stroring database
-	  query objects into the parameter container. Not yet tested.
-
-2011-07-10 08:12  lollisoft
-
-	* interfaces/lbInterfaces.h: Changed singletonHolder macro logging
-	  to be verbose only.
-
-2011-07-10 08:10  lollisoft
-
-	* BaseDevelopment/lbHook/lbHook.cpp: Corrected non const to const
-	  char usage for getOsType.
-
-2011-07-04 09:07  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/COPYRIGHT: All files
-	  herein are intendet to have LGPL as their license.
-
-2011-07-03 11:36  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/:
-	  Browse/Controller.cs.xsl, Entities/Entity.cs.xsl: Corrected
-	  creating mock data multiple times. Only need this once.
-
-2011-07-03 11:10  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellForm.Designer.cs.xsl, Module/MyView.Designer.cs.xsl,
-	  Module/MyView.cs.xsl, Module/MyWorkItem.cs.xsl,
-	  Module/Entities/Entity.cs.xsl,
-	  Module/View/DetailView.Designer.cs.xsl,
-	  Module/View/TabView.Designer.cs.xsl: Some corrections to get
-	  TabView per entity correctly loaded. It works as expected for
-	  displaying the dummy data.
-
-2011-07-02 23:48  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/MyModule.csproj.xsl:
-	  Added the module level workspace and other stuff (again).
-
-2011-07-02 22:24  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ProfileCatalog.xml.xsl, Module/MyModule.csproj.xsl: Using
-	  application name from XML model.
-
-2011-07-02 18:50  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/DetailView.Designer.cs.xsl:
-	  Added template code to create form layout.
-
-2011-07-02 18:12  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module.xsl, Module/MyModule.csproj.xsl,
-	  Module/View/Controller.cs.xsl,
-	  Module/View/DetailView.Designer.cs.xsl,
-	  Module/View/DetailView.cs.xsl, Module/View/ViewWorkItem.cs.xsl:
-	  Mostly added views and browsers to get a compilable application.
-
-2011-07-02 17:51  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module/MyModule.csproj.xsl, Module.xsl: Added view stuff.
-
-2011-07-02 17:50  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/ViewWorkItem.cs.xsl:
-	  Some corrections.
-
-2011-07-02 17:49  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/Controller.cs.xsl:
-	  Renamed template Controller to ViewController.
-
-2011-07-02 17:48  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/:
-	  DetailView.Designer.cs.xsl, DetailView.cs.xsl,
-	  DetailView.resx.xsl: Added and corrected detail view smart part.
-
-2011-07-02 17:44  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/DetailView.cs.xsl:
-	  Added detail view smart part.
-
-2011-07-02 17:22  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/ViewWorkItem.cs.xsl:
-	  Added view work item.
-
-2011-07-02 17:17  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/:
-	  TabView.Designer.cs.xsl, TabView.resx.xsl: Added tabview smart
-	  part.
-
-2011-07-02 17:12  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/Controller.cs.xsl:
-	  Fixed namespace.
-
-2011-07-02 17:11  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/TabView.cs.xsl:
-	  Added tabview smart part.
-
-2011-07-02 17:05  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/View/Controller.cs.xsl:
-	  Implemented view controller without opening details.
-
-2011-07-02 16:58  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/:
-	  MyModule.csproj.xsl, TitledSmartPart.Designer.cs.xsl,
-	  TitledSmartPart.cs.xsl, TitledSmartPart.resx.xsl: Corrected
-	  titled smart part templates.
-
-2011-07-02 16:57  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Entities/Entity.cs.xsl:
-	  Added static DisplayMember for helping list view getting right
-	  member name.
-
-2011-07-02 16:56  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/ListView.cs.xsl:
-	  Corrected some conflicts with declarations and types.
-
-2011-07-02 16:30  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module/TitledSmartPart.Designer.cs.xsl,
-	  Module/TitledSmartPart.cs.xsl, Module/TitledSmartPart.resx.xsl,
-	  Module.xsl: Added basic titled smart part.
-
-2011-07-02 16:18  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/ListView.resx.xsl:
-	  Added list view smart part.
-
-2011-07-02 16:15  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/:
-	  ListView.cs.xsl, ListView.Designer.cs.xsl: Added list view smart
-	  part.
-
-2011-07-02 16:08  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module.xsl, Module/MyModule.csproj.xsl,
-	  Module/Browse/BrowseWorkItem.cs.xsl,
-	  Module/Entities/Entity.cs.xsl: Corrected code generation resx
-	  issue. Currently no resx file will be generated and included.
-
-2011-07-02 16:00  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/:
-	  Browse/Main.resx.xsl, MyModule.csproj.xsl: Added main smart part.
-
-2011-07-02 15:47  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/:
-	  Main.Designer.cs.xsl, Main.cs.xsl: Added main smart part.
-
-2011-07-02 15:28  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/Main.cs.xsl:
-	  Added main smart part.
-
-2011-07-02 15:18  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/BrowseWorkItem.cs.xsl:
-	  Added browse work item.
-
-2011-07-02 14:58  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module.xsl, SmartClient.sln.xsl, generate.xsl,
-	  Module/MyModule.csproj.xsl, Module/Browse/Controller.cs.xsl,
-	  Module/Entities/Entity.cs.xsl: Added entities and corrected
-	  controller.
-
-2011-07-02 13:17  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/Browse/Controller.cs.xsl:
-	  Implemented controller class.
-
-2011-07-02 12:02  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/generate.xsl:
-	  Fixed template name.
-
-2011-07-02 11:59  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module.xsl, generate.xsl: Refactored out module stuff.
-
-2011-07-02 11:08  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/CommandMap.cs.xsl:
-	  Changed namespace.
-
-2011-07-02 10:58  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  CommandMap.cs.xsl, MainController.cs.xsl,
-	  ShellForm.Designer.cs.xsl, ShellWorkItem.cs.xsl: Corrected
-	  codegenerator.
-
-2011-07-02 10:22  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellApplication.csproj.xsl, generate.xsl, CommandMap.xml.xsl:
-	  Finished command map implementation. It works.
-
-2011-07-02 10:12  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  MainController.cs.xsl, ShellApplication.csproj.xsl, generate.xsl:
-	  Added main controller.
-
-2011-07-02 09:57  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  CommandMap.cs.xsl, CommandMap.xsd.xsl, CommandMap.xsx.xsl,
-	  ShellApplication.csproj.xsl, generate.xsl: Added code to support
-	  creating menu elements.
-
-2011-07-02 09:17  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellForm.Designer.cs.xsl, ShellForm.cs.xsl: Added code to
-	  support creating menu elements.
-
-2011-07-02 09:03  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.cs.xsl:
-	  Added code to support creating menu elements.
-
-2011-06-26 15:10  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellForm.Designer.cs.xsl, ShellForm.cs.xsl: Added tabWorkspace1
-	  for step 4.
-
-2011-06-26 14:54  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/MyModuleInit.cs.xsl:
-	  Added missing tab registration code.
-
-2011-06-26 14:48  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/MyModule.csproj.xsl:
-	  Added missing reference.
-
-2011-06-26 14:37  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  Module/IMyView.cs.xsl, Module/MyModule.csproj.xsl,
-	  Module/MyPresenter.cs.xsl, Module/MyView.Designer.cs.xsl,
-	  Module/MyView.cs.xsl, Module/MyView.resx.xsl,
-	  Module/MyWorkItem.cs.xsl, generate.xsl: Added the view.
-
-2011-06-26 14:18  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/MyModuleInit.cs.xsl:
-	  Removed the demo that the module gets loaded. (Step 3)
-
-2011-06-26 14:06  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Module/MyModule.csproj.xsl:
-	  Fixed reference to the CAB.
-
-2011-06-26 13:59  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  SmartClient.sln.xsl, generate.xsl: Added an overall solution.
-	  Corrected application main folder to be ShellApplication.
-
-2011-06-26 13:40  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ProfileCatalog.xml.xsl, ShellApplication.csproj.xsl,
-	  generate.xsl, Module/MyModule.csproj.xsl,
-	  Module/MyModule.sln.xsl, Module/MyModuleInit.cs.xsl,
-	  Module/MyWorkItem.cs.xsl,
-	  Module/Properties/ModuleAssemblyInfo.cs.xsl: Modifications for
-	  the second step to add a module.
-
-2011-06-26 12:38  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.csproj.xsl:
-	  Fixed project reference path.
-
-2011-06-26 12:26  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellApplication.csproj.xsl, ShellApplication.sln.xsl: Corrected
-	  ObjectBuilder path and solution path for CompositeUI and
-	  CompositeUI.WinForms.
-
-2011-06-26 12:19  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/ShellApplication.csproj.xsl:
-	  Fixed last differences.
-
-2011-06-26 12:03  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/generate.xsl:
-	  Fixed project root directory to enable adding modules in their own
-	  directory.
-
-2011-06-26 11:27  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellApplication.csproj.xsl, ShellApplication.sln.xsl,
-	  generate.xsl: Added missing solution after it was successfully
-	  built. (Templatized) Included creation of solution.
-
-2011-06-26 10:50  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/generate.xsl:
-	  Added ShellWorkItem.cs and fixed resx file.
-
-2011-06-26 10:35  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  exsl.node-set.xml, exsl.object-type.xml, exsl.xsl: Added missing
-	  exsl files.
-
-2011-06-26 10:35  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/Properties/:
-	  Resources.resx.xsl, Settings.Designer.cs.xsl,
-	  Settings.settings.xsl, AssemblyInfo.cs.xsl,
-	  Resources.Designer.cs.xsl: Fixed path to exsl.
-
-2011-06-26 10:22  lothar
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/SmartClientSoftwareFactory/:
-	  ShellApplication.cs.xsl, ShellApplication.csproj.xsl,
-	  ShellForm.Designer.cs.xsl, ShellForm.cs.xsl, ShellForm.resx.xsl,
-	  ShellWorkItem.cs.xsl, generate.xsl,
-	  Properties/AssemblyInfo.cs.xsl,
-	  Properties/Resources.Designer.cs.xsl,
-	  Properties/Resources.resx.xsl,
-	  Properties/Settings.Designer.cs.xsl,
-	  Properties/Settings.settings.xsl: Initial creation of templates
-	  with a bruteforce replace (& => &amp;, < => &lt;, > => &gt;)
-
-2011-06-18 19:29  lollisoft
-
-	* AppDevelopmentDemo/App/Application.cpp,
+	  BaseDevelopment/lbcs/appcs.cpp,
+	  BaseDevelopment/lbtransfer/lbTransferData.cpp,
+	  BaseDevelopment/lbtransfer/lbTransferDataObject.cpp,
+	  BaseDevelopment/lbtransfer/lbthread.cpp,
+	  BaseDevelopment/lbtransfer/socket.cpp,
+	  BaseDevelopment/lbtransfer/transfer.cpp,
+	  AppDevelopmentDemo/App/Application.cpp,
 	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/DecisionAction.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/ExecuteAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/SendSignalAction.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/lbDMFActionStepIdForFormValue.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/plugin.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/plugin.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
 	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
-	  BaseDevelopment/lbDB/lbDB.cpp, BaseDevelopment/lbHook/lbHook.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
-	  BaseDevelopment/lbclasses/lbInputStream.cpp,
-	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
-	  BaseDevelopment/lbclasses/lbkey.cpp,
-	  BaseDevelopment/lbclasses/lbobject.cpp,
-	  BaseDevelopment/lbclasses/lbobject.h,
-	  BaseDevelopment/lbclasses/misc.cpp, include/lbConfigHook.h,
-	  interfaces/lbInterfaces-sub-classes.h,
-	  interfaces/lbInterfaces-sub-db.h,
-	  interfaces/lbInterfaces-sub-transfer.h,
-	  interfaces/lbInterfaces-sub-ui.h,
-	  interfaces/lbInterfaces-sub-visitor.h,
-	  interfaces/lbInterfaces-sub-xml.h, interfaces/lbInterfaces.h,
-	  Plugins/DatabaseForm/Actions.cpp, Plugins/DatabaseForm/ffi.cpp,
-	  Plugins/DatabaseForm/fkpk.cpp,
-	  Plugins/DatabaseForm/formularactions.cpp,
+	  Plugins/DatabaseForm/Actions.cpp, Plugins/DatabaseForm/fkpk.cpp,
 	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
 	  Plugins/DatabaseForm/lbDatabaseForm.cpp,
-	  Plugins/DatabaseForm/lbDatabaseForm.h,
 	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
 	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
 	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
 	  Plugins/DatabaseForm/lbDetailMasterAction.cpp,
 	  Plugins/DatabaseForm/lbMasterDetailAction.cpp,
+	  Plugins/DatabaseForm/lbOpAqueAction.cpp,
 	  Plugins/DatabaseForm/lbSqlQueryAction.cpp,
+	  Plugins/DatabaseForm/plugin.cpp,
 	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/DatabaseLayerGateway/plugin.cpp,
+	  Plugins/DatabaseLayerGateway/pluginDatabaseLayerGateway.cpp,
 	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
+	  Plugins/DatabaseReport/plugin.cpp, Plugins/TestPlugin/plugin.cpp,
 	  Plugins/TestPlugin/pluginTest.cpp,
+	  Plugins/VisitorOperations/plugin.cpp,
 	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
 	  Plugins/VisitorOperations/pluginInputStream.cpp,
 	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
 	  Plugins/VisitorOperations/pluginJSONOutputStream.cpp,
 	  Plugins/VisitorOperations/pluginOutputStream.cpp,
 	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbBasicEventHandlers/lbBasicEventHandlers.cpp,
+	  Plugins/lbBasicEventHandlers/lbLoopEventHandlers.cpp,
+	  Plugins/lbBasicEventHandlers/plugin.cpp,
+	  Plugins/lbDMFDataModel/lbActionParameters.cpp,
+	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionTypesModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbApplicationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbDBReportModel.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbFormularsModel.cpp,
 	  Plugins/lbDMFDataModel/lbParameters.cpp,
+	  Plugins/lbDMFDataModel/lbRelations.cpp,
+	  Plugins/lbDMFDataModel/lbTranslationsModel.cpp,
+	  Plugins/lbDMFDataModel/lbUsersModel.cpp,
+	  Plugins/lbDMFDataModel/plugin.cpp,
+	  Plugins/lbFileOperationsPlugin/lbFileExists.cpp,
+	  Plugins/lbFileOperationsPlugin/lbReadTextFileToString.cpp,
+	  Plugins/lbFileOperationsPlugin/lbWriteStringToFile.cpp,
+	  Plugins/lbFileOperationsPlugin/plugin.cpp,
+	  Plugins/lbXSLTTransformer/lbXSLTTransformer.cpp,
+	  Plugins/lbXSLTTransformer/plugin.cpp,
 	  RegressionTests/TestUMLImport/testUMLImport.cpp,
 	  Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h, vendor/mkmk/mkmk.cpp:
-	  Changed all char* to const char* where a corresponding warning was
-	  generated.
+	  Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
+	  UnitTests/Actions/UIWrapper.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Decided to make a
+	  hash cut and removed stuff that everywhere was the cause for crashes
+	  on Mac.  Currently the code crashes on windows, but lets see how it
+	  is working on Mac.
 
-2011-06-12 22:24  lollisoft
+2011-10-15 08:36  lollisoft
 
-	* ChangeLog-basic.txt: Changes due to trials of file name with
-	  space issues.
+	* BaseDevelopment/Makefile, BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbModule/lbModule.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  BaseDevelopment/lbclasses/skiplist.cpp, include/lbConfigHook.h,
+	  interfaces/lbInterfaces.h, make/STD_MAKE, UnitTests/makefile,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp,
+	  UnitTests/MiniCppUnit/MiniCppUnit.hxx: All current changes
+	  including interfaces (starting mass changes).
 
-2011-06-12 20:54  lollisoft
+2011-10-15 07:14  lollisoft
 
-	* lbdmf.spec: Revert thr trials to cope with spaces in files and
-	  moved the hack to the makefile.
+	* Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp: Fixed
+	  possible issues due to not initialized variables.
+
+2011-10-09 21:05  lollisoft
+
+	* Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp: Fixed
+	  possible issues due to not initialized variables.
+
+2011-10-09 20:17  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/plugin.cpp:
+	  Renamed the class to get advantages while debugging.
+
+2011-10-09 20:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/:
+	  DecisionAction.cpp, ExecuteAction.cpp, SendSignalAction.cpp,
+	  lbDMFActionStepIdForFormValue.cpp, plugin.cpp: Fixed possible
+	  issues due to not initialized variables.
+
+2011-10-09 17:22  lollisoft
+
+	* Plugins/DatabaseForm/: Actions.cpp, ffi.cpp, fkpk.cpp,
+	  formularactions.cpp, lbDatabaseDialog.cpp, lbDatabaseForm.cpp,
+	  lbDatabaseForm.h, lbDatabasePanel.cpp,
+	  lbDatabaseTableViewDialog.cpp, lbDatabaseTableViewPanel.cpp,
+	  lbDetailMasterAction.cpp, lbMasterDetailAction.cpp,
+	  lbOpAqueAction.cpp, lbSqlQueryAction.cpp, plugin.cpp: Fixed
+	  possible issues due to not initialized variables.
+
+2011-10-09 09:28  lollisoft
+
+	* Plugins/lbDMFDataModel/: lbActionParameters.cpp,
+	  lbActionStepsModel.cpp, lbActionTypesModel.cpp,
+	  lbActionsModel.cpp, lbApplicationsModel.cpp, lbDBReportModel.cpp,
+	  lbDatabaseModel.cpp, lbFormularActionsModel.cpp,
+	  lbFormularsModel.cpp, lbParameters.cpp, lbRelations.cpp,
+	  lbTranslationsModel.cpp, lbUsersModel.cpp, plugin.cpp: Fixed
+	  possible issues due to not initialized variables.
+
+2011-10-09 09:27  lollisoft
+
+	* interfaces/lbInterfaces-sub-db.h: Removed unused code.
+
+2011-10-09 09:26  lollisoft
+
+	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Fixed
+	  possible memory leak.
+
+2011-10-03 10:58  lollisoft
+
+	* ChangeLog-basic.txt: Changes for release 1.0.3
+
+2011-10-03 06:43  lollisoft
+
+	* BaseDevelopment/: lbMetaApplication/lbMetaApplication.cpp,
+	  lbModule/lbModule.cpp, lbPluginManager/lbPluginManager.cpp,
+	  lbclasses/skiplist.cpp: Fixes to try cope with rare application
+	  crash.
 
