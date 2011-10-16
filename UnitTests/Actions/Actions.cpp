@@ -269,7 +269,7 @@ public:
 
 		makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
 
-		if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+		if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 			printf("Error: Plugin not found. (%s)\n", pluginModule);
 		}
 

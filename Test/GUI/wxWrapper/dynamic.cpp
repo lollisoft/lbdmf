@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.173 2011/10/15 21:47:13 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174 2011/10/16 08:40:57 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.173 $
+ * $Revision: 1.174 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.173 2011/10/15 21:47:13 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174 2011/10/16 08:40:57 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174  2011/10/16 08:40:57  lollisoft
+ * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
+ *
  * Revision 1.173  2011/10/15 21:47:13  lollisoft
  * Removed all code that is obsolete. Current code compiles but still does not run.
  *
@@ -1322,11 +1325,12 @@ public:
 		dialog = NULL;
         }
 
-	virtual ~lb_wxGUI() {
-		#ifdef VERBOSE
+		virtual ~lb_wxGUI() {
+			#ifdef VERBOSE
 	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
-	        #endif
-	}
+			#endif
+			cleanup();
+		}
 /*...e*/
 
         DECLARE_LB_UNKNOWN()

@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.68 2011/10/15 21:47:12 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.69 2011/10/16 08:40:56 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.69  2011/10/16 08:40:56  lollisoft
+ * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
+ *
  * Revision 1.68  2011/10/15 21:47:12  lollisoft
  * Removed all code that is obsolete. Current code compiles but still does not run.
  *
@@ -939,47 +942,45 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbSkipListElement::lbSkipListElement() { 
-	 
 	next = NULL; 
-	 
 	key = NULL; 
-	
-	;
+	data = NULL;
 }
 
 lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
 	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
-	 
 	next = e.getNext(); 
 	data = e.getObject();
 	key = e.getKey();
-	
 }
 
 //IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 void LB_STDCALL lbSkipListElement::detachData() {
-	
+	data = NULL;
 }
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) {
-    
-	
-    
+	data = NULL;
     next = _next;
     if (_next != NULL) {
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__);
     }
-    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_
-		if (o != NULL) {
-			if (doClone) {
-				data = o->clone(__FILE__, __LINE__);
-				if (data->getRefCount() > 1) {
-					_CL_VERBOSE << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_
-				}
-			} else {
-				o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__);
-				
+	if (o != NULL) {
+		if (doClone) {
+			data = o->clone(__FILE__, __LINE__);
+			if (data->getRefCount() > 1) {
+				_CL_VERBOSE << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_
 			}
+		} else {
+			o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__);
 		}
+	}
+
+	if (_key == NULL) {
+		_LOGERROR << "lbSkipListElement::lbSkipListElement(o, _key, ...) did not get a key, but expected.!" LOG_
+		key = NULL;
+		return;
+	}
+	
     lb_I_Unknown* uk_key = NULL;
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__);
 	_CL_VERBOSE << "Added an element with key value of " << key->charrep() LOG_
@@ -989,7 +990,7 @@ lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* 
         }
     }
     if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_
-		}
+}
 
 lbSkipListElement::~lbSkipListElement() {
 	char ptr[20] = "";

@@ -912,6 +912,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
         _LOG << "Detach all database forms from forms list." LOG_
 
         forms->detachAll();
+	forms->deleteAll();
 
         _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 

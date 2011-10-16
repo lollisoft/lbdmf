@@ -149,11 +149,6 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 
 	UAP(lb_I_Parameter, param)
-
-	if (manager == NULL) {
-		printf("manager is NULL.\n");
-	}
-
 	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("msg");
