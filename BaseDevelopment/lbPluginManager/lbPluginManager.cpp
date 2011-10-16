@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.90 $
+* $Revision: 1.91 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.90 2011/10/15 21:47:12 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.91 2011/10/16 10:01:46 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91  2011/10/16 10:01:46  lollisoft
+* Fixed a buffer overflow.
+*
 * Revision 1.90  2011/10/15 21:47:12  lollisoft
 * Removed all code that is obsolete. Current code compiles but still does not run.
 *
@@ -686,7 +689,9 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 	strcat(pluginModule, "\\");
 #endif
 #ifdef LINUX
+#ifndef OSX
 	strcat(pluginModule, "/");
+#endif
 #endif
 #ifdef OSX
 	strcat(pluginModule, "/");
@@ -801,7 +806,9 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 	strcat(pluginModule, "\\");
 #endif
 #ifdef LINUX
+#ifndef OSX
 	strcat(pluginModule, "/");
+#endif
 #endif
 #ifdef OSX
 	strcat(pluginModule, "/");
@@ -919,7 +926,9 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 	strcat(pluginModule, "\\");
 #endif
 #ifdef LINUX
+#ifndef OSX
 	strcat(pluginModule, "/");
+#endif
 #endif
 #ifdef OSX
 	strcat(pluginModule, "/");
