@@ -1,3 +1,12 @@
+2011-10-16 20:52  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed the dmg version.
+
+2011-10-16 20:35  lollisoft
+
+	* ChangeLog-basic.txt: New changelog for release 1.0.4-stable-rc1.
+	  (2)
+
 2011-10-16 20:27  lollisoft
 
 	* vendor/mkmk/make-osx.sh: Missing a Leopart version in the
@@ -291,11 +300,4 @@
 2011-10-03 10:58  lollisoft
 
 	* ChangeLog-basic.txt: Changes for release 1.0.3
-
-2011-10-03 06:43  lollisoft
-
-	* BaseDevelopment/: lbMetaApplication/lbMetaApplication.cpp,
-	  lbModule/lbModule.cpp, lbPluginManager/lbPluginManager.cpp,
-	  lbclasses/skiplist.cpp: Fixes to try cope with rare application
-	  crash.
 
