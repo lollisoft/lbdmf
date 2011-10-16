@@ -1,3 +1,12 @@
+2011-10-16 20:27  lollisoft
+
+	* vendor/mkmk/make-osx.sh: Missing a Leopart version in the
+	  detection.
+
+2011-10-16 20:14  lollisoft
+
+	* ChangeLog-basic.txt: New changelog for release 1.0.4-stable-rc1.
+
 2011-10-16 19:30  lollisoft
 
 	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
