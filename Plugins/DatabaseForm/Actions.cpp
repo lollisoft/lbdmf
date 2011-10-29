@@ -39,6 +39,8 @@
 order by src_actionid
 */
 
+class lb_I_Action;
+
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
 
@@ -104,6 +106,8 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...slbAction:0:*/
@@ -519,7 +523,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 
 			first_dst_actionid_unmatched = dst_actionid;
 
-			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getActionStepTransitionID() <<
+			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getID() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
 
 			if (expression.find("==") != -1) {
@@ -930,7 +934,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			if (actionidcmp->equals(*&actionid)) {
 			    _LOG << "Sort action steps by ordering column: " << appActionSteps->getActionStepOrderNo() << "." LOG_
 				order->setData(appActionSteps->getActionStepOrderNo());
-				stepid->setData(appActionSteps->getActionStepID());
+				stepid->setData(appActionSteps->getID());
 				sortedActionSteps->insert(&uk, &key);
 
 				appActionTypes->finishActionTypeIteration();
@@ -939,7 +943,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->getActionTypeBezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->getActionStepType() LOG_
 
 				if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
-					_LOG << "Found initial node. " << appActionSteps->getActionStepID() << " with order number " << key->charrep() LOG_
+					_LOG << "Found initial node. " << appActionSteps->getID() << " with order number " << key->charrep() LOG_
 					isNonLinearActivity = true;
 					initialNode->setData(order->getData());
 				}

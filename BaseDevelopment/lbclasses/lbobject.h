@@ -31,10 +31,18 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbobject.h,v 1.58 2011/10/15 13:14:05 lollisoft Exp $
+ * $Id: lbobject.h,v 1.59 2011/10/29 06:03:58 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.59  2011/10/29 06:03:58  lollisoft
+ * Refactored application model (and it's model classes) into separate files to enable code generation.
+ * The code generation is planned for the model classes and the composite container for the model.
+ * Refactored out the login and user management from meta application due to the fact that it is a
+ * distinct feature the meta application should not provide. The code has been moved to a security
+ * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
+ * available.
+ *
  * Revision 1.58  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
  * Currently the code crashes on windows, but lets see how it is working on Mac.
@@ -292,28 +300,7 @@
 #include <stdio.h>
 #include <lbInterfaces.h>
 
-/*...sclass lbLocale:0:*/
-class lbLocale : public lb_I_Locale
-{
-public:
 
-        void LB_STDCALL setLanguage(const char* lang);
-
-		void LB_STDCALL translate(char ** text, const char* to_translate);
-		void LB_STDCALL setTranslationData(lb_I_Unknown* uk);
-
-        UAP(lb_I_Translations, translations)
-        char* _lang;
-		bool  dbAvailable;
-
-		DECLARE_LB_UNKNOWN()
-
-public:
-        lbLocale();
-        virtual ~lbLocale();
-
-};
-/*...e*/
 
 
 /*...sclass lbParameter:0:*/

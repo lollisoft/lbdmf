@@ -47,7 +47,7 @@ public:
 	char*		LB_STDCALL getMenuHelp();
 	long		LB_STDCALL getApplicationID();
 	long		LB_STDCALL getTyp();
-	long		LB_STDCALL getFormularID();
+	long		LB_STDCALL getID();
 
 	bool		LB_STDCALL ismarked();
 	void		LB_STDCALL mark();
@@ -55,6 +55,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 	
@@ -101,6 +104,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 

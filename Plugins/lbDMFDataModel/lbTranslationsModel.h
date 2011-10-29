@@ -43,7 +43,7 @@ public:
 	void		LB_STDCALL setNextTranslation();
 	void		LB_STDCALL finishTranslationIteration();
 	
-	long		LB_STDCALL getTranslationID();
+	long		LB_STDCALL getID();
 	char*		LB_STDCALL getTranslationText();
 	char*		LB_STDCALL getTranslationTranslated();
 	char*		LB_STDCALL getTranslationLanguage();
@@ -54,6 +54,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, Translations)
 	UAP(lb_I_Container, Lookup)

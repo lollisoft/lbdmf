@@ -42,6 +42,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDBReportModel.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportElementTypes)
@@ -88,6 +89,13 @@ lbErrCodes lbReports::setData(lb_I_Unknown* uk) {
  
  
 
+void		LB_STDCALL lbReports::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbReports::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbReports::lbReports() {
 	
@@ -192,7 +200,7 @@ void		LB_STDCALL lbReports::finishReportIteration() {
 }
 
 
-long		LB_STDCALL lbReports::getReportID() {
+long		LB_STDCALL lbReports::getID() {
 	return currentID->getData();
 }
 
@@ -317,6 +325,13 @@ void LB_STDCALL lbPluginReportsModel::releaseImplementation() {
 /*...e*/
 /*...e*/
 
+void		LB_STDCALL lbReportParameters::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbReportParameters::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbReportParameters::lbReportParameters() {
 	
@@ -434,7 +449,7 @@ long		LB_STDCALL lbReportParameters::getReportID() {
 	return currentReportID->getData();
 }
 
-long		LB_STDCALL lbReportParameters::getParameterID() {
+long		LB_STDCALL lbReportParameters::getID() {
 	return currentID->getData();
 }
 
@@ -559,6 +574,13 @@ void LB_STDCALL lbPluginReportParametersModel::releaseImplementation() {
 /*...e*/
 
 
+void		LB_STDCALL lbReportElements::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbReportElements::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbReportElements::lbReportElements() {
 	
@@ -721,7 +743,7 @@ long		LB_STDCALL lbReportElements::getElementReportID() {
 	return currentReportID->getData();
 }
 
-long		LB_STDCALL lbReportElements::getElementID() {
+long		LB_STDCALL lbReportElements::getID() {
 	return currentID->getData();
 }
 
@@ -865,6 +887,13 @@ void LB_STDCALL lbPluginReportElementsModel::releaseImplementation() {
 /*...e*/
 /*...e*/
 
+void		LB_STDCALL lbReportElementTypes::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbReportElementTypes::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbReportElementTypes::lbReportElementTypes() {
 	
@@ -969,7 +998,7 @@ void		LB_STDCALL lbReportElementTypes::finishElementTypeIteration() {
 	ElementTypes->finishIteration();
 }
 
-long		LB_STDCALL lbReportElementTypes::getElementID() {
+long		LB_STDCALL lbReportElementTypes::getID() {
 	return currentID->getData();
 }
 
@@ -1095,6 +1124,13 @@ void LB_STDCALL lbPluginReportElementTypesModel::releaseImplementation() {
 /*...e*/
 /*...e*/
 
+void		LB_STDCALL lbReportTexts::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbReportTexts::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 
 lbReportTexts::lbReportTexts() {

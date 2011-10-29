@@ -41,6 +41,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbParameters.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbActionParameters, lbActionParameters)
@@ -48,6 +49,15 @@ IMPLEMENT_FUNCTOR(instanceOflbActionParameters, lbActionParameters)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionParameters)
 	ADD_INTERFACE(lb_I_Action_Parameters)
 END_IMPLEMENT_LB_UNKNOWN()
+
+
+void		LB_STDCALL lbActionParameters::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbActionParameters::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 
 lbActionParameters::lbActionParameters() {
@@ -177,7 +187,7 @@ void		LB_STDCALL lbActionParameters::deleteUnmarked() {
 		setNextActionParameter();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionParameterID());
+			ID->setData(getID());
 
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -195,7 +205,7 @@ void		LB_STDCALL lbActionParameters::deleteMarked() {
 		setNextActionParameter();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionParameterID());
+			ID->setData(getID());
 
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -239,7 +249,7 @@ void  LB_STDCALL lbActionParameters::finishActionParameterIteration() {
 	Parameters->finishIteration();
 }
 
-long LB_STDCALL lbActionParameters::getActionParameterID() {
+long LB_STDCALL lbActionParameters::getID() {
 	return currentID->getData();
 }
 
@@ -269,6 +279,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionStepParameters)
 ADD_INTERFACE(lb_I_ActionStep_Parameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
+
+void		LB_STDCALL lbActionStepParameters::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbActionStepParameters::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbActionStepParameters::lbActionStepParameters() {
 	
@@ -397,7 +415,7 @@ void		LB_STDCALL lbActionStepParameters::deleteUnmarked() {
 		setNextActionStepParameter();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionStepParameterID());
+			ID->setData(getID());
 
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -415,7 +433,7 @@ void		LB_STDCALL lbActionStepParameters::deleteMarked() {
 		setNextActionStepParameter();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionStepParameterID());
+			ID->setData(getID());
 
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -459,7 +477,7 @@ void  LB_STDCALL lbActionStepParameters::finishActionStepParameterIteration() {
 	Parameters->finishIteration();
 }
 
-long LB_STDCALL lbActionStepParameters::getActionStepParameterID() {
+long LB_STDCALL lbActionStepParameters::getID() {
 	return currentID->getData();
 }
 

@@ -73,6 +73,7 @@ extern "C" {
 /*...e*/
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <DecisionAction.h>
 
 /*...lbDecisionAction:0:*/

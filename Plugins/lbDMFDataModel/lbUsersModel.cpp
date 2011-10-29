@@ -51,6 +51,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbUsersModel.h>
 
 /*...sclass lbUsersModel implementation:0:*/
@@ -59,6 +60,14 @@ IMPLEMENT_FUNCTOR(instanceOflbUsersModel, lbUsersModel)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbUsersModel)
 	ADD_INTERFACE(lb_I_UserAccounts)
 END_IMPLEMENT_LB_UNKNOWN()
+
+void		LB_STDCALL lbUsersModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbUsersModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 
 lbUsersModel::lbUsersModel() {
@@ -183,7 +192,7 @@ void		LB_STDCALL lbUsersModel::deleteUnmarked() {
 		setNextUser();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getUserID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -201,7 +210,7 @@ void		LB_STDCALL lbUsersModel::deleteMarked() {
 		setNextUser();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getUserID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -243,7 +252,7 @@ char* LB_STDCALL lbUsersModel::getUserName() {
 	return currentUserName->charrep();
 }
 
-long  LB_STDCALL lbUsersModel::getUserID() {
+long  LB_STDCALL lbUsersModel::getID() {
 	return currentUserID->getData();
 }
 

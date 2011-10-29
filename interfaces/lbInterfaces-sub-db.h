@@ -35,6 +35,22 @@
 class lb_I_ColumnBinding;
 class lb_I_MVC_View;
 
+// Table Module pattern may be the best here.
+class lb_I_TableModule : public lb_I_Unknown
+{
+public:
+	virtual long		LB_STDCALL getID() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+	
+	virtual void		LB_STDCALL setOperator(lb_I_Unknown* db) = 0;
+	virtual lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName) = 0;
+};
 /*...sclass lb_I_Query:0:*/
 /**
  * \brief A SQL Query interface.

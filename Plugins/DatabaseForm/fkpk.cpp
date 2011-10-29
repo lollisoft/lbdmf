@@ -86,6 +86,8 @@ extern "C" {
 
 #include "wx/wizard.h"
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbConfigure_FK_PK_MappingDialog)
@@ -118,7 +120,7 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	
 	;
 	pass = 0;
-	_FoimularID = _forms->getFormularID(); 
+	_FoimularID = _forms->getID(); 
 	_DBUser = NULL;
 	_DBPass = NULL;
 	_DBName = NULL;
@@ -154,7 +156,10 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-	ID->setData(meta->getApplicationID());
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+	ID->setData(securityManager->getApplicationID());
 	
 	forms->finishFormularIteration();
 	while (forms->hasMoreFormulars()) {
@@ -175,7 +180,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 	}
 	
-	long FormID = forms->getFormularID();
+	long FormID = forms->getID();
 	
 	formularfields->finishFieldsIteration();
 	while (formularfields->hasMoreFields()) {

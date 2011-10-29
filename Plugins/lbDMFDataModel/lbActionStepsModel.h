@@ -38,13 +38,13 @@ public:
 	long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1);
 	bool		LB_STDCALL selectActionStep(long _id);
 	
-	int		LB_STDCALL getActionStepCount();
+	int			LB_STDCALL getActionStepCount();
 	bool		LB_STDCALL hasMoreActionSteps();
 	void		LB_STDCALL setNextActionStep();
 	void		LB_STDCALL finishActionStepIteration();
 	
 	char*		LB_STDCALL getActionStepBezeichnung();
-	long		LB_STDCALL getActionStepID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getActionStepActionID();
 	long		LB_STDCALL getActionStepOrderNo();
 	long		LB_STDCALL getActionStepType();
@@ -56,6 +56,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionStepID)
@@ -82,7 +85,7 @@ public:
 	void		LB_STDCALL setNextActionStepTransition();
 	void		LB_STDCALL finishActionStepTransitionIteration();
 	
-	long		LB_STDCALL getActionStepTransitionID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getActionStepTransitionSrcActionID();
 	long		LB_STDCALL getActionStepTransitionDstActionID();
 
@@ -96,6 +99,9 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 	
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
+
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentSrcActionId)

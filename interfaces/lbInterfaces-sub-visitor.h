@@ -26,6 +26,10 @@
  */
 /*...e*/
 
+//#include <lbInterfaces-lbDMFManager.h>
+
+
+
 /*...sclass lb_I_Aspect:0:*/
 /** \brief Visitor base for all my interfaces.
  *
@@ -39,6 +43,7 @@ public:
 
 // The lb_I_Streamable interface would possibly go impossible
 //virtual void LB_STDCALL visit(lb_I_Unknown*) { printf("Error: Catch all visitor called!\n"); }
+virtual void LB_STDCALL visit(lb_I_SecurityProvider*) = 0;
 virtual void LB_STDCALL visit(lb_I_LogonHandler*) = 0;
 virtual void LB_STDCALL visit(lb_I_LogonPage*) = 0;     // Conflict with the catchall. Don't use MI.
 virtual void LB_STDCALL visit(lb_I_AppSelectPage*) = 0; // As above
@@ -81,29 +86,13 @@ virtual void LB_STDCALL visit(lb_I_PluginManager*) = 0;
 virtual void LB_STDCALL visit(lb_I_PluginModule*) = 0;
 virtual void LB_STDCALL visit(lb_I_wxFrame*) = 0;
 virtual void LB_STDCALL visit(lb_I_Window*) = 0;
-virtual void LB_STDCALL visit(lb_I_Action*) = 0;
 virtual void LB_STDCALL visit(lb_I_Form*) = 0;
 virtual void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) = 0;
-virtual void LB_STDCALL visit(lb_I_DelegatedAction*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseReport*) = 0;
 virtual void LB_STDCALL visit(lb_I_CodeGenerator*) = 0;
 virtual void LB_STDCALL visit(lb_I_Streamable*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseOperation*) = 0;
-virtual void LB_STDCALL visit(lb_I_UserAccounts*) = 0;
-virtual void LB_STDCALL visit(lb_I_Applications*) = 0;
-virtual void LB_STDCALL visit(lb_I_User_Applications*) = 0;
-virtual void LB_STDCALL visit(lb_I_Formulars*) = 0;
-virtual void LB_STDCALL visit(lb_I_Formular_Fields*) = 0;
-virtual void LB_STDCALL visit(lb_I_ParameterTable*) = 0;
-virtual void LB_STDCALL visit(lb_I_ApplicationParameter*) = 0;
-virtual void LB_STDCALL visit(lb_I_FormularParameter*) = 0;
-virtual void LB_STDCALL visit(lb_I_Actions*) = 0;
-virtual void LB_STDCALL visit(lb_I_Formular_Actions*) = 0;
-virtual void LB_STDCALL visit(lb_I_Action_Types*) = 0;
-virtual void LB_STDCALL visit(lb_I_Action_Steps*) = 0;
-virtual void LB_STDCALL visit(lb_I_ActionStep_Parameters*) = 0;
-virtual void LB_STDCALL visit(lb_I_Action_Parameters*) = 0;
-virtual void LB_STDCALL visit(lb_I_Translations*) = 0;
+
 virtual void LB_STDCALL visit(lb_I_FileLocation*) = 0;
 virtual void LB_STDCALL visit(lb_I_DirLocation*) = 0;
 virtual void LB_STDCALL visit(lb_I_Socket*) = 0;
@@ -111,9 +100,9 @@ virtual void LB_STDCALL visit(lb_I_Transfer*) = 0;
 virtual void LB_STDCALL visit(lb_I_Transfer_Data*) = 0;
 virtual void LB_STDCALL visit(lb_I_Transfer_DataObject*) = 0;
 virtual void LB_STDCALL visit(lb_I_Thread*) = 0;
-	virtual void LB_STDCALL visit(lb_I_Lock*) = 0;
-	virtual void LB_STDCALL visit(lb_I_Mutex*) = 0;
-	virtual void LB_STDCALL visit(lb_I_CriticalSection*) = 0;
+virtual void LB_STDCALL visit(lb_I_Lock*) = 0;
+virtual void LB_STDCALL visit(lb_I_Mutex*) = 0;
+virtual void LB_STDCALL visit(lb_I_CriticalSection*) = 0;
 	
 	
 virtual void LB_STDCALL visit(lb_I_ThreadImplementation*) = 0;
@@ -126,21 +115,20 @@ virtual void LB_STDCALL visit(lb_I_DispatchFunction*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationClient*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationServerThread*) = 0;
 virtual void LB_STDCALL visit(lb_I_Proxy*) = 0;
-virtual void LB_STDCALL visit(lb_I_Column_Types*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBColumns*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBTables*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBPrimaryKeys*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBForeignKeys*) = 0;
-virtual void LB_STDCALL visit(lb_I_DBReportProperties*) = 0;
-virtual void LB_STDCALL visit(lb_I_DBReportTextblock*) = 0;
-virtual void LB_STDCALL visit(lb_I_Reports*) = 0;
-virtual void LB_STDCALL visit(lb_I_ReportParameters*) = 0;
-virtual void LB_STDCALL visit(lb_I_ReportElements*) = 0;
-virtual void LB_STDCALL visit(lb_I_ReportElementTypes*) = 0;
-virtual void LB_STDCALL visit(lb_I_ReportTexts*) = 0;
+
+//virtual void LB_STDCALL visit(lb_I_DBReportProperties*) = 0;
+//virtual void LB_STDCALL visit(lb_I_DBReportTextblock*) = 0;
+
+// Entities that are generated, are of dynamic nature. They need a delegated visitor.
+//#include <lbInterfaces-lbDMFManager-sub-visitor.h>
+
+virtual void LB_STDCALL visit(lb_I_TableModule*) = 0;
+
 virtual void LB_STDCALL visit(lb_I_BinaryData*) = 0;
-virtual void LB_STDCALL visit(lb_I_Applications_Formulars*) = 0;
-virtual void LB_STDCALL visit(lb_I_Action_Step_Transitions*) = 0;
 virtual void LB_STDCALL visit(lb_I_TestMethod*) = 0;
 virtual void LB_STDCALL visit(lb_I_TestFixture*) = 0;
 virtual void LB_STDCALL visit(lb_I_CryptoStream*) = 0;

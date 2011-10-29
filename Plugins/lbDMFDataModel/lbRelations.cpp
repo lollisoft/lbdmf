@@ -50,6 +50,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbRelations.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbUserApplicationRelationModel, lbUserApplicationRelationModel)
@@ -58,6 +59,13 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbUserApplicationRelationModel)
 	ADD_INTERFACE(lb_I_User_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void		LB_STDCALL lbUserApplicationRelationModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbUserApplicationRelationModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 /*...slbUserApplicationRelationModel\58\\58\lbUserApplicationRelationModel\40\\41\:0:*/
 lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
@@ -384,6 +392,13 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplicationFormularsRelationModel)
 	ADD_INTERFACE(lb_I_Applications_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void		LB_STDCALL lbApplicationFormularsRelationModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbApplicationFormularsRelationModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 /*...slbApplicationFormularsRelationModel\58\\58\lbApplicationFormularsRelationModel\40\\41\:0:*/
 lbApplicationFormularsRelationModel::lbApplicationFormularsRelationModel() {

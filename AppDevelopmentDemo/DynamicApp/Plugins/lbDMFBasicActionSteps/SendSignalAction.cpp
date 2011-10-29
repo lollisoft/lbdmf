@@ -73,6 +73,7 @@ extern "C" {
 /*...e*/
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <SendSignalAction.h>
 
 

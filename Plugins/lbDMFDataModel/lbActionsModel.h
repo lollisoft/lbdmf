@@ -42,7 +42,7 @@ public:
 	void		LB_STDCALL setNextAction();
 	void		LB_STDCALL finishActionIteration();
 	
-	long		LB_STDCALL getActionID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getActionTyp();
 	long		LB_STDCALL getActionTarget();
 
@@ -55,6 +55,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionID)

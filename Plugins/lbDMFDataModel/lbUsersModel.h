@@ -41,7 +41,7 @@ public:
 	void		LB_STDCALL setNextUser();
 	void		LB_STDCALL finishUserIteration();
 	char*		LB_STDCALL getUserName();
-	long		LB_STDCALL getUserID();
+	long		LB_STDCALL getID();
 	char*		LB_STDCALL getUserPassword();
 
 	bool		LB_STDCALL ismarked();
@@ -50,6 +50,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 	

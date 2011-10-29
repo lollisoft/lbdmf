@@ -42,7 +42,7 @@ public:
 	void		LB_STDCALL setNextParameter();
 	void		LB_STDCALL finishParameterIteration();
 
-	long		LB_STDCALL getParameterID();
+	long		LB_STDCALL getID();
 	char*		LB_STDCALL getParameterName();
 	char*		LB_STDCALL getParameterValue();
 
@@ -55,6 +55,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 
@@ -73,13 +76,14 @@ public:
 	lbColumnTypes();
 	virtual ~lbColumnTypes();
 
-	long		LB_STDCALL addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly);
+	long		LB_STDCALL addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly, long _id = -1);
 	bool		LB_STDCALL selectType(const char* tablename, const char* name);
 	int			LB_STDCALL getTypeCount();
 	bool		LB_STDCALL hasMoreTypes();
 	void		LB_STDCALL setNextType();
 	void		LB_STDCALL finishTypeIteration();
 
+	long		LB_STDCALL getID();
 	char*		LB_STDCALL getTableName();
 	char*		LB_STDCALL getName();
 	char*		LB_STDCALL getSpecialColumn();
@@ -93,6 +97,9 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
+
 	DECLARE_LB_UNKNOWN()
 
 	UAP(lb_I_Container, ColumnTypes)
@@ -102,6 +109,7 @@ public:
 	UAP(lb_I_String, currentSpecialColumn)
 	UAP(lb_I_String, currentControlType)
 	UAP(lb_I_Long, currentReadonly)
+	UAP(lb_I_Long, currentID)
 
 	UAP(lb_I_Long, marked)
 };
@@ -120,7 +128,7 @@ public:
 	void		LB_STDCALL setNextParameter();
 	void		LB_STDCALL finishParameterIteration();
 
-	long		LB_STDCALL getParameterID();
+	long		LB_STDCALL getID();
 	char*		LB_STDCALL getParameterName();
 	char*		LB_STDCALL getParameterValue();
 
@@ -133,6 +141,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 
@@ -159,7 +170,7 @@ public:
 	void		LB_STDCALL setNextActionParameter();
 	void		LB_STDCALL finishActionParameterIteration();
 
-	long		LB_STDCALL getActionParameterID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getActionParameterActionID();
 
 	char*		LB_STDCALL getActionParameterDescription();
@@ -173,6 +184,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 
@@ -203,7 +217,7 @@ public:
 	void		LB_STDCALL setNextActionStepParameter();
 	void		LB_STDCALL finishActionStepParameterIteration();
 
-	long		LB_STDCALL getActionStepParameterID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getActionStepParameterActionID();
 
 	char*		LB_STDCALL getActionStepParameterDescription();
@@ -217,6 +231,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 

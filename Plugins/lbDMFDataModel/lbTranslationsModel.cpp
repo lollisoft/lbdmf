@@ -52,6 +52,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbTranslationsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbTranslationsModel, lbTranslationsModel)
@@ -60,6 +61,13 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbTranslationsModel)
 	ADD_INTERFACE(lb_I_Translations)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void		LB_STDCALL lbTranslationsModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbTranslationsModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbTranslationsModel::lbTranslationsModel() {
 	
@@ -217,7 +225,7 @@ void		LB_STDCALL lbTranslationsModel::deleteUnmarked() {
 		setNextTranslation();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getTranslationID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -235,7 +243,7 @@ void		LB_STDCALL lbTranslationsModel::deleteMarked() {
 		setNextTranslation();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getTranslationID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -275,7 +283,7 @@ void  LB_STDCALL lbTranslationsModel::finishTranslationIteration() {
 	Translations->finishIteration();
 }
 
-long LB_STDCALL lbTranslationsModel::getTranslationID() {
+long LB_STDCALL lbTranslationsModel::getID() {
 	return currentTranslationID->getData();
 }
 

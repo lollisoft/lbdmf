@@ -68,6 +68,7 @@ extern "C" {
 #include <lbdynapp-module.h>
 /*...e*/
 
+#include <lbInterfaces-sub-security.h>
 #include <lbDynApp.h>
 /*...e*/
 
@@ -207,7 +208,8 @@ protected:
         UAP(lb_I_String, LogonUser)
         UAP(lb_I_String, LogonApplication)
         UAP(lb_I_MetaApplication, metaapp)
-
+		UAP(lb_I_SecurityProvider, securityManager)
+		
 #ifdef USE_RDCD_MODEL
         // Model of the dynamic form configuration
         UAP(lb_I_RDCDModel, model)
@@ -216,33 +218,13 @@ protected:
         /// \brief Dirty flag.
         bool dirty;
 
-        // Preloaded data from database, if plugins are available.
-        UAP(lb_I_Applications_Formulars, ApplicationFormulars)
-        UAP(lb_I_Formulars, forms)
-        UAP(lb_I_Formular_Fields, formularfields)
-        UAP(lb_I_Column_Types, columntypes)
-        UAP(lb_I_FormularParameter, formParams)
-        UAP(lb_I_Formular_Actions, formActions)
-        UAP(lb_I_ApplicationParameter, appParams)
-        UAP(lb_I_Actions, appActions)
-        UAP(lb_I_Action_Steps, appActionSteps)
-        UAP(lb_I_Action_Types, appActionTypes)
+//\todo Implement this dynaamically within a container.
+#include <EntityModelDecl.inc>		
+
         UAP(lb_I_DBTables, dbTables)
         UAP(lb_I_DBColumns, dbColumns)
         UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
         UAP(lb_I_DBForeignKeys, dbForeignKeys)
-        
-        UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
-        UAP(lb_I_Action_Parameters, appActionParameters)
-        UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
-        
-
-        UAP(lb_I_Reports, reports)
-        UAP(lb_I_ReportParameters, reportparams)
-        UAP(lb_I_ReportElements, reportelements)
-        UAP(lb_I_ReportElementTypes, reportelementtypes)
-        UAP(lb_I_ReportTexts, reporttextblocks)
-
 
         UAP(lb_I_String, GeneralDBSchemaname)
 
@@ -278,7 +260,9 @@ protected:
 /*...slbDynamicApplication:0:*/
 /*...sctors\47\dtors:0:*/
 lbDynamicApplication::lbDynamicApplication() {
-        
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+
         gui = NULL;
 
         _overwriteDatabase = false;
@@ -381,8 +365,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
-        
-        UAP(lb_I_InputStream, is)
+
+		UAP(lb_I_InputStream, is)
 
         is = metaapp->askOpenFileReadStream("sql|txt"); 
 
@@ -408,9 +392,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
                 }
                 sqldb->init();
 
-        char* DBName = strdup(appParams->getParameter("DBName", metaapp->getApplicationID())); 
-        char* DBPass = strdup(appParams->getParameter("DBPass", metaapp->getApplicationID())); 
-        char* DBUser = strdup(appParams->getParameter("DBUser", metaapp->getApplicationID()));
+        char* DBName = strdup(appParams->getParameter("DBName", securityManager->getApplicationID())); 
+        char* DBPass = strdup(appParams->getParameter("DBPass", securityManager->getApplicationID())); 
+        char* DBUser = strdup(appParams->getParameter("DBUser", securityManager->getApplicationID()));
         
         if (sqldb->connect(DBName, DBName, DBUser, DBPass) == ERR_NONE) {
                 UAP(lb_I_String, sql)
@@ -1195,7 +1179,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
                 document->setUAPString(*&param, *&tempStorageNamespace);
 
                 // The export needs the current application ID.
-                AppID->setData(metaapp->getApplicationID());
+                AppID->setData(securityManager->getApplicationID());
                 *param = "SaveApplicationID";
                 document->setUAPInteger(*&param, *&AppID);
  
@@ -1394,17 +1378,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 		*ApplicationName = "";
 		param->getUAPString(*&name, *&ApplicationName);
 
-
 		// Get it either from parameter or document value
 		if (*ApplicationName == "") {
 			document->getUAPInteger(*&name, *&AppID);
 			_LOG << "Export application " << AppID->charrep() << " to XML buffer." LOG_
 		} else {
+			UAP(lb_I_Unknown, apps)
 			UAP(lb_I_Applications, applications)
-			applications = metaapp->getApplicationModel();
+			apps = securityManager->getApplicationModel();
+			QI(apps, lb_I_Applications, applications)
 			applications->selectApplication(ApplicationName->charrep());
 
-			AppID->setData(applications->getApplicationID());
+			AppID->setData(applications->getID());
 			
 			// Pass it into the current application document as the save operation requires it.
 			document->setUAPInteger(*&name, *&AppID);
@@ -1554,7 +1539,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 
                 *param = "SaveApplicationID";
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
-                AppID->setData(metaapp->getApplicationID());
+                AppID->setData(securityManager->getApplicationID());
                 document->setUAPInteger(*&param, *&AppID);
         }
 
@@ -1752,7 +1737,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
         UAP_REQUEST(getModuleInstance(), lb_I_String, q)
         UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 
-        id->setData(metaapp->getApplicationID());
+        id->setData(securityManager->getApplicationID());
 
         *q = "update formulare set typ = 1 where anwendungid = ";
         *q += id->charrep();
@@ -1833,7 +1818,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         // appParams->getParameter() changes results to prior issued calls. Do temporaly make copies.
 
-                        long id = metaapp->getApplicationID();
+                        long id = securityManager->getApplicationID();
 
                         *DBName = appParams->getParameter("DBName", id);
                         *DBUser = appParams->getParameter("DBUser", id);
@@ -1853,7 +1838,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                         }
 
                         dbForm = gui->createDBForm(     formName->charrep(),
-                                                        formParams->getParameter("query", forms->getFormularID()),
+                                                        formParams->getParameter("query", forms->getID()),
                                                         DBName->charrep(),
                                                         DBUser->charrep(),
                                                         DBPass->charrep());
@@ -2287,8 +2272,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 }
 /*...e*/
 
-//#define USE_OLD_INITIALIZE
-
 lbErrCodes LB_STDCALL lbDynamicApplication::save() {
     return ERR_NONE;
 }
@@ -2432,8 +2415,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                         appParams->accept(*&fOpDB);
                                         fOpDB->end();
                                 } else {
-#ifndef USE_OLD_INITIALIZE
-                                        UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+										UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
 
                                         param->setCloning(false);
                                         document->setCloning(false);
@@ -2449,99 +2431,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                         accept(*&fOp);
 
                                         loadDataFromActiveDocument();
-#endif
-#ifdef USE_OLD_INITIALIZE
-                                        // System database is not available
-                                        UAP(lb_I_Applications_Formulars, ApplicationFormulars)
-                                        UAP(lb_I_Formulars, forms)
-                                        UAP(lb_I_Formular_Fields, formularfields)
-                                        UAP(lb_I_Column_Types, columntypes)
-                                        UAP(lb_I_FormularParameter, formParams)
-                                        UAP(lb_I_Formular_Actions, formActions)
-                                        UAP(lb_I_Actions, appActions)
-                                        UAP(lb_I_Action_Steps, appActionSteps)
-                                        UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
-                                        UAP(lb_I_Action_Parameters, appActionParameters)
-                                        UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
-                                        UAP(lb_I_Action_Types, appActionTypes)
-                                        UAP(lb_I_DBTables, dbTables)
-                                        UAP(lb_I_DBColumns, dbColumns)
-                                        UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-                                        UAP(lb_I_DBForeignKeys, dbForeignKeys)
-
-                                        UAP(lb_I_Reports, reports)
-                                        UAP(lb_I_ReportParameters, reportparams)
-                                        UAP(lb_I_ReportElements, reportelements)
-                                        UAP(lb_I_ReportElementTypes, reportelementtypes)
-                                        UAP(lb_I_ReportTexts, reporttextblocks)
-
-                                        if (isFileAvailable) {
-                                                AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
-                                                AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
-                                                AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
-                                                AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
-                                                AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
-                                                AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
-                                                AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
-                                                AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
-                                                AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
-                                                AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
-                                                AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
-                                                AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
-                                                AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
-                                                AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
-                                                AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
-                                                AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
-                                                AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
-
-
-                                                metaapp->setStatusText("Info", "Preload application data from file ...");
-
-                                                *name = "StorageDelegateNamespace";
-                                                *value = "lbDynAppInternalFormat";
-                                                param->setUAPString(*&name, *&value);
-
-                                                reports->accept(*&fOp);
-                                                reportparams->accept(*&fOp);
-                                                reportelements->accept(*&fOp);
-                                                reportelementtypes->accept(*&fOp);
-                                                reporttextblocks->accept(*&fOp);
-
-                                                ApplicationFormulars->accept(*&fOp);
-                                                forms->accept(*&fOp);
-                                                formularfields->accept(*&fOp);
-                                                columntypes->accept(*&fOp);
-                                                formActions->accept(*&fOp);
-                                                formParams->accept(*&fOp);
-                                                appParams->accept(*&fOp);
-                                                appActions->accept(*&fOp);
-                                                appActionTypes->accept(*&fOp);
-                                                appActionSteps->accept(*&fOp);
-                                                appActionStepTransitions->accept(*&fOp);
-                                                appActionParameters->accept(*&fOp);
-                                                appActionStepParameters->accept(*&fOp);
-                                                fOp->end();
-                                        } else {
-                                                // FATAL: No system database and no file.
-                                                metaapp->msgBox("Fatal", "No system database has been setup and no previously created file is available.");
-                                                return ERR_NONE;
-                                        }
-#endif // USE_OLD_INITIALIZE
                                 }
 
                                 // If the applications database is not the system database, also connect to that database too.
-                                if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") != 0) {
+                                if (strcmp(appParams->getParameter("DBName", securityManager->getApplicationID()), "lbDMF") != 0) {
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
-                                        *DBName = appParams->getParameter("DBName", metaapp->getApplicationID());
-                                        *DBUser = appParams->getParameter("DBUser", metaapp->getApplicationID());
-                                        *DBPass = appParams->getParameter("DBPass", metaapp->getApplicationID());
+                                        *DBName = appParams->getParameter("DBName", securityManager->getApplicationID());
+                                        *DBUser = appParams->getParameter("DBUser", securityManager->getApplicationID());
+                                        *DBPass = appParams->getParameter("DBPass", securityManager->getApplicationID());
 
                                         if ((applicationdatabase != NULL) && (applicationdatabase->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
-                                                _LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
+                                                _LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << securityManager->getApplicationID() << ")" LOG_
                                                 // This can lock the application in Mac OS X
                                                 // Maybe due to the splash sscreen
                                                 if (DBName->charrep() == NULL) 
@@ -2557,7 +2461,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                 }
 
                                 // Pass the applications ODBC database name, but the system database!
-                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), systemdatabase.getPtr());
+                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", securityManager->getApplicationID()), systemdatabase.getPtr());
                                 DBOperation = true;
                         }
                 }
@@ -2567,30 +2471,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
         if (isFileAvailable || isDBAvailable) {
 /*...sLoad from file or database:16:*/
-/*...sInitialize plugin based document models:32:*/
-#ifdef USE_OLD_INITIALIZE
-                AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
-                AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
-                AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
-                AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
-                AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
-                AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
-                AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
-                AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
-                AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
-                AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
-                AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
-                AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
-                AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
-                AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
-                AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
-                AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, appActionStepTransitions, "'action step transitions'")
-                AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
-                AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
-#endif
-/*...e*/
-
-
                 // Only this part is how to load the data. So here I have to set the correct handler for the load delegation routine.
 
                 // Loading the application related data succeeded. Put these into a parameter object for reference.
@@ -2609,7 +2489,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                 *value = "lb_I_Streamable";
                 param->setUAPString(*&name, *&value);
 
-#ifndef USE_OLD_INITIALIZE
                 if (!DBOperation) {
                         _LOG << "Load application data from file ..." LOG_
                         metaapp->setStatusText("Info", "Load application data from file ...");
@@ -2624,57 +2503,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
                         loadDataFromActiveDocument();
                 }
-#endif
-#ifdef USE_OLD_INITIALIZE
-                if (!DBOperation &&
-                        (ApplicationFormulars != NULL) &&
-                        (reports != NULL) &&
-                        (reportparams != NULL) &&
-                        (reportelements != NULL) &&
-                        (reportelementtypes != NULL) &&
-                        (reporttextblocks != NULL) &&
-                        (forms != NULL) &&
-                        (formularfields != NULL) &&
-                        (formParams != NULL) &&
-                        (appActions != NULL) &&
-                        (appActionSteps != NULL) &&
-                        (appActionStepTransitions != NULL) &&
-                        (appActionParameters != NULL) &&
-                        (appActionStepParameters != NULL) &&
-                        (appActionTypes != NULL) &&
-                        (appParams != NULL)) {
-                        _LOG << "Load application data from file ..." LOG_
-                        metaapp->setStatusText("Info", "Load application data from file ...");
 
-                        *name = "StorageDelegateNamespace";
-                        *value = "lbDynAppInternalFormat";
-                        param->setUAPString(*&name, *&value);
-
-                        //accept(*&fOp);
-
-
-                        reports->accept(*&fOp);
-                        reportparams->accept(*&fOp);
-                        reportelements->accept(*&fOp);
-                        reportelementtypes->accept(*&fOp);
-                        reporttextblocks->accept(*&fOp);
-
-                        ApplicationFormulars->accept(*&fOp);
-                        forms->accept(*&fOp);
-                        formularfields->accept(*&fOp);
-                        columntypes->accept(*&fOp);
-                        formActions->accept(*&fOp);
-                        formParams->accept(*&fOp);
-                        appParams->accept(*&fOp);
-                        appActions->accept(*&fOp);
-                        appActionTypes->accept(*&fOp);
-                        appActionSteps->accept(*&fOp);
-                        appActionStepTransitions->accept(*&fOp);
-                        appActionParameters->accept(*&fOp);
-                        appActionStepParameters->accept(*&fOp);
-                }
-#endif
-#ifndef USE_OLD_INITIALIZE
                 if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation) {
                         _LOG << "Load application data from database ..." LOG_
                         metaapp->setStatusText("Info", "Load application data from database ...");
@@ -2690,163 +2519,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
                         loadDataFromActiveDocument();
                 }
-#endif
-#ifdef USE_OLD_INITIALIZE
-                if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation &&
-                        (ApplicationFormulars != NULL) &&
-                        (reports != NULL) &&
-                        (reportparams != NULL) &&
-                        (reportelements != NULL) &&
-                        (reportelementtypes != NULL) &&
-                        (reporttextblocks != NULL) &&
-                        (forms != NULL) &&
-                        (formularfields != NULL) &&
-                        (formParams != NULL) &&
-                        (appActions != NULL) &&
-                        (appActionSteps != NULL) &&
-                        (appActionStepTransitions != NULL) &&
-                        (appActionParameters != NULL) &&
-                        (appActionStepParameters != NULL) &&
-                        (appActionTypes != NULL) &&
-                        (appParams != NULL)) {
-                        _LOG << "Load application data from database ..." LOG_
-                        metaapp->setStatusText("Info", "Load application data from database ...");
 
-                        *name = "StorageDelegateNamespace";
-                        *value = "lbDynAppInternalFormat";
-                        param->setUAPString(*&name, *&value);
-
-                        //accept(*&fOpDB);
-
-
-                        reports->accept(*&fOpDB);
-                        reportparams->accept(*&fOpDB);
-                        reportelements->accept(*&fOpDB);
-                        reportelementtypes->accept(*&fOpDB);
-                        reporttextblocks->accept(*&fOpDB);
-
-                        ApplicationFormulars->accept(*&fOpDB);
-                        forms->accept(*&fOpDB);
-                        formularfields->accept(*&fOpDB);
-                        columntypes->accept(*&fOpDB);
-                        formActions->accept(*&fOpDB);
-                        formParams->accept(*&fOpDB);
-                        appParams->accept(*&fOpDB);
-                        appActions->accept(*&fOpDB);
-                        appActionTypes->accept(*&fOpDB);
-                        appActionSteps->accept(*&fOpDB);
-                        appActionStepTransitions->accept(*&fOpDB);
-                        appActionParameters->accept(*&fOpDB);
-                        appActionStepParameters->accept(*&fOpDB);
-                }
-#endif // USE_OLD_INITIALIZE
                 if (!DBOperation) fOp->end();
                 if (DBOperation) fOpDB->end();
 
-#ifdef USE_OLD_INITIALIZE
-                if ((forms != NULL) &&
-                        (ApplicationFormulars != NULL) &&
-                        (reports != NULL) &&
-                        (reportparams != NULL) &&
-                        (reportelements != NULL) &&
-                        (reportelementtypes != NULL) &&
-                        (reporttextblocks != NULL) &&
-                        (formularfields != NULL) &&
-                        (formParams != NULL) &&
-                        (appActions != NULL) &&
-                        (appActionSteps != NULL) &&
-                        (appActionStepTransitions != NULL) &&
-                        (appActionParameters != NULL) &&
-                        (appActionStepParameters != NULL) &&
-                        (appActionTypes != NULL) &&
-                        (appParams != NULL)) {
-
-                        UAP(lb_I_Unknown, uk)
-
-
-                        *name = "Reports";
-                        QI(reports, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "Reportparams";
-                        QI(reportparams, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "Reportelements";
-                        QI(reportelements, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "Reportelementtypes";
-                        QI(reportelementtypes, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "Reporttextblocks";
-                        QI(reporttextblocks, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-
-
-                        *name = "FormularApplications";
-                        QI(ApplicationFormulars, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "Formulars";
-                        QI(forms, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "FormularFields";
-                        QI(formularfields, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "ColumnTypes";
-                        QI(columntypes, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "FormActions";
-                        QI(formActions, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "FormParams";
-                        QI(formParams, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "AppParams";
-                        QI(appParams, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "AppActions";
-                        QI(appActions, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "AppAction_Steps";
-                        QI(appActionSteps, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-
-                        *name = "AppActionTypes";
-                        QI(appActionTypes, lb_I_Unknown, uk)
-                                document->insert(&uk, &key);
-                        
-                        *name = "appActionStepTransitions";
-                        QI(appActionStepTransitions, lb_I_Unknown, uk)
-                        document->insert(&uk, &key);
-                        
-                        *name = "appActionParameters";
-                        QI(appActionParameters, lb_I_Unknown, uk)
-                        document->insert(&uk, &key);
-                        
-                        *name = "appActionStepParameters";
-                        QI(appActionStepParameters, lb_I_Unknown, uk)
-                        document->insert(&uk, &key);
-                        
-                }
-
-                *name = "ApplicationData";
-                param->setUAPContainer(*&name, *&document);
-
-                param++;
-                metaapp->setActiveDocument(*&param);
-#endif
-                int id = metaapp->getApplicationID();
+                int id = securityManager->getApplicationID();
 
                 _LOG << "Test for application ID: " << id LOG_
 
@@ -3320,14 +2997,14 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
         lbErrCodes err = ERR_NONE;
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-        _LOG << "Load application formulars of '" << app << "' with ID = '" << meta->getApplicationID() << "' for user '" << user << "'." LOG_
+        _LOG << "Load application formulars of '" << app << "' with ID = '" << securityManager->getApplicationID() << "' for user '" << user << "'." LOG_
 
         if ((forms != NULL) && (ApplicationFormulars != NULL)) {
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppIDComp)
                 int unused;
                 bool toolbaradded = false;
-                AppID->setData(meta->getApplicationID());
+                AppID->setData(securityManager->getApplicationID());
 
                 _LOG << "Load the formulars by document ..." LOG_
 

@@ -119,6 +119,7 @@ TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
+	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -146,6 +147,10 @@ lbDynamicAppStorage: dummy
 	$(MAKE) -C $@
 
 lbDMFXslt: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+lbDMFSimpleSecurityProvider: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 

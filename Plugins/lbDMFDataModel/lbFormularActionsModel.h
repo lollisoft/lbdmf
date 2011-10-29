@@ -42,7 +42,7 @@ public:
 	void		LB_STDCALL setNextFormularAction();
 	void		LB_STDCALL finishFormularActionIteration();
 	
-	long		LB_STDCALL getFormularActionID();
+	long		LB_STDCALL getID();
 	long		LB_STDCALL getFormularActionFormularID();
 	long		LB_STDCALL getFormularActionActionID();
 
@@ -54,6 +54,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, FormularActions)
 	

@@ -86,6 +86,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
+	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -126,15 +127,15 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*); // { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer*) { _CL_LOG << "visit(lb_I_Transfer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_Data*) { _CL_LOG << "visit(lb_I_Transfer_Data*)" LOG_ }
@@ -162,41 +163,46 @@ public:
 	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
 /*...e*/
         
-        void LB_STDCALL visit(lb_I_Streamable* pm);
-        void LB_STDCALL visit(lb_I_Application*);
-        void LB_STDCALL visit(lb_I_MetaApplication*);
-        void LB_STDCALL visit(lb_I_UserAccounts*);
-        void LB_STDCALL visit(lb_I_Applications*);
-        void LB_STDCALL visit(lb_I_User_Applications*);
-        void LB_STDCALL visit(lb_I_Formulars*);
-        void LB_STDCALL visit(lb_I_Formular_Fields*);
-        void LB_STDCALL visit(lb_I_Column_Types*);
-        void LB_STDCALL visit(lb_I_ApplicationParameter*);
-        void LB_STDCALL visit(lb_I_FormularParameter*);
-        void LB_STDCALL visit(lb_I_Actions*);
-        void LB_STDCALL visit(lb_I_Formular_Actions*);
-        void LB_STDCALL visit(lb_I_Action_Types*);
-        void LB_STDCALL visit(lb_I_Action_Steps*);
-        void LB_STDCALL visit(lb_I_Translations*);
-        void LB_STDCALL visit(lb_I_FileLocation*);
-        void LB_STDCALL visit(lb_I_DirLocation*);
-        void LB_STDCALL visit(lb_I_DBColumns*);
-        void LB_STDCALL visit(lb_I_DBTables*);
-        void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
-        void LB_STDCALL visit(lb_I_DBForeignKeys*);
+	void LB_STDCALL visit(lb_I_Streamable* pm);
+	void LB_STDCALL visit(lb_I_Application*);
+	void LB_STDCALL visit(lb_I_MetaApplication*);
 
-        void LB_STDCALL visit(lb_I_DBReportTextblock*);
-        void LB_STDCALL visit(lb_I_DBReportProperties*);
+	void LB_STDCALL visit(lb_I_TableModule* tableModule);
 
-        void LB_STDCALL visit(lb_I_Reports*);
-        void LB_STDCALL visit(lb_I_ReportParameters*);
-        void LB_STDCALL visit(lb_I_ReportElements*);
-        void LB_STDCALL visit(lb_I_ReportElementTypes*);
-        void LB_STDCALL visit(lb_I_ReportTexts*);
-        void LB_STDCALL visit(lb_I_Applications_Formulars*);
-        void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
-        void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
-        void LB_STDCALL visit(lb_I_Action_Parameters*);
+#ifdef UNFLEXIBLE_TOBE_REMOVED
+	void LB_STDCALL visit(lb_I_UserAccounts*);
+	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
+	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
+	void LB_STDCALL visit(lb_I_Translations*);
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
+	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
+#endif
+
+	void LB_STDCALL visit(lb_I_FileLocation*);
+	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
+
 
         /** \brief Create a new pair.
          * If a current value exisits, the current value is stored with the current name in current node.
@@ -516,67 +522,6 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Integer* i) {
         *this << i->getData();
 }
 
-
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
-        int count;
-        
-        count = actionstepparameters->getActionStepParametersCount();
-        *oStream << count;
-
-        actionstepparameters->finishActionStepParameterIteration();
-        
-        while (actionstepparameters->hasMoreActionStepParameters()) {
-                actionstepparameters->setNextActionStepParameter();
-                
-                *oStream << actionstepparameters->getActionStepParameterID();
-                *oStream << actionstepparameters->getActionStepParameterActionID();
-                
-                *oStream << actionstepparameters->getActionStepParameterDescription();
-                *oStream << actionstepparameters->getActionStepParameterName();
-                *oStream << actionstepparameters->getActionStepParameterValue();
-                *oStream << actionstepparameters->getActionStepParameterInterface();
-        }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_Action_Parameters* actionparameters) {
-        int count;
-        
-        count = actionparameters->getActionParametersCount();
-        *oStream << count;
-        
-        actionparameters->finishActionParameterIteration();
-        
-        while (actionparameters->hasMoreActionParameters()) {
-                actionparameters->setNextActionParameter();
-                
-                *oStream << actionparameters->getActionParameterID();
-                *oStream << actionparameters->getActionParameterActionID();
-                
-                *oStream << actionparameters->getActionParameterDescription();
-                *oStream << actionparameters->getActionParameterName();
-                *oStream << actionparameters->getActionParameterValue();
-                *oStream << actionparameters->getActionParameterInterface();
-        }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
-        int count;
-
-        count = applicationformulars->getRelationCount();
-        *oStream << count;
-        
-        applicationformulars->finishRelationIteration();
-        
-        while (applicationformulars->hasMoreRelations()) {
-                applicationformulars->setNextRelation();
-                
-                *oStream << applicationformulars->getID();
-                *oStream << applicationformulars->getApplicationID();
-                *oStream << applicationformulars->getFormularID();
-        }
-}
-
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Parameter* params) {
     json_t* params_array = addArray((currentnode != NULL) ? currentnode : root, (char*)"lb_I_Parameter"); // Array with parameters, or recursive arrays
 	
@@ -688,7 +633,163 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Parameter* params) {
 #endif
 }
 
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBColumns* columns) {
+        int count;
 
+        count = columns->getColumnCount();
+        *oStream << count;
+        
+        columns->finishColumnIteration();
+        
+        while (columns->hasMoreColumns()) {
+                columns->setNextColumn();
+                
+                *oStream << columns->getColumnID();
+                *oStream << columns->getColumnName();
+                *oStream << columns->getColumnComment();
+                *oStream << columns->getColumnTyp();
+                *oStream << columns->getColumnLen();
+                *oStream << columns->getColumnPKTable();
+                *oStream << columns->getColumnPKField();
+                *oStream << columns->getColumnTableName();
+                (columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBTables* tables) {
+        int count;
+
+        count = tables->getTableCount();
+        *oStream << count;
+        
+        tables->finishTableIteration();
+        
+        while (tables->hasMoreTables()) {
+                tables->setNextTable();
+                
+                *oStream << tables->getTableID();
+                *oStream << tables->getTableCatalog();
+                *oStream << tables->getTableSchema();
+                *oStream << tables->getTableName();
+                *oStream << tables->getTableType();
+                *oStream << tables->getTableRemarks();
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
+        int count;
+
+        count = fkeys->getForeignKeyCount();
+        *oStream << count;
+        
+        fkeys->finishForeignKeyIteration();
+        
+        while (fkeys->hasMoreForeignKeys()) {
+                fkeys->setNextForeignKey();
+                
+                *oStream << fkeys->getForeignKeyID();
+                
+                *oStream << fkeys->getForeignKeyPKTableCatalog();
+                *oStream << fkeys->getForeignKeyPKTableSchema();
+                *oStream << fkeys->getForeignKeyPKTableName();
+                *oStream << fkeys->getForeignKeyPKTableColumnName();
+                
+                *oStream << fkeys->getForeignKeyFKTableCatalog();
+                *oStream << fkeys->getForeignKeyFKTableSchema();
+                *oStream << fkeys->getForeignKeyFKTableName();
+                *oStream << fkeys->getForeignKeyFKTableColumnName();
+                
+                *oStream << fkeys->getForeignKeyKeySequence();
+                *oStream << fkeys->getForeignKeyUpdateRule();
+                *oStream << fkeys->getForeignKeyDeleteRule();
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+        int count;
+
+        count = pkeys->getPrimaryKeyCount();
+        *oStream << count;
+        
+        pkeys->finishPrimaryKeyIteration();
+        
+        while (pkeys->hasMorePrimaryKeys()) {
+                pkeys->setNextPrimaryKey();
+                
+                *oStream << pkeys->getPrimaryKeyID();
+                *oStream << pkeys->getPrimaryKeyTableCatalog();
+                *oStream << pkeys->getPrimaryKeyTableSchema();
+                *oStream << pkeys->getPrimaryKeyTableName();
+                *oStream << pkeys->getPrimaryKeyColumnName();
+                *oStream << pkeys->getPrimaryKeySequence();
+                *oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_TableModule* tableModule) {
+	tableModule->setOperator(*&oStream);
+	tableModule->ExecuteOperation("WriteToJsonFile");
+}
+
+#ifdef UNFLEXIBLE_TOBE_REMOVED
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+        int count;
+        
+        count = actionstepparameters->getActionStepParametersCount();
+        *oStream << count;
+
+        actionstepparameters->finishActionStepParameterIteration();
+        
+        while (actionstepparameters->hasMoreActionStepParameters()) {
+                actionstepparameters->setNextActionStepParameter();
+                
+                *oStream << actionstepparameters->getActionStepParameterID();
+                *oStream << actionstepparameters->getActionStepParameterActionID();
+                
+                *oStream << actionstepparameters->getActionStepParameterDescription();
+                *oStream << actionstepparameters->getActionStepParameterName();
+                *oStream << actionstepparameters->getActionStepParameterValue();
+                *oStream << actionstepparameters->getActionStepParameterInterface();
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_Action_Parameters* actionparameters) {
+        int count;
+        
+        count = actionparameters->getActionParametersCount();
+        *oStream << count;
+        
+        actionparameters->finishActionParameterIteration();
+        
+        while (actionparameters->hasMoreActionParameters()) {
+                actionparameters->setNextActionParameter();
+                
+                *oStream << actionparameters->getActionParameterID();
+                *oStream << actionparameters->getActionParameterActionID();
+                
+                *oStream << actionparameters->getActionParameterDescription();
+                *oStream << actionparameters->getActionParameterName();
+                *oStream << actionparameters->getActionParameterValue();
+                *oStream << actionparameters->getActionParameterInterface();
+        }
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+        int count;
+
+        count = applicationformulars->getRelationCount();
+        *oStream << count;
+        
+        applicationformulars->finishRelationIteration();
+        
+        while (applicationformulars->hasMoreRelations()) {
+                applicationformulars->setNextRelation();
+                
+                *oStream << applicationformulars->getID();
+                *oStream << applicationformulars->getApplicationID();
+                *oStream << applicationformulars->getFormularID();
+        }
+}
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Action_Step_Transitions* transition) {
         int count;
@@ -827,99 +928,6 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_UserAccounts* users) {
         }
 }
 
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBColumns* columns) {
-        int count;
-
-        count = columns->getColumnCount();
-        *oStream << count;
-        
-        columns->finishColumnIteration();
-        
-        while (columns->hasMoreColumns()) {
-                columns->setNextColumn();
-                
-                *oStream << columns->getColumnID();
-                *oStream << columns->getColumnName();
-                *oStream << columns->getColumnComment();
-                *oStream << columns->getColumnTyp();
-                *oStream << columns->getColumnLen();
-                *oStream << columns->getColumnPKTable();
-                *oStream << columns->getColumnPKField();
-                *oStream << columns->getColumnTableName();
-                (columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
-        }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBTables* tables) {
-        int count;
-
-        count = tables->getTableCount();
-        *oStream << count;
-        
-        tables->finishTableIteration();
-        
-        while (tables->hasMoreTables()) {
-                tables->setNextTable();
-                
-                *oStream << tables->getTableID();
-                *oStream << tables->getTableCatalog();
-                *oStream << tables->getTableSchema();
-                *oStream << tables->getTableName();
-                *oStream << tables->getTableType();
-                *oStream << tables->getTableRemarks();
-        }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
-        int count;
-
-        count = fkeys->getForeignKeyCount();
-        *oStream << count;
-        
-        fkeys->finishForeignKeyIteration();
-        
-        while (fkeys->hasMoreForeignKeys()) {
-                fkeys->setNextForeignKey();
-                
-                *oStream << fkeys->getForeignKeyID();
-                
-                *oStream << fkeys->getForeignKeyPKTableCatalog();
-                *oStream << fkeys->getForeignKeyPKTableSchema();
-                *oStream << fkeys->getForeignKeyPKTableName();
-                *oStream << fkeys->getForeignKeyPKTableColumnName();
-                
-                *oStream << fkeys->getForeignKeyFKTableCatalog();
-                *oStream << fkeys->getForeignKeyFKTableSchema();
-                *oStream << fkeys->getForeignKeyFKTableName();
-                *oStream << fkeys->getForeignKeyFKTableColumnName();
-                
-                *oStream << fkeys->getForeignKeyKeySequence();
-                *oStream << fkeys->getForeignKeyUpdateRule();
-                *oStream << fkeys->getForeignKeyDeleteRule();
-        }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
-        int count;
-
-        count = pkeys->getPrimaryKeyCount();
-        *oStream << count;
-        
-        pkeys->finishPrimaryKeyIteration();
-        
-        while (pkeys->hasMorePrimaryKeys()) {
-                pkeys->setNextPrimaryKey();
-                
-                *oStream << pkeys->getPrimaryKeyID();
-                *oStream << pkeys->getPrimaryKeyTableCatalog();
-                *oStream << pkeys->getPrimaryKeyTableSchema();
-                *oStream << pkeys->getPrimaryKeyTableName();
-                *oStream << pkeys->getPrimaryKeyColumnName();
-                *oStream << pkeys->getPrimaryKeySequence();
-                *oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
-        }
-}
-
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Translations* trans) {
         int count;
 
@@ -1033,14 +1041,6 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_Formular_Actions* formular_action
                 *oStream << formular_actions->getFormularActionActionID();
                 *oStream << formular_actions->getFormularActionEvent();
         }
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_FileLocation* fileloc) {
-                *oStream << fileloc->charrep();
-}
-
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_DirLocation* fileloc) {
-                *oStream << fileloc->charrep();
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_ApplicationParameter* apps) {
@@ -1172,6 +1172,15 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_User_Applications* app) {
                 *oStream << app->getUserID();
                 *oStream << app->getApplicationID();
         }
+}
+#endif
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_FileLocation* fileloc) {
+                *oStream << fileloc->charrep();
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DirLocation* fileloc) {
+                *oStream << fileloc->charrep();
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_MetaApplication* app) {

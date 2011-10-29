@@ -83,6 +83,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
+	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -123,15 +124,15 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*); // { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer*) { _CL_LOG << "visit(lb_I_Transfer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_Data*) { _CL_LOG << "visit(lb_I_Transfer_Data*)" LOG_ }
@@ -163,6 +164,10 @@ public:
 	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
+	
+	void LB_STDCALL visit(lb_I_TableModule* tableModule);
+
+#ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
@@ -176,16 +181,8 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Types*);
 	void LB_STDCALL visit(lb_I_Action_Steps*);
 	void LB_STDCALL visit(lb_I_Translations*);
-	void LB_STDCALL visit(lb_I_FileLocation*);
-	void LB_STDCALL visit(lb_I_DirLocation*);
-	void LB_STDCALL visit(lb_I_DBColumns*);
-	void LB_STDCALL visit(lb_I_DBTables*);
-	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
-	void LB_STDCALL visit(lb_I_DBForeignKeys*);
-
 	void LB_STDCALL visit(lb_I_DBReportTextblock*);
 	void LB_STDCALL visit(lb_I_DBReportProperties*);
-
 	void LB_STDCALL visit(lb_I_Reports*);
 	void LB_STDCALL visit(lb_I_ReportParameters*);
 	void LB_STDCALL visit(lb_I_ReportElements*);
@@ -195,6 +192,14 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
 	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
 	void LB_STDCALL visit(lb_I_Action_Parameters*);
+#endif
+	
+	void LB_STDCALL visit(lb_I_FileLocation*);
+	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 	/** \brief Start save operation.
 	 *
@@ -305,6 +310,66 @@ void LB_STDCALL lbOutputStream::visit(lb_I_String* s) {
 	*oStream << s->charrep();
 }
 
+void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
+	int count;
+
+	count = params->Count();
+	*oStream << count;
+
+	UAP(lb_I_Container, container)
+	
+	container = params->getParameterList();
+	
+	if (count == 0) return;
+	
+	container->finishIteration();
+
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	
+	while (container->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = container->nextElement();
+		key = container->currentKey();
+		
+		*oStream << key->charrep();
+		*oStream << uk->getClassName();
+
+		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
+
+		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
+			p->setData(*&uk);
+			visit(*&p);
+		}
+		if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
+			f->setData(*&uk);
+			visit(*&f);
+		}
+		if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
+			s->setData(*&uk);
+			visit(*&s);
+		}
+		if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
+			l->setData(*&uk);
+			visit(*&l);
+		}
+		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
+			b ->setData(*&uk);
+			visit(*&b);
+		}
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_TableModule* tableModule) {
+	tableModule->setOperator(*&oStream);
+	tableModule->ExecuteOperation("WriteToFile");
+}
+
+#ifdef UNFLEXIBLE_TOBE_REMOVED
 void LB_STDCALL lbOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
 	int count;
 	
@@ -363,62 +428,6 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationfo
 		*oStream << applicationformulars->getFormularID();
 	}
 }
-
-void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
-	int count;
-
-	count = params->Count();
-	*oStream << count;
-
-	UAP(lb_I_Container, container)
-	
-	container = params->getParameterList();
-	
-	if (count == 0) return;
-	
-	container->finishIteration();
-
-	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
-	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
-	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
-	
-	while (container->hasMoreElements()) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_KeyBase, key)
-		uk = container->nextElement();
-		key = container->currentKey();
-		
-		*oStream << key->charrep();
-		*oStream << uk->getClassName();
-
-		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
-
-		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
-			p->setData(*&uk);
-			visit(*&p);
-		}
-		if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
-			f->setData(*&uk);
-			visit(*&f);
-		}
-		if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
-			s->setData(*&uk);
-			visit(*&s);
-		}
-		if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
-			l->setData(*&uk);
-			visit(*&l);
-		}
-		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
-			b ->setData(*&uk);
-			visit(*&b);
-		}
-	}
-}
-
-
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Action_Step_Transitions* transition) {
 	int count;
@@ -557,99 +566,6 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
-	int count;
-
-	count = columns->getColumnCount();
-	*oStream << count;
-	
-	columns->finishColumnIteration();
-	
-	while (columns->hasMoreColumns()) {
-		columns->setNextColumn();
-		
-		*oStream << columns->getColumnID();
-		*oStream << columns->getColumnName();
-		*oStream << columns->getColumnComment();
-		*oStream << columns->getColumnTyp();
-		*oStream << columns->getColumnLen();
-		*oStream << columns->getColumnPKTable();
-		*oStream << columns->getColumnPKField();
-		*oStream << columns->getColumnTableName();
-		(columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
-	}
-}
-
-void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
-	int count;
-
-	count = tables->getTableCount();
-	*oStream << count;
-	
-	tables->finishTableIteration();
-	
-	while (tables->hasMoreTables()) {
-		tables->setNextTable();
-		
-		*oStream << tables->getTableID();
-		*oStream << tables->getTableCatalog();
-		*oStream << tables->getTableSchema();
-		*oStream << tables->getTableName();
-		*oStream << tables->getTableType();
-		*oStream << tables->getTableRemarks();
-	}
-}
-
-void LB_STDCALL lbOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
-	int count;
-
-	count = fkeys->getForeignKeyCount();
-	*oStream << count;
-	
-	fkeys->finishForeignKeyIteration();
-	
-	while (fkeys->hasMoreForeignKeys()) {
-		fkeys->setNextForeignKey();
-		
-		*oStream << fkeys->getForeignKeyID();
-		
-		*oStream << fkeys->getForeignKeyPKTableCatalog();
-		*oStream << fkeys->getForeignKeyPKTableSchema();
-		*oStream << fkeys->getForeignKeyPKTableName();
-		*oStream << fkeys->getForeignKeyPKTableColumnName();
-		
-		*oStream << fkeys->getForeignKeyFKTableCatalog();
-		*oStream << fkeys->getForeignKeyFKTableSchema();
-		*oStream << fkeys->getForeignKeyFKTableName();
-		*oStream << fkeys->getForeignKeyFKTableColumnName();
-		
-		*oStream << fkeys->getForeignKeyKeySequence();
-		*oStream << fkeys->getForeignKeyUpdateRule();
-		*oStream << fkeys->getForeignKeyDeleteRule();
-	}
-}
-
-void LB_STDCALL lbOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
-	int count;
-
-	count = pkeys->getPrimaryKeyCount();
-	*oStream << count;
-	
-	pkeys->finishPrimaryKeyIteration();
-	
-	while (pkeys->hasMorePrimaryKeys()) {
-		pkeys->setNextPrimaryKey();
-		
-		*oStream << pkeys->getPrimaryKeyID();
-		*oStream << pkeys->getPrimaryKeyTableCatalog();
-		*oStream << pkeys->getPrimaryKeyTableSchema();
-		*oStream << pkeys->getPrimaryKeyTableName();
-		*oStream << pkeys->getPrimaryKeyColumnName();
-		*oStream << pkeys->getPrimaryKeySequence();
-		*oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
-	}
-}
-
 void LB_STDCALL lbOutputStream::visit(lb_I_Translations* trans) {
 	int count;
 
@@ -763,14 +679,6 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Actions* formular_actions) {
 		*oStream << formular_actions->getFormularActionActionID();
 		*oStream << formular_actions->getFormularActionEvent();
 	}
-}
-
-void LB_STDCALL lbOutputStream::visit(lb_I_FileLocation* fileloc) {
-		*oStream << fileloc->charrep();
-}
-
-void LB_STDCALL lbOutputStream::visit(lb_I_DirLocation* fileloc) {
-		*oStream << fileloc->charrep();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_ApplicationParameter* apps) {
@@ -902,6 +810,108 @@ void LB_STDCALL lbOutputStream::visit(lb_I_User_Applications* app) {
 		*oStream << app->getUserID();
 		*oStream << app->getApplicationID();
 	}
+}
+#endif
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
+	int count;
+
+	count = columns->getColumnCount();
+	*oStream << count;
+	
+	columns->finishColumnIteration();
+	
+	while (columns->hasMoreColumns()) {
+		columns->setNextColumn();
+		
+		*oStream << columns->getColumnID();
+		*oStream << columns->getColumnName();
+		*oStream << columns->getColumnComment();
+		*oStream << columns->getColumnTyp();
+		*oStream << columns->getColumnLen();
+		*oStream << columns->getColumnPKTable();
+		*oStream << columns->getColumnPKField();
+		*oStream << columns->getColumnTableName();
+		(columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
+	int count;
+
+	count = tables->getTableCount();
+	*oStream << count;
+	
+	tables->finishTableIteration();
+	
+	while (tables->hasMoreTables()) {
+		tables->setNextTable();
+		
+		*oStream << tables->getTableID();
+		*oStream << tables->getTableCatalog();
+		*oStream << tables->getTableSchema();
+		*oStream << tables->getTableName();
+		*oStream << tables->getTableType();
+		*oStream << tables->getTableRemarks();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	int count;
+
+	count = fkeys->getForeignKeyCount();
+	*oStream << count;
+	
+	fkeys->finishForeignKeyIteration();
+	
+	while (fkeys->hasMoreForeignKeys()) {
+		fkeys->setNextForeignKey();
+		
+		*oStream << fkeys->getForeignKeyID();
+		
+		*oStream << fkeys->getForeignKeyPKTableCatalog();
+		*oStream << fkeys->getForeignKeyPKTableSchema();
+		*oStream << fkeys->getForeignKeyPKTableName();
+		*oStream << fkeys->getForeignKeyPKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyFKTableCatalog();
+		*oStream << fkeys->getForeignKeyFKTableSchema();
+		*oStream << fkeys->getForeignKeyFKTableName();
+		*oStream << fkeys->getForeignKeyFKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyKeySequence();
+		*oStream << fkeys->getForeignKeyUpdateRule();
+		*oStream << fkeys->getForeignKeyDeleteRule();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	int count;
+
+	count = pkeys->getPrimaryKeyCount();
+	*oStream << count;
+	
+	pkeys->finishPrimaryKeyIteration();
+	
+	while (pkeys->hasMorePrimaryKeys()) {
+		pkeys->setNextPrimaryKey();
+		
+		*oStream << pkeys->getPrimaryKeyID();
+		*oStream << pkeys->getPrimaryKeyTableCatalog();
+		*oStream << pkeys->getPrimaryKeyTableSchema();
+		*oStream << pkeys->getPrimaryKeyTableName();
+		*oStream << pkeys->getPrimaryKeyColumnName();
+		*oStream << pkeys->getPrimaryKeySequence();
+		*oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_FileLocation* fileloc) {
+		*oStream << fileloc->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DirLocation* fileloc) {
+		*oStream << fileloc->charrep();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {

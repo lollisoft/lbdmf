@@ -46,7 +46,7 @@ public:
 	void	LB_STDCALL finishApplicationIteration();
 	
 	char*	LB_STDCALL getApplicationName();
-	long	LB_STDCALL getApplicationID();
+	long	LB_STDCALL getID();
 	char*	LB_STDCALL getApplicationTitle();
 	char*	LB_STDCALL getApplicationFunctor();
 	char*	LB_STDCALL getApplicationModule();
@@ -58,6 +58,9 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
+
+	void		LB_STDCALL setOperator(lb_I_Unknown* db);
+	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 	

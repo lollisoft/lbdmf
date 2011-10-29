@@ -61,6 +61,8 @@ extern "C" {
 #include <lbConfigHook.h>
 #endif
 
+#include <lbInterfaces-lbDMFManager.h>
+
 /*...e*/
 
 #ifdef WINDOWS

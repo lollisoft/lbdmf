@@ -49,6 +49,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbActionsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbActionsModel, lbActionsModel)
@@ -57,6 +58,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionsModel)
 	ADD_INTERFACE(lb_I_Actions)
 END_IMPLEMENT_LB_UNKNOWN()
 
+
+void		LB_STDCALL lbActionsModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbActionsModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbActionsModel::lbActionsModel() {
 	
@@ -89,7 +98,7 @@ void		LB_STDCALL lbActionsModel::deleteUnmarked() {
 		setNextAction();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -107,7 +116,7 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 		setNextAction();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -243,7 +252,7 @@ void  LB_STDCALL lbActionsModel::finishActionIteration() {
 	Actions->finishIteration();
 }
 
-long LB_STDCALL lbActionsModel::getActionID() {
+long LB_STDCALL lbActionsModel::getID() {
 	return currentActionID->getData();
 }
 

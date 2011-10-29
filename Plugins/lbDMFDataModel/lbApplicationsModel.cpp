@@ -49,6 +49,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbApplicationsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbApplications, lbApplications)
@@ -57,6 +58,14 @@ IMPLEMENT_FUNCTOR(instanceOflbApplications, lbApplications)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplications)
 	ADD_INTERFACE(lb_I_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
+
+void		LB_STDCALL lbApplications::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbApplications::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 /*...slbApplications\58\\58\lbApplications\40\\41\:0:*/
 lbApplications::lbApplications() {
@@ -92,7 +101,7 @@ void		LB_STDCALL lbApplications::deleteUnmarked() {
 		setNextApplication();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getApplicationID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -110,7 +119,7 @@ void		LB_STDCALL lbApplications::deleteMarked() {
 		setNextApplication();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getApplicationID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -290,8 +299,8 @@ char*	LB_STDCALL lbApplications::getApplicationName() {
 	return currentApplication->charrep();
 }
 /*...e*/
-/*...slong    LB_STDCALL lbApplications\58\\58\getApplicationID\40\\41\:0:*/
-long	LB_STDCALL lbApplications::getApplicationID() {
+/*...slong    LB_STDCALL lbApplications\58\\58\getID\40\\41\:0:*/
+long	LB_STDCALL lbApplications::getID() {
 	return currentApplicationUID->getData();
 }
 /*...e*/

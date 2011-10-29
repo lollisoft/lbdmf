@@ -93,6 +93,8 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...slbDetailFormAction:0:*/
@@ -225,8 +227,11 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 
 			if ((formParams != NULL) && (forms != NULL)) {
+				UAP(lb_I_SecurityProvider, securityManager)
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-				long AppID = meta->getApplicationID();
+				long AppID = securityManager->getApplicationID();
 
 				while (forms->hasMoreFormulars()) {
 					forms->setNextFormular();
@@ -235,7 +240,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
 						UAP(lb_I_DatabaseForm, form)
-						long FormularID = forms->getFormularID();
+						long FormularID = forms->getID();
 						*SQL = formParams->getParameter("query", FormularID);
 						forms->finishFormularIteration();
 						form = gui->createDBForm(formularname->charrep(),

@@ -92,6 +92,8 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {

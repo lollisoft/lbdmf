@@ -99,6 +99,7 @@ extern "C" {
 
 #include <repwrt.h>
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseReport.h>
 
 /*...sclass lbPluginModuleDatabaseReport:0:*/

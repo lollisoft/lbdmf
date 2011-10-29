@@ -30,6 +30,7 @@
 
 
 #include <lbConfigHook.h>
+#include <lbInterfaces-sub-security.h>
 
 /*...smisc and includes:0:*/
 #ifdef __GNUG__
@@ -187,7 +188,10 @@ public:
 
 		meta->setUserName(user);
 
-		apps = meta->getApplications();
+		UAP(lb_I_SecurityProvider, securityManager)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+		apps = securityManager->getApplications();
 
 		box->Clear();
 
@@ -375,26 +379,33 @@ DECLARE_LB_UNKNOWN()
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_SecurityProvider, securityManager)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
 
-			if (meta->login(user, pass)) {
-				appselect->setLoggedOnUser(user);
-				if (pass) free(pass);
-				if (user) free(user);
+		if (securityManager != NULL && securityManager->login(user, pass)) {
+			appselect->setLoggedOnUser(user);
+			if (pass) free(pass);
+			if (user) free(user);
 
-				return TRUE;
-			} else {
-				char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-				char* buf1 = strdup(_trans("Error"));
-				wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+			return TRUE;
+		} else {
+			char* buf = NULL;
+			char* buf1 = strdup(_trans("Error"));
 
-				dialog.ShowModal();
+			if (securityManager != NULL)
+				buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+			else
+				buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
 
-				free(buf);
-				free(buf1);
+			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
-				return FALSE;
-			}
+			dialog.ShowModal();
+			free(buf);
+			free(buf1);
+
+			return FALSE;
+		}
 	}
 /*...e*/
 /*...svoid init\40\wxWindow\42\ parent\41\:8:*/

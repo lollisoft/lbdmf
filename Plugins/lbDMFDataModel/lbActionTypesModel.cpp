@@ -49,6 +49,7 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbActionTypesModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbActionTypesModel, lbActionTypesModel)
@@ -57,6 +58,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionTypesModel)
 	ADD_INTERFACE(lb_I_Action_Types)
 END_IMPLEMENT_LB_UNKNOWN()
 
+
+void		LB_STDCALL lbActionTypesModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbActionTypesModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbActionTypesModel::lbActionTypesModel() {
 	
@@ -87,7 +96,7 @@ void		LB_STDCALL lbActionTypesModel::deleteUnmarked() {
 		setNextActionType();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionTypeID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -105,7 +114,7 @@ void		LB_STDCALL lbActionTypesModel::deleteMarked() {
 		setNextActionType();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getActionTypeID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -233,7 +242,7 @@ void  LB_STDCALL lbActionTypesModel::finishActionTypeIteration() {
 	ActionTypes->finishIteration();
 }
 
-long LB_STDCALL lbActionTypesModel::getActionTypeID() {
+long LB_STDCALL lbActionTypesModel::getID() {
 	return currentActionTypesID->getData();
 }
 
