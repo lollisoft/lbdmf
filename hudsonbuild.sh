@@ -4,7 +4,7 @@ echo all: BaseDevelopment > makefile
 echo \# >> makefile
 
 #echo Updating full source tree to be save
-#cvs update -d
+cvs update -d
 
 echo export DEVROOT=`pwd` >> makefile
 echo export prefix=`pwd` >> makefile
