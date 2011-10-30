@@ -54,9 +54,8 @@ int main()
         theInstance().unregisterTests();
 
 		PM->unload();
+		unHookAll();
 	}
-
-	unHookAll();
 
 	return result;
 }

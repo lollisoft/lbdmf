@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148 $
+# * $Revision: 1.149 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148 2011/10/15 06:36:12 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.149 2011/10/30 15:46:10 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.149  2011/10/30 15:46:10  lollisoft
+# * Some changes in unit tests.
+# *
 # * Revision 1.148  2011/10/15 06:36:12  lollisoft
 # * All current changes including interfaces (starting mass changes).
 # *
@@ -1187,7 +1190,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=no
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
