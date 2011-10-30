@@ -184,8 +184,6 @@ endif
 
 all_targets: $(ALLTARGETS)
 
-
-
 distclean:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d distclean || exit $? ; \
@@ -212,6 +210,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 endif
 
@@ -220,6 +219,7 @@ ifeq ($(OSTYPE), linux)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 endif
 
@@ -228,6 +228,7 @@ ifeq ($(OSTYPE), osx)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 endif
 
