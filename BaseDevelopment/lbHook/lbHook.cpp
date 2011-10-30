@@ -1331,15 +1331,12 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 				}
 				printf("Unload module %s with %d references.\n", name, delMod->libreferences);
 				while (dlclose(delMod->lib) == 0) {
-					//if (isVerbose())
-					printf("Unloaded module %s.\n", name);
-				}
-				{
-					printf("Error while unloading module: %s\n", dlerror());
-					if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
+					if (isVerbose())
+						printf("Unloaded module %s.\n", name);
 				}
 
 				free(delMod->name);
+				delMod->name = NULL;
 				delete delMod;
 			} else {
 				lastMod = temp;
