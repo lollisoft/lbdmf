@@ -40,7 +40,7 @@ CRUISECONTROL=
 export CRUISECONTROL
 make install
 cd ..
-LD_LIBRARY_PATH=$(pwd)/lib:$(LD_LIBRARY_PATH)
+LD_LIBRARY_PATH=$(pwd)/lib
 export LD_LIBRARY_PATH
 PLUGIN_DIR=$(pwd)/plugins
 export PLUGIN_DIR
