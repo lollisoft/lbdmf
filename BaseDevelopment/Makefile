@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.230 $
+# * $Revision: 1.231 $
 # * $Name:  $
-# * $Id: Makefile,v 1.230 2011/10/30 08:40:59 lollisoft Exp $
+# * $Id: Makefile,v 1.231 2011/10/30 10:16:19 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.231  2011/10/30 10:16:19  lollisoft
+# * Added ../UnitTests target to normal build.
+# *
 # * Revision 1.230  2011/10/30 08:40:59  lollisoft
 # * Added building unit tests in CRUISECONTROL mode.
 # *
@@ -900,6 +903,7 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
+	../UnitTests \
 	../AppDevelopment
 endif
 
@@ -1478,9 +1482,9 @@ ifndef RPMBUILD
 
 install:
 	for sub_target in $(ALLDIRS); do \
-		$(MAKE) -C $$sub_target install; \
+		-$(MAKE) -C $$sub_target install; \
 	done
-	$(MAKE) -C ../AppDevelopment install
+	-$(MAKE) -C ../AppDevelopment install
 
 
 install-strip:
