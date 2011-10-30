@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229 $
+# * $Revision: 1.230 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229 2011/10/15 06:36:11 lollisoft Exp $
+# * $Id: Makefile,v 1.230 2011/10/30 08:40:59 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.230  2011/10/30 08:40:59  lollisoft
+# * Added building unit tests in CRUISECONTROL mode.
+# *
 # * Revision 1.229  2011/10/15 06:36:11  lollisoft
 # * All current changes including interfaces (starting mass changes).
 # *
@@ -905,6 +908,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
+	../UnitTests \
 	../RegressionTests
 endif
 
