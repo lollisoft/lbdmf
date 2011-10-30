@@ -36,7 +36,7 @@ CRUISECONTROL=yes
 export CRUISECONTROL
 make
 cd BaseDevelopment
-CRUISECONTROL=no
+CRUISECONTROL=
 export CRUISECONTROL
 make install
 cd ..
