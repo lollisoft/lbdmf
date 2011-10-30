@@ -35,3 +35,6 @@ echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> makefile
 CRUISECONTROL=yes
 export CRUISECONTROL
 make
+make install
+%(pwd)/bin/lbDMFUnitTests
+
