@@ -24,8 +24,8 @@ public:
 	TEST_FIXTURE( TestActions )
 	{
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
 		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
 		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
