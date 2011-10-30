@@ -40,5 +40,9 @@ CRUISECONTROL=
 export CRUISECONTROL
 make install
 cd ..
+LD_LIBRARY_PATH=$(pwd)/lib:$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH
+PLUGIN_DIR=$(pwd)/plugins
+export PLUGIN_DIR
 $(pwd)/bin/lbDMFUnitTests
 
