@@ -340,6 +340,8 @@ lbErrCodes LB_STDCALL lbDMFSSP::save() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
 	UAP(lb_I_Plugin, pl1)
 	UAP(lb_I_Unknown, ukPl1)
 	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
@@ -355,7 +357,7 @@ lbErrCodes LB_STDCALL lbDMFSSP::save() {
 
 #ifdef OSX
 	lb_I_GUI* g = NULL;
-	getGUI(&g);
+	meta->getGUI(&g);
 	if (g) {
 		if (!fOp1->begin("./wxWrapper.app/Contents/Resources/SimpleSecurity.sec")) {
 			// Fallback
@@ -447,6 +449,8 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
 
@@ -461,7 +465,7 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 
 #ifdef OSX
 			lb_I_GUI* g = NULL;
-			getGUI(&g);
+			meta->getGUI(&g);
 			if (g) {
 				if (!fOp->begin("./wxWrapper.app/Contents/Resources/SimpleSecurity.sec")) {
 					// Fallback
