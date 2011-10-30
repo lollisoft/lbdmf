@@ -376,7 +376,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	// Mark that data sets, that are related to this application
 	UAP(lb_I_SecurityProvider, securityManager)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	UAP(lb_I_Unknown, apps)
 	apps = securityManager->getApplicationModel();
 	QI(apps, lb_I_Applications, applications)

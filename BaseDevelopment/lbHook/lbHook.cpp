@@ -1122,6 +1122,16 @@ DLLEXPORT char* LB_CDECL translateText(const char* text) {
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
 
+		if (locale == NULL) {
+			if (translated != NULL)
+			{
+				free(translated);
+				translated = NULL;
+			}
+			if (translated == NULL) translated = (char*) strdup(text);
+			return translated;
+		}
+		
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)

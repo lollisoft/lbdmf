@@ -261,7 +261,7 @@ protected:
 /*...sctors\47\dtors:0:*/
 lbDynamicApplication::lbDynamicApplication() {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 
         gui = NULL;
 

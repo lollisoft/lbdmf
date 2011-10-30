@@ -360,7 +360,7 @@ int main(int argc, char *argv[]) {
 		// Need to issue some events to simulate user actions
 
 		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 		securityManager->login("user", "TestUser");
 
 		UAP(lb_I_Container, applications)

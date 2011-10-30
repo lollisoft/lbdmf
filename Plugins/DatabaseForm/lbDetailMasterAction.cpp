@@ -223,7 +223,7 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 			if ((formParams != NULL) && (forms != NULL)) {
 				UAP(lb_I_SecurityProvider, securityManager)
 				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 				long AppID = securityManager->getApplicationID();
 

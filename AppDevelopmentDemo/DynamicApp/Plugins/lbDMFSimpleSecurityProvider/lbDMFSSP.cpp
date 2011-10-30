@@ -67,7 +67,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDMFSSP::lbDMFSSP() {
-	_CL_LOG << "lbDMFSSP::lbDMFSSP() called." LOG_
+	_LOG << "lbDMFSSP::lbDMFSSP() called." LOG_
 	_logged_in = false;
 	_loading_object_data = false;
 	_force_use_database = false;

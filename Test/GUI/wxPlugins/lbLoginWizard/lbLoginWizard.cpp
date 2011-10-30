@@ -190,7 +190,7 @@ public:
 
 		UAP(lb_I_SecurityProvider, securityManager)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 		apps = securityManager->getApplications();
 
 		box->Clear();
@@ -381,7 +381,7 @@ DECLARE_LB_UNKNOWN()
 
 		UAP(lb_I_SecurityProvider, securityManager)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 
 		if (securityManager != NULL && securityManager->login(user, pass)) {
 			appselect->setLoggedOnUser(user);

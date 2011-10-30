@@ -158,7 +158,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
 	UAP(lb_I_SecurityProvider, securityManager)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, "Default", securityManager, "No security provider found.")
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	ID->setData(securityManager->getApplicationID());
 	
 	forms->finishFormularIteration();
