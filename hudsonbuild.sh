@@ -38,7 +38,7 @@ make
 cd BaseDevelopment
 CRUISECONTROL=
 export CRUISECONTROL
-make install
+make -e prefix=$(prefix) install
 cd ..
 LD_LIBRARY_PATH=$(pwd)/lib
 export LD_LIBRARY_PATH
