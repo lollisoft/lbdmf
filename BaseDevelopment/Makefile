@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.232 $
+# * $Revision: 1.233 $
 # * $Name:  $
-# * $Id: Makefile,v 1.232 2011/10/30 11:08:37 lollisoft Exp $
+# * $Id: Makefile,v 1.233 2011/10/30 17:13:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.233  2011/10/30 17:13:47  lollisoft
+# * Missed passing prefix in install target.
+# *
 # * Revision 1.232  2011/10/30 11:08:37  lollisoft
 # * Removed the -.
 # *
@@ -1485,7 +1488,7 @@ ifndef RPMBUILD
 
 install:
 	for sub_target in $(ALLDIRS); do \
-		$(MAKE) -C $$sub_target install; \
+		$(MAKE) -C $$sub_target -e prefix=$(prefix) install; \
 	done
 	$(MAKE) -C ../AppDevelopment install
 
