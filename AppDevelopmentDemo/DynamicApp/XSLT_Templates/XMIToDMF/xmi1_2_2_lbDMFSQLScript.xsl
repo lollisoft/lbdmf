@@ -198,11 +198,15 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='summary'">
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'summary_view', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 </xsl:if>
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header'">
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_view', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 </xsl:if>
 
 
@@ -286,11 +290,15 @@ insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of sele
 </UML:StructuralFeature.type>
 -->
 
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype[@name='summary']">
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'summary_view');
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 </xsl:if>
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype[@name='header']">
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_view');
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 </xsl:if>
 
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
