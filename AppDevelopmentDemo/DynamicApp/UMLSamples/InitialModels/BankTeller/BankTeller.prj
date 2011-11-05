@@ -1,6 +1,6 @@
 format 73
 "BankTeller"
-  revision 1
+  revision 5
   modified_by 2 "lothar"
 
 
@@ -36,5 +36,10 @@ format 73
 
   mark_for_import
   
+  ncouples 4
+  key "gxmi path" value "Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/BankTeller.xmi"
+  key "gxmi gen views" value "no"
+  key "gxmi encoding" value "ISO-8859-1"
+  key "gxmi taggedvalue" value "0"
   package_ref 128002 // BankTeller
 end

@@ -1,6 +1,6 @@
 format 73
 "BankTeller" // BankTeller
-  revision 1
+  revision 5
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -61,6 +61,7 @@ ${inlines}
       
       attribute 128002 "FirstName"
 	private explicit_type "string"
+	stereotype "header_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -71,6 +72,7 @@ ${inlines}
 
       attribute 128130 "LastName"
 	private explicit_type "string"
+	stereotype "header_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -81,6 +83,7 @@ ${inlines}
 
       attribute 128258 "Address1"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -91,6 +94,7 @@ ${inlines}
 
       attribute 128386 "Address2"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -101,6 +105,7 @@ ${inlines}
 
       attribute 128514 "City"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -111,6 +116,7 @@ ${inlines}
 
       attribute 128642 "State"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -121,6 +127,7 @@ ${inlines}
 
       attribute 128770 "ZipCode"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -131,6 +138,7 @@ ${inlines}
 
       attribute 128898 "EmailAddress"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -141,6 +149,7 @@ ${inlines}
 
       attribute 129026 "Phone1"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -151,6 +160,7 @@ ${inlines}
 
       attribute 129154 "Phone2"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -161,6 +171,7 @@ ${inlines}
 
       attribute 129282 "Comments"
 	private explicit_type "string"
+	stereotype "detail_group"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -183,7 +194,7 @@ ${inlines}
       explicit_switch_type ""
       
       attribute 129410 "accountNumber"
-	private explicit_type "long"
+	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -203,7 +214,7 @@ ${inlines}
       end
 
       attribute 129666 "currentBalance"
-	private explicit_type "decimal"
+	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
