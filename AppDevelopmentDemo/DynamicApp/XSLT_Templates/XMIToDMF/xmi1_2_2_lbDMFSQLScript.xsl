@@ -198,6 +198,14 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='summary'">
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'summary_view', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header'">
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_view', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+
+
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
 <xsl:if test="$datatype='image'">
@@ -277,6 +285,13 @@ insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of sele
 	<UML:DataType xmi.idref="BOUML_datatype_1"/>
 </UML:StructuralFeature.type>
 -->
+
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype[@name='summary']">
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'summary_view');
+</xsl:if>
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype[@name='header']">
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_view');
+</xsl:if>
 
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
