@@ -983,6 +983,17 @@ PRIMARY KEY (id),
 	// Base interface for visitors
 	class lb_I_Aspect;
 
+	// The data model of the main application is currently not extensible without modifying all the visitor implementations. This is a pain.
+	// To enable this I have refactored the code so that the data model could be much simpler extended without touching existing code. Also
+	// now I found a candidate to enable extension without recompilation of the existing code by applying the extension object pattern.
+	// To further simplifying the code change I like to do the following:
+	//
+	// Pass the namespace for each visitor plugin into the plugin instance itself. This allows for a mapping between the plugin (classname) and the
+	// namespace to forward to the extension lookup mechanism to find a counterpart for sample for the XML writer visitor implementation.
+
+	class lb_I_ExtensibleObject; // Marker interface to identify an extensible object
+	class lb_I_ExtensionObject; // Marker interface for the extension object
+	
 	class lb_I_SecurityProvider;
 	class lb_I_VisitableHelper;
 	class lb_I_Streamable;
@@ -2698,6 +2709,97 @@ class lb_I_VisitableHelper : public lb_I_Unknown {
 	
 };
 
+class lb_I_ExtensibleObject : public lb_I_Unknown {
+public:
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* name) = 0;
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* name) = 0;
+	
+	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* name, lb_I_ExtensionObject* extension) = 0;
+	virtual lbErrCodes		LB_STDCALL addExtension(const char* name, lb_I_ExtensionObject* extension) = 0;
+};
+
+#define DECLARE_EXTENSIBLEOBJECT() \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* name); \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* name); \
+\
+	lbErrCodes		LB_STDCALL addExtension(lb_I_String* name, lb_I_ExtensionObject* extension); \
+	lbErrCodes		LB_STDCALL addExtension(const char* name, lb_I_ExtensionObject* extension); \
+\
+	UAP(lb_I_Container, preAddedExtensions)
+	
+
+#define IMPLEMENT_EXTENSIBLEOBJECT(classname) \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(lb_I_String* name) { \
+	UAP(lb_I_ExtensionObject, exObject) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
+	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
+	*ns = name->charrep(); \
+	*ns += getClassName(); \
+	QI(ns, lb_I_KeyBase, nsKey) \
+	if (preAddedExtensions == NULL) { \
+		REQUEST(getModuleInstance(), lb_I_Container, preAddedExtensions) \
+		preAddedExtensions->setCloning(false); \
+	} \
+	if (preAddedExtensions->exists(&nsKey)) { \
+		UAP(lb_I_Unknown, ukEx) \
+		ukEx = preAddedExtensions->getElement(&nsKey); \
+		QI(ukEx, lb_I_ExtensionObject, exObject) \
+		if (exObject == NULL) return NULL; \
+		exObject++; \
+		return *&exObject; \
+	} \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, errMsg) \
+	*errMsg = "Failed to lookup matching object extension by combined namespace"; \
+	*errMsg += ns->charrep(); \
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, ns->charrep(), exObject, errMsg) \
+	if (exObject == NULL) return NULL; \
+	preAddedExtensions->insert(&ukexObject, &nsKey); \
+	exObject++; \
+	return *&exObject; \
+} \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(const char* name) { \
+	UAP(lb_I_ExtensionObject, exObject) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
+	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
+	*ns = name; \
+	*ns += getClassName(); \
+	QI(ns, lb_I_KeyBase, nsKey) \
+	if (preAddedExtensions == NULL) { \
+		REQUEST(getModuleInstance(), lb_I_Container, preAddedExtensions) \
+		preAddedExtensions->setCloning(false); \
+	} \
+	if (preAddedExtensions->exists(&nsKey)) { \
+		UAP(lb_I_Unknown, ukEx) \
+		ukEx = preAddedExtensions->getElement(&nsKey); \
+		QI(ukEx, lb_I_ExtensionObject, exObject) \
+		if (exObject == NULL) return NULL; \
+		exObject++; \
+		return *&exObject; \
+	} \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, errMsg) \
+	*errMsg = "Failed to lookup matching object extension by combined namespace"; \
+	*errMsg += ns->charrep(); \
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, ns->charrep(), exObject, errMsg) \
+	if (exObject == NULL) return NULL; \
+	preAddedExtensions->insert(&ukexObject, &nsKey); \
+	exObject++; \
+	return *&exObject; \
+} \
+lbErrCodes		LB_STDCALL classname::addExtension(lb_I_String* name, lb_I_ExtensionObject* extension) {\
+	_LOG << "Error: " << #classname << "::addExtension(() not yet implemented." LOG_ \
+	return ERR_NONE; \
+} \
+lbErrCodes		LB_STDCALL classname::addExtension(const char* name, lb_I_ExtensionObject* extension) { \
+	_LOG << "Error: " << #classname << "::addExtension(() not yet implemented." LOG_ \
+	return ERR_NONE; \
+}
+
+class lb_I_ExtensionObject : public lb_I_Unknown {
+	
+};
+
 /*...sclass lb_I_DispatchRequest:0:*/
 /**
  * \brief An attempt to create a request packet, that could be predefined.
@@ -4012,6 +4114,13 @@ public:
 	 * instance to be able to create new instances.
 	 */
 	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0;
+	
+	/** \brief Forward the namespace where the plugin resides in.
+	 * The namespace is required to enable forwarding the namespace as a context to be reused in further
+	 * plugin instanciations. Especially in the extensible object pattern I need this to find corresponding
+	 * extensions to the used visitor implementation.
+	 */
+	virtual void LB_STDCALL setNamespace(const char* _namespace) = 0;
 };
 /*...e*/
 

@@ -59,9 +59,9 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <lbDMFSSP.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbDMFSSP, lbDMFSSP)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbDMFSSP, lbDMFSSP)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDMFSSP)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDMFSSP)
 	ADD_INTERFACE(lb_I_SecurityProvider)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -72,6 +72,7 @@ lbDMFSSP::lbDMFSSP() {
 	_loading_object_data = false;
 	_force_use_database = false;
 	_loaded = false;
+	REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 }
 
 lbDMFSSP::~lbDMFSSP() {
@@ -84,7 +85,138 @@ lbErrCodes LB_STDCALL lbDMFSSP::setData(lb_I_Unknown*) {
 }
 
 bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
-	return false;
+	lbErrCodes err = ERR_NONE;
+
+	if (Users == NULL) {
+		if (load() != ERR_NONE) {
+			_LOG << "Error: Loading login data failed. Try store default." LOG_
+			if (save() != ERR_NONE) {
+				_LOG << "Error: Saving login data failed. Bail out." LOG_
+				return false;
+			}
+			
+			if (Users == NULL)
+			{
+				_LOG << "Error: Even after loading login data, the users list is not initialized. Bail out." LOG_
+				return false;
+			}
+		}
+	}
+	
+	if (Users->getUserCount() == 0) {
+		// Fallback to database use. This should be moved to a 'service', that would
+		// Read out the content's of the database. So the best would be using visitor
+		// pattern for this to do.
+
+		UAP(lb_I_Database, database)
+
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+		}
+
+		database->init();
+
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
+
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+
+		if (err != ERR_NONE) {
+			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
+			return FALSE;
+		}
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+
+		if (pl != NULL) {
+			ukPl = pl->getImplementation();
+
+			if (ukPl != NULL) {
+				UAP(lb_I_DatabaseOperation, fOp)
+				QI(ukPl, lb_I_DatabaseOperation, fOp)
+
+				if (!fOp->begin("lbDMF", database.getPtr())) {
+					return false;
+				}
+
+				Users->accept(*&fOp);
+
+				fOp->end();
+			} else {
+				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+			}
+		} else {
+			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+		}
+
+		// A first preload of the user accounts is ignored yet.
+		_CL_LOG << "Try selective database login check." LOG_
+
+
+		UAP(lb_I_Query, sampleQuery)
+
+		sampleQuery = database->getQuery("lbDMF", 0);
+
+		char* buffer = (char*) malloc(1000);
+		buffer[0] = 0;
+
+		sampleQuery->skipFKCollecting();
+		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
+               	user, pass);
+
+		_CL_VERBOSE << "Query for user " << user LOG_
+
+		if (sampleQuery->query(buffer) != ERR_NONE) {
+			sampleQuery->enableFKCollecting();
+			free(buffer);
+			return FALSE;
+		}
+
+		free(buffer);
+
+		sampleQuery->enableFKCollecting();
+
+		err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			_logged_in = true;
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		// We have got users from file
+
+		Users->finishUserIteration();
+		while (Users->hasMoreUsers()) {
+			Users->setNextUser();
+
+			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
+				_logged_in = true;
+				Users->finishUserIteration();
+				return true;
+			}
+		}
+
+		// There may be more users in the database, so try to fetch them and make one retry
+
+		return false;
+	}
 }
 
 lb_I_Unknown*	LB_STDCALL lbDMFSSP::getApplicationModel() {
@@ -112,6 +244,12 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
 
+	if (Applications == NULL) {
+		_LOGERROR << "Error: The list of applications has not been initialized. Bail out." LOG_
+		apps++;
+		return apps.getPtr();
+	}
+	
 	if (Applications->getApplicationCount() == 0) {
 		// Maybe no data collected in the file yet
 		// Fallback to manually read out the applications
@@ -124,7 +262,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-			_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+			_LOG << "lbDMFSSP::getApplications() Using plugin database backend for system database setup test..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, database)
@@ -140,7 +278,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 					UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 					AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-					_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+					_LOG << "lbDMFSSP::getApplications() Using plugin database backend for system database setup test..." LOG_
 				}
 				if (database == NULL) {
 					meta->msgBox("Error", "Getting application list failed. Even local database backend failed to load.");
@@ -149,11 +287,12 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 				}
 			}
 
-			_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
+			_LOG << "lbDMFSSP::getApplications() Using built in database backend for system database setup test..." LOG_
 		}
 
 		UAP(lb_I_Query, sampleQuery)
 		database->init();
+		_LOG << "lbDMFSSP::getApplications() Initialized the database..." LOG_
 
 		const char* lbDMFPasswd = getenv("lbDMFPasswd");
 		const char* lbDMFUser   = getenv("lbDMFUser");
@@ -191,6 +330,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 					return apps.getPtr();
 				}
 
+				_LOG << "lbDMFSSP::getApplications() Call accept methods for operaton (lb_I_DatabaseOperation)..." LOG_
 				Applications->accept(*&fOp);
 
 				Users->accept(*&fOp);
@@ -202,7 +342,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 				/// \todo Save on demand or at application end.
 				// => Save menu entry, or on property changes.
 				//save(); // Late save
-
+				Applications->finishApplicationIteration();
 				while (Applications->hasMoreApplications()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					UAP(lb_I_KeyBase, key)
@@ -215,6 +355,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 					QI(name, lb_I_KeyBase, key)
 					QI(name, lb_I_Unknown, ukName)
 
+					_LOG << "Found application in the database: " << name->charrep() LOG_
 					apps->insert(&ukName, &key);
 				}
 
@@ -456,6 +597,25 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 
+	UAP(lb_I_Plugin, pl2)
+	UAP(lb_I_Unknown, ukPl2)
+	pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+	ukPl2 = pl2->getImplementation();
+
+	UAP(lb_I_Plugin, pl3)
+	UAP(lb_I_Unknown, ukPl3)
+	pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+	ukPl3 = pl3->getImplementation();
+
+	UAP(lb_I_Plugin, pl4)
+	UAP(lb_I_Unknown, ukPl4)
+	pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
+	ukPl4 = pl4->getImplementation();
+
+	QI(ukPl2, lb_I_UserAccounts, Users)
+	QI(ukPl3, lb_I_Applications, Applications)
+	QI(ukPl4, lb_I_User_Applications, User_Applications)
+	
 	if (pl != NULL) {
 		ukPl = pl->getImplementation();
 
@@ -470,87 +630,24 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 				if (!fOp->begin("./wxWrapper.app/Contents/Resources/SimpleSecurity.sec")) {
 					// Fallback
 					if (!fOp->begin("SimpleSecurity.sec")) {
-						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+						_CL_LOG << "ERROR: Could not read default file for meta application!" LOG_
 
 						return ERR_FILE_READ;
 					}
 				}
 			} else if (!fOp->begin("SimpleSecurity.sec")) {
-				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+				_CL_LOG << "ERROR: Could not read default file for meta application!" LOG_
 
 				return ERR_FILE_READ;
 			}
 #endif
 #ifndef OSX
 			if (!fOp->begin("SimpleSecurity.sec")) {
-				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+				_LOGERROR << "ERROR: Could not read default file for meta application!" LOG_
 
 				return ERR_FILE_READ;
 			}
 #endif
-
-			// Read my data
-			//UAP(lb_I_Unknown, ukAcceptor)
-			//QI(this, lb_I_Unknown, ukAcceptor)
-			//ukAcceptor->accept(*&fOp);
-
-#ifdef IMPLEMENT_NEWSTUFF
-			/* Here it seems the best and earliest place to load interceptor configuration.
-			 * Before any user could login (except applications without login required), the
-			 * interceptors were setup. The interceptors may be registered before the intented
-			 * event handler will be registered and thus the interceptor must be stored until
-			 * it could be activated.
-			 *
-			 * A stored interceptor not only needs the name of the event to intercept, but also
-			 * the class and the pointer to the methods to be used for interception. Currently I
-			 * do not know  how to store the pointer to the method, as I assume it will change on
-			 * each application start.
-			 *
-			 * A plugin must register the interceptors of interest to activate the interception
-			 * functionality. The dispatcher should cancel all dispatching calls who have a registered
-			 * interceptor that is not fully loaded.
-			 */
-
-			//UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
-			//disp->accept(*&fOp);
-#endif
-
-			//_LOG << "Read property sets from metaapp file..." LOG_
-			//REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
-			//propertySets->accept(*&fOp);
-			//_LOG << "Done reading property sets. Having " << propertySets->Count() << " sets." LOG_
-
-
-			UAP(lb_I_Plugin, pl2)
-			UAP(lb_I_Unknown, ukPl2)
-			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
-			ukPl2 = pl2->getImplementation();
-
-			UAP(lb_I_Plugin, pl3)
-			UAP(lb_I_Unknown, ukPl3)
-			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
-			ukPl3 = pl3->getImplementation();
-
-			UAP(lb_I_Plugin, pl4)
-			UAP(lb_I_Unknown, ukPl4)
-			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
-			ukPl4 = pl4->getImplementation();
-
-/* Meta application could not know details of the application. Has it forms ?
-			UAP(lb_I_Plugin, pl5)
-			UAP(lb_I_Unknown, ukPl5)
-			pl5 = PM->getFirstMatchingPlugin("lb_I_Applications_Formulars", "Model");
-			ukPl5 = pl5->getImplementation();
-*/
-
-
-
-
-
-			QI(ukPl2, lb_I_UserAccounts, Users)
-			QI(ukPl3, lb_I_Applications, Applications)
-			QI(ukPl4, lb_I_User_Applications, User_Applications)
-//			QI(ukPl5, lb_I_Applications_Formulars, ApplicationFormulars)
 
 			// Database read will be forced by login.
 			if (!_force_use_database) {
@@ -602,6 +699,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -609,11 +708,11 @@ public:
 	UAP(lb_I_Unknown, ukSSP)
 };
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDMFSSP)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginDMFSSP)
         ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbPluginDMFSSP, lbPluginDMFSSP)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOflbPluginDMFSSP, lbPluginDMFSSP)
 
 /*...slbErrCodes LB_STDCALL lbPluginDMFSSP\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPluginDMFSSP::setData(lb_I_Unknown* uk) {
@@ -656,9 +755,9 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFSSP::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukSSP == NULL) {
-		lbDMFSSP* DMFXslt = new lbDMFSSP();
-		
-		QI(DMFXslt, lb_I_Unknown, ukSSP)
+		lb_I_Unknown* _ukSSP = NULL;
+		instanceOflbDMFSSP(&_ukSSP, getModuleInstance(), __FILE__, __LINE__);
+		QI(_ukSSP, lb_I_Unknown, ukSSP)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -671,13 +770,10 @@ lb_I_Unknown* LB_STDCALL lbPluginDMFSSP::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukSSP == NULL) {
-
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
-
-		lbDMFSSP* xslt = new lbDMFSSP();
-		
-
-		QI(xslt, lb_I_Unknown, ukSSP)
+		lb_I_Unknown* _ukSSP = NULL;
+		instanceOflbDMFSSP(&_ukSSP, getModuleInstance(), __FILE__, __LINE__);
+		QI(_ukSSP, lb_I_Unknown, ukSSP)
 	}
 
 	lb_I_Unknown* r = ukSSP.getPtr();

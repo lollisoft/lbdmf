@@ -36,7 +36,7 @@ class lb_I_ColumnBinding;
 class lb_I_MVC_View;
 
 // Table Module pattern may be the best here.
-class lb_I_TableModule : public lb_I_Unknown
+class lb_I_TableModule : public lb_I_ExtensibleObject
 {
 public:
 	virtual long		LB_STDCALL getID() = 0;

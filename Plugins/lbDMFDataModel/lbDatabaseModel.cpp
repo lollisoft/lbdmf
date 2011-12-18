@@ -57,6 +57,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBTableModel)
 	ADD_INTERFACE(lb_I_DBTables)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbDBTableModel)
+
 void		LB_STDCALL lbDBTableModel::setOperator(lb_I_Unknown* db) {
 
 }
@@ -298,6 +300,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -399,6 +403,8 @@ IMPLEMENT_FUNCTOR(instanceOflbDBColumnsModel, lbDBColumnsModel)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBColumnsModel)
 	ADD_INTERFACE(lb_I_DBColumns)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbDBColumnsModel)
 
 void		LB_STDCALL lbDBColumnsModel::setOperator(lb_I_Unknown* db) {
 
@@ -832,6 +838,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -933,6 +941,8 @@ IMPLEMENT_FUNCTOR(instanceOflbDBForeignKeysModel, lbDBForeignKeysModel)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBForeignKeysModel)
 	ADD_INTERFACE(lb_I_DBForeignKeys)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbDBForeignKeysModel)
 
 void		LB_STDCALL lbDBForeignKeysModel::setOperator(lb_I_Unknown* db) {
 
@@ -1276,6 +1286,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -1656,6 +1668,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

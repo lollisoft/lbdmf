@@ -59,11 +59,84 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplications)
 	ADD_INTERFACE(lb_I_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
 
-void		LB_STDCALL lbApplications::setOperator(lb_I_Unknown* db) {
+IMPLEMENT_EXTENSIBLEOBJECT(lbApplications)
 
+void		LB_STDCALL lbApplications::setOperator(lb_I_Unknown* db) {
+	QI(db, lb_I_Aspect, operation)
 }
 
 lbErrCodes	LB_STDCALL lbApplications::ExecuteOperation(const char* operationName) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	*name = operationName;
+
+	if (*name == "ReadFromDB")
+	{
+		_LOG << "lbApplications::ExecuteOperation('ReadFromDB'): Not yet implemented." LOG_
+		if (operation != NULL) {
+			UAP(lb_I_DatabaseOperation, dbop)
+			QI(operation, lb_I_DatabaseOperation, dbop)
+			
+			if (dbop != NULL) {
+				_LOG << "lbApplications::ExecuteOperation('ReadFromDB'): Have a database operation handle, so get the database backend from theire." LOG_
+				
+				UAP(lb_I_Database, db)
+				db = dbop->getDatabase();
+
+				if (db == NULL) {
+					_LOGERROR << "Error: Database operation did not have a database instance." LOG_
+					return ERR_NONE;
+				}
+				
+				lbErrCodes err = ERR_NONE;
+				UAP(lb_I_Query, q)
+
+				q = db->getQuery("lbDMF", 0);
+
+				q->skipFKCollecting();
+
+				if (q->query("select id, Name, Titel, ModuleName, Functor, Interface from Anwendungen") != ERR_NONE) {
+					_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+					return ERR_NONE;
+				}
+
+				err = q->first();
+
+				if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+					_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+				} else {
+					UAP(lb_I_Long, qID)
+					UAP(lb_I_String, qName)
+					UAP(lb_I_String, qTitel)
+					UAP(lb_I_String, qModuleName)
+					UAP(lb_I_String, qFunctor)
+					UAP(lb_I_String, qInterface)
+
+					qID = q->getAsLong(1);
+					qName = q->getAsString(2);
+					qTitel = q->getAsString(3);
+					qModuleName = q->getAsString(4);
+					qFunctor = q->getAsString(5);
+					qInterface = q->getAsString(6);
+					_LOG << "lbDatabaseInputStream::visit(lb_I_Applications) Adds an application: " << qName->charrep() LOG_
+					addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+
+					while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+						qID = q->getAsLong(1);
+						qName = q->getAsString(2);
+						qTitel = q->getAsString(3);
+						qModuleName = q->getAsString(4);
+						qFunctor = q->getAsString(5);
+						qInterface = q->getAsString(6);
+
+						_LOG << "lbDatabaseInputStream::visit(lb_I_Applications) Adds an application: " << qName->charrep() LOG_
+						addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+					}
+
+				}
+			}
+		}
+	}	
+
 	return ERR_NONE;
 }
 
@@ -343,6 +416,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+	
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -393,7 +468,6 @@ bool LB_STDCALL lbPluginApplications::run() {
 	return true;
 }
 
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginApplications\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginApplications::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
@@ -408,8 +482,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications::peekImplementation() {
 	
 	return ukApplications.getPtr();
 }
-/*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginApplications\58\\58\getImplementation\40\\41\:0:*/
+
 lb_I_Unknown* LB_STDCALL lbPluginApplications::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 
@@ -427,7 +500,7 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications::getImplementation() {
 	ukApplications.resetPtr();
 	return r;
 }
-/*...e*/
+
 void LB_STDCALL lbPluginApplications::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
@@ -436,6 +509,3 @@ void LB_STDCALL lbPluginApplications::releaseImplementation() {
                 ukApplications.resetPtr();
         }
 }
-/*...e*/
-/*...e*/
-

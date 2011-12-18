@@ -25,11 +25,16 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.149 $
+# * $Revision: 1.150 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.149 2011/10/30 15:46:10 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.150 2011/12/18 13:46:20 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.150  2011/12/18 13:46:20  lollisoft
+# * Implemented extensible object pattern to break up visitor pattern into one
+# * fixed object tree part and an extensible part that support plugins and
+# * code generation. Code compiles, but is not yet tested.
+# *
 # * Revision 1.149  2011/10/30 15:46:10  lollisoft
 # * Some changes in unit tests.
 # *
@@ -591,8 +596,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 

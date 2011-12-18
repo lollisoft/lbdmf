@@ -167,7 +167,7 @@ public:
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
-	void LB_STDCALL visit(lb_I_TableModule* tableModule);
+	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
@@ -250,9 +250,11 @@ public:
          */
         void LB_STDCALL end();
                 
-        lb_I_Stream* LB_STDCALL getStream();
+		void LB_STDCALL setContextNamespace(const char* _namespace);
+		lb_I_Stream* LB_STDCALL getStream();
         
         UAP(lb_I_OutputStream, oStream)
+		UAP(lb_I_String, contextNamespace)
                 
         /** \brief The root element.
          * This element stores all other elements, such as current node or currentarray.
@@ -336,6 +338,7 @@ lbJSONOutputStream::lbJSONOutputStream()
 #endif
         root = json_new_object(); // Create the root note
         currentnode = currentname = currentobject = currentvalue = NULL;
+	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
 }
 /*...e*/
 /*...slbJSONOutputStream\58\\58\\126\lbJSONOutputStream\40\\41\:0:*/
@@ -382,6 +385,9 @@ bool LB_STDCALL lbJSONOutputStream::begin(lb_I_Stream* stream) {
         return false;
 }
 
+void lbJSONOutputStream::setContextNamespace(const char* _namespace) {
+	*contextNamespace = _namespace;
+}
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Streamable* pm) {
         if (oStream != NULL) {
@@ -726,9 +732,19 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
         }
 }
 
-void LB_STDCALL lbJSONOutputStream::visit(lb_I_TableModule* tableModule) {
-	tableModule->setOperator(*&oStream);
-	tableModule->ExecuteOperation("WriteToJsonFile");
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
+	UAP(lb_I_ExtensionObject, extension) 
+	extension = tableModule->getExtension(*&contextNamespace);
+	
+	if (extension != NULL) {
+		UAP(lb_I_VisitorExtension, visitorExtension)
+		QI(extension, lb_I_VisitorExtension, visitorExtension)
+	
+		if (visitorExtension != NULL) {
+			visitorExtension->setOperator(this);
+			visitorExtension->execute();
+		}
+	}
 }
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
@@ -1330,6 +1346,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()

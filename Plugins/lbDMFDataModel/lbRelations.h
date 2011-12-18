@@ -59,6 +59,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 	
 	UAP(lb_I_Container, Relations)
 	
@@ -102,6 +103,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 	
 	UAP(lb_I_Container, Relations)
 	

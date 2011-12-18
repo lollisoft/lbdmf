@@ -34,6 +34,7 @@ public:
 	virtual ~lbTranslationsModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addTranslation(const char* text, const char* translated, const char* language, long _id = -1);
 	bool		LB_STDCALL selectTranslation(long _id);

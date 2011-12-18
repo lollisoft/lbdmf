@@ -165,7 +165,7 @@ public:
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 	
-	void LB_STDCALL visit(lb_I_TableModule* tableModule);
+	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
@@ -217,9 +217,11 @@ public:
 	 */
 	void LB_STDCALL end();
 		
+	void LB_STDCALL setContextNamespace(const char* _namespace);
 	lb_I_Stream* LB_STDCALL getStream();
 	
 	UAP(lb_I_OutputStream, oStream)
+	UAP(lb_I_String, contextNamespace)
 };
 
 
@@ -245,7 +247,7 @@ lbErrCodes LB_STDCALL lbOutputStream::setData(lb_I_Unknown* uk) {
 lbOutputStream::lbOutputStream() 
 {
 	_CL_LOG << "lbOutputStream::lbOutputStream() called." LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
 }
 /*...e*/
 /*...slbOutputStream\58\\58\\126\lbOutputStream\40\\41\:0:*/
@@ -290,6 +292,10 @@ bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
 	}
 	
 	return false;
+}
+
+void lbOutputStream::setContextNamespace(const char* _namespace) {
+	*contextNamespace = _namespace;
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Streamable* pm) {
@@ -364,9 +370,19 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_TableModule* tableModule) {
-	tableModule->setOperator(*&oStream);
-	tableModule->ExecuteOperation("WriteToFile");
+void LB_STDCALL lbOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
+	UAP(lb_I_ExtensionObject, extension) 
+	extension = tableModule->getExtension(*&contextNamespace);
+	
+	if (extension != NULL) {
+		UAP(lb_I_VisitorExtension, visitorExtension)
+		QI(extension, lb_I_VisitorExtension, visitorExtension)
+	
+		if (visitorExtension != NULL) {
+			visitorExtension->setOperator(this);
+			visitorExtension->execute();
+		}
+	}
 }
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
@@ -1052,6 +1068,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

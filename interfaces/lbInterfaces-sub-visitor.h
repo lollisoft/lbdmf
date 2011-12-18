@@ -41,6 +41,22 @@ public lb_I_Unknown
 { // abstract interface for visitors 
 public: 
 
+	/** \brief Set the context in a form of a namespace.
+	 * The context of the object means that an extension object of the given context should be used.
+	 * If a visitor is called with an extensible object, it cannot handle the operation as it is unknown
+	 * to the visitor. The context namespace the visitor is currently in should therefore taken to lookup
+	 * the proper extension object that will handle the operation.
+	 *
+	 * For that operation to succeed it requires a mapping from the object (operator) to the extension object
+	 * (operation) at runtime. Either the classname could be used or the interface the operator implements.
+	 * As the operator currently is not capable to tell about the main interface, the classname must be used.
+	 *
+	 * To easily lookup an extension object by the context, it should be combined with the classname to form a
+	 * new namespace that stands for the implementation of the specific extension object in question.
+	 */
+	virtual void setContextNamespace(const char* _namespace) = 0;
+
+
 // The lb_I_Streamable interface would possibly go impossible
 //virtual void LB_STDCALL visit(lb_I_Unknown*) { printf("Error: Catch all visitor called!\n"); }
 virtual void LB_STDCALL visit(lb_I_SecurityProvider*) = 0;
@@ -126,7 +142,7 @@ virtual void LB_STDCALL visit(lb_I_DBForeignKeys*) = 0;
 // Entities that are generated, are of dynamic nature. They need a delegated visitor.
 //#include <lbInterfaces-lbDMFManager-sub-visitor.h>
 
-virtual void LB_STDCALL visit(lb_I_TableModule*) = 0;
+virtual void LB_STDCALL visit(lb_I_ExtensibleObject*) = 0;
 
 virtual void LB_STDCALL visit(lb_I_BinaryData*) = 0;
 virtual void LB_STDCALL visit(lb_I_TestMethod*) = 0;
@@ -216,10 +232,20 @@ public:
          */
         virtual void LB_STDCALL end() = 0;
         
-        /** \brief Get access to stream.
+        /** \brief Get access to the database.
          *
          * This allows storage handling for private data.
          */
-        //virtual lb_I_Stream* LB_STDCALL getStream() = 0;
+        virtual lb_I_Database* LB_STDCALL getDatabase() = 0;
 };
 /*...e*/
+
+/** \brief Extension for the visitor.
+ * The visitor extension object is required to take responsibility to execute the operation in the context of the current viritor.
+ * That is for sample saving to a stream, the extension does this for the current extended object.
+ */
+class lb_I_VisitorExtension : public lb_I_ExtensionObject {
+public:
+	virtual void setOperator(lb_I_Aspect* operation) = 0;
+	virtual void execute() = 0;
+};

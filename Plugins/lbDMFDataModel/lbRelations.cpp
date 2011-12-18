@@ -59,6 +59,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbUserApplicationRelationModel)
 	ADD_INTERFACE(lb_I_User_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbUserApplicationRelationModel)
+
 void		LB_STDCALL lbUserApplicationRelationModel::setOperator(lb_I_Unknown* db) {
 
 }
@@ -284,6 +286,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -391,6 +395,8 @@ IMPLEMENT_FUNCTOR(instanceOflbApplicationFormularsRelationModel, lbApplicationFo
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplicationFormularsRelationModel)
 	ADD_INTERFACE(lb_I_Applications_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbApplicationFormularsRelationModel)
 
 void		LB_STDCALL lbApplicationFormularsRelationModel::setOperator(lb_I_Unknown* db) {
 
@@ -619,6 +625,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

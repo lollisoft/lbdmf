@@ -167,7 +167,7 @@ public:
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
-	void LB_STDCALL visit(lb_I_TableModule* tableModule);
+	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_Applications*);
@@ -206,10 +206,12 @@ public:
 	bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db);
 	void LB_STDCALL end();
 
-//	lb_I_Stream* LB_STDCALL getStream();
+	void LB_STDCALL setContextNamespace(const char* _namespace);
+	lb_I_Database* LB_STDCALL getDatabase();
 
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, ConnectionName)
+	UAP(lb_I_String, contextNamespace)
 };
 
 
@@ -235,7 +237,7 @@ lbErrCodes LB_STDCALL lbDatabaseInputStream::setData(lb_I_Unknown* uk) {
 lbDatabaseInputStream::lbDatabaseInputStream()
 {
 	_CL_VERBOSE << "lbDatabaseInputStream::lbDatabaseInputStream() called." LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
 }
 /*...e*/
 /*...slbDatabaseInputStream\58\\58\\126\lbDatabaseInputStream\40\\41\:0:*/
@@ -282,6 +284,15 @@ bool LB_STDCALL lbDatabaseInputStream::begin(const char* connectionname, lb_I_Da
 	return false;
 }
 
+lb_I_Database* LB_STDCALL lbDatabaseInputStream::getDatabase() {
+	db++;
+	return *&db;
+}
+
+void lbDatabaseInputStream::setContextNamespace(const char* _namespace) {
+	*contextNamespace = _namespace;
+}
+
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 	if (db != NULL) {
 		/*
@@ -297,16 +308,162 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 	}
 }
 
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_TableModule* tableModule) {
+// Visiting unknown nodes: https://www.re-motion.org/blogs/mix/2010/05/24/how-a-visitor-implementation-can-handle-unknown-nodes/
+// Other visitor patterns: http://objectmentor.com/resources/articles/visitor.pdf => Extension Object
+// http://www.brockmann-consult.de/beam-wiki/display/BEAM/Extension+Object+Pattern
+// http://www.lcs.syr.edu/faculty/fawcett/handouts/cse776/PatternPDFs/ExtensionObject.pdf
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule) {
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
 
-	tableModule->setOperator(*&db);
-	tableModule->ExecuteOperation("ReadFromDB");
+	UAP(lb_I_ExtensionObject, extension) 
+	extension = tableModule->getExtension(*&contextNamespace);
+	
+	if (extension != NULL) {
+		UAP(lb_I_VisitorExtension, visitorExtension)
+		QI(extension, lb_I_VisitorExtension, visitorExtension)
+	
+		if (visitorExtension != NULL) {
+			visitorExtension->setOperator(this);
+			visitorExtension->execute();
+		}
+	}
 }
+
 #ifdef UNFLEXIBLE_TOBE_REMOVED
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications* applications) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, Name, Titel, ModuleName, Functor, Interface from Anwendungen") != ERR_NONE) {
+		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qName)
+		UAP(lb_I_String, qTitel)
+		UAP(lb_I_String, qModuleName)
+		UAP(lb_I_String, qFunctor)
+		UAP(lb_I_String, qInterface)
+
+		qID = q->getAsLong(1);
+		qName = q->getAsString(2);
+		qTitel = q->getAsString(3);
+		qModuleName = q->getAsString(4);
+		qFunctor = q->getAsString(5);
+		qInterface = q->getAsString(6);
+		_LOG << "lbDatabaseInputStream::visit(lb_I_Applications) Adds an application: " << qName->charrep() LOG_
+		applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+
+		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qName = q->getAsString(2);
+			qTitel = q->getAsString(3);
+			qModuleName = q->getAsString(4);
+			qFunctor = q->getAsString(5);
+			qInterface = q->getAsString(6);
+
+			_LOG << "lbDatabaseInputStream::visit(lb_I_Applications) Adds an application: " << qName->charrep() LOG_
+			applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+		}
+
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applications) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, userid, anwendungenid from user_anwendungen") != ERR_NONE) {
+		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qUserID)
+		UAP(lb_I_Long, qAppID)
+
+		qID = q->getAsLong(1);
+		qUserID = q->getAsLong(2);
+		qAppID = q->getAsLong(3);
+
+		user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
+
+		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qUserID = q->getAsLong(2);
+			qAppID = q->getAsLong(3);
+
+			user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
+		}
+
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, userid, passwort from Users") != ERR_NONE) {
+		_LOG << "Error: Access to user table failed. Read user accounts would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No user accounts found. All accounts may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qUID)
+		UAP(lb_I_String, qPWD)
+
+		qID = q->getAsLong(1);
+		qUID = q->getAsString(2);
+		qPWD = q->getAsString(3);
+
+		users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qUID = q->getAsString(2);
+			qPWD = q->getAsString(3);
+
+			users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
+		}
+	}
+}
+
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) called" LOG_
@@ -664,50 +821,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportTextblock*) {
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportProperties*) {
 
-}
-
-
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
-	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_Query, q)
-
-	if (db == NULL) {
-		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
-		return;
-	}
-
-	q = db->getQuery("lbDMF", 0);
-
-	q->skipFKCollecting();
-
-	if (q->query("select id, userid, passwort from Users") != ERR_NONE) {
-		_LOG << "Error: Access to user table failed. Read user accounts would be skipped." LOG_
-		return;
-	}
-
-	err = q->first();
-
-	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
-		_LOG << "Error: No user accounts found. All accounts may be deleted accidantly." LOG_
-	} else {
-		UAP(lb_I_Long, qID)
-		UAP(lb_I_String, qUID)
-		UAP(lb_I_String, qPWD)
-
-		qID = q->getAsLong(1);
-		qUID = q->getAsString(2);
-		qPWD = q->getAsString(3);
-
-		users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
-
-		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
-			qID = q->getAsLong(1);
-			qUID = q->getAsString(2);
-			qPWD = q->getAsString(3);
-
-			users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
-		}
-	}
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
@@ -1731,92 +1844,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
 	}
 }
 
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications* applications) {
-	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_Query, q)
-
-	q = db->getQuery("lbDMF", 0);
-
-	q->skipFKCollecting();
-
-	if (q->query("select id, Name, Titel, ModuleName, Functor, Interface from Anwendungen") != ERR_NONE) {
-		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
-		return;
-	}
-
-	err = q->first();
-
-	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
-		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
-	} else {
-		UAP(lb_I_Long, qID)
-		UAP(lb_I_String, qName)
-		UAP(lb_I_String, qTitel)
-		UAP(lb_I_String, qModuleName)
-		UAP(lb_I_String, qFunctor)
-		UAP(lb_I_String, qInterface)
-
-		qID = q->getAsLong(1);
-		qName = q->getAsString(2);
-		qTitel = q->getAsString(3);
-		qModuleName = q->getAsString(4);
-		qFunctor = q->getAsString(5);
-		qInterface = q->getAsString(6);
-
-		applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
-
-		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
-			qID = q->getAsLong(1);
-			qName = q->getAsString(2);
-			qTitel = q->getAsString(3);
-			qModuleName = q->getAsString(4);
-			qFunctor = q->getAsString(5);
-			qInterface = q->getAsString(6);
-
-			applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
-		}
-
-	}
-}
-
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applications) {
-	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_Query, q)
-
-	q = db->getQuery("lbDMF", 0);
-
-	q->skipFKCollecting();
-
-	if (q->query("select id, userid, anwendungenid from user_anwendungen") != ERR_NONE) {
-		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
-		return;
-	}
-
-	err = q->first();
-
-	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
-		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
-	} else {
-		UAP(lb_I_Long, qID)
-		UAP(lb_I_Long, qUserID)
-		UAP(lb_I_Long, qAppID)
-
-		qID = q->getAsLong(1);
-		qUserID = q->getAsLong(2);
-		qAppID = q->getAsLong(3);
-
-		user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
-
-		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
-			qID = q->getAsLong(1);
-			qUserID = q->getAsLong(2);
-			qAppID = q->getAsLong(3);
-
-			user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
-		}
-
-	}
-}
 #endif
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_MetaApplication* app) {
@@ -2125,12 +2152,15 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseInputStream)
@@ -2151,7 +2181,12 @@ lbErrCodes LB_STDCALL lbPluginDatabaseInputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() {
 	_CL_VERBOSE << "lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() called.\n" LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "";
+}
+
+void LB_STDCALL lbPluginDatabaseInputStream::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
 }
 
 lbPluginDatabaseInputStream::~lbPluginDatabaseInputStream() {
@@ -2181,6 +2216,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -2199,7 +2235,8 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
-		
+
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 
 		QI(InputStream, lb_I_Unknown, impl)
 	}

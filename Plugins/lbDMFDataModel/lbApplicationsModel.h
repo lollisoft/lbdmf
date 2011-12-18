@@ -63,6 +63,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 	
 	UAP(lb_I_Container, Applications)
 	
@@ -73,6 +74,8 @@ public:
 	UAP(lb_I_String, currentInterface)
 
 	UAP(lb_I_Long, currentApplicationUID)
+	
+	UAP(lb_I_Aspect, operation)
 	
 	UAP(lb_I_Long, marked)	
 };

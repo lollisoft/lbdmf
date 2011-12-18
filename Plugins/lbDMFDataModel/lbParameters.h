@@ -60,7 +60,8 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
-
+	DECLARE_EXTENSIBLEOBJECT()
+	
 	UAP(lb_I_Container, Parameters)
 
 	UAP(lb_I_String, currentParameterName)
@@ -101,6 +102,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, ColumnTypes)
 
@@ -146,6 +148,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, Parameters)
 
@@ -189,6 +192,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, Parameters)
 
@@ -236,6 +240,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, Parameters)
 

@@ -49,6 +49,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportElementTypes)
 	ADD_INTERFACE(lb_I_ReportElementTypes)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbReportElementTypes)
+
 lbErrCodes lbReportElementTypes::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
@@ -56,6 +58,8 @@ lbErrCodes lbReportElementTypes::setData(lb_I_Unknown* uk) {
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportTexts)
 	ADD_INTERFACE(lb_I_ReportTexts)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbReportTexts)
 
 lbErrCodes lbReportTexts::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
@@ -65,6 +69,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportElements)
 	ADD_INTERFACE(lb_I_ReportElements)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbReportElements)
+
 lbErrCodes lbReportElements::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
@@ -73,6 +79,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportParameters)
 	ADD_INTERFACE(lb_I_ReportParameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbReportParameters)
+
 lbErrCodes lbReportParameters::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
@@ -80,6 +88,8 @@ lbErrCodes lbReportParameters::setData(lb_I_Unknown* uk) {
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReports)
 	ADD_INTERFACE(lb_I_Reports)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbReports)
 
 lbErrCodes lbReports::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
@@ -229,6 +239,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -477,6 +489,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -791,6 +805,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -1028,6 +1044,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -1279,6 +1297,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

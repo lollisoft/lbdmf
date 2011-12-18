@@ -34,6 +34,7 @@ public:
 	virtual ~lbFormularActionsModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addFormularAction(long formular, long action,  const char* event, long _id = -1);
 	bool		LB_STDCALL selectFormularAction(long _id);

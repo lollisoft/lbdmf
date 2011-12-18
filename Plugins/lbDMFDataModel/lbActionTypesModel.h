@@ -34,6 +34,7 @@ public:
 	virtual ~lbActionTypesModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1);
 	bool		LB_STDCALL selectActionType(long _id);

@@ -66,5 +66,5 @@ protected:
 	UAP(lb_I_MetaApplication, meta)
 };
 
-DECLARE_FUNCTOR(instanceOflbDMFSSP)
+DECLARE_SINGLETON_FUNCTOR(instanceOflbDMFSSP)
 

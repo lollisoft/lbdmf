@@ -59,6 +59,7 @@ public:
 	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, Tables)
 	UAP(lb_I_String, currentCatalog)
@@ -112,6 +113,7 @@ public:
 	void		LB_STDCALL lookupPage(int index);
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	// Contains pages of containers with each about 1000 elements maximum
 	UAP(lb_I_Container, ColumnsPages)
@@ -160,6 +162,7 @@ public:
 	virtual ~lbDBForeignKeysModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	/** \brief Add a foreign key information.
 	 * This function is based on ODBC 1.0 and therefore didn't support the last three columns returned by the SQLForeignKeys function.
@@ -224,6 +227,7 @@ public:
 	virtual ~lbDBPrimaryKeysModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
 													long key_seq, const char* column_name, long _id = -1);

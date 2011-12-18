@@ -57,6 +57,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularActionsModel)
 	ADD_INTERFACE(lb_I_Formular_Actions)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbFormularActionsModel)
+
 void		LB_STDCALL lbFormularActionsModel::setOperator(lb_I_Unknown* db) {
 
 }
@@ -274,6 +276,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

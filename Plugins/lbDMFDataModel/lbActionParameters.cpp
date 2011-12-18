@@ -50,6 +50,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionParameters)
 	ADD_INTERFACE(lb_I_Action_Parameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbActionParameters)
 
 void		LB_STDCALL lbActionParameters::setOperator(lb_I_Unknown* db) {
 
@@ -279,6 +280,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionStepParameters)
 ADD_INTERFACE(lb_I_ActionStep_Parameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbActionStepParameters)
 
 void		LB_STDCALL lbActionStepParameters::setOperator(lb_I_Unknown* db) {
 
@@ -519,6 +521,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -633,6 +637,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 
 	DECLARE_LB_UNKNOWN()

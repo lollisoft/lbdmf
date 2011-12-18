@@ -57,6 +57,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularsModel)
 	ADD_INTERFACE(lb_I_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbFormularsModel)
+
 void		LB_STDCALL lbFormularsModel::setOperator(lb_I_Unknown* db) {
 
 }
@@ -328,6 +330,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -429,6 +433,9 @@ IMPLEMENT_FUNCTOR(instanceOflbFormularFieldsModel, lbFormularFieldsModel)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularFieldsModel)
 	ADD_INTERFACE(lb_I_Formular_Fields)
 END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_EXTENSIBLEOBJECT(lbFormularFieldsModel)
+
 
 void		LB_STDCALL lbFormularFieldsModel::setOperator(lb_I_Unknown* db) {
 
@@ -728,6 +735,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

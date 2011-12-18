@@ -1,6 +1,6 @@
 format 73
 "BankTeller" // BankTeller
-  revision 6
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -208,8 +208,9 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      attribute 129410 "accountNumber"
-	private explicit_type "int"
+      attribute 129538 "accountType"
+	private explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -218,8 +219,9 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 129538 "accountType"
-	private explicit_type "string"
+      attribute 129410 "accountNumber"
+	private explicit_type "int"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""

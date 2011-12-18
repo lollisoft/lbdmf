@@ -441,6 +441,8 @@ public:
 	
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 	
 	UAP(lb_I_Unknown, ukCallActivity)
 };

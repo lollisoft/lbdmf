@@ -34,6 +34,7 @@ public:
 	virtual ~lbActionStepsModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1);
 	bool		LB_STDCALL selectActionStep(long _id);
@@ -77,6 +78,7 @@ public:
 	virtual ~lbActionStepTransitionsModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addTransition(const char* expression, long src_actionid, long dst_actionid, const char* description, long _id = -1);
 	bool		LB_STDCALL selectTransition(long _id);

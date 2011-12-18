@@ -34,6 +34,7 @@ public:
 	virtual ~lbActionsModel();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1);
 	bool		LB_STDCALL selectAction(long _id);

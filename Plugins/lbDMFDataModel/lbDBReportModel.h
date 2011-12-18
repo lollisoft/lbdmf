@@ -37,6 +37,7 @@ public:
 	virtual ~lbReports();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	virtual long		LB_STDCALL addReport(const char* name, const char* description, long _id = -1);
 
@@ -72,6 +73,7 @@ public:
 	virtual ~lbReportParameters();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	virtual long		LB_STDCALL addParameter(long reportid, const char* name, const char* value, long _id = -1);
 
@@ -109,6 +111,7 @@ public:
 	virtual ~lbReportElements();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addElement(long reportid, const char* name, long typ, long x, long y, long w, long h, const char* description, long _id = -1);
 
@@ -156,6 +159,7 @@ public:
 	virtual ~lbReportElementTypes();
 
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	virtual long		LB_STDCALL addElementType(const char* name, const char* description, long _id = -1);
 
@@ -191,6 +195,7 @@ public:
 	virtual ~lbReportTexts();
 	
 	DECLARE_LB_UNKNOWN()
+	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addText(long elementid, long line, const char* text, long _id = -1);
 

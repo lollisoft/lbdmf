@@ -32,11 +32,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91 $
+* $Revision: 1.92 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91 2011/10/16 10:01:46 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.92 2011/12/18 13:46:20 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.92  2011/12/18 13:46:20  lollisoft
+* Implemented extensible object pattern to break up visitor pattern into one
+* fixed object tree part and an extensible part that support plugins and
+* code generation. Code compiles, but is not yet tested.
+*
 * Revision 1.91  2011/10/16 10:01:46  lollisoft
 * Fixed a buffer overflow.
 *
@@ -2266,6 +2271,7 @@ lbErrCodes		LB_STDCALL lbPlugin::autorun() {
 			_LOG << "Error: Could not get interface lb_I_PluginImpl for implementation." LOG_
 			return ERR_NONE;
 		}
+		impl->setNamespace(_namespace);
 		return impl->autorun();
 	}
 	
@@ -2285,6 +2291,7 @@ void LB_STDCALL lbPlugin::initialize() {
 		QI(implementation, lb_I_PluginImpl, impl)
 		
 		_CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
+		impl->setNamespace(_namespace);
 		impl->initialize();
 	}
 	_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_
