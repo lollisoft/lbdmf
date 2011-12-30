@@ -2220,6 +2220,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
+				_LOG << "lbDatabaseLayerQuery::query() Error: Database operation was unsuccessful: " << currentdbLayer->GetErrorMessage().c_str() << ". Query was: " << q LOG_
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
