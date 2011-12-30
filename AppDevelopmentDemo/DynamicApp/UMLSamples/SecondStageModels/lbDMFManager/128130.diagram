@@ -31,9 +31,9 @@ relationcanvas 132226 relation_ref 128898 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 132610 relation_ref 160514 // <association>
-  from ref 132354 z 3006 stereotype "<<relationship>>" xyz 42.5 279.5 3000 to ref 128130
+  from ref 132354 z 3006 stereotype "<<relationship>>" xyz 42 279 3000 to ref 128130
   role_a_pos 114 222 3000 no_role_b
-  multiplicity_a_pos 87 222 3000 multiplicity_b_pos 85 322 3000
+  multiplicity_a_pos 85 222 3000 multiplicity_b_pos 87 322 3000
 end
 relationcanvas 132994 relation_ref 160386 // <dependency>
   from ref 132866 z 2007 to ref 132354
