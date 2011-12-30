@@ -782,24 +782,24 @@
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x27e82_0" client="BOUML_0x26a02_4" supplier="BOUML_0x26a82_4">
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC0_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC0_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC0_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC0_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC0_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC0_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC0_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC1_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC1_0x28882_11"/>
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC1_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC2_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC2_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC3_0x28882_11"/>
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC3_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC4_0x28882_11"/>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">
@@ -1452,13 +1452,13 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x27f82_0" visibility="protected" association="BOUML_ASSOC_0x27f02_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x26a82_4"/>
-							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f82_0" value="1"/>
-							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f82_0" value="1"/>
+							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f82_0" value="*"/>
+							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f82_0" value="*"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:relationship"/>
-								<taggedValue tag="lbDMF:relationship:order" value=""/>
-								<taggedValue tag="lbDMF:relationship:table" value=""/>
-								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
+								<taggedValue tag="lbDMF:relationship:order" value="-1"/>
+								<taggedValue tag="lbDMF:relationship:table" value="formulare"/>
+								<taggedValue tag="lbDMF:relationship:sourcecolumn" value="id"/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -1800,8 +1800,8 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="formularid" xmi:id="BOUML_0x27f02_0" visibility="protected" association="BOUML_ASSOC_0x27f02_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x20382_4"/>
-							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f02_0" value="*"/>
-							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f02_0" value="*"/>
+							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f02_0" value="1"/>
+							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f02_0" value="1"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:relationship"/>
 								<taggedValue tag="lbDMF:relationship:order" value=""/>
@@ -2310,7 +2310,7 @@
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20d02_0" order="-1" table="formulare" sourcecolumn="id" base_Element="BOUML_0x20d02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20e02_0" order="-1" table="formulare" sourcecolumn="id" base_Element="BOUML_0x20e02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20f82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x20f82_0"/>
-	<lbDMF:relationship xmi:id="BOUML_STELT_0x27f82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x27f82_0"/>
+	<lbDMF:relationship xmi:id="BOUML_STELT_0x27f82_0" order="-1" table="formulare" sourcecolumn="id" base_Element="BOUML_0x27f82_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20f02_0" order="-1" table="formulartypen" sourcecolumn="id" base_Element="BOUML_0x20f02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21082_0" order="-1" table="report_element_types" sourcecolumn="id" base_Element="BOUML_0x21082_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21002_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x21002_0"/>
