@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 38
+  revision 39
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -130,6 +130,18 @@ ${inlines}
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
+
+      classrelation 177410 // AktionsParameter (AktionsParameter)
+	relation 174210 ---> name "AktionsParameter"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "AktionsParameter" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 177410 // AktionsParameter (AktionsParameter)
+	  b parent class_ref 171778 // Action_Parameters
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
     end
 
     class 129282 "Action_Steps"
@@ -202,6 +214,18 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 177538 // ActionstepParameters (ActionstepParameters)
+	relation 174338 ---> name "ActionstepParameters"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "ActionstepParameters" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 177538 // ActionstepParameters (ActionstepParameters)
+	  b parent class_ref 171906 // ActionStep_Parameters
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "bezeichnung"
       end
     end
 
@@ -1791,6 +1815,132 @@ ${inlines}
       end
 
       attribute 176386 "module"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 171778 "Action_Parameters"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "antivirus.png"
+      classrelation 177154 // <dependency>
+	relation 173954 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 177154 // <dependency>
+	  b parent class_ref 129922 // action_parameters
+      end
+
+      attribute 183554 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183682 "value"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183810 "interface"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183938 "description"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 171906 "ActionStep_Parameters"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "ktip.png"
+      classrelation 177282 // <dependency>
+	relation 174082 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 177282 // <dependency>
+	  b parent class_ref 130050 // action_step_parameter
+      end
+
+      attribute 184066 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 184194 "value"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 184322 "interface"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 184450 "description"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
