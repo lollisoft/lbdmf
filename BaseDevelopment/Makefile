@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.233 $
+# * $Revision: 1.234 $
 # * $Name:  $
-# * $Id: Makefile,v 1.233 2011/10/30 17:13:47 lollisoft Exp $
+# * $Id: Makefile,v 1.234 2011/12/30 16:31:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.234  2011/12/30 16:31:11  lollisoft
+# * Added new target DBTool.
+# *
 # * Revision 1.233  2011/10/30 17:13:47  lollisoft
 # * Missed passing prefix in install target.
 # *
@@ -1355,6 +1358,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
+	../Test/Console/DBTool \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
@@ -1735,6 +1739,10 @@ endif
 
 ../Test/Console/XML: dummy
 	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/Console/DBTool: dummy
+	$(MAKE) -s -C $@ -e MODULE=DBTool -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy
