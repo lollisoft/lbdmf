@@ -566,11 +566,45 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
  
 
 </xsl:if>
-<!--
+
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
-ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
+<xsl:if test="./lowerValue/@value='1'">
+<xsl:if test="./upperValue/@value='1'">
+
+<xsl:variable name="PrimaryTableId" select="./type/@xmi:idref"/>
+
+<xsl:variable name="PrimaryTable" select="//packagedElement[@xmi:id=$PrimaryTableId]/@name"/>
+<xsl:variable name="PrimaryTableSourceColumn" select="//packagedElement[@xmi:id=$PrimaryTableId]/ownedAttribute/xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/>
+--ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="$PrimaryTable"/>_<xsl:value-of select="$PrimaryTableSourceColumn"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="$PrimaryTable"/>" ( "<xsl:value-of select="$PrimaryTableSourceColumn"/>" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="$PrimaryTable"/>_<xsl:value-of select="$PrimaryTableSourceColumn"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="$PrimaryTable"/>" ( "<xsl:value-of select="$PrimaryTableSourceColumn"/>" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins" BEFORE INSERT ON <xsl:value-of select="../@name"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="$PrimaryTableSourceColumn"/> FROM <xsl:value-of select="$PrimaryTable"/> WHERE <xsl:value-of select="$PrimaryTableSourceColumn"/> = new.<xsl:value-of select="@name"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd" BEFORE UPDATE ON <xsl:value-of select="../@name"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="$PrimaryTableSourceColumn"/> FROM <xsl:value-of select="$PrimaryTable"/> WHERE <xsl:value-of select="$PrimaryTableSourceColumn"/> = new.<xsl:value-of select="@name"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del" BEFORE DELETE ON <xsl:value-of select="$PrimaryTable"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT <xsl:value-of select="@name"/> FROM <xsl:value-of select="../@name"/> WHERE <xsl:value-of select="@name"/> = old.<xsl:value-of select="$PrimaryTableSourceColumn"/>) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key <xsl:value-of select="../@name"/>(<xsl:value-of select="@name"/>)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$PrimaryTable"/>', '<xsl:value-of select="$PrimaryTableSourceColumn"/>', '<xsl:value-of select="../@name"/>', '<xsl:value-of select="@name"/>');
+ 
 </xsl:if>
--->
+</xsl:if>
+</xsl:if>
+
 </xsl:for-each>
 </xsl:template>
 
