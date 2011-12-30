@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1">
-	<xmi:Documentation exporter="Bouml" exporterVersion="1.11"/>
+	<xmi:Documentation exporter="Bouml" exporterVersion="1.13"/>
 	<uml:Model xmi:type="uml:Model" xmi:id="themodel" name="lbDMFManager">
 		<profileApplication xmi:type="uml:ProfileApplication" xmi:id="BOUML_PRFA_0x1f582_22">
 			<appliedProfile xmi:idref="BOUML_0x1f582_22"/>
@@ -13,7 +13,7 @@
 				<taggedValue tag="gxmi primitive type" value="no"/>
 				<taggedValue tag="gxmi gen eclipse" value="no"/>
 				<taggedValue tag="gxmi use profile" value="no"/>
-				<taggedValue tag="gxmi path" value="/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF Manager.xmi"/>
+				<taggedValue tag="gxmi path" value="Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF Manager.xmi"/>
 				<taggedValue tag="gxmi vis prefix" value="no"/>
 				<taggedValue tag="gxmi linefeed" value="no"/>
 				<taggedValue tag="gxmi gen views" value="no"/>
@@ -66,9 +66,7 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="toolbarimage" xmi:id="BOUML_0x1f802_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:toolbarimagefile"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:toolbarimagefile"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="Formular_Parameter" xmi:id="BOUML_0x21802_0" visibility="protected" association="BOUML_ASSOC_0x21802_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f502_4"/>
@@ -154,9 +152,7 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedOperation xmi:type="uml:Operation" name="Codegenerieren" xmi:id="BOUML_0x1f402_2" visibility="public" isAbstract="false">
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:codegeneration"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:codegeneration"/></xmi:Extension>
 							<ownedParameter xmi:type="uml:Parameter" name="name" xmi:id="BOUML_op_param_1" direction="in">
 								<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 							</ownedParameter>
@@ -176,17 +172,13 @@
 							</xmi:Extension>
 						</ownedAttribute>
 						<ownedOperation xmi:type="uml:Operation" name="GenerateTurboVision" xmi:id="BOUML_0x1f882_2" visibility="public" isAbstract="false">
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:workflow"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:workflow"/></xmi:Extension>
 							<ownedParameter xmi:type="uml:Parameter" name="name" xmi:id="BOUML_op_param_2" direction="in">
 								<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 							</ownedParameter>
 						</ownedOperation>
 						<ownedOperation xmi:type="uml:Operation" name="actValidateAnwendungen" xmi:id="BOUML_0x22b82_2" visibility="public" isAbstract="false">
-							<xmi:Extension extender="Bouml">
-								<stereotype name="validator"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="validator"/></xmi:Extension>
 							<ownedParameter xmi:type="uml:Parameter" name="name" xmi:id="BOUML_op_param_3" direction="in">
 								<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 							</ownedParameter>
@@ -324,9 +316,7 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Activity" xmi:id="BOUML_0x1f482_39" name="actValidateAnwendungen" specification="BOUML_0x22b82_2">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="validator"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="validator"/></xmi:Extension>
 						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x20d82_70">
 							<outgoing xmi:idref="BOUML_0x27982_40"/>
 						</node>
@@ -461,9 +451,7 @@
 						</ownedBehavior>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Activity" xmi:id="BOUML_0x20e02_39" name="GenerateTurboVision">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="workflow"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="workflow"/></xmi:Extension>
 						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x22982_70">
 							<outgoing xmi:idref="BOUML_0x2cf82_40"/>
 						</node>
@@ -637,6 +625,67 @@
 							<body>result = 1</body>
 						</ownedBehavior>
 					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="lbDMFManager" xmi:id="BOUML_0x24a02_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:application"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="User" xmi:id="BOUML_0x24a82_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:ribbongroup"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="Submenu" xmi:id="BOUML_0x24b82_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:ribbonmenu"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="NewUser" xmi:id="BOUML_0x24c02_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:menuaction"/></xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="MenuImage" xmi:id="BOUML_0x27482_1" visibility="protected">
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:toolbarimagefile"/></xmi:Extension>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="Administration" xmi:id="BOUML_0x24e82_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:ribbonpage"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="createInvoices" xmi:id="BOUML_0x24f02_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:menuaction"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="SelectUser" xmi:id="BOUML_0x24f82_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="lbDMF:menuaction"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="Admin" xmi:id="BOUML_0x25002_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="role"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="Finance" xmi:id="BOUML_0x25082_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="role"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="FormularFields" xmi:id="BOUML_0x26a02_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x28e02_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x28e82_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="dbtype" xmi:id="BOUML_0x28f02_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x28f82_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29002_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="formularid" xmi:id="BOUML_0x29082_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_0"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:UseCase" xmi:id="BOUML_0x1f402_5" name="New User">
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Ein Administrator legt in der Benutzerverwaltung neue Benutzer an."/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:UseCase" xmi:id="BOUML_0x1f482_5" name="Select User">
+					</packagedElement>
+					<packagedElement xmi:type="uml:UseCase" xmi:id="BOUML_0x1f502_5" name="create Invoices">
+						<include xmi:type="uml:Include" xmi:id="BOUML_0x1f402_9" addition="BOUML_0x1f482_5">
+							<xmi:Extension extender="Bouml"><stereotype name="include"/></xmi:Extension>
+						</include>
+					</packagedElement>
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f982_0" client="BOUML_0x1f402_4" supplier="BOUML_0x20882_4">
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x21782_0" name="AnwendungenBenutzer" visibility="protected">
@@ -703,17 +752,62 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f802_0" client="BOUML_0x1fa02_4" supplier="BOUML_0x20602_4">
 					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26182_0" client="BOUML_0x24a82_4" supplier="BOUML_0x24e82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x25c82_0" client="BOUML_0x24b82_4" supplier="BOUML_0x24a82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x25d82_0" client="BOUML_0x24c02_4" supplier="BOUML_0x24a82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x25e82_0" client="BOUML_0x24c02_4" supplier="BOUML_0x1f402_4">
+						<xmi:Extension extender="Bouml"><stereotype name="creates"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26402_0" client="BOUML_0x24c02_4" supplier="BOUML_0x25002_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26102_0" client="BOUML_0x24e82_4" supplier="BOUML_0x24a02_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26202_0" client="BOUML_0x24f02_4" supplier="BOUML_0x24a82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26382_0" client="BOUML_0x24f02_4" supplier="BOUML_0x24f82_4">
+						<xmi:Extension extender="Bouml"><stereotype name="choosen"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26482_0" client="BOUML_0x24f02_4" supplier="BOUML_0x25082_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26282_0" client="BOUML_0x24f82_4" supplier="BOUML_0x24a82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26302_0" client="BOUML_0x24f82_4" supplier="BOUML_0x1f402_4">
+						<xmi:Extension extender="Bouml"><stereotype name="chooses"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x26502_0" client="BOUML_0x24f82_4" supplier="BOUML_0x25082_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x27e82_0" client="BOUML_0x26a02_4" supplier="BOUML_0x26a82_4">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC0_0x28882_11">
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC0_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC0_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC0_0x28882_11"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC1_0x28882_11">
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC1_0x28882_11"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC3_0x28882_11"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC4_0x28882_11"/>
+					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">
 					<packagedElement xmi:type="uml:Class" name="action_parameters" xmi:id="BOUML_0x1fb82_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x20982_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x20a02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -740,14 +834,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="action_step_parameter" xmi:id="BOUML_0x1fc02_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x20c02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x20c82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -774,14 +864,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="action_step_transitions" xmi:id="BOUML_0x1fc82_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x20e82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="expression" xmi:id="BOUML_0x20f02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -813,20 +899,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="action_steps" xmi:id="BOUML_0x1fd02_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="bezeichnung" xmi:id="BOUML_0x21082_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="a_order_nr" xmi:id="BOUML_0x21102_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -891,20 +971,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="action_types" xmi:id="BOUML_0x1fd82_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21202_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="bezeichnung" xmi:id="BOUML_0x21282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="action_handler" xmi:id="BOUML_0x21302_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -936,20 +1010,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="actions" xmi:id="BOUML_0x1fe02_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21402_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x21482_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="source" xmi:id="BOUML_0x21502_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1003,20 +1071,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungen" xmi:id="BOUML_0x1fe82_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21602_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x21682_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="titel" xmi:id="BOUML_0x21702_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1087,14 +1149,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungen_formulare" xmi:id="BOUML_0x1ff02_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21902_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="anwendungid" xmi:id="BOUML_0x20602_0" visibility="protected" association="BOUML_ASSOC_0x20602_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fe82_4"/>
@@ -1120,14 +1178,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungs_parameter" xmi:id="BOUML_0x1ff82_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21982_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="parametername" xmi:id="BOUML_0x21a02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1148,14 +1202,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungsberechtigungen" xmi:id="BOUML_0x20002_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21b02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="idformular" xmi:id="BOUML_0x20c82_0" visibility="protected" association="BOUML_ASSOC_0x20c02_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x20382_4"/>
@@ -1181,28 +1231,20 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="applevel_plugin_registry" xmi:id="BOUML_0x20082_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21b82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="anwendungid" xmi:id="BOUML_0x21c02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="codegentarget" xmi:id="BOUML_0x20102_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21c82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x21d02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1221,14 +1263,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="column_types" xmi:id="BOUML_0x20182_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21f82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x22002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1247,14 +1285,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="foreignkey_visibledata_mapping" xmi:id="BOUML_0x20202_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x22302_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1270,14 +1304,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formular_actions" xmi:id="BOUML_0x20282_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22502_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="event" xmi:id="BOUML_0x22582_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1306,14 +1336,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formular_parameters" xmi:id="BOUML_0x20302_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22602_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="parametername" xmi:id="BOUML_0x22682_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1334,20 +1360,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formulare" xmi:id="BOUML_0x20382_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22782_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x22802_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="menuname" xmi:id="BOUML_0x22882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1430,16 +1450,23 @@
 								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
 							</xmi:Extension>
 						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x27f82_0" visibility="protected" association="BOUML_ASSOC_0x27f02_0" aggregation="none">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_0x26a82_4"/>
+							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f82_0" value="1"/>
+							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f82_0" value="1"/>
+							<xmi:Extension extender="Bouml">
+								<stereotype name="lbDMF:relationship"/>
+								<taggedValue tag="lbDMF:relationship:order" value=""/>
+								<taggedValue tag="lbDMF:relationship:table" value=""/>
+								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
+							</xmi:Extension>
+						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formulartypen" xmi:id="BOUML_0x20402_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22b02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="handlermodule" xmi:id="BOUML_0x22b82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1455,9 +1482,7 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="beschreibung" xmi:id="BOUML_0x22d82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="anonymous_role_18" xmi:id="BOUML_0x20f02_0" visibility="protected" association="BOUML_ASSOC_0x20f02_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x20382_4"/>
@@ -1472,14 +1497,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="regressiontest" xmi:id="BOUML_0x20482_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22e02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="test" xmi:id="BOUML_0x22e82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1492,14 +1513,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="report_element_types" xmi:id="BOUML_0x20502_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x23082_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1520,20 +1537,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="report_elements" xmi:id="BOUML_0x20582_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23182_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x23202_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="x" xmi:id="BOUML_0x23282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -1585,14 +1596,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="report_parameters" xmi:id="BOUML_0x20602_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23502_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x23582_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1613,14 +1620,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="report_texts" xmi:id="BOUML_0x20682_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23682_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="line" xmi:id="BOUML_0x23702_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -1641,20 +1644,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="reports" xmi:id="BOUML_0x20702_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23802_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x23882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="description" xmi:id="BOUML_0x23902_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1683,14 +1680,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="translations" xmi:id="BOUML_0x20782_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23982_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="text" xmi:id="BOUML_0x23a02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1703,14 +1696,10 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="user_anwendungen" xmi:id="BOUML_0x20802_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23b82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="anwendungenid" xmi:id="BOUML_0x20902_0" visibility="protected" association="BOUML_ASSOC_0x20902_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fe82_4"/>
@@ -1736,20 +1725,14 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="users" xmi:id="BOUML_0x20882_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="entity"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23c02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="lbDMF:pk"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x23c82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
-							<xmi:Extension extender="Bouml">
-								<stereotype name="visible"/>
-							</xmi:Extension>
+							<xmi:Extension extender="Bouml"><stereotype name="visible"/></xmi:Extension>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="vorname" xmi:id="BOUML_0x23d02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1791,6 +1774,39 @@
 								<taggedValue tag="lbDMF:relationship:order" value="-1"/>
 								<taggedValue tag="lbDMF:relationship:table" value="users"/>
 								<taggedValue tag="lbDMF:relationship:sourcecolumn" value="id"/>
+							</xmi:Extension>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Class" name="FormularFields" xmi:id="BOUML_0x26a82_4" visibility="package">
+						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x29102_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x29182_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x29202_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="dbtype" xmi:id="BOUML_0x29282_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x29302_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29382_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="formularid" xmi:id="BOUML_0x27f02_0" visibility="protected" association="BOUML_ASSOC_0x27f02_0" aggregation="none">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_0x20382_4"/>
+							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x27f02_0" value="*"/>
+							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x27f02_0" value="*"/>
+							<xmi:Extension extender="Bouml">
+								<stereotype name="lbDMF:relationship"/>
+								<taggedValue tag="lbDMF:relationship:order" value=""/>
+								<taggedValue tag="lbDMF:relationship:table" value=""/>
+								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -1890,12 +1906,14 @@
 						<memberEnd xmi:idref="BOUML_0x21502_0"/>
 						<memberEnd xmi:idref="BOUML_0x21582_0"/>
 					</packagedElement>
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x27f02_0" visibility="protected">
+						<memberEnd xmi:idref="BOUML_0x27f02_0"/>
+						<memberEnd xmi:idref="BOUML_0x27f82_0"/>
+					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1fa02_22" name ="Reports">
 					<packagedElement xmi:type="uml:Class" name="Formulare" xmi:id="BOUML_0x21202_4" visibility="package">
-						<xmi:Extension extender="Bouml">
-							<stereotype name="report"/>
-						</xmi:Extension>
+						<xmi:Extension extender="Bouml"><stereotype name="report"/></xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x25882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -1926,7 +1944,7 @@
 						<importedPackage xmi:type="uml:Model" href="http://schema.omg.org/spec/UML/2.1/uml.xml#1"/>
 					</packageImport>
 					<packagedElement xmi:type="uml:Stereotype" name="masterdetail_action" xmi:id="BOUML_0x20902_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Defines that a relation is a master detail action. The action is as of ´master form opens a detail form´."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_2" body="Defines that a relation is a master detail action. The action is as of ´master form opens a detail form´."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -1948,7 +1966,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_masterdetail_action" xmi:id="BOUML_EXTEND_0x1fa02_0" type="BOUML_0x1fa02_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="fk" xmi:id="BOUML_0x20a02_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_2" body="Defines that an attribute is a foreign key."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_3" body="Defines that an attribute is a foreign key."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -1967,7 +1985,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_fk" xmi:id="BOUML_EXTEND_0x1fa82_0" type="BOUML_0x1fa82_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="pk" xmi:id="BOUML_0x20a82_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_3" body="Defines that an attribute is a primary key."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_4" body="Defines that an attribute is a primary key."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -1986,7 +2004,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_pk" xmi:id="BOUML_EXTEND_0x1fb02_0" type="BOUML_0x1fb02_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="detailmaster_action" xmi:id="BOUML_0x20b02_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_4" body="Defines that a relation is a detail master action. The action is as of ´detail form opens a master form´."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_5" body="Defines that a relation is a detail master action. The action is as of ´detail form opens a master form´."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -2008,7 +2026,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_detailmaster_action" xmi:id="BOUML_EXTEND_0x1fb82_0" type="BOUML_0x1fb82_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="relationship" xmi:id="BOUML_0x20b82_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_5" body="This stereotype is to specify an association to be a relation."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_6" body="This stereotype is to specify an association to be a relation."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -2036,7 +2054,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_relationship" xmi:id="BOUML_EXTEND_0x1fc02_0" type="BOUML_0x1fc02_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="codegeneration" xmi:id="BOUML_0x20c02_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_6" body="This stereotype is to specify an association to be a relation."/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_7" body="This stereotype is to specify an association to be a relation."/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -2055,7 +2073,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_codegeneration" xmi:id="BOUML_EXTEND_0x1fc82_0" type="BOUML_0x1fc82_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="toolbarimagefile" xmi:id="BOUML_0x20c82_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_7" body="This stereotype is to specify an attribute to be a special image selector control"/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_8" body="This stereotype is to specify an attribute to be a special image selector control"/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -2074,7 +2092,7 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_toolbarimagefile" xmi:id="BOUML_EXTEND_0x1fd02_0" type="BOUML_0x1fd02_0" aggregation="composite"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Stereotype" name="test_application_via_lua" xmi:id="BOUML_0x20d02_4" visibility="package">
-						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_8" body="This stereotype is to specify an operation to execute the application generated as wxLua script"/>
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_9" body="This stereotype is to specify an operation to execute the application generated as wxLua script"/>
 						<xmi:Extension extender="Bouml">
 							<stereotype name="stereotype"/>
 							<taggedValue tag="stereotypeSetParameters" value=""/>
@@ -2126,12 +2144,99 @@
 					<packagedElement xmi:type="uml:Extension" name="A_Element_application" xmi:id="BOUML_EXT_0x24202_0" memberEnd="BOUML_BASE_0x24202_0">
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_application" xmi:id="BOUML_EXTEND_0x24202_0" type="BOUML_0x24202_0" aggregation="composite"/>
 					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="menu" xmi:id="BOUML_0x24b02_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="" value=""/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x25b82_0" association="BOUML_EXT_0x25b82_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_menu" xmi:id="BOUML_EXT_0x25b82_0" memberEnd="BOUML_BASE_0x25b82_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_menu" xmi:id="BOUML_EXTEND_0x25b82_0" type="BOUML_0x25b82_0" aggregation="composite"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="menuaction" xmi:id="BOUML_0x24c82_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x25d02_0" association="BOUML_EXT_0x25d02_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_menuaction" xmi:id="BOUML_EXT_0x25d02_0" memberEnd="BOUML_BASE_0x25d02_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_menuaction" xmi:id="BOUML_EXTEND_0x25d02_0" type="BOUML_0x25d02_0" aggregation="composite"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="ribbonmenu" xmi:id="BOUML_0x24d02_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x25f82_0" association="BOUML_EXT_0x25f82_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_ribbonmenu" xmi:id="BOUML_EXT_0x25f82_0" memberEnd="BOUML_BASE_0x25f82_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_ribbonmenu" xmi:id="BOUML_EXTEND_0x25f82_0" type="BOUML_0x25f82_0" aggregation="composite"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="ribbonpage" xmi:id="BOUML_0x24d82_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x26082_0" association="BOUML_EXT_0x26082_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_ribbonpage" xmi:id="BOUML_EXT_0x26082_0" memberEnd="BOUML_BASE_0x26082_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_ribbonpage" xmi:id="BOUML_EXTEND_0x26082_0" type="BOUML_0x26082_0" aggregation="composite"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="ribbongroup" xmi:id="BOUML_0x24e02_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x26002_0" association="BOUML_EXT_0x26002_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_ribbongroup" xmi:id="BOUML_EXT_0x26002_0" memberEnd="BOUML_BASE_0x26002_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_ribbongroup" xmi:id="BOUML_EXTEND_0x26002_0" type="BOUML_0x26002_0" aggregation="composite"/>
+					</packagedElement>
 				</packagedElement>
 			</packagedElement>
 		</packagedElement>
 		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_0" name="ForeignKey"/>
 		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_1" name="boolean"/>
 	</uml:Model>
+	<lbDMF:application xmi:id="BOUML_STELT_0x24a02_4" base_Element="BOUML_0x24a02_4"/>
 	<lbDMF:codegeneration xmi:id="BOUML_STELT_0x1f402_2" base_Element="BOUML_0x1f402_2"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21782_0" sourcecolumn="userid" base_Element="BOUML_0x21782_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21802_0" sourcecolumn="name" base_Element="BOUML_0x21802_0"/>
@@ -2140,6 +2245,9 @@
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21702_0" sourcecolumn="name" base_Element="BOUML_0x21702_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21602_0" sourcecolumn="name" base_Element="BOUML_0x21602_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21902_0" sourcecolumn="name" base_Element="BOUML_0x21902_0"/>
+	<lbDMF:menuaction xmi:id="BOUML_STELT_0x24c02_4" base_Element="BOUML_0x24c02_4"/>
+	<lbDMF:menuaction xmi:id="BOUML_STELT_0x24f02_4" base_Element="BOUML_0x24f02_4"/>
+	<lbDMF:menuaction xmi:id="BOUML_STELT_0x24f82_4" base_Element="BOUML_0x24f82_4"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x20982_1" base_Element="BOUML_0x20982_1"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x20c02_1" base_Element="BOUML_0x20c02_1"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x20e82_1" base_Element="BOUML_0x20e82_1"/>
@@ -2167,6 +2275,7 @@
 	<lbDMF:pk xmi:id="BOUML_STELT_0x23982_1" base_Element="BOUML_0x23982_1"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x23b82_1" base_Element="BOUML_0x23b82_1"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x23c02_1" base_Element="BOUML_0x23c02_1"/>
+	<lbDMF:pk xmi:id="BOUML_STELT_0x29102_1" base_Element="BOUML_0x29102_1"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20382_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x20382_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x1fe82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x1fe82_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x1ff82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x1ff82_0"/>
@@ -2201,6 +2310,7 @@
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20d02_0" order="-1" table="formulare" sourcecolumn="id" base_Element="BOUML_0x20d02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20e02_0" order="-1" table="formulare" sourcecolumn="id" base_Element="BOUML_0x20e02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20f82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x20f82_0"/>
+	<lbDMF:relationship xmi:id="BOUML_STELT_0x27f82_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x27f82_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20f02_0" order="-1" table="formulartypen" sourcecolumn="id" base_Element="BOUML_0x20f02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21082_0" order="-1" table="report_element_types" sourcecolumn="id" base_Element="BOUML_0x21082_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21002_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x21002_0"/>
@@ -2215,6 +2325,11 @@
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x20a02_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x20a02_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21402_0" order="-1" table="users" sourcecolumn="id" base_Element="BOUML_0x21402_0"/>
 	<lbDMF:relationship xmi:id="BOUML_STELT_0x21502_0" order="-1" table="users" sourcecolumn="id" base_Element="BOUML_0x21502_0"/>
+	<lbDMF:relationship xmi:id="BOUML_STELT_0x27f02_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x27f02_0"/>
+	<lbDMF:ribbongroup xmi:id="BOUML_STELT_0x24a82_4" base_Element="BOUML_0x24a82_4"/>
+	<lbDMF:ribbonmenu xmi:id="BOUML_STELT_0x24b82_4" base_Element="BOUML_0x24b82_4"/>
+	<lbDMF:ribbonpage xmi:id="BOUML_STELT_0x24e82_4" base_Element="BOUML_0x24e82_4"/>
 	<lbDMF:toolbarimagefile xmi:id="BOUML_STELT_0x1f802_1" base_Element="BOUML_0x1f802_1"/>
+	<lbDMF:toolbarimagefile xmi:id="BOUML_STELT_0x27482_1" base_Element="BOUML_0x27482_1"/>
 	<lbDMF:workflow xmi:id="BOUML_STELT_0x1f882_2" base_Element="BOUML_0x1f882_2"/>
 </xmi:XMI>
