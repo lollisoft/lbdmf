@@ -287,7 +287,7 @@
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
 -- DROP TABLE <xsl:value-of select="$TableName"/>
-DROP TABLE "<xsl:value-of select="$TableName"/>";
+DROP TABLE IF EXISTS "<xsl:value-of select="$TableName"/>";
 </xsl:template>
 
 <xsl:template name="dropMSSQLTable">
@@ -321,15 +321,17 @@ select "dropTable"('<xsl:value-of select="$TableName"/>');
 -- CREATE Sqlite TABLE <xsl:value-of select="$TableName"/>
 CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:choose>
 	<xsl:when test="$Aggregation='none'">
-		<xsl:if test="./lowerValue/@value!='1'">
-		<xsl:if test="./upperValue/@value!='1'">
+		<xsl:if test="@name!=''">
+		<xsl:if test="./lowerValue/@value='1'">
+		<xsl:if test="./upperValue/@value='1'">
 			<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
 			<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/><xsl:if test="position()!=1">,
 	</xsl:if>
 	<xsl:call-template name="createDBTypeForeignKeyColumn"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template>	
 		</xsl:if>
 		</xsl:if>
-    </xsl:when>
+		</xsl:if>
+	</xsl:when>
 	<xsl:otherwise>
 		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
 		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
@@ -414,7 +416,7 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./owne
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
--- CREATE TABLE <xsl:value-of select="$TableName"/>
+-- CREATE TABLE <xsl:value-of select="$TableName"/> with auto id
 CREATE TABLE "<xsl:value-of select="$TableName"/>" (
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
 <xsl:variable name="Aggregation" select="@aggregation"/>
@@ -534,6 +536,7 @@ ALTER TABLE "<xsl:value-of select="../@name"/>" ADD CONSTRAINT "cst_<xsl:value-o
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
+-- Create table relations for <xsl:value-of select="$TableName"/>
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
 -- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
@@ -611,9 +614,9 @@ select "dropConstraint"('<xsl:value-of select="../@name"/>', 'cst_<xsl:value-of 
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:fk'">
 --ALTER TABLE "<xsl:value-of select="../@name"/>" DROP CONSTRAINT "cst_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>_<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" FOREIGN KEY ( "<xsl:value-of select="@name"/>" ) REFERENCES "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:table']/@value"/>" ( "<xsl:value-of select="xmi:Extension/taggedValue[@tag='lbDMF:sourcecolumn']/@value"/>" );
 
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
 
 <!--
 DROP TRIGGER 'fk_nullable_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
@@ -642,9 +645,9 @@ DELETE FROM "lbDMF_ForeignKeys" where FKTable = '<xsl:value-of select="../@name"
 <xsl:variable name="foreignKey" select="//ownedAttribute[@association=$AssocID][@xmi:id!=$AttributeID]/@name"/>
 <xsl:variable name="primaryTableID1" select="//ownedAttribute[@association=$AssocID][@xmi:id!=$AttributeID]/../@name"/>	
 
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
-DROP TRIGGER 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd';
+DROP TRIGGER IF EXISTS 'fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del';
 
 DELETE FROM "lbDMF_ForeignKeys" where FKTable = '<xsl:value-of select="../@name"/>' AND FKColumn = '<xsl:value-of select="@name"/>';
 </xsl:if>
@@ -685,6 +688,8 @@ DELETE FROM "lbDMF_ForeignKeys" where FKTable = '<xsl:value-of select="../@name"
     <xsl:param name="TableName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
+-- Create table relations for <xsl:value-of select="$TableName"/> with auto id
+	
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']"><xsl:variable name="Aggregation" select="@aggregation"/><xsl:if test="$Aggregation='none'">
 <xsl:variable name="otherClassID" select="./type/@xmi:idref"/><!--<xsl:if test="position()=1">,</xsl:if>-->
 	<xsl:call-template name="createDBTypeAutoID"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:if>
