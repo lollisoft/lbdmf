@@ -48,6 +48,7 @@
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
 /*...e*/
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbFormularsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbFormularsModel, lbFormularsModel)
@@ -56,6 +57,15 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularsModel)
 	ADD_INTERFACE(lb_I_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbFormularsModel)
+
+void		LB_STDCALL lbFormularsModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbFormularsModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbFormularsModel::lbFormularsModel() {
 	
@@ -144,7 +154,7 @@ void		LB_STDCALL lbFormularsModel::deleteUnmarked() {
 		setNextFormular();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getFormularID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -162,7 +172,7 @@ void		LB_STDCALL lbFormularsModel::deleteMarked() {
 		setNextFormular();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getFormularID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -290,7 +300,7 @@ char* LB_STDCALL lbFormularsModel::getEventName() {
 	return currentEventName->charrep();
 }
 
-long  LB_STDCALL lbFormularsModel::getFormularID() {
+long  LB_STDCALL lbFormularsModel::getID() {
 	return currentFormularID->getData();
 }
 
@@ -320,6 +330,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -422,6 +434,16 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularFieldsModel)
 	ADD_INTERFACE(lb_I_Formular_Fields)
 END_IMPLEMENT_LB_UNKNOWN()
 
+IMPLEMENT_EXTENSIBLEOBJECT(lbFormularFieldsModel)
+
+
+void		LB_STDCALL lbFormularFieldsModel::setOperator(lb_I_Unknown* db) {
+
+}
+
+lbErrCodes	LB_STDCALL lbFormularFieldsModel::ExecuteOperation(const char* operationName) {
+	return ERR_NONE;
+}
 
 lbFormularFieldsModel::lbFormularFieldsModel() {
 	
@@ -534,7 +556,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteUnmarked() {
 		setNextField();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getFormularID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -552,7 +574,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteMarked() {
 		setNextField();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getFormularID());
+			ID->setData(getID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -713,6 +735,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
