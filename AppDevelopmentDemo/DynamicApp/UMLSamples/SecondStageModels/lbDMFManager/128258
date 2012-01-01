@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 17
+  revision 18
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -2164,9 +2164,38 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      attribute 168194 "id"
-	protected explicit_type "int"
-	stereotype "lbDMF:pk"
+      attribute 168706 "fkname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168834 "fktable"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168578 "dbtype"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 191362 "isforeignkey"
+	protected explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -2195,36 +2224,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 168578 "dbtype"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 168706 "fkname"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 168834 "fktable"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
       classrelation 163586 // formularid (<association>)
 	relation 160514 ----
 	  stereotype "lbDMF:relationship"
@@ -2240,6 +2239,17 @@ ${inlines}
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
+      end
+
+      attribute 168194 "id"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
   end
