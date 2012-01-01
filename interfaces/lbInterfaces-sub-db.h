@@ -139,13 +139,13 @@ public:
 	 */
 	virtual void LB_STDCALL skipPeeking() = 0;
 
-        /**
-         * \brief Set the SQL query.
-         *
-         * Set the SQL query string to be used.
-         */
-        virtual lbErrCodes LB_STDCALL query(const char* q, bool bind = true) = 0;
-
+	/**
+	 * \brief Set the SQL query.
+	 *
+	 * Set the SQL query string to be used.
+	 */
+	virtual lbErrCodes LB_STDCALL query(const char* q, bool bind = true) = 0;
+		
 	/**
 	 * \brief Bind columns, if not yet have bound.
 	 *

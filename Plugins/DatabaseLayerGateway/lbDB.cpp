@@ -5250,6 +5250,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(const char* conne
 			*name = "5";
 			param->setUAPString(*&name, *&colName);
 
+			_LOG << "lbDatabaseLayerDatabase::getColumns() got " << TableName->charrep() << ":" << colName->charrep() LOG_
+			
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 //			typeLong->setData((long)colTypeLong);
 //			*name = "DataType";

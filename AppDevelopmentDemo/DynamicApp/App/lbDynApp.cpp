@@ -69,6 +69,9 @@ extern "C" {
 /*...e*/
 
 #include <lbInterfaces-sub-security.h>
+// Include generated file
+#include <lbInterfaces-lbDMFManager.h>
+
 #include <lbDynApp.h>
 /*...e*/
 
@@ -182,6 +185,11 @@ public:
 
         lbErrCodes LB_STDCALL overwriteDatabase(lb_I_Unknown* uk);
         lbErrCodes LB_STDCALL writeXMISettings(lb_I_Unknown* uk);
+		
+		char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID);
+		char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
+		
+		lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name);
 protected:
 
         /** \brief Load the database forms.
@@ -363,6 +371,42 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
         return err;
 }
 
+char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
+	from->finishApplicationParameterIteration();
+	
+	while (from->hasMoreApplicationParameter()) {
+		from->setNextApplicationParameter();
+		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
+			return from->get_parametervalue();
+	}
+	_LOG << "lbDynamicApplication::getParameter(...) Error: Parameter not found." LOG_
+	return NULL;
+}
+
+char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
+	from->finishFormularParameterIteration();
+	
+	while (from->hasMoreFormularParameter()) {
+		from->setNextFormularParameter();
+		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
+			return from->get_parametervalue();
+	}
+	_LOG << "lbDynamicApplication::getParameter(...) Error: Parameter not found." LOG_
+	return NULL;
+}
+
+lbErrCodes LB_STDCALL lbDynamicApplication::lookupApplication(lb_I_Applications* applications, const char* name) {
+	applications->finishApplicationsIteration();
+	
+	while (applications->hasMoreApplications()) {
+		applications->setNextApplications();
+		if (strcmp(applications->get_name(), name) == 0)
+			return ERR_NONE;
+	}
+	
+	return ERR_ENTITY_NOT_FOUND;
+}
+
 lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
@@ -392,9 +436,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
                 }
                 sqldb->init();
 
-        char* DBName = strdup(appParams->getParameter("DBName", securityManager->getApplicationID())); 
-        char* DBPass = strdup(appParams->getParameter("DBPass", securityManager->getApplicationID())); 
-        char* DBUser = strdup(appParams->getParameter("DBUser", securityManager->getApplicationID()));
+        char* DBName = strdup(lookupParameter(*&ApplicationParameterEntity, "DBName", securityManager->getApplicationID())); 
+        char* DBPass = strdup(lookupParameter(*&ApplicationParameterEntity, "DBPass", securityManager->getApplicationID())); 
+        char* DBUser = strdup(lookupParameter(*&ApplicationParameterEntity, "DBUser", securityManager->getApplicationID()));
         
         if (sqldb->connect(DBName, DBName, DBUser, DBPass) == ERR_NONE) {
                 UAP(lb_I_String, sql)
@@ -893,7 +937,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                 AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
                 AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database columns'")
                 AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database tables'")
-                AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+                AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, Formular_FieldsEntity, "'formular fields'")
 
                 UAP(lb_I_Parameter, param)
                 UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -912,16 +956,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
                 *name = "SaveApplicationID";
                 param->getUAPInteger(*&name, *&AppID);
-                _LOG << "Have to save application ID = " << AppID->charrep() << ", database = " << appParams->getParameter("DBName", AppID->getData()) LOG_
+                _LOG << "Have to save application ID = " << AppID->charrep() << ", database = " << lookupParameter(*&ApplicationParameterEntity, "DBName", AppID->getData()) LOG_
 
                 *lastExportedApp = AppID->charrep();
 
-                if (strcmp(appParams->getParameter("DBName", AppID->getData()), "lbDMF") == 0) {
+                if (strcmp(lookupParameter(*&ApplicationParameterEntity, "DBName", AppID->getData()), "lbDMF") == 0) {
                         // Is system database
                         metaapp->setStatusText("Info", "Target database is system database ...");
 
                         _LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using system database." LOG_
-                        formularfields->accept(*&fOpDB);
+                        Formular_FieldsEntity->accept(*&fOpDB);
                         metaapp->setStatusText("Info", "Reading primary keys ...");
                         dbPrimaryKeys->accept(*&fOpDB);
                         metaapp->setStatusText("Info", "Reading foreign keys ...");
@@ -963,9 +1007,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
                         _LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using custom database." LOG_
 
-                        *dbname = appParams->getParameter("DBName", AppID->getData());
-                        *dbuser = appParams->getParameter("DBUser", AppID->getData());
-                        *dbpass = appParams->getParameter("DBPass", AppID->getData());
+                        *dbname = lookupParameter(*&ApplicationParameterEntity, "DBName", AppID->getData());
+                        *dbuser = lookupParameter(*&ApplicationParameterEntity, "DBUser", AppID->getData());
+                        *dbpass = lookupParameter(*&ApplicationParameterEntity, "DBPass", AppID->getData());
 
                         UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 
@@ -1021,7 +1065,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
                                         if (fOpCustomformularfieldsDB != NULL) {
                                                 fOpCustomformularfieldsDB->begin(dbname->charrep(), custom_formularfieldsDB.getPtr());
-                                                formularfields->accept(*&fOpCustomformularfieldsDB);
+                                                Formular_FieldsEntity->accept(*&fOpCustomformularfieldsDB);
                                         }
                                         metaapp->setStatusText("Info", "Reading primary keys ...");
                                         dbPrimaryKeys->accept(*&fOpCustomDB);
@@ -1054,7 +1098,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                         metaapp->setStatusText("Info", "Storing formularfields ...");
 
                         *name = "FormularFields";
-                        QI(formularfields, lb_I_Unknown, uk)
+                        QI(Formular_FieldsEntity, lb_I_Unknown, uk)
                         // The container allows multiple entries by key.
                         /// \todo Look at other places too.
                         if (document->exists(&key) == 1) document->remove(&key);
@@ -1387,7 +1431,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 			UAP(lb_I_Applications, applications)
 			apps = securityManager->getApplicationModel();
 			QI(apps, lb_I_Applications, applications)
-			applications->selectApplication(ApplicationName->charrep());
+			
+			if (lookupApplication(*&applications, ApplicationName->charrep()) == ERR_ENTITY_NOT_FOUND)
+				_LOGERROR << "Error: Application was not found." LOG_
 
 			AppID->setData(applications->getID());
 			
@@ -1443,7 +1489,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
                 *name = "AppParams";
                 QI(name, lb_I_KeyBase, key)
                 uk = doc->getElement(&key);
-                QI(uk, lb_I_ApplicationParameter, appParams)
+                QI(uk, lb_I_ApplicationParameter, ApplicationParameterEntity)
 
         }
 
@@ -1609,13 +1655,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 
                 char* eventName = eman->reverseEvent(eventID->getData());
 
-                if ((forms != NULL) && (forms->getFormularCount() > 0)) {
-                        forms->finishFormularIteration();
-                        while (forms->hasMoreFormulars()) {
-                                forms->setNextFormular();
+                if ((FormularsEntity != NULL) && (FormularsEntity->getFormularsCount() > 0)) {
+                        FormularsEntity->finishFormularsIteration();
+                        while (FormularsEntity->hasMoreFormulars()) {
+                                FormularsEntity->setNextFormulars();
 
-                                if (strcmp(forms->getEventName(), eventName) == 0) {
-                                        forms->finishFormularIteration();
+                                if (strcmp(FormularsEntity->get_eventname(), eventName) == 0) {
+                                        FormularsEntity->finishFormularsIteration();
                                         metaapp->setStatusText("Info", "Found the form by reversing event ID ...");
                                         break;
                                 }
@@ -1627,19 +1673,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                         UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
                         q = systemdatabase->getQuery("lbDMF", 0);
 
-                if (forms == NULL) {
+                if (FormularsEntity == NULL) {
                         metaapp->msgBox("Error", "Forms object not loaded.");
                         return err;
                 }
 
-                typ->setData(forms->getTyp());
+                typ->setData(FormularsEntity->get_typ());
 
                 *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
                 *sql += "FixedDBForm_";
-                *sql += forms->getName();
+                *sql += FormularsEntity->get_name();
                 *sql += "'";
 
-                _LOG << "Query for custom database formular (" << forms->getName() << "): " << sql->charrep() LOG_
+                _LOG << "Query for custom database formular (" << FormularsEntity->get_name() << "): " << sql->charrep() LOG_
 
                         if (q->query(sql->charrep()) == ERR_NONE) {
 
@@ -1672,7 +1718,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 
                                                         QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
 
-                                                                dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
+                                                                dbForm = gui->addCustomDBForm(dbForm.getPtr(), FormularsEntity->get_name());
 
                                                         if (dbForm != NULL) {
                                                                 dbForm->show();
@@ -1805,13 +1851,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                 } else {
 #endif
 
-                if ((forms != NULL) && (forms->getFormularCount() > 0)) {
-                        forms->finishFormularIteration();
-                        while (forms->hasMoreFormulars()) {
-                                forms->setNextFormular();
+                if ((FormularsEntity != NULL) && (FormularsEntity->getFormularsCount() > 0)) {
+                        FormularsEntity->finishFormularsIteration();
+                        while (FormularsEntity->hasMoreFormulars()) {
+                                FormularsEntity->setNextFormulars();
 
-                                if (strcmp(forms->getEventName(), eventName) == 0) {
-                                        forms->finishFormularIteration();
+                                if (strcmp(FormularsEntity->get_eventname(), eventName) == 0) {
+                                        FormularsEntity->finishFormularsIteration();
                                         break;
                                 }
                         }
@@ -1820,16 +1866,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                         long id = securityManager->getApplicationID();
 
-                        *DBName = appParams->getParameter("DBName", id);
-                        *DBUser = appParams->getParameter("DBUser", id);
-                        *DBPass = appParams->getParameter("DBPass", id);
+                        *DBName = lookupParameter(*&ApplicationParameterEntity, "DBName", id);
+                        *DBUser = lookupParameter(*&ApplicationParameterEntity, "DBUser", id);
+                        *DBPass = lookupParameter(*&ApplicationParameterEntity, "DBPass", id);
 
                         if (*DBName == "") {
                                 metaapp->msgBox("Information", "Your local application configuration is out of sync.\n\nPlease activate 'Prefer database configuration' at least for one application restart.\n\nThen restart the application.");
                                 return err;
                         }
 
-                        *formName = forms->getName();
+                        *formName = FormularsEntity->get_name();
 
                         if (*formName == "") {
                                 _LOG << "Error: Datamodel does not return formular name!" LOG_
@@ -1838,7 +1884,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                         }
 
                         dbForm = gui->createDBForm(     formName->charrep(),
-                                                        formParams->getParameter("query", forms->getID()),
+                                                        lookupParameter(*&FormularParameterEntity, "query", FormularsEntity->getID()),
                                                         DBName->charrep(),
                                                         DBUser->charrep(),
                                                         DBPass->charrep());
@@ -2002,7 +2048,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
                                 }
 
-                                //*formName = forms->getName();
+                                //*formName = FormularsEntity->getName();
                                 dbForm = gui->createDBForm(formName->charrep(), query->charrep(),
                                                                                    DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
@@ -2434,14 +2480,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                 }
 
                                 // If the applications database is not the system database, also connect to that database too.
-                                if (strcmp(appParams->getParameter("DBName", securityManager->getApplicationID()), "lbDMF") != 0) {
+                                if (strcmp(lookupParameter(*&appParams, "DBName", securityManager->getApplicationID()), "lbDMF") != 0) {
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
                                         UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
-                                        *DBName = appParams->getParameter("DBName", securityManager->getApplicationID());
-                                        *DBUser = appParams->getParameter("DBUser", securityManager->getApplicationID());
-                                        *DBPass = appParams->getParameter("DBPass", securityManager->getApplicationID());
+                                        *DBName = lookupParameter(*&appParams, "DBName", securityManager->getApplicationID());
+                                        *DBUser = lookupParameter(*&appParams, "DBUser", securityManager->getApplicationID());
+                                        *DBPass = lookupParameter(*&appParams, "DBPass", securityManager->getApplicationID());
 
                                         if ((applicationdatabase != NULL) && (applicationdatabase->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
 /// \todo Implement fallback to Sqlite3 database.
@@ -2461,7 +2507,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                 }
 
                                 // Pass the applications ODBC database name, but the system database!
-                                isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", securityManager->getApplicationID()), systemdatabase.getPtr());
+                                isDBAvailable = fOpDB->begin(lookupParameter(*&appParams, "DBName", securityManager->getApplicationID()), systemdatabase.getPtr());
                                 DBOperation = true;
                         }
                 }
@@ -2853,19 +2899,19 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 
     *name = "AppParams";
     uk = document->getElement(&key);
-    QI(uk, lb_I_ApplicationParameter, appParams)
+    QI(uk, lb_I_ApplicationParameter, ApplicationParameterEntity)
 
     *name = "Formulars";
     uk = document->getElement(&key);
-    QI(uk, lb_I_Formulars, forms)
+    QI(uk, lb_I_Formulars, FormularsEntity)
 
     *name = "FormParams";
     uk = document->getElement(&key);
-    QI(uk, lb_I_FormularParameter, formParams)
+    QI(uk, lb_I_FormularParameter, FormularParameterEntity)
 
     *name = "FormularApplications";
     uk = document->getElement(&key);
-    QI(uk, lb_I_Applications_Formulars, ApplicationFormulars)
+    QI(uk, lb_I_Applications_Formulars, Applications_FormularsEntity)
 
 
         // Read out application settings
@@ -2990,7 +3036,7 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 
         metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
 
-    if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
+    if (FormularsEntity == NULL) _LOG << "Error: forms is NULL." LOG_
 }
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
@@ -2999,7 +3045,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
         _LOG << "Load application formulars of '" << app << "' with ID = '" << securityManager->getApplicationID() << "' for user '" << user << "'." LOG_
 
-        if ((forms != NULL) && (ApplicationFormulars != NULL)) {
+        if ((FormularsEntity != NULL) && (Applications_FormularsEntity != NULL)) {
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppIDComp)
                 int unused;
@@ -3014,12 +3060,12 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                 free(ed);
                 free(menu);
 
-                ApplicationFormulars->finishRelationIteration();
-                while (ApplicationFormulars->hasMoreRelations()) {
-                        ApplicationFormulars->setNextRelation();
-                        AppIDComp->setData(ApplicationFormulars->getApplicationID());
+                Applications_FormularsEntity->finishApplications_FormularsIteration();
+                while (Applications_FormularsEntity->hasMoreApplications_Formulars()) {
+                        Applications_FormularsEntity->setNextApplications_Formulars();
+                        AppIDComp->setData(Applications_FormularsEntity->get_anwendungid());
 
-                        _LOG << "Check formular ID = '" << ApplicationFormulars->getFormularID() << "' and their application ID = '" << ApplicationFormulars->getApplicationID() << "'." LOG_
+                        _LOG << "Check formular ID = '" << Applications_FormularsEntity->get_formularid() << "' and their application ID = '" << Applications_FormularsEntity->get_anwendungid() << "'." LOG_
 
                         if (AppIDComp->equals(*&AppID)) {
                                 UAP_REQUEST(getModuleInstance(), lb_I_String, EventName)
@@ -3027,13 +3073,13 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 UAP_REQUEST(getModuleInstance(), lb_I_String, ToolBarImage)
                                 UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
 
-                                long FormID = ApplicationFormulars->getFormularID();
-                                forms->selectFormular(FormID);
+                                long FormID = Applications_FormularsEntity->get_formularid();
+                                FormularsEntity->selectFormulars(FormID);
 
-                                *EventName = forms->getEventName();
-                                *MenuName = forms->getMenuName();
-                                *ToolBarImage = forms->getToolbarImage();
-                                Typ->setData(forms->getTyp());
+                                *EventName = FormularsEntity->get_eventname();
+                                *MenuName = FormularsEntity->get_menuname();
+                                *ToolBarImage = FormularsEntity->get_toolbarimage();
+                                Typ->setData(FormularsEntity->get_typ());
 
                                 if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 
@@ -3062,7 +3108,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 }
                         }
                 }
-                ApplicationFormulars->finishRelationIteration();
+                Applications_FormularsEntity->finishApplications_FormularsIteration();
         } else {
                 const char* lbDMFPasswd = getenv("lbDMFPasswd");
                 const char* lbDMFUser   = getenv("lbDMFUser");

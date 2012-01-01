@@ -735,12 +735,13 @@ void LB_STDCALL lbDBColumnsModel::setNextPage() {
 void LB_STDCALL lbDBColumnsModel::finishPageIteration() {
 	ColumnsPages->finishIteration();
 	if (hasMorePages()) setNextPage();
-	Columns->finishIteration();
+	if (Columns != NULL) Columns->finishIteration();
 }
 
 
 bool  LB_STDCALL lbDBColumnsModel::hasMoreColumns() {
 	if (Columns == NULL) finishPageIteration();
+	if (Columns == NULL) return false;
 	if (Columns->hasMoreElements() == 0) { // get next page if no more entries are in the current page
 		if (hasMorePages()) { // and there are more pages.
 			setNextPage();
