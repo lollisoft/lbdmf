@@ -182,12 +182,12 @@ lbErrCodes LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setData(lb_I_Un
 
 long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">long <xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">/* Special column <xsl:value-of select="@name"/> */</xsl:when>
+<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">/* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 <xsl:otherwise><xsl:choose>
-<xsl:when test="@dbtype='Bit'">bool <xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="@dbtype='Float'">float <xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="@dbtype='Integer'">int <xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="@dbtype='String'">char* <xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='String'">char* _<xsl:value-of select="$FieldName"/>, </xsl:when>
 </xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
@@ -196,14 +196,14 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 	lbErrCodes err = ERR_NONE;
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
-<xsl:choose><xsl:when test="@isfk='1'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Long, _<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">// Special column <xsl:value-of select="@name"/>
+<xsl:choose><xsl:when test="@isfk='1'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Long, __<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">// Special column __<xsl:value-of select="@name"/>
 </xsl:when>
 <xsl:otherwise>
-<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Boolean, _<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Float, _<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Integer, _<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_String, _<xsl:value-of select="@name"/>)
+<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Boolean, __<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Float, __<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Integer, __<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_String, __<xsl:value-of select="@name"/>)
 </xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -223,10 +223,10 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 </xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">// Special column <xsl:value-of select="@name"/>
 </xsl:when>
 <xsl:otherwise>
-<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/>-&gt;setData(<xsl:value-of select="@name"/>));
-</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/>-&gt;setData(<xsl:value-of select="@name"/>));
-</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/>-&gt;setData(<xsl:value-of select="@name"/>));
-</xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>*_<xsl:value-of select="@name"/> = <xsl:value-of select="@name"/>;
+<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
+</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
+</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
+</xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>*__<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 </xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -441,6 +441,10 @@ void  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::finish<xsl:value-of 
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
 }
 
+long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_id() {
+	return current<xsl:value-of select="$FormName"/>ID-&gt;getData();
+}
+
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">
 long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
@@ -451,7 +455,7 @@ long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of sel
 </xsl:when>
 <xsl:otherwise>
 <xsl:choose><xsl:when test="@dbtype='Bit'">
-boolean LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;getData();
 }
 </xsl:when><xsl:when test="@dbtype='Float'">

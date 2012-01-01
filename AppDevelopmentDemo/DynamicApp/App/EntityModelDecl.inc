@@ -1,24 +1,42 @@
-#include <lbInterfaces-lbDMFManager.h>
 
         // Preloaded data from database, if plugins are available.
-        UAP(lb_I_Applications_Formulars, ApplicationFormulars)
-        UAP(lb_I_Formulars, forms)
-        UAP(lb_I_Formular_Fields, formularfields)
-        UAP(lb_I_Column_Types, columntypes)
-        UAP(lb_I_FormularParameter, formParams)
-        UAP(lb_I_Formular_Actions, formActions)
-        UAP(lb_I_ApplicationParameter, appParams)
-        UAP(lb_I_Actions, appActions)
-        UAP(lb_I_Action_Steps, appActionSteps)
-        UAP(lb_I_Action_Types, appActionTypes)
-        
-        UAP(lb_I_Action_Step_Transitions, appActionStepTransitions)
-        UAP(lb_I_Action_Parameters, appActionParameters)
-        UAP(lb_I_ActionStep_Parameters, appActionStepParameters)
-        
 
-        UAP(lb_I_Reports, reports)
-        UAP(lb_I_ReportParameters, reportparams)
-        UAP(lb_I_ReportElements, reportelements)
-        UAP(lb_I_ReportElementTypes, reportelementtypes)
-        UAP(lb_I_ReportTexts, reporttextblocks)
+        UAP(lb_I_Actions, ActionsEntity)
+
+        UAP(lb_I_Action_Steps, Action_StepsEntity)
+
+        UAP(lb_I_UserAccounts, UserAccountsEntity)
+
+        UAP(lb_I_Formulars, FormularsEntity)
+
+        UAP(lb_I_FormularParameter, FormularParameterEntity)
+
+        UAP(lb_I_User_Applications, User_ApplicationsEntity)
+
+        UAP(lb_I_Applications_Formulars, Applications_FormularsEntity)
+
+        UAP(lb_I_Applications, ApplicationsEntity)
+
+        UAP(lb_I_Uebersetzungen, UebersetzungenEntity)
+
+        UAP(lb_I_Formular_Actions, Formular_ActionsEntity)
+
+        UAP(lb_I_ApplicationParameter, ApplicationParameterEntity)
+
+        UAP(lb_I_Reportdefinitionen, ReportdefinitionenEntity)
+
+        UAP(lb_I_Reportparameter, ReportparameterEntity)
+
+        UAP(lb_I_Formular_Fields, Formular_FieldsEntity)
+
+        UAP(lb_I_Action_Step_Transitions, Action_Step_TransitionsEntity)
+
+        UAP(lb_I_Column_Types, Column_TypesEntity)
+
+        UAP(lb_I_FKPK_Mapping, FKPK_MappingEntity)
+
+        UAP(lb_I_Action_Types, Action_TypesEntity)
+
+        UAP(lb_I_Action_Parameters, Action_ParametersEntity)
+
+        UAP(lb_I_ActionStep_Parameters, ActionStep_ParametersEntity)

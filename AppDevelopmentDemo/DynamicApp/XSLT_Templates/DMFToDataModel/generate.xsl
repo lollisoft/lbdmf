@@ -83,8 +83,6 @@ Export application code to <xsl:value-of select="$basedir"/>
 
 <xsl:call-template name="EntityModelInterfaceMisc">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-<xsl:with-param name="FormularID" select="@ID"/>
-<xsl:with-param name="FormName" select="$FormularName"/>
 </xsl:call-template>
 
 </exsl:document>
