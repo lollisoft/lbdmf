@@ -161,14 +161,14 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	ID->setData(securityManager->getApplicationID());
 	
-	forms->finishFormularIteration();
+	forms->finishFormularsIteration();
 	while (forms->hasMoreFormulars()) {
-		forms->setNextFormular();
-		FID->setData(forms->getApplicationID());
+		forms->setNextFormulars();
+		FID->setData(forms->get_anwendungid());
 		
 		if (FID->equals(*&ID)) {
-			if (strcmp(formName, forms->getName()) == 0) {
-				forms->finishFormularIteration();
+			if (strcmp(formName, forms->get_name()) == 0) {
+				forms->finishFormularsIteration();
 				formFound = true;
 				_LOG << "Found formular name in datamodel." LOG_
 				break;
@@ -182,22 +182,22 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	
 	long FormID = forms->getID();
 	
-	formularfields->finishFieldsIteration();
-	while (formularfields->hasMoreFields()) {
-		formularfields->setNextField();
+	formularfields->finishFormular_FieldsIteration();
+	while (formularfields->hasMoreFormular_Fields()) {
+		formularfields->setNextFormular_Fields();
 		
-		if (formularfields->getFormularID() == FormID) {
-			if (strcmp(formularfields->getName(), fieldName) == 0) {
+		if (formularfields->get_formularid() == FormID) {
+			if (strcmp(formularfields->get_name(), fieldName) == 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
 				
-				*fkt = formularfields->getFKTable();
-				*fkn = formularfields->getFKName();
+				*fkt = formularfields->get_fktable();
+				*fkn = formularfields->get_fkname();
 				
 				if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
 				
 				definitionFound = true;
-				formularfields->finishFieldsIteration();
+				formularfields->finishFormular_FieldsIteration();
 				break;
 			}
 		}
@@ -327,25 +327,25 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
                 switch (coltype) {
                         case lb_I_Query::lbDBColumnBit: // Force replace
 								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
-                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                formularfields->addFormular_Fields(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnFloat:
 								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
-                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                formularfields->addFormular_Fields(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnChar:
 								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
-                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                formularfields->addFormular_Fields(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnBinary:
 								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
-                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                formularfields->addFormular_Fields(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                                 
                         case lb_I_Query::lbDBColumnBigInteger:
                         case lb_I_Query::lbDBColumnInteger:
 								_LOG << "Save the visible column into the internal object model. (" << fkName->charrep() << " in " << fkTable->charrep() << " to " << PKN->charrep() << " in " << PKTable->charrep() << ")" LOG_
-                                formularfields->addField(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+                                formularfields->addFormular_Fields(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
                                 break;
                         case lb_I_Query::lbDBColumnUnknown:
                                 _CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_

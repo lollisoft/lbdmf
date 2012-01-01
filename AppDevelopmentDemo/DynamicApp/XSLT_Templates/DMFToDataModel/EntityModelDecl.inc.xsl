@@ -133,8 +133,6 @@
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
-#include &lt;lbInterfaces-<xsl:value-of select="$ApplicationName"/>.h&gt;
-
         // Preloaded data from database, if plugins are available.
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>

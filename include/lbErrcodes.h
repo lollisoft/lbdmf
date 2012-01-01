@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46 2011/07/24 13:42:56 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.47 2012/01/01 09:01:36 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.47  2012/01/01 09:01:36  lollisoft
+ * The current version does not compile but contains code to try find out
+ * why the order of the columns in generated code is reversed.
+ *
  * Revision 1.46  2011/07/24 13:42:56  lollisoft
  * Added an error code for not connected proxies.
  *
@@ -373,6 +377,9 @@ enum lbErrCodes {
 	ERR_DOCUMENTELEMENT_MISSING,
 
 	ERR_NOT_CONNECTED,
+	
+/* Entity error codes */	
+	ERR_ENTITY_NOT_FOUND,
 	
 /* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
 	ERR_LAST_ENUM = 0x7fffffff

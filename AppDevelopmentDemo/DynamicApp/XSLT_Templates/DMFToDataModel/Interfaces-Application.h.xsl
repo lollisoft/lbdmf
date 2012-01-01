@@ -135,22 +135,56 @@
 	<xsl:param name="FormName"/>
 class lb_I_<xsl:value-of select="$FormName"/> : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL add<xsl:value-of select="$FormName"/>(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
+	virtual long		LB_STDCALL add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:choose>
+<xsl:when test="@isfk='1'">long <xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"> /* Special column _<xsl:value-of select="@name"/> */</xsl:when>
+	<xsl:otherwise><xsl:choose>
+	<xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
+	<xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
+	<xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
+	<xsl:when test="@dbtype='String'">const char* _<xsl:value-of select="$FieldName"/>, </xsl:when></xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+
+</xsl:for-each> long <xsl:value-of select="$FormName"/>ID = -1) = 0;
 	virtual bool		LB_STDCALL select<xsl:value-of select="$FormName"/>(long _id) = 0;
 	virtual int			LB_STDCALL get<xsl:value-of select="$FormName"/>Count() = 0;
 	virtual bool		LB_STDCALL hasMore<xsl:value-of select="$FormName"/>() = 0;
 	virtual void		LB_STDCALL setNext<xsl:value-of select="$FormName"/>() = 0;
 	virtual void		LB_STDCALL finish<xsl:value-of select="$FormName"/>Iteration() = 0;
 
-<xsl:for-each select="//packagedElement[@xmi:id=$FormularID]/ownedAttribute[@xmi:type='uml:Property']">
-<xsl:variable name="backendType"><xsl:call-template name="MapType"/></xsl:variable>
-<xsl:if test="$backendType!='lb_I_Collection'">
-<xsl:if test="@name!=''">
-<xsl:value-of select="'    '"/>virtual<xsl:value-of select="$backendType"/> LB_STDCALL get_<xsl:value-of select="@name"/>() = 0;
-</xsl:if>
-</xsl:if>
-</xsl:for-each>
-};
+	virtual long LB_STDCALL get_id() = 0;
+
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+
+<xsl:choose>
+	<xsl:when test="@isfk='1'">
+<xsl:value-of select="'    '"/>virtual long LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+	</xsl:when>
+	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
+		// Special column <xsl:value-of select="@name"/>
+	</xsl:when>
+	<xsl:otherwise>
+<xsl:choose>
+			<xsl:when test="@dbtype='Bit'">
+<xsl:value-of select="'    '"/>virtual bool LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+			</xsl:when>
+			<xsl:when test="@dbtype='Float'">
+<xsl:value-of select="'    '"/>virtual float LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+			</xsl:when>
+			<xsl:when test="@dbtype='Integer'">
+<xsl:value-of select="'    '"/>virtual int LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+			</xsl:when>
+			<xsl:when test="@dbtype='String'">
+<xsl:value-of select="'    '"/>virtual char* LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+			</xsl:when>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+
+</xsl:for-each>};
 </xsl:template>
 
 <xsl:template name="EntityModelInterfaceMisc">

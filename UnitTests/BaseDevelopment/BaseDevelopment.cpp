@@ -819,6 +819,7 @@ public:
 	TEST_FIXTURE( BaseDevelopmentContainer )
 	{
 		TEST_CASE(test_Instanciate_lbContainer)
+		TEST_CASE(test_lbContainer_Order)
 		TEST_CASE(test_lbContainer_InsertString_with_Integer_Key)
 		TEST_CASE(test_lbContainer_lookup_byKey)
 		TEST_CASE(test_lbContainer_lookupNI_byExists)
@@ -918,6 +919,76 @@ public:
 		ASSERT_EQUALS( true, c.getPtr() != NULL );
 	}
 
+	void test_lbContainer_Order( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_Order");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+
+
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(i, lb_I_KeyBase, key)
+
+		*s = "Testvalue1";
+		i->setData(1);
+		c->insert(&uk, &key);
+		*s = "Testvalue2";
+		i->setData(2);
+		c->insert(&uk, &key);
+		*s = "Testvalue3";
+		i->setData(3);
+		c->insert(&uk, &key);
+		*s = "Testvalue4";
+		i->setData(4);
+		c->insert(&uk, &key);
+		*s = "Testvalue5";
+		i->setData(5);
+		c->insert(&uk, &key);
+
+		ASSERT_EQUALS( 5, c->Count() );
+
+		UAP(lb_I_String, resultedString)
+		UAP(lb_I_Unknown, uk1)
+
+		uk1 = c->getElement(&key);
+
+		ASSERT_EQUALS( true, uk1 != NULL );
+
+		c->finishIteration();
+		
+		c->hasMoreElements();
+		uk1 = c->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
+		
+		c->hasMoreElements();
+		uk1 = c->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
+		
+		c->hasMoreElements();
+		uk1 = c->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
+		
+		c->hasMoreElements();
+		uk1 = c->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
+		
+		c->hasMoreElements();
+		uk1 = c->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
+		
+	}
+	
 	void test_lbContainer_lookup_byKey( void )
 	{
 		lbErrCodes err = ERR_NONE;
@@ -1333,6 +1404,7 @@ public:
 // The first Sqlite base test will cause an application crash at exit, but the second will suceed.
 		TEST_CASE(test_Sqlite_FailingQuery)
 		TEST_CASE(test_Sqlite_ForeignKey)
+		TEST_CASE(test_Sqlite_ColumnOrder)
 	}
 
 
@@ -1427,6 +1499,106 @@ public:
 		ASSERT_EQUALS( ERR_NONE, err3);
     }
 
+	void test_Sqlite_ColumnOrder( void )
+	{
+	lbErrCodes err = ERR_NONE;
+	puts("test_Sqlite_ColumnOrder");
+
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Database, db)
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+	
+	ASSERT_EQUALS( true, db.getPtr() != NULL );
+
+	ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+
+	UAP(lb_I_Query, query)
+
+	query = db->getQuery("UnitTestSqlite", 0);
+
+	ASSERT_EQUALS( true, query != NULL);
+
+        lbErrCodes err1;
+        lbErrCodes err2;
+
+        err1 = query->query(
+			"CREATE TABLE test ("
+			"	id INTEGER PRIMARY KEY,"
+			"	AName BPCHAR,"
+			"	BName BPCHAR"
+			")"
+			, false);
+
+		UAP(lb_I_Container, columns)
+		columns = db->getColumns("UnitTestSqlite");
+		
+		int count = 1;
+		
+		columns->finishIteration();
+		while (columns->hasMoreElements()) {
+			UAP(lb_I_Unknown, ukPage)
+			UAP(lb_I_Container, columnsPageContainer)
+			ukPage = columns->nextElement();
+			QI(ukPage, lb_I_Container, columnsPageContainer)
+
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			
+			columnsPageContainer->finishIteration();
+			while (columnsPageContainer->hasMoreElements()) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_Parameter, param)
+				uk = columnsPageContainer->nextElement();
+				QI(uk, lb_I_Parameter, param)
+				*name = "4";
+				param->getUAPString(*&name, *&value);
+			
+				if (*value == "test") {
+					*name = "5";
+					param->getUAPString(*&name, *&value);
+					if (count == 1) {
+						ASSERT_EQUALS( "id", value->charrep());
+					}
+					if (count == 2) {
+						ASSERT_EQUALS( "AName", value->charrep());
+					}
+					if (count == 3) {
+						ASSERT_EQUALS( "BName", value->charrep());
+					}
+					count++;
+				}
+			}
+			
+			columnsPageContainer->finishIteration();
+			
+			UAP(lb_I_DBColumns, DBColumns)
+			
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_DBColumns, "Model", DBColumns, "'database plugin'")
+			
+			DBColumns->addPagedConainer(*&columnsPageContainer);
+			
+			count = 1;
+			//DBColumns->finishColumnIteration();
+			while (DBColumns->hasMoreColumns()) {
+				DBColumns->setNextColumn();
+				if (strcmp(DBColumns->getColumnTableName(), "test") == 0) {
+					*value = DBColumns->getColumnName();
+					if (count == 1) {
+						ASSERT_EQUALS( "id", value->charrep());
+					}
+					if (count == 2) {
+						ASSERT_EQUALS( "AName", value->charrep());
+					}
+					if (count == 3) {
+						ASSERT_EQUALS( "BName", value->charrep());
+					}
+					count++;
+				}
+			}
+			
+		}
+	}
+	
     void test_Sqlite_ForeignKey( void )
     {
 	lbErrCodes err = ERR_NONE;
@@ -1822,24 +1994,25 @@ public:
 
 
 
-DECLARE_FIXTURE( BaseDevelopmentHook )
-DECLARE_FIXTURE( BaseDevelopmentString )
-DECLARE_FIXTURE( BaseDevelopmentLogger )
-DECLARE_FIXTURE( BaseDevelopmentInputStream )
+//DECLARE_FIXTURE( BaseDevelopmentHook )
+//DECLARE_FIXTURE( BaseDevelopmentString )
+//DECLARE_FIXTURE( BaseDevelopmentLogger )
+//DECLARE_FIXTURE( BaseDevelopmentInputStream )
 DECLARE_FIXTURE( BaseDevelopmentContainer )
-DECLARE_FIXTURE( BaseDevelopmentEventManager )
-DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
+//DECLARE_FIXTURE( BaseDevelopmentEventManager )
+//DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
+
 // The database tests are faulting at exit of the test application (the Sqlite failing query test is the cause).
 DECLARE_FIXTURE( BaseDevelopmentDatabase )
 
 __attribute__ ((constructor)) void ct() {
-	USE_FIXTURE( BaseDevelopmentHook )
-	USE_FIXTURE( BaseDevelopmentString )
-	USE_FIXTURE( BaseDevelopmentLogger )
-	USE_FIXTURE( BaseDevelopmentInputStream )
+//	USE_FIXTURE( BaseDevelopmentHook )
+//	USE_FIXTURE( BaseDevelopmentString )
+//	USE_FIXTURE( BaseDevelopmentLogger )
+//	USE_FIXTURE( BaseDevelopmentInputStream )
 	USE_FIXTURE( BaseDevelopmentContainer )
-	USE_FIXTURE( BaseDevelopmentEventManager )
-	USE_FIXTURE( BaseDevelopmentMetaApplication )
+//	USE_FIXTURE( BaseDevelopmentEventManager )
+//	USE_FIXTURE( BaseDevelopmentMetaApplication )
 	USE_FIXTURE( BaseDevelopmentDatabase )
 }
 

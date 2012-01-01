@@ -136,24 +136,24 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	if (columntypes != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, fieldname)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, specialColumn)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, specialColumn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, columnType)
 
-		columntypes->finishTypeIteration();
-		while (columntypes->hasMoreTypes()) {
-			columntypes->setNextType();
+		columntypes->finishColumn_TypesIteration();
+		while (columntypes->hasMoreColumn_Types()) {
+			columntypes->setNextColumn_Types();
 			
-			*tablename = columntypes->getTableName();
-			*fieldname = columntypes->getName();
-			*specialColumn = columntypes->getSpecialColumn();
-			*columnType = columntypes->getControlType();
+			*tablename = columntypes->get_tablename();
+			*fieldname = columntypes->get_name();
+			specialColumn->setData(columntypes->get_specialcolumn());
+			*columnType = columntypes->get_controltype();
 
 			for (int i = 1; i <= query->getColumns(); i++) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 				
 				col->setData(query->getColumnName(i));
 
-				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && columntypes->getReadonly()) {
+				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && columntypes->get_ro()) {
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					
@@ -163,7 +163,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 					ROFields->insert(&uk, &key);
 				}
 				
-				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
+				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((bool)specialColumn->getData())) {
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					
@@ -175,7 +175,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 			}
 		}
-		columntypes->finishTypeIteration();
+		columntypes->finishColumn_TypesIteration();
 	} else {
 		UAP(lb_I_Database, database)
 		char* dbbackend = meta->getSystemDatabaseBackend();
