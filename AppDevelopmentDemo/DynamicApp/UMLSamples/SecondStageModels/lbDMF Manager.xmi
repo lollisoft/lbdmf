@@ -265,7 +265,7 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 					</packagedElement>
-					<packagedElement xmi:type="uml:Class" name="Formularaktionenzuordnen" xmi:id="BOUML_0x1f802_4" visibility="package">
+					<packagedElement xmi:type="uml:Class" name="Formular_Actions" xmi:id="BOUML_0x1f802_4" visibility="package">
 						<xmi:Extension extender="Bouml">
 							<stereotype name="form"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="actions_formulare.png"/>
@@ -674,19 +674,22 @@
 							<stereotype name="form"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="view_detailed.png"/>
 						</xmi:Extension>
-						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x28e02_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x28f82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x28e82_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="dbtype" xmi:id="BOUML_0x28f02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x28f82_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="isforeignkey" xmi:id="BOUML_0x2ec02_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x28e02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29002_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x28e82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="formularid" xmi:id="BOUML_0x29082_1" visibility="protected">
@@ -700,6 +703,12 @@
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="expression" xmi:id="BOUML_0x2ad02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="src_actionid" xmi:id="BOUML_0x2ea02_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_0"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="dst_actionid" xmi:id="BOUML_0x2ea82_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_0"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="description" xmi:id="BOUML_0x2ad82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -782,6 +791,9 @@
 							<stereotype name="form"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="ktip.png"/>
 						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="description" xmi:id="BOUML_0x2d082_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x2cf02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -791,8 +803,8 @@
 						<ownedAttribute xmi:type="uml:Property" name="interface" xmi:id="BOUML_0x2d002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="description" xmi:id="BOUML_0x2d082_1" visibility="protected">
-							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						<ownedAttribute xmi:type="uml:Property" name="action_step_id" xmi:id="BOUML_0x2eb02_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_0"/>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:UseCase" xmi:id="BOUML_0x1f402_5" name="New User">
@@ -931,16 +943,16 @@
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC1_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC2_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC2_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC3_0x28882_11"/>
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC3_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC4_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC4_0x28882_11"/>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">
@@ -1920,23 +1932,22 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formular_fields" xmi:id="BOUML_0x26a82_4" visibility="package">
 						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
-						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x29102_1" visibility="protected">
-							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
-							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
-						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x29182_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x29302_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x29202_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29382_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="dbtype" xmi:id="BOUML_0x29282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="fkname" xmi:id="BOUML_0x29302_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="isforeignkey" xmi:id="BOUML_0x2eb82_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x29182_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x29382_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x29202_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="formularid" xmi:id="BOUML_0x27f02_0" visibility="protected" association="BOUML_ASSOC_0x27f02_0" aggregation="none">
@@ -1949,6 +1960,10 @@
 								<taggedValue tag="lbDMF:relationship:table" value=""/>
 								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
 							</xmi:Extension>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x29102_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x1fe02_0" visibility="protected">
