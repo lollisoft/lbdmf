@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 39
+  revision 40
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -396,7 +396,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137346 // Formularaktionenzuordnen (Formularaktionenzuordnen)
-	  b parent class_ref 129026 // Formularaktionenzuordnen
+	  b parent class_ref 129026 // Formular_Actions
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
@@ -761,7 +761,7 @@ ${inlines}
       end
     end
 
-    class 129026 "Formularaktionenzuordnen"
+    class 129026 "Formular_Actions"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -1524,7 +1524,7 @@ ${inlines}
       
       ncouples 1
       key "lbDMF:toolbarimagefile" value "view_detailed.png"
-      attribute 167426 "name"
+      attribute 167810 "fkname"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1534,7 +1534,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 167554 "tablename"
+      attribute 167938 "fktable"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1554,7 +1554,17 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 167810 "fkname"
+      attribute 191490 "isforeignkey"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167426 "name"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1564,7 +1574,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 167938 "fktable"
+      attribute 167554 "tablename"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1617,6 +1627,26 @@ ${inlines}
 
       attribute 175362 "expression"
 	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 190978 "src_actionid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 191106 "dst_actionid"
+	protected explicit_type "ForeignKey"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1910,6 +1940,16 @@ ${inlines}
 	  b parent class_ref 130050 // action_step_parameter
       end
 
+      attribute 184450 "description"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 184066 "name"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1940,8 +1980,8 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 184450 "description"
-	protected explicit_type "string"
+      attribute 191234 "action_step_id"
+	protected explicit_type "ForeignKey"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
