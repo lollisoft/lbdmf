@@ -48,7 +48,6 @@
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
 /*...e*/
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbFormularsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbFormularsModel, lbFormularsModel)
@@ -57,15 +56,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularsModel)
 	ADD_INTERFACE(lb_I_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbFormularsModel)
-
-void		LB_STDCALL lbFormularsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbFormularsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbFormularsModel::lbFormularsModel() {
 	
@@ -154,7 +144,7 @@ void		LB_STDCALL lbFormularsModel::deleteUnmarked() {
 		setNextFormular();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -172,7 +162,7 @@ void		LB_STDCALL lbFormularsModel::deleteMarked() {
 		setNextFormular();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -300,7 +290,7 @@ char* LB_STDCALL lbFormularsModel::getEventName() {
 	return currentEventName->charrep();
 }
 
-long  LB_STDCALL lbFormularsModel::getID() {
+long  LB_STDCALL lbFormularsModel::getFormularID() {
 	return currentFormularID->getData();
 }
 
@@ -330,8 +320,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -434,16 +422,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularFieldsModel)
 	ADD_INTERFACE(lb_I_Formular_Fields)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbFormularFieldsModel)
-
-
-void		LB_STDCALL lbFormularFieldsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbFormularFieldsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbFormularFieldsModel::lbFormularFieldsModel() {
 	
@@ -479,7 +457,7 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, IsFK)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularFieldID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -508,13 +486,13 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 			}
 		}
 		uniqueID++;
-		ID->setData(uniqueID);
+		FormularFieldID->setData(uniqueID);
 	} else {
 		if (fieldid == -1) {
 			uniqueID++;
-			ID->setData(uniqueID);
+			FormularFieldID->setData(uniqueID);
 		} else {
-			ID->setData(fieldid);
+			FormularFieldID->setData(fieldid);
 		}
 	}
 	
@@ -535,13 +513,13 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 	*paramname = "FormularID";
 	param->setUAPLong(*&paramname, *&FormularID);
 	*paramname = "ID";
-	param->setUAPLong(*&paramname, *&ID);
+	param->setUAPLong(*&paramname, *&FormularFieldID);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
-	QI(FormularID, lb_I_KeyBase, key)
+	QI(FormularFieldID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
 	
 	FormularFields->insert(&ukParam, &key);
@@ -556,7 +534,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteUnmarked() {
 		setNextField();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -574,7 +552,7 @@ void		LB_STDCALL lbFormularFieldsModel::deleteMarked() {
 		setNextField();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getFormularID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -735,8 +713,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
