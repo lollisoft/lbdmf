@@ -1501,22 +1501,22 @@ public:
 
 	void test_Sqlite_ColumnOrder( void )
 	{
-	lbErrCodes err = ERR_NONE;
-	puts("test_Sqlite_ColumnOrder");
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_ColumnOrder");
 
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	UAP(lb_I_Database, db)
-	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
-	
-	ASSERT_EQUALS( true, db.getPtr() != NULL );
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
 
-	ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
 
-	UAP(lb_I_Query, query)
+		UAP(lb_I_Query, query)
 
-	query = db->getQuery("UnitTestSqlite", 0);
+		query = db->getQuery("UnitTestSqlite", 0);
 
-	ASSERT_EQUALS( true, query != NULL);
+		ASSERT_EQUALS( true, query != NULL);
 
         lbErrCodes err1;
         lbErrCodes err2;
@@ -1533,6 +1533,10 @@ public:
 		columns = db->getColumns("UnitTestSqlite");
 		
 		int count = 1;
+		int checked = 0;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		
 		columns->finishIteration();
 		while (columns->hasMoreElements()) {
@@ -1541,8 +1545,6 @@ public:
 			ukPage = columns->nextElement();
 			QI(ukPage, lb_I_Container, columnsPageContainer)
 
-			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 			
 			columnsPageContainer->finishIteration();
 			while (columnsPageContainer->hasMoreElements()) {
@@ -1558,45 +1560,52 @@ public:
 					param->getUAPString(*&name, *&value);
 					if (count == 1) {
 						ASSERT_EQUALS( "id", value->charrep());
+						checked++;
 					}
 					if (count == 2) {
 						ASSERT_EQUALS( "AName", value->charrep());
+						checked++;
 					}
 					if (count == 3) {
 						ASSERT_EQUALS( "BName", value->charrep());
+						checked++;
 					}
 					count++;
 				}
 			}
 			
-			columnsPageContainer->finishIteration();
-			
-			UAP(lb_I_DBColumns, DBColumns)
-			
-			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_DBColumns, "Model", DBColumns, "'database plugin'")
-			
-			DBColumns->addPagedConainer(*&columnsPageContainer);
-			
-			count = 1;
-			//DBColumns->finishColumnIteration();
-			while (DBColumns->hasMoreColumns()) {
-				DBColumns->setNextColumn();
-				if (strcmp(DBColumns->getColumnTableName(), "test") == 0) {
-					*value = DBColumns->getColumnName();
-					if (count == 1) {
-						ASSERT_EQUALS( "id", value->charrep());
-					}
-					if (count == 2) {
-						ASSERT_EQUALS( "AName", value->charrep());
-					}
-					if (count == 3) {
-						ASSERT_EQUALS( "BName", value->charrep());
-					}
-					count++;
-				}
-			}
-			
+			//columnsPageContainer->finishIteration();
 		}
+
+		UAP(lb_I_DBColumns, DBColumns)
+		
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_DBColumns, "Model", DBColumns, "'database plugin'")
+		
+		DBColumns->addPagedConainer(*&columns);
+		
+		count = 1;
+		DBColumns->finishColumnIteration();
+		while (DBColumns->hasMoreColumns()) {
+			DBColumns->setNextColumn();
+			if (strcmp(DBColumns->getColumnTableName(), "test") == 0) {
+				*value = DBColumns->getColumnName();
+				if (count == 1) {
+					ASSERT_EQUALS( "id", value->charrep());
+					checked++;
+				}
+				if (count == 2) {
+					ASSERT_EQUALS( "AName", value->charrep());
+					checked++;
+				}
+				if (count == 3) {
+					ASSERT_EQUALS( "BName", value->charrep());
+					checked++;
+				}
+				count++;
+			}
+		}
+		
+		ASSERT_EQUALS( 6, checked);
 	}
 	
     void test_Sqlite_ForeignKey( void )
