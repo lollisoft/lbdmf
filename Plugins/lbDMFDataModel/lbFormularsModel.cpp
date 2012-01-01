@@ -479,7 +479,7 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, IsFK)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularFieldID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FormularID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -508,13 +508,13 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 			}
 		}
 		uniqueID++;
-		ID->setData(uniqueID);
+		FormularFieldID->setData(uniqueID);
 	} else {
 		if (fieldid == -1) {
 			uniqueID++;
-			ID->setData(uniqueID);
+			FormularFieldID->setData(uniqueID);
 		} else {
-			ID->setData(fieldid);
+			FormularFieldID->setData(fieldid);
 		}
 	}
 	
@@ -535,13 +535,13 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 	*paramname = "FormularID";
 	param->setUAPLong(*&paramname, *&FormularID);
 	*paramname = "ID";
-	param->setUAPLong(*&paramname, *&ID);
+	param->setUAPLong(*&paramname, *&FormularFieldID);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
-	QI(FormularID, lb_I_KeyBase, key)
+	QI(FormularFieldID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
 	
 	FormularFields->insert(&ukParam, &key);
