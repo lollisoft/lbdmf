@@ -558,7 +558,7 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, const c
                 UAP(lb_I_String, name)
                 name = query->getColumnName(i);
                 
-                if (query->hasFKColumn(name->charrep()) == 1 && !haveNotMappedForeignKeyFields(forms->getName(), name->charrep())) {
+                if (query->hasFKColumn(name->charrep()) == 1 && !haveNotMappedForeignKeyFields(forms->get_name(), name->charrep())) {
                         cBoxFKNames->Append(wxString(name->charrep()));
                 }
         }
