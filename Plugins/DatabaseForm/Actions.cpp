@@ -367,7 +367,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStep_Parameters(step->getData(), _interface->charrep(), value->charrep(), name->charrep(), description->charrep());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 				err = query->next();
 			}
@@ -380,7 +380,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStep_Parameters(step->getData(), _interface->charrep(), value->charrep(), name->charrep(), description->charrep());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
@@ -402,7 +402,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);		
 				
-				stepParameters->addActionStep_Parameters(step->getData(), _interface->charrep(), value->charrep(), name->charrep(), description->charrep());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
