@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.72 2011/10/29 06:03:58 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.73 2012/01/04 06:37:19 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.73  2012/01/04 06:37:19  lollisoft
+ * Compiles against generated entity model.
+ *
  * Revision 1.72  2011/10/29 06:03:58  lollisoft
  * Refactored application model (and it's model classes) into separate files to enable code generation.
  * The code generation is planned for the model classes and the composite container for the model.
@@ -1818,6 +1821,9 @@ public:
 	lbDatabaseTableViewPanel* panel;
 	bool _created;
 };
+
+// Helper
+char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
 
 
 #ifdef __cplusplus
