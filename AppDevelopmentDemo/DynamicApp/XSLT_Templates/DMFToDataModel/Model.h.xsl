@@ -143,7 +143,7 @@ public:
 	virtual ~lb<xsl:value-of select="$FormName"/>Model();
 
 	long		LB_STDCALL add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:choose>
-<xsl:when test="@isfk='1'">long <xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"> /* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 	<xsl:otherwise><xsl:choose>
 	<xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
@@ -153,7 +153,8 @@ public:
 	</xsl:otherwise>
 </xsl:choose>
 
-</xsl:for-each> long <xsl:value-of select="$FormName"/>ID = -1);
+</xsl:for-each> long _<xsl:value-of select="$FormName"/>ID = -1);
+
 	bool		LB_STDCALL select<xsl:value-of select="$FormName"/>(long _id);
 	int			LB_STDCALL get<xsl:value-of select="$FormName"/>Count();
 	bool		LB_STDCALL hasMore<xsl:value-of select="$FormName"/>();
@@ -166,7 +167,7 @@ public:
 
 <xsl:choose>
 	<xsl:when test="@isfk='1'">
-<xsl:value-of select="'    '"/>long LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
+	long		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
 	</xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
 		// Special column <xsl:value-of select="@name"/>
@@ -174,26 +175,20 @@ public:
 	<xsl:otherwise>
 <xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-<xsl:value-of select="'    '"/>bool LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
-			</xsl:when>
+	bool		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 			<xsl:when test="@dbtype='Float'">
-<xsl:value-of select="'    '"/>float LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
-			</xsl:when>
+	float		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-<xsl:value-of select="'    '"/>int LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
-			</xsl:when>
+	int			LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 			<xsl:when test="@dbtype='String'">
-<xsl:value-of select="'    '"/>char* LB_STDCALL get_<xsl:value-of select="$FieldName"/>();
-			</xsl:when>
+	char*		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
 
 </xsl:for-each>
 
-<xsl:value-of select="'    '"/>/** \brief Get the field id.
-<xsl:value-of select="'     '"/>*/
-<xsl:value-of select="'    '"/>virtual long get_id() = 0;
+	long		LB_STDCALL get_id();
 
 	bool		LB_STDCALL ismarked();
 	void		LB_STDCALL mark();
@@ -216,7 +211,7 @@ public:
 
 <xsl:choose>
 	<xsl:when test="@isfk='1'">
-<xsl:value-of select="'    '"/>UAP(lb_I_Long, current<xsl:value-of select="$FieldName"/>();
+	UAP(lb_I_Long, current<xsl:value-of select="$FieldName"/>)
 	</xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
 		// Special column <xsl:value-of select="@name"/>
@@ -224,16 +219,16 @@ public:
 	<xsl:otherwise>
 <xsl:choose>
 			<xsl:when test="@dbtype='Bit'">
-<xsl:value-of select="'    '"/>UAP(lb_I_Boolean, current<xsl:value-of select="$FieldName"/>();
+	UAP(lb_I_Boolean, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
-<xsl:value-of select="'    '"/>UAP(lb_I_Float, current<xsl:value-of select="$FieldName"/>();
+	UAP(lb_I_Float, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-<xsl:value-of select="'    '"/>UAP(lb_I_Integer, current<xsl:value-of select="$FieldName"/>();
+	UAP(lb_I_Integer, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
-<xsl:value-of select="'    '"/>UAP(lb_I_String, current<xsl:value-of select="$FieldName"/>();
+	UAP(lb_I_String, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>

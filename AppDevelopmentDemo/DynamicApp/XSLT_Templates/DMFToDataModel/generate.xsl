@@ -38,6 +38,7 @@
 
 <xsl:import href="Model.h.xsl"/>
 <xsl:import href="Model.cpp.xsl"/>
+<xsl:import href="plugin.cpp.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
@@ -159,6 +160,12 @@ Export application code to <xsl:value-of select="$basedir"/>
 </xsl:call-template>
 </exsl:document>
 </xsl:for-each>
+
+<exsl:document href="{$basedir}/Plugins/lbDMFDataModel/plugin.cpp" method="text">
+<xsl:call-template name="plugin.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+</exsl:document>
 
 
 <exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/App/EntityModelDecl.inc" method="text">
