@@ -127,7 +127,7 @@
 #include &lt;lbdmfdatamodel-module.h&gt;
 /*...e*/
 #include &lt;lbInterfaces-<xsl:value-of select="$ApplicationName"/>.h&gt;
-#include &lt;lb<xsl:value-of select="$FormName"/>Model.h&gt;
+#include &lt;Generated_EntityModel<xsl:value-of select="$FormName"/>.h&gt;
 
 IMPLEMENT_FUNCTOR(instanceOflb<xsl:value-of select="$FormName"/>Model, lb<xsl:value-of select="$FormName"/>Model)
 
@@ -181,18 +181,18 @@ lbErrCodes LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setData(lb_I_Un
 }
 
 long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
-<xsl:choose><xsl:when test="@isfk='1'">long <xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:choose><xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">/* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 <xsl:otherwise><xsl:choose>
 <xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="@dbtype='String'">char* _<xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='String'">const char* _<xsl:value-of select="$FieldName"/>, </xsl:when>
 </xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
 
-</xsl:for-each> long <xsl:value-of select="$FormName"/>ID) {
+</xsl:for-each> long _<xsl:value-of select="$FormName"/>ID) {
 	lbErrCodes err = ERR_NONE;
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
@@ -211,7 +211,7 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 
 </xsl:for-each>
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, _<xsl:value-of select="$FormName"/>ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, __<xsl:value-of select="$FormName"/>ID)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 
@@ -219,13 +219,13 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
-<xsl:choose><xsl:when test="@isfk='1'"><xsl:value-of select="'    '"/>_<xsl:value-of select="@name"/>-&gt;setData(<xsl:value-of select="@name"/>);
+<xsl:choose><xsl:when test="@isfk='1'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">// Special column <xsl:value-of select="@name"/>
 </xsl:when>
 <xsl:otherwise>
-<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
-</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
-</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>));
+<xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>);
+</xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>);
+</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>__<xsl:value-of select="@name"/>-&gt;setData(_<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>*__<xsl:value-of select="@name"/> = _<xsl:value-of select="@name"/>;
 </xsl:when>
 		</xsl:choose>
@@ -234,30 +234,28 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 
 </xsl:for-each>
 	
-	_<xsl:value-of select="$FormName"/>ID-&gt;setData(<xsl:value-of select="$FormName"/>ID);
+	__<xsl:value-of select="$FormName"/>ID-&gt;setData(_<xsl:value-of select="$FormName"/>ID);
 
-	_LOG &lt;&lt; "lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>('" &lt;&lt; name &lt;&lt; "', '" &lt;&lt; menuname &lt;&lt; "'...) called." LOG_
-	
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPLong(*&amp;paramname, *&amp;_<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPLong(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
 // Special column <xsl:value-of select="@name"/>
 </xsl:when>
 <xsl:otherwise>
 <xsl:choose><xsl:when test="@dbtype='Bit'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPBoolean(*&amp;paramname, *&amp;_<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPBoolean(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='Float'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPFloat(*&amp;paramname, *&amp;_<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPFloat(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='Integer'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPInteger(*&amp;paramname, *&amp;_<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPInteger(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='String'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPString(*&amp;paramname, *&amp;_<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPString(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when>
 		</xsl:choose>
 	</xsl:otherwise>
@@ -266,14 +264,14 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 </xsl:for-each>
 
 	*paramname = "<xsl:value-of select="$FormName"/>ID";
-	param-&gt;setUAPLong(*&amp;paramname, *&amp;<xsl:value-of select="$FormName"/>ID);
+	param-&gt;setUAPLong(*&amp;paramname, *&amp;__<xsl:value-of select="$FormName"/>ID);
 
 	*paramname = "marked";
 	param-&gt;setUAPLong(*&amp;paramname, *&amp;marked);
 
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
-	QI(<xsl:value-of select="$FormName"/>ID, lb_I_KeyBase, key)
+	QI(__<xsl:value-of select="$FormName"/>ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
 	
 	<xsl:value-of select="$FormName"/>-&gt;insert(&amp;ukParam, &amp;key);
@@ -288,7 +286,7 @@ void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
 		setNext<xsl:value-of select="$FormName"/>();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID-&gt;setData(getID());
+			ID-&gt;setData(get_id());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -306,7 +304,7 @@ void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteMarked() {
 		setNext<xsl:value-of select="$FormName"/>();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID-&gt;setData(getID());
+			ID-&gt;setData(get_id());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
