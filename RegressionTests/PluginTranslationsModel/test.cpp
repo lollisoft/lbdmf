@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 
 		QI(uk, lb_I_Translations, translations)
 
-		translations->addTranslation("Auto", "car", "german", 1);
+		translations->addTranslations("Auto", "car", "german", 1);
 	}
 
 	PM->unload();
