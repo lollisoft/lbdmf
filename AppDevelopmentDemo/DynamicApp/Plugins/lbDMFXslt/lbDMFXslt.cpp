@@ -206,6 +206,29 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
 	return false;
 }
 
+lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
+	applications->finishApplicationsIteration();
+	
+	while (applications->hasMoreApplications()) {
+		applications->setNextApplications();
+		if (strcmp(applications->get_name(), name) == 0)
+			return ERR_NONE;
+	}
+	
+	return ERR_ENTITY_NOT_FOUND;
+}
+
+char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
+	from->finishApplicationParameterIteration();
+	
+	while (from->hasMoreApplicationParameter()) {
+		from->setNextApplicationParameter();
+		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
+			return from->get_parametervalue();
+	}
+
+	return NULL;
+}
 
 /**
  * \brief Perform XSLT transformation as action step.
@@ -316,7 +339,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	apps = securityManager->getApplicationModel();
 	QI(apps, lb_I_Applications, applications)
 	
-	applications->selectApplication(ApplicationName->charrep());
+	lookupApplication(*&applications, ApplicationName->charrep());
 	
 	if (activeDocument != NULL) {
 		UAP(lb_I_KeyBase, key)
@@ -329,16 +352,16 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		QI(name, lb_I_KeyBase, key)
 		uk = document->getElement(&key);
 		QI(uk, lb_I_ApplicationParameter, appParams)
-		AppID->setData(applications->getID());
+		AppID->setData(applications->get_id());
 		
 		id = (long) AppID->getData();
 		
-        _CL_LOG << "Change to new output directory: " << appParams->getParameter("codegenbasedir", id) LOG_
+        _CL_LOG << "Change to new output directory: " << lookupParameter(*&appParams, "codegenbasedir", id) LOG_
 		
-		if (strcmp(appParams->getParameter("codegenbasedir", id), "") == 0) {
+		if (strcmp(lookupParameter(*&appParams, "codegenbasedir", id), "") == 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dirloc)
 			if (metaapp->askForDirectory(*&dirloc)) {
-				appParams->addParameter("codegenbasedir", dirloc->charrep(), id);
+				appParams->addApplicationParameter("codegenbasedir", dirloc->charrep(), id);
 				
 				UAP(lb_I_Database, database)
 				
@@ -449,7 +472,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	metaapp->setStatusText("Info", "Read XML data ...");
 	// *********************************************************
 
-	if (do_chdir) chdir(appParams->getParameter("codegenbasedir", id));
+	if (do_chdir) chdir(lookupParameter(*&appParams, "codegenbasedir", id));
 
 	exsltRegisterAll();
 	xsltSecurityPrefsPtr sec = NULL;
