@@ -182,25 +182,25 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 			
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectAction_Steps(myActionID);
+			*What = appActionSteps->get_what();
 			
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.
 			
-			transitions->finishActionStepTransitionIteration();
-			while (transitions->hasMoreActionStepTransitions()) {
-				transitions->setNextActionStepTransition();
+			transitions->finishAction_Step_TransitionsIteration();
+			while (transitions->hasMoreAction_Step_Transitions()) {
+				transitions->setNextAction_Step_Transitions();
 				// First use a simple expression without any Lex & Yacc parser
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
 				long dst_actionid;
 				UAP_REQUEST(getModuleInstance(), lb_I_String, expression)
 				//wxString expression;
-				*expression = transitions->getActionStepTransitionDecision();
-				dst_actionid = transitions->getActionStepTransitionDstActionID();
+				*expression = transitions->get_expression();
+				dst_actionid = transitions->get_dst_actionid();
 				
-				if (transitions->getActionStepTransitionSrcActionID() == myActionID) {
+				if (transitions->get_src_actionid() == myActionID) {
 					_LOG << "Evaluate expression '" << expression->charrep() << "' of actionid = " << myActionID LOG_
 					if (expression->strpos("==") != -1) {
 						// equal operator
