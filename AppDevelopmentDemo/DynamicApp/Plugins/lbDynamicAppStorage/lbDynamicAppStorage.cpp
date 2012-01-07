@@ -383,7 +383,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 	meta->setStatusText("Info", "Write XML document ...");
 	
-	applications->selectApplication(AppID->getData());
+	applications->selectApplications(AppID->getData());
 	applications->mark();
 
 	if ((forms != NULL) &&

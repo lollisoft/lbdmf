@@ -218,8 +218,8 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectAction_Steps(myActionID);
+			*What = appActionSteps->get_what();
 
 			*msg = "Send signal to dispatcher (";
 
@@ -234,16 +234,17 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 
 			// Build up the required parameters (with substituted placeholders) for the configured signal
 			int I = 0;
-			while (SignalParams->hasMoreActionStepParameters()) {
+			SignalParams->finishActionStep_ParametersIteration();
+			while (SignalParams->hasMoreActionStep_Parameters()) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
 				UAP_REQUEST(getModuleInstance(), lb_I_String, valueSubstituted)
 
-				SignalParams->setNextActionStepParameter();
+				SignalParams->setNextActionStep_Parameters();
 
-				*name = SignalParams->getActionStepParameterName();
-				*value = SignalParams->getActionStepParameterValue();
+				*name = SignalParams->get_name();
+				*value = SignalParams->get_value();
 
 				_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for dispatcher." LOG_
 
@@ -285,18 +286,18 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 			UAP(lb_I_Unknown, uk_result)
 			QI(result, lb_I_Unknown, uk_result)
 
-			dispatcher->dispatch(appActionSteps->getActionStepBezeichnung(), uk.getPtr(), &uk_result);
+			dispatcher->dispatch(appActionSteps->get_bezeichnung(), uk.getPtr(), &uk_result);
 
 ///\todo Check if there is a need to evaluate the result or pass it back (askYesNo).
 
 /*
  * At least in a case of askYesNo there may be a change in a flow in a non linear action. Thus a value must be passed back.
- * To distinguish each result of such an action the name could be used from getActionStepBezeichnung().
+ * To distinguish each result of such an action the name could be used from get_bezeichnung().
  */
 #define PASS_BACK_RESULT
 #ifdef PASS_BACK_RESULT
 			UAP_REQUEST(getModuleInstance(), lb_I_String, passback)
-			*passback = appActionSteps->getActionStepBezeichnung();
+			*passback = appActionSteps->get_bezeichnung();
 
 			params->setUAPString(*&passback, *&result);
 #endif
