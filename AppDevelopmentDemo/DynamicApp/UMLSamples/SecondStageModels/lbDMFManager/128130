@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 40
+  revision 42
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -718,7 +718,7 @@ ${inlines}
       end
     end
 
-    class 128898 "Uebersetzungen"
+    class 128898 "Translations"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -743,6 +743,16 @@ ${inlines}
       end
 
       attribute 130690 "text"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 206210 "language"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -828,7 +838,7 @@ ${inlines}
       
       ncouples 1
       key "lbDMF:toolbarimagefile" value "app_params.png"
-      attribute 130946 "parametervalue"
+      attribute 131074 "parametername"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -838,7 +848,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 131074 "parametername"
+      attribute 130946 "parametervalue"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -867,7 +877,7 @@ ${inlines}
       end
     end
 
-    class 129410 "Reportdefinitionen"
+    class 129410 "Reports"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -916,13 +926,13 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137474 // Reportparameter (Reportparameter)
-	  b parent class_ref 129538 // Reportparameter
+	  b parent class_ref 129538 // ReportParameters
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
     end
 
-    class 129538 "Reportparameter"
+    class 129538 "ReportParameters"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -965,6 +975,199 @@ ${inlines}
       end
 
       attribute 152450 "reportid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 178434 "ReportElements"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 204802 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 204930 "description"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205058 "x"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205186 "y"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205314 "w"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205442 "h"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 184194 // <dependency>
+	relation 180994 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 184194 // <dependency>
+	  b parent class_ref 132482 // report_elements
+      end
+
+      attribute 205826 "reportid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205954 "typ"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 178690 "ReportElementTypes"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 205570 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205698 "description"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 184322 // <dependency>
+	relation 181122 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 184322 // <dependency>
+	  b parent class_ref 132354 // report_element_types
+      end
+    end
+
+    class 178562 "ReportTexts"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 204546 "line"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 204674 "text"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 184066 // <dependency>
+	relation 180866 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 184066 // <dependency>
+	  b parent class_ref 132738 // report_texts
+      end
+
+      attribute 206082 "elementid"
 	protected explicit_type "ForeignKey"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1909,6 +2112,16 @@ ${inlines}
 
       attribute 183938 "description"
 	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198018 "actionid"
+	protected explicit_type "ForeignKey"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""

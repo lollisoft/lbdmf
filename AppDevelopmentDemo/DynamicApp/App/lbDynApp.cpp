@@ -1435,7 +1435,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 			if (lookupApplication(*&applications, ApplicationName->charrep()) == ERR_ENTITY_NOT_FOUND)
 				_LOGERROR << "Error: Application was not found." LOG_
 
-			AppID->setData(applications->getID());
+			AppID->setData(applications->get_id());
 			
 			// Pass it into the current application document as the save operation requires it.
 			document->setUAPInteger(*&name, *&AppID);
@@ -1884,7 +1884,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                         }
 
                         dbForm = gui->createDBForm(     formName->charrep(),
-                                                        lookupParameter(*&FormularParameterEntity, "query", FormularsEntity->getID()),
+                                                        lookupParameter(*&FormularParameterEntity, "query", FormularsEntity->get_id()),
                                                         DBName->charrep(),
                                                         DBUser->charrep(),
                                                         DBPass->charrep());

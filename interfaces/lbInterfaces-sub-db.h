@@ -39,7 +39,7 @@ class lb_I_MVC_View;
 class lb_I_TableModule : public lb_I_ExtensibleObject
 {
 public:
-	virtual long		LB_STDCALL getID() = 0;
+	virtual long		LB_STDCALL get_id() = 0;
 
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;

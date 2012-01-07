@@ -26,7 +26,7 @@
 //virtual void LB_STDCALL visit(lb_I_Applications*) = 0;
 
 
-//virtual void LB_STDCALL visit(lb_I_Uebersetzungen*) = 0;
+//virtual void LB_STDCALL visit(lb_I_Translations*) = 0;
 
 
 //virtual void LB_STDCALL visit(lb_I_Formular_Actions*) = 0;
@@ -35,10 +35,19 @@
 //virtual void LB_STDCALL visit(lb_I_ApplicationParameter*) = 0;
 
 
-//virtual void LB_STDCALL visit(lb_I_Reportdefinitionen*) = 0;
+//virtual void LB_STDCALL visit(lb_I_Reports*) = 0;
 
 
-//virtual void LB_STDCALL visit(lb_I_Reportparameter*) = 0;
+//virtual void LB_STDCALL visit(lb_I_ReportParameters*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_ReportElements*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_ReportElementTypes*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_ReportTexts*) = 0;
 
 
 //virtual void LB_STDCALL visit(lb_I_Formular_Fields*) = 0;
