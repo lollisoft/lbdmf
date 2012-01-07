@@ -617,13 +617,13 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
 
-			long FormID = forms->getID();
+			long FormID = forms->get_id();
 
 			formularfields->finishFormular_FieldsIteration();
 			while (formularfields->hasMoreFormular_Fields()) {
 				formularfields->setNextFormular_Fields();
 
-				if (formularfields->getID() == FormID) {
+				if (formularfields->get_id() == FormID) {
 					if (strcmp(formularfields->get_name(), name) == 0) {
 						definitionFound = true;
 						formularfields->finishFormular_FieldsIteration();
@@ -654,12 +654,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 					}
 				}
 
-				long FormID = forms->getID();
+				long FormID = forms->get_id();
 
 				while (formularfields->hasMoreFormular_Fields()) {
 					formularfields->setNextFormular_Fields();
 
-					if (formularfields->getID() == FormID) {
+					if (formularfields->get_id() == FormID) {
 						if (strcmp(formularfields->get_name(), name) == 0) {
 							definitionFound = true;
 							formularfields->finishFormular_FieldsIteration();
@@ -1707,7 +1707,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const cha
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -1888,7 +1888,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::activateActionButtons() {
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -1927,7 +1927,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -2185,13 +2185,13 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 				_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
 
-			long FormID = forms->getID();
+			long FormID = forms->get_id();
 
 			formularfields->finishFormular_FieldsIteration();
 			while (formularfields->hasMoreFormular_Fields()) {
 				formularfields->setNextFormular_Fields();
 
-				if (formularfields->getID() == FormID) {
+				if (formularfields->get_id() == FormID) {
 					if (strcmp(formularfields->get_name(), name->charrep()) == 0) {
 						definitionFound = true;
 						formularfields->finishFormular_FieldsIteration();
@@ -2249,12 +2249,12 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 					}
 				}
 
-				long FormID = forms->getID();
+				long FormID = forms->get_id();
 
 				while (formularfields->hasMoreFormular_Fields()) {
 					formularfields->setNextFormular_Fields();
 
-					if (formularfields->getID() == FormID) {
+					if (formularfields->get_id() == FormID) {
 						if (strcmp(formularfields->get_name(), name->charrep()) == 0) {
 							definitionFound = true;
 							formularfields->finishFormular_FieldsIteration();

@@ -120,7 +120,7 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	
 	;
 	pass = 0;
-	_FoimularID = _forms->getID(); 
+	_FoimularID = _forms->get_id(); 
 	_DBUser = NULL;
 	_DBPass = NULL;
 	_DBName = NULL;
@@ -180,7 +180,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 	}
 	
-	long FormID = forms->getID();
+	long FormID = forms->get_id();
 	
 	formularfields->finishFormular_FieldsIteration();
 	while (formularfields->hasMoreFormular_Fields()) {

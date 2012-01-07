@@ -17,15 +17,21 @@
 
         UAP(lb_I_Applications, ApplicationsEntity)
 
-        UAP(lb_I_Uebersetzungen, UebersetzungenEntity)
+        UAP(lb_I_Translations, TranslationsEntity)
 
         UAP(lb_I_Formular_Actions, Formular_ActionsEntity)
 
         UAP(lb_I_ApplicationParameter, ApplicationParameterEntity)
 
-        UAP(lb_I_Reportdefinitionen, ReportdefinitionenEntity)
+        UAP(lb_I_Reports, ReportsEntity)
 
-        UAP(lb_I_Reportparameter, ReportparameterEntity)
+        UAP(lb_I_ReportParameters, ReportParametersEntity)
+
+        UAP(lb_I_ReportElements, ReportElementsEntity)
+
+        UAP(lb_I_ReportElementTypes, ReportElementTypesEntity)
+
+        UAP(lb_I_ReportTexts, ReportTextsEntity)
 
         UAP(lb_I_Formular_Fields, Formular_FieldsEntity)
 
