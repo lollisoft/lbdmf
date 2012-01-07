@@ -240,7 +240,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
 						UAP(lb_I_DatabaseForm, form)
-						long FormularID = forms->getID();
+						long FormularID = forms->get_id();
 						*SQL = lookupParameter(*&formParams, "query", FormularID);
 						forms->finishFormularsIteration();
 						form = gui->createDBForm(formularname->charrep(),

@@ -561,13 +561,13 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 	}
 	
-	long FormID = forms->getID();
+	long FormID = forms->get_id();
 	
 	formularfields->finishFormular_FieldsIteration();
 	while (formularfields->hasMoreFormular_Fields()) {
 		formularfields->setNextFormular_Fields();
 		
-		if (formularfields->getID() == FormID) {
+		if (formularfields->get_id() == FormID) {
 			if (strcmp(formularfields->get_name(), fieldName) == 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
@@ -1712,7 +1712,7 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -1914,7 +1914,7 @@ void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -1953,7 +1953,7 @@ void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->getID();
+					long FormID = forms->get_id();
 
 					while (formActions->hasMoreFormular_Actions()) {
 						formActions->setNextFormular_Actions();
@@ -4970,7 +4970,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 	while (forms->hasMoreFormulars()) {
 		forms->setNextFormulars();
 		if ((forms->get_anwendungid() == securityManager->getApplicationID()) && (strcmp(forms->get_name(), untranslated_formName) == 0)) {
-			formularID = forms->getID();
+			formularID = forms->get_id();
 		}
 	}
 
