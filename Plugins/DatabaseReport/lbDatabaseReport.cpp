@@ -695,16 +695,16 @@ long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		}
 	}
 	long first_dst_actionid = -1;
-	transitions->finishActionStepTransitionIteration();
-	while (transitions->hasMoreActionStepTransitions()) {
-		transitions->setNextActionStepTransition();
+	transitions->finishAction_Step_TransitionsIteration();
+	while (transitions->hasMoreAction_Step_Transitions()) {
+		transitions->setNextAction_Step_Transitions();
 		// First use a simple expression without any Lex & Yacc parser
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
 		long dst_actionid;
 		wxString expression;
-		expression = transitions->getActionStepTransitionDecision();
-		dst_actionid = transitions->getActionStepTransitionDstActionID();
+		expression = transitions->get_expression();
+		dst_actionid = transitions->get_dst_actionid();
 		
 		if (expression.find("==") != -1) {
 			// equal operator
@@ -1016,23 +1016,23 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 		
 		_LOG << "Prepare report with id = " << id LOG_
 		
-		reports->selectReport(id);
+		reports->selectReports(id);
 		
-		reportelements->finishElementIteration();
+		reportelements->finishReportElementsIteration();
 		
-		while (reportelements->hasMoreElements()) {
-			reportelements->setNextElement();
-			_LOG << "Check for report element " << reportelements->getElementName() << " with reportid = " << reportelements->getElementReportID() LOG_
-			if (reportelements->getElementReportID() == id) {
+		while (reportelements->hasMoreReportElements()) {
+			reportelements->setNextReportElements();
+			_LOG << "Check for report element " << reportelements->get_name() << " with reportid = " << reportelements->get_reportid() LOG_
+			if (reportelements->get_reportid() == id) {
 				
 				// The report element matches to this report
 				
-				long x = reportelements->getElementX();
-				long y = reportelements->getElementY();
+				long x = reportelements->get_x();
+				long y = reportelements->get_y();
 				
-				_LOG << "Have a report element x, y (" << x << ", " << y << ") for given report: '" << reportelements->getElementName() << "' with typ '" << reportelements->getElementTyp() << "'." LOG_
+				_LOG << "Have a report element x, y (" << x << ", " << y << ") for given report: '" << reportelements->get_name() << "' with typ '" << reportelements->get_typ() << "'." LOG_
 				
-				switch (reportelements->getElementTyp()) {
+				switch (reportelements->get_typ()) {
 					case 1: // Text block
 					{
 						UAP_REQUEST(getModuleInstance(), lb_I_Container, lines)
@@ -1041,23 +1041,23 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 						
 						_LOG << "Have a report text block element..." LOG_
 						
-						reporttextblocks->finishTextIteration();
+						reporttextblocks->finishReportTextsIteration();
 						
-						while (reporttextblocks->hasMoreTexts()) {
-							reporttextblocks->setNextText();
+						while (reporttextblocks->hasMoreReportTexts()) {
+							reporttextblocks->setNextReportTexts();
 							
-							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->getLine() << "'." LOG_
-							if (reporttextblocks->getElementID() == reportelements->getID()) {
+							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->get_line() << "'." LOG_
+							if (reporttextblocks->get_elementid() == reportelements->get_id()) {
 								UAP_REQUEST(getModuleInstance(), lb_I_String, l)
 								UAP_REQUEST(getModuleInstance(), lb_I_Long, i)
 								
-								*l = reporttextblocks->getText();
-								i->setData(reporttextblocks->getLine());
+								*l = reporttextblocks->get_text();
+								i->setData(reporttextblocks->get_line());
 								
 								QI(i, lb_I_KeyBase, key)
 								QI(l, lb_I_Unknown, ukLine)
 								
-								_LOG << "Insert a line of text into report text block: '" << reporttextblocks->getLine() << "'." LOG_
+								_LOG << "Insert a line of text into report text block: '" << reporttextblocks->get_line() << "'." LOG_
 								
 								lines->insert(&ukLine, &key);
 							}
