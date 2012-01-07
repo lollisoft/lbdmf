@@ -103,7 +103,7 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 		}
 	}
 	
-	if (Users->getUserCount() == 0) {
+	if (Users->getUserAccountsCount() == 0) {
 		// Fallback to database use. This should be moved to a 'service', that would
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
@@ -202,13 +202,13 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 	} else {
 		// We have got users from file
 
-		Users->finishUserIteration();
-		while (Users->hasMoreUsers()) {
-			Users->setNextUser();
+		Users->finishUserAccountsIteration();
+		while (Users->hasMoreUserAccounts()) {
+			Users->setNextUserAccounts();
 
-			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
+			if ((strcmp(Users->get_userid(), user) == 0) && (strcmp(Users->get_passwort(), pass) == 0)) {
 				_logged_in = true;
-				Users->finishUserIteration();
+				Users->finishUserAccountsIteration();
 				return true;
 			}
 		}
@@ -219,20 +219,44 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 	}
 }
 
+lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
+	applications->finishApplicationsIteration();
+	
+	while (applications->hasMoreApplications()) {
+		applications->setNextApplications();
+		if (strcmp(applications->get_name(), name) == 0)
+			return ERR_NONE;
+	}
+	
+	return ERR_ENTITY_NOT_FOUND;
+}
+
+lbErrCodes LB_STDCALL lookupAccount(lb_I_UserAccounts* accounts, const char* name) {
+	accounts->finishUserAccountsIteration();
+	
+	while (accounts->hasMoreUserAccounts()) {
+		accounts->setNextUserAccounts();
+		if (strcmp(accounts->get_userid(), name) == 0)
+			return ERR_NONE;
+	}
+	
+	return ERR_ENTITY_NOT_FOUND;
+}
+
 lb_I_Unknown*	LB_STDCALL lbDMFSSP::getApplicationModel() {
 	
 }
 
 long LB_STDCALL lbDMFSSP::getApplicationID() {
-	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
-		Applications->selectApplication(LogonApplication->charrep());
+	if ((_logged_in) && (Applications->getApplicationsCount() > 0)) {
+		lookupApplication(*&Applications, LogonApplication->charrep());
 
-		return Applications->getID();
+		return Applications->get_id();
 	} else {
 		if (!_logged_in) {
 			_LOG << "Error: lbDMFSSP::getApplicationID() returns 0, because user is not logged in." LOG_
 		}
-		if (Applications->getApplicationCount() <= 0) {
+		if (Applications->getApplicationsCount() <= 0) {
 			_LOG << "Error: lbDMFSSP::getApplicationID() returns 0, because the application count of Applications is 0." LOG_
 		}
 		return 0;
@@ -250,7 +274,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 		return apps.getPtr();
 	}
 	
-	if (Applications->getApplicationCount() == 0) {
+	if (Applications->getApplicationsCount() == 0) {
 		// Maybe no data collected in the file yet
 		// Fallback to manually read out the applications
 
@@ -342,15 +366,15 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 				/// \todo Save on demand or at application end.
 				// => Save menu entry, or on property changes.
 				//save(); // Late save
-				Applications->finishApplicationIteration();
+				Applications->finishApplicationsIteration();
 				while (Applications->hasMoreApplications()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, ukName)
 
-					Applications->setNextApplication();
+					Applications->setNextApplications();
 
-					*name = Applications->getApplicationName();
+					*name = Applications->get_name();
 
 					QI(name, lb_I_KeyBase, key)
 					QI(name, lb_I_Unknown, ukName)
@@ -359,7 +383,7 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 					apps->insert(&ukName, &key);
 				}
 
-				Applications->finishApplicationIteration();
+				Applications->finishApplicationsIteration();
 				hasDBLoaded = true;
 			} else {
 				_LOG << "Error: Could not load database stream operator classes!" LOG_
@@ -433,25 +457,25 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 		}
 /*...e*/
 	} else {
-		if (Users->selectAccount(LogonUser->charrep())) {
-			long UID = Users->getID();
+		if (lookupAccount(*&Users, LogonUser->charrep())) {
+			long UID = Users->get_id();
 
-			User_Applications->finishRelationIteration();
+			User_Applications->finishUser_ApplicationsIteration();
 
-			while (User_Applications->hasMoreRelations()) {
-				User_Applications->setNextRelation();
-				Applications->selectApplication(User_Applications->getApplicationID());
+			while (User_Applications->hasMoreUser_Applications()) {
+				User_Applications->setNextUser_Applications();
+				Applications->selectApplications(User_Applications->get_anwendungenid());
 
-				_LOG <<	"Check if user '" << Users->getUserName() <<
-							"' has rights on application '" << Applications->getApplicationName() << "'. (" << User_Applications->getApplicationID() << ") " <<
-							UID << " = " << User_Applications->getUserID() LOG_
+				_LOG <<	"Check if user " << Users->get_name() << ", " << Users->get_vorname() <<
+							"' has rights on application '" << Applications->get_name() << "'. (" << User_Applications->get_anwendungenid() << ") " <<
+							UID << " = " << User_Applications->get_userid() LOG_
 
-				if (User_Applications->getUserID() == UID) {
+				if (User_Applications->get_userid() == UID) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, S1)
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk_S1)
 
-					*S1 = Applications->getApplicationName();
+					*S1 = Applications->get_name();
 
 					QI(S1, lb_I_KeyBase, key)
 					QI(S1, lb_I_Unknown, uk_S1)
@@ -661,7 +685,7 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 				// Read applications to formular assoc
 //				ukPl5->accept(*&fOp);
 
-				if (Users->getUserCount() == 0) {
+				if (Users->getUserAccountsCount() == 0) {
 					_LOG << "Warning: Users list from file does not contain any data." LOG_
 				}
 			} else {
