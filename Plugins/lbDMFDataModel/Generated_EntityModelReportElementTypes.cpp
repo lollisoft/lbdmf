@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelReportElementTypes.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbReportElementTypesModel, lbReportElementTypesModel)
+IMPLEMENT_FUNCTOR(instanceOfReportElementTypesModel, ReportElementTypesModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportElementTypesModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(ReportElementTypesModel)
 	ADD_INTERFACE(lb_I_ReportElementTypes)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbReportElementTypesModel)
+IMPLEMENT_EXTENSIBLEOBJECT(ReportElementTypesModel)
 
-void		LB_STDCALL lbReportElementTypesModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbReportElementTypesModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbReportElementTypesModel::lbReportElementTypesModel() {
+ReportElementTypesModel::ReportElementTypesModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportElementTypes)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_String, currentdescription)
@@ -79,19 +72,81 @@ lbReportElementTypesModel::lbReportElementTypesModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentReportElementTypesID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbReportElementTypesModel::lbReportElementTypesModel() called." LOG_
+	_CL_VERBOSE << "ReportElementTypesModel::ReportElementTypesModel() called." LOG_
 }
 
-lbReportElementTypesModel::~lbReportElementTypesModel() {
-	_CL_VERBOSE << "lbReportElementTypesModel::~lbReportElementTypesModel() called." LOG_
+ReportElementTypesModel::~ReportElementTypesModel() {
+	_CL_VERBOSE << "ReportElementTypesModel::~ReportElementTypesModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbReportElementTypesModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbReportElementTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL ReportElementTypesModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: ReportElementTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbReportElementTypesModel::addReportElementTypes(const char* _name, const char* _description,  long _ReportElementTypesID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL ReportElementTypesModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_ReportElementTypes";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL ReportElementTypesModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL ReportElementTypesModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL ReportElementTypesModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL ReportElementTypesModel::addReportElementTypes(const char* _name, const char* _description,  long _ReportElementTypesID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -133,7 +188,7 @@ long  LB_STDCALL lbReportElementTypesModel::addReportElementTypes(const char* _n
 	return -1;
 }
 
-void		LB_STDCALL lbReportElementTypesModel::deleteUnmarked() {
+void		LB_STDCALL ReportElementTypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportElementTypes->finishIteration();
 	while (hasMoreReportElementTypes()) {
@@ -151,7 +206,7 @@ void		LB_STDCALL lbReportElementTypesModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbReportElementTypesModel::deleteMarked() {
+void		LB_STDCALL ReportElementTypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportElementTypes->finishIteration();
 	while (hasMoreReportElementTypes()) {
@@ -169,7 +224,7 @@ void		LB_STDCALL lbReportElementTypesModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbReportElementTypesModel::selectReportElementTypes(long user_id) {
+bool LB_STDCALL ReportElementTypesModel::selectReportElementTypes(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -204,28 +259,28 @@ bool LB_STDCALL lbReportElementTypesModel::selectReportElementTypes(long user_id
 	return false;
 }
 
-bool LB_STDCALL lbReportElementTypesModel::ismarked() {
+bool LB_STDCALL ReportElementTypesModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbReportElementTypesModel::mark() {
+void LB_STDCALL ReportElementTypesModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbReportElementTypesModel::unmark() {
+void LB_STDCALL ReportElementTypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbReportElementTypesModel::getReportElementTypesCount() {
+int  LB_STDCALL ReportElementTypesModel::getReportElementTypesCount() {
 	return ReportElementTypes->Count();
 }
 
-bool  LB_STDCALL lbReportElementTypesModel::hasMoreReportElementTypes() {
+bool  LB_STDCALL ReportElementTypesModel::hasMoreReportElementTypes() {
 	return (ReportElementTypes->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbReportElementTypesModel::setNextReportElementTypes() {
+void  LB_STDCALL ReportElementTypesModel::setNextReportElementTypes() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -247,20 +302,20 @@ void  LB_STDCALL lbReportElementTypesModel::setNextReportElementTypes() {
 	
 }
 
-void  LB_STDCALL lbReportElementTypesModel::finishReportElementTypesIteration() {
+void  LB_STDCALL ReportElementTypesModel::finishReportElementTypesIteration() {
 	ReportElementTypes->finishIteration();
 }
 
-long LB_STDCALL lbReportElementTypesModel::get_id() {
+long LB_STDCALL ReportElementTypesModel::get_id() {
 	return currentReportElementTypesID->getData();
 }
 
 
-char* LB_STDCALL lbReportElementTypesModel::get_name() {
+char* LB_STDCALL ReportElementTypesModel::get_name() {
 	return currentname->charrep();
 }
 
-char* LB_STDCALL lbReportElementTypesModel::get_description() {
+char* LB_STDCALL ReportElementTypesModel::get_description() {
 	return currentdescription->charrep();
 }
 
@@ -331,10 +386,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukReportElementTypesModel == NULL) {
-		lbReportElementTypesModel* ReportElementTypesModel = new lbReportElementTypesModel();
+		ReportElementTypesModel* aReportElementTypesModel = new ReportElementTypesModel();
 		
 	
-		QI(ReportElementTypesModel, lb_I_Unknown, ukReportElementTypesModel)
+		QI(aReportElementTypesModel, lb_I_Unknown, ukReportElementTypesModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -349,10 +404,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbReportElementTypesModel* ReportElementTypesModel = new lbReportElementTypesModel();
+		ReportElementTypesModel* aReportElementTypesModel = new ReportElementTypesModel();
 		
 	
-		QI(ReportElementTypesModel, lb_I_Unknown, ukReportElementTypesModel)
+		QI(aReportElementTypesModel, lb_I_Unknown, ukReportElementTypesModel)
 	}
 	
 	lb_I_Unknown* r = ukReportElementTypesModel.getPtr();

@@ -52,29 +52,22 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelAction_Steps.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbAction_StepsModel, lbAction_StepsModel)
+IMPLEMENT_FUNCTOR(instanceOfAction_StepsModel, Action_StepsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbAction_StepsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Action_StepsModel)
 	ADD_INTERFACE(lb_I_Action_Steps)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbAction_StepsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Action_StepsModel)
 
-void		LB_STDCALL lbAction_StepsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbAction_StepsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbAction_StepsModel::lbAction_StepsModel() {
+Action_StepsModel::Action_StepsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Action_Steps)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentbezeichnung)
     REQUEST(getModuleInstance(), lb_I_String, currentwhat)
-    REQUEST(getModuleInstance(), lb_I_Integer, currenta_order_nr)
+    REQUEST(getModuleInstance(), lb_I_Long, currenta_order_nr)
     REQUEST(getModuleInstance(), lb_I_Long, currenttype)
     REQUEST(getModuleInstance(), lb_I_Long, currentactionid)
 
@@ -82,24 +75,86 @@ lbAction_StepsModel::lbAction_StepsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentAction_StepsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbAction_StepsModel::lbAction_StepsModel() called." LOG_
+	_CL_VERBOSE << "Action_StepsModel::Action_StepsModel() called." LOG_
 }
 
-lbAction_StepsModel::~lbAction_StepsModel() {
-	_CL_VERBOSE << "lbAction_StepsModel::~lbAction_StepsModel() called." LOG_
+Action_StepsModel::~Action_StepsModel() {
+	_CL_VERBOSE << "Action_StepsModel::~Action_StepsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbAction_StepsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbAction_StepsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Action_StepsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Action_StepsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbAction_StepsModel::addAction_Steps(const char* _bezeichnung, const char* _what, int _a_order_nr, long _type, long _actionid,  long _Action_StepsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Action_StepsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Action_Steps";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Action_StepsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Action_StepsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Action_StepsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Action_StepsModel::addAction_Steps(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __bezeichnung)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __what)
-    UAP_REQUEST(getModuleInstance(), lb_I_Integer, __a_order_nr)
+    UAP_REQUEST(getModuleInstance(), lb_I_Long, __a_order_nr)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __type)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __actionid)
 
@@ -125,7 +180,7 @@ long  LB_STDCALL lbAction_StepsModel::addAction_Steps(const char* _bezeichnung, 
     *paramname = "what";
     param->setUAPString(*&paramname, *&__what);
     *paramname = "a_order_nr";
-    param->setUAPInteger(*&paramname, *&__a_order_nr);
+    param->setUAPLong(*&paramname, *&__a_order_nr);
     *paramname = "type";
     param->setUAPLong(*&paramname, *&__type);
     *paramname = "actionid";
@@ -148,7 +203,7 @@ long  LB_STDCALL lbAction_StepsModel::addAction_Steps(const char* _bezeichnung, 
 	return -1;
 }
 
-void		LB_STDCALL lbAction_StepsModel::deleteUnmarked() {
+void		LB_STDCALL Action_StepsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Steps->finishIteration();
 	while (hasMoreAction_Steps()) {
@@ -166,7 +221,7 @@ void		LB_STDCALL lbAction_StepsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbAction_StepsModel::deleteMarked() {
+void		LB_STDCALL Action_StepsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Steps->finishIteration();
 	while (hasMoreAction_Steps()) {
@@ -184,7 +239,7 @@ void		LB_STDCALL lbAction_StepsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbAction_StepsModel::selectAction_Steps(long user_id) {
+bool LB_STDCALL Action_StepsModel::selectAction_Steps(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -206,7 +261,7 @@ bool LB_STDCALL lbAction_StepsModel::selectAction_Steps(long user_id) {
     *paramname = "what";
     param->getUAPString(*&paramname, *&currentwhat);
     *paramname = "a_order_nr";
-    param->getUAPInteger(*&paramname, *&currenta_order_nr);
+    param->getUAPLong(*&paramname, *&currenta_order_nr);
     *paramname = "type";
     param->getUAPLong(*&paramname, *&currenttype);
     *paramname = "actionid";
@@ -225,28 +280,28 @@ bool LB_STDCALL lbAction_StepsModel::selectAction_Steps(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbAction_StepsModel::ismarked() {
+bool LB_STDCALL Action_StepsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbAction_StepsModel::mark() {
+void LB_STDCALL Action_StepsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbAction_StepsModel::unmark() {
+void LB_STDCALL Action_StepsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbAction_StepsModel::getAction_StepsCount() {
+int  LB_STDCALL Action_StepsModel::getAction_StepsCount() {
 	return Action_Steps->Count();
 }
 
-bool  LB_STDCALL lbAction_StepsModel::hasMoreAction_Steps() {
+bool  LB_STDCALL Action_StepsModel::hasMoreAction_Steps() {
 	return (Action_Steps->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbAction_StepsModel::setNextAction_Steps() {
+void  LB_STDCALL Action_StepsModel::setNextAction_Steps() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -260,7 +315,7 @@ void  LB_STDCALL lbAction_StepsModel::setNextAction_Steps() {
     *paramname = "what";
     param->getUAPString(*&paramname, *&currentwhat);
     *paramname = "a_order_nr";
-    param->getUAPInteger(*&paramname, *&currenta_order_nr);
+    param->getUAPLong(*&paramname, *&currenta_order_nr);
     *paramname = "type";
     param->getUAPLong(*&paramname, *&currenttype);
     *paramname = "actionid";
@@ -274,32 +329,32 @@ void  LB_STDCALL lbAction_StepsModel::setNextAction_Steps() {
 	
 }
 
-void  LB_STDCALL lbAction_StepsModel::finishAction_StepsIteration() {
+void  LB_STDCALL Action_StepsModel::finishAction_StepsIteration() {
 	Action_Steps->finishIteration();
 }
 
-long LB_STDCALL lbAction_StepsModel::get_id() {
+long LB_STDCALL Action_StepsModel::get_id() {
 	return currentAction_StepsID->getData();
 }
 
 
-char* LB_STDCALL lbAction_StepsModel::get_bezeichnung() {
+char* LB_STDCALL Action_StepsModel::get_bezeichnung() {
 	return currentbezeichnung->charrep();
 }
 
-char* LB_STDCALL lbAction_StepsModel::get_what() {
+char* LB_STDCALL Action_StepsModel::get_what() {
 	return currentwhat->charrep();
 }
 
-int LB_STDCALL lbAction_StepsModel::get_a_order_nr() {
+long LB_STDCALL Action_StepsModel::get_a_order_nr() {
 	return currenta_order_nr->getData();
 }
 
-long LB_STDCALL lbAction_StepsModel::get_type() {
+long LB_STDCALL Action_StepsModel::get_type() {
 	return currenttype->getData();
 }
 
-long LB_STDCALL lbAction_StepsModel::get_actionid() {
+long LB_STDCALL Action_StepsModel::get_actionid() {
 	return currentactionid->getData();
 }
 
@@ -370,10 +425,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_StepsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukAction_StepsModel == NULL) {
-		lbAction_StepsModel* Action_StepsModel = new lbAction_StepsModel();
+		Action_StepsModel* aAction_StepsModel = new Action_StepsModel();
 		
 	
-		QI(Action_StepsModel, lb_I_Unknown, ukAction_StepsModel)
+		QI(aAction_StepsModel, lb_I_Unknown, ukAction_StepsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -388,10 +443,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_StepsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbAction_StepsModel* Action_StepsModel = new lbAction_StepsModel();
+		Action_StepsModel* aAction_StepsModel = new Action_StepsModel();
 		
 	
-		QI(Action_StepsModel, lb_I_Unknown, ukAction_StepsModel)
+		QI(aAction_StepsModel, lb_I_Unknown, ukAction_StepsModel)
 	}
 	
 	lb_I_Unknown* r = ukAction_StepsModel.getPtr();

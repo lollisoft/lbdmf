@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelFormular_Actions.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbFormular_ActionsModel, lbFormular_ActionsModel)
+IMPLEMENT_FUNCTOR(instanceOfFormular_ActionsModel, Formular_ActionsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormular_ActionsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_ActionsModel)
 	ADD_INTERFACE(lb_I_Formular_Actions)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbFormular_ActionsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Formular_ActionsModel)
 
-void		LB_STDCALL lbFormular_ActionsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbFormular_ActionsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbFormular_ActionsModel::lbFormular_ActionsModel() {
+Formular_ActionsModel::Formular_ActionsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Formular_Actions)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentevent)
     REQUEST(getModuleInstance(), lb_I_Long, currentaction)
@@ -80,19 +73,81 @@ lbFormular_ActionsModel::lbFormular_ActionsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormular_ActionsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbFormular_ActionsModel::lbFormular_ActionsModel() called." LOG_
+	_CL_VERBOSE << "Formular_ActionsModel::Formular_ActionsModel() called." LOG_
 }
 
-lbFormular_ActionsModel::~lbFormular_ActionsModel() {
-	_CL_VERBOSE << "lbFormular_ActionsModel::~lbFormular_ActionsModel() called." LOG_
+Formular_ActionsModel::~Formular_ActionsModel() {
+	_CL_VERBOSE << "Formular_ActionsModel::~Formular_ActionsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbFormular_ActionsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbFormular_ActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Formular_ActionsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Formular_ActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbFormular_ActionsModel::addFormular_Actions(const char* _event, long _action, long _formular,  long _Formular_ActionsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Formular_ActionsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Formular_Actions";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Formular_ActionsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Formular_ActionsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Formular_ActionsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Formular_ActionsModel::addFormular_Actions(const char* _event, long _action, long _formular,  long _Formular_ActionsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __event)
@@ -138,7 +193,7 @@ long  LB_STDCALL lbFormular_ActionsModel::addFormular_Actions(const char* _event
 	return -1;
 }
 
-void		LB_STDCALL lbFormular_ActionsModel::deleteUnmarked() {
+void		LB_STDCALL Formular_ActionsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Actions->finishIteration();
 	while (hasMoreFormular_Actions()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbFormular_ActionsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbFormular_ActionsModel::deleteMarked() {
+void		LB_STDCALL Formular_ActionsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Actions->finishIteration();
 	while (hasMoreFormular_Actions()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbFormular_ActionsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbFormular_ActionsModel::selectFormular_Actions(long user_id) {
+bool LB_STDCALL Formular_ActionsModel::selectFormular_Actions(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -211,28 +266,28 @@ bool LB_STDCALL lbFormular_ActionsModel::selectFormular_Actions(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbFormular_ActionsModel::ismarked() {
+bool LB_STDCALL Formular_ActionsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbFormular_ActionsModel::mark() {
+void LB_STDCALL Formular_ActionsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbFormular_ActionsModel::unmark() {
+void LB_STDCALL Formular_ActionsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbFormular_ActionsModel::getFormular_ActionsCount() {
+int  LB_STDCALL Formular_ActionsModel::getFormular_ActionsCount() {
 	return Formular_Actions->Count();
 }
 
-bool  LB_STDCALL lbFormular_ActionsModel::hasMoreFormular_Actions() {
+bool  LB_STDCALL Formular_ActionsModel::hasMoreFormular_Actions() {
 	return (Formular_Actions->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbFormular_ActionsModel::setNextFormular_Actions() {
+void  LB_STDCALL Formular_ActionsModel::setNextFormular_Actions() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -256,24 +311,24 @@ void  LB_STDCALL lbFormular_ActionsModel::setNextFormular_Actions() {
 	
 }
 
-void  LB_STDCALL lbFormular_ActionsModel::finishFormular_ActionsIteration() {
+void  LB_STDCALL Formular_ActionsModel::finishFormular_ActionsIteration() {
 	Formular_Actions->finishIteration();
 }
 
-long LB_STDCALL lbFormular_ActionsModel::get_id() {
+long LB_STDCALL Formular_ActionsModel::get_id() {
 	return currentFormular_ActionsID->getData();
 }
 
 
-char* LB_STDCALL lbFormular_ActionsModel::get_event() {
+char* LB_STDCALL Formular_ActionsModel::get_event() {
 	return currentevent->charrep();
 }
 
-long LB_STDCALL lbFormular_ActionsModel::get_action() {
+long LB_STDCALL Formular_ActionsModel::get_action() {
 	return currentaction->getData();
 }
 
-long LB_STDCALL lbFormular_ActionsModel::get_formular() {
+long LB_STDCALL Formular_ActionsModel::get_formular() {
 	return currentformular->getData();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormular_ActionsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukFormular_ActionsModel == NULL) {
-		lbFormular_ActionsModel* Formular_ActionsModel = new lbFormular_ActionsModel();
+		Formular_ActionsModel* aFormular_ActionsModel = new Formular_ActionsModel();
 		
 	
-		QI(Formular_ActionsModel, lb_I_Unknown, ukFormular_ActionsModel)
+		QI(aFormular_ActionsModel, lb_I_Unknown, ukFormular_ActionsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormular_ActionsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbFormular_ActionsModel* Formular_ActionsModel = new lbFormular_ActionsModel();
+		Formular_ActionsModel* aFormular_ActionsModel = new Formular_ActionsModel();
 		
 	
-		QI(Formular_ActionsModel, lb_I_Unknown, ukFormular_ActionsModel)
+		QI(aFormular_ActionsModel, lb_I_Unknown, ukFormular_ActionsModel)
 	}
 	
 	lb_I_Unknown* r = ukFormular_ActionsModel.getPtr();

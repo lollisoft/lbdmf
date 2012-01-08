@@ -32,10 +32,10 @@
 /** \brief class ActionStep_Parameters.
  * Documentation for ActionStep_Parameters
  */
-class lbActionStep_ParametersModel : public lb_I_ActionStep_Parameters {
+class ActionStep_ParametersModel : public lb_I_ActionStep_Parameters {
 public:
-	lbActionStep_ParametersModel();
-	virtual ~lbActionStep_ParametersModel();
+	ActionStep_ParametersModel();
+	virtual ~ActionStep_ParametersModel();
 
 	long		LB_STDCALL addActionStep_Parameters(const char* _description, const char* _name, const char* _value, const char* _interface, long _action_step_id,  long _ActionStep_ParametersID = -1);
 
@@ -62,12 +62,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ActionStep_Parameters)
 	
 

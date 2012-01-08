@@ -161,6 +161,7 @@ public:
 	void LB_STDCALL visit(lb_I_CryptoStream*) { _CL_LOG << "visit(lb_I_CryptoStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DispatchInterceptor*) { _CL_LOG << "visit(lb_I_DispatchInterceptor*)" LOG_ }
 	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ExtensionObject*) { _CL_LOG << "visit(lb_I_ExtensionObject*)" LOG_ }
 /*...e*/
 
 	void LB_STDCALL visit(lb_I_Streamable*);
@@ -328,7 +329,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule)
 		if (visitorExtension != NULL) {
 			visitorExtension->setOperator(this);
 			visitorExtension->execute();
+		} else {
+			_LOG << "Error: Could not get interface lb_I_VisitorExtension from extension object." LOG_
 		}
+	} else {
+		_LOG << "Warning: Could not get visitor implementation as extension object." LOG_
 	}
 }
 

@@ -52,27 +52,20 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelReportParameters.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbReportParametersModel, lbReportParametersModel)
+IMPLEMENT_FUNCTOR(instanceOfReportParametersModel, ReportParametersModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportParametersModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(ReportParametersModel)
 	ADD_INTERFACE(lb_I_ReportParameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbReportParametersModel)
+IMPLEMENT_EXTENSIBLEOBJECT(ReportParametersModel)
 
-void		LB_STDCALL lbReportParametersModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbReportParametersModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbReportParametersModel::lbReportParametersModel() {
+ReportParametersModel::ReportParametersModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportParameters)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
-    REQUEST(getModuleInstance(), lb_I_Integer, currentvalue)
+    REQUEST(getModuleInstance(), lb_I_Long, currentvalue)
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_Long, currentreportid)
 
@@ -80,22 +73,84 @@ lbReportParametersModel::lbReportParametersModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentReportParametersID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbReportParametersModel::lbReportParametersModel() called." LOG_
+	_CL_VERBOSE << "ReportParametersModel::ReportParametersModel() called." LOG_
 }
 
-lbReportParametersModel::~lbReportParametersModel() {
-	_CL_VERBOSE << "lbReportParametersModel::~lbReportParametersModel() called." LOG_
+ReportParametersModel::~ReportParametersModel() {
+	_CL_VERBOSE << "ReportParametersModel::~ReportParametersModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbReportParametersModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbReportParametersModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL ReportParametersModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: ReportParametersModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbReportParametersModel::addReportParameters(int _value, const char* _name, long _reportid,  long _ReportParametersID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL ReportParametersModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_ReportParameters";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL ReportParametersModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL ReportParametersModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL ReportParametersModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL ReportParametersModel::addReportParameters(long _value, const char* _name, long _reportid,  long _ReportParametersID) {
 	lbErrCodes err = ERR_NONE;
 
-    UAP_REQUEST(getModuleInstance(), lb_I_Integer, __value)
+    UAP_REQUEST(getModuleInstance(), lb_I_Long, __value)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __reportid)
 
@@ -115,7 +170,7 @@ long  LB_STDCALL lbReportParametersModel::addReportParameters(int _value, const 
 	__ReportParametersID->setData(_ReportParametersID);
 
     *paramname = "value";
-    param->setUAPInteger(*&paramname, *&__value);
+    param->setUAPLong(*&paramname, *&__value);
     *paramname = "name";
     param->setUAPString(*&paramname, *&__name);
     *paramname = "reportid";
@@ -138,7 +193,7 @@ long  LB_STDCALL lbReportParametersModel::addReportParameters(int _value, const 
 	return -1;
 }
 
-void		LB_STDCALL lbReportParametersModel::deleteUnmarked() {
+void		LB_STDCALL ReportParametersModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportParameters->finishIteration();
 	while (hasMoreReportParameters()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbReportParametersModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbReportParametersModel::deleteMarked() {
+void		LB_STDCALL ReportParametersModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportParameters->finishIteration();
 	while (hasMoreReportParameters()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbReportParametersModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbReportParametersModel::selectReportParameters(long user_id) {
+bool LB_STDCALL ReportParametersModel::selectReportParameters(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -192,7 +247,7 @@ bool LB_STDCALL lbReportParametersModel::selectReportParameters(long user_id) {
 		QI(uk, lb_I_Parameter, param)
 		
     *paramname = "value";
-    param->getUAPInteger(*&paramname, *&currentvalue);
+    param->getUAPLong(*&paramname, *&currentvalue);
     *paramname = "name";
     param->getUAPString(*&paramname, *&currentname);
     *paramname = "reportid";
@@ -211,28 +266,28 @@ bool LB_STDCALL lbReportParametersModel::selectReportParameters(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbReportParametersModel::ismarked() {
+bool LB_STDCALL ReportParametersModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbReportParametersModel::mark() {
+void LB_STDCALL ReportParametersModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbReportParametersModel::unmark() {
+void LB_STDCALL ReportParametersModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbReportParametersModel::getReportParametersCount() {
+int  LB_STDCALL ReportParametersModel::getReportParametersCount() {
 	return ReportParameters->Count();
 }
 
-bool  LB_STDCALL lbReportParametersModel::hasMoreReportParameters() {
+bool  LB_STDCALL ReportParametersModel::hasMoreReportParameters() {
 	return (ReportParameters->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbReportParametersModel::setNextReportParameters() {
+void  LB_STDCALL ReportParametersModel::setNextReportParameters() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -242,7 +297,7 @@ void  LB_STDCALL lbReportParametersModel::setNextReportParameters() {
 	QI(uk, lb_I_Parameter, param)
 
     *paramname = "value";
-    param->getUAPInteger(*&paramname, *&currentvalue);
+    param->getUAPLong(*&paramname, *&currentvalue);
     *paramname = "name";
     param->getUAPString(*&paramname, *&currentname);
     *paramname = "reportid";
@@ -256,24 +311,24 @@ void  LB_STDCALL lbReportParametersModel::setNextReportParameters() {
 	
 }
 
-void  LB_STDCALL lbReportParametersModel::finishReportParametersIteration() {
+void  LB_STDCALL ReportParametersModel::finishReportParametersIteration() {
 	ReportParameters->finishIteration();
 }
 
-long LB_STDCALL lbReportParametersModel::get_id() {
+long LB_STDCALL ReportParametersModel::get_id() {
 	return currentReportParametersID->getData();
 }
 
 
-int LB_STDCALL lbReportParametersModel::get_value() {
+long LB_STDCALL ReportParametersModel::get_value() {
 	return currentvalue->getData();
 }
 
-char* LB_STDCALL lbReportParametersModel::get_name() {
+char* LB_STDCALL ReportParametersModel::get_name() {
 	return currentname->charrep();
 }
 
-long LB_STDCALL lbReportParametersModel::get_reportid() {
+long LB_STDCALL ReportParametersModel::get_reportid() {
 	return currentreportid->getData();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukReportParametersModel == NULL) {
-		lbReportParametersModel* ReportParametersModel = new lbReportParametersModel();
+		ReportParametersModel* aReportParametersModel = new ReportParametersModel();
 		
 	
-		QI(ReportParametersModel, lb_I_Unknown, ukReportParametersModel)
+		QI(aReportParametersModel, lb_I_Unknown, ukReportParametersModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbReportParametersModel* ReportParametersModel = new lbReportParametersModel();
+		ReportParametersModel* aReportParametersModel = new ReportParametersModel();
 		
 	
-		QI(ReportParametersModel, lb_I_Unknown, ukReportParametersModel)
+		QI(aReportParametersModel, lb_I_Unknown, ukReportParametersModel)
 	}
 	
 	lb_I_Unknown* r = ukReportParametersModel.getPtr();

@@ -32,12 +32,12 @@
 /** \brief class ReportElements.
  * Documentation for ReportElements
  */
-class lbReportElementsModel : public lb_I_ReportElements {
+class ReportElementsModel : public lb_I_ReportElements {
 public:
-	lbReportElementsModel();
-	virtual ~lbReportElementsModel();
+	ReportElementsModel();
+	virtual ~ReportElementsModel();
 
-	long		LB_STDCALL addReportElements(const char* _name, const char* _description, int _x, int _y, int _w, int _h, long _reportid, long _typ,  long _ReportElementsID = -1);
+	long		LB_STDCALL addReportElements(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID = -1);
 
 	bool		LB_STDCALL selectReportElements(long _id);
 	int			LB_STDCALL getReportElementsCount();
@@ -48,10 +48,10 @@ public:
 
 	char*		LB_STDCALL get_name();
 	char*		LB_STDCALL get_description();
-	int			LB_STDCALL get_x();
-	int			LB_STDCALL get_y();
-	int			LB_STDCALL get_w();
-	int			LB_STDCALL get_h();
+	long			LB_STDCALL get_x();
+	long			LB_STDCALL get_y();
+	long			LB_STDCALL get_w();
+	long			LB_STDCALL get_h();
 	long		LB_STDCALL get_reportid();
 	
 	long		LB_STDCALL get_typ();
@@ -66,12 +66,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ReportElements)
 	
 
@@ -79,13 +79,13 @@ public:
 			
 	UAP(lb_I_String, currentdescription)
 			
-	UAP(lb_I_Integer, currentx)
+	UAP(lb_I_Long, currentx)
 			
-	UAP(lb_I_Integer, currenty)
+	UAP(lb_I_Long, currenty)
 			
-	UAP(lb_I_Integer, currentw)
+	UAP(lb_I_Long, currentw)
 			
-	UAP(lb_I_Integer, currenth)
+	UAP(lb_I_Long, currenth)
 			
 	UAP(lb_I_Long, currentreportid)
 	

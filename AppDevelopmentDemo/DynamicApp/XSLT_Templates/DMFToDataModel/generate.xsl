@@ -40,6 +40,20 @@
 <xsl:import href="Model.cpp.xsl"/>
 <xsl:import href="plugin.cpp.xsl"/>
 
+<xsl:import href="DBReaderExtension.h.xsl"/>
+<xsl:import href="DBReaderExtension.cpp.xsl"/>
+
+<xsl:import href="XMLWriterExtension.h.xsl"/>
+<xsl:import href="XMLWriterExtension.cpp.xsl"/>
+
+<xsl:import href="InternalFormatReaderExtension.h.xsl"/>
+<xsl:import href="InternalFormatReaderExtension.cpp.xsl"/>
+
+<xsl:import href="InternalFormatWriterExtension.h.xsl"/>
+<xsl:import href="InternalFormatWriterExtension.cpp.xsl"/>
+
+<xsl:import href="extensions_plugin.cpp.xsl"/>
+
 <xsl:output method="text" indent="no"/>
 
 <xsl:template match="lbDMF">
@@ -159,7 +173,79 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="FormName" select="$FormularName2"/>
 </xsl:call-template>
 </exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/XMLWriterExtension_{$FormularName2}.h" method="text">
+<xsl:call-template name="XMLWriterExtension.h">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/XMLWriterExtension_{$FormularName2}.cpp" method="text">
+<xsl:call-template name="XMLWriterExtension.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/InternalFormatWriter_{$FormularName2}.h" method="text">
+<xsl:call-template name="InternalFormatWriterExtension.h">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/InternalFormatWriter_{$FormularName2}.cpp" method="text">
+<xsl:call-template name="InternalFormatWriterExtension.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/InternalFormatReader_{$FormularName2}.h" method="text">
+<xsl:call-template name="InternalFormatReaderExtension.h">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/InternalFormatReader_{$FormularName2}.cpp" method="text">
+<xsl:call-template name="InternalFormatReaderExtension.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/DBReader_{$FormularName2}.h" method="text">
+<xsl:call-template name="DBReaderExtension.h">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/DBReader_{$FormularName2}.cpp" method="text">
+<xsl:call-template name="DBReaderExtension.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+<xsl:with-param name="FormularID" select="@ID"/>
+<xsl:with-param name="FormName" select="$FormularName2"/>
+</xsl:call-template>
+</exsl:document>
+
 </xsl:for-each>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/extensions_plugin.cpp" method="text">
+<xsl:call-template name="extensions_plugin.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+</exsl:document>
 
 <exsl:document href="{$basedir}/Plugins/lbDMFDataModel/plugin.cpp" method="text">
 <xsl:call-template name="plugin.cpp">

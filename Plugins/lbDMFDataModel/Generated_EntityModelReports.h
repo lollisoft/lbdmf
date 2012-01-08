@@ -32,10 +32,10 @@
 /** \brief class Reports.
  * Documentation for Reports
  */
-class lbReportsModel : public lb_I_Reports {
+class ReportsModel : public lb_I_Reports {
 public:
-	lbReportsModel();
-	virtual ~lbReportsModel();
+	ReportsModel();
+	virtual ~ReportsModel();
 
 	long		LB_STDCALL addReports(const char* _description, const char* _name,  long _ReportsID = -1);
 
@@ -58,12 +58,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Reports)
 	
 

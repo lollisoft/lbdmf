@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelApplicationParameter.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbApplicationParameterModel, lbApplicationParameterModel)
+IMPLEMENT_FUNCTOR(instanceOfApplicationParameterModel, ApplicationParameterModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplicationParameterModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(ApplicationParameterModel)
 	ADD_INTERFACE(lb_I_ApplicationParameter)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbApplicationParameterModel)
+IMPLEMENT_EXTENSIBLEOBJECT(ApplicationParameterModel)
 
-void		LB_STDCALL lbApplicationParameterModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbApplicationParameterModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbApplicationParameterModel::lbApplicationParameterModel() {
+ApplicationParameterModel::ApplicationParameterModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, ApplicationParameter)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentparametername)
     REQUEST(getModuleInstance(), lb_I_String, currentparametervalue)
@@ -80,19 +73,81 @@ lbApplicationParameterModel::lbApplicationParameterModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationParameterID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbApplicationParameterModel::lbApplicationParameterModel() called." LOG_
+	_CL_VERBOSE << "ApplicationParameterModel::ApplicationParameterModel() called." LOG_
 }
 
-lbApplicationParameterModel::~lbApplicationParameterModel() {
-	_CL_VERBOSE << "lbApplicationParameterModel::~lbApplicationParameterModel() called." LOG_
+ApplicationParameterModel::~ApplicationParameterModel() {
+	_CL_VERBOSE << "ApplicationParameterModel::~ApplicationParameterModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbApplicationParameterModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbApplicationParameterModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL ApplicationParameterModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: ApplicationParameterModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbApplicationParameterModel::addApplicationParameter(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL ApplicationParameterModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_ApplicationParameter";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL ApplicationParameterModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL ApplicationParameterModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL ApplicationParameterModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL ApplicationParameterModel::addApplicationParameter(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __parametername)
@@ -138,7 +193,7 @@ long  LB_STDCALL lbApplicationParameterModel::addApplicationParameter(const char
 	return -1;
 }
 
-void		LB_STDCALL lbApplicationParameterModel::deleteUnmarked() {
+void		LB_STDCALL ApplicationParameterModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ApplicationParameter->finishIteration();
 	while (hasMoreApplicationParameter()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbApplicationParameterModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbApplicationParameterModel::deleteMarked() {
+void		LB_STDCALL ApplicationParameterModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ApplicationParameter->finishIteration();
 	while (hasMoreApplicationParameter()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbApplicationParameterModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbApplicationParameterModel::selectApplicationParameter(long user_id) {
+bool LB_STDCALL ApplicationParameterModel::selectApplicationParameter(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -211,28 +266,28 @@ bool LB_STDCALL lbApplicationParameterModel::selectApplicationParameter(long use
 	return false;
 }
 
-bool LB_STDCALL lbApplicationParameterModel::ismarked() {
+bool LB_STDCALL ApplicationParameterModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbApplicationParameterModel::mark() {
+void LB_STDCALL ApplicationParameterModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbApplicationParameterModel::unmark() {
+void LB_STDCALL ApplicationParameterModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbApplicationParameterModel::getApplicationParameterCount() {
+int  LB_STDCALL ApplicationParameterModel::getApplicationParameterCount() {
 	return ApplicationParameter->Count();
 }
 
-bool  LB_STDCALL lbApplicationParameterModel::hasMoreApplicationParameter() {
+bool  LB_STDCALL ApplicationParameterModel::hasMoreApplicationParameter() {
 	return (ApplicationParameter->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbApplicationParameterModel::setNextApplicationParameter() {
+void  LB_STDCALL ApplicationParameterModel::setNextApplicationParameter() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -256,24 +311,24 @@ void  LB_STDCALL lbApplicationParameterModel::setNextApplicationParameter() {
 	
 }
 
-void  LB_STDCALL lbApplicationParameterModel::finishApplicationParameterIteration() {
+void  LB_STDCALL ApplicationParameterModel::finishApplicationParameterIteration() {
 	ApplicationParameter->finishIteration();
 }
 
-long LB_STDCALL lbApplicationParameterModel::get_id() {
+long LB_STDCALL ApplicationParameterModel::get_id() {
 	return currentApplicationParameterID->getData();
 }
 
 
-char* LB_STDCALL lbApplicationParameterModel::get_parametername() {
+char* LB_STDCALL ApplicationParameterModel::get_parametername() {
 	return currentparametername->charrep();
 }
 
-char* LB_STDCALL lbApplicationParameterModel::get_parametervalue() {
+char* LB_STDCALL ApplicationParameterModel::get_parametervalue() {
 	return currentparametervalue->charrep();
 }
 
-long LB_STDCALL lbApplicationParameterModel::get_anwendungid() {
+long LB_STDCALL ApplicationParameterModel::get_anwendungid() {
 	return currentanwendungid->getData();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationParameterModel::peekImplementation()
 	lbErrCodes err = ERR_NONE;
 
 	if (ukApplicationParameterModel == NULL) {
-		lbApplicationParameterModel* ApplicationParameterModel = new lbApplicationParameterModel();
+		ApplicationParameterModel* aApplicationParameterModel = new ApplicationParameterModel();
 		
 	
-		QI(ApplicationParameterModel, lb_I_Unknown, ukApplicationParameterModel)
+		QI(aApplicationParameterModel, lb_I_Unknown, ukApplicationParameterModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationParameterModel::getImplementation() 
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbApplicationParameterModel* ApplicationParameterModel = new lbApplicationParameterModel();
+		ApplicationParameterModel* aApplicationParameterModel = new ApplicationParameterModel();
 		
 	
-		QI(ApplicationParameterModel, lb_I_Unknown, ukApplicationParameterModel)
+		QI(aApplicationParameterModel, lb_I_Unknown, ukApplicationParameterModel)
 	}
 	
 	lb_I_Unknown* r = ukApplicationParameterModel.getPtr();

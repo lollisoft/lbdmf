@@ -129,25 +129,18 @@
 #include &lt;lbInterfaces-<xsl:value-of select="$ApplicationName"/>.h&gt;
 #include &lt;Generated_EntityModel<xsl:value-of select="$FormName"/>.h&gt;
 
-IMPLEMENT_FUNCTOR(instanceOflb<xsl:value-of select="$FormName"/>Model, lb<xsl:value-of select="$FormName"/>Model)
+IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>Model, <xsl:value-of select="$FormName"/>Model)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb<xsl:value-of select="$FormName"/>Model)
+BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>Model)
 	ADD_INTERFACE(lb_I_<xsl:value-of select="$FormName"/>)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lb<xsl:value-of select="$FormName"/>Model)
+IMPLEMENT_EXTENSIBLEOBJECT(<xsl:value-of select="$FormName"/>Model)
 
-void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lb<xsl:value-of select="$FormName"/>Model::lb<xsl:value-of select="$FormName"/>Model() {
+<xsl:value-of select="$FormName"/>Model::<xsl:value-of select="$FormName"/>Model() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, <xsl:value-of select="$FormName"/>)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_Long, current<xsl:value-of select="@name"/>)
@@ -156,7 +149,7 @@ lb<xsl:value-of select="$FormName"/>Model::lb<xsl:value-of select="$FormName"/>M
 <xsl:otherwise>
 <xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_Boolean, current<xsl:value-of select="@name"/>)
 </xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_Float, current<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_Integer, current<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_Long, current<xsl:value-of select="@name"/>)
 </xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>REQUEST(getModuleInstance(), lb_I_String, current<xsl:value-of select="@name"/>)
 </xsl:when>
 		</xsl:choose>
@@ -168,25 +161,87 @@ lb<xsl:value-of select="$FormName"/>Model::lb<xsl:value-of select="$FormName"/>M
 	REQUEST(getModuleInstance(), lb_I_Long, current<xsl:value-of select="$FormName"/>ID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE &lt;&lt; "lb<xsl:value-of select="$FormName"/>Model::lb<xsl:value-of select="$FormName"/>Model() called." LOG_
+	_CL_VERBOSE &lt;&lt; "<xsl:value-of select="$FormName"/>Model::<xsl:value-of select="$FormName"/>Model() called." LOG_
 }
 
-lb<xsl:value-of select="$FormName"/>Model::~lb<xsl:value-of select="$FormName"/>Model() {
-	_CL_VERBOSE &lt;&lt; "lb<xsl:value-of select="$FormName"/>Model::~lb<xsl:value-of select="$FormName"/>Model() called." LOG_
+<xsl:value-of select="$FormName"/>Model::~<xsl:value-of select="$FormName"/>Model() {
+	_CL_VERBOSE &lt;&lt; "<xsl:value-of select="$FormName"/>Model::~<xsl:value-of select="$FormName"/>Model() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setData(lb_I_Unknown*) {
-	_LOG &lt;&lt; "Error: lb<xsl:value-of select="$FormName"/>Model::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Model::setData(lb_I_Unknown*) {
+	_LOG &lt;&lt; "Error: <xsl:value-of select="$FormName"/>Model::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL <xsl:value-of select="$FormName"/>Model::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_<xsl:value-of select="$FormName"/>";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions-&gt;exists(*&amp;key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&amp;key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG &lt;&lt; "Error: Did not find extension object for given namespace " &lt;&lt; CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL <xsl:value-of select="$FormName"/>Model::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&amp;CNS);
+}
+
+	
+lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Model::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Model::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL <xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">/* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 <xsl:otherwise><xsl:choose>
 <xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
-<xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
+<xsl:when test="@dbtype='Integer'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="@dbtype='String'">const char* _<xsl:value-of select="$FieldName"/>, </xsl:when>
 </xsl:choose>
 	</xsl:otherwise>
@@ -202,7 +257,7 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 <xsl:otherwise>
 <xsl:choose><xsl:when test="@dbtype='Bit'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Boolean, __<xsl:value-of select="@name"/>)
 </xsl:when><xsl:when test="@dbtype='Float'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Float, __<xsl:value-of select="@name"/>)
-</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Integer, __<xsl:value-of select="@name"/>)
+</xsl:when><xsl:when test="@dbtype='Integer'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_Long, __<xsl:value-of select="@name"/>)
 </xsl:when><xsl:when test="@dbtype='String'"><xsl:value-of select="'    '"/>UAP_REQUEST(getModuleInstance(), lb_I_String, __<xsl:value-of select="@name"/>)
 </xsl:when>
 		</xsl:choose>
@@ -252,7 +307,7 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 <xsl:value-of select="'    '"/>param-&gt;setUAPFloat(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='Integer'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;setUAPInteger(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;setUAPLong(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='String'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
 <xsl:value-of select="'    '"/>param-&gt;setUAPString(*&amp;paramname, *&amp;__<xsl:value-of select="@name"/>);
@@ -279,7 +334,7 @@ long  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::add<xsl:value-of sel
 	return -1;
 }
 
-void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
+void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
 	while (hasMore<xsl:value-of select="$FormName"/>()) {
@@ -297,7 +352,7 @@ void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteMarked() {
+void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
 	while (hasMore<xsl:value-of select="$FormName"/>()) {
@@ -315,7 +370,7 @@ void		LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::select<xsl:value-of select="$FormName"/>(long user_id) {
+bool LB_STDCALL <xsl:value-of select="$FormName"/>Model::select<xsl:value-of select="$FormName"/>(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -348,7 +403,7 @@ bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::select<xsl:value-of s
 <xsl:value-of select="'    '"/>param-&gt;getUAPFloat(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='Integer'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;getUAPInteger(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;getUAPLong(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='String'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
 <xsl:value-of select="'    '"/>param-&gt;getUAPString(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
@@ -371,28 +426,28 @@ bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::select<xsl:value-of s
 	return false;
 }
 
-bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::ismarked() {
+bool LB_STDCALL <xsl:value-of select="$FormName"/>Model::ismarked() {
 	if (marked-&gt;getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::mark() {
+void LB_STDCALL <xsl:value-of select="$FormName"/>Model::mark() {
 	marked-&gt;setData((long) 1);
 }
 
-void LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::unmark() {
+void LB_STDCALL <xsl:value-of select="$FormName"/>Model::unmark() {
 	marked-&gt;setData((long) 0);
 }
 
-int  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get<xsl:value-of select="$FormName"/>Count() {
+int  LB_STDCALL <xsl:value-of select="$FormName"/>Model::get<xsl:value-of select="$FormName"/>Count() {
 	return <xsl:value-of select="$FormName"/>-&gt;Count();
 }
 
-bool  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::hasMore<xsl:value-of select="$FormName"/>() {
+bool  LB_STDCALL <xsl:value-of select="$FormName"/>Model::hasMore<xsl:value-of select="$FormName"/>() {
 	return (<xsl:value-of select="$FormName"/>-&gt;hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of select="$FormName"/>() {
+void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of select="$FormName"/>() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -417,7 +472,7 @@ void  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of
 <xsl:value-of select="'    '"/>param-&gt;getUAPFloat(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='Integer'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
-<xsl:value-of select="'    '"/>param-&gt;getUAPInteger(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
+<xsl:value-of select="'    '"/>param-&gt;getUAPLong(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
 </xsl:when><xsl:when test="@dbtype='String'">
 <xsl:value-of select="'    '"/>*paramname = "<xsl:value-of select="@name"/>";
 <xsl:value-of select="'    '"/>param-&gt;getUAPString(*&amp;paramname, *&amp;current<xsl:value-of select="@name"/>);
@@ -435,17 +490,17 @@ void  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of
 	
 }
 
-void  LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::finish<xsl:value-of select="$FormName"/>Iteration() {
+void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::finish<xsl:value-of select="$FormName"/>Iteration() {
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
 }
 
-long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_id() {
+long LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_id() {
 	return current<xsl:value-of select="$FormName"/>ID-&gt;getData();
 }
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/> <xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">
-long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+long LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;getData();
 }
 </xsl:when><xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
@@ -453,19 +508,19 @@ long LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of sel
 </xsl:when>
 <xsl:otherwise>
 <xsl:choose><xsl:when test="@dbtype='Bit'">
-bool LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+bool LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;getData();
 }
 </xsl:when><xsl:when test="@dbtype='Float'">
-float LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+float LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;getData();
 }
 </xsl:when><xsl:when test="@dbtype='Integer'">
-int LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+long LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;getData();
 }
 </xsl:when><xsl:when test="@dbtype='String'">
-char* LB_STDCALL lb<xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
+char* LB_STDCALL <xsl:value-of select="$FormName"/>Model::get_<xsl:value-of select="@name"/>() {
 	return current<xsl:value-of select="@name"/>-&gt;charrep();
 }
 </xsl:when>
@@ -541,10 +596,10 @@ lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$FormName"/>Model::peekIm
 	lbErrCodes err = ERR_NONE;
 
 	if (uk<xsl:value-of select="$FormName"/>Model == NULL) {
-		lb<xsl:value-of select="$FormName"/>Model* <xsl:value-of select="$FormName"/>Model = new lb<xsl:value-of select="$FormName"/>Model();
+		<xsl:value-of select="$FormName"/>Model* a<xsl:value-of select="$FormName"/>Model = new <xsl:value-of select="$FormName"/>Model();
 		
 	
-		QI(<xsl:value-of select="$FormName"/>Model, lb_I_Unknown, uk<xsl:value-of select="$FormName"/>Model)
+		QI(a<xsl:value-of select="$FormName"/>Model, lb_I_Unknown, uk<xsl:value-of select="$FormName"/>Model)
 	} else {
 		_CL_VERBOSE &lt;&lt; "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -559,10 +614,10 @@ lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$FormName"/>Model::getImp
 
 		_CL_VERBOSE &lt;&lt; "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lb<xsl:value-of select="$FormName"/>Model* <xsl:value-of select="$FormName"/>Model = new lb<xsl:value-of select="$FormName"/>Model();
+		<xsl:value-of select="$FormName"/>Model* a<xsl:value-of select="$FormName"/>Model = new <xsl:value-of select="$FormName"/>Model();
 		
 	
-		QI(<xsl:value-of select="$FormName"/>Model, lb_I_Unknown, uk<xsl:value-of select="$FormName"/>Model)
+		QI(a<xsl:value-of select="$FormName"/>Model, lb_I_Unknown, uk<xsl:value-of select="$FormName"/>Model)
 	}
 	
 	lb_I_Unknown* r = uk<xsl:value-of select="$FormName"/>Model.getPtr();

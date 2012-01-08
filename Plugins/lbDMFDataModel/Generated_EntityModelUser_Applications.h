@@ -32,10 +32,10 @@
 /** \brief class User_Applications.
  * Documentation for User_Applications
  */
-class lbUser_ApplicationsModel : public lb_I_User_Applications {
+class User_ApplicationsModel : public lb_I_User_Applications {
 public:
-	lbUser_ApplicationsModel();
-	virtual ~lbUser_ApplicationsModel();
+	User_ApplicationsModel();
+	virtual ~User_ApplicationsModel();
 
 	long		LB_STDCALL addUser_Applications(long _userid, long _anwendungenid,  long _User_ApplicationsID = -1);
 
@@ -60,12 +60,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, User_Applications)
 	
 
