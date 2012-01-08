@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelFormular_Fields.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbFormular_FieldsModel, lbFormular_FieldsModel)
+IMPLEMENT_FUNCTOR(instanceOfFormular_FieldsModel, Formular_FieldsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormular_FieldsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_FieldsModel)
 	ADD_INTERFACE(lb_I_Formular_Fields)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbFormular_FieldsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Formular_FieldsModel)
 
-void		LB_STDCALL lbFormular_FieldsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbFormular_FieldsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbFormular_FieldsModel::lbFormular_FieldsModel() {
+Formular_FieldsModel::Formular_FieldsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Formular_Fields)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentfkname)
     REQUEST(getModuleInstance(), lb_I_String, currentfktable)
@@ -84,19 +77,81 @@ lbFormular_FieldsModel::lbFormular_FieldsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormular_FieldsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbFormular_FieldsModel::lbFormular_FieldsModel() called." LOG_
+	_CL_VERBOSE << "Formular_FieldsModel::Formular_FieldsModel() called." LOG_
 }
 
-lbFormular_FieldsModel::~lbFormular_FieldsModel() {
-	_CL_VERBOSE << "lbFormular_FieldsModel::~lbFormular_FieldsModel() called." LOG_
+Formular_FieldsModel::~Formular_FieldsModel() {
+	_CL_VERBOSE << "Formular_FieldsModel::~Formular_FieldsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbFormular_FieldsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbFormular_FieldsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Formular_FieldsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Formular_FieldsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbFormular_FieldsModel::addFormular_Fields(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Formular_FieldsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Formular_Fields";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Formular_FieldsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Formular_FieldsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Formular_FieldsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Formular_FieldsModel::addFormular_Fields(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __fkname)
@@ -158,7 +213,7 @@ long  LB_STDCALL lbFormular_FieldsModel::addFormular_Fields(const char* _fkname,
 	return -1;
 }
 
-void		LB_STDCALL lbFormular_FieldsModel::deleteUnmarked() {
+void		LB_STDCALL Formular_FieldsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Fields->finishIteration();
 	while (hasMoreFormular_Fields()) {
@@ -176,7 +231,7 @@ void		LB_STDCALL lbFormular_FieldsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbFormular_FieldsModel::deleteMarked() {
+void		LB_STDCALL Formular_FieldsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Fields->finishIteration();
 	while (hasMoreFormular_Fields()) {
@@ -194,7 +249,7 @@ void		LB_STDCALL lbFormular_FieldsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbFormular_FieldsModel::selectFormular_Fields(long user_id) {
+bool LB_STDCALL Formular_FieldsModel::selectFormular_Fields(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -239,28 +294,28 @@ bool LB_STDCALL lbFormular_FieldsModel::selectFormular_Fields(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbFormular_FieldsModel::ismarked() {
+bool LB_STDCALL Formular_FieldsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbFormular_FieldsModel::mark() {
+void LB_STDCALL Formular_FieldsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbFormular_FieldsModel::unmark() {
+void LB_STDCALL Formular_FieldsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbFormular_FieldsModel::getFormular_FieldsCount() {
+int  LB_STDCALL Formular_FieldsModel::getFormular_FieldsCount() {
 	return Formular_Fields->Count();
 }
 
-bool  LB_STDCALL lbFormular_FieldsModel::hasMoreFormular_Fields() {
+bool  LB_STDCALL Formular_FieldsModel::hasMoreFormular_Fields() {
 	return (Formular_Fields->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbFormular_FieldsModel::setNextFormular_Fields() {
+void  LB_STDCALL Formular_FieldsModel::setNextFormular_Fields() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -292,40 +347,40 @@ void  LB_STDCALL lbFormular_FieldsModel::setNextFormular_Fields() {
 	
 }
 
-void  LB_STDCALL lbFormular_FieldsModel::finishFormular_FieldsIteration() {
+void  LB_STDCALL Formular_FieldsModel::finishFormular_FieldsIteration() {
 	Formular_Fields->finishIteration();
 }
 
-long LB_STDCALL lbFormular_FieldsModel::get_id() {
+long LB_STDCALL Formular_FieldsModel::get_id() {
 	return currentFormular_FieldsID->getData();
 }
 
 
-char* LB_STDCALL lbFormular_FieldsModel::get_fkname() {
+char* LB_STDCALL Formular_FieldsModel::get_fkname() {
 	return currentfkname->charrep();
 }
 
-char* LB_STDCALL lbFormular_FieldsModel::get_fktable() {
+char* LB_STDCALL Formular_FieldsModel::get_fktable() {
 	return currentfktable->charrep();
 }
 
-char* LB_STDCALL lbFormular_FieldsModel::get_dbtype() {
+char* LB_STDCALL Formular_FieldsModel::get_dbtype() {
 	return currentdbtype->charrep();
 }
 
-bool LB_STDCALL lbFormular_FieldsModel::get_isforeignkey() {
+bool LB_STDCALL Formular_FieldsModel::get_isforeignkey() {
 	return currentisforeignkey->getData();
 }
 
-char* LB_STDCALL lbFormular_FieldsModel::get_name() {
+char* LB_STDCALL Formular_FieldsModel::get_name() {
 	return currentname->charrep();
 }
 
-char* LB_STDCALL lbFormular_FieldsModel::get_tablename() {
+char* LB_STDCALL Formular_FieldsModel::get_tablename() {
 	return currenttablename->charrep();
 }
 
-long LB_STDCALL lbFormular_FieldsModel::get_formularid() {
+long LB_STDCALL Formular_FieldsModel::get_formularid() {
 	return currentformularid->getData();
 }
 
@@ -396,10 +451,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormular_FieldsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukFormular_FieldsModel == NULL) {
-		lbFormular_FieldsModel* Formular_FieldsModel = new lbFormular_FieldsModel();
+		Formular_FieldsModel* aFormular_FieldsModel = new Formular_FieldsModel();
 		
 	
-		QI(Formular_FieldsModel, lb_I_Unknown, ukFormular_FieldsModel)
+		QI(aFormular_FieldsModel, lb_I_Unknown, ukFormular_FieldsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -414,10 +469,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormular_FieldsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbFormular_FieldsModel* Formular_FieldsModel = new lbFormular_FieldsModel();
+		Formular_FieldsModel* aFormular_FieldsModel = new Formular_FieldsModel();
 		
 	
-		QI(Formular_FieldsModel, lb_I_Unknown, ukFormular_FieldsModel)
+		QI(aFormular_FieldsModel, lb_I_Unknown, ukFormular_FieldsModel)
 	}
 	
 	lb_I_Unknown* r = ukFormular_FieldsModel.getPtr();

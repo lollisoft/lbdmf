@@ -32,10 +32,10 @@
 /** \brief class UserAccounts.
  * Documentation for UserAccounts
  */
-class lbUserAccountsModel : public lb_I_UserAccounts {
+class UserAccountsModel : public lb_I_UserAccounts {
 public:
-	lbUserAccountsModel();
-	virtual ~lbUserAccountsModel();
+	UserAccountsModel();
+	virtual ~UserAccountsModel();
 
 	long		LB_STDCALL addUserAccounts(const char* _passwort, const char* _userid, const char* _vorname, const char* _name,  long _UserAccountsID = -1);
 
@@ -60,12 +60,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, UserAccounts)
 	
 

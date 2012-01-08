@@ -52,27 +52,20 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelReportTexts.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbReportTextsModel, lbReportTextsModel)
+IMPLEMENT_FUNCTOR(instanceOfReportTextsModel, ReportTextsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbReportTextsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(ReportTextsModel)
 	ADD_INTERFACE(lb_I_ReportTexts)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbReportTextsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(ReportTextsModel)
 
-void		LB_STDCALL lbReportTextsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbReportTextsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbReportTextsModel::lbReportTextsModel() {
+ReportTextsModel::ReportTextsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, ReportTexts)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
-    REQUEST(getModuleInstance(), lb_I_Integer, currentline)
+    REQUEST(getModuleInstance(), lb_I_Long, currentline)
     REQUEST(getModuleInstance(), lb_I_String, currenttext)
     REQUEST(getModuleInstance(), lb_I_Long, currentelementid)
 
@@ -80,22 +73,84 @@ lbReportTextsModel::lbReportTextsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentReportTextsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbReportTextsModel::lbReportTextsModel() called." LOG_
+	_CL_VERBOSE << "ReportTextsModel::ReportTextsModel() called." LOG_
 }
 
-lbReportTextsModel::~lbReportTextsModel() {
-	_CL_VERBOSE << "lbReportTextsModel::~lbReportTextsModel() called." LOG_
+ReportTextsModel::~ReportTextsModel() {
+	_CL_VERBOSE << "ReportTextsModel::~ReportTextsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbReportTextsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbReportTextsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL ReportTextsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: ReportTextsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbReportTextsModel::addReportTexts(int _line, const char* _text, long _elementid,  long _ReportTextsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL ReportTextsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_ReportTexts";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL ReportTextsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL ReportTextsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL ReportTextsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL ReportTextsModel::addReportTexts(long _line, const char* _text, long _elementid,  long _ReportTextsID) {
 	lbErrCodes err = ERR_NONE;
 
-    UAP_REQUEST(getModuleInstance(), lb_I_Integer, __line)
+    UAP_REQUEST(getModuleInstance(), lb_I_Long, __line)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __text)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __elementid)
 
@@ -115,7 +170,7 @@ long  LB_STDCALL lbReportTextsModel::addReportTexts(int _line, const char* _text
 	__ReportTextsID->setData(_ReportTextsID);
 
     *paramname = "line";
-    param->setUAPInteger(*&paramname, *&__line);
+    param->setUAPLong(*&paramname, *&__line);
     *paramname = "text";
     param->setUAPString(*&paramname, *&__text);
     *paramname = "elementid";
@@ -138,7 +193,7 @@ long  LB_STDCALL lbReportTextsModel::addReportTexts(int _line, const char* _text
 	return -1;
 }
 
-void		LB_STDCALL lbReportTextsModel::deleteUnmarked() {
+void		LB_STDCALL ReportTextsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportTexts->finishIteration();
 	while (hasMoreReportTexts()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbReportTextsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbReportTextsModel::deleteMarked() {
+void		LB_STDCALL ReportTextsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportTexts->finishIteration();
 	while (hasMoreReportTexts()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbReportTextsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbReportTextsModel::selectReportTexts(long user_id) {
+bool LB_STDCALL ReportTextsModel::selectReportTexts(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -192,7 +247,7 @@ bool LB_STDCALL lbReportTextsModel::selectReportTexts(long user_id) {
 		QI(uk, lb_I_Parameter, param)
 		
     *paramname = "line";
-    param->getUAPInteger(*&paramname, *&currentline);
+    param->getUAPLong(*&paramname, *&currentline);
     *paramname = "text";
     param->getUAPString(*&paramname, *&currenttext);
     *paramname = "elementid";
@@ -211,28 +266,28 @@ bool LB_STDCALL lbReportTextsModel::selectReportTexts(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbReportTextsModel::ismarked() {
+bool LB_STDCALL ReportTextsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbReportTextsModel::mark() {
+void LB_STDCALL ReportTextsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbReportTextsModel::unmark() {
+void LB_STDCALL ReportTextsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbReportTextsModel::getReportTextsCount() {
+int  LB_STDCALL ReportTextsModel::getReportTextsCount() {
 	return ReportTexts->Count();
 }
 
-bool  LB_STDCALL lbReportTextsModel::hasMoreReportTexts() {
+bool  LB_STDCALL ReportTextsModel::hasMoreReportTexts() {
 	return (ReportTexts->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbReportTextsModel::setNextReportTexts() {
+void  LB_STDCALL ReportTextsModel::setNextReportTexts() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -242,7 +297,7 @@ void  LB_STDCALL lbReportTextsModel::setNextReportTexts() {
 	QI(uk, lb_I_Parameter, param)
 
     *paramname = "line";
-    param->getUAPInteger(*&paramname, *&currentline);
+    param->getUAPLong(*&paramname, *&currentline);
     *paramname = "text";
     param->getUAPString(*&paramname, *&currenttext);
     *paramname = "elementid";
@@ -256,24 +311,24 @@ void  LB_STDCALL lbReportTextsModel::setNextReportTexts() {
 	
 }
 
-void  LB_STDCALL lbReportTextsModel::finishReportTextsIteration() {
+void  LB_STDCALL ReportTextsModel::finishReportTextsIteration() {
 	ReportTexts->finishIteration();
 }
 
-long LB_STDCALL lbReportTextsModel::get_id() {
+long LB_STDCALL ReportTextsModel::get_id() {
 	return currentReportTextsID->getData();
 }
 
 
-int LB_STDCALL lbReportTextsModel::get_line() {
+long LB_STDCALL ReportTextsModel::get_line() {
 	return currentline->getData();
 }
 
-char* LB_STDCALL lbReportTextsModel::get_text() {
+char* LB_STDCALL ReportTextsModel::get_text() {
 	return currenttext->charrep();
 }
 
-long LB_STDCALL lbReportTextsModel::get_elementid() {
+long LB_STDCALL ReportTextsModel::get_elementid() {
 	return currentelementid->getData();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukReportTextsModel == NULL) {
-		lbReportTextsModel* ReportTextsModel = new lbReportTextsModel();
+		ReportTextsModel* aReportTextsModel = new ReportTextsModel();
 		
 	
-		QI(ReportTextsModel, lb_I_Unknown, ukReportTextsModel)
+		QI(aReportTextsModel, lb_I_Unknown, ukReportTextsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbReportTextsModel* ReportTextsModel = new lbReportTextsModel();
+		ReportTextsModel* aReportTextsModel = new ReportTextsModel();
 		
 	
-		QI(ReportTextsModel, lb_I_Unknown, ukReportTextsModel)
+		QI(aReportTextsModel, lb_I_Unknown, ukReportTextsModel)
 	}
 	
 	lb_I_Unknown* r = ukReportTextsModel.getPtr();

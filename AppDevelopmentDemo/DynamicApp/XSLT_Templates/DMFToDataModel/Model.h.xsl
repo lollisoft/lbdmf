@@ -84,7 +84,7 @@
 </xsl:if>
 </xsl:if>
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name='ForeignKey'">
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Integer</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Long</xsl:if>
 </xsl:if>
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
 <xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Container</xsl:if>
@@ -93,7 +93,7 @@
 	<xsl:choose>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
+		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Long</xsl:when>
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
 		</xsl:otherwise>
 	</xsl:choose>
@@ -137,10 +137,10 @@
 /** \brief class <xsl:value-of select="$FormName"/>.
  * Documentation for <xsl:value-of select="$FormName"/>
  */
-class lb<xsl:value-of select="$FormName"/>Model : public lb_I_<xsl:value-of select="$FormName"/> {
+class <xsl:value-of select="$FormName"/>Model : public lb_I_<xsl:value-of select="$FormName"/> {
 public:
-	lb<xsl:value-of select="$FormName"/>Model();
-	virtual ~lb<xsl:value-of select="$FormName"/>Model();
+	<xsl:value-of select="$FormName"/>Model();
+	virtual ~<xsl:value-of select="$FormName"/>Model();
 
 	long		LB_STDCALL add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:choose>
 <xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
@@ -148,7 +148,7 @@ public:
 	<xsl:otherwise><xsl:choose>
 	<xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
 	<xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
-	<xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
+	<xsl:when test="@dbtype='Integer'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 	<xsl:when test="@dbtype='String'">const char* _<xsl:value-of select="$FieldName"/>, </xsl:when></xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
@@ -179,7 +179,7 @@ public:
 			<xsl:when test="@dbtype='Float'">
 	float		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-	int			LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
+	long			LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 			<xsl:when test="@dbtype='String'">
 	char*		LB_STDCALL get_<xsl:value-of select="$FieldName"/>();</xsl:when>
 		</xsl:choose>
@@ -197,12 +197,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, <xsl:value-of select="$FormName"/>)
 	
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
@@ -225,7 +225,7 @@ public:
 	UAP(lb_I_Float, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-	UAP(lb_I_Integer, current<xsl:value-of select="$FieldName"/>)
+	UAP(lb_I_Long, current<xsl:value-of select="$FieldName"/>)
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
 	UAP(lb_I_String, current<xsl:value-of select="$FieldName"/>)

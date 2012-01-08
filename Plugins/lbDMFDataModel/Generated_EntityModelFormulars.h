@@ -32,10 +32,10 @@
 /** \brief class Formulars.
  * Documentation for Formulars
  */
-class lbFormularsModel : public lb_I_Formulars {
+class FormularsModel : public lb_I_Formulars {
 public:
-	lbFormularsModel();
-	virtual ~lbFormularsModel();
+	FormularsModel();
+	virtual ~FormularsModel();
 
 	long		LB_STDCALL addFormulars(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID = -1);
 
@@ -65,12 +65,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Formulars)
 	
 

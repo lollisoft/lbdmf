@@ -32,10 +32,10 @@
 /** \brief class Action_Step_Transitions.
  * Documentation for Action_Step_Transitions
  */
-class lbAction_Step_TransitionsModel : public lb_I_Action_Step_Transitions {
+class Action_Step_TransitionsModel : public lb_I_Action_Step_Transitions {
 public:
-	lbAction_Step_TransitionsModel();
-	virtual ~lbAction_Step_TransitionsModel();
+	Action_Step_TransitionsModel();
+	virtual ~Action_Step_TransitionsModel();
 
 	long		LB_STDCALL addAction_Step_Transitions(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID = -1);
 
@@ -62,12 +62,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Action_Step_Transitions)
 	
 

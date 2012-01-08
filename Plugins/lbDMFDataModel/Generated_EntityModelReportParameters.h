@@ -32,12 +32,12 @@
 /** \brief class ReportParameters.
  * Documentation for ReportParameters
  */
-class lbReportParametersModel : public lb_I_ReportParameters {
+class ReportParametersModel : public lb_I_ReportParameters {
 public:
-	lbReportParametersModel();
-	virtual ~lbReportParametersModel();
+	ReportParametersModel();
+	virtual ~ReportParametersModel();
 
-	long		LB_STDCALL addReportParameters(int _value, const char* _name, long _reportid,  long _ReportParametersID = -1);
+	long		LB_STDCALL addReportParameters(long _value, const char* _name, long _reportid,  long _ReportParametersID = -1);
 
 	bool		LB_STDCALL selectReportParameters(long _id);
 	int			LB_STDCALL getReportParametersCount();
@@ -46,7 +46,7 @@ public:
 	void		LB_STDCALL finishReportParametersIteration();
 
 
-	int			LB_STDCALL get_value();
+	long			LB_STDCALL get_value();
 	char*		LB_STDCALL get_name();
 	long		LB_STDCALL get_reportid();
 	
@@ -60,16 +60,16 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ReportParameters)
 	
 
-	UAP(lb_I_Integer, currentvalue)
+	UAP(lb_I_Long, currentvalue)
 			
 	UAP(lb_I_String, currentname)
 			

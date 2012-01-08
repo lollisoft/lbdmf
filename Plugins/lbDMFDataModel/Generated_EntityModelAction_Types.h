@@ -32,10 +32,10 @@
 /** \brief class Action_Types.
  * Documentation for Action_Types
  */
-class lbAction_TypesModel : public lb_I_Action_Types {
+class Action_TypesModel : public lb_I_Action_Types {
 public:
-	lbAction_TypesModel();
-	virtual ~lbAction_TypesModel();
+	Action_TypesModel();
+	virtual ~Action_TypesModel();
 
 	long		LB_STDCALL addAction_Types(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID = -1);
 
@@ -59,12 +59,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Action_Types)
 	
 

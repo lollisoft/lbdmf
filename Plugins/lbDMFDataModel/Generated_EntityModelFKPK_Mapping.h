@@ -32,10 +32,10 @@
 /** \brief class FKPK_Mapping.
  * Documentation for FKPK_Mapping
  */
-class lbFKPK_MappingModel : public lb_I_FKPK_Mapping {
+class FKPK_MappingModel : public lb_I_FKPK_Mapping {
 public:
-	lbFKPK_MappingModel();
-	virtual ~lbFKPK_MappingModel();
+	FKPK_MappingModel();
+	virtual ~FKPK_MappingModel();
 
 	long		LB_STDCALL addFKPK_Mapping(const char* _pktable, const char* _pkname, const char* _fktable, const char* _fkname,  long _FKPK_MappingID = -1);
 
@@ -60,12 +60,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, FKPK_Mapping)
 	
 

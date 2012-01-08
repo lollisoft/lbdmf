@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelFormularParameter.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbFormularParameterModel, lbFormularParameterModel)
+IMPLEMENT_FUNCTOR(instanceOfFormularParameterModel, FormularParameterModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularParameterModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(FormularParameterModel)
 	ADD_INTERFACE(lb_I_FormularParameter)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbFormularParameterModel)
+IMPLEMENT_EXTENSIBLEOBJECT(FormularParameterModel)
 
-void		LB_STDCALL lbFormularParameterModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbFormularParameterModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbFormularParameterModel::lbFormularParameterModel() {
+FormularParameterModel::FormularParameterModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, FormularParameter)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentparametervalue)
     REQUEST(getModuleInstance(), lb_I_String, currentparametername)
@@ -80,19 +73,81 @@ lbFormularParameterModel::lbFormularParameterModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularParameterID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbFormularParameterModel::lbFormularParameterModel() called." LOG_
+	_CL_VERBOSE << "FormularParameterModel::FormularParameterModel() called." LOG_
 }
 
-lbFormularParameterModel::~lbFormularParameterModel() {
-	_CL_VERBOSE << "lbFormularParameterModel::~lbFormularParameterModel() called." LOG_
+FormularParameterModel::~FormularParameterModel() {
+	_CL_VERBOSE << "FormularParameterModel::~FormularParameterModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbFormularParameterModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbFormularParameterModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL FormularParameterModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: FormularParameterModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbFormularParameterModel::addFormularParameter(const char* _parametervalue, const char* _parametername, long _formularid,  long _FormularParameterID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL FormularParameterModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_FormularParameter";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL FormularParameterModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL FormularParameterModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL FormularParameterModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL FormularParameterModel::addFormularParameter(const char* _parametervalue, const char* _parametername, long _formularid,  long _FormularParameterID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __parametervalue)
@@ -138,7 +193,7 @@ long  LB_STDCALL lbFormularParameterModel::addFormularParameter(const char* _par
 	return -1;
 }
 
-void		LB_STDCALL lbFormularParameterModel::deleteUnmarked() {
+void		LB_STDCALL FormularParameterModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	FormularParameter->finishIteration();
 	while (hasMoreFormularParameter()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbFormularParameterModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbFormularParameterModel::deleteMarked() {
+void		LB_STDCALL FormularParameterModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	FormularParameter->finishIteration();
 	while (hasMoreFormularParameter()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbFormularParameterModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbFormularParameterModel::selectFormularParameter(long user_id) {
+bool LB_STDCALL FormularParameterModel::selectFormularParameter(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -211,28 +266,28 @@ bool LB_STDCALL lbFormularParameterModel::selectFormularParameter(long user_id) 
 	return false;
 }
 
-bool LB_STDCALL lbFormularParameterModel::ismarked() {
+bool LB_STDCALL FormularParameterModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbFormularParameterModel::mark() {
+void LB_STDCALL FormularParameterModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbFormularParameterModel::unmark() {
+void LB_STDCALL FormularParameterModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbFormularParameterModel::getFormularParameterCount() {
+int  LB_STDCALL FormularParameterModel::getFormularParameterCount() {
 	return FormularParameter->Count();
 }
 
-bool  LB_STDCALL lbFormularParameterModel::hasMoreFormularParameter() {
+bool  LB_STDCALL FormularParameterModel::hasMoreFormularParameter() {
 	return (FormularParameter->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbFormularParameterModel::setNextFormularParameter() {
+void  LB_STDCALL FormularParameterModel::setNextFormularParameter() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -256,24 +311,24 @@ void  LB_STDCALL lbFormularParameterModel::setNextFormularParameter() {
 	
 }
 
-void  LB_STDCALL lbFormularParameterModel::finishFormularParameterIteration() {
+void  LB_STDCALL FormularParameterModel::finishFormularParameterIteration() {
 	FormularParameter->finishIteration();
 }
 
-long LB_STDCALL lbFormularParameterModel::get_id() {
+long LB_STDCALL FormularParameterModel::get_id() {
 	return currentFormularParameterID->getData();
 }
 
 
-char* LB_STDCALL lbFormularParameterModel::get_parametervalue() {
+char* LB_STDCALL FormularParameterModel::get_parametervalue() {
 	return currentparametervalue->charrep();
 }
 
-char* LB_STDCALL lbFormularParameterModel::get_parametername() {
+char* LB_STDCALL FormularParameterModel::get_parametername() {
 	return currentparametername->charrep();
 }
 
-long LB_STDCALL lbFormularParameterModel::get_formularid() {
+long LB_STDCALL FormularParameterModel::get_formularid() {
 	return currentformularid->getData();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularParameterModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukFormularParameterModel == NULL) {
-		lbFormularParameterModel* FormularParameterModel = new lbFormularParameterModel();
+		FormularParameterModel* aFormularParameterModel = new FormularParameterModel();
 		
 	
-		QI(FormularParameterModel, lb_I_Unknown, ukFormularParameterModel)
+		QI(aFormularParameterModel, lb_I_Unknown, ukFormularParameterModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularParameterModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbFormularParameterModel* FormularParameterModel = new lbFormularParameterModel();
+		FormularParameterModel* aFormularParameterModel = new FormularParameterModel();
 		
 	
-		QI(FormularParameterModel, lb_I_Unknown, ukFormularParameterModel)
+		QI(aFormularParameterModel, lb_I_Unknown, ukFormularParameterModel)
 	}
 	
 	lb_I_Unknown* r = ukFormularParameterModel.getPtr();

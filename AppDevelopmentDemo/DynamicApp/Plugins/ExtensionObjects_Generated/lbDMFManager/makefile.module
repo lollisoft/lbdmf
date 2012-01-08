@@ -1,0 +1,78 @@
+# Define your module based settings
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL = $(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces -i=$(DEVROOT_MAKE)\\projects\\CPP\\vendor\\libxslt-1.1.21 -i=$(DEVROOT_MAKE)\\projects\\CPP\\vendor\\libxml2-2.6.29\\include 
+MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxslt-1.1.21 -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxml2-2.6.29/include
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,$(DEVROOT_MAKE)/projects/dll/libs/lbxslt.lib
+
+MINGWLIBS+= -llibxml2 -llbxslt
+
+MOD_INCL_MINGW = $(STD_INCL_MINGW)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+
+MOD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+
+
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+LIBS = $(BASE_LIBS), Q:/develop/Tools/msc/VC98/Lib/odbc32.lib
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+endif
+
+#OBJDEP=../lbHook/lbHook.o
+# ../lbHook/conio.o
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -lexslt
+endif    
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -lexslt
+endif    
+
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -lexslt
+endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+OBJDEP=
+LIBS=$(OSX_ARCH) $(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
+VENDORLIBS=
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+OBJDEP=
+VENDORLIBS=$(HOME)/lib/lbhook.so /usr/lib/libiodbc.dylib
+endif    
+
+endif

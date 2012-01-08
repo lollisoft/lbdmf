@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelAction_Types.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbAction_TypesModel, lbAction_TypesModel)
+IMPLEMENT_FUNCTOR(instanceOfAction_TypesModel, Action_TypesModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbAction_TypesModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Action_TypesModel)
 	ADD_INTERFACE(lb_I_Action_Types)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbAction_TypesModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Action_TypesModel)
 
-void		LB_STDCALL lbAction_TypesModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbAction_TypesModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbAction_TypesModel::lbAction_TypesModel() {
+Action_TypesModel::Action_TypesModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Action_Types)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentbezeichnung)
     REQUEST(getModuleInstance(), lb_I_String, currentaction_handler)
@@ -80,19 +73,81 @@ lbAction_TypesModel::lbAction_TypesModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentAction_TypesID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbAction_TypesModel::lbAction_TypesModel() called." LOG_
+	_CL_VERBOSE << "Action_TypesModel::Action_TypesModel() called." LOG_
 }
 
-lbAction_TypesModel::~lbAction_TypesModel() {
-	_CL_VERBOSE << "lbAction_TypesModel::~lbAction_TypesModel() called." LOG_
+Action_TypesModel::~Action_TypesModel() {
+	_CL_VERBOSE << "Action_TypesModel::~Action_TypesModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbAction_TypesModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbAction_TypesModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Action_TypesModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Action_TypesModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbAction_TypesModel::addAction_Types(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Action_TypesModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Action_Types";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Action_TypesModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Action_TypesModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Action_TypesModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Action_TypesModel::addAction_Types(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __bezeichnung)
@@ -138,7 +193,7 @@ long  LB_STDCALL lbAction_TypesModel::addAction_Types(const char* _bezeichnung, 
 	return -1;
 }
 
-void		LB_STDCALL lbAction_TypesModel::deleteUnmarked() {
+void		LB_STDCALL Action_TypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Types->finishIteration();
 	while (hasMoreAction_Types()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbAction_TypesModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbAction_TypesModel::deleteMarked() {
+void		LB_STDCALL Action_TypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Types->finishIteration();
 	while (hasMoreAction_Types()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbAction_TypesModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbAction_TypesModel::selectAction_Types(long user_id) {
+bool LB_STDCALL Action_TypesModel::selectAction_Types(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -211,28 +266,28 @@ bool LB_STDCALL lbAction_TypesModel::selectAction_Types(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbAction_TypesModel::ismarked() {
+bool LB_STDCALL Action_TypesModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbAction_TypesModel::mark() {
+void LB_STDCALL Action_TypesModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbAction_TypesModel::unmark() {
+void LB_STDCALL Action_TypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbAction_TypesModel::getAction_TypesCount() {
+int  LB_STDCALL Action_TypesModel::getAction_TypesCount() {
 	return Action_Types->Count();
 }
 
-bool  LB_STDCALL lbAction_TypesModel::hasMoreAction_Types() {
+bool  LB_STDCALL Action_TypesModel::hasMoreAction_Types() {
 	return (Action_Types->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbAction_TypesModel::setNextAction_Types() {
+void  LB_STDCALL Action_TypesModel::setNextAction_Types() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -256,24 +311,24 @@ void  LB_STDCALL lbAction_TypesModel::setNextAction_Types() {
 	
 }
 
-void  LB_STDCALL lbAction_TypesModel::finishAction_TypesIteration() {
+void  LB_STDCALL Action_TypesModel::finishAction_TypesIteration() {
 	Action_Types->finishIteration();
 }
 
-long LB_STDCALL lbAction_TypesModel::get_id() {
+long LB_STDCALL Action_TypesModel::get_id() {
 	return currentAction_TypesID->getData();
 }
 
 
-char* LB_STDCALL lbAction_TypesModel::get_bezeichnung() {
+char* LB_STDCALL Action_TypesModel::get_bezeichnung() {
 	return currentbezeichnung->charrep();
 }
 
-char* LB_STDCALL lbAction_TypesModel::get_action_handler() {
+char* LB_STDCALL Action_TypesModel::get_action_handler() {
 	return currentaction_handler->charrep();
 }
 
-char* LB_STDCALL lbAction_TypesModel::get_module() {
+char* LB_STDCALL Action_TypesModel::get_module() {
 	return currentmodule->charrep();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_TypesModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukAction_TypesModel == NULL) {
-		lbAction_TypesModel* Action_TypesModel = new lbAction_TypesModel();
+		Action_TypesModel* aAction_TypesModel = new Action_TypesModel();
 		
 	
-		QI(Action_TypesModel, lb_I_Unknown, ukAction_TypesModel)
+		QI(aAction_TypesModel, lb_I_Unknown, ukAction_TypesModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_TypesModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbAction_TypesModel* Action_TypesModel = new lbAction_TypesModel();
+		Action_TypesModel* aAction_TypesModel = new Action_TypesModel();
 		
 	
-		QI(Action_TypesModel, lb_I_Unknown, ukAction_TypesModel)
+		QI(aAction_TypesModel, lb_I_Unknown, ukAction_TypesModel)
 	}
 	
 	lb_I_Unknown* r = ukAction_TypesModel.getPtr();

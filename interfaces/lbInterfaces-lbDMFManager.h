@@ -20,7 +20,7 @@ public:
 
 class lb_I_Action_Steps : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL addAction_Steps(const char* _bezeichnung, const char* _what, int _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1) = 0;
+	virtual long		LB_STDCALL addAction_Steps(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectAction_Steps(long _id) = 0;
 	virtual int			LB_STDCALL getAction_StepsCount() = 0;
@@ -33,7 +33,7 @@ public:
 
     virtual char* LB_STDCALL get_bezeichnung() = 0;
 			    virtual char* LB_STDCALL get_what() = 0;
-			    virtual int LB_STDCALL get_a_order_nr() = 0;
+			    virtual long LB_STDCALL get_a_order_nr() = 0;
 			    virtual long LB_STDCALL get_type() = 0;
 	    virtual long LB_STDCALL get_actionid() = 0;
 	};
@@ -224,7 +224,7 @@ public:
 
 class lb_I_ReportParameters : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL addReportParameters(int _value, const char* _name, long _reportid,  long _ReportParametersID = -1) = 0;
+	virtual long		LB_STDCALL addReportParameters(long _value, const char* _name, long _reportid,  long _ReportParametersID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectReportParameters(long _id) = 0;
 	virtual int			LB_STDCALL getReportParametersCount() = 0;
@@ -235,14 +235,14 @@ public:
 	// Derived from lb_I_TableModule
 	//virtual long LB_STDCALL get_id() = 0;
 
-    virtual int LB_STDCALL get_value() = 0;
+    virtual long LB_STDCALL get_value() = 0;
 			    virtual char* LB_STDCALL get_name() = 0;
 			    virtual long LB_STDCALL get_reportid() = 0;
 	};
 
 class lb_I_ReportElements : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL addReportElements(const char* _name, const char* _description, int _x, int _y, int _w, int _h, long _reportid, long _typ,  long _ReportElementsID = -1) = 0;
+	virtual long		LB_STDCALL addReportElements(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectReportElements(long _id) = 0;
 	virtual int			LB_STDCALL getReportElementsCount() = 0;
@@ -255,10 +255,10 @@ public:
 
     virtual char* LB_STDCALL get_name() = 0;
 			    virtual char* LB_STDCALL get_description() = 0;
-			    virtual int LB_STDCALL get_x() = 0;
-			    virtual int LB_STDCALL get_y() = 0;
-			    virtual int LB_STDCALL get_w() = 0;
-			    virtual int LB_STDCALL get_h() = 0;
+			    virtual long LB_STDCALL get_x() = 0;
+			    virtual long LB_STDCALL get_y() = 0;
+			    virtual long LB_STDCALL get_w() = 0;
+			    virtual long LB_STDCALL get_h() = 0;
 			    virtual long LB_STDCALL get_reportid() = 0;
 	    virtual long LB_STDCALL get_typ() = 0;
 	};
@@ -282,7 +282,7 @@ public:
 
 class lb_I_ReportTexts : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL addReportTexts(int _line, const char* _text, long _elementid,  long _ReportTextsID = -1) = 0;
+	virtual long		LB_STDCALL addReportTexts(long _line, const char* _text, long _elementid,  long _ReportTextsID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectReportTexts(long _id) = 0;
 	virtual int			LB_STDCALL getReportTextsCount() = 0;
@@ -293,7 +293,7 @@ public:
 	// Derived from lb_I_TableModule
 	//virtual long LB_STDCALL get_id() = 0;
 
-    virtual int LB_STDCALL get_line() = 0;
+    virtual long LB_STDCALL get_line() = 0;
 			    virtual char* LB_STDCALL get_text() = 0;
 			    virtual long LB_STDCALL get_elementid() = 0;
 	};

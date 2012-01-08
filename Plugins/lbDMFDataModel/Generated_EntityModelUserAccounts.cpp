@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelUserAccounts.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbUserAccountsModel, lbUserAccountsModel)
+IMPLEMENT_FUNCTOR(instanceOfUserAccountsModel, UserAccountsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbUserAccountsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(UserAccountsModel)
 	ADD_INTERFACE(lb_I_UserAccounts)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbUserAccountsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(UserAccountsModel)
 
-void		LB_STDCALL lbUserAccountsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbUserAccountsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbUserAccountsModel::lbUserAccountsModel() {
+UserAccountsModel::UserAccountsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, UserAccounts)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentpasswort)
     REQUEST(getModuleInstance(), lb_I_String, currentuserid)
@@ -81,19 +74,81 @@ lbUserAccountsModel::lbUserAccountsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserAccountsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbUserAccountsModel::lbUserAccountsModel() called." LOG_
+	_CL_VERBOSE << "UserAccountsModel::UserAccountsModel() called." LOG_
 }
 
-lbUserAccountsModel::~lbUserAccountsModel() {
-	_CL_VERBOSE << "lbUserAccountsModel::~lbUserAccountsModel() called." LOG_
+UserAccountsModel::~UserAccountsModel() {
+	_CL_VERBOSE << "UserAccountsModel::~UserAccountsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbUserAccountsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbUserAccountsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL UserAccountsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: UserAccountsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbUserAccountsModel::addUserAccounts(const char* _passwort, const char* _userid, const char* _vorname, const char* _name,  long _UserAccountsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL UserAccountsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_UserAccounts";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL UserAccountsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL UserAccountsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL UserAccountsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL UserAccountsModel::addUserAccounts(const char* _passwort, const char* _userid, const char* _vorname, const char* _name,  long _UserAccountsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __passwort)
@@ -143,7 +198,7 @@ long  LB_STDCALL lbUserAccountsModel::addUserAccounts(const char* _passwort, con
 	return -1;
 }
 
-void		LB_STDCALL lbUserAccountsModel::deleteUnmarked() {
+void		LB_STDCALL UserAccountsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	UserAccounts->finishIteration();
 	while (hasMoreUserAccounts()) {
@@ -161,7 +216,7 @@ void		LB_STDCALL lbUserAccountsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbUserAccountsModel::deleteMarked() {
+void		LB_STDCALL UserAccountsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	UserAccounts->finishIteration();
 	while (hasMoreUserAccounts()) {
@@ -179,7 +234,7 @@ void		LB_STDCALL lbUserAccountsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbUserAccountsModel::selectUserAccounts(long user_id) {
+bool LB_STDCALL UserAccountsModel::selectUserAccounts(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -218,28 +273,28 @@ bool LB_STDCALL lbUserAccountsModel::selectUserAccounts(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbUserAccountsModel::ismarked() {
+bool LB_STDCALL UserAccountsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbUserAccountsModel::mark() {
+void LB_STDCALL UserAccountsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbUserAccountsModel::unmark() {
+void LB_STDCALL UserAccountsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbUserAccountsModel::getUserAccountsCount() {
+int  LB_STDCALL UserAccountsModel::getUserAccountsCount() {
 	return UserAccounts->Count();
 }
 
-bool  LB_STDCALL lbUserAccountsModel::hasMoreUserAccounts() {
+bool  LB_STDCALL UserAccountsModel::hasMoreUserAccounts() {
 	return (UserAccounts->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbUserAccountsModel::setNextUserAccounts() {
+void  LB_STDCALL UserAccountsModel::setNextUserAccounts() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -265,28 +320,28 @@ void  LB_STDCALL lbUserAccountsModel::setNextUserAccounts() {
 	
 }
 
-void  LB_STDCALL lbUserAccountsModel::finishUserAccountsIteration() {
+void  LB_STDCALL UserAccountsModel::finishUserAccountsIteration() {
 	UserAccounts->finishIteration();
 }
 
-long LB_STDCALL lbUserAccountsModel::get_id() {
+long LB_STDCALL UserAccountsModel::get_id() {
 	return currentUserAccountsID->getData();
 }
 
 
-char* LB_STDCALL lbUserAccountsModel::get_passwort() {
+char* LB_STDCALL UserAccountsModel::get_passwort() {
 	return currentpasswort->charrep();
 }
 
-char* LB_STDCALL lbUserAccountsModel::get_userid() {
+char* LB_STDCALL UserAccountsModel::get_userid() {
 	return currentuserid->charrep();
 }
 
-char* LB_STDCALL lbUserAccountsModel::get_vorname() {
+char* LB_STDCALL UserAccountsModel::get_vorname() {
 	return currentvorname->charrep();
 }
 
-char* LB_STDCALL lbUserAccountsModel::get_name() {
+char* LB_STDCALL UserAccountsModel::get_name() {
 	return currentname->charrep();
 }
 
@@ -357,10 +412,10 @@ lb_I_Unknown* LB_STDCALL lbPluginUserAccountsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukUserAccountsModel == NULL) {
-		lbUserAccountsModel* UserAccountsModel = new lbUserAccountsModel();
+		UserAccountsModel* aUserAccountsModel = new UserAccountsModel();
 		
 	
-		QI(UserAccountsModel, lb_I_Unknown, ukUserAccountsModel)
+		QI(aUserAccountsModel, lb_I_Unknown, ukUserAccountsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -375,10 +430,10 @@ lb_I_Unknown* LB_STDCALL lbPluginUserAccountsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbUserAccountsModel* UserAccountsModel = new lbUserAccountsModel();
+		UserAccountsModel* aUserAccountsModel = new UserAccountsModel();
 		
 	
-		QI(UserAccountsModel, lb_I_Unknown, ukUserAccountsModel)
+		QI(aUserAccountsModel, lb_I_Unknown, ukUserAccountsModel)
 	}
 	
 	lb_I_Unknown* r = ukUserAccountsModel.getPtr();

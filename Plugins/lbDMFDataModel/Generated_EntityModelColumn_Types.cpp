@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelColumn_Types.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbColumn_TypesModel, lbColumn_TypesModel)
+IMPLEMENT_FUNCTOR(instanceOfColumn_TypesModel, Column_TypesModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbColumn_TypesModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Column_TypesModel)
 	ADD_INTERFACE(lb_I_Column_Types)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbColumn_TypesModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Column_TypesModel)
 
-void		LB_STDCALL lbColumn_TypesModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbColumn_TypesModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbColumn_TypesModel::lbColumn_TypesModel() {
+Column_TypesModel::Column_TypesModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Column_Types)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_String, currenttablename)
@@ -82,19 +75,81 @@ lbColumn_TypesModel::lbColumn_TypesModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentColumn_TypesID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbColumn_TypesModel::lbColumn_TypesModel() called." LOG_
+	_CL_VERBOSE << "Column_TypesModel::Column_TypesModel() called." LOG_
 }
 
-lbColumn_TypesModel::~lbColumn_TypesModel() {
-	_CL_VERBOSE << "lbColumn_TypesModel::~lbColumn_TypesModel() called." LOG_
+Column_TypesModel::~Column_TypesModel() {
+	_CL_VERBOSE << "Column_TypesModel::~Column_TypesModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbColumn_TypesModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbColumn_TypesModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Column_TypesModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Column_TypesModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbColumn_TypesModel::addColumn_Types(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Column_TypesModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Column_Types";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Column_TypesModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Column_TypesModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Column_TypesModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Column_TypesModel::addColumn_Types(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -148,7 +203,7 @@ long  LB_STDCALL lbColumn_TypesModel::addColumn_Types(const char* _name, const c
 	return -1;
 }
 
-void		LB_STDCALL lbColumn_TypesModel::deleteUnmarked() {
+void		LB_STDCALL Column_TypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Column_Types->finishIteration();
 	while (hasMoreColumn_Types()) {
@@ -166,7 +221,7 @@ void		LB_STDCALL lbColumn_TypesModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbColumn_TypesModel::deleteMarked() {
+void		LB_STDCALL Column_TypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Column_Types->finishIteration();
 	while (hasMoreColumn_Types()) {
@@ -184,7 +239,7 @@ void		LB_STDCALL lbColumn_TypesModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbColumn_TypesModel::selectColumn_Types(long user_id) {
+bool LB_STDCALL Column_TypesModel::selectColumn_Types(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -225,28 +280,28 @@ bool LB_STDCALL lbColumn_TypesModel::selectColumn_Types(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbColumn_TypesModel::ismarked() {
+bool LB_STDCALL Column_TypesModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbColumn_TypesModel::mark() {
+void LB_STDCALL Column_TypesModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbColumn_TypesModel::unmark() {
+void LB_STDCALL Column_TypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbColumn_TypesModel::getColumn_TypesCount() {
+int  LB_STDCALL Column_TypesModel::getColumn_TypesCount() {
 	return Column_Types->Count();
 }
 
-bool  LB_STDCALL lbColumn_TypesModel::hasMoreColumn_Types() {
+bool  LB_STDCALL Column_TypesModel::hasMoreColumn_Types() {
 	return (Column_Types->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbColumn_TypesModel::setNextColumn_Types() {
+void  LB_STDCALL Column_TypesModel::setNextColumn_Types() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -274,32 +329,32 @@ void  LB_STDCALL lbColumn_TypesModel::setNextColumn_Types() {
 	
 }
 
-void  LB_STDCALL lbColumn_TypesModel::finishColumn_TypesIteration() {
+void  LB_STDCALL Column_TypesModel::finishColumn_TypesIteration() {
 	Column_Types->finishIteration();
 }
 
-long LB_STDCALL lbColumn_TypesModel::get_id() {
+long LB_STDCALL Column_TypesModel::get_id() {
 	return currentColumn_TypesID->getData();
 }
 
 
-char* LB_STDCALL lbColumn_TypesModel::get_name() {
+char* LB_STDCALL Column_TypesModel::get_name() {
 	return currentname->charrep();
 }
 
-char* LB_STDCALL lbColumn_TypesModel::get_tablename() {
+char* LB_STDCALL Column_TypesModel::get_tablename() {
 	return currenttablename->charrep();
 }
 
-bool LB_STDCALL lbColumn_TypesModel::get_ro() {
+bool LB_STDCALL Column_TypesModel::get_ro() {
 	return currentro->getData();
 }
 
-bool LB_STDCALL lbColumn_TypesModel::get_specialcolumn() {
+bool LB_STDCALL Column_TypesModel::get_specialcolumn() {
 	return currentspecialcolumn->getData();
 }
 
-char* LB_STDCALL lbColumn_TypesModel::get_controltype() {
+char* LB_STDCALL Column_TypesModel::get_controltype() {
 	return currentcontroltype->charrep();
 }
 
@@ -370,10 +425,10 @@ lb_I_Unknown* LB_STDCALL lbPluginColumn_TypesModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukColumn_TypesModel == NULL) {
-		lbColumn_TypesModel* Column_TypesModel = new lbColumn_TypesModel();
+		Column_TypesModel* aColumn_TypesModel = new Column_TypesModel();
 		
 	
-		QI(Column_TypesModel, lb_I_Unknown, ukColumn_TypesModel)
+		QI(aColumn_TypesModel, lb_I_Unknown, ukColumn_TypesModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -388,10 +443,10 @@ lb_I_Unknown* LB_STDCALL lbPluginColumn_TypesModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbColumn_TypesModel* Column_TypesModel = new lbColumn_TypesModel();
+		Column_TypesModel* aColumn_TypesModel = new Column_TypesModel();
 		
 	
-		QI(Column_TypesModel, lb_I_Unknown, ukColumn_TypesModel)
+		QI(aColumn_TypesModel, lb_I_Unknown, ukColumn_TypesModel)
 	}
 	
 	lb_I_Unknown* r = ukColumn_TypesModel.getPtr();

@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelAction_Parameters.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbAction_ParametersModel, lbAction_ParametersModel)
+IMPLEMENT_FUNCTOR(instanceOfAction_ParametersModel, Action_ParametersModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbAction_ParametersModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Action_ParametersModel)
 	ADD_INTERFACE(lb_I_Action_Parameters)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbAction_ParametersModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Action_ParametersModel)
 
-void		LB_STDCALL lbAction_ParametersModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbAction_ParametersModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbAction_ParametersModel::lbAction_ParametersModel() {
+Action_ParametersModel::Action_ParametersModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Action_Parameters)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_String, currentvalue)
@@ -82,19 +75,81 @@ lbAction_ParametersModel::lbAction_ParametersModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentAction_ParametersID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbAction_ParametersModel::lbAction_ParametersModel() called." LOG_
+	_CL_VERBOSE << "Action_ParametersModel::Action_ParametersModel() called." LOG_
 }
 
-lbAction_ParametersModel::~lbAction_ParametersModel() {
-	_CL_VERBOSE << "lbAction_ParametersModel::~lbAction_ParametersModel() called." LOG_
+Action_ParametersModel::~Action_ParametersModel() {
+	_CL_VERBOSE << "Action_ParametersModel::~Action_ParametersModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbAction_ParametersModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbAction_ParametersModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Action_ParametersModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Action_ParametersModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbAction_ParametersModel::addAction_Parameters(const char* _name, const char* _value, const char* _interface, const char* _description, long _actionid,  long _Action_ParametersID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Action_ParametersModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Action_Parameters";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Action_ParametersModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Action_ParametersModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Action_ParametersModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Action_ParametersModel::addAction_Parameters(const char* _name, const char* _value, const char* _interface, const char* _description, long _actionid,  long _Action_ParametersID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -148,7 +203,7 @@ long  LB_STDCALL lbAction_ParametersModel::addAction_Parameters(const char* _nam
 	return -1;
 }
 
-void		LB_STDCALL lbAction_ParametersModel::deleteUnmarked() {
+void		LB_STDCALL Action_ParametersModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Parameters->finishIteration();
 	while (hasMoreAction_Parameters()) {
@@ -166,7 +221,7 @@ void		LB_STDCALL lbAction_ParametersModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbAction_ParametersModel::deleteMarked() {
+void		LB_STDCALL Action_ParametersModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Parameters->finishIteration();
 	while (hasMoreAction_Parameters()) {
@@ -184,7 +239,7 @@ void		LB_STDCALL lbAction_ParametersModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbAction_ParametersModel::selectAction_Parameters(long user_id) {
+bool LB_STDCALL Action_ParametersModel::selectAction_Parameters(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -225,28 +280,28 @@ bool LB_STDCALL lbAction_ParametersModel::selectAction_Parameters(long user_id) 
 	return false;
 }
 
-bool LB_STDCALL lbAction_ParametersModel::ismarked() {
+bool LB_STDCALL Action_ParametersModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbAction_ParametersModel::mark() {
+void LB_STDCALL Action_ParametersModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbAction_ParametersModel::unmark() {
+void LB_STDCALL Action_ParametersModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbAction_ParametersModel::getAction_ParametersCount() {
+int  LB_STDCALL Action_ParametersModel::getAction_ParametersCount() {
 	return Action_Parameters->Count();
 }
 
-bool  LB_STDCALL lbAction_ParametersModel::hasMoreAction_Parameters() {
+bool  LB_STDCALL Action_ParametersModel::hasMoreAction_Parameters() {
 	return (Action_Parameters->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbAction_ParametersModel::setNextAction_Parameters() {
+void  LB_STDCALL Action_ParametersModel::setNextAction_Parameters() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -274,32 +329,32 @@ void  LB_STDCALL lbAction_ParametersModel::setNextAction_Parameters() {
 	
 }
 
-void  LB_STDCALL lbAction_ParametersModel::finishAction_ParametersIteration() {
+void  LB_STDCALL Action_ParametersModel::finishAction_ParametersIteration() {
 	Action_Parameters->finishIteration();
 }
 
-long LB_STDCALL lbAction_ParametersModel::get_id() {
+long LB_STDCALL Action_ParametersModel::get_id() {
 	return currentAction_ParametersID->getData();
 }
 
 
-char* LB_STDCALL lbAction_ParametersModel::get_name() {
+char* LB_STDCALL Action_ParametersModel::get_name() {
 	return currentname->charrep();
 }
 
-char* LB_STDCALL lbAction_ParametersModel::get_value() {
+char* LB_STDCALL Action_ParametersModel::get_value() {
 	return currentvalue->charrep();
 }
 
-char* LB_STDCALL lbAction_ParametersModel::get_interface() {
+char* LB_STDCALL Action_ParametersModel::get_interface() {
 	return currentinterface->charrep();
 }
 
-char* LB_STDCALL lbAction_ParametersModel::get_description() {
+char* LB_STDCALL Action_ParametersModel::get_description() {
 	return currentdescription->charrep();
 }
 
-long LB_STDCALL lbAction_ParametersModel::get_actionid() {
+long LB_STDCALL Action_ParametersModel::get_actionid() {
 	return currentactionid->getData();
 }
 
@@ -370,10 +425,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_ParametersModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukAction_ParametersModel == NULL) {
-		lbAction_ParametersModel* Action_ParametersModel = new lbAction_ParametersModel();
+		Action_ParametersModel* aAction_ParametersModel = new Action_ParametersModel();
 		
 	
-		QI(Action_ParametersModel, lb_I_Unknown, ukAction_ParametersModel)
+		QI(aAction_ParametersModel, lb_I_Unknown, ukAction_ParametersModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -388,10 +443,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_ParametersModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbAction_ParametersModel* Action_ParametersModel = new lbAction_ParametersModel();
+		Action_ParametersModel* aAction_ParametersModel = new Action_ParametersModel();
 		
 	
-		QI(Action_ParametersModel, lb_I_Unknown, ukAction_ParametersModel)
+		QI(aAction_ParametersModel, lb_I_Unknown, ukAction_ParametersModel)
 	}
 	
 	lb_I_Unknown* r = ukAction_ParametersModel.getPtr();

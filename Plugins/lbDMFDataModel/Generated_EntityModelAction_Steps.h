@@ -32,12 +32,12 @@
 /** \brief class Action_Steps.
  * Documentation for Action_Steps
  */
-class lbAction_StepsModel : public lb_I_Action_Steps {
+class Action_StepsModel : public lb_I_Action_Steps {
 public:
-	lbAction_StepsModel();
-	virtual ~lbAction_StepsModel();
+	Action_StepsModel();
+	virtual ~Action_StepsModel();
 
-	long		LB_STDCALL addAction_Steps(const char* _bezeichnung, const char* _what, int _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1);
+	long		LB_STDCALL addAction_Steps(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1);
 
 	bool		LB_STDCALL selectAction_Steps(long _id);
 	int			LB_STDCALL getAction_StepsCount();
@@ -48,7 +48,7 @@ public:
 
 	char*		LB_STDCALL get_bezeichnung();
 	char*		LB_STDCALL get_what();
-	int			LB_STDCALL get_a_order_nr();
+	long			LB_STDCALL get_a_order_nr();
 	long		LB_STDCALL get_type();
 	
 	long		LB_STDCALL get_actionid();
@@ -63,12 +63,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Action_Steps)
 	
 
@@ -76,7 +76,7 @@ public:
 			
 	UAP(lb_I_String, currentwhat)
 			
-	UAP(lb_I_Integer, currenta_order_nr)
+	UAP(lb_I_Long, currenta_order_nr)
 			
 	UAP(lb_I_Long, currenttype)
 	

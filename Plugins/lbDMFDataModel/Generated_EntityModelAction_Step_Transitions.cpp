@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelAction_Step_Transitions.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbAction_Step_TransitionsModel, lbAction_Step_TransitionsModel)
+IMPLEMENT_FUNCTOR(instanceOfAction_Step_TransitionsModel, Action_Step_TransitionsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbAction_Step_TransitionsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Action_Step_TransitionsModel)
 	ADD_INTERFACE(lb_I_Action_Step_Transitions)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbAction_Step_TransitionsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Action_Step_TransitionsModel)
 
-void		LB_STDCALL lbAction_Step_TransitionsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbAction_Step_TransitionsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbAction_Step_TransitionsModel::lbAction_Step_TransitionsModel() {
+Action_Step_TransitionsModel::Action_Step_TransitionsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Action_Step_Transitions)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currentexpression)
     REQUEST(getModuleInstance(), lb_I_Long, currentsrc_actionid)
@@ -81,19 +74,81 @@ lbAction_Step_TransitionsModel::lbAction_Step_TransitionsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentAction_Step_TransitionsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbAction_Step_TransitionsModel::lbAction_Step_TransitionsModel() called." LOG_
+	_CL_VERBOSE << "Action_Step_TransitionsModel::Action_Step_TransitionsModel() called." LOG_
 }
 
-lbAction_Step_TransitionsModel::~lbAction_Step_TransitionsModel() {
-	_CL_VERBOSE << "lbAction_Step_TransitionsModel::~lbAction_Step_TransitionsModel() called." LOG_
+Action_Step_TransitionsModel::~Action_Step_TransitionsModel() {
+	_CL_VERBOSE << "Action_Step_TransitionsModel::~Action_Step_TransitionsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbAction_Step_TransitionsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbAction_Step_TransitionsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Action_Step_TransitionsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Action_Step_TransitionsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbAction_Step_TransitionsModel::addAction_Step_Transitions(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Action_Step_TransitionsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Action_Step_Transitions";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Action_Step_TransitionsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Action_Step_TransitionsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Action_Step_TransitionsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Action_Step_TransitionsModel::addAction_Step_Transitions(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __expression)
@@ -143,7 +198,7 @@ long  LB_STDCALL lbAction_Step_TransitionsModel::addAction_Step_Transitions(cons
 	return -1;
 }
 
-void		LB_STDCALL lbAction_Step_TransitionsModel::deleteUnmarked() {
+void		LB_STDCALL Action_Step_TransitionsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Step_Transitions->finishIteration();
 	while (hasMoreAction_Step_Transitions()) {
@@ -161,7 +216,7 @@ void		LB_STDCALL lbAction_Step_TransitionsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbAction_Step_TransitionsModel::deleteMarked() {
+void		LB_STDCALL Action_Step_TransitionsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Step_Transitions->finishIteration();
 	while (hasMoreAction_Step_Transitions()) {
@@ -179,7 +234,7 @@ void		LB_STDCALL lbAction_Step_TransitionsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbAction_Step_TransitionsModel::selectAction_Step_Transitions(long user_id) {
+bool LB_STDCALL Action_Step_TransitionsModel::selectAction_Step_Transitions(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -218,28 +273,28 @@ bool LB_STDCALL lbAction_Step_TransitionsModel::selectAction_Step_Transitions(lo
 	return false;
 }
 
-bool LB_STDCALL lbAction_Step_TransitionsModel::ismarked() {
+bool LB_STDCALL Action_Step_TransitionsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbAction_Step_TransitionsModel::mark() {
+void LB_STDCALL Action_Step_TransitionsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbAction_Step_TransitionsModel::unmark() {
+void LB_STDCALL Action_Step_TransitionsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbAction_Step_TransitionsModel::getAction_Step_TransitionsCount() {
+int  LB_STDCALL Action_Step_TransitionsModel::getAction_Step_TransitionsCount() {
 	return Action_Step_Transitions->Count();
 }
 
-bool  LB_STDCALL lbAction_Step_TransitionsModel::hasMoreAction_Step_Transitions() {
+bool  LB_STDCALL Action_Step_TransitionsModel::hasMoreAction_Step_Transitions() {
 	return (Action_Step_Transitions->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbAction_Step_TransitionsModel::setNextAction_Step_Transitions() {
+void  LB_STDCALL Action_Step_TransitionsModel::setNextAction_Step_Transitions() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -265,28 +320,28 @@ void  LB_STDCALL lbAction_Step_TransitionsModel::setNextAction_Step_Transitions(
 	
 }
 
-void  LB_STDCALL lbAction_Step_TransitionsModel::finishAction_Step_TransitionsIteration() {
+void  LB_STDCALL Action_Step_TransitionsModel::finishAction_Step_TransitionsIteration() {
 	Action_Step_Transitions->finishIteration();
 }
 
-long LB_STDCALL lbAction_Step_TransitionsModel::get_id() {
+long LB_STDCALL Action_Step_TransitionsModel::get_id() {
 	return currentAction_Step_TransitionsID->getData();
 }
 
 
-char* LB_STDCALL lbAction_Step_TransitionsModel::get_expression() {
+char* LB_STDCALL Action_Step_TransitionsModel::get_expression() {
 	return currentexpression->charrep();
 }
 
-long LB_STDCALL lbAction_Step_TransitionsModel::get_src_actionid() {
+long LB_STDCALL Action_Step_TransitionsModel::get_src_actionid() {
 	return currentsrc_actionid->getData();
 }
 
-long LB_STDCALL lbAction_Step_TransitionsModel::get_dst_actionid() {
+long LB_STDCALL Action_Step_TransitionsModel::get_dst_actionid() {
 	return currentdst_actionid->getData();
 }
 
-char* LB_STDCALL lbAction_Step_TransitionsModel::get_description() {
+char* LB_STDCALL Action_Step_TransitionsModel::get_description() {
 	return currentdescription->charrep();
 }
 
@@ -357,10 +412,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_Step_TransitionsModel::peekImplementatio
 	lbErrCodes err = ERR_NONE;
 
 	if (ukAction_Step_TransitionsModel == NULL) {
-		lbAction_Step_TransitionsModel* Action_Step_TransitionsModel = new lbAction_Step_TransitionsModel();
+		Action_Step_TransitionsModel* aAction_Step_TransitionsModel = new Action_Step_TransitionsModel();
 		
 	
-		QI(Action_Step_TransitionsModel, lb_I_Unknown, ukAction_Step_TransitionsModel)
+		QI(aAction_Step_TransitionsModel, lb_I_Unknown, ukAction_Step_TransitionsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -375,10 +430,10 @@ lb_I_Unknown* LB_STDCALL lbPluginAction_Step_TransitionsModel::getImplementation
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbAction_Step_TransitionsModel* Action_Step_TransitionsModel = new lbAction_Step_TransitionsModel();
+		Action_Step_TransitionsModel* aAction_Step_TransitionsModel = new Action_Step_TransitionsModel();
 		
 	
-		QI(Action_Step_TransitionsModel, lb_I_Unknown, ukAction_Step_TransitionsModel)
+		QI(aAction_Step_TransitionsModel, lb_I_Unknown, ukAction_Step_TransitionsModel)
 	}
 	
 	lb_I_Unknown* r = ukAction_Step_TransitionsModel.getPtr();

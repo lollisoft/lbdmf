@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelApplications_Formulars.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbApplications_FormularsModel, lbApplications_FormularsModel)
+IMPLEMENT_FUNCTOR(instanceOfApplications_FormularsModel, Applications_FormularsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplications_FormularsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Applications_FormularsModel)
 	ADD_INTERFACE(lb_I_Applications_Formulars)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbApplications_FormularsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(Applications_FormularsModel)
 
-void		LB_STDCALL lbApplications_FormularsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbApplications_FormularsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbApplications_FormularsModel::lbApplications_FormularsModel() {
+Applications_FormularsModel::Applications_FormularsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Applications_Formulars)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_Long, currentanwendungid)
     REQUEST(getModuleInstance(), lb_I_Long, currentformularid)
@@ -79,19 +72,81 @@ lbApplications_FormularsModel::lbApplications_FormularsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplications_FormularsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbApplications_FormularsModel::lbApplications_FormularsModel() called." LOG_
+	_CL_VERBOSE << "Applications_FormularsModel::Applications_FormularsModel() called." LOG_
 }
 
-lbApplications_FormularsModel::~lbApplications_FormularsModel() {
-	_CL_VERBOSE << "lbApplications_FormularsModel::~lbApplications_FormularsModel() called." LOG_
+Applications_FormularsModel::~Applications_FormularsModel() {
+	_CL_VERBOSE << "Applications_FormularsModel::~Applications_FormularsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbApplications_FormularsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbApplications_FormularsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL Applications_FormularsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: Applications_FormularsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbApplications_FormularsModel::addApplications_Formulars(long _anwendungid, long _formularid,  long _Applications_FormularsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL Applications_FormularsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Applications_Formulars";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL Applications_FormularsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL Applications_FormularsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL Applications_FormularsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL Applications_FormularsModel::addApplications_Formulars(long _anwendungid, long _formularid,  long _Applications_FormularsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __anwendungid)
@@ -133,7 +188,7 @@ long  LB_STDCALL lbApplications_FormularsModel::addApplications_Formulars(long _
 	return -1;
 }
 
-void		LB_STDCALL lbApplications_FormularsModel::deleteUnmarked() {
+void		LB_STDCALL Applications_FormularsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications_Formulars->finishIteration();
 	while (hasMoreApplications_Formulars()) {
@@ -151,7 +206,7 @@ void		LB_STDCALL lbApplications_FormularsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbApplications_FormularsModel::deleteMarked() {
+void		LB_STDCALL Applications_FormularsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications_Formulars->finishIteration();
 	while (hasMoreApplications_Formulars()) {
@@ -169,7 +224,7 @@ void		LB_STDCALL lbApplications_FormularsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbApplications_FormularsModel::selectApplications_Formulars(long user_id) {
+bool LB_STDCALL Applications_FormularsModel::selectApplications_Formulars(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -204,28 +259,28 @@ bool LB_STDCALL lbApplications_FormularsModel::selectApplications_Formulars(long
 	return false;
 }
 
-bool LB_STDCALL lbApplications_FormularsModel::ismarked() {
+bool LB_STDCALL Applications_FormularsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbApplications_FormularsModel::mark() {
+void LB_STDCALL Applications_FormularsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbApplications_FormularsModel::unmark() {
+void LB_STDCALL Applications_FormularsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbApplications_FormularsModel::getApplications_FormularsCount() {
+int  LB_STDCALL Applications_FormularsModel::getApplications_FormularsCount() {
 	return Applications_Formulars->Count();
 }
 
-bool  LB_STDCALL lbApplications_FormularsModel::hasMoreApplications_Formulars() {
+bool  LB_STDCALL Applications_FormularsModel::hasMoreApplications_Formulars() {
 	return (Applications_Formulars->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbApplications_FormularsModel::setNextApplications_Formulars() {
+void  LB_STDCALL Applications_FormularsModel::setNextApplications_Formulars() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -247,20 +302,20 @@ void  LB_STDCALL lbApplications_FormularsModel::setNextApplications_Formulars() 
 	
 }
 
-void  LB_STDCALL lbApplications_FormularsModel::finishApplications_FormularsIteration() {
+void  LB_STDCALL Applications_FormularsModel::finishApplications_FormularsIteration() {
 	Applications_Formulars->finishIteration();
 }
 
-long LB_STDCALL lbApplications_FormularsModel::get_id() {
+long LB_STDCALL Applications_FormularsModel::get_id() {
 	return currentApplications_FormularsID->getData();
 }
 
 
-long LB_STDCALL lbApplications_FormularsModel::get_anwendungid() {
+long LB_STDCALL Applications_FormularsModel::get_anwendungid() {
 	return currentanwendungid->getData();
 }
 
-long LB_STDCALL lbApplications_FormularsModel::get_formularid() {
+long LB_STDCALL Applications_FormularsModel::get_formularid() {
 	return currentformularid->getData();
 }
 
@@ -331,10 +386,10 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications_FormularsModel::peekImplementation
 	lbErrCodes err = ERR_NONE;
 
 	if (ukApplications_FormularsModel == NULL) {
-		lbApplications_FormularsModel* Applications_FormularsModel = new lbApplications_FormularsModel();
+		Applications_FormularsModel* aApplications_FormularsModel = new Applications_FormularsModel();
 		
 	
-		QI(Applications_FormularsModel, lb_I_Unknown, ukApplications_FormularsModel)
+		QI(aApplications_FormularsModel, lb_I_Unknown, ukApplications_FormularsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -349,10 +404,10 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications_FormularsModel::getImplementation(
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbApplications_FormularsModel* Applications_FormularsModel = new lbApplications_FormularsModel();
+		Applications_FormularsModel* aApplications_FormularsModel = new Applications_FormularsModel();
 		
 	
-		QI(Applications_FormularsModel, lb_I_Unknown, ukApplications_FormularsModel)
+		QI(aApplications_FormularsModel, lb_I_Unknown, ukApplications_FormularsModel)
 	}
 	
 	lb_I_Unknown* r = ukApplications_FormularsModel.getPtr();

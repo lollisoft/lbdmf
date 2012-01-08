@@ -32,10 +32,10 @@
 /** \brief class ApplicationParameter.
  * Documentation for ApplicationParameter
  */
-class lbApplicationParameterModel : public lb_I_ApplicationParameter {
+class ApplicationParameterModel : public lb_I_ApplicationParameter {
 public:
-	lbApplicationParameterModel();
-	virtual ~lbApplicationParameterModel();
+	ApplicationParameterModel();
+	virtual ~ApplicationParameterModel();
 
 	long		LB_STDCALL addApplicationParameter(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID = -1);
 
@@ -60,12 +60,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ApplicationParameter)
 	
 
