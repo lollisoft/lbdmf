@@ -32,10 +32,10 @@
 /** \brief class Column_Types.
  * Documentation for Column_Types
  */
-class lbColumn_TypesModel : public lb_I_Column_Types {
+class Column_TypesModel : public lb_I_Column_Types {
 public:
-	lbColumn_TypesModel();
-	virtual ~lbColumn_TypesModel();
+	Column_TypesModel();
+	virtual ~Column_TypesModel();
 
 	long		LB_STDCALL addColumn_Types(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID = -1);
 
@@ -61,12 +61,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, Column_Types)
 	
 

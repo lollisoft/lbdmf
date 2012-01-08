@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelUser_Applications.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbUser_ApplicationsModel, lbUser_ApplicationsModel)
+IMPLEMENT_FUNCTOR(instanceOfUser_ApplicationsModel, User_ApplicationsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbUser_ApplicationsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(User_ApplicationsModel)
 	ADD_INTERFACE(lb_I_User_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbUser_ApplicationsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(User_ApplicationsModel)
 
-void		LB_STDCALL lbUser_ApplicationsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbUser_ApplicationsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbUser_ApplicationsModel::lbUser_ApplicationsModel() {
+User_ApplicationsModel::User_ApplicationsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, User_Applications)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_Long, currentuserid)
     REQUEST(getModuleInstance(), lb_I_Long, currentanwendungenid)
@@ -79,19 +72,81 @@ lbUser_ApplicationsModel::lbUser_ApplicationsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentUser_ApplicationsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbUser_ApplicationsModel::lbUser_ApplicationsModel() called." LOG_
+	_CL_VERBOSE << "User_ApplicationsModel::User_ApplicationsModel() called." LOG_
 }
 
-lbUser_ApplicationsModel::~lbUser_ApplicationsModel() {
-	_CL_VERBOSE << "lbUser_ApplicationsModel::~lbUser_ApplicationsModel() called." LOG_
+User_ApplicationsModel::~User_ApplicationsModel() {
+	_CL_VERBOSE << "User_ApplicationsModel::~User_ApplicationsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbUser_ApplicationsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbUser_ApplicationsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL User_ApplicationsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: User_ApplicationsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbUser_ApplicationsModel::addUser_Applications(long _userid, long _anwendungenid,  long _User_ApplicationsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL User_ApplicationsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_User_Applications";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL User_ApplicationsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL User_ApplicationsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL User_ApplicationsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL User_ApplicationsModel::addUser_Applications(long _userid, long _anwendungenid,  long _User_ApplicationsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __userid)
@@ -133,7 +188,7 @@ long  LB_STDCALL lbUser_ApplicationsModel::addUser_Applications(long _userid, lo
 	return -1;
 }
 
-void		LB_STDCALL lbUser_ApplicationsModel::deleteUnmarked() {
+void		LB_STDCALL User_ApplicationsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	User_Applications->finishIteration();
 	while (hasMoreUser_Applications()) {
@@ -151,7 +206,7 @@ void		LB_STDCALL lbUser_ApplicationsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbUser_ApplicationsModel::deleteMarked() {
+void		LB_STDCALL User_ApplicationsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	User_Applications->finishIteration();
 	while (hasMoreUser_Applications()) {
@@ -169,7 +224,7 @@ void		LB_STDCALL lbUser_ApplicationsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbUser_ApplicationsModel::selectUser_Applications(long user_id) {
+bool LB_STDCALL User_ApplicationsModel::selectUser_Applications(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -204,28 +259,28 @@ bool LB_STDCALL lbUser_ApplicationsModel::selectUser_Applications(long user_id) 
 	return false;
 }
 
-bool LB_STDCALL lbUser_ApplicationsModel::ismarked() {
+bool LB_STDCALL User_ApplicationsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbUser_ApplicationsModel::mark() {
+void LB_STDCALL User_ApplicationsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbUser_ApplicationsModel::unmark() {
+void LB_STDCALL User_ApplicationsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbUser_ApplicationsModel::getUser_ApplicationsCount() {
+int  LB_STDCALL User_ApplicationsModel::getUser_ApplicationsCount() {
 	return User_Applications->Count();
 }
 
-bool  LB_STDCALL lbUser_ApplicationsModel::hasMoreUser_Applications() {
+bool  LB_STDCALL User_ApplicationsModel::hasMoreUser_Applications() {
 	return (User_Applications->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbUser_ApplicationsModel::setNextUser_Applications() {
+void  LB_STDCALL User_ApplicationsModel::setNextUser_Applications() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -247,20 +302,20 @@ void  LB_STDCALL lbUser_ApplicationsModel::setNextUser_Applications() {
 	
 }
 
-void  LB_STDCALL lbUser_ApplicationsModel::finishUser_ApplicationsIteration() {
+void  LB_STDCALL User_ApplicationsModel::finishUser_ApplicationsIteration() {
 	User_Applications->finishIteration();
 }
 
-long LB_STDCALL lbUser_ApplicationsModel::get_id() {
+long LB_STDCALL User_ApplicationsModel::get_id() {
 	return currentUser_ApplicationsID->getData();
 }
 
 
-long LB_STDCALL lbUser_ApplicationsModel::get_userid() {
+long LB_STDCALL User_ApplicationsModel::get_userid() {
 	return currentuserid->getData();
 }
 
-long LB_STDCALL lbUser_ApplicationsModel::get_anwendungenid() {
+long LB_STDCALL User_ApplicationsModel::get_anwendungenid() {
 	return currentanwendungenid->getData();
 }
 
@@ -331,10 +386,10 @@ lb_I_Unknown* LB_STDCALL lbPluginUser_ApplicationsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukUser_ApplicationsModel == NULL) {
-		lbUser_ApplicationsModel* User_ApplicationsModel = new lbUser_ApplicationsModel();
+		User_ApplicationsModel* aUser_ApplicationsModel = new User_ApplicationsModel();
 		
 	
-		QI(User_ApplicationsModel, lb_I_Unknown, ukUser_ApplicationsModel)
+		QI(aUser_ApplicationsModel, lb_I_Unknown, ukUser_ApplicationsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -349,10 +404,10 @@ lb_I_Unknown* LB_STDCALL lbPluginUser_ApplicationsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbUser_ApplicationsModel* User_ApplicationsModel = new lbUser_ApplicationsModel();
+		User_ApplicationsModel* aUser_ApplicationsModel = new User_ApplicationsModel();
 		
 	
-		QI(User_ApplicationsModel, lb_I_Unknown, ukUser_ApplicationsModel)
+		QI(aUser_ApplicationsModel, lb_I_Unknown, ukUser_ApplicationsModel)
 	}
 	
 	lb_I_Unknown* r = ukUser_ApplicationsModel.getPtr();

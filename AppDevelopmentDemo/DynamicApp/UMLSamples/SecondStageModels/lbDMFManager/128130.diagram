@@ -34,7 +34,7 @@ classcanvas 133634 class_ref 130818 // anwendungen_formulare
 end
 relationcanvas 128258 relation_ref 131842 // <association>
   from ref 128130 z 1999 stereotype "<<relationship>>" xyz 330 210 3000 to ref 128002
-  role_a_pos 532 205 3000 role_b_pos 148 204 3000
+  role_a_pos 517 206 3000 role_b_pos 148 204 3000
   multiplicity_a_pos 619 239 3000 multiplicity_b_pos 148 238 3000
 end
 relationcanvas 132226 relation_ref 128898 // <dependency>
@@ -64,7 +64,7 @@ relationcanvas 133378 relation_ref 133890 // Formulare
 end
 relationcanvas 133762 relation_ref 131586 // <association>
   from ref 133634 z 3012 stereotype "<<relationship>>" xyz 489 143 3012 to ref 128002
-  role_a_pos 532 175 3000 role_b_pos 472 71 3000
+  role_a_pos 522 176 3000 role_b_pos 472 71 3000
   multiplicity_a_pos 619 209 3000 multiplicity_b_pos 472 105 3000
 end
 relationcanvas 133890 relation_ref 132226 // <association>

@@ -125,6 +125,7 @@ ALLTARGETS = \
 	lbDMFXslt \
 	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
+	ExtensionObjects_Generated/lbDMFManager \
 	lbDynamicAppStorage
 endif
 
@@ -145,6 +146,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+ExtensionObjects_Generated/lbDMFManager: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFManagerExtensionObjects -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 lbDynamicAppStorage: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure

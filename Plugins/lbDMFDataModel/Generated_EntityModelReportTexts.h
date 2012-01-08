@@ -32,12 +32,12 @@
 /** \brief class ReportTexts.
  * Documentation for ReportTexts
  */
-class lbReportTextsModel : public lb_I_ReportTexts {
+class ReportTextsModel : public lb_I_ReportTexts {
 public:
-	lbReportTextsModel();
-	virtual ~lbReportTextsModel();
+	ReportTextsModel();
+	virtual ~ReportTextsModel();
 
-	long		LB_STDCALL addReportTexts(int _line, const char* _text, long _elementid,  long _ReportTextsID = -1);
+	long		LB_STDCALL addReportTexts(long _line, const char* _text, long _elementid,  long _ReportTextsID = -1);
 
 	bool		LB_STDCALL selectReportTexts(long _id);
 	int			LB_STDCALL getReportTextsCount();
@@ -46,7 +46,7 @@ public:
 	void		LB_STDCALL finishReportTextsIteration();
 
 
-	int			LB_STDCALL get_line();
+	long			LB_STDCALL get_line();
 	char*		LB_STDCALL get_text();
 	long		LB_STDCALL get_elementid();
 	
@@ -60,16 +60,16 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ReportTexts)
 	
 
-	UAP(lb_I_Integer, currentline)
+	UAP(lb_I_Long, currentline)
 			
 	UAP(lb_I_String, currenttext)
 			

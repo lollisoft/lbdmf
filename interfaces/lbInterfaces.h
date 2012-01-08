@@ -2711,30 +2711,31 @@ class lb_I_VisitableHelper : public lb_I_Unknown {
 
 class lb_I_ExtensibleObject : public lb_I_Unknown {
 public:
-	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* name) = 0;
-	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* name) = 0;
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace) = 0;
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace) = 0;
 	
-	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* name, lb_I_ExtensionObject* extension) = 0;
-	virtual lbErrCodes		LB_STDCALL addExtension(const char* name, lb_I_ExtensionObject* extension) = 0;
+	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) = 0;
+	virtual lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) = 0;
 };
 
 #define DECLARE_EXTENSIBLEOBJECT() \
-	lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* name); \
-	lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* name); \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace); \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace); \
 \
-	lbErrCodes		LB_STDCALL addExtension(lb_I_String* name, lb_I_ExtensionObject* extension); \
-	lbErrCodes		LB_STDCALL addExtension(const char* name, lb_I_ExtensionObject* extension); \
+	lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension); \
+	lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension); \
 \
 	UAP(lb_I_Container, preAddedExtensions)
 	
 
 #define IMPLEMENT_EXTENSIBLEOBJECT(classname) \
-lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(lb_I_String* name) { \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(lb_I_String* contextnamespace) { \
 	UAP(lb_I_ExtensionObject, exObject) \
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
 	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
-	*ns = name->charrep(); \
+	*ns = contextnamespace->charrep(); \
+	*ns += "_"; \
 	*ns += getClassName(); \
 	QI(ns, lb_I_KeyBase, nsKey) \
 	if (preAddedExtensions == NULL) { \
@@ -2758,12 +2759,13 @@ lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(lb_I_String* name) { \
 	exObject++; \
 	return *&exObject; \
 } \
-lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(const char* name) { \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(const char* contextnamespace) { \
 	UAP(lb_I_ExtensionObject, exObject) \
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
 	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
-	*ns = name; \
+	*ns = contextnamespace; \
+	*ns += "_"; \
 	*ns += getClassName(); \
 	QI(ns, lb_I_KeyBase, nsKey) \
 	if (preAddedExtensions == NULL) { \
@@ -2796,8 +2798,12 @@ lbErrCodes		LB_STDCALL classname::addExtension(const char* name, lb_I_ExtensionO
 	return ERR_NONE; \
 }
 
+/** \brief An extension for a extensible class.
+ *
+ */
 class lb_I_ExtensionObject : public lb_I_Unknown {
-	
+public:
+	virtual void LB_STDCALL setOwningObject(lb_I_Unknown* owning) = 0;
 };
 
 /*...sclass lb_I_DispatchRequest:0:*/

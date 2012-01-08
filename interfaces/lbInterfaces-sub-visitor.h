@@ -150,6 +150,7 @@ virtual void LB_STDCALL visit(lb_I_TestFixture*) = 0;
 virtual void LB_STDCALL visit(lb_I_CryptoStream*) = 0;
 virtual void LB_STDCALL visit(lb_I_DispatchInterceptor*) = 0;
 virtual void LB_STDCALL visit(lb_I_VisitableHelper*) = 0;
+virtual void LB_STDCALL visit(lb_I_ExtensionObject*) = 0;
 //virtual ~Aspect(){} 
 };   
 /*...e*/
@@ -246,6 +247,6 @@ public:
  */
 class lb_I_VisitorExtension : public lb_I_ExtensionObject {
 public:
-	virtual void setOperator(lb_I_Aspect* operation) = 0;
-	virtual void execute() = 0;
+	virtual void LB_STDCALL setOperator(lb_I_Aspect* operation) = 0;
+	virtual void LB_STDCALL execute() = 0;
 };

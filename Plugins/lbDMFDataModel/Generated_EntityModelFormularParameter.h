@@ -32,10 +32,10 @@
 /** \brief class FormularParameter.
  * Documentation for FormularParameter
  */
-class lbFormularParameterModel : public lb_I_FormularParameter {
+class FormularParameterModel : public lb_I_FormularParameter {
 public:
-	lbFormularParameterModel();
-	virtual ~lbFormularParameterModel();
+	FormularParameterModel();
+	virtual ~FormularParameterModel();
 
 	long		LB_STDCALL addFormularParameter(const char* _parametervalue, const char* _parametername, long _formularid,  long _FormularParameterID = -1);
 
@@ -60,12 +60,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, FormularParameter)
 	
 

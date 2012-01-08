@@ -32,10 +32,10 @@
 /** \brief class ReportElementTypes.
  * Documentation for ReportElementTypes
  */
-class lbReportElementTypesModel : public lb_I_ReportElementTypes {
+class ReportElementTypesModel : public lb_I_ReportElementTypes {
 public:
-	lbReportElementTypesModel();
-	virtual ~lbReportElementTypesModel();
+	ReportElementTypesModel();
+	virtual ~ReportElementTypesModel();
 
 	long		LB_STDCALL addReportElementTypes(const char* _name, const char* _description,  long _ReportElementTypesID = -1);
 
@@ -58,12 +58,12 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	DECLARE_EXTENSIBLEOBJECT()
+
+	UAP(lb_I_Container, objectExtensions)
 	
+
 	UAP(lb_I_Container, ReportElementTypes)
 	
 

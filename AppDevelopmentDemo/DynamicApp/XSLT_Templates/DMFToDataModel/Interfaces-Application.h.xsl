@@ -93,7 +93,7 @@
 	<xsl:choose>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">bool</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">char</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int</xsl:when>
+		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">long</xsl:when> <!-- XMI import to database maps int to INTEGER -->
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
 		</xsl:otherwise>
 	</xsl:choose>
@@ -112,7 +112,7 @@
 </xsl:if>
 </xsl:if>
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name='ForeignKey'">
-<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Integer</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Long</xsl:if>
 </xsl:if>
 <xsl:if test="//packagedElement[@xmi:id=$DatatypeID]/@name!='ForeignKey'">
 <xsl:if test="./type/@xmi:type='uml:Class'">lb_I_Container</xsl:if>
@@ -121,7 +121,7 @@
 	<xsl:choose>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">lb_I_Boolean</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">lb_I_String</xsl:when>
-		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Integer</xsl:when>
+		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">lb_I_Long</xsl:when>
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
 		</xsl:otherwise>
 	</xsl:choose>
@@ -141,7 +141,7 @@ public:
 	<xsl:otherwise><xsl:choose>
 	<xsl:when test="@dbtype='Bit'">bool _<xsl:value-of select="$FieldName"/>, </xsl:when>
 	<xsl:when test="@dbtype='Float'">float _<xsl:value-of select="$FieldName"/>, </xsl:when>
-	<xsl:when test="@dbtype='Integer'">int _<xsl:value-of select="$FieldName"/>, </xsl:when>
+	<xsl:when test="@dbtype='Integer'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 	<xsl:when test="@dbtype='String'">const char* _<xsl:value-of select="$FieldName"/>, </xsl:when></xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
@@ -177,7 +177,7 @@ public:
 <xsl:value-of select="'    '"/>virtual float LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
-<xsl:value-of select="'    '"/>virtual int LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
+<xsl:value-of select="'    '"/>virtual long LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
 <xsl:value-of select="'    '"/>virtual char* LB_STDCALL get_<xsl:value-of select="$FieldName"/>() = 0;

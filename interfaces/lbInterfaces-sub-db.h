@@ -47,9 +47,6 @@ public:
 
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
-	
-	virtual void		LB_STDCALL setOperator(lb_I_Unknown* db) = 0;
-	virtual lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName) = 0;
 };
 /*...sclass lb_I_Query:0:*/
 /**

@@ -52,25 +52,18 @@
 #include <lbInterfaces-lbDMFManager.h>
 #include <Generated_EntityModelTranslations.h>
 
-IMPLEMENT_FUNCTOR(instanceOflbTranslationsModel, lbTranslationsModel)
+IMPLEMENT_FUNCTOR(instanceOfTranslationsModel, TranslationsModel)
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbTranslationsModel)
+BEGIN_IMPLEMENT_LB_UNKNOWN(TranslationsModel)
 	ADD_INTERFACE(lb_I_Translations)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbTranslationsModel)
+IMPLEMENT_EXTENSIBLEOBJECT(TranslationsModel)
 
-void		LB_STDCALL lbTranslationsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbTranslationsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
-lbTranslationsModel::lbTranslationsModel() {
+TranslationsModel::TranslationsModel() {
 	
 	REQUEST(getModuleInstance(), lb_I_Container, Translations)
+	REQUEST(getModuleInstance(), lb_I_Container, objectExtensions)
 
     REQUEST(getModuleInstance(), lb_I_String, currenttranslated)
     REQUEST(getModuleInstance(), lb_I_String, currenttext)
@@ -80,19 +73,81 @@ lbTranslationsModel::lbTranslationsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentTranslationsID)
 
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
-	_CL_VERBOSE << "lbTranslationsModel::lbTranslationsModel() called." LOG_
+	_CL_VERBOSE << "TranslationsModel::TranslationsModel() called." LOG_
 }
 
-lbTranslationsModel::~lbTranslationsModel() {
-	_CL_VERBOSE << "lbTranslationsModel::~lbTranslationsModel() called." LOG_
+TranslationsModel::~TranslationsModel() {
+	_CL_VERBOSE << "TranslationsModel::~TranslationsModel() called." LOG_
 }
 
-lbErrCodes LB_STDCALL lbTranslationsModel::setData(lb_I_Unknown*) {
-	_LOG << "Error: lbTranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
+lbErrCodes LB_STDCALL TranslationsModel::setData(lb_I_Unknown*) {
+	_LOG << "Error: TranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbTranslationsModel::addTranslations(const char* _translated, const char* _text, const char* _language,  long _TranslationsID) {
+#ifdef bla
+lb_I_ExtensionObject* LB_STDCALL TranslationsModel::getExtension(lb_I_String* contextnamespace) {
+	// Lookup the matching extension by the context namespace.
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	*CNS += "_For_Translations";
+	
+	UAP(lb_I_KeyBase, key)
+	QI(CNS, lb_I_KeyBase, key)
+	
+	if (objectExtensions->exists(*&key)) {
+		UAP(lb_I_ExtensionObject, ex)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = objectExtensions->getElement(*&key);
+		QI(uk, lb_I_ExtensionObject, ex)
+		ex++;
+		return ex;
+	}
+		
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, dbbackend, extension, "'database plugin'")
+	if (extension == NULL) {
+		_LOG << "Error: Did not find extension object for given namespace " << CNS->charrep() LOG_
+		return NULL;
+	}
+	extension++;
+	return extension.getPtr();
+}
+
+lb_I_ExtensionObject* LB_STDCALL TranslationsModel::getExtension(const char* contextnamespace) {
+/*
+	These extensions may be supported until yet. At least the following are required.
+
+	Required
+	
+	ADD_PLUGIN(lbPluginInputStream,			InputStreamVisitor)
+	ADD_PLUGIN(lbPluginDatabaseInputStream,	DatabaseInputStreamVisitor)
+	ADD_PLUGIN(lbPluginOutputStream,		OutputStreamVisitor)
+	ADD_PLUGIN(lbPluginXMLOutputStream,		XMLOutputStreamVisitor)
+
+	May
+	
+	ADD_PLUGIN(lbPluginXMLInputStream,		XMLInputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONOutputStream,	JSONOutputStreamVisitor)
+	ADD_PLUGIN(lbPluginJSONInputStream,		JSONInputStreamVisitor)
+*/
+	UAP_REQUEST(getModuleInstance(), lb_I_String, CNS)
+	*CNS = contextnamespace;
+	return getExtension(*&CNS);
+}
+
+	
+lbErrCodes LB_STDCALL TranslationsModel::addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+
+lbErrCodes LB_STDCALL TranslationsModel::addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) {
+
+}
+#endif
+
+long  LB_STDCALL TranslationsModel::addTranslations(const char* _translated, const char* _text, const char* _language,  long _TranslationsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __translated)
@@ -138,7 +193,7 @@ long  LB_STDCALL lbTranslationsModel::addTranslations(const char* _translated, c
 	return -1;
 }
 
-void		LB_STDCALL lbTranslationsModel::deleteUnmarked() {
+void		LB_STDCALL TranslationsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Translations->finishIteration();
 	while (hasMoreTranslations()) {
@@ -156,7 +211,7 @@ void		LB_STDCALL lbTranslationsModel::deleteUnmarked() {
 	}
 }
 
-void		LB_STDCALL lbTranslationsModel::deleteMarked() {
+void		LB_STDCALL TranslationsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Translations->finishIteration();
 	while (hasMoreTranslations()) {
@@ -174,7 +229,7 @@ void		LB_STDCALL lbTranslationsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL lbTranslationsModel::selectTranslations(long user_id) {
+bool LB_STDCALL TranslationsModel::selectTranslations(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -211,28 +266,28 @@ bool LB_STDCALL lbTranslationsModel::selectTranslations(long user_id) {
 	return false;
 }
 
-bool LB_STDCALL lbTranslationsModel::ismarked() {
+bool LB_STDCALL TranslationsModel::ismarked() {
 	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
-void LB_STDCALL lbTranslationsModel::mark() {
+void LB_STDCALL TranslationsModel::mark() {
 	marked->setData((long) 1);
 }
 
-void LB_STDCALL lbTranslationsModel::unmark() {
+void LB_STDCALL TranslationsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbTranslationsModel::getTranslationsCount() {
+int  LB_STDCALL TranslationsModel::getTranslationsCount() {
 	return Translations->Count();
 }
 
-bool  LB_STDCALL lbTranslationsModel::hasMoreTranslations() {
+bool  LB_STDCALL TranslationsModel::hasMoreTranslations() {
 	return (Translations->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL lbTranslationsModel::setNextTranslations() {
+void  LB_STDCALL TranslationsModel::setNextTranslations() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -256,24 +311,24 @@ void  LB_STDCALL lbTranslationsModel::setNextTranslations() {
 	
 }
 
-void  LB_STDCALL lbTranslationsModel::finishTranslationsIteration() {
+void  LB_STDCALL TranslationsModel::finishTranslationsIteration() {
 	Translations->finishIteration();
 }
 
-long LB_STDCALL lbTranslationsModel::get_id() {
+long LB_STDCALL TranslationsModel::get_id() {
 	return currentTranslationsID->getData();
 }
 
 
-char* LB_STDCALL lbTranslationsModel::get_translated() {
+char* LB_STDCALL TranslationsModel::get_translated() {
 	return currenttranslated->charrep();
 }
 
-char* LB_STDCALL lbTranslationsModel::get_text() {
+char* LB_STDCALL TranslationsModel::get_text() {
 	return currenttext->charrep();
 }
 
-char* LB_STDCALL lbTranslationsModel::get_language() {
+char* LB_STDCALL TranslationsModel::get_language() {
 	return currentlanguage->charrep();
 }
 
@@ -344,10 +399,10 @@ lb_I_Unknown* LB_STDCALL lbPluginTranslationsModel::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukTranslationsModel == NULL) {
-		lbTranslationsModel* TranslationsModel = new lbTranslationsModel();
+		TranslationsModel* aTranslationsModel = new TranslationsModel();
 		
 	
-		QI(TranslationsModel, lb_I_Unknown, ukTranslationsModel)
+		QI(aTranslationsModel, lb_I_Unknown, ukTranslationsModel)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -362,10 +417,10 @@ lb_I_Unknown* LB_STDCALL lbPluginTranslationsModel::getImplementation() {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		lbTranslationsModel* TranslationsModel = new lbTranslationsModel();
+		TranslationsModel* aTranslationsModel = new TranslationsModel();
 		
 	
-		QI(TranslationsModel, lb_I_Unknown, ukTranslationsModel)
+		QI(aTranslationsModel, lb_I_Unknown, ukTranslationsModel)
 	}
 	
 	lb_I_Unknown* r = ukTranslationsModel.getPtr();
