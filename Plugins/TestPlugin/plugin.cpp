@@ -104,15 +104,15 @@ char* LB_STDCALL lbPluginModuleTest::getTestFixture() {
 
 lbPluginModuleTest::lbPluginModuleTest() {
 	
-	_LOG << "lbPluginModuleTest::lbPluginModuleTest() called." LOG_
+	_LOGVERBOSE << "lbPluginModuleTest::lbPluginModuleTest() called." LOG_
 }
 
 lbPluginModuleTest::~lbPluginModuleTest() {
-	_CL_LOG << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
+	_LOGVERBOSE << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleTest::initialize() {
-	_CL_LOG << "lbPluginModuleTest::initialize() called." LOG_
+	_LOGVERBOSE << "lbPluginModuleTest::initialize() called." LOG_
 	enumPlugins();
 }
 
@@ -121,10 +121,10 @@ void LB_STDCALL lbPluginModuleTest::install() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleTest::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
+	_LOGVERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
 
 	if (uk != NULL) {
-		_CL_LOG << "Cloning lbPluginModuleTest with " << uk->getRefCount() << " references." LOG_
+		_LOGVERBOSE << "Cloning lbPluginModuleTest with " << uk->getRefCount() << " references." LOG_
 	}
         
         return ERR_NOT_IMPLEMENTED;

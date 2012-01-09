@@ -192,9 +192,9 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModelExtensions)
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>InternalFileReaderExtension, InputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
+	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>InternalFormatReaderExtension, InputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
 	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>DBReaderExtension, DatabaseInputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
-	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>InternalFileWriterExtension, OutputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
+	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>InternalFormatWriterExtension, OutputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
 	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>XMLWriterExtension, XMLOutputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
 </xsl:for-each>	
 // Nongenerated plugin definitions	
