@@ -92,11 +92,11 @@ END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
 	
-	_LOG << "lbPluginModule::lbPluginModule() lbPluginDMFSSP with namespace Default called." LOG_
+	_LOGVERBOSE << "lbPluginModule::lbPluginModule() lbPluginDMFSSP with namespace Default called." LOG_
 }
 
 lbPluginModule::~lbPluginModule() {
-	_LOG << "lbPluginModule::~lbPluginModule() lbPluginDMFSSP with namespace Default called." LOG_
+	_LOGVERBOSE << "lbPluginModule::~lbPluginModule() lbPluginDMFSSP with namespace Default called." LOG_
 }
 
 // The failure code is not late binding the columns, thus a primary key
@@ -109,7 +109,7 @@ lbPluginModule::~lbPluginModule() {
 void LB_STDCALL lbPluginModule::initialize() {
 	lbErrCodes err = ERR_NONE;
 
-	_LOG << "lbPluginModule::initialize() lbPluginDMFSSP called." LOG_
+	_LOGVERBOSE << "lbPluginModule::initialize() lbPluginDMFSSP called." LOG_
 	enumPlugins();
 }
 

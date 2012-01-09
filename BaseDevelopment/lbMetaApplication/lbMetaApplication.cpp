@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.189 $
+ * $Revision: 1.190 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.189 2011/10/29 06:03:58 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.190 2012/01/09 07:37:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.190  2012/01/09 07:37:51  lollisoft
+ * Fixed some functor naming problems in code generator
+ * and changed some log messages to be verbose only.
+ *
  * Revision 1.189  2011/10/29 06:03:58  lollisoft
  * Refactored application model (and it's model classes) into separate files to enable code generation.
  * The code generation is planned for the model classes and the composite container for the model.
@@ -3820,7 +3824,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Reversed)
 	*Reversed = reversed;
 	Reversed->replace(ptr, "");
-	_LOG << "Adding an interceptor '" << Reversed->charrep() << "' for event '" << reversed << "'. Replace pattern '" << ptr << "'" LOG_
+	_LOGVERBOSE << "Adding an interceptor '" << Reversed->charrep() << "' for event '" << reversed << "'. Replace pattern '" << ptr << "'" LOG_
 	activateInterceptor(*&Reversed, *&ev);
 
 	return ERR_NONE;
@@ -3961,8 +3965,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::activateInterceptor(lb_I_String* EvName, lb
 	if (evInterceptor != NULL) {
 		_LOG << "lb_Dispatcher::activateInterceptor() activates interceptor '" << EvName->charrep() << "'" LOG_
 		ev->setInterceptor(evInterceptor->getInterceptor(), evInterceptor->getBeforeInterceptor(), evInterceptor->getAfterInterceptor());
-	} else {
-		_LOG << "lb_Dispatcher::activateInterceptor() failed activating interceptor '" << EvName->charrep() << "'" LOG_
 	}
 	return ERR_NONE;
 }
