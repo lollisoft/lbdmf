@@ -32,11 +32,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.92 $
+* $Revision: 1.93 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.92 2011/12/18 13:46:20 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.93 2012/01/09 07:37:51 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.93  2012/01/09 07:37:51  lollisoft
+* Fixed some functor naming problems in code generator
+* and changed some log messages to be verbose only.
+*
 * Revision 1.92  2011/12/18 13:46:20  lollisoft
 * Implemented extensible object pattern to break up visitor pattern into one
 * fixed object tree part and an extensible part that support plugins and
@@ -659,7 +663,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 
-	_LOG << "Try to load module '" << module << "'" LOG_
+	_LOGVERBOSE << "Try to load module '" << module << "'" LOG_
 
 	char* pluginDir = NULL;
 
@@ -712,7 +716,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 
 	/*...sTry to load a plugin module:8:*/
 	if (PluginModules->exists(&key) != 0) {
-		_LOG << "Warning: Plugin already registered. (" << pluginName->charrep() << ")" LOG_
+		_LOGVERBOSE << "Warning: Plugin already registered. (" << pluginName->charrep() << ")" LOG_
 		free(pluginModule);
 		free(pluginDir);
 	} else {
@@ -776,7 +780,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 
-	_CL_LOG << "Try to load server module '" << module << "'" LOG_
+	_LOGVERBOSE << "Try to load server module '" << module << "'" LOG_
 
 	char* pluginDir = NULL;
 
@@ -896,7 +900,7 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 
-	_CL_VERBOSE << "Try to load unit test module '" << module << "'" LOG_
+	_LOGVERBOSE << "Try to load unit test module '" << module << "'" LOG_
 
 	char* pluginDir = NULL;
 
@@ -1575,7 +1579,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					PluginContainer.resetPtr();
 				}
 
-				_LOG << "Initialize plugin " << plM->getModule()->charrep() LOG_
+				_LOGVERBOSE << "Initialize plugin " << plM->getModule()->charrep() LOG_
 				
 				PluginContainer = plM->getPlugins();
 
