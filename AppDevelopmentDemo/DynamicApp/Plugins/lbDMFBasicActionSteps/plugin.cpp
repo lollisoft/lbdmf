@@ -106,11 +106,11 @@ BEGIN_PLUGINS(lbPluginModuleDMFBasicActionSteps)
 END_PLUGINS()
 
 lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() {
-	_LOG << "lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
+	_LOGVERBOSE << "lbPluginModuleDMFBasicActionSteps::lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 
 lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() {
-	_LOG << "lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
+	_LOGVERBOSE << "lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() lbPluginDMFIdForFormValue with namespace BasicActionSteps called." LOG_
 }
 
 // The failure code is not late binding the columns, thus a primary key
@@ -123,7 +123,7 @@ lbPluginModuleDMFBasicActionSteps::~lbPluginModuleDMFBasicActionSteps() {
 void LB_STDCALL lbPluginModuleDMFBasicActionSteps::initialize() {
 	lbErrCodes err = ERR_NONE;
 	
-	_LOG << "lbPluginModuleDMFBasicActionSteps::initialize() lbPluginDMFIdForFormValue called." LOG_
+	_LOGVERBOSE << "lbPluginModuleDMFBasicActionSteps::initialize() lbPluginDMFIdForFormValue called." LOG_
 	enumPlugins();
 }
 
@@ -137,7 +137,7 @@ void LB_STDCALL lbPluginModuleDMFBasicActionSteps::install() {
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
-		_LOG << "Using plugin database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
+		_LOGVERBOSE << "Using plugin database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
 	} else {
 		// Use built in
 		REQUEST(getModuleInstance(), lb_I_Database, database)
@@ -147,7 +147,7 @@ void LB_STDCALL lbPluginModuleDMFBasicActionSteps::install() {
 			return;
 		}
 		
-		_LOG << "Using built in database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
+		_LOGVERBOSE << "Using built in database backend for lbPluginModuleDMFBasicActionSteps::initialize() operation..." LOG_
 	}
 
 	const char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -205,7 +205,7 @@ void LB_STDCALL lbPluginModuleDMFBasicActionSteps::install() {
 	if (err == ERR_NONE) {
 		err = q->first();
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			_LOG << "Plugin lbPluginDMFIdForFormValue with BasicActionSteps already installed." LOG_
+			_LOGVERBOSE << "Plugin lbPluginDMFIdForFormValue with BasicActionSteps already installed." LOG_
 		} else {
 			if (meta->askYesNo("Plugin for XSLT transformation actions available.\n\nWould you enable that plugin ?")) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, columnname)
