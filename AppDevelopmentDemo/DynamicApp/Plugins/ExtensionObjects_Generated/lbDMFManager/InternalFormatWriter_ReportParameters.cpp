@@ -124,7 +124,6 @@ void LB_STDCALL ReportParametersInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_value();
 		*oStream << owningObject->get_name();
 		*oStream << owningObject->get_reportid();
-		*oStream << owningObject->get_reportid();
 	}
 }
 

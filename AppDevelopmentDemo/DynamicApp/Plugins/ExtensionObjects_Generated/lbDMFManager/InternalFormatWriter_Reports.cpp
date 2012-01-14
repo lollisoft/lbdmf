@@ -123,7 +123,6 @@ void LB_STDCALL ReportsInternalFormatWriterExtension::execute() {
 
 		*oStream << owningObject->get_description();
 		*oStream << owningObject->get_name();
-		*oStream << owningObject->get_name();
 	}
 }
 

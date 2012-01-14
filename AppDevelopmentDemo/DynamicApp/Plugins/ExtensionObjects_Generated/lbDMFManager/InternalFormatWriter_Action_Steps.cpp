@@ -126,7 +126,6 @@ void LB_STDCALL Action_StepsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_a_order_nr();
 		*oStream << owningObject->get_type();
 		*oStream << owningObject->get_actionid();
-		*oStream << owningObject->get_actionid();
 	}
 }
 

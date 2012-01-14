@@ -128,7 +128,6 @@ void LB_STDCALL FormularsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_toolbarimage();
 		*oStream << owningObject->get_anwendungid();
 		*oStream << owningObject->get_typ();
-		*oStream << owningObject->get_typ();
 	}
 }
 

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.191 $
+ * $Revision: 1.192 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.191 2012/01/14 19:54:13 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.192 2012/01/14 22:56:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.192  2012/01/14 22:56:26  lollisoft
+ * Fixed a code generator bug that let the application fail to load from local file.
+ *
  * Revision 1.191  2012/01/14 19:54:13  lollisoft
  * Generated code works with written code and application fully initializes.
  * Also it can exit without errors. Maybe the XSLT templates will not work yet.
@@ -1362,7 +1365,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	int getMainModuleInfo;
 	int testPressed;
 	int enterDebugger;
-	int getLoginData;
+	int _getLoginData;
 	int doAutoload;
 	int doLog;
 /*...e*/
@@ -1384,7 +1387,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
-		eman->registerEvent("getLoginData", getLoginData);
+		eman->registerEvent("getLoginData", _getLoginData);
 	}
 /*...e*/
 
@@ -1512,7 +1515,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 
 			_LOG << "Using database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
-			loadApplication(u, a);
+			//loadApplication(u, a);
+			getLoginData(NULL);
 
 			_LOG << "Used database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
@@ -1937,7 +1941,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
+	
 	if (applicationName == NULL) {
 		/*
 		 * No predefined application without authentication.
@@ -1949,9 +1953,29 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		UAP(lb_I_SecurityProvider, securityManager)
 		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 		
-		//long ApplicationID = securityManager->getApplicationID();
 		UAP(lb_I_String, ModuleName)
 		UAP(lb_I_String, Functor)
+		
+		UAP(lb_I_Container, apps)
+		apps = securityManager->getApplications();
+		
+		apps->finishIteration();
+		while (apps->hasMoreElements() == 1)
+		{
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_String, appName)
+			uk = apps->nextElement();
+			QI(uk, lb_I_String, appName)
+			if (*appName == application)
+			{
+				UAP(lb_I_Long, id)
+				UAP(lb_I_KeyBase, key)
+				key = apps->currentKey();
+				QI(key, lb_I_Long, id)
+				securityManager->setCurrentApplicationId(id->getData());
+				break;
+			}
+		}
 		
 		ModuleName = securityManager->getApplicationModule();
 		Functor = securityManager->getApplicationFunctor();

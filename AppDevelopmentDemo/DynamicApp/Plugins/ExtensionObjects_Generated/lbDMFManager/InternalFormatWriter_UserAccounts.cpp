@@ -125,7 +125,6 @@ void LB_STDCALL UserAccountsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_userid();
 		*oStream << owningObject->get_vorname();
 		*oStream << owningObject->get_name();
-		*oStream << owningObject->get_name();
 	}
 }
 

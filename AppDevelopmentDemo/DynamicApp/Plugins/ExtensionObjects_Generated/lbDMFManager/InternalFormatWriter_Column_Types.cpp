@@ -126,7 +126,6 @@ void LB_STDCALL Column_TypesInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_ro();
 		*oStream << owningObject->get_specialcolumn();
 		*oStream << owningObject->get_controltype();
-		*oStream << owningObject->get_controltype();
 	}
 }
 

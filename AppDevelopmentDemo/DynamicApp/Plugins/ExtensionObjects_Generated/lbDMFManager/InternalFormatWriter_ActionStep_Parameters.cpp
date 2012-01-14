@@ -126,7 +126,6 @@ void LB_STDCALL ActionStep_ParametersInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_value();
 		*oStream << owningObject->get_interface();
 		*oStream << owningObject->get_action_step_id();
-		*oStream << owningObject->get_action_step_id();
 	}
 }
 

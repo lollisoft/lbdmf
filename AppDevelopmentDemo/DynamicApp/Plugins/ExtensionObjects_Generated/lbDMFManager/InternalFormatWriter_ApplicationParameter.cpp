@@ -124,7 +124,6 @@ void LB_STDCALL ApplicationParameterInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_parametername();
 		*oStream << owningObject->get_parametervalue();
 		*oStream << owningObject->get_anwendungid();
-		*oStream << owningObject->get_anwendungid();
 	}
 }
 
