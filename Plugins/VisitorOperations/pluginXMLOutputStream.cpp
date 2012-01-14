@@ -83,7 +83,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
-	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -166,7 +165,8 @@ public:
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
-	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
+	void LB_STDCALL visit(lb_I_ExtensibleObject* extensibleObject);
+	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_LOG << "visit(lb_I_SecurityProvider*)" LOG_ }
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
@@ -299,6 +299,7 @@ bool LB_STDCALL lbXMLOutputStream::begin(lb_I_Stream* stream) {
 }
 
 void lbXMLOutputStream::setContextNamespace(const char* _namespace) {
+	_LOG << "lbXMLOutputStream::setContextNamespace('" << _namespace << "') called." LOG_
 	*contextNamespace = _namespace;
 }
 
@@ -306,11 +307,15 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Streamable* pm) {
 		_CL_LOG << "lbXMLOutputStream::visit(lb_I_Streamable* pm) Error: Private format. Could not generate XML for it !" LOG_
 }
 
-void LB_STDCALL lbXMLOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ExtensibleObject* extensibleObject) {
 	UAP(lb_I_ExtensionObject, extension) 
-	extension = tableModule->getExtension(*&contextNamespace);
+	extension = extensibleObject->getExtension(*&contextNamespace);
 	
 	if (extension != NULL) {
+		UAP(lb_I_Unknown, uk)
+		QI(extensibleObject, lb_I_Unknown, uk)
+		extension->setOwningObject(*&uk);
+
 		UAP(lb_I_VisitorExtension, visitorExtension)
 		QI(extension, lb_I_VisitorExtension, visitorExtension)
 	
@@ -320,7 +325,11 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
 		}
 	}
 }
+/*
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_SecurityProvider*) {
 
+}
+*/
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Reports*) {
 
@@ -927,13 +936,14 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
+	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginXMLOutputStream)
@@ -954,11 +964,16 @@ lbErrCodes LB_STDCALL lbPluginXMLOutputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginXMLOutputStream::lbPluginXMLOutputStream() {
 	_CL_VERBOSE << "lbPluginXMLOutputStream::lbPluginXMLOutputStream() called.\n" LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginXMLOutputStream::~lbPluginXMLOutputStream() {
 	_CL_VERBOSE << "lbPluginXMLOutputStream::~lbPluginXMLOutputStream() called.\n" LOG_
+}
+
+void LB_STDCALL lbPluginXMLOutputStream::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
 }
 
 bool LB_STDCALL lbPluginXMLOutputStream::canAutorun() {
@@ -984,6 +999,7 @@ lb_I_Unknown* LB_STDCALL lbPluginXMLOutputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbXMLOutputStream* InputStream = new lbXMLOutputStream();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -1003,6 +1019,7 @@ lb_I_Unknown* LB_STDCALL lbPluginXMLOutputStream::getImplementation() {
 	
 		lbXMLOutputStream* InputStream = new lbXMLOutputStream();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	}

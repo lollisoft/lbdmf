@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFormular_FieldsInternalFormatWriterExtension, Formul
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_FieldsInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Formular_FieldsInternalFormatWriterExtension::Formular_FieldsInternalFormatWriterExtension() {

@@ -64,6 +64,7 @@ extern "C" {
 #include <lbConfigHook.h>
 #endif
 
+#include <lbInterfaces-sub-security.h>
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
@@ -226,6 +227,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, sysSchemaQuery)
 	UAP(lb_I_Database, database)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, initialDatabaseLocation)
@@ -339,7 +341,6 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
 		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Using plugin database backend for system database setup test..." LOG_
 		
@@ -554,23 +555,62 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
 	meta->setDirLocation(installdir->charrep());
 #endif
-	meta->msgBox("Info",
-		   "This application is running the first time on this computer,\n"
-		   "or your prior configured database is not available anyhow.\n\n"
-		   "Please inform your administrator, if the database is not available.\n\n"
-		   "Otherwise, you currently work in a local initial database version.\n\n"
-		   "And you are automatically logged in as an 'administrator'.\n\n"
-		   "For security considerations please change the password for\n"
-		   "your user account, wich is currently the default 'user'.");
 
-	// While the plugin get's initialized meta->load() must have been called to enable the following two functions.
-	meta->setUserName("user");
-	meta->setApplicationName("lbDMF Manager");
+	// Also the application requires an authenticated user
+	UAP(lb_I_SecurityProvider, securityManager)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+
+	if (securityManager != NULL) {
+		securityManager->login("user", "TestUser"); // A fresh installed database should have this default user.
 	
-	meta->setAutoload(true);
-	meta->setGUIMaximized(true); // Otherwise the toolbar is bigger than frame width. Default size should be changed.
-	meta->save(); // Save, because otherwise the usage of DatabaseLayerGateway gets overwritten by created standard version of first try of loading the file.
+		UAP(lb_I_Unknown, uk)
+		
+		UAP(lb_I_Container, apps)
+		apps = securityManager->getApplications();
+		
+		apps->finishIteration();
+		while (apps->hasMoreElements() == 1)
+		{
+			UAP(lb_I_String, name)
+			uk = apps->nextElement();
+			QI(uk, lb_I_String, name)
+			
+			if (*name == "lbDMF Manager") {
+				UAP(lb_I_Long, id)
+				UAP(lb_I_KeyBase, key)
+				key = apps->currentKey();
+				QI(key, lb_I_Long, id)
+				securityManager->setCurrentApplicationId(id->getData());
+			}
+		}
+		
 	
+	
+		meta->msgBox("Info",
+			   "This application is running the first time on this computer,\n"
+			   "or your prior configured database is not available anyhow.\n\n"
+			   "Please inform your administrator, if the database is not available.\n\n"
+			   "Otherwise, you currently work in a local initial database version.\n\n"
+			   "And you are automatically logged in as an 'administrator'.\n\n"
+			   "For security considerations please change the password for\n"
+			   "your user account, wich is currently the default 'user'.");
+
+		// While the plugin get's initialized meta->load() must have been called to enable the following two functions.
+		meta->setUserName("user");
+		meta->setApplicationName("lbDMF Manager");
+		
+		meta->setAutoload(true);
+		meta->setGUIMaximized(true); // Otherwise the toolbar is bigger than frame width. Default size should be changed.
+		meta->save(); // Save, because otherwise the usage of DatabaseLayerGateway gets overwritten by created standard version of first try of loading the file.
+	} else {
+		meta->msgBox("Info",
+			   "The security module responsible to provide login functionality could not be loaded. "
+			   "Only applications without user management are possible. Automatic application load "
+			   "will also not be possible.");
+
+		meta->setGUIMaximized(true); // Otherwise the toolbar is bigger than frame width. Default size should be changed.
+		meta->save(); // Save, because otherwise the usage of DatabaseLayerGateway gets overwritten by created standard version of first try of loading the file.
+	}
 	return true;
 }
 

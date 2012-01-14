@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFormular_FieldsDBReaderExtension, Formular_FieldsDBR
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_FieldsDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Formular_FieldsDBReaderExtension::Formular_FieldsDBReaderExtension() {
@@ -132,7 +133,7 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 		UAP(lb_I_String, qfkname)
 		UAP(lb_I_String, qfktable)
 		UAP(lb_I_String, qdbtype)
-		UAP(lb_I_Boolean, qisforeignkey)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, qisforeignkey)
 		UAP(lb_I_String, qname)
 		UAP(lb_I_String, qtablename)
 		UAP(lb_I_Long, qformularid)

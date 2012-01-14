@@ -280,6 +280,7 @@ bool LB_STDCALL lbInputStreamOpr::begin(lb_I_Stream* stream) {
 }
 
 void lbInputStreamOpr::setContextNamespace(const char* _namespace) {
+	_LOG << "lbInputStreamOpr::setContextNamespace('" << _namespace << "') called." LOG_
 	*contextNamespace = _namespace;
 }
 
@@ -368,9 +369,14 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_ExtensibleObject* tableModule) {
 	UAP(lb_I_ExtensionObject, extension) 
+	_LOG << "lbInputStreamOpr::visit(lb_I_ExtensibleObject* tableModule) using context namespace = " << contextNamespace->charrep() LOG_
 	extension = tableModule->getExtension(*&contextNamespace);
 	
 	if (extension != NULL) {
+		UAP(lb_I_Unknown, uk)
+		QI(tableModule, lb_I_Unknown, uk)
+		extension->setOwningObject(*&uk);
+
 		UAP(lb_I_VisitorExtension, visitorExtension)
 		QI(extension, lb_I_VisitorExtension, visitorExtension)
 	
@@ -1174,13 +1180,14 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
+	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginInputStream)
@@ -1199,9 +1206,14 @@ lbErrCodes LB_STDCALL lbPluginInputStream::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+void LB_STDCALL lbPluginInputStream::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
+}
+
 lbPluginInputStream::lbPluginInputStream() {
 	_CL_VERBOSE << "lbPluginInputStream::lbPluginInputStream() called.\n" LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginInputStream::~lbPluginInputStream() {
@@ -1231,6 +1243,7 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -1250,7 +1263,8 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::getImplementation() {
 	
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
 		
-	
+		InputStream->setContextNamespace(pluginNamespace->charrep());
+
 		QI(InputStream, lb_I_Unknown, impl)
 	}
 	

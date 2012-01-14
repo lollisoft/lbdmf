@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFormular_FieldsXMLWriterExtension, Formular_FieldsXM
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_FieldsXMLWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Formular_FieldsXMLWriterExtension::Formular_FieldsXMLWriterExtension() {

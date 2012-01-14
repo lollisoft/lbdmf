@@ -161,6 +161,7 @@ IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>InternalFormatRead
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>InternalFormatReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 <xsl:value-of select="$FormName"/>InternalFormatReaderExtension::<xsl:value-of select="$FormName"/>InternalFormatReaderExtension() {

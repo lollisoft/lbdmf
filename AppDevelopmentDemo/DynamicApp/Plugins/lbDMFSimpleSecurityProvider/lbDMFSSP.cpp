@@ -72,7 +72,9 @@ lbDMFSSP::lbDMFSSP() {
 	_loading_object_data = false;
 	_force_use_database = false;
 	_loaded = false;
+	CurrentApplicationID = 0;
 	REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 }
 
 lbDMFSSP::~lbDMFSSP() {
@@ -108,6 +110,9 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
 
+		return false;
+		
+#ifdef FALLBACK_ENABLED		
 		UAP(lb_I_Database, database)
 
 		char* dbbackend = meta->getSystemDatabaseBackend();
@@ -176,7 +181,7 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 		buffer[0] = 0;
 
 		sampleQuery->skipFKCollecting();
-		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
+		sprintf(buffer, "select id from Users where userid = '%s' and passwort = '%s'",
                	user, pass);
 
 		_CL_VERBOSE << "Query for user " << user LOG_
@@ -195,27 +200,70 @@ bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 			_logged_in = true;
+			UAP(lb_I_Long, UID)
+			UID = sampleQuery->getAsLong(1);
+			CurrentUserID = UID->getData();
 			return true;
 		} else {
 			return false;
 		}
+#endif
 	} else {
 		// We have got users from file
-
+		_LOG << "lbDMFSSP::login('" << user << "', '***') checks against account list..." LOG_
 		Users->finishUserAccountsIteration();
 		while (Users->hasMoreUserAccounts()) {
 			Users->setNextUserAccounts();
-
-			if ((strcmp(Users->get_userid(), user) == 0) && (strcmp(Users->get_passwort(), pass) == 0)) {
-				_logged_in = true;
-				Users->finishUserAccountsIteration();
-				return true;
+			if (strcmp(Users->get_userid(), user) == 0) {
+				_LOG << "User found." LOG_
+				if(strcmp(Users->get_passwort(), pass) == 0) {
+					_LOG << "User is valid." LOG_
+					_logged_in = true;
+					CurrentUserID = Users->get_id();
+					setAllowedApplications(Users->get_id());
+					Users->finishUserAccountsIteration();
+					return true;
+				}
 			}
 		}
 
 		// There may be more users in the database, so try to fetch them and make one retry
+		_LOG << "User not found." LOG_
 
+		if (AllowedApplications == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, AllowedApplications)
+		}
 		return false;
+	}
+}
+
+void LB_STDCALL lbDMFSSP::setAllowedApplications(long userid) {
+	if (AllowedApplications == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, AllowedApplications)
+	} else {
+		AllowedApplications->deleteAll();
+	}
+	
+	User_Applications->finishUser_ApplicationsIteration();
+	
+	while (User_Applications->hasMoreUser_Applications()) {
+		User_Applications->setNextUser_Applications();
+		
+		if (User_Applications->get_userid() == userid) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ApplicationID)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, ApplicationName)
+			
+			ApplicationID->setData(User_Applications->get_anwendungenid());
+			Applications->selectApplications(User_Applications->get_anwendungenid());
+			*ApplicationName = Applications->get_name();
+			
+			QI(ApplicationName, lb_I_Unknown, uk)
+			QI(ApplicationID, lb_I_KeyBase, key)
+			
+			AllowedApplications->insert(&uk, &key);
+		}
 	}
 }
 
@@ -243,29 +291,37 @@ lbErrCodes LB_STDCALL lookupAccount(lb_I_UserAccounts* accounts, const char* nam
 	return ERR_ENTITY_NOT_FOUND;
 }
 
-lb_I_Unknown*	LB_STDCALL lbDMFSSP::getApplicationModel() {
-	
+bool LB_STDCALL lbDMFSSP::setCurrentApplicationId(long id) {
+	if (!isApplicationIDAllowed(id) || !_logged_in)
+		return false;
+
+	CurrentApplicationID = id;
+	Applications->selectApplications(id);
+	*LogonApplication = Applications->get_name();
+	return true;
 }
 
 long LB_STDCALL lbDMFSSP::getApplicationID() {
-	if ((_logged_in) && (Applications->getApplicationsCount() > 0)) {
-		lookupApplication(*&Applications, LogonApplication->charrep());
-
-		return Applications->get_id();
+	if (_logged_in) {
+		return CurrentApplicationID;
 	} else {
-		if (!_logged_in) {
-			_LOG << "Error: lbDMFSSP::getApplicationID() returns 0, because user is not logged in." LOG_
-		}
-		if (Applications->getApplicationsCount() <= 0) {
-			_LOG << "Error: lbDMFSSP::getApplicationID() returns 0, because the application count of Applications is 0." LOG_
-		}
 		return 0;
 	}
 }
 
 lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 	lbErrCodes err = ERR_NONE;
-
+	
+	if (AllowedApplications != NULL) {
+		AllowedApplications++;
+		return AllowedApplications.getPtr();
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
+		apps++;
+		return apps.getPtr();
+	}
+	
+#ifdef bla
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
 
 	if (Applications == NULL) {
@@ -490,6 +546,29 @@ lb_I_Container* LB_STDCALL lbDMFSSP::getApplications() {
 
 	apps++;
 	return apps.getPtr();
+#endif	
+}
+
+lb_I_Unknown*	LB_STDCALL lbDMFSSP::getApplicationModel() {
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Applications, copyOfApplications)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_Applications, Model, copyOfApplications, "'database report'")
+
+	User_Applications->finishUser_ApplicationsIteration();
+	
+	while (User_Applications->hasMoreUser_Applications()) {
+		User_Applications->setNextUser_Applications();
+		
+		if (User_Applications->get_userid() == CurrentUserID) {
+			Applications->selectApplications(User_Applications->get_anwendungenid());
+
+			copyOfApplications->addApplications(Applications->get_titel(), Applications->get_name(), Applications->get_interface(), Applications->get_functor(), Applications->get_modulename(), Applications->get_id());
+		}
+	}
+	QI(copyOfApplications, lb_I_Unknown, uk)
+	uk++;
+	return uk.getPtr();
 }
 
 lbErrCodes LB_STDCALL lbDMFSSP::uninitialize() {
@@ -498,6 +577,60 @@ lbErrCodes LB_STDCALL lbDMFSSP::uninitialize() {
 	if (Applications != NULL) Applications--;
 
 	return ERR_NONE;
+}
+
+bool LB_STDCALL lbDMFSSP::isApplicationIDAllowed(long ApplicationID) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
+	UAP(lb_I_KeyBase, key)
+	id->setData(ApplicationID);
+	QI(id, lb_I_KeyBase, key)
+	
+	if (AllowedApplications->exists(&key) == 1)
+		return true;
+	
+	return false;
+}
+
+lb_I_String* LB_STDCALL lbDMFSSP::getApplicationModule() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, m)
+	*m = "";
+	m++;
+	
+	if (!isApplicationIDAllowed(CurrentApplicationID) || !_logged_in)
+		return m.getPtr();
+	
+	Applications->finishApplicationsIteration();
+	
+	while (Applications->hasMoreApplications()) {
+		Applications->setNextApplications();
+		
+		if (Applications->get_id() == CurrentApplicationID) {
+			*m = Applications->get_modulename();
+			return m.getPtr();
+		}
+	}
+	return m.getPtr();
+}
+
+lb_I_String* LB_STDCALL lbDMFSSP::getApplicationFunctor() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	*f = "";
+	f++;
+	
+	if (!isApplicationIDAllowed(CurrentApplicationID) || !_logged_in)
+		return f.getPtr();
+
+	Applications->finishApplicationsIteration();
+	
+	while (Applications->hasMoreApplications()) {
+		Applications->setNextApplications();
+		
+		if (Applications->get_id() == CurrentApplicationID) {
+			*f = Applications->get_functor();
+			return f.getPtr();
+		}
+	}
+	return f.getPtr();
 }
 
 lbErrCodes LB_STDCALL lbDMFSSP::save() {
@@ -667,27 +800,95 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 #endif
 #ifndef OSX
 			if (!fOp->begin("SimpleSecurity.sec")) {
-				_LOGERROR << "ERROR: Could not read default file for meta application!" LOG_
+				_LOGERROR << "ERROR: Could not read login data from file. Try to use database." LOG_
 
-				return ERR_FILE_READ;
+				UAP(lb_I_Plugin, plDB)
+				UAP(lb_I_Unknown, ukPlDB)
+
+				plDB = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+				
+				ukPlDB = plDB->getImplementation();
+
+				if (ukPlDB != NULL) {
+					UAP(lb_I_DatabaseOperation, fOpDB)
+					QI(ukPlDB, lb_I_DatabaseOperation, fOpDB)
+						
+					UAP(lb_I_Database, database)
+
+					char* dbbackend = meta->getSystemDatabaseBackend();
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+						_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, database)
+
+						if (database == NULL) {
+							meta->setSystemDatabaseBackend("DatabaseLayerGateway");
+							meta->setApplicationDatabaseBackend("DatabaseLayerGateway");
+							meta->useSystemDatabaseBackend(true);
+							meta->useApplicationDatabaseBackend(true);
+
+							// A second try here
+							char* dbbackend = meta->getSystemDatabaseBackend();
+							if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+								UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+								AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+								_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+							}
+							if (database == NULL) {
+								meta->msgBox("Error", "Getting application list failed. Even local database backend failed to load.");
+								return ERR_FILE_READ; //\todo Fix error code.
+							}
+						}
+
+						_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
+					}
+
+					UAP(lb_I_Query, sampleQuery)
+					database->init();
+
+					const char* lbDMFPasswd = getenv("lbDMFPasswd");
+					const char* lbDMFUser   = getenv("lbDMFUser");
+
+					if (!lbDMFUser) lbDMFUser = "dba";
+					if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+					database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+						
+					fOpDB->begin("lbDMF", *&database);
+
+					// Read an Users list
+					ukPl2->accept(*&fOpDB);
+					// Read an Applications list
+					ukPl3->accept(*&fOpDB);
+					// Read users applications
+					ukPl4->accept(*&fOpDB);
+					fOpDB->end();
+				}
+
+				if (Users->getUserAccountsCount() == 0) {
+					meta->msgBox("Error", "Database did not contain login information.");
+					return ERR_FILE_READ;
+				} else {
+					_loaded = true;
+
+					return ERR_NONE;
+				}
 			}
 #endif
 
 			// Database read will be forced by login.
 			if (!_force_use_database) {
 				_LOG << "Read users, applications and user associations from file." LOG_
+				
 				// Read an Users list
 				ukPl2->accept(*&fOp);
 				// Read an Applications list
 				ukPl3->accept(*&fOp);
 				// Read users applications
 				ukPl4->accept(*&fOp);
-				// Read applications to formular assoc
-//				ukPl5->accept(*&fOp);
-
-				if (Users->getUserAccountsCount() == 0) {
-					_LOG << "Warning: Users list from file does not contain any data." LOG_
-				}
 			} else {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();

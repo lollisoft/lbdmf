@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfColumn_TypesDBReaderExtension, Column_TypesDBReaderE
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Column_TypesDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Column_TypesDBReaderExtension::Column_TypesDBReaderExtension() {
@@ -131,8 +132,8 @@ void LB_STDCALL Column_TypesDBReaderExtension::execute() {
 
 		UAP(lb_I_String, qname)
 		UAP(lb_I_String, qtablename)
-		UAP(lb_I_Boolean, qro)
-		UAP(lb_I_Boolean, qspecialcolumn)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, qro)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, qspecialcolumn)
 		UAP(lb_I_String, qcontroltype)
 
 		// Copy values

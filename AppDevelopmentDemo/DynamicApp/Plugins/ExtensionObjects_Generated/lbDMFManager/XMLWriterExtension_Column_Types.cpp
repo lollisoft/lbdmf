@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfColumn_TypesXMLWriterExtension, Column_TypesXMLWrite
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Column_TypesXMLWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Column_TypesXMLWriterExtension::Column_TypesXMLWriterExtension() {
