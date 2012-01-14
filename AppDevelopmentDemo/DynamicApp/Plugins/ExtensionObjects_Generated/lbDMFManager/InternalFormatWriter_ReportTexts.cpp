@@ -124,7 +124,6 @@ void LB_STDCALL ReportTextsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_line();
 		*oStream << owningObject->get_text();
 		*oStream << owningObject->get_elementid();
-		*oStream << owningObject->get_elementid();
 	}
 }
 

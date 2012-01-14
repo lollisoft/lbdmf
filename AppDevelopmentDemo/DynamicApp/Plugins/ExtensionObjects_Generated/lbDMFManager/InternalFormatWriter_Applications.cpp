@@ -126,7 +126,6 @@ void LB_STDCALL ApplicationsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_interface();
 		*oStream << owningObject->get_functor();
 		*oStream << owningObject->get_modulename();
-		*oStream << owningObject->get_modulename();
 	}
 }
 

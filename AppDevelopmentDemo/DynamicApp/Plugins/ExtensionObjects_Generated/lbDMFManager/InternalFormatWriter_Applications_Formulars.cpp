@@ -123,7 +123,6 @@ void LB_STDCALL Applications_FormularsInternalFormatWriterExtension::execute() {
 
 		*oStream << owningObject->get_anwendungid();
 		*oStream << owningObject->get_formularid();
-		*oStream << owningObject->get_formularid();
 	}
 }
 

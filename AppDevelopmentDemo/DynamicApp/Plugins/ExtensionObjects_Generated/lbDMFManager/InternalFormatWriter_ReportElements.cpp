@@ -129,7 +129,6 @@ void LB_STDCALL ReportElementsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_h();
 		*oStream << owningObject->get_reportid();
 		*oStream << owningObject->get_typ();
-		*oStream << owningObject->get_typ();
 	}
 }
 

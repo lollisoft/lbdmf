@@ -381,6 +381,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_ExtensibleObject* tableModule) {
 		QI(extension, lb_I_VisitorExtension, visitorExtension)
 	
 		if (visitorExtension != NULL) {
+			_LOG << "Load an object from internal formatted file: " << tableModule->getClassName() << " with " << visitorExtension->getClassName() LOG_
 			visitorExtension->setOperator(this);
 			visitorExtension->execute();
 		}

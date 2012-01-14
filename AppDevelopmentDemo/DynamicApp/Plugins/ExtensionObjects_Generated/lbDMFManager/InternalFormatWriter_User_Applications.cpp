@@ -123,7 +123,6 @@ void LB_STDCALL User_ApplicationsInternalFormatWriterExtension::execute() {
 
 		*oStream << owningObject->get_userid();
 		*oStream << owningObject->get_anwendungenid();
-		*oStream << owningObject->get_anwendungenid();
 	}
 }
 

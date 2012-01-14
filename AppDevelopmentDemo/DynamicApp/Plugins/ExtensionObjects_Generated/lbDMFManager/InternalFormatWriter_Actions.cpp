@@ -125,7 +125,6 @@ void LB_STDCALL ActionsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_source();
 		*oStream << owningObject->get_name();
 		*oStream << owningObject->get_typ();
-		*oStream << owningObject->get_typ();
 	}
 }
 
