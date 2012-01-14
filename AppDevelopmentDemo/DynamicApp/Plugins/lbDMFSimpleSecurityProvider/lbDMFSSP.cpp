@@ -584,10 +584,19 @@ bool LB_STDCALL lbDMFSSP::isApplicationIDAllowed(long ApplicationID) {
 	UAP(lb_I_KeyBase, key)
 	id->setData(ApplicationID);
 	QI(id, lb_I_KeyBase, key)
-	
-	if (AllowedApplications->exists(&key) == 1)
+
+/*	
+	if (!_logged_in) {
+		lb_I_GUI* gui;
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		meta->getGUI(&gui);
+		UAP(lb_I_Form, loginForm)
+		loginForm = gui->createLoginForm();
+	}
+*/
+	if (AllowedApplications != NULL && AllowedApplications->exists(&key) == 1)
 		return true;
-	
+
 	return false;
 }
 

@@ -125,7 +125,6 @@ void LB_STDCALL FKPK_MappingInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_pkname();
 		*oStream << owningObject->get_fktable();
 		*oStream << owningObject->get_fkname();
-		*oStream << owningObject->get_fkname();
 	}
 }
 

@@ -124,7 +124,6 @@ void LB_STDCALL Formular_ActionsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_event();
 		*oStream << owningObject->get_action();
 		*oStream << owningObject->get_formular();
-		*oStream << owningObject->get_formular();
 	}
 }
 

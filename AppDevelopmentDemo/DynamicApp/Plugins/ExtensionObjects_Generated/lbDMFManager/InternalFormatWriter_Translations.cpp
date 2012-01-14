@@ -124,7 +124,6 @@ void LB_STDCALL TranslationsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_translated();
 		*oStream << owningObject->get_text();
 		*oStream << owningObject->get_language();
-		*oStream << owningObject->get_language();
 	}
 }
 

@@ -125,7 +125,6 @@ void LB_STDCALL Action_Step_TransitionsInternalFormatWriterExtension::execute() 
 		*oStream << owningObject->get_src_actionid();
 		*oStream << owningObject->get_dst_actionid();
 		*oStream << owningObject->get_description();
-		*oStream << owningObject->get_description();
 	}
 }
 

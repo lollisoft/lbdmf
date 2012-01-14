@@ -124,7 +124,6 @@ void LB_STDCALL FormularParameterInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_parametervalue();
 		*oStream << owningObject->get_parametername();
 		*oStream << owningObject->get_formularid();
-		*oStream << owningObject->get_formularid();
 	}
 }
 

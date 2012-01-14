@@ -241,10 +241,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatWriterExtension:
 </xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
-<xsl:if test="position()=last()">
-		*oStream &lt;&lt; owningObject-&gt;get_<xsl:value-of select="$FieldName"/>
-</xsl:if>
-</xsl:for-each>();
+</xsl:for-each>
 	}
 }
 
