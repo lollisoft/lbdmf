@@ -37,9 +37,13 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	bool			LB_STDCALL login(const char* user, const char* pass);
+	bool			LB_STDCALL setCurrentApplicationId(long id);
 	long 			LB_STDCALL getApplicationID();
 	lb_I_Container* LB_STDCALL getApplications();
 	lb_I_Unknown*	LB_STDCALL getApplicationModel();
+
+	lb_I_String*	LB_STDCALL getApplicationModule();
+	lb_I_String*	LB_STDCALL getApplicationFunctor();
 
 	lbErrCodes 		LB_STDCALL save();
 	lbErrCodes 		LB_STDCALL load();
@@ -50,6 +54,13 @@ public:
 	virtual ~lbDMFSSP();
 
 protected:
+
+	void 			LB_STDCALL setAllowedApplications(long userid);
+	bool			LB_STDCALL isApplicationIDAllowed(long ApplicationID);
+
+
+	/// \brief Applications stored in file or database.
+	UAP(lb_I_Container, AllowedApplications)
 	/// \brief Applications stored in file or database.
 	UAP(lb_I_Applications, Applications)
 	/// \brief Users stored in file or database.
@@ -61,6 +72,10 @@ protected:
 	bool _loading_object_data;
 	bool _force_use_database;
 	bool _loaded;
+	
+	long CurrentApplicationID;
+	long CurrentUserID;
+	
 	UAP(lb_I_String, LogonApplication)
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_MetaApplication, meta)

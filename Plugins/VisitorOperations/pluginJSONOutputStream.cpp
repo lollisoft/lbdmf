@@ -388,6 +388,7 @@ bool LB_STDCALL lbJSONOutputStream::begin(lb_I_Stream* stream) {
 }
 
 void lbJSONOutputStream::setContextNamespace(const char* _namespace) {
+	_LOG << "lbJSONOutputStream::setContextNamespace('" << _namespace << "') called." LOG_
 	*contextNamespace = _namespace;
 }
 
@@ -739,6 +740,10 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
 	extension = tableModule->getExtension(*&contextNamespace);
 	
 	if (extension != NULL) {
+		UAP(lb_I_Unknown, uk)
+		QI(tableModule, lb_I_Unknown, uk)
+		extension->setOwningObject(*&uk);
+
 		UAP(lb_I_VisitorExtension, visitorExtension)
 		QI(extension, lb_I_VisitorExtension, visitorExtension)
 	
@@ -1349,13 +1354,14 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
+	void LB_STDCALL setNamespace(const char* _namespace);
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()
 	
 private:
 	UAP(lb_I_Unknown, impl)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginJSONOutputStream)
@@ -1374,9 +1380,14 @@ lbErrCodes LB_STDCALL lbPluginJSONOutputStream::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+void LB_STDCALL lbPluginJSONOutputStream::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
+}
+
 lbPluginJSONOutputStream::lbPluginJSONOutputStream() {
 	_CL_VERBOSE << "lbPluginJSONOutputStream::lbPluginJSONOutputStream() called.\n" LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginJSONOutputStream::~lbPluginJSONOutputStream() {
@@ -1406,6 +1417,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
 		
+		OutputStream->setContextNamespace(pluginNamespace->charrep());
 		
 		QI(OutputStream, lb_I_Unknown, impl)
 	} else {
@@ -1425,6 +1437,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONOutputStream::getImplementation() {
 		
 		lbJSONOutputStream* OutputStream = new lbJSONOutputStream();
 		
+		OutputStream->setContextNamespace(pluginNamespace->charrep());
 		
 		QI(OutputStream, lb_I_Unknown, impl)
 	}

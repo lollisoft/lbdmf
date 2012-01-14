@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFKPK_MappingDBReaderExtension, FKPK_MappingDBReaderE
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(FKPK_MappingDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 FKPK_MappingDBReaderExtension::FKPK_MappingDBReaderExtension() {

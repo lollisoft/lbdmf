@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFormular_ActionsDBReaderExtension, Formular_ActionsD
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Formular_ActionsDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Formular_ActionsDBReaderExtension::Formular_ActionsDBReaderExtension() {

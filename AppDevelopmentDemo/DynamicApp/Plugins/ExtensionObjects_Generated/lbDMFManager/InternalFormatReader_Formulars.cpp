@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFormularsInternalFormatReaderExtension, FormularsInt
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(FormularsInternalFormatReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 FormularsInternalFormatReaderExtension::FormularsInternalFormatReaderExtension() {

@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfAction_TypesDBReaderExtension, Action_TypesDBReaderE
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Action_TypesDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Action_TypesDBReaderExtension::Action_TypesDBReaderExtension() {

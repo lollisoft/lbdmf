@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfUser_ApplicationsXMLWriterExtension, User_Applicatio
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(User_ApplicationsXMLWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 User_ApplicationsXMLWriterExtension::User_ApplicationsXMLWriterExtension() {

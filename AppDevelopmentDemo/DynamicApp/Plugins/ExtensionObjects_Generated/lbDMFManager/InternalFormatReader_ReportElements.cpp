@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfReportElementsInternalFormatReaderExtension, ReportE
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(ReportElementsInternalFormatReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 ReportElementsInternalFormatReaderExtension::ReportElementsInternalFormatReaderExtension() {

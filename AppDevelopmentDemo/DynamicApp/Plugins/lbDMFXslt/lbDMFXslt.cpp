@@ -334,12 +334,6 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	UAP(lb_I_SecurityProvider, securityManager)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-	UAP(lb_I_Applications, applications)
-	UAP(lb_I_Unknown, apps)
-	apps = securityManager->getApplicationModel();
-	QI(apps, lb_I_Applications, applications)
-	
-	lookupApplication(*&applications, ApplicationName->charrep());
 	
 	if (activeDocument != NULL) {
 		UAP(lb_I_KeyBase, key)
@@ -352,7 +346,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		QI(name, lb_I_KeyBase, key)
 		uk = document->getElement(&key);
 		QI(uk, lb_I_ApplicationParameter, appParams)
-		AppID->setData(applications->get_id());
+		AppID->setData(securityManager->getApplicationID());
 		
 		id = (long) AppID->getData();
 		

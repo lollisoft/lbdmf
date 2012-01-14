@@ -32,11 +32,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.93 $
+* $Revision: 1.94 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.93 2012/01/09 07:37:51 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.94 2012/01/14 19:54:13 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.94  2012/01/14 19:54:13  lollisoft
+* Generated code works with written code and application fully initializes.
+* Also it can exit without errors. Maybe the XSLT templates will not work yet.
+* This is due to small changes in the naming (plural vs singular).
+*
 * Revision 1.93  2012/01/09 07:37:51  lollisoft
 * Fixed some functor naming problems in code generator
 * and changed some log messages to be verbose only.
@@ -2337,7 +2342,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 		return NULL;
 	}
 	
-	
+	impl->setNamespace(_namespace);
 	uk = impl->peekImplementation();
 	
 	return uk;
@@ -2372,7 +2377,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 		return NULL;
 	}
 	
-	
+	impl->setNamespace(_namespace);
 	uk = impl->getImplementation();
 	
 	return uk;

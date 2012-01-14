@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfReportsInternalFormatWriterExtension, ReportsInterna
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(ReportsInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 ReportsInternalFormatWriterExtension::ReportsInternalFormatWriterExtension() {
