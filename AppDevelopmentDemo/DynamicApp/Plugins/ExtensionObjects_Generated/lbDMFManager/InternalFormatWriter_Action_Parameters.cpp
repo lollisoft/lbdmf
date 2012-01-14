@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfAction_ParametersInternalFormatWriterExtension, Acti
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Action_ParametersInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Action_ParametersInternalFormatWriterExtension::Action_ParametersInternalFormatWriterExtension() {

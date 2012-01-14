@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfAction_Step_TransitionsInternalFormatWriterExtension
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Action_Step_TransitionsInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Action_Step_TransitionsInternalFormatWriterExtension::Action_Step_TransitionsInternalFormatWriterExtension() {

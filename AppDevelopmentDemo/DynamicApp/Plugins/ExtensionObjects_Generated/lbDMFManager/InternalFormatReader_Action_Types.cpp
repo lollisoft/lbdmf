@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfAction_TypesInternalFormatReaderExtension, Action_Ty
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Action_TypesInternalFormatReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Action_TypesInternalFormatReaderExtension::Action_TypesInternalFormatReaderExtension() {

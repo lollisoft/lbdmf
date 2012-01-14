@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfColumn_TypesInternalFormatWriterExtension, Column_Ty
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Column_TypesInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 Column_TypesInternalFormatWriterExtension::Column_TypesInternalFormatWriterExtension() {

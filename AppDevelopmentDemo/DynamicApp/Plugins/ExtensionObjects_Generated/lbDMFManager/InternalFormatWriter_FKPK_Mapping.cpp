@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfFKPK_MappingInternalFormatWriterExtension, FKPK_Mapp
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(FKPK_MappingInternalFormatWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 FKPK_MappingInternalFormatWriterExtension::FKPK_MappingInternalFormatWriterExtension() {

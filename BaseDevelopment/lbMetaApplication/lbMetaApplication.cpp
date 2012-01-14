@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.190 $
+ * $Revision: 1.191 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.190 2012/01/09 07:37:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.191 2012/01/14 19:54:13 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.191  2012/01/14 19:54:13  lollisoft
+ * Generated code works with written code and application fully initializes.
+ * Also it can exit without errors. Maybe the XSLT templates will not work yet.
+ * This is due to small changes in the naming (plural vs singular).
+ *
  * Revision 1.190  2012/01/09 07:37:51  lollisoft
  * Fixed some functor naming problems in code generator
  * and changed some log messages to be verbose only.
@@ -736,8 +741,8 @@ extern "C" {
 #include <lbConfigHook.h>
 #endif
 
+#include <lbInterfaces-sub-security.h>
 #include <lbmetaapp-module.h>
-
 #include <lbMetaApplication.h>
 /*...e*/
 
@@ -1888,6 +1893,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, const char* application) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	
+	_LOG << "lb_MetaApplication::loadApplication('" << ((user == NULL) ? "NULL" : user) << "', '" << ((application == NULL) ? "NULL" : application) << "') called" LOG_
+	
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -1934,7 +1943,66 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		 * No predefined application without authentication.
 		 * Read the configuration from a database.
 		 */
+		_LOG << "lb_MetaApplication::loadApplication() loads an application over parameters: " << ((application == NULL) ? "NULL" : application) LOG_
 
+			// Also the application requires an authenticated user
+		UAP(lb_I_SecurityProvider, securityManager)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+		
+		//long ApplicationID = securityManager->getApplicationID();
+		UAP(lb_I_String, ModuleName)
+		UAP(lb_I_String, Functor)
+		
+		ModuleName = securityManager->getApplicationModule();
+		Functor = securityManager->getApplicationFunctor();
+
+		applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+		applicationName[0] = 0;
+		strcpy(applicationName, ModuleName->charrep());
+
+		char f[100] = "";
+		char appl[100] = "";
+		UAP(lb_I_Unknown, a)
+
+		strcpy(f, PREFIX);
+		strcat(f, Functor->charrep());
+		strcpy(appl, applicationName);
+
+
+#ifdef WINDOWS
+		getModuleInstance()->preload(appl);
+		getModuleInstance()->makeInstance(f, appl, &a);
+#endif
+#ifdef LINUX
+		strcat(appl, ".so");
+		getModuleInstance()->preload(appl);
+		getModuleInstance()->makeInstance(f, appl, &a);
+#endif
+
+		if (a == NULL) {
+			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			return ERR_NONE;
+		}
+
+		if (moduleName == NULL) {
+			moduleName = (char*) malloc(strlen(appl)+1);
+			moduleName[0] = 0;
+			strcpy(moduleName, appl);
+		} else {
+			_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+		}
+
+		QI(a, lb_I_Application, app)
+
+			//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+
+		app->setGUI(gui);
+		app->initialize(user, application);
+
+		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
+		LogonApplication->setData(application);
+		free(applicationName);
+		
 #ifdef OLD_TIGHT_DEPENDENCY	
 		if (Applications->getApplicationCount() != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, ModuleName)
@@ -2137,6 +2205,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 #endif		
 	} else {
+		_LOG << "lb_MetaApplication::loadApplication() loads an application over the environmemt: " << applicationName LOG_
 
 		UAP(lb_I_Unknown, a)
 
@@ -2165,7 +2234,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		getModuleInstance()->makeInstance(PREFIX "instanceOfApplication", name, &a);
 #endif
 		if (a == NULL) {
-			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			return ERR_NONE;
 		}
 

@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfReportParametersXMLWriterExtension, ReportParameters
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(ReportParametersXMLWriterExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 ReportParametersXMLWriterExtension::ReportParametersXMLWriterExtension() {

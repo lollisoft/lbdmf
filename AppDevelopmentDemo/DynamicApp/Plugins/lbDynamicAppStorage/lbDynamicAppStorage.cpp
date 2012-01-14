@@ -446,6 +446,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 		meta->setStatusText("Info", "Write XML document (applications) ...");
 		applications->accept(*&aspect);
+		
 		meta->setStatusText("Info", "Write XML document (ApplicationFormulars) ...");
 		ApplicationFormulars->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (forms) ...");

@@ -1427,15 +1427,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 			document->getUAPInteger(*&name, *&AppID);
 			_LOG << "Export application " << AppID->charrep() << " to XML buffer." LOG_
 		} else {
-			UAP(lb_I_Unknown, apps)
-			UAP(lb_I_Applications, applications)
-			apps = securityManager->getApplicationModel();
-			QI(apps, lb_I_Applications, applications)
-			
-			if (lookupApplication(*&applications, ApplicationName->charrep()) == ERR_ENTITY_NOT_FOUND)
-				_LOGERROR << "Error: Application was not found." LOG_
-
-			AppID->setData(applications->get_id());
+			AppID->setData(securityManager->getApplicationID());
 			
 			// Pass it into the current application document as the save operation requires it.
 			document->setUAPInteger(*&name, *&AppID);

@@ -3755,6 +3755,8 @@ void LB_STDCALL cls::enumPlugins() { \
 		Plugins--; \
 	} \
 	REQUEST(getModuleInstance(), lb_I_Container, Plugins)
+	
+//	Plugins->setCloning(false);
 
 #define ADD_PLUGIN(plugin, namespace) \
 	UAP_REQUEST(getModuleInstance(), lb_I_Plugin, P##plugin##namespace) \

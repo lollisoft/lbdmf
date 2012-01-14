@@ -291,6 +291,7 @@ lb_I_Database* LB_STDCALL lbDatabaseInputStream::getDatabase() {
 }
 
 void lbDatabaseInputStream::setContextNamespace(const char* _namespace) {
+	_LOG << "lbDatabaseInputStream::setContextNamespace('" << _namespace << "') called." LOG_
 	*contextNamespace = _namespace;
 }
 
@@ -320,9 +321,15 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule)
 	}
 
 	UAP(lb_I_ExtensionObject, extension) 
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule) using context namespace = " << contextNamespace->charrep() LOG_
+
 	extension = tableModule->getExtension(*&contextNamespace);
 	
 	if (extension != NULL) {
+		UAP(lb_I_Unknown, uk)
+		QI(tableModule, lb_I_Unknown, uk)
+		extension->setOwningObject(*&uk);
+	
 		UAP(lb_I_VisitorExtension, visitorExtension)
 		QI(extension, lb_I_VisitorExtension, visitorExtension)
 	
@@ -2187,7 +2194,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseInputStream::setData(lb_I_Unknown* uk) {
 lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() {
 	_CL_VERBOSE << "lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() called.\n" LOG_
 	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
-	*pluginNamespace = "";
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 void LB_STDCALL lbPluginDatabaseInputStream::setNamespace(const char* _namespace) {

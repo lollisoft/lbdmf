@@ -161,6 +161,7 @@ IMPLEMENT_FUNCTOR(instanceOf<xsl:value-of select="$FormName"/>DBReaderExtension,
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(<xsl:value-of select="$FormName"/>DBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 <xsl:value-of select="$FormName"/>DBReaderExtension::<xsl:value-of select="$FormName"/>DBReaderExtension() {
@@ -250,7 +251,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>DBReaderExtension::execute() {
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>
 <xsl:otherwise><xsl:choose>
 <xsl:when test="@dbtype='Bit'">
-		UAP(lb_I_Boolean, q<xsl:value-of select="$FieldName"/>)</xsl:when>
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, q<xsl:value-of select="$FieldName"/>)</xsl:when>
 <xsl:when test="@dbtype='Float'">
 		UAP(lb_I_Float, q<xsl:value-of select="$FieldName"/>)</xsl:when>
 <xsl:when test="@dbtype='Integer'">

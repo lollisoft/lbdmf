@@ -56,6 +56,7 @@ IMPLEMENT_FUNCTOR(instanceOfApplicationParameterDBReaderExtension, ApplicationPa
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(ApplicationParameterDBReaderExtension)
 	ADD_INTERFACE(lb_I_ExtensionObject)
+	ADD_INTERFACE(lb_I_VisitorExtension)
 END_IMPLEMENT_LB_UNKNOWN()
 
 ApplicationParameterDBReaderExtension::ApplicationParameterDBReaderExtension() {
