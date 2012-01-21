@@ -124,7 +124,7 @@ void LB_STDCALL Formular_ActionsInternalFormatReaderExtension::execute() {
 		*iStream >> _event;
 		*iStream >> _action;
 		*iStream >> _formular;
-												
+		_LOG << "Read Formular_Actions entry from database: " << _event << ", " << _action << ", " << _formular << ", " <<  _ID LOG_
 		owningObject->addFormular_Actions(_event, _action, _formular,  _ID);
 
 		// Leaky !

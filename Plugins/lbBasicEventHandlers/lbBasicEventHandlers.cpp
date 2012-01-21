@@ -55,19 +55,19 @@
 
 #include <lbBasicEventHandlers.h>
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbBasicEventHandlers)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbTextOperations)
 ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbBasicEventHandlers::lbBasicEventHandlers() {
+lbTextOperations::lbTextOperations() {
 	
 }
 
-lbBasicEventHandlers::~lbBasicEventHandlers() {
+lbTextOperations::~lbTextOperations() {
 	
 }
 
-lb_I_Unknown* lbBasicEventHandlers::getUnknown() {
+lb_I_Unknown* lbTextOperations::getUnknown() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Unknown, uk)
 	
@@ -76,27 +76,27 @@ lb_I_Unknown* lbBasicEventHandlers::getUnknown() {
 	return uk.getPtr();
 }
 
-lbErrCodes LB_STDCALL lbBasicEventHandlers::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbTextOperations::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_LOG << "lbBasicEventHandlers::setData(...) not implemented yet" LOG_
+	_CL_LOG << "lbTextOperations::setData(...) not implemented yet" LOG_
 	
 	return ERR_NOT_IMPLEMENTED;
 }
 
-lbErrCodes LB_STDCALL lbBasicEventHandlers::registerEventHandler(lb_I_Dispatcher* disp) {
+lbErrCodes LB_STDCALL lbTextOperations::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	int temp;
 	eman->registerEvent("replaceText", temp);
 	eman->registerEvent("prependText", temp);
 	eman->registerEvent("replaceText", temp);
 
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::replaceText, "replaceText");
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::prependText, "prependText");
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::appendText, "appendText");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbTextOperations::replaceText, "replaceText");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbTextOperations::prependText, "prependText");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbTextOperations::appendText, "appendText");
 }
 
-lbErrCodes LB_STDCALL lbBasicEventHandlers::replaceText(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbTextOperations::replaceText(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, buffer) // Replace in this
 	UAP_REQUEST(getModuleInstance(), lb_I_String, toReplace) // What should be replaced
 	UAP_REQUEST(getModuleInstance(), lb_I_String, with) // Replace to this text
@@ -114,7 +114,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::replaceText(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, params)
 	
 	if (uk == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Did not got an object." LOG_
+		_LOG << "lbTextOperations::replaceText() Did not got an object." LOG_
 		params->setUAPString(*&paramName, *&result);
 		return ERR_PARAMETER_MISSING;
 	}
@@ -122,46 +122,46 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::replaceText(lb_I_Unknown* uk) {
 	QI(uk, lb_I_Parameter, params)
 	
 	if (params == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter is not of type lb_I_Parameter." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter is not of type lb_I_Parameter." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_ILLEGAL_PARAMETER;
 	}
 	
 	*paramName = "buffer";
 	if ((err = params->getUAPString(*&paramName, *&buffer)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
 	*paramName = "toReplace";
 	if ((err = params->getUAPString(*&paramName, *&toReplace)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'toReplace' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'toReplace' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'toReplace' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'toReplace' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
 	*paramName = "with";
 	if ((err = params->getUAPString(*&paramName, *&with)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'with' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'with' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'with' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'with' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
@@ -177,7 +177,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::replaceText(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbBasicEventHandlers::prependText(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbTextOperations::prependText(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, buffer) // Replace in this
 	UAP_REQUEST(getModuleInstance(), lb_I_String, prepend) // What should be prepended
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result) // Result for activity
@@ -194,7 +194,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::prependText(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, params)
 	
 	if (uk == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Did not got an object." LOG_
+		_LOG << "lbTextOperations::replaceText() Did not got an object." LOG_
 		params->setUAPString(*&paramName, *&result);
 		return ERR_PARAMETER_MISSING;
 	}
@@ -202,33 +202,33 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::prependText(lb_I_Unknown* uk) {
 	QI(uk, lb_I_Parameter, params)
 	
 	if (params == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter is not of type lb_I_Parameter." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter is not of type lb_I_Parameter." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_ILLEGAL_PARAMETER;
 	}
 	
 	*paramName = "buffer";
 	if ((err = params->getUAPString(*&paramName, *&buffer)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
 	*paramName = "prepend";
 	if ((err = params->getUAPString(*&paramName, *&prepend)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'prepend' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'prepend' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'prepend' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'prepend' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
@@ -248,7 +248,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::prependText(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbBasicEventHandlers::appendText(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbTextOperations::appendText(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, buffer) // Replace in this
 	UAP_REQUEST(getModuleInstance(), lb_I_String, append) // What should be appended
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result) // Result for activity
@@ -265,7 +265,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::appendText(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, params)
 	
 	if (uk == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Did not got an object." LOG_
+		_LOG << "lbTextOperations::replaceText() Did not got an object." LOG_
 		params->setUAPString(*&paramName, *&result);
 		return ERR_PARAMETER_MISSING;
 	}
@@ -273,33 +273,33 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::appendText(lb_I_Unknown* uk) {
 	QI(uk, lb_I_Parameter, params)
 	
 	if (params == NULL) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter is not of type lb_I_Parameter." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter is not of type lb_I_Parameter." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_ILLEGAL_PARAMETER;
 	}
 	
 	*paramName = "buffer";
 	if ((err = params->getUAPString(*&paramName, *&buffer)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'buffer' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
 	*paramName = "append";
 	if ((err = params->getUAPString(*&paramName, *&append)) == ERR_PARAM_NOT_FOUND) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'append' not found." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'append' not found." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_NOT_FOUND;
 	}
 	
 	if (err == ERR_PARAM_WRONG_TYPE) {
-		_LOG << "lbBasicEventHandlers::replaceText() Parameter 'append' is not of type lb_I_String." LOG_
+		_LOG << "lbTextOperations::replaceText() Parameter 'append' is not of type lb_I_String." LOG_
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_PARAM_WRONG_TYPE;
 	}
@@ -316,11 +316,11 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::appendText(lb_I_Unknown* uk) {
 }
 
 
-class lbPluginBasicEventHandlers : public lb_I_PluginImpl {
+class lbPluginTextOperations : public lb_I_PluginImpl {
 public:
-	lbPluginBasicEventHandlers();
+	lbPluginTextOperations();
 	
-	virtual ~lbPluginBasicEventHandlers();
+	virtual ~lbPluginTextOperations();
 	
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
@@ -343,39 +343,39 @@ public:
 
 
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginBasicEventHandlers)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginTextOperations)
 ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbPluginBasicEventHandlers, lbPluginBasicEventHandlers)
+IMPLEMENT_FUNCTOR(instanceOflbPluginTextOperations, lbPluginTextOperations)
 
-/*...slbErrCodes LB_STDCALL lbPluginBasicEventHandlers\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbPluginBasicEventHandlers::setData(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbPluginTextOperations\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginTextOperations::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::setData(...) called.\n" LOG_
+	_CL_VERBOSE << "lbPluginTextOperations::setData(...) called.\n" LOG_
 	
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
-lbPluginBasicEventHandlers::lbPluginBasicEventHandlers() {
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::lbPluginBasicEventHandlers() called.\n" LOG_
+lbPluginTextOperations::lbPluginTextOperations() {
+	_CL_VERBOSE << "lbPluginTextOperations::lbPluginTextOperations() called.\n" LOG_
 	
 }
 
-lbPluginBasicEventHandlers::~lbPluginBasicEventHandlers() {
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::~lbPluginBasicEventHandlers() called.\n" LOG_
+lbPluginTextOperations::~lbPluginTextOperations() {
+	_CL_VERBOSE << "lbPluginTextOperations::~lbPluginTextOperations() called.\n" LOG_
 }
 
-bool LB_STDCALL lbPluginBasicEventHandlers::canAutorun() {
+bool LB_STDCALL lbPluginTextOperations::canAutorun() {
 	return true;
 }
 
-lbErrCodes LB_STDCALL lbPluginBasicEventHandlers::autorun() {
+lbErrCodes LB_STDCALL lbPluginTextOperations::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
-	lbBasicEventHandlers* XSLTTransformer = new lbBasicEventHandlers();
+	lbTextOperations* XSLTTransformer = new lbTextOperations();
 		
 	QI(XSLTTransformer, lb_I_Unknown, ukTransformer) 
 	
@@ -386,19 +386,19 @@ lbErrCodes LB_STDCALL lbPluginBasicEventHandlers::autorun() {
 	return err;
 }
 
-void LB_STDCALL lbPluginBasicEventHandlers::initialize() {
+void LB_STDCALL lbPluginTextOperations::initialize() {
 }
 
-bool LB_STDCALL lbPluginBasicEventHandlers::run() {
+bool LB_STDCALL lbPluginTextOperations::run() {
 	return true;
 }
 
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginBasicEventHandlers\58\\58\peekImplementation\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lbPluginBasicEventHandlers::peekImplementation() {
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginTextOperations\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginTextOperations::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (ukTransformer == NULL) {
-		lbBasicEventHandlers* transformer = new lbBasicEventHandlers();
+		lbTextOperations* transformer = new lbTextOperations();
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	} else {
@@ -408,15 +408,15 @@ lb_I_Unknown* LB_STDCALL lbPluginBasicEventHandlers::peekImplementation() {
 	return ukTransformer.getPtr();
 }
 /*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginBasicEventHandlers\58\\58\getImplementation\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lbPluginBasicEventHandlers::getImplementation() {
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginTextOperations\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginTextOperations::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (ukTransformer == NULL) {
 		
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
-		lbBasicEventHandlers* transformer = new lbBasicEventHandlers();
+		lbTextOperations* transformer = new lbTextOperations();
 		
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
@@ -427,7 +427,7 @@ lb_I_Unknown* LB_STDCALL lbPluginBasicEventHandlers::getImplementation() {
 	return r;
 }
 /*...e*/
-void LB_STDCALL lbPluginBasicEventHandlers::releaseImplementation() {
+void LB_STDCALL lbPluginTextOperations::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (ukTransformer != NULL) {

@@ -162,12 +162,13 @@ int main(int argc, char *argv[]) {
 /*...sTest list plugins:8:*/
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 		UAP_REQUEST(mm, lb_I_PluginManager, PM)
-
-		if (PM->beginEnumPlugins()) {
+		UAP(lb_I_PluginIterator, it)
+		it = PM->getPluginIterator();
+		if (it->beginEnumPlugins()) {
 
 			while (true) {
 				UAP(lb_I_Plugin, pl)
-				pl = PM->nextPlugin();
+				pl = it->nextPlugin();
 
 				if (pl == NULL) break;
 
@@ -195,11 +196,13 @@ int main(int argc, char *argv[]) {
 		if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 			UAP_REQUEST(mm, lb_I_PluginManager, PM)
 
-			if (PM->beginEnumPlugins()) {
+			UAP(lb_I_PluginIterator, it)
+			it = PM->getPluginIterator();
+			if (it->beginEnumPlugins()) {
 
 				while (true) {
 					UAP(lb_I_Plugin, pl)
-					pl = PM->nextPlugin();
+					pl = it->nextPlugin();
 
 					if (pl == NULL) break;
 
@@ -246,12 +249,14 @@ int main(int argc, char *argv[]) {
 			UAP_REQUEST(mm, lb_I_PluginManager, PM)
 
 /*...sLoad first from given list:32:*/
-			if (PM->beginEnumPlugins()) {
+			UAP(lb_I_PluginIterator, it)
+			it = PM->getPluginIterator();
+			if (it->beginEnumPlugins()) {
 
 				while (true) {
 					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
-					pl = PM->nextPlugin();
+					pl = it->nextPlugin();
 
 					if (pl == NULL) break;
 
@@ -281,12 +286,12 @@ int main(int argc, char *argv[]) {
 			_CL_LOG << "Loaded first plugin." LOG_
 
 /*...sLoad second from given list:32:*/
-			if (PM->beginEnumPlugins()) {
+			if (it->beginEnumPlugins()) {
 
 				while (true) {
 					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
-					pl = PM->nextPlugin();
+					pl = it->nextPlugin();
 
 					if (pl == NULL) break;
 

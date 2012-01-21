@@ -124,7 +124,7 @@ void LB_STDCALL FormularParameterInternalFormatReaderExtension::execute() {
 		*iStream >> _parametervalue;
 		*iStream >> _parametername;
 		*iStream >> _formularid;
-												
+		_LOG << "Read FormularParameter entry from database: " << _parametervalue << ", " << _parametername << ", " << _formularid << ", " <<  _ID LOG_
 		owningObject->addFormularParameter(_parametervalue, _parametername, _formularid,  _ID);
 
 		// Leaky !

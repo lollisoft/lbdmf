@@ -124,7 +124,7 @@ void LB_STDCALL ReportParametersInternalFormatReaderExtension::execute() {
 		*iStream >> _value;
 		*iStream >> _name;
 		*iStream >> _reportid;
-												
+		_LOG << "Read ReportParameters entry from database: " << _value << ", " << _name << ", " << _reportid << ", " <<  _ID LOG_
 		owningObject->addReportParameters(_value, _name, _reportid,  _ID);
 
 		// Leaky !

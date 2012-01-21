@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.107 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106 2011/10/15 16:33:26 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.107 2012/01/21 18:39:21 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.107  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.106  2011/10/15 16:33:26  lollisoft
  * Removed some unused code and no more required code. Current version does not compile at all.
  *
@@ -1153,6 +1156,38 @@ int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
 	return (*key < _key); \
 }
 /*...e*/
+
+class lb_I_Iterator : public lb_I_VisitableHelper {
+public:
+	/** \brief Number of objects in the container.
+	 *
+	 */
+    virtual int LB_STDCALL Count() = 0;
+
+	/** \brief Returns 1 if elements are iterable.
+	 *
+	 */
+    virtual int LB_STDCALL hasMoreElements() = 0;
+
+	/** \brief Get next element.
+	 *
+	 */
+    virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
+
+	/** \brief Stops the iteration modus, begun with hasMoreElements.
+	 *
+	 * Use this function to stop the iteration. You must use this function to
+	 * be able to restart iteration. If hasMoreElements returns 0, the
+	 * iteration is finished automatically.
+	 */
+    virtual void LB_STDCALL finishIteration() = 0;
+	
+	/** \brief Get current key based on iterator position.
+	 *
+	 */
+	virtual lb_I_KeyBase* LB_STDCALL currentKey() = 0;
+};
+
 /*...sclass lb_I_Container:0:*/
 /** \brief Storage for other objects.
  *
@@ -1163,6 +1198,10 @@ int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
  */
 class lb_I_Container : public lb_I_Unknown {
 public:
+	/** \brief Get a separate iterator to enable multible independent itarations.
+	 */
+	virtual lb_I_Iterator* getIterator() = 0;
+
 	/** \brief Number of objects in the container.
 	 *
 	 */

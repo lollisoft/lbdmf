@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.69 2011/10/16 08:40:56 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.70 2012/01/21 18:39:21 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.70  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.69  2011/10/16 08:40:56  lollisoft
  * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
  *
@@ -413,9 +416,132 @@ void SkipNode::detach() {
 }
 /*...e*/
 
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(Iterator)
+	ADD_INTERFACE(lb_I_Iterator)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbErrCodes LB_STDCALL Iterator::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	return ERR_NONE;
+}
+
+Iterator::Iterator() {
+	iterator = NULL;
+	iteration = 0;
+	head = NULL;
+	skipiterator = NULL;
+	flag = 1;
+	level = MAXLEVEL;
+	count = 0;
+	cloning = true;
+	_currentKey = NULL;
+	container_data = NULL;
+}
+
+Iterator::Iterator(SkipNode* _head, int _count) {
+	iterator = NULL;
+	iteration = 0;
+	head = _head;
+	skipiterator = NULL;
+	flag = 1;
+	level = MAXLEVEL;
+	count = _count;
+	cloning = true;
+	_currentKey = NULL;
+	container_data = NULL;
+}
+
+
+Iterator::~Iterator() {
+	head = NULL;
+	skipiterator = NULL;
+}
+
+int LB_STDCALL Iterator::Count() { 
+        return count; 
+} 
+
+int LB_STDCALL Iterator::hasMoreElements() { 
+    return can_dump();
+} 
+
+lb_I_Unknown* LB_STDCALL Iterator::nextElement() { 
+	Elem e = dump_next();
+	
+	if(e != NULL) {
+		_currentKey = e->getKey();
+		if (e == NULL) {
+			_LOGERROR << "FARAL: Object went to NULL, but not expected." LOG_
+			return NULL;
+		}
+		lb_I_Unknown* u = e->getObject();
+		_TRMemValidate(u);
+		return u;
+	} else {
+        _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
+        return NULL; 
+	}
+}
+
+lb_I_KeyBase* LB_STDCALL Iterator::currentKey() {
+	lb_I_KeyBase* temp;
+	_currentKey->queryInterface("lb_I_KeyBase", (void**) &temp, __FILE__, __LINE__);
+	return _currentKey;
+}
+
+void Iterator::finishIteration() {
+	iteration = 0;
+}
+
+int Iterator::can_dump() {
+	if (count == 0) return 0;
+	if (iteration == 0) { 
+       	iteration = 1; 
+        skipiterator = head; 
+		flag = 1;
+	} 
+
+	if (skipiterator == NULL) { 
+	        iteration = 0; 
+	        flag = 1;
+	        return 0; 
+	} 
+	
+	return 1;
+}
+
+Elem Iterator::dump_next() {
+	if (skipiterator != NULL) {
+		Elem e = skipiterator->value.getPtr();
+		
+		while (e == NULL) {
+			skipiterator = skipiterator->forward[0];
+			if (!skipiterator) return NULL;
+			e = skipiterator->value.getPtr();
+		}
+
+		skipiterator = skipiterator->forward[0];
+		return e;
+	} else {
+		printf("Return NULL because skipiterator is NULLn");
+		return NULL;
+	}
+}
+
 BEGIN_IMPLEMENT_LB_UNKNOWN(SkipList)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
+
+lb_I_Iterator* LB_STDCALL SkipList::getIterator() {
+	Iterator* it = new Iterator(head, count);
+	lb_I_Iterator* _it = NULL;
+	it->queryInterface("lb_I_Iterator", (void**) &_it, __FILE__, __LINE__);
+	_LOG << "SkipList::getIterator() Returns a list of " << Count()  << " elements" LOG_
+	return _it;
+}
 
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {

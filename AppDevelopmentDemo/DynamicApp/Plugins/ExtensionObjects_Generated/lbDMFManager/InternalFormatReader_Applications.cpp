@@ -128,7 +128,7 @@ void LB_STDCALL ApplicationsInternalFormatReaderExtension::execute() {
 		*iStream >> _interface;
 		*iStream >> _functor;
 		*iStream >> _modulename;
-												
+		_LOG << "Read Applications entry from database: " << _titel << ", " << _name << ", " << _interface << ", " << _functor << ", " << _modulename << ", " <<  _ID LOG_
 		owningObject->addApplications(_titel, _name, _interface, _functor, _modulename,  _ID);
 
 		// Leaky !
