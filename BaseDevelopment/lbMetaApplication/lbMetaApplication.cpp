@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.192 $
+ * $Revision: 1.193 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.192 2012/01/14 22:56:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.193 2012/01/21 18:39:21 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.193  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.192  2012/01/14 22:56:26  lollisoft
  * Fixed a code generator bug that let the application fail to load from local file.
  *
@@ -1095,7 +1098,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
-
+	
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 
 	if (pl != NULL) {

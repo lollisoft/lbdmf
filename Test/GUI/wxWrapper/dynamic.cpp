@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174 2011/10/16 08:40:57 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174 $
+ * $Revision: 1.175 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174 2011/10/16 08:40:57 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.175  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.174  2011/10/16 08:40:57  lollisoft
  * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
  *
@@ -2478,14 +2481,15 @@ bool MyApp::OnInit(void)
 
     _LOG << "Start enumerating plugins to call their autorun function." LOG_
 
-    if (PM->beginEnumPlugins()) {
-
-    while (TRUE) {
-        UAP(lb_I_Plugin, pl)
-        pl = PM->nextPlugin();
-        if (pl == NULL) break;
-            pl->autorun();
-        }
+	UAP(lb_I_PluginIterator, it)
+	it = PM->getPluginIterator();
+    if (it->beginEnumPlugins()) {
+		while (TRUE) {
+			UAP(lb_I_Plugin, pl)
+			pl = it->nextPlugin();
+			if (pl == NULL) break;
+				pl->autorun();
+			}
     }
 
 	FlushMenubarQueue();

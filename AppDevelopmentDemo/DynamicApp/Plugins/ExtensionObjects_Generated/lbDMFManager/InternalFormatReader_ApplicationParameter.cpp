@@ -124,7 +124,7 @@ void LB_STDCALL ApplicationParameterInternalFormatReaderExtension::execute() {
 		*iStream >> _parametername;
 		*iStream >> _parametervalue;
 		*iStream >> _anwendungid;
-												
+		_LOG << "Read ApplicationParameter entry from database: " << _parametername << ", " << _parametervalue << ", " << _anwendungid << ", " <<  _ID LOG_
 		owningObject->addApplicationParameter(_parametername, _parametervalue, _anwendungid,  _ID);
 
 		// Leaky !

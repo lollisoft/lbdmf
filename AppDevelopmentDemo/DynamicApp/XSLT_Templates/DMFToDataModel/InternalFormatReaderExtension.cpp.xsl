@@ -255,7 +255,18 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatReaderExtension:
 	</xsl:otherwise>
 </xsl:choose>
 </xsl:for-each>
-												
+		_LOG &lt;&lt; "Read <xsl:value-of select="$FormName"/> entry from database: " &lt;&lt; <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose><xsl:when test="@isfk='1'">_<xsl:value-of select="$FieldName"/> &lt;&lt; ", " &lt;&lt; </xsl:when>
+<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>
+<xsl:otherwise><xsl:choose>
+<xsl:when test="@dbtype='Bit'">_<xsl:value-of select="$FieldName"/> &lt;&lt; ", " &lt;&lt; </xsl:when>
+<xsl:when test="@dbtype='Float'">_<xsl:value-of select="$FieldName"/> &lt;&lt; ", " &lt;&lt; </xsl:when>
+<xsl:when test="@dbtype='Integer'">_<xsl:value-of select="$FieldName"/> &lt;&lt; ", " &lt;&lt; </xsl:when>
+<xsl:when test="@dbtype='String'">_<xsl:value-of select="$FieldName"/> &lt;&lt; ", " &lt;&lt; </xsl:when>
+</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each> _ID LOG_
 		owningObject->add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">_<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>

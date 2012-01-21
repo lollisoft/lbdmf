@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.16 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbcontainer.h,v 1.17 2012/01/21 18:39:21 lollisoft Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.17  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.16  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
@@ -125,6 +128,8 @@ public:
 
     lbContainer();
     virtual ~lbContainer();
+
+	lb_I_Iterator* LB_STDCALL getIterator();
 
     DECLARE_LB_UNKNOWN()
 

@@ -3561,6 +3561,32 @@ class lb_I_PluginImpl;
 class lb_I_PluginModule;
 class lb_I_ApplicationServerModul;
 
+/** \brief A new iterator interface for plugins.
+ * As I have discovered that using a container and an inerator at once is impractical when using the same container at moltible places eithet threaded
+ * in a recursive context, this should solve the issue that a plugin can corrupt an iteration when it self loads a plugin.
+ * This is an iterator pattern based implementation. The disadvantages of modifying the contents while iterating are not covered in lb_I_PluginManager,
+ * thus the user has to do that.
+ */
+class lb_I_PluginIterator : public lb_I_VisitableHelper {
+public:
+	/** \brief Starts listing of plugins.
+	 *
+	 * As of lb_I_Container interface, this is similar to the beginning of
+	 * enumerating its objects.
+	 */
+	virtual bool LB_STDCALL beginEnumPlugins() = 0;
+
+	/** \brief Get the next plugin.
+	 *
+	 * Gets the next plugin handle instance. This does not
+	 * load an instance of the plugin implementation. But it
+	 * loads the module.
+	 *
+	 * To finally use the plugin, you must attach to it.
+	 */
+	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+};
+
 /*...sclass lb_I_PluginManager:0:*/
 /** \brief The plugin manager
  *
@@ -3593,6 +3619,11 @@ public:
 	 */
 	virtual void LB_STDCALL unload() = 0;
 
+	/** \brief Get the iterator for common plugins.
+	 * The server and unit test plugins are not yet changed.
+	 */
+	virtual lb_I_PluginIterator* LB_STDCALL getPluginIterator() = 0;
+#ifdef bla	
 	/** \brief Starts listing of plugins.
 	 *
 	 * As of lb_I_Container interface, this is similar to the beginning of
@@ -3609,6 +3640,7 @@ public:
 	 * To finally use the plugin, you must attach to it.
 	 */
 	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+#endif
 
 	/** \brief Starts listing of server plugins.
 	 *

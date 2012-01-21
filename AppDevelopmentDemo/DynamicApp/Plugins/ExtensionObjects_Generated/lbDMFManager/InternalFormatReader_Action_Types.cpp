@@ -124,7 +124,7 @@ void LB_STDCALL Action_TypesInternalFormatReaderExtension::execute() {
 		*iStream >> _bezeichnung;
 		*iStream >> _action_handler;
 		*iStream >> _module;
-												
+		_LOG << "Read Action_Types entry from database: " << _bezeichnung << ", " << _action_handler << ", " << _module << ", " <<  _ID LOG_
 		owningObject->addAction_Types(_bezeichnung, _action_handler, _module,  _ID);
 
 		// Leaky !

@@ -269,7 +269,6 @@ protected:
 /*...sctors\47\dtors:0:*/
 lbDynamicApplication::lbDynamicApplication() {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 
         gui = NULL;
 
@@ -2315,9 +2314,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::save() {
 }
 
 lbErrCodes LB_STDCALL lbDynamicApplication::load() {
-    lbErrCodes err = ERR_NONE;
-    int unused = -1;
+		lbErrCodes err = ERR_NONE;
+		int unused = -1;
 
+        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		if (securityManager == NULL) {
+			AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+		}
+	
         UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
         UAP_REQUEST(getModuleInstance(), lb_I_String, name)
         UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -2327,7 +2331,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
         _LOG << "lbDynamicApplication::initialize('" << LogonUser->charrep() << "', '" << LogonApplication->charrep() << "') called." LOG_
 
-        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
         UAP(lb_I_Unknown, ukPl)
 

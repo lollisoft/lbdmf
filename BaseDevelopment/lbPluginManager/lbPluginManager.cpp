@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.94 $
+* $Revision: 1.95 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.94 2012/01/14 19:54:13 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.95 2012/01/21 18:39:21 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.95  2012/01/21 18:39:21  lollisoft
+* Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+*
 * Revision 1.94  2012/01/14 19:54:13  lollisoft
 * Generated code works with written code and application fully initializes.
 * Also it can exit without errors. Maybe the XSLT templates will not work yet.
@@ -457,6 +460,173 @@ extern "C" {
 #include <lbPluginManager.h>
 /*...e*/
 
+class lbPluginIterator : public lb_I_PluginIterator
+{
+public:
+	lbPluginIterator();
+	lbPluginIterator(lb_I_Iterator* pluginModules);
+	virtual ~lbPluginIterator();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	bool LB_STDCALL beginEnumPlugins();
+	lb_I_Plugin* LB_STDCALL nextPlugin();
+	
+protected:
+	UAP(lb_I_Iterator, PluginModules)
+	UAP(lb_I_Iterator, PluginContainer)
+	bool firstPlugin;
+	bool lastPlugin;
+	bool begunEnumerate;
+	bool firstEnumerate;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginIterator)
+ADD_INTERFACE(lb_I_PluginIterator)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbPluginIterator::lbPluginIterator() {
+	begunEnumerate = firstEnumerate = false;
+	firstPlugin = true;
+	lastPlugin = false;
+}
+
+lbPluginIterator::lbPluginIterator(lb_I_Iterator* pluginModules) {
+	_LOG << "lbPluginIterator::lbPluginIterator() Got " << pluginModules->Count() << " elements" LOG_
+	begunEnumerate = firstEnumerate = false;
+	firstPlugin = true;
+	lastPlugin = false;
+	PluginModules = pluginModules;
+	_LOG << "lbPluginIterator::lbPluginIterator() Set " << PluginModules->Count() << " elements" LOG_
+}
+
+lbPluginIterator::~lbPluginIterator() {
+
+}
+
+lbErrCodes LB_STDCALL lbPluginIterator::setData(lb_I_Unknown* uk) {
+	_CL_VERBOSE << "lbPluginIterator::setData(...) not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+bool LB_STDCALL lbPluginIterator::beginEnumPlugins() {
+	PluginModules->finishIteration();
+
+	if (PluginModules->hasMoreElements()) {
+		begunEnumerate = true;
+		lastPlugin = false;
+		firstPlugin = true;
+		return true;
+	}
+	_LOG << "lbPluginIterator::beginEnumPlugins() Has an empty iterator." LOG_
+	return false;
+}
+
+lb_I_Plugin* LB_STDCALL lbPluginIterator::nextPlugin() {
+	lbErrCodes err = ERR_NONE;
+
+	if (begunEnumerate) {
+		if (firstPlugin) {
+			firstPlugin = FALSE;
+
+			/*
+			If no more plugin modules found return NULL.
+
+			If there are more plugins in a plugin module, return one.
+
+			If No more plugins in a module, go to next module and try there.
+			*/
+
+			while (PluginModules->hasMoreElements()) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_PluginModule, plM)
+
+				uk = PluginModules->nextElement();
+
+				if (uk == NULL) {
+					_LOGERROR << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+					return NULL;
+				}
+
+				QI(uk, lb_I_PluginModule, plM)
+
+				if (PluginContainer != NULL) {
+					PluginContainer->finishIteration();
+					PluginContainer--;
+					PluginContainer.resetPtr();
+				}
+
+				_LOGVERBOSE << "Initialize plugin " << plM->getModule()->charrep() LOG_
+				
+				UAP(lb_I_Container, C)
+				C = plM->getPlugins();
+				PluginContainer = C->getIterator();
+
+				if (PluginContainer == NULL) {
+					_LOGERROR << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
+					return NULL;
+				}
+
+				if (PluginContainer->Count() == 0) {
+					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
+				}
+
+				if (PluginContainer->hasMoreElements()) {
+					UAP(lb_I_Unknown, uk)
+					uk = PluginContainer->nextElement();
+
+					if (uk == NULL) {
+						_LOGERROR << "FATAL: Plugin container reported having at least one more element, but it may be corrupted." LOG_
+						return NULL;
+					}
+					
+					UAP(lb_I_Plugin, plugin)
+					QI(uk, lb_I_Plugin, plugin)
+					plugin++;
+
+					return plugin.getPtr();
+				}
+			}
+			_LOGERROR << "Error: Did not find a plugin in the firet plugin module." LOG_
+			return NULL;
+		} else {
+
+			if (!lastPlugin) {
+				if (PluginContainer->hasMoreElements()) {
+					UAP(lb_I_Unknown, uk)
+					lb_I_Unknown* u = PluginContainer->nextElement();
+
+					if (u != NULL && u != (void*)0x7) {
+						uk = u;
+					} else {
+						lbBreak();
+					}
+					
+					if (uk == NULL) {
+						_LOGERROR << "FATAL: Plugin container reported having at least one more element, but it may be corrupted." LOG_
+						return NULL;
+					}
+					
+					UAP(lb_I_Plugin, plugin)
+					QI(uk, lb_I_Plugin, plugin)
+					plugin++;
+
+					return plugin.getPtr();
+				} else {
+					firstPlugin = true;
+
+					return nextPlugin();
+				}
+			}
+		}
+
+	} else {
+		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
+	}
+	_LOGERROR << "Error: Did not find a plugin in any plugin modules." LOG_
+	return NULL;
+}
+
 /*...sclass lbPluginManager:0:*/
 /// \brief Plugin manager implementation.
 class lbPluginManager :
@@ -477,12 +647,15 @@ public:
 	void LB_STDCALL initialize();
 	void LB_STDCALL runInstallers();
 	void LB_STDCALL unload();
-	bool LB_STDCALL beginEnumPlugins();
+	
+	//bool LB_STDCALL beginEnumPlugins();
 	bool LB_STDCALL beginEnumServerPlugins();
 
 	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(const char* match, const char* _namespace, const char* _version);
-	lb_I_Plugin* LB_STDCALL nextPlugin();
+	//lb_I_Plugin* LB_STDCALL nextPlugin();
 
+	lb_I_PluginIterator* LB_STDCALL getPluginIterator();
+	
 	lb_I_ApplicationServerModul* LB_STDCALL nextServerPluginModul();
 	lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(const char* match, const char* _namespace);
 	lb_I_Plugin* LB_STDCALL nextServerPlugin();
@@ -529,8 +702,6 @@ private:
 
 	UAP(lb_I_String, MyPluginDir)
 
-	bool firstPlugin;
-	bool lastPlugin;
 	bool firstServerPlugin;
 	bool lastServerPlugin;
 	bool firstUnitTestPlugin;
@@ -553,13 +724,10 @@ lb_I_Unknown* LB_STDCALL lbPluginManager::getUnknown() {
 
 
 lbPluginManager::lbPluginManager() {
-	
-	begunEnumerate = firstEnumerate = begunUnitTestEnumerate = false;
+	firstEnumerate = begunUnitTestEnumerate = false;
 	begunServerEnumerate = firstServerEnumerate = firstUnitTestEnumerate = false;
 	firstUnitTestPlugin = false;
-	firstPlugin = true;
 	firstServerPlugin = true;
-	lastPlugin = false;
 	lastServerPlugin = false;
 	lastUnitTestPlugin = false;
 	isInitialized = false;
@@ -1534,6 +1702,14 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 	}
 	copy->finishIteration();
 }
+
+lb_I_PluginIterator* LB_STDCALL lbPluginManager::getPluginIterator() {
+	if (!isInitialized) initialize();
+	lbPluginIterator* it = new lbPluginIterator(PluginModules->getIterator());
+	return it;
+}
+
+#ifdef bla
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (!isInitialized) initialize();
@@ -1543,12 +1719,50 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (PluginModules->hasMoreElements()) {
 		begunEnumerate = true;
 		firstPlugin = true;
+		
+		
+		if (begunEnumerate) {
+			while (PluginModules->hasMoreElements()) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_PluginModule, plM)
+
+				uk = PluginModules->nextElement();
+
+				if (uk == NULL) {
+					_LOGERROR << "Error: Got a NULL pointer, but reported was another element in PluginModules!" LOG_
+					return false;
+				}
+
+				QI(uk, lb_I_PluginModule, plM)
+
+				if (PluginContainer != NULL) {
+					PluginContainer--;
+					PluginContainer.resetPtr();
+				}
+
+				_LOGVERBOSE << "Initialize plugin " << plM->getModule()->charrep() LOG_
+				
+				PluginContainer = plM->getPlugins();
+
+				if (PluginContainer == NULL) {
+					_LOGERROR << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
+					return false;
+				}
+				
+				PluginContainer->finishIteration();
+			}
+		}
+		
+		PluginModules->finishIteration();
+		
 		return true;
 	}
 	return false;
 }
 /*...e*/
+
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\nextPlugin\40\\41\:0:*/
+///\todo When a plugin was not found it may break the loop and causes others not to be found.
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	lbErrCodes err = ERR_NONE;
 
@@ -1589,7 +1803,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				PluginContainer = plM->getPlugins();
 
 				if (PluginContainer == NULL) {
-					_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
+					_LOGERROR << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 					return NULL;
 				}
 
@@ -1597,6 +1811,8 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
 				}
 
+				// Produces an endless loop as the loop is not in this function and beloa is only an if statement.
+				//PluginContainer->finishIteration();
 				if (PluginContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk)
 					uk = PluginContainer->nextElement();
@@ -1613,7 +1829,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					return plugin.getPtr();
 				}
 			}
-
+			_LOGERROR << "Error: Did not find a plugin in the firet plugin module." LOG_
 			return NULL;
 		} else {
 
@@ -1649,17 +1865,21 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	} else {
 		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
 	}
-
+	_LOGERROR << "Error: Did not find a plugin in any plugin modules." LOG_
 	return NULL;
 }
 /*...e*/
+#endif
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
 lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* match, const char* _namespace, const char* _version) {
-	if (beginEnumPlugins()) {
+	UAP(lb_I_PluginIterator, it)
+	it = getPluginIterator();
+	
+	if (it->beginEnumPlugins()) {
 		while (true) {
 			UAP(lb_I_Plugin, pl)
-			pl = nextPlugin();
+			pl = it->nextPlugin();
 			
 			if (pl == NULL) {
 				_LOGERROR "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << _namespace << "', '" << _version << "'): Didn't find any plugin.!" LOG_
@@ -1667,9 +1887,13 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* matc
 			}
 
 			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_
+			
+			if (pl->hasInterface(match)) {
+				_LOG << "lbPluginManager::getFirstMatchingPlugin() Found any plugin with required interface: " << pl->getClassName() << ", " << pl->getNamespace() LOG_
+			}
+			
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {
-				PluginContainer->finishIteration();
-				PluginModules->finishIteration();
+				//it->finishIteration();
 
 				pl++;
 
@@ -1680,29 +1904,17 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* matc
 		_CL_LOG "Plugins registered:" LOG_
 
 
-		if (beginEnumPlugins()) {
+		if (it->beginEnumPlugins()) {
 
 			while (true) {
 				UAP(lb_I_Plugin, pl)
-				pl = nextPlugin();
+				pl = it->nextPlugin();
 
 				if (pl == NULL) break;
 
 				//pl->initialize();
 
 				_CL_LOG << "Plugin name, namespace, version: " << pl->getName() << ", " << pl->getNamespace() << ", " << pl->getVersion() LOG_
-#ifdef bla
-				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
-					UAP(lb_I_Unknown, uk)
-
-					uk = pl->getImplementation();
-					if (uk != NULL) {
-						_CL_LOG << "Loaded: " << uk->getClassName() LOG_
-					} else {
-						_CL_LOG << "Failed to get plugin implementation." LOG_
-					}
-				}
-#endif
 			}
 		}
 
