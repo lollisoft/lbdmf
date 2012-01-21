@@ -133,7 +133,8 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 {
 	_CL_LOG << "lbDatabaseTableViewPanel::lbDatabaseTableViewPanel() called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+///\todo Move out of constructor
+	//AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 
 	formName = strdup("Database table view");
 	untranslated_formName = NULL;

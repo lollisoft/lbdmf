@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.37 2011/10/15 21:47:12 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.38 2012/01/21 18:39:21 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.38  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.37  2011/10/15 21:47:12  lollisoft
  * Removed all code that is obsolete. Current code compiles but still does not run.
  *
@@ -229,6 +232,13 @@ IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbContainer)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
+
+
+lb_I_Iterator* LB_STDCALL lbContainer::getIterator() {
+	_LOG << "lbContainer::getIterator() is not implemented." LOG_
+	return NULL;
+}
+
 
 lbContainer::lbContainer() {
     iteration = 0;

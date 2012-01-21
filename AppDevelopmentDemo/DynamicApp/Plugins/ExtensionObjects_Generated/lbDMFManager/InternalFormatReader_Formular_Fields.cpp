@@ -132,7 +132,7 @@ void LB_STDCALL Formular_FieldsInternalFormatReaderExtension::execute() {
 		*iStream >> _name;
 		*iStream >> _tablename;
 		*iStream >> _formularid;
-												
+		_LOG << "Read Formular_Fields entry from database: " << _fkname << ", " << _fktable << ", " << _dbtype << ", " << _isforeignkey << ", " << _name << ", " << _tablename << ", " << _formularid << ", " <<  _ID LOG_
 		owningObject->addFormular_Fields(_fkname, _fktable, _dbtype, _isforeignkey, _name, _tablename, _formularid,  _ID);
 
 		// Leaky !

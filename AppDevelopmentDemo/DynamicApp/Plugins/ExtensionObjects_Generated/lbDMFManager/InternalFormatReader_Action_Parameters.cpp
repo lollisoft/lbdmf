@@ -128,7 +128,7 @@ void LB_STDCALL Action_ParametersInternalFormatReaderExtension::execute() {
 		*iStream >> _interface;
 		*iStream >> _description;
 		*iStream >> _actionid;
-												
+		_LOG << "Read Action_Parameters entry from database: " << _name << ", " << _value << ", " << _interface << ", " << _description << ", " << _actionid << ", " <<  _ID LOG_
 		owningObject->addAction_Parameters(_name, _value, _interface, _description, _actionid,  _ID);
 
 		// Leaky !

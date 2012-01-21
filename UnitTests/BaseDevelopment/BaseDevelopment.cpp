@@ -825,6 +825,7 @@ public:
 		TEST_CASE(test_lbContainer_lookupNI_byExists)
 		TEST_CASE(test_lbContainer_lookupPostFreed_byExists)
 		TEST_CASE(test_lbContainer_lookupNotInitializedString_byExists)
+		TEST_CASE(test_lbContainer_iterator)
 	}
 	
 	void test_lbContainer_lookupNotInitializedString_byExists( void )
@@ -919,6 +920,111 @@ public:
 		ASSERT_EQUALS( true, c.getPtr() != NULL );
 	}
 
+	void test_lbContainer_iterator( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_lbContainer_iterator");
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+
+		ASSERT_EQUALS( true, c.getPtr() != NULL );
+
+
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		QI(s, lb_I_Unknown, uk)
+		QI(i, lb_I_KeyBase, key)
+
+		*s = "Testvalue1";
+		i->setData(1);
+		c->insert(&uk, &key);
+		*s = "Testvalue2";
+		i->setData(2);
+		c->insert(&uk, &key);
+		*s = "Testvalue3";
+		i->setData(3);
+		c->insert(&uk, &key);
+		*s = "Testvalue4";
+		i->setData(4);
+		c->insert(&uk, &key);
+		*s = "Testvalue5";
+		i->setData(5);
+		c->insert(&uk, &key);
+
+		ASSERT_EQUALS( 5, c->Count() );
+
+		UAP(lb_I_String, resultedString)
+		UAP(lb_I_Unknown, uk1)
+
+		uk1 = c->getElement(&key);
+
+		ASSERT_EQUALS( true, uk1 != NULL );
+
+		c->finishIteration();
+		
+		UAP(lb_I_Iterator, it)
+		UAP(lb_I_Iterator, it1)
+
+		it = c->getIterator();
+		it1 = c->getIterator();
+
+		it->finishIteration();
+		it1->finishIteration();
+		
+		it->hasMoreElements();
+		uk1 = it->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
+		
+		it->hasMoreElements();
+		uk1 = it->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
+		
+
+			it1->hasMoreElements();
+			uk1 = it1->nextElement();
+			QI(uk1, lb_I_String, resultedString)
+			ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
+			
+			it1->hasMoreElements();
+			uk1 = it1->nextElement();
+			QI(uk1, lb_I_String, resultedString)
+			ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
+			
+			it1->hasMoreElements();
+			uk1 = it1->nextElement();
+			QI(uk1, lb_I_String, resultedString)
+			ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
+			
+			it1->hasMoreElements();
+			uk1 = it1->nextElement();
+			QI(uk1, lb_I_String, resultedString)
+			ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
+			
+			it1->hasMoreElements();
+			uk1 = it1->nextElement();
+			QI(uk1, lb_I_String, resultedString)
+			ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
+
+
+		it->hasMoreElements();
+		uk1 = it->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
+		
+		it->hasMoreElements();
+		uk1 = it->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
+		
+		it->hasMoreElements();
+		uk1 = it->nextElement();
+		QI(uk1, lb_I_String, resultedString)
+		ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
+	}
+	
 	void test_lbContainer_Order( void )
 	{
 		lbErrCodes err = ERR_NONE;
@@ -2001,6 +2107,81 @@ public:
 	}
 };
 
+class BaseDevelopmentPluginManager : public TestFixture<BaseDevelopmentPluginManager>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentPluginManager )
+	{
+		TEST_CASE(test_Instantiate)
+		TEST_CASE(test_Enumerate)
+	}
+
+
+public:
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+
+	void tearDown()
+	{
+	}
+
+
+	void test_Instantiate( void )
+	{
+		puts("test_Instantiate");
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		ASSERT_EQUALS( true, PM.getPtr() != NULL );
+	}
+
+	void test_Enumerate( void )
+	{
+		puts("test_Enumerate");
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		ASSERT_EQUALS( true, PM.getPtr() != NULL );
+		
+		PM->initialize();
+		
+		UAP(lb_I_PluginIterator, it)
+		it = PM->getPluginIterator();
+		
+		int firstCount = 0;
+		
+		if (it->beginEnumPlugins()) {
+			while (it->nextPlugin() != NULL) firstCount++;
+		}
+		
+		int secondCount = 0;
+
+		if (it->beginEnumPlugins()) {
+			while (it->nextPlugin() != NULL) secondCount++;
+		}
+		ASSERT_EQUALS( firstCount, secondCount );
+		ASSERT_EQUALS( true, firstCount > 0);
+		ASSERT_EQUALS( true, secondCount  > 0);
+		_LOGERROR << "test_Enumerate() iterated over " << firstCount << " plugins." LOG_
+	}
+
+
+	bool LoadSettings()
+	{
+		return true;
+	}
+};
+
 
 
 //DECLARE_FIXTURE( BaseDevelopmentHook )
@@ -2008,6 +2189,7 @@ public:
 //DECLARE_FIXTURE( BaseDevelopmentLogger )
 //DECLARE_FIXTURE( BaseDevelopmentInputStream )
 DECLARE_FIXTURE( BaseDevelopmentContainer )
+DECLARE_FIXTURE( BaseDevelopmentPluginManager )
 //DECLARE_FIXTURE( BaseDevelopmentEventManager )
 //DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
 
@@ -2020,6 +2202,7 @@ __attribute__ ((constructor)) void ct() {
 //	USE_FIXTURE( BaseDevelopmentLogger )
 //	USE_FIXTURE( BaseDevelopmentInputStream )
 	USE_FIXTURE( BaseDevelopmentContainer )
+	USE_FIXTURE( BaseDevelopmentPluginManager )
 //	USE_FIXTURE( BaseDevelopmentEventManager )
 //	USE_FIXTURE( BaseDevelopmentMetaApplication )
 	USE_FIXTURE( BaseDevelopmentDatabase )

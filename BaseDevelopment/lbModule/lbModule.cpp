@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149 $
+ * $Revision: 1.150 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149 2011/10/15 16:33:26 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.150 2012/01/21 18:39:21 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.150  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.149  2011/10/15 16:33:26  lollisoft
  * Removed some unused code and no more required code. Current version does not compile at all.
  *
@@ -625,6 +628,7 @@ public:
 	SkipList();
 	virtual ~SkipList();
 	
+	lb_I_Iterator* LB_STDCALL getIterator();
 	
 	DECLARE_LB_UNKNOWN()
 	DECLARE_LB_I_CONTAINER_IMPL()
@@ -712,6 +716,12 @@ SkipList::SkipList() {
 SkipList::~SkipList() {
 	delete head;
 }
+
+lb_I_Iterator* LB_STDCALL SkipList::getIterator() {
+	_LOG << "SkipList::getIterator() is not implemented." LOG_
+	return NULL;
+}
+
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 
         return count; 
@@ -2000,7 +2010,9 @@ public:
     lbModuleContainer();
     virtual ~lbModuleContainer();
 
-    DECLARE_LB_UNKNOWN()
+	lb_I_Iterator* LB_STDCALL getIterator();
+    
+	DECLARE_LB_UNKNOWN()
 
 // This may be a string container
 
@@ -3490,6 +3502,10 @@ lbModuleContainer::lbModuleContainer() {
 lbModuleContainer::~lbModuleContainer() {
 }
 
+lb_I_Iterator* LB_STDCALL lbModuleContainer::getIterator() {
+	_LOG << "lbModuleContainer::getIterator() is not implemented." LOG_
+	return NULL;
+}
 int LB_STDCALL lbModuleContainer::position(lb_I_KeyBase** const key) {
 	_LOG << "lbModuleContainer::position(lb_I_KeyBase** const key) is not implemented." LOG_
     return 0; 
