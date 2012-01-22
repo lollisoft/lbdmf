@@ -122,7 +122,6 @@ void LB_STDCALL ReportsInternalFormatReaderExtension::execute() {
 
 		*iStream >> _description;
 		*iStream >> _name;
-		_LOG << "Read Reports entry from database: " << _description << ", " << _name << ", " <<  _ID LOG_
 		owningObject->addReports(_description, _name,  _ID);
 
 		// Leaky !

@@ -28,11 +28,19 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.73 2012/01/04 06:37:19 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.74 2012/01/22 11:03:03 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.74  2012/01/22 11:03:03  lollisoft
+ * Added support for custom extension objects.
+ * Using that for the formular fields entity to read from
+ * columns of the configured query per form.
+ *
+ * Fixed bugs that resulted in the new costom db reader
+ * extension class
+ *
  * Revision 1.73  2012/01/04 06:37:19  lollisoft
  * Compiles against generated entity model.
  *
@@ -381,7 +389,7 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 	lb_I_Unknown* LB_STDCALL getUnknown();
 		
-	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName);
 		
 	void OnDispatch(wxCommandEvent& event);
 
@@ -999,7 +1007,7 @@ public:
 
 	bool LB_STDCALL checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns);
 	
-	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName);
 		
 	DECLARE_LB_UNKNOWN()
 

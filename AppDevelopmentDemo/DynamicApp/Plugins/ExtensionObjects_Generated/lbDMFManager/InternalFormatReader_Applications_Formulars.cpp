@@ -122,7 +122,6 @@ void LB_STDCALL Applications_FormularsInternalFormatReaderExtension::execute() {
 
 		*iStream >> _anwendungid;
 		*iStream >> _formularid;
-		_LOG << "Read Applications_Formulars entry from database: " << _anwendungid << ", " << _formularid << ", " <<  _ID LOG_
 		owningObject->addApplications_Formulars(_anwendungid, _formularid,  _ID);
 
 		// Leaky !

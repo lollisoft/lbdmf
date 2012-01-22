@@ -128,7 +128,6 @@ void LB_STDCALL Column_TypesInternalFormatReaderExtension::execute() {
 		*iStream >> _ro;
 		*iStream >> _specialcolumn;
 		*iStream >> _controltype;
-		_LOG << "Read Column_Types entry from database: " << _name << ", " << _tablename << ", " << _ro << ", " << _specialcolumn << ", " << _controltype << ", " <<  _ID LOG_
 		owningObject->addColumn_Types(_name, _tablename, _ro, _specialcolumn, _controltype,  _ID);
 
 		// Leaky !
