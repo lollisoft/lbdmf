@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 22
+  revision 23
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1433,6 +1433,7 @@ ${inlines}
 	key "lbDMF:relationship:table" value "formulare"
 	key "lbDMF:relationship:order" value "-1"
       end
+
     end
 
     class 132098 "formulartypen"

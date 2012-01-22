@@ -1249,7 +1249,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	meta->setStatusText("Info", "Load database configuration (forms) ...");
 	forms->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formularfields) ...");
+	aspect->setContextNamespace("DatabaseInputStreamVisitor_BuildFromFormularParameter");
 	formularfields->accept(*&aspect);
+	aspect->setContextNamespace("DatabaseInputStreamVisitor");
 	meta->setStatusText("Info", "Load database configuration (columntypes) ...");
 	columntypes->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formActions) ...");

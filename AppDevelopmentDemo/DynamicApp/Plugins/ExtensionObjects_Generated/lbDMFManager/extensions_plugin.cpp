@@ -210,7 +210,11 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModelExtensions)
 	ADD_PLUGIN(lbPluginActionStep_ParametersInternalFormatWriterExtension, OutputStreamVisitor_ActionStep_ParametersModel)
 	ADD_PLUGIN(lbPluginActionStep_ParametersXMLWriterExtension, XMLOutputStreamVisitor_ActionStep_ParametersModel)
 	
-// Nongenerated plugin definitions	
+// Nongenerated plugin definitions
+
+// This db reader is required to build up the formular fields model from the configured SQL queries instead from reading the corresponding table
+// Use setContextNamespace to point to the implementation with this namespace when reading from databases
+	ADD_PLUGIN(lbPluginFormular_FieldsDBReaderExtension_BuildFromFormularParameter, DatabaseInputStreamVisitor_BuildFromFormularParameter_Formular_FieldsModel)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModelExtensions::lbPluginModulelbDMFDataModelExtensions() {

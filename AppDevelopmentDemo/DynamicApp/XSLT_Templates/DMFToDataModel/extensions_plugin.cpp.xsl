@@ -197,7 +197,11 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModelExtensions)
 	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>InternalFormatWriterExtension, OutputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
 	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>XMLWriterExtension, XMLOutputStreamVisitor_<xsl:value-of select="$FormularName"/>Model)
 </xsl:for-each>	
-// Nongenerated plugin definitions	
+// Nongenerated plugin definitions
+
+// This db reader is required to build up the formular fields model from the configured SQL queries instead from reading the corresponding table
+// Use setContextNamespace to point to the implementation with this namespace when reading from databases
+	ADD_PLUGIN(lbPluginFormular_FieldsDBReaderExtension_BuildFromFormularParameter, DatabaseInputStreamVisitor_BuildFromFormularParameterModel)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModelExtensions::lbPluginModulelbDMFDataModelExtensions() {
