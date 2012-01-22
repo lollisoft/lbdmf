@@ -532,7 +532,7 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 /*...e*/
 }
 
-bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formName, const char* fieldName) {
+bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName) {
 	bool definitionFound = false;
 	bool formFound = false;
 	lbErrCodes err = ERR_NONE;
@@ -567,7 +567,7 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 	while (formularfields->hasMoreFormular_Fields()) {
 		formularfields->setNextFormular_Fields();
 		
-		if (formularfields->get_id() == FormID) {
+		if (formularfields->get_formularid() == FormID) {
 			if (strcmp(formularfields->get_name(), fieldName) == 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
@@ -627,7 +627,10 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			buffer[0] = 0;
 
 
-			if (!haveNotMappedForeignKeyFields(formName, name)) {
+			UAP(lb_I_String, tName)
+			tName = sampleQuery->getTableName(name);
+			_LOG << "addComboField() Checks for a fieldmapping for form " << tName->charrep() << " with field " << name LOG_
+			if (!haveNotMappedForeignKeyFields(formName, tName->charrep(), name)) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 				
@@ -639,7 +642,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 				// Why do I this twice?
 				// Refactored
-				bool definitionFound = haveNotMappedForeignKeyFields(formName, name);
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, tName->charrep(), name);
 				
 				UAP(lb_I_Unknown, uk)
                 UAP(lb_I_Parameter, params)
@@ -2187,7 +2190,9 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-			if (!haveNotMappedForeignKeyFields(formName, name->charrep())) {
+			UAP(lb_I_String, tName)
+			tName = sampleQuery->getTableName(name->charrep());
+			if (!haveNotMappedForeignKeyFields(formName, tName->charrep(), name->charrep())) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 
@@ -2246,7 +2251,9 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				}
 				
 				// Why was this coded here before refactoring?
-				bool definitionFound = haveNotMappedForeignKeyFields(formName, name->charrep());
+				UAP(lb_I_String, tName)
+				tName = sampleQuery->getTableName(name->charrep());
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, tName->charrep(), name->charrep());
 			}
 
 #ifdef USE_FKPK_QUERY

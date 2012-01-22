@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk)
         return ERR_NOT_IMPLEMENTED;
 }
 
-bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(const char* formName, const char* fieldName) {
+bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName) {
 	bool definitionFound = false;
 	bool formFound = false;
 	lbErrCodes err = ERR_NONE;
@@ -557,8 +557,10 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, const c
         for (int i = 1; i <= query->getColumns(); i++) {
                 UAP(lb_I_String, name)
                 name = query->getColumnName(i);
+                UAP(lb_I_String, tName)
+                tName = query->getTableName(name->charrep());
                 
-                if (query->hasFKColumn(name->charrep()) == 1 && !haveNotMappedForeignKeyFields(forms->get_name(), name->charrep())) {
+                if (query->hasFKColumn(name->charrep()) == 1 && !haveNotMappedForeignKeyFields(forms->get_name(), tName->charrep(), name->charrep())) {
                         cBoxFKNames->Append(wxString(name->charrep()));
                 }
         }

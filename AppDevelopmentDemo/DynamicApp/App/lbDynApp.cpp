@@ -964,7 +964,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                         metaapp->setStatusText("Info", "Target database is system database ...");
 
                         _LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using system database." LOG_
+						fOpDB->setContextNamespace("DatabaseInputStreamVisitor_BuildFromFormularParameter");
                         Formular_FieldsEntity->accept(*&fOpDB);
+						fOpDB->setContextNamespace("DatabaseInputStreamVisitor");
                         metaapp->setStatusText("Info", "Reading primary keys ...");
                         dbPrimaryKeys->accept(*&fOpDB);
                         metaapp->setStatusText("Info", "Reading foreign keys ...");
@@ -1064,7 +1066,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
                                         if (fOpCustomformularfieldsDB != NULL) {
                                                 fOpCustomformularfieldsDB->begin(dbname->charrep(), custom_formularfieldsDB.getPtr());
+												fOpCustomformularfieldsDB->setContextNamespace("DatabaseInputStreamVisitor_BuildFromFormularParameter");
                                                 Formular_FieldsEntity->accept(*&fOpCustomformularfieldsDB);
+												fOpCustomformularfieldsDB->setContextNamespace("DatabaseInputStreamVisitor");
                                         }
                                         metaapp->setStatusText("Info", "Reading primary keys ...");
                                         dbPrimaryKeys->accept(*&fOpCustomDB);

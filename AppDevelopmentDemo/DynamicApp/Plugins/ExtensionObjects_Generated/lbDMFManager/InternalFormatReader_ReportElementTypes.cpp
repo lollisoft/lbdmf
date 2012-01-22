@@ -122,7 +122,6 @@ void LB_STDCALL ReportElementTypesInternalFormatReaderExtension::execute() {
 
 		*iStream >> _name;
 		*iStream >> _description;
-		_LOG << "Read ReportElementTypes entry from database: " << _name << ", " << _description << ", " <<  _ID LOG_
 		owningObject->addReportElementTypes(_name, _description,  _ID);
 
 		// Leaky !
