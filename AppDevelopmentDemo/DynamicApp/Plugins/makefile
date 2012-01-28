@@ -107,6 +107,7 @@ ALLTARGETS = \
 	lbDMFXslt \
 	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
+	ExtensionObjects_Generated/lbDMFManager \
 	lbDynamicAppStorage
 endif
 
