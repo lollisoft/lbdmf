@@ -796,15 +796,143 @@ lbErrCodes LB_STDCALL lbDMFSSP::load() {
 				if (!fOp->begin("./wxWrapper.app/Contents/Resources/SimpleSecurity.sec")) {
 					// Fallback
 					if (!fOp->begin("SimpleSecurity.sec")) {
-						_CL_LOG << "ERROR: Could not read default file for meta application!" LOG_
+						_LOGERROR << "ERROR: Could not read login data from file. Try to use database." LOG_
 
-						return ERR_FILE_READ;
+						UAP(lb_I_Plugin, plDB)
+						UAP(lb_I_Unknown, ukPlDB)
+						
+						plDB = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+						
+						ukPlDB = plDB->getImplementation();
+						
+						if (ukPlDB != NULL) {
+							UAP(lb_I_DatabaseOperation, fOpDB)
+							QI(ukPlDB, lb_I_DatabaseOperation, fOpDB)
+							
+							UAP(lb_I_Database, database)
+							
+							char* dbbackend = meta->getSystemDatabaseBackend();
+							if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+								UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+								AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+								_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+							} else {
+								// Use built in
+								REQUEST(getModuleInstance(), lb_I_Database, database)
+								
+								if (database == NULL) {
+									meta->setSystemDatabaseBackend("DatabaseLayerGateway");
+									meta->setApplicationDatabaseBackend("DatabaseLayerGateway");
+									meta->useSystemDatabaseBackend(true);
+									meta->useApplicationDatabaseBackend(true);
+									
+									// A second try here
+									char* dbbackend = meta->getSystemDatabaseBackend();
+									if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+										UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+										AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+										_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+									}
+									if (database == NULL) {
+										meta->msgBox("Error", "Getting application list failed. Even local database backend failed to load.");
+										return ERR_FILE_READ; //\todo Fix error code.
+									}
+								}
+								
+								_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
+							}
+							
+							UAP(lb_I_Query, sampleQuery)
+							database->init();
+							
+							const char* lbDMFPasswd = getenv("lbDMFPasswd");
+							const char* lbDMFUser   = getenv("lbDMFUser");
+							
+							if (!lbDMFUser) lbDMFUser = "dba";
+							if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+							
+							database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+							
+							fOpDB->begin("lbDMF", *&database);
+							
+							// Read an Users list
+							ukPl2->accept(*&fOpDB);
+							// Read an Applications list
+							ukPl3->accept(*&fOpDB);
+							// Read users applications
+							ukPl4->accept(*&fOpDB);
+							fOpDB->end();
+						}
 					}
 				}
 			} else if (!fOp->begin("SimpleSecurity.sec")) {
-				_CL_LOG << "ERROR: Could not read default file for meta application!" LOG_
-
-				return ERR_FILE_READ;
+				_LOGERROR << "ERROR: Could not read login data from file. Try to use database." LOG_
+				
+				UAP(lb_I_Plugin, plDB)
+				UAP(lb_I_Unknown, ukPlDB)
+				
+				plDB = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+				
+				ukPlDB = plDB->getImplementation();
+				
+				if (ukPlDB != NULL) {
+					UAP(lb_I_DatabaseOperation, fOpDB)
+					QI(ukPlDB, lb_I_DatabaseOperation, fOpDB)
+					
+					UAP(lb_I_Database, database)
+					
+					char* dbbackend = meta->getSystemDatabaseBackend();
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+						_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, database)
+						
+						if (database == NULL) {
+							meta->setSystemDatabaseBackend("DatabaseLayerGateway");
+							meta->setApplicationDatabaseBackend("DatabaseLayerGateway");
+							meta->useSystemDatabaseBackend(true);
+							meta->useApplicationDatabaseBackend(true);
+							
+							// A second try here
+							char* dbbackend = meta->getSystemDatabaseBackend();
+							if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+								UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+								AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+								_LOG << "lb_MetaApplication::getApplications() Using plugin database backend for system database setup test..." LOG_
+							}
+							if (database == NULL) {
+								meta->msgBox("Error", "Getting application list failed. Even local database backend failed to load.");
+								return ERR_FILE_READ; //\todo Fix error code.
+							}
+						}
+						
+						_LOG << "lb_MetaApplication::getApplications() Using built in database backend for system database setup test..." LOG_
+					}
+					
+					UAP(lb_I_Query, sampleQuery)
+					database->init();
+					
+					const char* lbDMFPasswd = getenv("lbDMFPasswd");
+					const char* lbDMFUser   = getenv("lbDMFUser");
+					
+					if (!lbDMFUser) lbDMFUser = "dba";
+					if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+					
+					database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+					
+					fOpDB->begin("lbDMF", *&database);
+					
+					// Read an Users list
+					ukPl2->accept(*&fOpDB);
+					// Read an Applications list
+					ukPl3->accept(*&fOpDB);
+					// Read users applications
+					ukPl4->accept(*&fOpDB);
+					fOpDB->end();
+				}
 			}
 #endif
 #ifndef OSX
