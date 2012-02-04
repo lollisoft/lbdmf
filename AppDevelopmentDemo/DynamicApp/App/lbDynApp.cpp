@@ -259,6 +259,15 @@ protected:
         UAP(lb_I_FileLocation, XSLFileSystemDatabase)
         UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
         UAP(lb_I_FileLocation, XSLFileUMLExport)
+		
+		// The namespace used to select storage operations.
+		// These are the following variants at this point:
+		// lbDynAppUMLImport, lbDynAppXMLFormat, lbDynAppInternalFormat
+		UAP(lb_I_String, lbDynAppUMLImport)
+		UAP(lb_I_String, lbDynAppXMLFormat)
+		UAP(lb_I_String, lbDynAppInternalFormat)
+		
+		
         //UAP(lb_I_Boolean, UseOtherXSLFile)
 
 
@@ -298,6 +307,14 @@ lbDynamicApplication::lbDynamicApplication() {
         REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileUMLExport)
         REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProjectExport)
 
+		REQUEST(getModuleInstance(), lb_I_String, lbDynAppUMLImport)
+		REQUEST(getModuleInstance(), lb_I_String, lbDynAppXMLFormat)
+		REQUEST(getModuleInstance(), lb_I_String, lbDynAppInternalFormat)
+
+		*lbDynAppUMLImport = "lbDynAppUMLImport";
+		*lbDynAppXMLFormat = "lbDynAppXMLFormat";
+		*lbDynAppInternalFormat = "lbDynAppInternalFormat";
+		
 #ifdef WINDOWS
         XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
         XMIFileUMLProjectExport->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\Export.xmi");
@@ -1222,7 +1239,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
                 *param = "StorageDelegateNamespace";
                 document->getUAPString(*&param, *&StorageNamespace);
 
-                *tempStorageNamespace = "lbDynAppUMLImport";
+                *tempStorageNamespace = lbDynAppUMLImport->charrep();
+				
+				if (*LogonApplication == "lbDMF Manager") {
+					*tempStorageNamespace += "_v2.0";
+				} else {
+					
+				}
+				
                 document->setUAPString(*&param, *&tempStorageNamespace);
 
                 // The export needs the current application ID.
@@ -1347,7 +1371,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 *param = "StorageDelegateNamespace";
                 document->getUAPString(*&param, *&StorageNamespace);
 
-                *tempStorageNamespace = "lbDynAppUMLImport";
+                *tempStorageNamespace = lbDynAppUMLImport->charrep();
                 document->setUAPString(*&param, *&tempStorageNamespace);
                 
                 UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
@@ -1476,7 +1500,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
                 *name = "StorageDelegateNamespace";
                 document->getUAPString(*&name, *&StorageNamespace);
 
-                *tempStorageNamespace = "lbDynAppXMLFormat";
+                *tempStorageNamespace = lbDynAppXMLFormat->charrep();
                 document->setUAPString(*&name, *&tempStorageNamespace);
 
                 *name = "ApplicationData";
@@ -1575,7 +1599,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
                 *param = "StorageDelegateNamespace";
                 document->getUAPString(*&param, *&StorageNamespace);
 
-                *tempStorageNamespace = "lbDynAppXMLFormat";
+                *tempStorageNamespace = lbDynAppXMLFormat->charrep();
                 document->setUAPString(*&param, *&tempStorageNamespace);
 
                 *param = "SaveApplicationID";
@@ -2140,7 +2164,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
                         *param = "StorageDelegateNamespace";
                         document->getUAPString(*&param, *&StorageNamespace);
 
-                        *tempStorageNamespace = "lbDynAppInternalFormat";
+                        *tempStorageNamespace = lbDynAppInternalFormat->charrep();
                         document->setUAPString(*&param, *&tempStorageNamespace);
 
                         UAP_REQUEST(getModuleInstance(), lb_I_String, name)
