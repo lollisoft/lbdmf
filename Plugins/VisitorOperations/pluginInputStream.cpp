@@ -1122,6 +1122,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 	if (document != NULL) {
 		*param = "StorageDelegateNamespace";
 		document->getUAPString(*&param, *&StorageNamespace);
+
+		// Here would be the point to detect, if there is any version information in the document.
+		// If so, the proper plugin should be selected by appending the version information to the namespace
 		
 		// Get the plugin that is responsible to save the data.		
 		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());
@@ -1140,7 +1143,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 			_LOG << "Error: Found a lb_I_StandaloneStreamable plugin via PM->getFirstMatchingPlugin(...), but QI failed." LOG_
 		} else {
 			//isFileAvailable = fOp->begin(filename->charrep()); 
-			
+		
 			mystream->setOperator(this);
 			mystream->load(*&iStream);
 		}
