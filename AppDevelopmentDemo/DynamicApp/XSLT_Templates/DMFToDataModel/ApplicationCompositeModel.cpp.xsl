@@ -175,7 +175,7 @@
 
 #include &lt;lbInterfaces-sub-security.h&gt;
 #include &lt;lbInterfaces-lbDMFManager.h&gt;
-#include &lt;lbDynamicAppStorage.h&gt;
+#include &lt;ApplicationCompositeModel.h&gt;
 
 // Includes for the libxml / libxslt libraries
 
@@ -249,15 +249,15 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Unknown, uk)
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM" select="@name"/>
+<xsl:variable name="FormularNameACM">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -271,7 +271,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	UAP(lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	UAP(lb_I_<xsl:value-of select="$FormularNameACM"/>, <xsl:value-of select="$FormularNameACM"/>)
 </xsl:for-each>
 
 	UAP(lb_I_DBTables, dbTables)
@@ -394,15 +394,15 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(name, lb_I_KeyBase, key)
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM1" select="@name"/>
+<xsl:variable name="FormularNameACM1">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM1"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -416,9 +416,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	*name = "<xsl:value-of select="$FormularName1"/>";
+	*name = "<xsl:value-of select="$FormularNameACM1"/>";
 	uk = document-&gt;getElement(&amp;key);
-	QI(uk, lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	QI(uk, lb_I_<xsl:value-of select="$FormularNameACM1"/>, <xsl:value-of select="$FormularNameACM1"/>)
 </xsl:for-each>
 
 	*name = "DBPrimaryKeys";
@@ -459,24 +459,24 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	UAP(lb_I_Unknown, apps)
 	apps = securityManager-&gt;getApplicationModel();
-	QI(apps, lb_I_Applications, applications)
+	QI(apps, lb_I_Applications, Applications)
 	
 	meta-&gt;setStatusText("Info", "Write XML document ...");
 	
-	applications-&gt;selectApplications(AppID-&gt;getData());
-	applications-&gt;mark();
+	Applications-&gt;selectApplications(AppID-&gt;getData());
+	Applications-&gt;mark();
 
 	if (
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM2" select="@name"/>
+<xsl:variable name="FormularNameACM2">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM2"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -490,7 +490,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		(<xsl:value-of select="$FormularName1"/> != NULL) &amp;&amp;
+		(<xsl:value-of select="$FormularNameACM2"/> != NULL) &amp;&amp;
 </xsl:for-each>
 	    (dbColumns != NULL) &amp;&amp;
 	    (dbPrimaryKeys != NULL) &amp;&amp;
@@ -524,15 +524,15 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 #endif
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM3" select="@name"/>
+<xsl:variable name="FormularNameACM3">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM3"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -546,8 +546,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		meta-&gt;setStatusText("Info", "Write XML document (<xsl:value-of select="$FormularName1"/>) ...");
-		<xsl:value-of select="$FormularName1"/>-&gt;accept(*&amp;aspect);
+		meta-&gt;setStatusText("Info", "Write XML document (<xsl:value-of select="$FormularNameACM3"/>) ...");
+		<xsl:value-of select="$FormularNameACM3"/>-&gt;accept(*&amp;aspect);
 </xsl:for-each>
 
 		meta-&gt;setStatusText("Info", "Write XML document (dbPrimaryKeys) ...");
@@ -614,15 +614,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	}
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM4" select="@name"/>
+<xsl:variable name="FormularNameACM4">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM4"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -636,7 +636,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	UAP(lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	UAP(lb_I_<xsl:value-of select="$FormularNameACM4"/>, <xsl:value-of select="$FormularNameACM4"/>)
 </xsl:for-each>
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBColumns, dbColumns)
@@ -645,15 +645,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM5" select="@name"/>
+<xsl:variable name="FormularNameACM5">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM5"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -667,19 +667,19 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularName1"/>, Model, <xsl:value-of select="$FormularName1"/>, "'<xsl:value-of select="$FormularName1"/>'")
+	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularNameACM5"/>, Model, <xsl:value-of select="$FormularNameACM5"/>, "'<xsl:value-of select="$FormularNameACM5"/>'")
 </xsl:for-each>
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM6" select="@name"/>
+<xsl:variable name="FormularNameACM6">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM6"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -693,7 +693,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	<xsl:value-of select="$FormularName1"/>-&gt;accept(*&amp;aspect);
+	<xsl:value-of select="$FormularNameACM6"/>-&gt;accept(*&amp;aspect);
 </xsl:for-each>
 
 	// Read out application settings
@@ -745,15 +745,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 
 	if (
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM7" select="@name"/>
+<xsl:variable name="FormularNameACM7">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM7"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -767,7 +767,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		(<xsl:value-of select="$FormularName1"/> != NULL) &amp;&amp; 
+		(<xsl:value-of select="$FormularNameACM7"/> != NULL) &amp;&amp; 
 </xsl:for-each>
 		true) {
 		
@@ -785,15 +785,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		QI(ukParams, lb_I_Parameter, params)
 		
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM8" select="@name"/>
+<xsl:variable name="FormularNameACM8">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM8"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -807,8 +807,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		*name = "<xsl:value-of select="$FormularName1"/>";
-		QI(<xsl:value-of select="$FormularName1"/>, lb_I_Unknown, uk)
+		*name = "<xsl:value-of select="$FormularNameACM8"/>";
+		QI(<xsl:value-of select="$FormularNameACM8"/>, lb_I_Unknown, uk)
 		document-&gt;insert(&amp;uk, &amp;key);
 </xsl:for-each>
 
@@ -889,15 +889,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Unknown, uk)
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM9" select="@name"/>
+<xsl:variable name="FormularNameACM9">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM9"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -911,7 +911,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	UAP(lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	UAP(lb_I_<xsl:value-of select="$FormularNameACM9"/>, <xsl:value-of select="$FormularNameACM9"/>)
 </xsl:for-each>
 
 	// Save application settings
@@ -962,15 +962,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 			
 			
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM10" select="@name"/>
+<xsl:variable name="FormularNameACM10">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM10"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -984,9 +984,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	*name = "<xsl:value-of select="$FormularName1"/>";
+	*name = "<xsl:value-of select="$FormularNameACM10"/>";
 	uk = document-&gt;getElement(&amp;key);
-	QI(uk, lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	QI(uk, lb_I_<xsl:value-of select="$FormularNameACM10"/>, <xsl:value-of select="$FormularNameACM10"/>)
 </xsl:for-each>
 
 	// Store the settings from dynamic application
@@ -1050,15 +1050,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	if (
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM11" select="@name"/>
+<xsl:variable name="FormularNameACM11">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM11"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1072,7 +1072,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		(<xsl:value-of select="$FormularName1"/> != NULL) &amp;&amp;
+		(<xsl:value-of select="$FormularNameACM11"/> != NULL) &amp;&amp;
 </xsl:for-each>
 
 		true) {
@@ -1080,15 +1080,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		_LOG &lt;&lt; "Start storing the data" LOG_
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM12" select="@name"/>
+<xsl:variable name="FormularNameACM12">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM12"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1102,7 +1102,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		<xsl:value-of select="$FormularName1"/>-&gt;accept(*&amp;aspect);
+		<xsl:value-of select="$FormularNameACM12"/>-&gt;accept(*&amp;aspect);
 </xsl:for-each>
 
 		UMLImportTargetDBName-&gt;accept(*&amp;aspect);
@@ -1143,15 +1143,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM13" select="@name"/>
+<xsl:variable name="FormularNameACM13">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM13"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1165,7 +1165,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	UAP(lb_I_<xsl:value-of select="$FormularName1"/>, <xsl:value-of select="$FormularName1"/>)
+	UAP(lb_I_<xsl:value-of select="$FormularNameACM13"/>, <xsl:value-of select="$FormularNameACM13"/>)
 </xsl:for-each>
 
 	UAP(lb_I_DBTables, dbTables)
@@ -1179,15 +1179,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'database report'")
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM14" select="@name"/>
+<xsl:variable name="FormularNameACM14">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM14"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1201,19 +1201,19 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularName1"/>, Model, <xsl:value-of select="$FormularName1"/>, "'<xsl:value-of select="$FormularName1"/>'")
+	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularNameACM14"/>, Model, <xsl:value-of select="$FormularNameACM14"/>, "'<xsl:value-of select="$FormularNameACM14"/>'")
 </xsl:for-each>
 	
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM15" select="@name"/>
+<xsl:variable name="FormularNameACM15">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM15"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1227,8 +1227,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	if (<xsl:value-of select="$FormularName1"/> == NULL)  {
-		_LOG &lt;&lt; "lb_I_<xsl:value-of select="$FormularName1"/> instance is NULL." LOG_
+	if (<xsl:value-of select="$FormularNameACM15"/> == NULL)  {
+		_LOG &lt;&lt; "lb_I_<xsl:value-of select="$FormularNameACM15"/> instance is NULL." LOG_
 	}
 </xsl:for-each>
 
@@ -1256,15 +1256,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	dbForeignKeys-&gt;accept(*&amp;aspect);
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM16" select="@name"/>
+<xsl:variable name="FormularNameACM16">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM16"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1278,8 +1278,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	meta-&gt;setStatusText("Info", "Load database configuration (<xsl:value-of select="$FormularName1"/>) ...");
-	<xsl:value-of select="$FormularName1"/>-&gt;accept(*&amp;aspect);
+	meta-&gt;setStatusText("Info", "Load database configuration (<xsl:value-of select="$FormularNameACM16"/>) ...");
+	<xsl:value-of select="$FormularNameACM16"/>-&gt;accept(*&amp;aspect);
 </xsl:for-each>
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -1485,15 +1485,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	if (
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM17" select="@name"/>
+<xsl:variable name="FormularNameACM17">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM17"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1507,20 +1507,20 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		(<xsl:value-of select="$FormularName1"/> != NULL) &amp;&amp; 
+		(<xsl:value-of select="$FormularNameACM17"/> != NULL) &amp;&amp; 
 </xsl:for-each>
 		true) {
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularName1">
+<xsl:variable name="tempFormularNameACM18" select="@name"/>
+<xsl:variable name="FormularNameACM18">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempFormularNameACM18"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'-'"/>
 		<xsl:with-param name="substringOut" select="''"/>
@@ -1534,8 +1534,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-		*name = "<xsl:value-of select="$FormularName1"/>";
-		QI(<xsl:value-of select="$FormularName1"/>, lb_I_Unknown, uk)
+		*name = "<xsl:value-of select="$FormularNameACM18"/>";
+		QI(<xsl:value-of select="$FormularNameACM18"/>, lb_I_Unknown, uk)
 		document-&gt;insert(&amp;uk, &amp;key);
 </xsl:for-each>
 	}		

@@ -68,7 +68,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:variable name="ApplicationName" select="concat(substring-before($OrginalApplicationName, ' '), substring-after($OrginalApplicationName, ' '))"/>
 
 <xsl:variable name="V" select="//lbDMF/@applicationversion"/>
-<xsl:variable name="tempFormularName"><xsl:choose><xsl:when test="$V!=''"><xsl:value-of select="$V"/></xsl:when><xsl:otherwise>2.0</xsl:otherwise></xsl:choose></xsl:variable>
+<xsl:variable name="tempApplicationVersion"><xsl:choose><xsl:when test="$V!=''"><xsl:value-of select="$V"/></xsl:when><xsl:otherwise>2.0</xsl:otherwise></xsl:choose></xsl:variable>
 <xsl:variable name="ApplicationVersion">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
@@ -76,7 +76,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 		<xsl:with-param name="stringIn">
 	<xsl:call-template name="SubstringReplace">
 		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
+			<xsl:value-of select="$tempApplicationVersion"/>
 		</xsl:with-param>
 		<xsl:with-param name="substringIn" select="'.'"/>
 		<xsl:with-param name="substringOut" select="'_'"/>
