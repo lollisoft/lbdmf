@@ -51,8 +51,12 @@
 
 <xsl:import href="InternalFormatWriterExtension.h.xsl"/>
 <xsl:import href="InternalFormatWriterExtension.cpp.xsl"/>
-
 <xsl:import href="extensions_plugin.cpp.xsl"/>
+
+<xsl:import href="ApplicationCompositeModel.h.xsl"/>
+<xsl:import href="ApplicationCompositeModel.cpp.xsl"/>
+<xsl:import href="storage_plugin.cpp.xsl"/>
+
 
 <xsl:output method="text" indent="no"/>
 
@@ -63,6 +67,29 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:variable name="OrginalApplicationName" select="//lbDMF/applications/application[@ID=$ApplicationID]/@name"/>
 <xsl:variable name="ApplicationName" select="concat(substring-before($OrginalApplicationName, ' '), substring-after($OrginalApplicationName, ' '))"/>
 
+<xsl:variable name="V" select="//lbDMF/@applicationversion"/>
+<xsl:variable name="tempFormularName"><xsl:choose><xsl:when test="$V!=''"><xsl:value-of select="$V"/></xsl:when><xsl:otherwise>2.0</xsl:otherwise></xsl:choose></xsl:variable>
+<xsl:variable name="ApplicationVersion">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'.'"/>
+		<xsl:with-param name="substringOut" select="'_'"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="'_'"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="'_'"/>
+	</xsl:call-template>
+</xsl:variable>
 <exsl:document href="{$basedir}/Interfaces/lbInterfaces-{$ApplicationName}.h" method="text">
 <!-- === Formular specific template ====================================================================== -->
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
@@ -240,6 +267,24 @@ Export application code to <xsl:value-of select="$basedir"/>
 </exsl:document>
 
 </xsl:for-each>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage_Generated/{$ApplicationName}_v{$ApplicationVersion}/storage_plugin.cpp" method="text">
+<xsl:call-template name="storage_plugin.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage_Generated/{$ApplicationName}_v{$ApplicationVersion}/ApplicationCompositeModel.h" method="text">
+<xsl:call-template name="ApplicationCompositeModel.h">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+</exsl:document>
+
+<exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage_Generated/{$ApplicationName}_v{$ApplicationVersion}/ApplicationCompositeModel.cpp" method="text">
+<xsl:call-template name="ApplicationCompositeModel.cpp">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+</exsl:document>
 
 <exsl:document href="{$basedir}/AppDevelopmentDemo/DynamicApp/Plugins/ExtensionObjects_Generated/{$ApplicationName}/extensions_plugin.cpp" method="text">
 <xsl:call-template name="extensions_plugin.cpp">
