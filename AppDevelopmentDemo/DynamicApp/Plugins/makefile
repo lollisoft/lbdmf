@@ -108,6 +108,7 @@ ALLTARGETS = \
 	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	ExtensionObjects_Generated/lbDMFManager \
+	lbDynamicAppStorage_Generated/lbDMFManager_v2_0 \
 	lbDynamicAppStorage
 endif
 
@@ -127,6 +128,7 @@ ALLTARGETS = \
 	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	ExtensionObjects_Generated/lbDMFManager \
+	lbDynamicAppStorage_Generated/lbDMFManager_v2_0 \
 	lbDynamicAppStorage
 endif
 
@@ -150,6 +152,10 @@ dummy:
 
 ExtensionObjects_Generated/lbDMFManager: dummy
 	$(MAKE) -C $@ -e MODULE=lbDMFManagerExtensionObjects -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+lbDynamicAppStorage_Generated/lbDMFManager_v2_0: dummy
+	$(MAKE) -C $@ -e MODULE=lbDynamicAppStorage_v2_0 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 lbDynamicAppStorage: dummy
