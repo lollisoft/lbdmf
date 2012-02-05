@@ -64,6 +64,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -123,7 +125,6 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationBus::peekImplementation() {
 
 	if (impl == NULL) {
 		ApplicationBus* InputStream = new ApplicationBus();
-		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -140,7 +141,6 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationBus::getImplementation() {
 	if (impl == NULL) {
 		_LOG << "Warning: getImplementation() has not been used prior." LOG_
 		ApplicationBus* applicationBus = new ApplicationBus();
-		applicationBus->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(applicationBus, lb_I_Unknown, impl)
 	}
