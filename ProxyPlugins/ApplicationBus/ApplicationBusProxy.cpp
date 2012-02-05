@@ -396,6 +396,8 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
+	void LB_STDCALL setNamespace(const char* _namespace) { }
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukApplicationBusProxy)
@@ -456,7 +458,6 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationBusProxy::peekImplementation() {
 
 	if (ukApplicationBusProxy == NULL) {
 		ApplicationBusProxy* oApplicationBusProxy = new ApplicationBusProxy();
-		oApplicationBusProxy->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(oApplicationBusProxy, lb_I_Unknown, ukApplicationBusProxy)
 	} else {
@@ -475,7 +476,6 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationBusProxy::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		ApplicationBusProxy* oApplicationBusProxy = new ApplicationBusProxy();
-		oApplicationBusProxy->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(oApplicationBusProxy, lb_I_Unknown, ukApplicationBusProxy)
 	}

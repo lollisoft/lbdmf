@@ -217,6 +217,8 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
+	void LB_STDCALL setNamespace(const char* _namespace) { }
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukFaxNumberProxy)
@@ -277,7 +279,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumberProxy::peekImplementation() {
 
 	if (ukFaxNumberProxy == NULL) {
 		FaxNumberProxy* oFaxNumberProxy = new FaxNumberProxy();
-		oFaxNumberProxy->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(oFaxNumberProxy, lb_I_Unknown, ukFaxNumberProxy)
 	} else {
@@ -296,7 +297,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumberProxy::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		FaxNumberProxy* oFaxNumberProxy = new FaxNumberProxy();
-		oFaxNumberProxy->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(oFaxNumberProxy, lb_I_Unknown, ukFaxNumberProxy)
 	}
