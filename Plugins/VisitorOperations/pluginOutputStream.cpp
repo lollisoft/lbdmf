@@ -167,6 +167,7 @@ public:
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 	
 	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
+	void LB_STDCALL visit(lb_I_DocumentVersion*);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
@@ -389,6 +390,10 @@ void LB_STDCALL lbOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
 			visitorExtension->execute();
 		}
 	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DocumentVersion*) {
+
 }
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
