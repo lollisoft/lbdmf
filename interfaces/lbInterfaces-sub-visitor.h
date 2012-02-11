@@ -28,7 +28,64 @@
 
 //#include <lbInterfaces-lbDMFManager.h>
 
+/** \brief Stores version information.
+ * The version information stored in a document is represented by this class. A versionable document is in most cases a composition of many elements.
+ * As a sample the lb_I_Application may store many information that should be versionable. The application defines a storage namespace to define, who
+ * is responsible for storing and loading the data. Different versions could be created over time. This should be detected.
+ */
+class lb_I_DocumentVersion :
+public lb_I_Unknown
+{
+public:
 
+	virtual bool LB_STDCALL isValidVersion() = 0;
+
+	virtual void LB_STDCALL setData(lb_I_String* _Interface, lb_I_String* _Functor, lb_I_String* _Module, lb_I_String* _ModuleVersion, lb_I_String* _StoragePluginNamespace, lb_I_String* _StoragePluginVersion) = 0;
+
+	virtual void LB_STDCALL setData(const char* _Interface, const char* _Functor, const char* _Module, const char* _ModuleVersion, const char* _StoragePluginNamespace, const char* _StoragePluginVersion) = 0;
+
+	/** \brief Adding an interface lets automatically detect the correct composite container based on an interface.
+	 * A case may be the loading of a document by double clicking it in the file explorer. Typically the file is linked
+	 * to an application. But in the case of this framework and the intent to develop application prototypes, different
+	 * logical applications may be loaded by the application using modules and their functors.
+	 *
+	 * For this case I need a module name, functor name and the interface.
+	 */
+	virtual lb_I_String* LB_STDCALL getInterface() = 0;
+	
+	/** \brief Get the functor that creates the instance to load the data into it.
+	 * The functor creates an instance that must be passed to the visitor.
+	 */
+	virtual lb_I_String* LB_STDCALL getFunctor() = 0;
+	
+	/** \brief Get the module from where the instance comes to load the data into it.
+	 * The functor creates an instance that must be passed to the visitor.
+	 */
+	virtual lb_I_String* LB_STDCALL getModule() = 0;
+	
+	/** \brief Get the module version.
+	 * This is not yet supported by the module. It may be depend upon a SCM version tag like CVS. In conjunction with
+	 * the storage plugin version it is a matching of correct participants.
+	 */
+	virtual lb_I_String* LB_STDCALL getModuleVersion() = 0;
+	
+	/** \brief The namespace of the storage handler.
+	 * The namespace selects a generic storage mechanism, such as internal, XML or JSON.
+	 * I don't yet know how to detect this format as I don't know how to then read the
+	 * version information to become knowledge of that format. In the end it may be file
+	 * extensions to identify that.
+	 *
+	 * Also, currently the XML and the JSON are used for import and export capabilities.
+	 * They are not yet used for primary storage.
+	 */
+	virtual lb_I_String* LB_STDCALL getStoragePluginNamespace() = 0;
+	
+	/** \brief The version of the plugin.
+	 * Also a plugin may have a version. Thechnically I should manage document versions manually and not with the SCM
+	 * numbering at each commit, as this leads to much intermediate versions to match.
+	 */
+	virtual lb_I_String* LB_STDCALL getStoragePluginVersion() = 0;
+};
 
 /*...sclass lb_I_Aspect:0:*/
 /** \brief Visitor base for all my interfaces.
@@ -56,9 +113,11 @@ public:
 	 */
 	virtual void setContextNamespace(const char* _namespace) = 0;
 
-
 // The lb_I_Streamable interface would possibly go impossible
 //virtual void LB_STDCALL visit(lb_I_Unknown*) { printf("Error: Catch all visitor called!\n"); }
+
+virtual void LB_STDCALL visit(lb_I_DocumentVersion*) = 0;
+
 virtual void LB_STDCALL visit(lb_I_SecurityProvider*) = 0;
 virtual void LB_STDCALL visit(lb_I_LogonHandler*) = 0;
 virtual void LB_STDCALL visit(lb_I_LogonPage*) = 0;     // Conflict with the catchall. Don't use MI.
