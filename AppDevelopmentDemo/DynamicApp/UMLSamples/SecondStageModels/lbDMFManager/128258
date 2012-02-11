@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 23
+  revision 24
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1434,6 +1434,9 @@ ${inlines}
 	key "lbDMF:relationship:order" value "-1"
       end
 
+      classrelation 190978 // <association>
+	relation_ref 187650 // <association>
+      end
     end
 
     class 132098 "formulartypen"
@@ -2261,6 +2264,91 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+    end
+
+    class 185218 "tipmessage"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 212738 "id"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 212866 "caption"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 212994 "message"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 191106 // <association>
+	relation 187778 ----
+	  a role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 191106 // <association>
+	  b role_name "tipmessageid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 191234 // tipmessageid (<association>)
+      end
+    end
+
+    class 185346 "formulare_tipmessage"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 190850 // formularid (<association>)
+	relation 187650 ----
+	  a role_name "formularid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 190850 // formularid (<association>)
+	  b role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 190978 // <association>
+      end
+
+      classrelation 191234 // tipmessageid (<association>)
+	relation_ref 187778 // <association>
       end
     end
   end

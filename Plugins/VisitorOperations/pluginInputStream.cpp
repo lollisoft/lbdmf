@@ -170,6 +170,8 @@ public:
 
 	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
 
+	void LB_STDCALL visit(lb_I_DocumentVersion*);
+
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
@@ -291,6 +293,10 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 	} else {
 		_CL_LOG << "lbInputStreamOpr::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DocumentVersion*) {
+
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_String* s) {
@@ -1125,6 +1131,15 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 
 		// Here would be the point to detect, if there is any version information in the document.
 		// If so, the proper plugin should be selected by appending the version information to the namespace
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_DocumentVersion, DocumentVersion)
+		
+		// This function should revert to begin if no document version was found.
+		visit(*&DocumentVersion);
+		
+		if (DocumentVersion->isValidVersion()) {
+			// Read out the version information and create a corresponding namespace to get the correct implementation.
+		}
 		
 		// Get the plugin that is responsible to save the data.		
 		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());

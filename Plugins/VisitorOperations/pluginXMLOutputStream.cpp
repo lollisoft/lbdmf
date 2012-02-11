@@ -167,6 +167,7 @@ public:
 
 	void LB_STDCALL visit(lb_I_ExtensibleObject* extensibleObject);
 	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_LOG << "visit(lb_I_SecurityProvider*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DocumentVersion*);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
@@ -325,11 +326,11 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_ExtensibleObject* extensibleObject
 		}
 	}
 }
-/*
-void LB_STDCALL lbXMLOutputStream::visit(lb_I_SecurityProvider*) {
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DocumentVersion*) {
 
 }
-*/
+
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Reports*) {
 

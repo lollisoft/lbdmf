@@ -169,6 +169,7 @@ public:
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
 	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
+	void LB_STDCALL visit(lb_I_DocumentVersion*);
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_Applications*);
@@ -342,6 +343,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule)
 	} else {
 		_LOG << "Warning: Could not get visitor implementation as extension object." LOG_
 	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DocumentVersion*) {
+
 }
 
 #ifdef UNFLEXIBLE_TOBE_REMOVED
