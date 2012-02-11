@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.234 $
+# * $Revision: 1.235 $
 # * $Name:  $
-# * $Id: Makefile,v 1.234 2011/12/30 16:31:11 lollisoft Exp $
+# * $Id: Makefile,v 1.235 2012/02/11 07:34:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.235  2012/02/11 07:34:38  lollisoft
+# * Added touch Makefile for the clean target.
+# *
 # * Revision 1.234  2011/12/30 16:31:11  lollisoft
 # * Added new target DBTool.
 # *
@@ -1610,6 +1613,7 @@ $(prefix)/plugins:
 	-mkdir -p $@
 
 clean:
+	touch Makefile
 	@for d in $(ALLDIRS); do \
 	  $(MAKE) -C $$d clean; \
 	done
