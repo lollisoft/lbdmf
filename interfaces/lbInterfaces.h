@@ -2974,6 +2974,7 @@ public:
 class lb_I_DatabaseForm;
 class lb_I_GUI;
 class lb_I_Form;
+class lb_I_DocumentVersion;
 
 /*...sclass lb_I_Frame:0:*/
 /**
@@ -3052,6 +3053,10 @@ public:
 	 */
 	virtual lb_I_EventManager* LB_STDCALL getEVManager() = 0;
 
+	/** \brief Set the information that the application model is old.
+	 * The flag isOld identifies an older version. The version is optional.
+	 */
+	virtual void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL) = 0;
 };
 /*...e*/
 
