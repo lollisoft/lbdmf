@@ -165,7 +165,7 @@ public:
 /*...e*/
 
 	void LB_STDCALL visit(lb_I_Streamable* pm);
-	void LB_STDCALL visit(lb_I_Application*);
+	void LB_STDCALL visit(lb_I_Application* app);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
 	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
@@ -1128,8 +1128,8 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Dispatcher* disp) {
 	disp->setInterceptorDefinitions(*&s);	
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
-	_CL_LOG << "lbInputStreamOpr::visit(): Read data of application." LOG_
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application* app) {
+	_LOG << "lbInputStreamOpr::visit(): Read data of application." LOG_
 	lbErrCodes err = ERR_NONE;
 	
 	// Get the document via the active document from meta application.
@@ -1178,6 +1178,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is setting custom version to " << StorageNamespace->charrep() LOG_
 		} else {
 			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is an old version of " << StorageNamespace->charrep() LOG_
+			app->loadedApplicationVersion(true);
 		}
 		// Get the plugin that is responsible to save the data.		
 		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());

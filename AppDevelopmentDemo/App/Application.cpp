@@ -73,6 +73,7 @@ public:
         lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
 
         lbErrCodes LB_STDCALL getCustomFormsConfig(lb_I_Unknown* uk);
+		void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL);
 
 protected:
         lb_I_GUI* gui;
@@ -100,6 +101,10 @@ lb_I_Unknown* LB_STDCALL lbApplication::getUnknown() {
         lb_I_Unknown* ukp;
         queryInterface("lb_I_Unknown", (void**) &ukp, __FILE__, __LINE__);
         return ukp;
+}
+
+void LB_STDCALL lbApplication::loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version) {
+
 }
 
 /*...sregister event handlers:0:*/

@@ -98,6 +98,8 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	lb_I_Unknown* LB_STDCALL getUnknown();
 
+	void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL) { }
+
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 
