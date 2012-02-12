@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.1 $
+* $Revision: 1.2 $
 * $Name:  $
-* $Id: lbDocumentVersion.cpp,v 1.1 2012/02/11 19:18:53 lollisoft Exp $
+* $Id: lbDocumentVersion.cpp,v 1.2 2012/02/12 11:58:26 lollisoft Exp $
 *
 * $Log: lbDocumentVersion.cpp,v $
+* Revision 1.2  2012/02/12 11:58:26  lollisoft
+* Implemented detection of a file version that has no version information.
+*
 * Revision 1.1  2012/02/11 19:18:53  lollisoft
 * Basic implementation of document versioning compiles.
 *
@@ -73,6 +76,8 @@ public:
 	
 	DECLARE_LB_UNKNOWN()
 
+	void LB_STDCALL setInvalid();
+
 	bool LB_STDCALL isValidVersion();
 
 	void LB_STDCALL setData(lb_I_String* _Interface, lb_I_String* _Functor, lb_I_String* _Module, lb_I_String* _ModuleVersion, lb_I_String* _StoragePluginNamespace, lb_I_String* _StoragePluginVersion);
@@ -92,6 +97,7 @@ public:
 	lb_I_String* LB_STDCALL getStoragePluginVersion();
 	
 private:
+	bool invalid;
 	UAP(lb_I_String, __Interface)
 	UAP(lb_I_String, Functor)
 	UAP(lb_I_String, Module)
@@ -99,6 +105,8 @@ private:
 	UAP(lb_I_String, StoragePluginNamespace)
 	UAP(lb_I_String, StoragePluginVersion)
 };
+
+IMPLEMENT_FUNCTOR(instanceOflbDocumentVersion, lbDocumentVersion)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDocumentVersion)
 ADD_INTERFACE(lb_I_DocumentVersion)
@@ -117,14 +125,19 @@ lbDocumentVersion::lbDocumentVersion() {
 	REQUEST(getModuleInstance(), lb_I_String, ModuleVersion)
 	REQUEST(getModuleInstance(), lb_I_String, StoragePluginNamespace)
 	REQUEST(getModuleInstance(), lb_I_String, StoragePluginVersion)
+	invalid = true;
 }
 
 lbDocumentVersion::~lbDocumentVersion() {
 
 }
 
+void LB_STDCALL lbDocumentVersion::setInvalid() {
+	invalid = true;
+}
+
 bool LB_STDCALL lbDocumentVersion::isValidVersion() {
-	return false;
+	return !invalid;
 }
 
 void LB_STDCALL lbDocumentVersion::setData(lb_I_String* _Interface, lb_I_String* _Functor, lb_I_String* _Module, lb_I_String* _ModuleVersion, lb_I_String* _StoragePluginNamespace, lb_I_String* _StoragePluginVersion) {
@@ -141,6 +154,7 @@ void LB_STDCALL lbDocumentVersion::setData(lb_I_String* _Interface, lb_I_String*
 	ModuleVersion++;
 	StoragePluginNamespace++;
 	StoragePluginVersion++;
+	invalid = false;
 }
 
 void LB_STDCALL lbDocumentVersion::setData(const char* _Interface, const char* _Functor, const char* _Module, const char* _ModuleVersion, const char* _StoragePluginNamespace, const char* _StoragePluginVersion) {
@@ -150,6 +164,7 @@ void LB_STDCALL lbDocumentVersion::setData(const char* _Interface, const char* _
 	*ModuleVersion = _ModuleVersion;
 	*StoragePluginNamespace =_StoragePluginNamespace;
 	*StoragePluginVersion = _StoragePluginVersion;
+	invalid = false;
 }
 
 lb_I_String* LB_STDCALL lbDocumentVersion::getInterface() {
