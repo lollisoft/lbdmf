@@ -295,8 +295,38 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_DocumentVersion*) {
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DocumentVersion* dver) {
+	char* buffer = NULL;
+	char* _Interface = NULL;
+	char* _Functor = NULL;
+	char* _Module = NULL;
+	char* _ModuleVersion = NULL;
+	char* _StoragePluginNamespace = NULL;
+	char* _StoragePluginVersion = NULL;
+	*iStream >> buffer;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	*s = buffer;
+	free(buffer);
+	
+	
+	if (*s == "DocumentVersion") {
 
+		*iStream >> _Interface;
+		*iStream >> _Functor;
+		*iStream >> _Module;
+		*iStream >> _ModuleVersion;
+		*iStream >> _StoragePluginNamespace;
+		*iStream >> _StoragePluginVersion;
+		dver->setData(_Interface, _Functor, _Module, _ModuleVersion, _StoragePluginNamespace, _StoragePluginVersion);
+	} else {
+		dver->setInvalid();
+		iStream->close();
+		bool ret = iStream->open();
+		if (!ret) {
+			_LOG << "lbInputStreamOpr::visit(lb_I_DocumentVersion* dver) Failed to reopen file." LOG_
+		}
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_String* s) {
@@ -1139,8 +1169,16 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
 		
 		if (DocumentVersion->isValidVersion()) {
 			// Read out the version information and create a corresponding namespace to get the correct implementation.
+			
+			UAP(lb_I_String, v)
+			v = DocumentVersion->getStoragePluginVersion();
+			
+			*StorageNamespace += "_";
+			*StorageNamespace += v->charrep();
+			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is setting custom version to " << StorageNamespace->charrep() LOG_
+		} else {
+			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is an old version of " << StorageNamespace->charrep() LOG_
 		}
-		
 		// Get the plugin that is responsible to save the data.		
 		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());
 		

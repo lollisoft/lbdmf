@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.150 $
+ * $Revision: 1.151 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.150 2012/01/21 18:39:21 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.151 2012/02/12 11:58:26 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.151  2012/02/12 11:58:26  lollisoft
+ * Implemented detection of a file version that has no version information.
+ *
  * Revision 1.150  2012/01/21 18:39:21  lollisoft
  * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
  *
@@ -2300,6 +2303,12 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	
 	if (strcmp(searchArgument, "lb_I_String") == 0) {
 		functor = PREFIX "instanceOfString";
+		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_DocumentVersion") == 0) {
+		functor = PREFIX "instanceOflbDocumentVersion";
 		module = "lbClasses";
 		found = true;
 	}

@@ -37,7 +37,7 @@ class lb_I_DocumentVersion :
 public lb_I_Unknown
 {
 public:
-
+	virtual void LB_STDCALL setInvalid() = 0;
 	virtual bool LB_STDCALL isValidVersion() = 0;
 
 	virtual void LB_STDCALL setData(lb_I_String* _Interface, lb_I_String* _Functor, lb_I_String* _Module, lb_I_String* _ModuleVersion, lb_I_String* _StoragePluginNamespace, lb_I_String* _StoragePluginVersion) = 0;
