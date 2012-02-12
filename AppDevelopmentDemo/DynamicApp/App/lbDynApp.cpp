@@ -190,6 +190,9 @@ public:
 		char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
 		
 		lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name);
+		void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL);
+        lbErrCodes LB_STDCALL OnSaveDocumentInCurrentVersion(lb_I_Unknown* uk);
+
 protected:
 
         /** \brief Load the database forms.
@@ -266,7 +269,10 @@ protected:
 		UAP(lb_I_String, lbDynAppUMLImport)
 		UAP(lb_I_String, lbDynAppXMLFormat)
 		UAP(lb_I_String, lbDynAppInternalFormat)
+		UAP(lb_I_DocumentVersion, DocumentVersion)
+		UAP(lb_I_DocumentVersion, CurrentVersion)
 		
+		bool saveToCurrentVersion;
 		
         //UAP(lb_I_Boolean, UseOtherXSLFile)
 
@@ -314,6 +320,15 @@ lbDynamicApplication::lbDynamicApplication() {
 		*lbDynAppUMLImport = "lbDynAppUMLImport";
 		*lbDynAppXMLFormat = "lbDynAppXMLFormat";
 		*lbDynAppInternalFormat = "lbDynAppInternalFormat";
+
+		REQUEST(getModuleInstance(), lb_I_DocumentVersion, DocumentVersion)
+		REQUEST(getModuleInstance(), lb_I_DocumentVersion, CurrentVersion)
+		saveToCurrentVersion = false;
+
+		/*
+		 * Important: This version information should be changed on each change in the UML model or entity model used.
+		 */
+		CurrentVersion->setData("lb_I_Application", "instanceOfApplication", "lbDynApp", "2.0", lbDynAppInternalFormat->charrep(), "2_0");
 		
 #ifdef WINDOWS
         XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
@@ -369,7 +384,26 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lbDynamicApplication::OnSaveDocumentInCurrentVersion(lb_I_Unknown* uk) {
+	saveToCurrentVersion = true;
+}
 
+void LB_STDCALL lbDynamicApplication::loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version) {
+	if (version == NULL || isOld) {
+		// Register handler OnSaveDocumentInCurrentVersion
+        int unused;
+        UAP_REQUEST(getModuleInstance(), lb_I_String, editMenu)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
+        
+		*editMenu = _trans("&File");
+        *menuEntry = _trans("Save document in current version");
+        eman->registerEvent("OnSaveDocumentInCurrentVersion", unused);
+        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::OnSaveDocumentInCurrentVersion, "OnSaveDocumentInCurrentVersion");
+        metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "OnSaveDocumentInCurrentVersion", "");
+		
+		metaapp->msgBox("Information", "The loaded application is from an older version.");
+	}
+}
 
 lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
@@ -2254,10 +2288,31 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 
                         *name = "ApplicationData";
                         document->setUAPContainer(*&name, *&ApplicationData);
-                }
+                } else {
+					_LOG << "lbDynamicApplication::uninitialize() Error: No active document was loaded." LOG_
+					*param = "StorageDelegateNamespace";
+					document->getUAPString(*&param, *&StorageNamespace);
+
+					*tempStorageNamespace = lbDynAppInternalFormat->charrep();
+					document->setUAPString(*&param, *&tempStorageNamespace);
+				}
 
                 /// \todo Move storing procedure to a storage handler.
 
+				if (saveToCurrentVersion) {
+					*param = "StorageDelegateNamespace";
+					document->getUAPString(*&param, *&StorageNamespace);
+
+					*tempStorageNamespace = lbDynAppInternalFormat->charrep();
+					
+					UAP(lb_I_String, ver)
+					ver = CurrentVersion->getStoragePluginVersion();
+					*tempStorageNamespace += "_v";
+					*tempStorageNamespace += ver->charrep();
+					
+					document->setUAPString(*&param, *&tempStorageNamespace);
+				}
+				
                 pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
 
                 if (pl == NULL) {
@@ -2384,19 +2439,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
         UAP(lb_I_FileOperation, fOp)
         UAP(lb_I_DatabaseOperation, fOpDB)
 
-        _CL_LOG << "Try to find a lb_I_FileOperation plugin ..." LOG_
+        _LOG << "Try to find a lb_I_FileOperation plugin ..." LOG_
         pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 
         if (pl != NULL) {
-                _CL_LOG << "Found one ..." LOG_
-                ukPl = pl->getImplementation();
+			_LOG << "Found one ..." LOG_
+			ukPl = pl->getImplementation();
         } else {
-                _LOG << "No lb_I_FileOperation plugin available." LOG_
+			_LOG << "No lb_I_FileOperation plugin available." LOG_
         }
 
         if (ukPl != NULL) QI(ukPl, lb_I_FileOperation, fOp)
         if (fOp == NULL) {
-                _LOG << "Error: Found a lb_I_FileOperation plugin via PM->getFirstMatchingPlugin(...), but QI failed." LOG_
+			_LOG << "Error: Found a lb_I_FileOperation plugin via PM->getFirstMatchingPlugin(...), but QI failed." LOG_
         } else {
                 isFileAvailable = fOp->begin(filename->charrep());
         }
@@ -2536,7 +2591,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                 }
         }
 
-        _CL_LOG << "Load application settings from file or database ..." LOG_
+        _LOG << "Load application settings from file or database ..." LOG_
 
         if (isFileAvailable || isDBAvailable) {
 /*...sLoad from file or database:16:*/
@@ -2721,7 +2776,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
 
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const char* app) {
-        _CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_
+        _LOG << "lbDynamicApplication::initialize(...) called." LOG_
         // To be implemented in a separate application module
         lbErrCodes err = ERR_NONE;
         int unused;
