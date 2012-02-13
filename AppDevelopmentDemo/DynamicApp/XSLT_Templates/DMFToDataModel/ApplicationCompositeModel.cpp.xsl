@@ -959,7 +959,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
-			
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularNameACM10" select="@name"/>
@@ -986,7 +986,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 </xsl:variable>
 	*name = "<xsl:value-of select="$FormularNameACM10"/>";
 	uk = document-&gt;getElement(&amp;key);
-	QI(uk, lb_I_<xsl:value-of select="$FormularNameACM10"/>, <xsl:value-of select="$FormularNameACM10"/>)
+	if (uk != NULL) {
+		QI(uk, lb_I_<xsl:value-of select="$FormularNameACM10"/>, <xsl:value-of select="$FormularNameACM10"/>)
+	} else {
+		AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularNameACM10"/>, Model, <xsl:value-of select="$FormularNameACM10"/>, "'<xsl:value-of select="$FormularNameACM10"/>'")
+	}
 </xsl:for-each>
 
 	// Store the settings from dynamic application

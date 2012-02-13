@@ -1140,100 +1140,192 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
-			
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			
 
 	*name = "Actions";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Actions, Actions)
+	if (uk != NULL) {
+		QI(uk, lb_I_Actions, Actions)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Actions, Model, Actions, "'Actions'")
+	}
 
 	*name = "Action_Steps";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Action_Steps, Action_Steps)
+	if (uk != NULL) {
+		QI(uk, lb_I_Action_Steps, Action_Steps)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Action_Steps, Model, Action_Steps, "'Action_Steps'")
+	}
 
 	*name = "UserAccounts";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_UserAccounts, UserAccounts)
+	if (uk != NULL) {
+		QI(uk, lb_I_UserAccounts, UserAccounts)
+	} else {
+		AQUIRE_PLUGIN(lb_I_UserAccounts, Model, UserAccounts, "'UserAccounts'")
+	}
 
 	*name = "Formulars";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Formulars, Formulars)
+	if (uk != NULL) {
+		QI(uk, lb_I_Formulars, Formulars)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Formulars, Model, Formulars, "'Formulars'")
+	}
 
 	*name = "FormularParameter";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_FormularParameter, FormularParameter)
+	if (uk != NULL) {
+		QI(uk, lb_I_FormularParameter, FormularParameter)
+	} else {
+		AQUIRE_PLUGIN(lb_I_FormularParameter, Model, FormularParameter, "'FormularParameter'")
+	}
 
 	*name = "User_Applications";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_User_Applications, User_Applications)
+	if (uk != NULL) {
+		QI(uk, lb_I_User_Applications, User_Applications)
+	} else {
+		AQUIRE_PLUGIN(lb_I_User_Applications, Model, User_Applications, "'User_Applications'")
+	}
 
 	*name = "Applications_Formulars";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Applications_Formulars, Applications_Formulars)
+	if (uk != NULL) {
+		QI(uk, lb_I_Applications_Formulars, Applications_Formulars)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, Applications_Formulars, "'Applications_Formulars'")
+	}
 
 	*name = "Applications";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Applications, Applications)
+	if (uk != NULL) {
+		QI(uk, lb_I_Applications, Applications)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Applications, Model, Applications, "'Applications'")
+	}
 
 	*name = "Translations";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Translations, Translations)
+	if (uk != NULL) {
+		QI(uk, lb_I_Translations, Translations)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Translations, Model, Translations, "'Translations'")
+	}
 
 	*name = "Formular_Actions";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Formular_Actions, Formular_Actions)
+	if (uk != NULL) {
+		QI(uk, lb_I_Formular_Actions, Formular_Actions)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, Formular_Actions, "'Formular_Actions'")
+	}
 
 	*name = "ApplicationParameter";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ApplicationParameter, ApplicationParameter)
+	if (uk != NULL) {
+		QI(uk, lb_I_ApplicationParameter, ApplicationParameter)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, ApplicationParameter, "'ApplicationParameter'")
+	}
 
 	*name = "Reports";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Reports, Reports)
+	if (uk != NULL) {
+		QI(uk, lb_I_Reports, Reports)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Reports, Model, Reports, "'Reports'")
+	}
 
 	*name = "ReportParameters";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ReportParameters, ReportParameters)
+	if (uk != NULL) {
+		QI(uk, lb_I_ReportParameters, ReportParameters)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ReportParameters, Model, ReportParameters, "'ReportParameters'")
+	}
 
 	*name = "ReportElements";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ReportElements, ReportElements)
+	if (uk != NULL) {
+		QI(uk, lb_I_ReportElements, ReportElements)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ReportElements, Model, ReportElements, "'ReportElements'")
+	}
 
 	*name = "ReportElementTypes";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ReportElementTypes, ReportElementTypes)
+	if (uk != NULL) {
+		QI(uk, lb_I_ReportElementTypes, ReportElementTypes)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, ReportElementTypes, "'ReportElementTypes'")
+	}
 
 	*name = "ReportTexts";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ReportTexts, ReportTexts)
+	if (uk != NULL) {
+		QI(uk, lb_I_ReportTexts, ReportTexts)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ReportTexts, Model, ReportTexts, "'ReportTexts'")
+	}
 
 	*name = "Formular_Fields";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Formular_Fields, Formular_Fields)
+	if (uk != NULL) {
+		QI(uk, lb_I_Formular_Fields, Formular_Fields)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, Formular_Fields, "'Formular_Fields'")
+	}
 
 	*name = "Action_Step_Transitions";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Action_Step_Transitions, Action_Step_Transitions)
+	if (uk != NULL) {
+		QI(uk, lb_I_Action_Step_Transitions, Action_Step_Transitions)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Action_Step_Transitions, Model, Action_Step_Transitions, "'Action_Step_Transitions'")
+	}
 
 	*name = "Column_Types";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Column_Types, Column_Types)
+	if (uk != NULL) {
+		QI(uk, lb_I_Column_Types, Column_Types)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Column_Types, Model, Column_Types, "'Column_Types'")
+	}
 
 	*name = "FKPK_Mapping";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_FKPK_Mapping, FKPK_Mapping)
+	if (uk != NULL) {
+		QI(uk, lb_I_FKPK_Mapping, FKPK_Mapping)
+	} else {
+		AQUIRE_PLUGIN(lb_I_FKPK_Mapping, Model, FKPK_Mapping, "'FKPK_Mapping'")
+	}
 
 	*name = "Action_Types";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Action_Types, Action_Types)
+	if (uk != NULL) {
+		QI(uk, lb_I_Action_Types, Action_Types)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Action_Types, Model, Action_Types, "'Action_Types'")
+	}
 
 	*name = "Action_Parameters";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Action_Parameters, Action_Parameters)
+	if (uk != NULL) {
+		QI(uk, lb_I_Action_Parameters, Action_Parameters)
+	} else {
+		AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, Action_Parameters, "'Action_Parameters'")
+	}
 
 	*name = "ActionStep_Parameters";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_ActionStep_Parameters, ActionStep_Parameters)
+	if (uk != NULL) {
+		QI(uk, lb_I_ActionStep_Parameters, ActionStep_Parameters)
+	} else {
+		AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, ActionStep_Parameters, "'ActionStep_Parameters'")
+	}
 
 
 	// Store the settings from dynamic application
