@@ -5,7 +5,7 @@
 <!--<xsl:variable name="targetdatabase" select="'PostgreSQL'"/>-->
 <xsl:variable name="targetdatabase" select="'DatabaseLayerGateway'"/><!-- Mapped from Application Database backend in the properties window group General -->
 <xsl:variable name="execute_droprules" select="'yes'"/>
-<xsl:variable name="database_name" select="'lbDMF'"/>
+<xsl:variable name="database_name" select="'BankTeller'"/>
 <xsl:variable name="database_user" select="'&lt;dbuser&gt;'"/>
 <xsl:variable name="database_pass" select="'&lt;dbpass&gt;'"/>
 </xsl:stylesheet>
