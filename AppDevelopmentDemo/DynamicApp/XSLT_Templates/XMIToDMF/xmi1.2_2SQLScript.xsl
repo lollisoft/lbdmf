@@ -43,6 +43,7 @@
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
 	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 </xsl:variable>
@@ -51,7 +52,6 @@
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
-
 <!-- ************************************************* -->
 
   <xsl:template match="text()|@*">
@@ -99,6 +99,7 @@
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
+-- Creating a database script for '<xsl:value-of select="$targetdatabase"/>'
 
 <!-- Create some required functions -->
 
