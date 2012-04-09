@@ -43,13 +43,15 @@
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 </xsl:variable>
 <xsl:variable name="TargetDBVersion">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
-
 <!-- ************************************************* -->
 
 
@@ -95,6 +97,7 @@
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
+-- Creating a database script for targetdatabase='<xsl:value-of select="$targetdatabase"/>' TargetDBType='<xsl:value-of select="$TargetDBType"/>'
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 		<!-- Generate System database definition -->
 		<xsl:variable name="AppName"><xsl:value-of select="@name"/></xsl:variable>
@@ -111,7 +114,6 @@
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
 </xsl:if>
-	
 	
 -- Package: <xsl:value-of select="@name"/>
 -- Skip rewrite
@@ -557,19 +559,21 @@ insert into actions (name, typ, source, target) values ('<xsl:value-of select="$
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
 'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, currval('actions_id_seq')); 
-
+delete from formular_actions where formular = GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>');
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
 'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, currval('actions_id_seq')); 
 
+delete from formular_actions where formular = GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>');
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
 'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>')); 
 
+delete from formular_actions where formular = (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
 insert into formular_actions (formular, action, event) values ((select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>'), 
 (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
