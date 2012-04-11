@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 5
+  revision 6
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -83,19 +83,6 @@ ${inlines}
 	relation_ref 128002 // <aggregation>
       end
 
-      classrelation 134658 // <aggregation>
-	relation 134530 o---
-	  stereotype "detailmaster_action"
-	  a role_name "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 134658 // <aggregation>
-	  b role_name "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 134786 // <aggregation>
-      end
-
       attribute 135042 "ReleaseDatum"
 	private explicit_type "date"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -108,6 +95,7 @@ ${inlines}
 
       classrelation 141570 // <aggregation>
 	relation 141186 o---
+	  stereotype "masterdetail_action"
 	  a role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -116,6 +104,10 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 141698 // <aggregation>
+      end
+
+      classrelation 148354 // <aggregation>
+	relation_ref 147714 // <aggregation>
       end
     end
 
@@ -166,6 +158,7 @@ ${inlines}
 
       classrelation 141314 // <aggregation>
 	relation 141058 o---
+	  stereotype "masterdetail_action"
 	  a role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -209,8 +202,17 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 134786 // <aggregation>
-	relation_ref 134530 // <aggregation>
+      classrelation 148226 // <aggregation>
+	relation 147714 o---
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148226 // <aggregation>
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148354 // <aggregation>
       end
     end
 
