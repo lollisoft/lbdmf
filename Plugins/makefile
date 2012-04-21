@@ -123,6 +123,7 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	UserFeedback \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
@@ -151,6 +152,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+UserFeedback: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 lbBasicEventHandlers: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
