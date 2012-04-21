@@ -101,7 +101,7 @@ lbErrCodes LB_STDCALL lbUserFeedback::SendPositiveFeedback(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	lb_I_GUI* gui;
 	meta->getGUI(&gui);
-	gui->openWebPage("Positive User Feedback", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=14");
+	gui->openWebPage("I am happy with this product", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=14");
 	return ERR_NONE;
 }
 
@@ -109,7 +109,7 @@ lbErrCodes LB_STDCALL lbUserFeedback::SendNegativeFeedback(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	lb_I_GUI* gui;
 	meta->getGUI(&gui);
-	gui->openWebPage("Negative User Feedback", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=15");
+	gui->openWebPage("I am sad about this product", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=15");
 	return ERR_NONE;
 }
 
@@ -117,7 +117,7 @@ lbErrCodes LB_STDCALL lbUserFeedback::SendCoolIdeaFeedback(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	lb_I_GUI* gui;
 	meta->getGUI(&gui);
-	gui->openWebPage("Cool Idea User Feedback", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=17");
+	gui->openWebPage("I have a cool idea", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=17");
 	return ERR_NONE;
 }
 
@@ -125,7 +125,7 @@ lbErrCodes LB_STDCALL lbUserFeedback::SendPuzzledFeedback(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	lb_I_GUI* gui;
 	meta->getGUI(&gui);
-	gui->openWebPage("Puzzled User Feedback", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=16");
+	gui->openWebPage("I am puzzled, can you help me", "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=16");
 	return ERR_NONE;
 }
 
