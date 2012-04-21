@@ -95,6 +95,33 @@ lbErrCodes LB_STDCALL lbUserFeedback::registerEventHandler(lb_I_Dispatcher* disp
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbUserFeedback::SendPuzzledFeedback, "SendPuzzledFeedback");
 	eman->registerEvent("SendCoolIdeaFeedback", temp);
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbUserFeedback::SendCoolIdeaFeedback, "SendCoolIdeaFeedback");
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+	char* help = strdup(_trans("&Help"));
+	char* negativeentry = strdup(_trans("I am sad about this product"));
+	char* positiveentry = strdup(_trans("I am happy with this product"));
+	char* coolideaentry = strdup(_trans("I have a cool idea"));
+	char* puzzledentry = strdup(_trans("I am puzzled, can you help me"));
+
+	meta->addMenuEntry(help, negativeentry, "SendNegativeFeedback", "");
+	meta->addMenuEntry(help, positiveentry, "SendPositiveFeedback", "");
+	meta->addMenuEntry(help, coolideaentry, "SendCoolIdeaFeedback", "");
+	meta->addMenuEntry(help, puzzledentry, "SendPuzzledFeedback", "");
+
+	meta->addToolBar("User Feedback");
+	meta->addToolBarButton("User Feedback", "I am happy with this product", "SendPositiveFeedback", "nicubunu_Smiley_Happy.png");
+	meta->addToolBarButton("User Feedback", "I am sad about this product", "SendNegativeFeedback", "nicubunu_Smiley_Sad.png");
+	meta->addToolBarButton("User Feedback", "I have a cool idea", "SendCoolIdeaFeedback", "nicubunu_Smiley_Cool.png");
+	meta->addToolBarButton("User Feedback", "I am puzzled, can you help me", "SendPuzzledFeedback", "nicubunu_Smiley_Puzzled.png");
+	
+	free(help);
+	free(negativeentry);
+	free(positiveentry);
+	free(coolideaentry);
+	free(puzzledentry);
+	
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbUserFeedback::SendPositiveFeedback(lb_I_Unknown* uk) {
@@ -191,31 +218,6 @@ lbErrCodes LB_STDCALL lbPluginUserFeedback::autorun() {
 		lbUserFeedback* feedback = new lbUserFeedback();
 		QI(feedback, lb_I_Unknown, ukUserFeedback)
 		feedback->registerEventHandler(*&disp);
-
-		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-
-		char* help = strdup(_trans("&Help"));
-		char* negativeentry = strdup(_trans("Send negative feedback"));
-		char* positiveentry = strdup(_trans("Send positive feedback"));
-		char* coolideaentry = strdup(_trans("Send cool idea feedback"));
-		char* puzzledentry = strdup(_trans("Send puzzled feedback"));
-
-		meta->addMenuEntry(help, negativeentry, "SendNegativeFeedback", "");
-		meta->addMenuEntry(help, positiveentry, "SendPositiveFeedback", "");
-		meta->addMenuEntry(help, coolideaentry, "SendCoolIdeaFeedback", "");
-		meta->addMenuEntry(help, puzzledentry, "SendPuzzledFeedback", "");
-
-		meta->addToolBar("User Feedback");
-		meta->addToolBarButton("User Feedback", "I am happy with this product", "SendPositiveFeedback", "nicubunu_Smiley_Happy.png");
-		meta->addToolBarButton("User Feedback", "I am sad about this product", "SendNegativeFeedback", "nicubunu_Smiley_Sad.png");
-		meta->addToolBarButton("User Feedback", "I have a cool idea", "SendCoolIdeaFeedback", "nicubunu_Smiley_Cool.png");
-		meta->addToolBarButton("User Feedback", "I am puzzled, can you help me", "SendPuzzledFeedback", "nicubunu_Smiley_Puzzled.png");
-		
-		free(help);
-		free(negativeentry);
-		free(positiveentry);
-		free(coolideaentry);
-		free(puzzledentry);
 	}
 	
 	return err;
