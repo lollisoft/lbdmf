@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.43.2.1 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.1 2012/04/21 11:00:00 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.1  2012/04/21 11:00:00  lollisoft
+ * Added support methods for a new user feedback plugin.
+ *
  * Revision 1.43  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -422,6 +425,10 @@ public:
 	/// \brief Toggle a tool from the toolbar.
 	lbErrCodes LB_STDCALL toggleTool_From_ToolBar(lb_I_Unknown* uk);
 	
+		
+	/// \brief Open a web page in a notebook page.
+	lbErrCodes LB_STDCALL openWebPage(lb_I_Unknown* uk);
+
 	/* \brief Enabling posting events programmatically.
 	 * Allows to send an event after this event has been processed.
 	 * As of wxWidgets, wxEvtHandler::AddPendingEvent(wxEvent& event) is used.
@@ -534,6 +541,11 @@ public:
 
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass);
 
+		
+	/// \brief Open a web page in a notebook page.
+	virtual lbErrCodes LB_STDCALL openWebPage(const char* pagename, const char* url);
+
+	
 	virtual lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
 

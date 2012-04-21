@@ -81,8 +81,6 @@
 #include <lbConfigHook.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
-
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/imaglist.h"
@@ -95,7 +93,7 @@
 #include <wx/file.h>
 #include <wx/splash.h>
 #include <wx/treebase.h>
-
+#include <wx/html/htmlwin.h>
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
@@ -265,10 +263,7 @@ void wxAppSelectPage::setLoggedOnUser(const char* user) {
 
                 meta->setUserName(userid);
 
-				UAP(lb_I_SecurityProvider, securityManager)
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-                apps = securityManager->getApplications();
+                apps = meta->getApplications();
 
                 box->Clear();
 
@@ -441,25 +436,17 @@ bool wxLogonPage::TransferDataFromWindow() {
         const char* pass = strdup(getTextValue("Passwort:"));
         const char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-        if (securityManager != NULL && securityManager->login(user, pass)) {
+        if (meta->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
                 if (pass) free((void*)pass);
                 if (user) free((void*)user);
 
                 return TRUE;
         } else {
-                char* buf = NULL;
+                char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
                 char* buf1 = strdup(_trans("Error"));
-
-				if (securityManager != NULL)
-					buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-				else
-					buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
-				
                 wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
                 dialog.ShowModal();
@@ -623,6 +610,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         eman->registerEvent("addTool_To_ToolBar", temp);
         eman->registerEvent("removeTool_From_ToolBar", temp);
         eman->registerEvent("toggleTool_From_ToolBar", temp);
+        eman->registerEvent("openWebPage", temp);
+
 
 		eman->registerEvent("removeToolBar", temp);
 		eman->registerEvent("showLeftTreeView", _showLeftTreeView);
@@ -643,6 +632,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addTool_To_ToolBar, "addTool_To_ToolBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
+        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::openWebPage, "openWebPage");
 
 		disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftTreeView, "showLeftTreeView");
 
@@ -959,12 +949,133 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wizard->SetPageSize(size);
 
-        wizard->RunWizard(page1);
+        if ( ! wizard->RunWizard(page1) )
+        {
+            wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
+            wxICON_INFORMATION | wxOK);
+        }
+
+//      wxString app = page3->getSelectedApp();
+
         wizard->Destroy();
 
+
+#ifdef bla
+/*...s:0:*/
+
+        lbErrCodes err = ERR_NONE;
+
+        // Locate the form instance in the container
+
+        lbLoginDialog* _dialog = NULL;
+
+        if (forms == NULL) {
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
+        }
+
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_KeyBase, key)
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
+        fName->setData("LoginForm");
+
+        QI(fName, lb_I_KeyBase, key)
+
+        uk = forms->getElement(&key);
+
+        if (uk != NULL) {
+                _dialog = (lbLoginDialog*) *&uk;
+        }
+
+        if (_dialog) {
+                _dialog->Show(TRUE);
+        } else {
+                _dialog = new lbLoginDialog();
+                
+
+                QI(_dialog, lb_I_Unknown, uk)
+
+                forms->insert(&uk, &key);
+
+                delete _dialog;
+                _dialog = NULL;
+
+                uk = forms->getElement(&key);
+
+                if (uk != NULL) {
+                        _dialog = (lbLoginDialog*) *&uk;
+                }
+
+                _dialog->init(frame);
+                _dialog->Show();
+        }
+/*...e*/
+#endif
         return NULL;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_wxGUI::openWebPage(const char* pagename, const char* url) {
+
+		wxLaunchDefaultBrowser(url);
+		return ERR_NONE;
+
+        if (frame->isPanelUsage()) {
+                if (!notebook) {
+                        notebook = new wxNotebook(frame, -1);
+                        sizerMain = new wxBoxSizer(wxVERTICAL);
+
+                        frame->SetAutoLayout(TRUE);
+                        notebook->SetAutoLayout(TRUE);
+
+                        sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+
+                        frame->SetSizer(sizerMain);
+#ifdef USE_WXAUI
+                        frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+                        frame->getAUIManager().Update();
+#endif
+                }
+        }
+
+
+		// Remove old Page
+		int num = notebook->GetPageCount();
+		for (int i = 0; i < num; i++) {
+			if (strncmp(notebook->GetPageText(i).c_str(), pagename, strlen(pagename)) == 0) {
+				notebook->DeletePage(i);
+				break; // Bug: The num variable is not updated and will produce an index out of range error.
+			}
+		}
+
+
+		if (frame->isPanelUsage()) {
+				wxHtmlWindow* htw = new wxHtmlWindow(notebook);
+				htw->LoadPage(url);
+				wxWindow* w = htw;
+				w->Fit();
+
+				_LOG << "Add notebook pane with name " << pagename LOG_
+				notebook->AddPage(w, pagename, true);
+
+				if (!frame->IsMaximized()) {
+						notebook->SetSizeHints(w->GetSize());
+						notebook->Fit();
+				}
+
+				if (frame->isSplitted()) {
+						if (!frame->IsMaximized()) frame->Fit();
+				} else {
+						if (!frame->IsMaximized()) {
+
+							frame->SetSizeHints(notebook->GetSize());
+							frame->Fit();
+							frame->Centre();
+						}
+				}
+		}
+
+}
 
 lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) {
         lbErrCodes err = ERR_NONE;
@@ -2759,6 +2870,30 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeTool_From_ToolBar(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::toggleTool_From_ToolBar(lb_I_Unknown* uk) {
+        return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::openWebPage(lb_I_Unknown* uk) {
+        lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+        UAP(lb_I_Parameter, param)
+        QI(uk, lb_I_Parameter, param)
+
+		if (param == NULL) {
+			_LOGERROR << "lb_wxFrame::openWebPage() Error: Called with a wrong parameter type. Expected lb_I_Parameter." LOG_
+			return err;
+		}
+		
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, url)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, pagename)
+
+        *parameter = "URL";
+        param->getUAPString(*&parameter, *&url);
+        *parameter = "URL";
+        param->getUAPString(*&parameter, *&pagename);
+
+		gui->openWebPage(pagename->charrep(), url->charrep());
+		
         return ERR_NONE;
 }
 
