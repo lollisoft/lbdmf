@@ -298,6 +298,8 @@ public:
 	virtual void LB_STDCALL showPendingMessages() = 0;
 	
 	virtual void LB_STDCALL refreshAll() = 0;
+
+	virtual lbErrCodes LB_STDCALL openWebPage(const char* pagename, const char* url) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
