@@ -43,6 +43,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	UserFeedback \
 	TestPlugin \
 	VisitorOperations \
 	DatabaseLayerGateway \
@@ -62,6 +63,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
@@ -81,6 +83,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
@@ -100,6 +103,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
