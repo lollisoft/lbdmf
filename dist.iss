@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Development Environment
-AppVerName=lbDMF Development Environment 1.0.4-stable-rc1
-OutputBaseFilename=lbDMF-Source-1.0.4-stable-rc1
+AppVerName=lbDMF Development Environment 1.0.4-stable-rc2
+OutputBaseFilename=lbDMF-Source-1.0.4-stable-rc2
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
