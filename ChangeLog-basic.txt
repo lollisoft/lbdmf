@@ -1,303 +1,109 @@
-2011-10-16 20:52  lollisoft
+2012-04-22 20:05  lollisoft
 
-	* Test/GUI/wxWrapper/postlink-mac.sh: Changed the dmg version.
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed release name.
 
-2011-10-16 20:35  lollisoft
+2012-04-22 19:13  lollisoft
 
-	* ChangeLog-basic.txt: New changelog for release 1.0.4-stable-rc1.
-	  (2)
+	* Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Splash
+	  Screen changes.
 
-2011-10-16 20:27  lollisoft
-
-	* vendor/mkmk/make-osx.sh: Missing a Leopart version in the
-	  detection.
-
-2011-10-16 20:14  lollisoft
-
-	* ChangeLog-basic.txt: New changelog for release 1.0.4-stable-rc1.
-
-2011-10-16 19:30  lollisoft
-
-	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
-	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Changed
-	  splash screen.
-
-2011-10-16 14:36  lollisoft
+2012-04-22 19:07  lollisoft
 
 	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
-	  interfaces/lbInterfaces.h: Changes to package new release (1.0.4
-	  stable rc1)
+	  interfaces/lbInterfaces.h: Changed version numbers.
 
-2011-10-16 12:01  lollisoft
+2012-04-22 19:05  lollisoft
 
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Fixed a
-	  buffer overflow.
+	* Test/GUI/wxWrapper/splash.png, BaseDevelopment/splash.png: Copied
+	  version new version into the branch for the branch release.
 
-2011-10-16 10:40  lollisoft
+2012-04-22 18:53  lollisoft
 
-	* BaseDevelopment/lbclasses/skiplist.cpp,
-	  Test/GUI/wxWrapper/dynamic.cpp,
+	* make_src_dist.sh: Corrected checkout to match the branch.
+
+2012-04-22 18:19  lollisoft
+
+	* lbdmf.spec: Changed revision number.
+
+2012-04-22 17:38  lollisoft
+
+	* Plugins/makefile: Added osx and other targets to compile that I
+	  have forgotten.
+
+2012-04-22 12:35  lollisoft
+
+	* Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Copied
+	  version 1.17 into the branch for the branch release.
+
+2012-04-22 12:13  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Copied version 1.13 into
+	  the branch for the branch release.
+
+2012-04-21 13:00  lollisoft
+
+	* interfaces/lbInterfaces-sub-ui.h,
 	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  UnitTests/Actions/Actions.cpp, UnitTests/Actions/UIWrapper.cpp,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Refactoring
-	  produced again some uninitialized variables that havs been fixed
-	  now. The app seems to start and esit without errors.
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Added support methods for a
+	  new user feedback plugin.
 
-2011-10-15 23:47  lollisoft
+2012-04-21 12:55  lollisoft
 
-	* AppDevelopmentDemo/App/Application.cpp,
-	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/DecisionAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/ExecuteAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/SendSignalAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/lbDMFActionStepIdForFormValue.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
-	  BaseDevelopment/lbDB/lbDB.cpp,
-	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
-	  BaseDevelopment/lbXMLConfig/lbDOMConfig/lbDOMConfig.cpp,
-	  BaseDevelopment/lbclasses/lbInputStream.cpp,
-	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
-	  BaseDevelopment/lbclasses/lbcontainer.cpp,
-	  BaseDevelopment/lbclasses/lbelement.h,
-	  BaseDevelopment/lbclasses/lbkey.cpp,
-	  BaseDevelopment/lbclasses/lbobject.cpp,
-	  BaseDevelopment/lbclasses/lbthread.cpp,
-	  BaseDevelopment/lbclasses/lbthread.h,
-	  BaseDevelopment/lbclasses/misc.cpp,
-	  BaseDevelopment/lbclasses/skiplist.cpp,
-	  BaseDevelopment/lbcs/appcs.cpp,
-	  BaseDevelopment/lbtransfer/lbTransferData.cpp,
-	  BaseDevelopment/lbtransfer/socket.cpp,
-	  Plugins/DatabaseForm/Actions.cpp, Plugins/DatabaseForm/fkpk.cpp,
-	  Plugins/DatabaseForm/formularactions.cpp,
-	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseForm.cpp,
-	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
-	  Plugins/DatabaseForm/lbDetailMasterAction.cpp,
-	  Plugins/DatabaseForm/lbMasterDetailAction.cpp,
-	  Plugins/DatabaseForm/lbOpAqueAction.cpp,
-	  Plugins/DatabaseForm/lbSqlQueryAction.cpp,
-	  Plugins/DatabaseForm/plugin.cpp,
-	  Plugins/DatabaseLayerGateway/lbDB.cpp,
-	  Plugins/DatabaseLayerGateway/pluginDatabaseLayerGateway.cpp,
-	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
-	  Plugins/TestPlugin/pluginTest.cpp,
-	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
-	  Plugins/VisitorOperations/pluginInputStream.cpp,
-	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
-	  Plugins/VisitorOperations/pluginJSONOutputStream.cpp,
-	  Plugins/VisitorOperations/pluginOutputStream.cpp,
-	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
-	  Plugins/lbBasicEventHandlers/lbBasicEventHandlers.cpp,
-	  Plugins/lbBasicEventHandlers/lbLoopEventHandlers.cpp,
-	  Plugins/lbDMFDataModel/lbActionParameters.cpp,
-	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
-	  Plugins/lbDMFDataModel/lbActionTypesModel.cpp,
-	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
-	  Plugins/lbDMFDataModel/lbApplicationsModel.cpp,
-	  Plugins/lbDMFDataModel/lbDBReportModel.cpp,
-	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
-	  Plugins/lbDMFDataModel/lbFormularActionsModel.cpp,
-	  Plugins/lbDMFDataModel/lbFormularsModel.cpp,
-	  Plugins/lbDMFDataModel/lbParameters.cpp,
-	  Plugins/lbDMFDataModel/lbRelations.cpp,
-	  Plugins/lbDMFDataModel/lbTranslationsModel.cpp,
-	  Plugins/lbDMFDataModel/lbUsersModel.cpp,
-	  Plugins/lbDMFDataModel/plugin.cpp,
-	  Plugins/lbFileOperationsPlugin/lbFileExists.cpp,
-	  Plugins/lbFileOperationsPlugin/lbReadTextFileToString.cpp,
-	  Plugins/lbFileOperationsPlugin/lbWriteStringToFile.cpp,
-	  Plugins/lbXSLTTransformer/lbXSLTTransformer.cpp,
-	  RegressionTests/Basetypes/Basetypes.cpp,
-	  RegressionTests/ContainerTest/containerTest.cpp,
-	  RegressionTests/Database/dbTest.cpp,
-	  RegressionTests/Events/testEvents.cpp,
-	  RegressionTests/Memory/memTest.cpp,
-	  RegressionTests/Parameter/Parameter.cpp,
-	  RegressionTests/PluginTest/PluginTest.cpp,
-	  RegressionTests/PluginTranslationsModel/test.cpp,
-	  RegressionTests/TestUMLImport/testUMLImport.cpp,
-	  RegressionTests/Translation/testTranslation.cpp,
-	  RegressionTests/UAPLeakTest/UAPLeakTest.cpp,
-	  Samples/HelloWorld/helloworld.cpp, Test/Console/XML/test.cpp,
-	  Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp,
-	  Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
-	  Test/GUI/wxWrapper/dynamic.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  UnitTests/Actions/Actions.cpp, interfaces/lbInterfaces.h,
-	  UnitTests/Actions/UIWrapper.cpp,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Removed all code
-	  that is obsolete. Current code compiles but still does not run.
+	* Plugins/UserFeedback/lbUserFeedback.cpp: Corrected menu texts.
 
-2011-10-15 18:33  lollisoft
+2012-04-21 12:44  lollisoft
 
-	* BaseDevelopment/lbHook/lbHook.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  interfaces/lbInterfaces-sub-classes.h, interfaces/lbInterfaces.h:
-	  Removed some unused code and no more required code. Current version
-	  does not compile at all.
+	* Plugins/UserFeedback/lbUserFeedback.cpp: Changed menu text to
+	  match those in the toolbars.
 
-2011-10-15 15:13  lollisoft
+2012-04-21 12:30  lollisoft
 
-	* interfaces/lbInterfaces-sub-classes.h,
-	  BaseDevelopment/lbDB/lbDB.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
-	  BaseDevelopment/lbXMLConfig/lbDOMConfig/lbDOMConfig.cpp,
-	  BaseDevelopment/lbXMLConfig/lbXMLConfig/lbXMLConfig.cpp,
-	  BaseDevelopment/lbclasses/lbInputStream.cpp,
-	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
-	  BaseDevelopment/lbclasses/lbcontainer.cpp,
-	  BaseDevelopment/lbclasses/lbelement.h,
-	  BaseDevelopment/lbclasses/lbkey.cpp,
-	  BaseDevelopment/lbclasses/lbobject.cpp,
-	  BaseDevelopment/lbclasses/lbobject.h,
-	  BaseDevelopment/lbclasses/lbthread.cpp,
-	  BaseDevelopment/lbclasses/lbthread.h,
-	  BaseDevelopment/lbclasses/misc.cpp,
-	  BaseDevelopment/lbclasses/skiplist.cpp,
-	  BaseDevelopment/lbcs/appcs.cpp,
-	  BaseDevelopment/lbtransfer/lbTransferData.cpp,
-	  BaseDevelopment/lbtransfer/lbTransferDataObject.cpp,
-	  BaseDevelopment/lbtransfer/lbthread.cpp,
-	  BaseDevelopment/lbtransfer/socket.cpp,
-	  BaseDevelopment/lbtransfer/transfer.cpp,
-	  AppDevelopmentDemo/App/Application.cpp,
-	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/DecisionAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/ExecuteAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/SendSignalAction.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/lbDMFActionStepIdForFormValue.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/plugin.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/lbDMFXslt.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/plugin.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
-	  Plugins/DatabaseForm/Actions.cpp, Plugins/DatabaseForm/fkpk.cpp,
-	  Plugins/DatabaseForm/lbDatabaseDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseForm.cpp,
-	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
-	  Plugins/DatabaseForm/lbDetailMasterAction.cpp,
-	  Plugins/DatabaseForm/lbMasterDetailAction.cpp,
-	  Plugins/DatabaseForm/lbOpAqueAction.cpp,
-	  Plugins/DatabaseForm/lbSqlQueryAction.cpp,
-	  Plugins/DatabaseForm/plugin.cpp,
-	  Plugins/DatabaseLayerGateway/lbDB.cpp,
-	  Plugins/DatabaseLayerGateway/plugin.cpp,
-	  Plugins/DatabaseLayerGateway/pluginDatabaseLayerGateway.cpp,
-	  Plugins/DatabaseReport/lbDatabaseReport.cpp,
-	  Plugins/DatabaseReport/plugin.cpp, Plugins/TestPlugin/plugin.cpp,
-	  Plugins/TestPlugin/pluginTest.cpp,
-	  Plugins/VisitorOperations/plugin.cpp,
-	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
-	  Plugins/VisitorOperations/pluginInputStream.cpp,
-	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
-	  Plugins/VisitorOperations/pluginJSONOutputStream.cpp,
-	  Plugins/VisitorOperations/pluginOutputStream.cpp,
-	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
-	  Plugins/lbBasicEventHandlers/lbBasicEventHandlers.cpp,
-	  Plugins/lbBasicEventHandlers/lbLoopEventHandlers.cpp,
-	  Plugins/lbBasicEventHandlers/plugin.cpp,
-	  Plugins/lbDMFDataModel/lbActionParameters.cpp,
-	  Plugins/lbDMFDataModel/lbActionStepsModel.cpp,
-	  Plugins/lbDMFDataModel/lbActionTypesModel.cpp,
-	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
-	  Plugins/lbDMFDataModel/lbApplicationsModel.cpp,
-	  Plugins/lbDMFDataModel/lbDBReportModel.cpp,
-	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
-	  Plugins/lbDMFDataModel/lbFormularActionsModel.cpp,
-	  Plugins/lbDMFDataModel/lbFormularsModel.cpp,
-	  Plugins/lbDMFDataModel/lbParameters.cpp,
-	  Plugins/lbDMFDataModel/lbRelations.cpp,
-	  Plugins/lbDMFDataModel/lbTranslationsModel.cpp,
-	  Plugins/lbDMFDataModel/lbUsersModel.cpp,
-	  Plugins/lbDMFDataModel/plugin.cpp,
-	  Plugins/lbFileOperationsPlugin/lbFileExists.cpp,
-	  Plugins/lbFileOperationsPlugin/lbReadTextFileToString.cpp,
-	  Plugins/lbFileOperationsPlugin/lbWriteStringToFile.cpp,
-	  Plugins/lbFileOperationsPlugin/plugin.cpp,
-	  Plugins/lbXSLTTransformer/lbXSLTTransformer.cpp,
-	  Plugins/lbXSLTTransformer/plugin.cpp,
-	  RegressionTests/TestUMLImport/testUMLImport.cpp,
-	  Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp,
-	  Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp,
-	  UnitTests/Actions/UIWrapper.cpp,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Decided to make a
-	  hash cut and removed stuff that everywhere was the cause for crashes
-	  on Mac.  Currently the code crashes on windows, but lets see how it
-	  is working on Mac.
+	* Plugins/: UserFeedback/lbUserFeedback.cpp,
+	  UserFeedback/lbUserFeedback.h, UserFeedback/makefile.module,
+	  UserFeedback/plugin.cpp, makefile: A new user feedback plugin.
 
-2011-10-15 08:36  lollisoft
+2012-04-21 12:01  lollisoft
 
-	* BaseDevelopment/Makefile, BaseDevelopment/lbHook/lbHook.cpp,
-	  BaseDevelopment/lbModule/lbModule.cpp,
-	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
-	  BaseDevelopment/lbclasses/skiplist.cpp, include/lbConfigHook.h,
-	  interfaces/lbInterfaces.h, make/STD_MAKE, UnitTests/makefile,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp,
-	  UnitTests/MiniCppUnit/MiniCppUnit.hxx: All current changes
-	  including interfaces (starting mass changes).
+	* Test/GUI/wxWrapper/toolbarimages/: nicubunu_Smiley_Cool.png,
+	  nicubunu_Smiley_Puzzled.png: Added icons for user feedback.
 
-2011-10-15 07:14  lollisoft
+2012-04-21 11:49  lollisoft
 
-	* Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp: Fixed
-	  possible issues due to not initialized variables.
+	* Test/GUI/wxWrapper/toolbarimages/: nicubunu_Smiley_Happy.png,
+	  nicubunu_Smiley_Sad.png: Added icons for user feedback.
 
-2011-10-09 21:05  lollisoft
-
-	* Test/GUI/wxPlugins/lbCryptoStream/lbCryptoStream.cpp: Fixed
-	  possible issues due to not initialized variables.
-
-2011-10-09 20:17  lollisoft
+2012-04-11 08:27  lollisoft
 
 	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/plugin.cpp:
-	  Renamed the class to get advantages while debugging.
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/:
+	  128002, 128002.diagram, CDKatalog.prj: Enhanced the model that
+	  now gets also properly generated with DevExpress SCSF template.
 
-2011-10-09 20:15  lollisoft
+2012-04-09 19:48  lollisoft
 
-	* AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/:
-	  DecisionAction.cpp, ExecuteAction.cpp, SendSignalAction.cpp,
-	  lbDMFActionStepIdForFormValue.cpp, plugin.cpp: Fixed possible
-	  issues due to not initialized variables.
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/:
+	  128002, 128002.diagram, CDKatalog.prj, generation_settings,
+	  stereotypes: Added new tables into the sample.
 
-2011-10-09 17:22  lollisoft
+2012-04-09 19:46  lollisoft
 
-	* Plugins/DatabaseForm/: Actions.cpp, ffi.cpp, fkpk.cpp,
-	  formularactions.cpp, lbDatabaseDialog.cpp, lbDatabaseForm.cpp,
-	  lbDatabaseForm.h, lbDatabasePanel.cpp,
-	  lbDatabaseTableViewDialog.cpp, lbDatabaseTableViewPanel.cpp,
-	  lbDetailMasterAction.cpp, lbMasterDetailAction.cpp,
-	  lbOpAqueAction.cpp, lbSqlQueryAction.cpp, plugin.cpp: Fixed
-	  possible issues due to not initialized variables.
+	* AppDevelopmentDemo/DynamicApp/: App/lbDynApp.cpp,
+	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp: Added new
+	  settings to support database backend type setting per application
+	  and system.
 
-2011-10-09 09:28  lollisoft
+2012-01-01 15:43  lollisoft
 
-	* Plugins/lbDMFDataModel/: lbActionParameters.cpp,
-	  lbActionStepsModel.cpp, lbActionTypesModel.cpp,
-	  lbActionsModel.cpp, lbApplicationsModel.cpp, lbDBReportModel.cpp,
-	  lbDatabaseModel.cpp, lbFormularActionsModel.cpp,
-	  lbFormularsModel.cpp, lbParameters.cpp, lbRelations.cpp,
-	  lbTranslationsModel.cpp, lbUsersModel.cpp, plugin.cpp: Fixed
-	  possible issues due to not initialized variables.
+	* Plugins/lbDMFDataModel/lbFormularsModel.cpp: Fixed the field
+	  order swapping bug.
 
-2011-10-09 09:27  lollisoft
+2011-12-10 07:30  lollisoft
 
-	* interfaces/lbInterfaces-sub-db.h: Removed unused code.
-
-2011-10-09 09:26  lollisoft
-
-	* BaseDevelopment/lbPluginManager/lbPluginManager.cpp: Fixed
-	  possible memory leak.
-
-2011-10-03 10:58  lollisoft
-
-	* ChangeLog-basic.txt: Changes for release 1.0.3
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
+	  128130, 128258.diagram, 133250.diagram: Minor changes like page
+	  size.
 
