@@ -21,7 +21,12 @@ if [ "$ARCH" == "ppc" ]; then
 	cd Projects
 fi
 
-cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r HEAD CPP
+# Building HEAD revision
+#cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r HEAD CPP
+
+# Building branch revision
+cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r Release_1_0_4_stable_rc1_branch CPP
+
 cp ~/develop/Projects/CPP/Plugins/DatabaseReport/repwrt.cpp CPP/Plugins/DatabaseReport/repwrt.cpp
 cp ~/develop/Projects/CPP/Plugins/DatabaseReport/repwrt.h CPP/Plugins/DatabaseReport/repwrt.h
 
