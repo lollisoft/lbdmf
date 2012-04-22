@@ -1,7 +1,7 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
-export VERSION=1.0.4-stable-rc1
+export VERSION=1.0.4_stable_rc2
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
