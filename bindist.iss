@@ -62,6 +62,7 @@ Source: "Q:\Develop\Projects\plugins\lbDMFDataModel.dll"; DestDir: "{app}\Develo
 Source: "Q:\Develop\Projects\plugins\lbDynamicAppStorage.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbLoginWizard.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbVisitorOperations.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\plugins\UserFeedback.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 
 ; Also now add the code generation plugin.
 Source: "Q:\Develop\Projects\plugins\lbDMFXslt.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
