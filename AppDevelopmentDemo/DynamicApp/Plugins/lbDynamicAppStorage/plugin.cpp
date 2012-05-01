@@ -152,6 +152,8 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 	// Too unsave now (Sqlite check fails on selecting sysadmin account)
 	//return true;
 	
+	_LOGERROR << "lbPluginModuleDynamicAppStorage::checkForDatabase() called." LOG_
+	
 	if (_check_for_databases_failure_step == -2) return false; // Failed prior. Outer loop must break.
 	
 	if (database == NULL) {
@@ -235,6 +237,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	char* home = getenv("HOME");
 	
 	bool  localInitialisation = false;
+
+
+	_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() called." LOG_
 	
 #ifdef WINDOWS
 	*testSQLFile = ".\\Database\\lbDMF-Sqlite-SystemDB.sql";
@@ -576,7 +581,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 
 
 lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
-	
+	_LOGERROR << "lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() called." LOG_
 	// Nothing checked yet.
 	_check_for_databases_failure_step = -1;
 
@@ -595,6 +600,7 @@ void LB_STDCALL lbPluginModuleDynamicAppStorage::initialize() {
 
 void LB_STDCALL lbPluginModuleDynamicAppStorage::install() {
 	// The check may have several rounds.
+	_LOGERROR << "lbPluginModuleDynamicAppStorage::install() called." LOG_
 	while (!checkForDatabases()) {
 		if (_check_for_databases_failure_step == -2) break; //
 		
