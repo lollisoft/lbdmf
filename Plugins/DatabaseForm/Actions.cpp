@@ -496,6 +496,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 	long first_dst_actionid = -1;
 	long first_dst_actionid_unmatched = -1;
 	int transitions_matched = 0;
+	int transitions_unmatched = 0;
 
 	_LOG << "lbAction::getNextStepId() called with id = " << id LOG_
 
@@ -521,19 +522,17 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 			dst_actionid = trans->get_dst_actionid();
 			src_actionid = trans->get_src_actionid();
 
-			first_dst_actionid_unmatched = dst_actionid;
-
 			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->get_id() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
 
 			if (expression.find("==") != -1) {
 				// equal operator
 				_LOG << "Error: Boolean expression not allowed!" LOG_
-			} else
+			} else {
 				if (expression.find("!=") != -1) {
 					// equal operator
 					_LOG << "Error: Boolean expression not allowed!" LOG_
-				} else
+				} else {
 					if (expression.find("=") != -1) {
 						// assignment (typically adding a parameter to params)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, left)
@@ -553,7 +552,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 						params->setUAPString(*&left, *&right);
 						first_dst_actionid = dst_actionid;
 						transitions_matched++;
-					} else
+					} else {
 						if (expression.find("+=") != -1) {
 							// append value to an existing string
 							UAP_REQUEST(getModuleInstance(), lb_I_String, left)
@@ -579,13 +578,22 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 							params->setUAPString(*&left, *&append);
 							first_dst_actionid = dst_actionid;
 							transitions_matched++;
+						} else {
+							// Unmatched
+							if (transitions_unmatched == 0) {
+								first_dst_actionid_unmatched = dst_actionid;
+							}
+							transitions_unmatched++;
 						}
+					}
+				}
+			}
 		}
 	}
 
-	if (transitions_matched > 1) {
+	if (transitions_unmatched > 1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-		meta->msgBox("Error", "Expected one transition, but have more. This is not correct.");
+		meta->msgBox("Error", "Expected one default transition, but have more. This is not correct.");
 		return 0;
 	}
 
