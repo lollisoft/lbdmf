@@ -2,6 +2,21 @@ class lb_I_SecurityProvider :
 	public lb_I_Unknown
 {
 public:
+	/** \brief Login to the application automatically.
+	 * Internally there must be a mechanism to share a secret between the metaapplication and the security manager to validate
+	 * the process. The secret is then used instead the password. The user should never get the secret.
+	 *
+	 * In the beginning this will be a fake.
+	 */
+	virtual bool			LB_STDCALL autologin(const char* user, const char* secret) = 0;
+	
+	/** \brief Returns a secret for the actually logged in user.
+	 * A user may activate autoload application. To enable autoloading applications with the new security mechanism, a secret
+	 * must be shared between the currently logged in system user (Windows/Mac/...) and the security manager.
+	 */
+	virtual lb_I_String*	LB_STDCALL getOrCreateSecret() = 0;
+
+	
 	/** \brief Login to the application.
 	 */
 	virtual bool			LB_STDCALL login(const char* user, const char* pass) = 0;
