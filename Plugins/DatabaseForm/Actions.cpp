@@ -535,7 +535,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 					_LOG << "Error: Boolean expression not allowed!" LOG_
 				} else
 					if (expression.find("=") != -1) {
-						// assignment (typically adding a parameter to params
+						// assignment (typically adding a parameter to params)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, left)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, right)
 
@@ -553,7 +553,33 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 						params->setUAPString(*&left, *&right);
 						first_dst_actionid = dst_actionid;
 						transitions_matched++;
-					}
+					} else
+						if (expression.find("+=") != -1) {
+							// append value to an existing string
+							UAP_REQUEST(getModuleInstance(), lb_I_String, left)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, right)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, append)
+
+							*left = expression.substr(0, expression.find("+=")-1).c_str();
+							*right = expression.substr(expression.find("+=")+1).c_str();
+
+							right->trim();
+							right->trim(false);
+							right->substitutePlaceholder(*&params);
+							left->trim();
+							left->trim(false);
+
+							_LOG << "Have build left = '" << left->charrep() << "' and right = '" << right->charrep() << "' from expression = '" << expression.c_str() << "'" LOG_
+
+							
+							params->getUAPString(*&left, *&append);
+							
+							*append += right;
+							
+							params->setUAPString(*&left, *&append);
+							first_dst_actionid = dst_actionid;
+							transitions_matched++;
+						}
 		}
 	}
 
