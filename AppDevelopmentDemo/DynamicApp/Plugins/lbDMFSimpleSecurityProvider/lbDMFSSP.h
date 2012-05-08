@@ -36,6 +36,8 @@ public:
 	
 	DECLARE_LB_UNKNOWN()
 	
+	bool			LB_STDCALL autologin(const char* user, const char* secret);
+	lb_I_String*	LB_STDCALL getOrCreateSecret();
 	bool			LB_STDCALL login(const char* user, const char* pass);
 	bool			LB_STDCALL setCurrentApplicationId(long id);
 	long 			LB_STDCALL getApplicationID();
@@ -78,6 +80,7 @@ protected:
 	
 	UAP(lb_I_String, LogonApplication)
 	UAP(lb_I_String, LogonUser)
+	UAP(lb_I_String, LogonSecret)
 	UAP(lb_I_MetaApplication, meta)
 };
 
