@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.193 $
+ * $Revision: 1.194 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.193 2012/01/21 18:39:21 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.194 2012/05/08 04:47:16 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.194  2012/05/08 04:47:16  lollisoft
+ * Using new autologin API.
+ *
  * Revision 1.193  2012/01/21 18:39:21  lollisoft
  * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
  *
@@ -1519,7 +1522,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 			_LOG << "Using database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
 			//loadApplication(u, a);
-			getLoginData(NULL);
+			//getLoginData(NULL);
+			UAP(lb_I_SecurityProvider, securityManager)
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+			securityManager->autologin(u, "theSecret");
+			loadApplication(u, a);
 
 			_LOG << "Used database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
