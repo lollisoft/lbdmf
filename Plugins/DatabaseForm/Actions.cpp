@@ -39,8 +39,6 @@
 order by src_actionid
 */
 
-class lb_I_Action;
-
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
 
@@ -106,8 +104,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...slbAction:0:*/
@@ -496,6 +492,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 	long first_dst_actionid = -1;
 	long first_dst_actionid_unmatched = -1;
 	int transitions_matched = 0;
+	int transitions_unmatched = 0;
 
 	_LOG << "lbAction::getNextStepId() called with id = " << id LOG_
 
@@ -521,21 +518,20 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 			dst_actionid = trans->getActionStepTransitionDstActionID();
 			src_actionid = trans->getActionStepTransitionSrcActionID();
 
-			first_dst_actionid_unmatched = dst_actionid;
 
-			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getID() <<
+			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getActionStepTransitionID() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
 
 			if (expression.find("==") != -1) {
 				// equal operator
 				_LOG << "Error: Boolean expression not allowed!" LOG_
-			} else
+			} else {
 				if (expression.find("!=") != -1) {
 					// equal operator
 					_LOG << "Error: Boolean expression not allowed!" LOG_
-				} else
+				} else {
 					if (expression.find("=") != -1) {
-						// assignment (typically adding a parameter to params
+						// assignment (typically adding a parameter to params)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, left)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, right)
 
@@ -553,13 +549,48 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 						params->setUAPString(*&left, *&right);
 						first_dst_actionid = dst_actionid;
 						transitions_matched++;
+					} else {
+						if (expression.find("+=") != -1) {
+							// append value to an existing string
+							UAP_REQUEST(getModuleInstance(), lb_I_String, left)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, right)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, append)
+
+							*left = expression.substr(0, expression.find("+=")-1).c_str();
+							*right = expression.substr(expression.find("+=")+1).c_str();
+
+							right->trim();
+							right->trim(false);
+							right->substitutePlaceholder(*&params);
+							left->trim();
+							left->trim(false);
+
+							_LOG << "Have build left = '" << left->charrep() << "' and right = '" << right->charrep() << "' from expression = '" << expression.c_str() << "'" LOG_
+
+							
+							params->getUAPString(*&left, *&append);
+							
+							*append += right;
+							
+							params->setUAPString(*&left, *&append);
+							first_dst_actionid = dst_actionid;
+							transitions_matched++;
+						} else {
+							// Unmatched
+							if (transitions_unmatched == 0) {
+								first_dst_actionid_unmatched = dst_actionid;
+							}
+							transitions_unmatched++;
+						}
 					}
+				}
+			}
 		}
 	}
 
-	if (transitions_matched > 1) {
+	if (transitions_unmatched > 1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-		meta->msgBox("Error", "Expected one transition, but have more. This is not correct.");
+		meta->msgBox("Error", "Expected one default transition, but have more. This is not correct.");
 		return 0;
 	}
 
@@ -934,7 +965,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			if (actionidcmp->equals(*&actionid)) {
 			    _LOG << "Sort action steps by ordering column: " << appActionSteps->getActionStepOrderNo() << "." LOG_
 				order->setData(appActionSteps->getActionStepOrderNo());
-				stepid->setData(appActionSteps->getID());
+				stepid->setData(appActionSteps->getActionStepID());
 				sortedActionSteps->insert(&uk, &key);
 
 				appActionTypes->finishActionTypeIteration();
@@ -943,7 +974,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->getActionTypeBezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->getActionStepType() LOG_
 
 				if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
-					_LOG << "Found initial node. " << appActionSteps->getID() << " with order number " << key->charrep() LOG_
+					_LOG << "Found initial node. " << appActionSteps->getActionStepID() << " with order number " << key->charrep() LOG_
 					isNonLinearActivity = true;
 					initialNode->setData(order->getData());
 				}
