@@ -75,6 +75,7 @@ lbDMFSSP::lbDMFSSP() {
 	CurrentApplicationID = 0;
 	REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
+	REQUEST(getModuleInstance(), lb_I_String, LogonSecret)
 }
 
 lbDMFSSP::~lbDMFSSP() {
@@ -85,6 +86,171 @@ lbErrCodes LB_STDCALL lbDMFSSP::setData(lb_I_Unknown*) {
 		_CL_VERBOSE << "Error: lbDMFSSP::setData(lb_I_Unknown*) not implemented." LOG_
 		return ERR_NOT_IMPLEMENTED;
 }
+
+lb_I_String* LB_STDCALL lbDMFSSP::getOrCreateSecret() {
+		Users->finishUserAccountsIteration();
+		while (Users->hasMoreUserAccounts()) {
+			Users->setNextUserAccounts();
+			if(Users->get_id() == CurrentUserID) {
+				LogonSecret->setData(Users->get_secret());
+				setAllowedApplications(Users->get_id());
+				Users->finishUserAccountsIteration();
+				LogonSecret++;
+				return *&LogonSecret;
+			}
+		}
+
+}
+
+bool LB_STDCALL lbDMFSSP::autologin(const char* user, const char* secret) {
+	lbErrCodes err = ERR_NONE;
+
+	if (Users == NULL) {
+		if (load() != ERR_NONE) {
+			_LOG << "Error: Loading login data failed. Try store default." LOG_
+			if (save() != ERR_NONE) {
+				_LOG << "Error: Saving login data failed. Bail out." LOG_
+				return false;
+			}
+			
+			if (Users == NULL)
+			{
+				_LOG << "Error: Even after loading login data, the users list is not initialized. Bail out." LOG_
+				return false;
+			}
+		}
+	}
+	
+	if (Users->getUserAccountsCount() == 0) {
+		// Fallback to database use. This should be moved to a 'service', that would
+		// Read out the content's of the database. So the best would be using visitor
+		// pattern for this to do.
+
+		return false;
+		
+#ifdef FALLBACK_ENABLED		
+		UAP(lb_I_Database, database)
+
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using plugin database backend for system database setup test..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "lb_MetaApplication::isAnyDatabaseAvailable() Using built in database backend for system database setup test..." LOG_
+		}
+
+		database->init();
+
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
+
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+
+		if (err != ERR_NONE) {
+			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
+			return FALSE;
+		}
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+
+		if (pl != NULL) {
+			ukPl = pl->getImplementation();
+
+			if (ukPl != NULL) {
+				UAP(lb_I_DatabaseOperation, fOp)
+				QI(ukPl, lb_I_DatabaseOperation, fOp)
+
+				if (!fOp->begin("lbDMF", database.getPtr())) {
+					return false;
+				}
+
+				Users->accept(*&fOp);
+
+				fOp->end();
+			} else {
+				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+			}
+		} else {
+			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+		}
+
+		// A first preload of the user accounts is ignored yet.
+		_CL_LOG << "Try selective database login check." LOG_
+
+
+		UAP(lb_I_Query, sampleQuery)
+
+		sampleQuery = database->getQuery("lbDMF", 0);
+
+		char* buffer = (char*) malloc(1000);
+		buffer[0] = 0;
+
+		sampleQuery->skipFKCollecting();
+		sprintf(buffer, "select id from Users where userid = '%s' and secret = '%s'",
+               	user, pass);
+
+		_CL_VERBOSE << "Query for user " << user LOG_
+
+		if (sampleQuery->query(buffer) != ERR_NONE) {
+			sampleQuery->enableFKCollecting();
+			free(buffer);
+			return FALSE;
+		}
+
+		free(buffer);
+
+		sampleQuery->enableFKCollecting();
+
+		err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			_logged_in = true;
+			UAP(lb_I_Long, UID)
+			UID = sampleQuery->getAsLong(1);
+			CurrentUserID = UID->getData();
+			return true;
+		} else {
+			return false;
+		}
+#endif
+	} else {
+		// We have got users from file
+		_LOG << "lbDMFSSP::login('" << user << "', '***') checks against account list..." LOG_
+		Users->finishUserAccountsIteration();
+		while (Users->hasMoreUserAccounts()) {
+			Users->setNextUserAccounts();
+			if (strcmp(Users->get_userid(), user) == 0) {
+				_LOG << "User found." LOG_
+				if(strcmp(Users->get_secret(), secret) == 0) {
+					_LOG << "User is valid." LOG_
+					_logged_in = true;
+					CurrentUserID = Users->get_id();
+					setAllowedApplications(Users->get_id());
+					Users->finishUserAccountsIteration();
+					return true;
+				}
+			}
+		}
+
+		// There may be more users in the database, so try to fetch them and make one retry
+		_LOG << "User not found." LOG_
+
+		if (AllowedApplications == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Container, AllowedApplications)
+		}
+		return false;
+	}}
 
 bool LB_STDCALL lbDMFSSP::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
