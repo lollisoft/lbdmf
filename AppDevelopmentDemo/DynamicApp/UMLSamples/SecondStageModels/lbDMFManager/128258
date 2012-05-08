@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 24
+  revision 25
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -2163,6 +2163,16 @@ ${inlines}
 	key "lbDMF:relationship:sourcecolumn" value "id"
 	key "lbDMF:relationship:table" value "users"
 	key "lbDMF:relationship:order" value "-1"
+      end
+
+      attribute 219522 "secret"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 

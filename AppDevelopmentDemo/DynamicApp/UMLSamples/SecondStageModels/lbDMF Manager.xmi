@@ -99,6 +99,9 @@
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x1f582_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="secret" xmi:id="BOUML_0x37302_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="AnwendungenBenutzer" xmi:id="BOUML_0x21782_0" visibility="protected" association="BOUML_ASSOC_0x21782_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f582_4"/>
 							<xmi:Extension extender="Bouml">
@@ -231,7 +234,7 @@
 								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="name"/>
 							</xmi:Extension>
 						</ownedAttribute>
-						<ownedOperation xmi:type="uml:Operation" name="GenerateTurboVision" xmi:id="BOUML_0x1f882_2" visibility="public" isAbstract="false">
+						<ownedOperation xmi:type="uml:Operation" name="CreateSystemApplication" xmi:id="BOUML_0x1f882_2" visibility="public" isAbstract="false">
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:workflow"/></xmi:Extension>
 							<ownedParameter xmi:type="uml:Parameter" name="name" xmi:id="BOUML_op_param_2" direction="in">
 								<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -515,7 +518,7 @@
 							<body>result = 1</body>
 						</ownedBehavior>
 					</packagedElement>
-					<packagedElement xmi:type="uml:Activity" xmi:id="BOUML_0x20e02_39" name="GenerateTurboVision">
+					<packagedElement xmi:type="uml:Activity" xmi:id="BOUML_0x20e02_39" name="CreateSystemApplication">
 						<xmi:Extension extender="Bouml"><stereotype name="workflow"/></xmi:Extension>
 						<node xmi:type="uml:InitialNode" xmi:id="BOUML_0x22982_70">
 							<outgoing xmi:idref="BOUML_0x2cf82_40"/>
@@ -523,13 +526,13 @@
 						<node xmi:type="uml:FinalNode" xmi:id="BOUML_0x22a02_72">
 							<incoming xmi:idref="BOUML_0x2cf02_40"/>
 						</node>
-						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24202_56" name="Generate TurboVision (Mac)">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24202_56" name="Generate System Application (Mac)">
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"/>
+								<taggedValue tag="stylesheet" value="/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"/>
 							</xmi:Extension>
-							<outgoing xmi:idref="BOUML_0x2cd82_40"/>
+							<outgoing xmi:idref="BOUML_0x33e82_40"/>
 							<incoming xmi:idref="BOUML_0x30502_40"/>
 						</node>
 						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x24302_56" name="exportApplicationToXMLBuffer">
@@ -558,37 +561,35 @@
 							<outgoing xmi:idref="BOUML_0x2cd02_40"/>
 							<incoming xmi:idref="BOUML_0x30682_40"/>
 						</node>
-						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x29002_56" name="Generate TurboVision (Windows)">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x29002_56" name="Generate System Application (Windows)">
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\TurboVision\gen_TurboVisionFixedFormularClasses.xsl"/>
+								<taggedValue tag="stylesheet" value="\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\DMFToDataModel\generate.xsl"/>
 							</xmi:Extension>
-							<outgoing xmi:idref="BOUML_0x2ce02_40"/>
+							<outgoing xmi:idref="BOUML_0x33d02_40"/>
 							<incoming xmi:idref="BOUML_0x32102_40"/>
 						</node>
-						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x29082_56" name="Generate TurboVision (Unix)">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x29082_56" name="Generate System Application (Unix)">
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"/>
+								<taggedValue tag="stylesheet" value="/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"/>
 							</xmi:Extension>
-							<outgoing xmi:idref="BOUML_0x2ce82_40"/>
+							<outgoing xmi:idref="BOUML_0x34002_40"/>
 							<incoming xmi:idref="BOUML_0x30482_40"/>
 						</node>
 						<node xmi:type="uml:OpaqueAction" xmi:id="BOUML_0x29102_46" name="NOP">
 							<outgoing xmi:idref="BOUML_0x2cf02_40"/>
-							<incoming xmi:idref="BOUML_0x2cd82_40"/>
 							<incoming xmi:idref="BOUML_0x2cd02_40"/>
-							<incoming xmi:idref="BOUML_0x2ce02_40"/>
-							<incoming xmi:idref="BOUML_0x2ce82_40"/>
-							<incoming xmi:idref="BOUML_0x32202_40"/>
+							<incoming xmi:idref="BOUML_0x35c82_40"/>
+							<incoming xmi:idref="BOUML_0x35d02_40"/>
 						</node>
-						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2aa82_56" name="Show OS Type">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2aa82_56" name="Show what I am">
 							<xmi:Extension extender="Bouml">
-								<taggedValue tag="title" value="Betriebssystem..."/>
+								<taggedValue tag="title" value="System Code Generator"/>
 								<taggedValue tag="signal" value="showMsgBox"/>
-								<taggedValue tag="msg" value="Os Type is {OSType}"/>
+								<taggedValue tag="msg" value="Generate code for {OSType}"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x30282_40"/>
 							<incoming xmi:idref="BOUML_0x2e902_40"/>
@@ -621,18 +622,113 @@
 							<outgoing xmi:idref="BOUML_0x32182_40"/>
 							<incoming xmi:idref="BOUML_0x32082_40"/>
 						</node>
-						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2c482_56" name="Generate TurboVision (Windows installed)">
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2c482_56" name="Generate System Application (Windows installed)">
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="signal" value="transformXSLT"/>
 								<taggedValue tag="source" value="{file}"/>
-								<taggedValue tag="stylesheet" value="\lbDMF\XSLT\TurboVision\gen_TurboVisionFixedFormularClasses.xsl"/>
+								<taggedValue tag="stylesheet" value="\lbDMF\XSLT\DMFToDataModel\generate.xsl"/>
 							</xmi:Extension>
-							<outgoing xmi:idref="BOUML_0x32202_40"/>
+							<outgoing xmi:idref="BOUML_0x36102_40"/>
 							<incoming xmi:idref="BOUML_0x32182_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2de02_56" name="Create System Database SQL Script (Windows)">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="transformXSLT"/>
+								<taggedValue tag="source" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\SecondStageModels\\lbDMF "/>
+								<taggedValue tag="stylesheet" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\importUML-ApplicationDB.xsl"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x33d82_40"/>
+							<incoming xmi:idref="BOUML_0x33d02_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2de82_56" name="Create Application Database SQL Script (Windows)">
+							<outgoing xmi:idref="BOUML_0x35f02_40"/>
+							<incoming xmi:idref="BOUML_0x33d82_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2df02_56" name="Create System Database SQL Script (Mac)">
+							<outgoing xmi:idref="BOUML_0x33f02_40"/>
+							<incoming xmi:idref="BOUML_0x33e82_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2df82_56" name="Create Application Database SQL Script (Mac)">
+							<outgoing xmi:idref="BOUML_0x35e82_40"/>
+							<incoming xmi:idref="BOUML_0x33f02_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2e002_56" name="Create System Database SQL Script (Linux)">
+							<outgoing xmi:idref="BOUML_0x34082_40"/>
+							<incoming xmi:idref="BOUML_0x34002_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2e082_56" name="Create Application Database SQL Script (Linux)">
+							<outgoing xmi:idref="BOUML_0x35e02_40"/>
+							<incoming xmi:idref="BOUML_0x34082_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2e102_56" name="Create System Database SQL Script (Windows installed)">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="transformXSLT"/>
+								<taggedValue tag="source" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi"/>
+								<taggedValue tag="stylesheet" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\importUML-SystemDB.xsl"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x33c02_40"/>
+							<incoming xmi:idref="BOUML_0x36182_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2e182_56" name="Create Application Database SQL Script (Windows installed)">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="transformXSLT"/>
+								<taggedValue tag="source" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi"/>
+								<taggedValue tag="stylesheet" value="Q:\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\importUML-ApplicationDB.xsl"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x35f82_40"/>
+							<incoming xmi:idref="BOUML_0x33c02_40"/>
+						</node>
+						<node xmi:type="uml:DecisionNode" xmi:id="BOUML_0x27782_73">
+							<outgoing xmi:idref="BOUML_0x35b82_40"/>
+							<outgoing xmi:idref="BOUML_0x36002_40"/>
+							<incoming xmi:idref="BOUML_0x35f02_40"/>
+							<incoming xmi:idref="BOUML_0x35e82_40"/>
+							<incoming xmi:idref="BOUML_0x35e02_40"/>
+							<incoming xmi:idref="BOUML_0x35f82_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2fb82_56" name="write System DDL to file">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="writeStringToFile"/>
+								<taggedValue tag="source" value="{systemDDL}"/>
+								<taggedValue tag="filename" value="\develop\Projects\CPP\Database\lbDMF-Sqlite-SystemDB.sql"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x35c02_40"/>
+							<incoming xmi:idref="BOUML_0x35b82_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2fc02_56" name="write Application DDL to file">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="writeStringToFile"/>
+								<taggedValue tag="source" value="{applicationDDL}"/>
+								<taggedValue tag="filename" value="\develop\Projects\CPP\Database\lbDMF-Sqlite-SystemDB.sql"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x35c82_40"/>
+							<incoming xmi:idref="BOUML_0x35c02_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2fc82_56" name="write combined DDL for PostgreSQL">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="signal" value="writeStringToFile"/>
+								<taggedValue tag="source" value="{CombinedDDL}"/>
+								<taggedValue tag="filename" value="\develop\Projects\CPP\Database\lbDMF-PostgreSQL.sql"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x35d02_40"/>
+							<incoming xmi:idref="BOUML_0x36082_40"/>
+						</node>
+						<node xmi:type="uml:OpaqueAction" xmi:id="BOUML_0x2fd02_46" name="NOP0">
+							<outgoing xmi:idref="BOUML_0x36082_40"/>
+							<incoming xmi:idref="BOUML_0x36002_40"/>
+						</node>
+						<node xmi:type="uml:SendSignalAction" xmi:id="BOUML_0x2fd82_56" name="Show generated for Windows installed">
+							<xmi:Extension extender="Bouml">
+								<taggedValue tag="title" value="Plattform"/>
+								<taggedValue tag="signal" value="showMsgBox"/>
+								<taggedValue tag="msg" value="Es wurde Code in einer Endbenutzer Installation generiert"/>
+							</xmi:Extension>
+							<outgoing xmi:idref="BOUML_0x36182_40"/>
+							<incoming xmi:idref="BOUML_0x36102_40"/>
 						</node>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2cf82_40" source="BOUML_0x22982_70" target="BOUML_0x24302_56">
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2cd82_40" source="BOUML_0x24202_56" target="BOUML_0x29102_46">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x33e82_40" source="BOUML_0x24202_56" target="BOUML_0x2df02_56">
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x29482_40" source="BOUML_0x24302_56" target="BOUML_0x25c82_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
 						</edge>
@@ -640,9 +736,9 @@
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2cd02_40" source="BOUML_0x28f82_56" target="BOUML_0x29102_46">
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2ce02_40" source="BOUML_0x29002_56" target="BOUML_0x29102_46">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x33d02_40" source="BOUML_0x29002_56" target="BOUML_0x2de02_56">
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2ce82_40" source="BOUML_0x29082_56" target="BOUML_0x29102_46">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x34002_40" source="BOUML_0x29082_56" target="BOUML_0x2e002_56">
 						</edge>
 						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x2cf02_40" source="BOUML_0x29102_46" target="BOUML_0x22a02_72" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x2cf02_40">
 						</edge>
@@ -681,13 +777,58 @@
 								<body>result == 0</body>
 							</guard>
 						</edge>
-						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x32202_40" source="BOUML_0x2c482_56" target="BOUML_0x29102_46">
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x36102_40" source="BOUML_0x2c482_56" target="BOUML_0x2fd82_56">
 						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x33d82_40" source="BOUML_0x2de02_56" target="BOUML_0x2de82_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x33d82_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35f02_40" source="BOUML_0x2de82_56" target="BOUML_0x27782_73" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x35f02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x33f02_40" source="BOUML_0x2df02_56" target="BOUML_0x2df82_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x33d82_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35e82_40" source="BOUML_0x2df82_56" target="BOUML_0x27782_73" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x35f02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x34082_40" source="BOUML_0x2e002_56" target="BOUML_0x2e082_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x33d82_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35e02_40" source="BOUML_0x2e082_56" target="BOUML_0x27782_73" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x35f02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x33c02_40" source="BOUML_0x2e102_56" target="BOUML_0x2e182_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x33d82_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35f82_40" source="BOUML_0x2e182_56" target="BOUML_0x27782_73" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x35f02_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35b82_40" source="BOUML_0x27782_73" target="BOUML_0x2fb82_56">
+							<guard xmi:type="uml:OpaqueExpression" xmi:id="BOUML_GUARD_0x35b82_40">
+								<body>backend == DatabaseLayerGateway</body>
+							</guard>
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x36002_40" source="BOUML_0x27782_73" target="BOUML_0x2fd02_46" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x36002_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35c02_40" source="BOUML_0x2fb82_56" target="BOUML_0x2fc02_56">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35c82_40" source="BOUML_0x2fc02_56" target="BOUML_0x29102_46">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x35d02_40" source="BOUML_0x2fc82_56" target="BOUML_0x29102_46">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x36082_40" source="BOUML_0x2fd02_46" target="BOUML_0x2fc82_56" transformation="BOUML_OPAQUE_TRANS_BEHAVIOR_0x36082_40">
+						</edge>
+						<edge xmi:type="uml:ControlFlow" xmi:id="BOUML_0x36182_40" source="BOUML_0x2fd82_56" target="BOUML_0x2e102_56">
+						</edge>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x36082_40">
+							<body>CombinedDDL += {systemDDL}</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x36002_40">
+							<body>CombinedDDL = {applicationDDL}</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x35f02_40">
+							<body>applicationDDL = {stepout}</body>
+						</ownedBehavior>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x29482_40">
 							<body>file = lala.xml</body>
 						</ownedBehavior>
 						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x2cf02_40">
 							<body>result = 1</body>
+						</ownedBehavior>
+						<ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="BOUML_OPAQUE_TRANS_BEHAVIOR_0x33d82_40">
+							<body>systemDDL = {stepout}</body>
 						</ownedBehavior>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="lbDMFManager" xmi:id="BOUML_0x24a02_4" visibility="package">
@@ -999,20 +1140,20 @@
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC0_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC1_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC1_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC1_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC2_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC3_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC3_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC4_0x28882_11"/>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">
@@ -1993,6 +2134,9 @@
 								<taggedValue tag="lbDMF:relationship:table" value="users"/>
 								<taggedValue tag="lbDMF:relationship:sourcecolumn" value="id"/>
 							</xmi:Extension>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="secret" xmi:id="BOUML_0x35982_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formular_fields" xmi:id="BOUML_0x26a82_4" visibility="package">
