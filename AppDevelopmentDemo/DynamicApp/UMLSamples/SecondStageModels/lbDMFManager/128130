@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 42
+  revision 47
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -274,6 +274,16 @@ ${inlines}
       end
 
       attribute 128386 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 226050 "secret"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -682,7 +692,7 @@ ${inlines}
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
 
-      operation 129154 "GenerateTurboVision"
+      operation 129154 "CreateSystemApplication"
 	stereotype "lbDMF:workflow"
 	public explicit_return_type ""
 	nparams 1
@@ -1314,12 +1324,12 @@ ${inlines}
       end
     end
 
-    activity 134658 "GenerateTurboVision"
+    activity 134658 "CreateSystemApplication"
       stereotype "workflow"
       activitydiagram 152962 "CGWorkflow"
 	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations no shadow default
 	show_infonote default drawing_language default show_stereotype_properties default
-	size A4
+	size A3
       end
 
       activitynode 141698 initial_node ""
@@ -1331,14 +1341,14 @@ ${inlines}
       activitynode 141826 activity_final ""
       end
 
-      activityaction 147970 "Generate TurboVision (Mac)"
+      activityaction 147970 "Generate System Application (Mac)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
-	key "stylesheet" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
+	key "stylesheet" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
 	key "source" value "{file}"
-	flow 183682 "<flow>"
-	  on activityaction_ref 168194 // activity action NOP
+	flow 212610 "<flow>"
+	  on activityaction_ref 188162 // activity action Create System Database SQL Script (Mac)
 	end
       end
 
@@ -1360,7 +1370,7 @@ ${inlines}
 	key "filename" value "{file}"
 	key "source" value "{memorybuffer}"
 	flow 190722 "<flow>"
-	  on activityaction_ref 174722 // activity action Show OS Type
+	  on activityaction_ref 174722 // activity action Show what I am
 	end
       end
 
@@ -1375,25 +1385,25 @@ ${inlines}
 	end
       end
 
-      activityaction 167938 "Generate TurboVision (Windows)"
+      activityaction 167938 "Generate System Application (Windows)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"
-	flow 183810 "<flow>"
-	  on activityaction_ref 168194 // activity action NOP
+	key "stylesheet" value "\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToDataModel\\generate.xsl"
+	flow 212226 "<flow>"
+	  on activityaction_ref 187906 // activity action Create System Database SQL Script (Windows)
 	end
       end
 
-      activityaction 168066 "Generate TurboVision (Unix)"
+      activityaction 168066 "Generate System Application (Unix)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
-	flow 183938 "<flow>"
-	  on activityaction_ref 168194 // activity action NOP
+	key "stylesheet" value "/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
+	flow 212994 "<flow>"
+	  on activityaction_ref 188418 // activity action Create System Database SQL Script (Linux)
 	end
       end
 
@@ -1405,12 +1415,12 @@ ${inlines}
 	end
       end
 
-      activityaction 174722 "Show OS Type"
+      activityaction 174722 "Show what I am"
 	send_signal_action
 	ncouples 3
 	key "signal" value "showMsgBox"
-	key "msg" value "Os Type is {OSType}"
-	key "title" value "Betriebssystem..."
+	key "msg" value "Generate code for {OSType}"
+	key "title" value "System Code Generator"
 	flow 197250 "<flow>"
 	  on activitynode_ref 148354 // decision
 	end
@@ -1422,7 +1432,7 @@ ${inlines}
 	end
 
 	flow 197762 "<flow>"
-	  on activityaction_ref 168066 // activity action Generate TurboVision (Unix)
+	  on activityaction_ref 168066 // activity action Generate System Application (Unix)
 	    uml_guard "OSType == \"Unix\""
 	end
       end
@@ -1433,7 +1443,7 @@ ${inlines}
 	end
 
 	flow 197890 "<flow>"
-	  on activityaction_ref 147970 // activity action Generate TurboVision (Mac)
+	  on activityaction_ref 147970 // activity action Generate System Application (Mac)
 	    uml_guard "OSType == \"Mac\""
 	end
       end
@@ -1461,24 +1471,164 @@ ${inlines}
 
       activitynode 155138 decision ""
 	flow 205058 "<flow>"
-	  on activityaction_ref 167938 // activity action Generate TurboVision (Windows)
+	  on activityaction_ref 167938 // activity action Generate System Application (Windows)
 	    uml_guard "result == 1"
 	end
 
 	flow 205186 "<flow>"
-	  on activityaction_ref 181378 // activity action Generate TurboVision (Windows installed)
+	  on activityaction_ref 181378 // activity action Generate System Application (Windows installed)
 	    uml_guard "result == 0"
 	end
       end
 
-      activityaction 181378 "Generate TurboVision (Windows installed)"
+      activityaction 181378 "Generate System Application (Windows installed)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "\\lbDMF\\XSLT\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"
-	flow 205314 "<flow>"
+	key "stylesheet" value "\\lbDMF\\XSLT\\DMFToDataModel\\generate.xsl"
+	flow 221442 "<flow>"
+	  on activityaction_ref 195970 // activity action Show generated for Windows installed
+	end
+      end
+
+      activityaction 187906 "Create System Database SQL Script (Windows)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF "
+	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
+	flow 212354 "<flow>"
+	  on activityaction_ref 188034 // activity action Create Application Database SQL Script (Windows)
+	      uml_transformation "systemDDL = {stepout}"
+	end
+      end
+
+      activityaction 188034 "Create Application Database SQL Script (Windows)"
+	send_signal_action
+	flow 220930 "<flow>"
+	  on activitynode_ref 161666 // decision
+	      uml_transformation "applicationDDL = {stepout}"
+	end
+      end
+
+      activityaction 188162 "Create System Database SQL Script (Mac)"
+	send_signal_action
+	flow 212738 "<flow>"
+	  on activityaction_ref 188290 // activity action Create Application Database SQL Script (Mac)
+	      uml_transformation "systemDDL = {stepout}"
+	end
+      end
+
+      activityaction 188290 "Create Application Database SQL Script (Mac)"
+	send_signal_action
+	flow 220802 "<flow>"
+	  on activitynode_ref 161666 // decision
+	      uml_transformation "applicationDDL = {stepout}"
+	end
+      end
+
+      activityaction 188418 "Create System Database SQL Script (Linux)"
+	send_signal_action
+	flow 213122 "<flow>"
+	  on activityaction_ref 188546 // activity action Create Application Database SQL Script (Linux)
+	      uml_transformation "systemDDL = {stepout}"
+	end
+      end
+
+      activityaction 188546 "Create Application Database SQL Script (Linux)"
+	send_signal_action
+	flow 220674 "<flow>"
+	  on activitynode_ref 161666 // decision
+	      uml_transformation "applicationDDL = {stepout}"
+	end
+      end
+
+      activityaction 188674 "Create System Database SQL Script (Windows installed)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
+	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-SystemDB.xsl"
+	flow 211970 "<flow>"
+	  on activityaction_ref 188802 // activity action Create Application Database SQL Script (Windows installed)
+	      uml_transformation "systemDDL = {stepout}"
+	end
+      end
+
+      activityaction 188802 "Create Application Database SQL Script (Windows installed)"
+	send_signal_action
+	ncouples 3
+	key "signal" value "transformXSLT"
+	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
+	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
+	flow 221058 "<flow>"
+	  on activitynode_ref 161666 // decision
+	      uml_transformation "applicationDDL = {stepout}"
+	end
+      end
+
+      activitynode 161666 decision ""
+	flow 220034 "<flow>"
+	  on activityaction_ref 195458 // activity action write System DDL to file
+	    uml_guard "backend == DatabaseLayerGateway"
+	end
+
+	flow 221186 "<flow>"
+	  on activityaction_ref 195842 // activity action NOP0
+	      uml_transformation "CombinedDDL = {applicationDDL}"
+	end
+      end
+
+      activityaction 195458 "write System DDL to file"
+	send_signal_action
+	ncouples 3
+	key "signal" value "writeStringToFile"
+	key "source" value "{systemDDL}"
+	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-Sqlite-SystemDB.sql"
+	flow 220162 "<flow>"
+	  on activityaction_ref 195586 // activity action write Application DDL to file
+	end
+      end
+
+      activityaction 195586 "write Application DDL to file"
+	send_signal_action
+	ncouples 3
+	key "signal" value "writeStringToFile"
+	key "source" value "{applicationDDL}"
+	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-Sqlite-SystemDB.sql"
+	flow 220290 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
+	end
+      end
+
+      activityaction 195714 "write combined DDL for PostgreSQL"
+	send_signal_action
+	ncouples 3
+	key "signal" value "writeStringToFile"
+	key "source" value "{CombinedDDL}"
+	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-PostgreSQL.sql"
+	flow 220418 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
+	end
+      end
+
+      activityaction 195842 "NOP0"
+	opaque_action
+	flow 221314 "<flow>"
+	  on activityaction_ref 195714 // activity action write combined DDL for PostgreSQL
+	      uml_transformation "CombinedDDL += {systemDDL}"
+	end
+      end
+
+      activityaction 195970 "Show generated for Windows installed"
+	send_signal_action
+	ncouples 3
+	key "signal" value "showMsgBox"
+	key "title" value "Plattform"
+	key "msg" value "Es wurde Code in einer Endbenutzer Installation generiert"
+	flow 221570 "<flow>"
+	  on activityaction_ref 188674 // activity action Create System Database SQL Script (Windows installed)
 	end
       end
     end
