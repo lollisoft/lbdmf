@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 47
+  revision 49
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1345,7 +1345,7 @@ ${inlines}
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
-	key "stylesheet" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
+	key "stylesheet" value "{BasePath}/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
 	key "source" value "{file}"
 	flow 212610 "<flow>"
 	  on activityaction_ref 188162 // activity action Create System Database SQL Script (Mac)
@@ -1390,7 +1390,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToDataModel\\generate.xsl"
+	key "stylesheet" value "{BasePath}\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToDataModel\\generate.xsl"
 	flow 212226 "<flow>"
 	  on activityaction_ref 187906 // activity action Create System Database SQL Script (Windows)
 	end
@@ -1401,7 +1401,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
+	key "stylesheet" value "{BasePath}/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
 	flow 212994 "<flow>"
 	  on activityaction_ref 188418 // activity action Create System Database SQL Script (Linux)
 	end
@@ -1434,6 +1434,7 @@ ${inlines}
 	flow 197762 "<flow>"
 	  on activityaction_ref 168066 // activity action Generate System Application (Unix)
 	    uml_guard "OSType == \"Unix\""
+	      uml_transformation "BasePath = /home/lothar/develop/Projects/CPP"
 	end
       end
 
@@ -1445,6 +1446,7 @@ ${inlines}
 	flow 197890 "<flow>"
 	  on activityaction_ref 147970 // activity action Generate System Application (Mac)
 	    uml_guard "OSType == \"Mac\""
+	      uml_transformation "BasePath = /Users/lothar/develop/Projects/CPP"
 	end
       end
 
@@ -1473,11 +1475,13 @@ ${inlines}
 	flow 205058 "<flow>"
 	  on activityaction_ref 167938 // activity action Generate System Application (Windows)
 	    uml_guard "result == 1"
+	      uml_transformation "BasePath = \\\\develop\\\\Projects\\\\CPP"
 	end
 
 	flow 205186 "<flow>"
 	  on activityaction_ref 181378 // activity action Generate System Application (Windows installed)
 	    uml_guard "result == 0"
+	      uml_transformation "BasePath = \\\\lbDMF"
 	end
       end
 
@@ -1486,7 +1490,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "\\lbDMF\\XSLT\\DMFToDataModel\\generate.xsl"
+	key "stylesheet" value "{BasePath}\\XSLT\\DMFToDataModel\\generate.xsl"
 	flow 221442 "<flow>"
 	  on activityaction_ref 195970 // activity action Show generated for Windows installed
 	end
@@ -1548,8 +1552,8 @@ ${inlines}
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
-	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
-	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-SystemDB.xsl"
+	key "source" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
+	key "stylesheet" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-SystemDB.xsl"
 	flow 211970 "<flow>"
 	  on activityaction_ref 188802 // activity action Create Application Database SQL Script (Windows installed)
 	      uml_transformation "systemDDL = {stepout}"
@@ -1560,8 +1564,8 @@ ${inlines}
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
-	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
-	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
+	key "source" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
+	key "stylesheet" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
 	flow 221058 "<flow>"
 	  on activitynode_ref 161666 // decision
 	      uml_transformation "applicationDDL = {stepout}"
@@ -1575,7 +1579,7 @@ ${inlines}
 	end
 
 	flow 221186 "<flow>"
-	  on activityaction_ref 195842 // activity action NOP0
+	  on activityaction_ref 195842 // activity action Combine DDL files in transition
 	      uml_transformation "CombinedDDL = {applicationDDL}"
 	end
       end
@@ -1585,7 +1589,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "writeStringToFile"
 	key "source" value "{systemDDL}"
-	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-Sqlite-SystemDB.sql"
+	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-Sqlite-SystemDB.sql"
 	flow 220162 "<flow>"
 	  on activityaction_ref 195586 // activity action write Application DDL to file
 	end
@@ -1596,7 +1600,7 @@ ${inlines}
 	ncouples 3
 	key "signal" value "writeStringToFile"
 	key "source" value "{applicationDDL}"
-	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-Sqlite-SystemDB.sql"
+	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-Sqlite-SystemDB.sql"
 	flow 220290 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
 	end
@@ -1607,13 +1611,13 @@ ${inlines}
 	ncouples 3
 	key "signal" value "writeStringToFile"
 	key "source" value "{CombinedDDL}"
-	key "filename" value "\\develop\\Projects\\CPP\\Database\\lbDMF-PostgreSQL.sql"
+	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-PostgreSQL.sql"
 	flow 220418 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
 	end
       end
 
-      activityaction 195842 "NOP0"
+      activityaction 195842 "Combine DDL files in transition"
 	opaque_action
 	flow 221314 "<flow>"
 	  on activityaction_ref 195714 // activity action write combined DDL for PostgreSQL

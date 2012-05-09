@@ -126,10 +126,10 @@ activityactioncanvas 157826 activityaction_ref 195714 // activity action write c
   show_opaque_action_definition default
   xyzwh 179.7 1412.8 2000 293 41
 end
-activityactioncanvas 159106 activityaction_ref 195842 // activity action NOP0
+activityactioncanvas 159106 activityaction_ref 195842 // activity action Combine DDL files in transition
   show_infonote default drawing_language default show_stereotype_properties default
   show_opaque_action_definition default
-  xyzwh 274.8 1178.2 2000 101 61
+  xyzwh 201.8 1183.2 2000 249 52
 end
 activityactioncanvas 161026 activityaction_ref 195970 // activity action Show generated for Windows installed
   show_infonote default drawing_language default show_stereotype_properties default
@@ -183,6 +183,10 @@ flowcanvas 144770 flow_ref 197762 // <flow>
   
   from ref 142466 z 2001 label "[OSType == \"Unix\"]" xyz 435 222 2001 to ref 142082
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 162178 "<<transformation>>
+BasePath = /home/lothar/develop/Projects/CPP"
+    xyzwh 315 142 2001 363 58
 end
 flowcanvas 144898 flow_ref 197506 // <flow>
   
@@ -193,6 +197,10 @@ flowcanvas 145026 flow_ref 197890 // <flow>
   
   from ref 142594 z 2001 label "[OSType == \"Mac\"]" xyz 415 284 2001 to ref 141314
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 162434 "<<transformation>>
+BasePath = /Users/lothar/develop/Projects/CPP"
+    xyzwh 711 133 2001 365 58
 end
 flowcanvas 145282 flow_ref 198274 // <flow>
   
@@ -214,11 +222,19 @@ flowcanvas 147330 flow_ref 205058 // <flow>
   
   from ref 147074 z 2007 label "[result == 1]" xyz 421 404 2007 to ref 141954
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 161794 "<<transformation>>
+BasePath = \\\\develop\\\\Projects\\\\CPP"
+    xyzwh 498 335 2007 288 58
 end
 flowcanvas 147714 flow_ref 205186 // <flow>
   
   from ref 147074 z 2006 label "[result == 0]" xyz 238 455 2006 to ref 147458
   show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 161538 "<<transformation>>
+BasePath = \\\\lbDMF"
+    xyzwh 537 459 2006 177 58
 end
 flowcanvas 152194 flow_ref 211970 // <flow>
   
@@ -379,4 +395,12 @@ line 160642 -_-_
   from ref 158722 z 2002 to ref 160514
 line 160898 -_-_
   from ref 158594 z 2002 to ref 160770
+line 161666 -_-_
+  from ref 147714 z 2007 to ref 161538
+line 161922 -_-_
+  from ref 147330 z 2008 to ref 161794
+line 162306 -_-_
+  from ref 144770 z 2002 to ref 162178
+line 162562 -_-_
+  from ref 145026 z 2002 to ref 162434
 end
