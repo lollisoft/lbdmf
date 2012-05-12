@@ -78,6 +78,29 @@ extern "C" {
 #include <lbActions.h>
 #include <lbFormularActions.h>
 
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularActions)
+ADD_INTERFACE(lb_I_FormularAction_Manager)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbFormularActions, lbFormularActions)
+
+
+lbFormularActions::lbFormularActions() {
+	//actions = NULL;
+}
+
+lbFormularActions::~lbFormularActions() {
+	_CL_LOG << "lbFormularActions::~lbFormularActions() called." LOG_
+
+	if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_
+}
+
+lbErrCodes LB_STDCALL lbFormularActions::setData(lb_I_Unknown* uk) {
+	_CL_VERBOSE << "lbFormularActions::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+	return ERR_NOT_IMPLEMENTED;
+}
+
 void lbFormularActions::addRegisteredAction(long ActionID, const char* eventName) {
 	lbErrCodes err = ERR_NONE;
 	if (eventmapping == NULL) {
