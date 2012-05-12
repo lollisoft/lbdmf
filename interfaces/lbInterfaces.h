@@ -4826,6 +4826,31 @@ public:
 	virtual void LB_STDCALL setActionID(long id) = 0;
 };
 
+class lb_I_ActionTransitionLogic : public lb_I_Unknown {
+	/** \brief Set the action step ID.
+	 */
+	virtual void LB_STDCALL setActionID(long id) = 0;
+
+	/** \brief Compute the next step ID.
+	 * This is usually only one ID, except in a desicion. In a Desicion the one is returned whose guard matches.
+	 */
+	virtual long LB_STDCALL getNextStepId() = 0;
+	
+	/** \brief Compute transitions.
+	 * This method executes all transitions.
+	 */
+	virtual lbErrCodes LB_STDCALL executeTransitions() = 0;
+
+	/** \brief Set the transitions to be operated upon.
+	 */
+	virtual void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions) = 0;
+	
+	/** \brief Forward parameters.
+	 * The transition logic probably relies upon parameters.
+	 */
+	virtual void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams) = 0;
+};
+
 /// \todo Think about the interface name.
 /**
  * \brief This interface is intended as a way to delegate action steps.
@@ -4876,6 +4901,55 @@ public:
 
 };
 /*...e*/
+
+/** \brief Interface to manage formular actions.
+ */
+class lb_I_FormularAction_Manager : public lb_I_VisitableHelper {
+public:
+	/** \brief Add a mapping from event name to it's action ID.
+	 */
+	virtual void addRegisteredAction(long ActionID, const char* eventName) = 0;
+
+	/** \brief ID of action target.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when
+	 */
+	virtual char* getActionTargetID(const char* reversed_event) = 0;
+
+	/** \brief ID of action target as long.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when
+	 */
+	virtual long getActionTargetIDLong(const char* reversed_event) = 0;
+
+	/** \brief Source field of the action. */
+	virtual char* getActionSourceDataField(const char* reversed_event) = 0;
+
+	/** \brief ID for the action. */
+	virtual long getActionID(const char* reversed_event) = 0;
+
+	/** \brief Get the action instance.
+	 *
+	 * This function creates the requested action instance, stores it for caching and
+	 * then returns a reference to it.
+	 */
+	virtual lb_I_Action* getAction(long id) = 0;
+
+	/** \brief Validate the form.
+	 *
+	 * Use this function to check, if the data has a correct state.
+	 */
+	virtual bool validate() = 0;
+
+	/** \brief Update master/detail views and related views.
+	 *
+	 * Use this function to update related views. This may master/detail views and
+	 * possibly views, containing data fields related to any open views.
+	 */
+	virtual bool update() = 0;
+};
 
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
