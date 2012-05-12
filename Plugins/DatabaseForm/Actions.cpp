@@ -570,7 +570,7 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 							
 							params->getUAPString(*&left, *&append);
 							
-							*append += right;
+							*append += right->charrep();
 							
 							params->setUAPString(*&left, *&append);
 							first_dst_actionid = dst_actionid;

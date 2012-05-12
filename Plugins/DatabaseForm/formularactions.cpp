@@ -92,9 +92,11 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
+#define USE_EXRERNAL_FORMULARACTIONS
+
 #include <lbDatabaseForm.h>
+
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 
 void FormularActions::addRegisteredAction(long ActionID, const char* eventName) {
 	lbErrCodes err = ERR_NONE;
@@ -369,3 +371,5 @@ long FormularActions::getActionID(const char* what) {
 	return getActionTargetIDLong(what);
 }
 /*...e*/
+
+#endif
