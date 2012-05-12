@@ -96,8 +96,6 @@ extern "C" {
 #include "wx/statline.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...slbDatabaseTableViewPanel:0:*/
@@ -119,8 +117,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::setData(lb_I_Unknown* uk) {
 		UAP(lb_I_DatabaseForm, dbForm)
 		QI(uk, lb_I_DatabaseForm, dbForm)
 
-		fa = ((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa;
-		((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa = NULL;
+		fa = ((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa.getPtr();
+		((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa.resetPtr();
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -132,16 +130,13 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 //	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_LOG << "lbDatabaseTableViewPanel::lbDatabaseTableViewPanel() called." LOG_
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-///\todo Move out of constructor
-	//AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-
+	
 	formName = strdup("Database table view");
 	untranslated_formName = NULL;
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
-	fa = NULL;
+	//fa = NULL;
 	FFI = NULL;
     numRows = 30;
     page = 0;
@@ -167,7 +162,7 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 lbDatabaseTableViewPanel::~lbDatabaseTableViewPanel() {
 	_CL_VERBOSE << "lbDatabaseTableViewPanel::~lbDatabaseTableViewPanel() called." LOG_
 
-	if (fa != NULL) delete fa;
+	//if (fa != NULL) delete fa;
 	if (FFI != NULL) delete FFI;
 	free (formName);
 	free (base_formName);
@@ -597,16 +592,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-			ID->setData(securityManager->getApplicationID());
+			ID->setData(meta->getApplicationID());
 
-			forms->finishFormularsIteration();
+			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
-				forms->setNextFormulars();
-				FID->setData(forms->get_anwendungid());
+				forms->setNextFormular();
+				FID->setData(forms->getApplicationID());
 
 				if (FID->equals(*&ID)) {
-					if (strcmp(formName, forms->get_name()) == 0) {
-						forms->finishFormularsIteration();
+					if (strcmp(formName, forms->getName()) == 0) {
+						forms->finishFormularIteration();
 						formFound = true;
 						_LOG << "Found formular name in datamodel." LOG_
 						break;
@@ -618,16 +613,16 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
 
-			long FormID = forms->get_id();
+			long FormID = forms->getFormularID();
 
-			formularfields->finishFormular_FieldsIteration();
-			while (formularfields->hasMoreFormular_Fields()) {
-				formularfields->setNextFormular_Fields();
+			formularfields->finishFieldsIteration();
+			while (formularfields->hasMoreFields()) {
+				formularfields->setNextField();
 
-				if (formularfields->get_id() == FormID) {
-					if (strcmp(formularfields->get_name(), name) == 0) {
+				if (formularfields->getFormularID() == FormID) {
+					if (strcmp(formularfields->getName(), name) == 0) {
 						definitionFound = true;
-						formularfields->finishFormular_FieldsIteration();
+						formularfields->finishFieldsIteration();
 						break;
 					}
 				}
@@ -643,27 +638,27 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 				fkpkPanel->destroy();
 				meta->setLoadFromDatabase(true);
 
-				long ID = securityManager->getApplicationID();
+				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
-					forms->setNextFormulars();
+					forms->setNextFormular();
 
-					if (forms->get_anwendungid() == ID) {
-						if (strcmp(formName, forms->get_name()) == 0) {
-							forms->finishFormularsIteration();
+					if (forms->getApplicationID() == ID) {
+						if (strcmp(formName, forms->getName()) == 0) {
+							forms->finishFormularIteration();
 							break;
 						}
 					}
 				}
 
-				long FormID = forms->get_id();
+				long FormID = forms->getFormularID();
 
-				while (formularfields->hasMoreFormular_Fields()) {
-					formularfields->setNextFormular_Fields();
+				while (formularfields->hasMoreFields()) {
+					formularfields->setNextField();
 
-					if (formularfields->get_id() == FormID) {
-						if (strcmp(formularfields->get_name(), name) == 0) {
+					if (formularfields->getFormularID() == FormID) {
+						if (strcmp(formularfields->getName(), name) == 0) {
 							definitionFound = true;
-							formularfields->finishFormular_FieldsIteration();
+							formularfields->finishFieldsIteration();
 							break;
 						}
 					}
@@ -798,8 +793,8 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
-				*PKName = formularfields->get_fkname(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->get_fktable();
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable();
 #endif
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
@@ -1697,29 +1692,32 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const cha
 
 	//   formulars      <-      NM               ->   actions
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
 
-							appActions->selectActions(ActionID);
-							char* actionName = appActions->get_name();
+							appActions->selectAction(ActionID);
+							char* actionName = appActions->getActionName();
 
 							// Helps to faster lookup the action ID from event name
 							fa->addRegisteredAction(ActionID, eventName);
@@ -1878,28 +1876,31 @@ _CL_LOG << "Connect event handlers" LOG_
 void LB_STDCALL lbDatabaseTableViewPanel::activateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
-							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectActions(ActionID);
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
 
 							_LOG << "Activate action '" << actionName << "'" LOG_
 
@@ -1917,28 +1918,31 @@ void LB_STDCALL lbDatabaseTableViewPanel::activateActionButtons() {
 void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
-							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectActions(ActionID);
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
 
 							_LOG << "Deactivate action '" << actionName << "'" LOG_
 
@@ -2165,16 +2169,16 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-			ID->setData(securityManager->getApplicationID());
+			ID->setData(meta->getApplicationID());
 
-			forms->finishFormularsIteration();
+			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
-				forms->setNextFormulars();
-				FID->setData(forms->get_anwendungid());
+				forms->setNextFormular();
+				FID->setData(forms->getApplicationID());
 
 				if (FID->equals(*&ID)) {
-					if (strcmp(base_formName, forms->get_name()) == 0) {
-						forms->finishFormularsIteration();
+					if (strcmp(base_formName, forms->getName()) == 0) {
+						forms->finishFormularIteration();
 						formFound = true;
 						_LOG << "Found formular name in datamodel." LOG_
 						break;
@@ -2186,16 +2190,16 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 				_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 			}
 
-			long FormID = forms->get_id();
+			long FormID = forms->getFormularID();
 
-			formularfields->finishFormular_FieldsIteration();
-			while (formularfields->hasMoreFormular_Fields()) {
-				formularfields->setNextFormular_Fields();
+			formularfields->finishFieldsIteration();
+			while (formularfields->hasMoreFields()) {
+				formularfields->setNextField();
 
-				if (formularfields->get_id() == FormID) {
-					if (strcmp(formularfields->get_name(), name->charrep()) == 0) {
+				if (formularfields->getFormularID() == FormID) {
+					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 						definitionFound = true;
-						formularfields->finishFormular_FieldsIteration();
+						formularfields->finishFieldsIteration();
 						break;
 					}
 				}
@@ -2238,27 +2242,27 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 				sampleQuery->query(newSql, false);
 				free(newSql);
 
-				long ID = securityManager->getApplicationID();
+				long ID = meta->getApplicationID();
 				while (forms->hasMoreFormulars()) {
-					forms->setNextFormulars();
+					forms->setNextFormular();
 
-					if (forms->get_anwendungid() == ID) {
-						if (strcmp(formName, forms->get_name()) == 0) {
-							forms->finishFormularsIteration();
+					if (forms->getApplicationID() == ID) {
+						if (strcmp(formName, forms->getName()) == 0) {
+							forms->finishFormularIteration();
 							break;
 						}
 					}
 				}
 
-				long FormID = forms->get_id();
+				long FormID = forms->getFormularID();
 
-				while (formularfields->hasMoreFormular_Fields()) {
-					formularfields->setNextFormular_Fields();
+				while (formularfields->hasMoreFields()) {
+					formularfields->setNextField();
 
-					if (formularfields->get_id() == FormID) {
-						if (strcmp(formularfields->get_name(), name->charrep()) == 0) {
+					if (formularfields->getFormularID() == FormID) {
+						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 							definitionFound = true;
-							formularfields->finishFormular_FieldsIteration();
+							formularfields->finishFieldsIteration();
 							break;
 						}
 					}
@@ -2343,8 +2347,8 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
-				*PKName = formularfields->get_fkname(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->get_fktable();
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable();
 #endif
 
 				wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
@@ -5041,8 +5045,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
