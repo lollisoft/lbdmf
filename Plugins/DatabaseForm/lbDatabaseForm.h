@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.1 $
+ * $Revision: 1.71.2.2 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.1 2012/05/12 11:50:13 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.2 2012/05/12 14:25:00 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.2  2012/05/12 14:25:00  lollisoft
+ * Deactivated mor code within these files before really deleting the files.
+ *
  * Revision 1.71.2.1  2012/05/12 11:50:13  lollisoft
  * Changes to get the refactored activity classes from lbWorkflowEngine.
  *
@@ -473,6 +476,8 @@ protected:
 };
 /*...e*/
 
+#ifndef USE_EXRERNAL_FORMULARACTIONS
+
 /*...sclass lbDetailFormAction:0:*/
 class lbDetailFormAction : public lb_I_DelegatedAction
 {
@@ -585,8 +590,6 @@ class lbOpAqueOperation : public lb_I_DelegatedAction
 		UAP(lb_I_Database, db)
 	};
 /*...e*/
-
-#ifndef USE_EXRERNAL_FORMULARACTIONS
 
 /*...sclass FormularActions:0:*/
 /** \brief Management of formular actions.

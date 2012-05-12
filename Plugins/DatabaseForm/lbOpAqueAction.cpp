@@ -93,9 +93,11 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
+#define USE_EXRERNAL_FORMULARACTIONS
+
 #include <lbDatabaseForm.h>
+
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 
 /*...lbOpAqueOperation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbOpAqueOperation)
@@ -212,3 +214,4 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 	return 0;
 }
 
+#endif
