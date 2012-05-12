@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbFormularActions.h,v 1.1.2.1 2012/05/12 04:40:17 lollisoft Exp $
+ * $Id: lbFormularActions.h,v 1.1.2.2 2012/05/12 21:20:09 lollisoft Exp $
  *
  * $Log: lbFormularActions.h,v $
+ * Revision 1.1.2.2  2012/05/12 21:20:09  lollisoft
+ * Code cleanup and made formularactions loadable at runtime.
+ *
  * Revision 1.1.2.1  2012/05/12 04:40:17  lollisoft
  * Moved action implementation out of DatabaseForm plugin and replaced wx related code with my own.
  *
@@ -59,20 +62,15 @@
  * should be also responsible to update the detail/master views when the user
  * changes the peer.
  */
-class lbFormularActions {
+class lbFormularActions : public lb_I_FormularAction_Manager {
 
 public:
 
-	lbFormularActions() {
-		//actions = NULL;
-	}
+	lbFormularActions();
 
-	virtual ~lbFormularActions() {
-		_CL_LOG << "lbFormularActions::~lbFormularActions() called." LOG_
+	virtual ~lbFormularActions();
 
-		if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_
-	}
-
+	DECLARE_LB_UNKNOWN()
 
 	/** \brief Add a mapping from event name to it's action ID.
 	 */
@@ -129,10 +127,7 @@ protected:
 extern "C" {
 #endif
 
-DECLARE_FUNCTOR(instanceOflbSQLQueryAction)
-
-// Based on the 'group box' this control can be used to draw lines and so on.
-DECLARE_FUNCTOR(instanceOflbOwnerDrawControl)
+DECLARE_FUNCTOR(instanceOflbFormularActions)
 
 #ifdef __cplusplus
 }
