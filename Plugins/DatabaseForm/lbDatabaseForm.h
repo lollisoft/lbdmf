@@ -28,29 +28,13 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.71.2.1 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.74 2012/01/22 11:03:03 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.1 2012/05/12 11:50:13 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
- * Revision 1.74  2012/01/22 11:03:03  lollisoft
- * Added support for custom extension objects.
- * Using that for the formular fields entity to read from
- * columns of the configured query per form.
- *
- * Fixed bugs that resulted in the new costom db reader
- * extension class
- *
- * Revision 1.73  2012/01/04 06:37:19  lollisoft
- * Compiles against generated entity model.
- *
- * Revision 1.72  2011/10/29 06:03:58  lollisoft
- * Refactored application model (and it's model classes) into separate files to enable code generation.
- * The code generation is planned for the model classes and the composite container for the model.
- * Refactored out the login and user management from meta application due to the fact that it is a
- * distinct feature the meta application should not provide. The code has been moved to a security
- * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
- * available.
+ * Revision 1.71.2.1  2012/05/12 11:50:13  lollisoft
+ * Changes to get the refactored activity classes from lbWorkflowEngine.
  *
  * Revision 1.71  2011/10/09 15:22:54  lollisoft
  * Fixed possible issues due to not initialized variables.
@@ -389,7 +373,7 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 	lb_I_Unknown* LB_STDCALL getUnknown();
 		
-	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName);
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
 		
 	void OnDispatch(wxCommandEvent& event);
 
@@ -602,6 +586,8 @@ class lbOpAqueOperation : public lb_I_DelegatedAction
 	};
 /*...e*/
 
+#ifndef USE_EXRERNAL_FORMULARACTIONS
+
 /*...sclass FormularActions:0:*/
 /** \brief Management of formular actions.
  *
@@ -682,6 +668,8 @@ protected:
 	UAP(lb_I_Actions, appActions)
 };
 /*...e*/
+
+#endif
 
 /*...sclass FormularFieldInformation:0:*/
 /** \brief Management of formular fields.
@@ -1007,12 +995,11 @@ public:
 
 	bool LB_STDCALL checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns);
 	
-	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName);
+	bool LB_STDCALL haveNotMappedForeignKeyFields(const char* formName, const char* fieldName);
 		
 	DECLARE_LB_UNKNOWN()
 
 /*...svariables:8:*/
-	UAP(lb_I_SecurityProvider, securityManager)
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 	UAP(lb_I_String, SQLString)
@@ -1095,7 +1082,7 @@ public:
 	char* untranslated_formName;
 
 	FormularFieldInformation* FFI;
-	FormularActions* fa;
+	UAP(lb_I_FormularAction_Manager, fa)
 
 	lb_I_DatabaseForm* _master;
 	lb_I_DatabaseForm* _detail;
@@ -1352,8 +1339,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...svariables:8:*/
-	UAP(lb_I_SecurityProvider, securityManager)
-
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 	UAP(lb_I_String, SQLString)
@@ -1429,7 +1414,7 @@ public:
 	char* untranslated_formName;
 
 	FormularFieldInformation* FFI;
-	FormularActions* fa;
+	UAP(lb_I_FormularAction_Manager, fa)
 
 	lb_I_DatabaseForm* _master;
 	lb_I_DatabaseForm* _detail;
@@ -1829,9 +1814,6 @@ public:
 	lbDatabaseTableViewPanel* panel;
 	bool _created;
 };
-
-// Helper
-char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
 
 
 #ifdef __cplusplus
