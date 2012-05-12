@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.106.2.1 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106 2011/10/15 16:33:26 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.1 2012/05/12 21:16:25 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.1  2012/05/12 21:16:25  lollisoft
+ * Added documentation to string interface.
+ *
  * Revision 1.106  2011/10/15 16:33:26  lollisoft
  * Removed some unused code and no more required code. Current version does not compile at all.
  *
@@ -701,7 +704,13 @@ public:
 	
 	virtual lb_I_String* LB_STDCALL left(int until) = 0;
 	virtual lb_I_String* LB_STDCALL right(int from) = 0;
+	
+	/** \brief Returns the position from 0 or -1 if not found.
+	 */
 	virtual int LB_STDCALL strpos(const char* with) = 0;
+	
+	/** \brief Returns the position from 0 or -1 if not found.
+	 */
 	virtual int LB_STDCALL rstrpos(const char* with) = 0;
 	
 	/** \brief Replace all occurences of placeholders with their values from params.
