@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149 $
+ * $Revision: 1.149.2.1 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149 2011/10/15 16:33:26 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149.2.1 2012/05/19 05:47:32 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.1  2012/05/19 05:47:32  lollisoft
+ * New workflow module integrated into the build. SQL scripts tewaked.
+ *
  * Revision 1.149  2011/10/15 16:33:26  lollisoft
  * Removed some unused code and no more required code. Current version does not compile at all.
  *
@@ -2212,192 +2215,198 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Lock") == 0) {
 	 	functor = PREFIX "instanceOflbLock";
 		module = "lbClasses";
 		found = true;
 	}
-	
-	if (strcmp(searchArgument, "lb_I_Thread") == 0) {
-	 	functor = PREFIX "instanceOflbThread";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	
-	if (strcmp(searchArgument, "lb_I_Container") == 0) {
-	 	functor = PREFIX "instanceOfSkipList";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_InputStream") == 0) {
-	 	functor = PREFIX "instanceOfInputStream";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_OutputStream") == 0) {
-	 	functor = PREFIX "instanceOfOutputStream";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_Log") == 0) {
-		functor = PREFIX "instanceOfLogger";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_KeyBase") == 0) {
-		functor = PREFIX "instanceOfIntegerKey";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
-		functor = PREFIX "instanceOfInteger";
-		module = "lbClasses";
-		found = true;
-	}
-	
-	if (strcmp(searchArgument, "lb_I_FileLocation") == 0) {
-		functor = PREFIX "instanceOfFileLocation";
-		module = "lbClasses";
-		found = true;
-	}
-
-	if (strcmp(searchArgument, "lb_I_DirLocation") == 0) {
-		functor = PREFIX "instanceOfDirLocation";
-		module = "lbClasses";
-		found = true;
-	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Long") == 0) {
 		functor = PREFIX "instanceOfLong";
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
 		functor = PREFIX "instanceOfBoolean";
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_String") == 0) {
 		functor = PREFIX "instanceOfString";
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Parameter") == 0) {
 		functor = PREFIX "instanceOfParameter";
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
+	if (strcmp(searchArgument, "lb_I_Thread") == 0) {
+	 	functor = PREFIX "instanceOflbThread";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_Container") == 0) {
+	 	functor = PREFIX "instanceOfSkipList";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_InputStream") == 0) {
+	 	functor = PREFIX "instanceOfInputStream";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_OutputStream") == 0) {
+	 	functor = PREFIX "instanceOfOutputStream";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_Log") == 0) {
+		functor = PREFIX "instanceOfLogger";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_KeyBase") == 0) {
+		functor = PREFIX "instanceOfIntegerKey";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
+		functor = PREFIX "instanceOfInteger";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_FileLocation") == 0) {
+		functor = PREFIX "instanceOfFileLocation";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_DirLocation") == 0) {
+		functor = PREFIX "instanceOfDirLocation";
+		module = "lbClasses";
+		found = true;
+	}
+	else
 	if (strcmp(searchArgument, "lb_I_Database") == 0) {
 		functor = PREFIX "instanceOfDatabase";
 		module = "lbDB";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_PluginManager") == 0) {
 		functor = PREFIX "instanceOfPluginManager";
 		module = "lbPluginManager";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Plugin") == 0) {
 		functor = PREFIX "instanceOfPlugin";
 		module = "lbPluginManager";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_InterfaceRepository") == 0) {
 	 	functor = "instanceOfInterfaceRepository";
 		module = "lbDOMConfig";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_MetaApplication") == 0) {
 		functor = PREFIX "instanceOfMetaApplication";
 		module = "lbMetaApplication";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_EventMapper") == 0) {
 		functor = PREFIX "instanceOfEventMapper";
 		module = "lbMetaApplication";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_EventManager") == 0) {
 		functor = PREFIX "instanceOfEventManager";
 		module = "lbMetaApplication";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_Dispatcher") == 0) {
 		functor = PREFIX "instanceOfDispatcher";
 		module = "lbMetaApplication";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_EvHandler") == 0) {
 		functor = PREFIX "instanceOfEvHandler";
 		module = "lbMetaApplication";
 		found = true;
 	}
-
+	else
 	if (strcmp(searchArgument, "lb_I_Locale") == 0) {
 		functor = PREFIX "instanceOfLocale";
 		module = "lbClasses";
 		found = true;
 	}
-
+	else
 	if (strcmp(searchArgument, "lb_I_Socket") == 0) {
 		functor = PREFIX "instanceOflbSocket";
 		module = "lbtransfer";
 		found = true;
 	}
+	else
 	// lbDMF_ACEWrapper instead of lbtransfer when paying with ACE version. But currently it has problems between Mac OS X and Windows XP. (Maybe TCP_NODELAY doesn't work).
 	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
 		functor = PREFIX "instanceOflbTransfer";
 		module = "lbtransfer";
 		found = true;
 	}
-
+	else
 	if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
 		functor = PREFIX "instanceOflbTransferDataObject";
 		module = "lbtransfer";
 		found = true;
 	}
-
+	else
 	if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
 		functor = PREFIX "instanceOflbTransferData";
 		module = "lbtransfer";
 		found = true;
 	}
-
+	else
 	if (strcmp(searchArgument, "lb_I_BinaryData") == 0) {
 		functor = PREFIX "instanceOfBinaryData";
 		module = "lbClasses";
 		found = true;
 	}
-	
+	else
 	if (strcmp(searchArgument, "lb_I_ApplicationServer") == 0) {
 		functor = PREFIX "instanceOflbAppServer";
 		module = "lbcs";
 		found = true;
 	}
-	
+	else
 ///\todo Implement this as 'search in plugins'.
 	if (strcmp(searchArgument, "lb_I_ApplicationBus") == 0) {
 		functor = PREFIX "instanceOfApplicationBusProxy";
 		module = "ApplicationBusProxy";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_FormularAction_Manager") == 0) {
+		functor = PREFIX "instanceOflbFormularActions";
+		module = "lbWorkflowEngine";
 		found = true;
 	}
 

@@ -48,8 +48,6 @@ LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
 	libr $(WATCOMLIBS)$(SLASH)winmm.lib
 
-MINGWLIBS+= -llibxml2 -llbxslt
-
 MOD_INCL_MINGW = $(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 
