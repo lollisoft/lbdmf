@@ -1,28 +1,13 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.235 $
+# * $Revision: 1.229.2.1 $
 # * $Name:  $
-# * $Id: Makefile,v 1.235 2012/02/11 07:34:38 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.1 2012/05/19 05:47:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
-# * Revision 1.235  2012/02/11 07:34:38  lollisoft
-# * Added touch Makefile for the clean target.
-# *
-# * Revision 1.234  2011/12/30 16:31:11  lollisoft
-# * Added new target DBTool.
-# *
-# * Revision 1.233  2011/10/30 17:13:47  lollisoft
-# * Missed passing prefix in install target.
-# *
-# * Revision 1.232  2011/10/30 11:08:37  lollisoft
-# * Removed the -.
-# *
-# * Revision 1.231  2011/10/30 10:16:19  lollisoft
-# * Added ../UnitTests target to normal build.
-# *
-# * Revision 1.230  2011/10/30 08:40:59  lollisoft
-# * Added building unit tests in CRUISECONTROL mode.
+# * Revision 1.229.2.1  2012/05/19 05:47:32  lollisoft
+# * New workflow module integrated into the build. SQL scripts tewaked.
 # *
 # * Revision 1.229  2011/10/15 06:36:11  lollisoft
 # * All current changes including interfaces (starting mass changes).
@@ -915,7 +900,6 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../UnitTests \
 	../AppDevelopment
 endif
 
@@ -924,7 +908,6 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
-	../UnitTests \
 	../RegressionTests
 endif
 
@@ -1030,6 +1013,7 @@ ALLTARGETS = \
 	lbModule \
 	lbMetaApplication \
 	lbclasses \
+	lbWorkflowEngine \
 	lbDB \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1062,6 +1046,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1105,6 +1090,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1131,6 +1117,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1183,6 +1170,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1209,6 +1197,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1260,6 +1249,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1287,6 +1277,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1349,6 +1340,7 @@ ALLTARGETS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1361,7 +1353,6 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
-	../Test/Console/DBTool \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
@@ -1384,6 +1375,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1435,6 +1427,7 @@ ALLTARGETS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1466,6 +1459,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1495,7 +1489,7 @@ ifndef RPMBUILD
 
 install:
 	for sub_target in $(ALLDIRS); do \
-		$(MAKE) -C $$sub_target -e prefix=$(prefix) install; \
+		$(MAKE) -C $$sub_target install; \
 	done
 	$(MAKE) -C ../AppDevelopment install
 
@@ -1613,7 +1607,6 @@ $(prefix)/plugins:
 	-mkdir -p $@
 
 clean:
-	touch Makefile
 	@for d in $(ALLDIRS); do \
 	  $(MAKE) -C $$d clean; \
 	done
@@ -1743,10 +1736,6 @@ endif
 
 ../Test/Console/XML: dummy
 	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
-
-../Test/Console/DBTool: dummy
-	$(MAKE) -s -C $@ -e MODULE=DBTool -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy
@@ -2033,6 +2022,10 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+lbWorkflowEngine: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbWorkflowEngine -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	
 #../Plugins/DatabaseForm: dummy
 #	$(MAKE) -s -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 #	$(MAKE) -s -C $@
