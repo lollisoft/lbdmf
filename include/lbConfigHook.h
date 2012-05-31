@@ -437,6 +437,7 @@ extern "C" DLLEXPORT char*		LB_CDECL _translateText(const char* text);
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 extern "C" DLLEXPORT const char*		LB_CDECL _getOsType();
+extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _CopyFile(const char* from, const char* to);
 #endif
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
@@ -526,6 +527,7 @@ extern "C" DLLEXPORT void LB_CDECL uninitLocale();
 
 extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename);
 extern "C" DLLEXPORT bool LB_CDECL FileExists(char *filename);
+extern "C" DLLEXPORT lbErrCodes LB_CDECL CopyFile(const char* from, const char* to);
 
 extern "C" DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name);
 /*...sDLLEXPORT lbErrCodes LB_CDECL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/

@@ -214,6 +214,7 @@ extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
 extern "C" DLLEXPORT const char*	LB_CDECL _getOsType() { return getOsType(); }
+extern "C" DLLEXPORT lbErrCodes	LB_CDECL _CopyFile(const char* from, const char* to) { return CopyFile(from, to); }
 
 #endif
 
@@ -651,6 +652,21 @@ extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
 #endif
 	rmdir(filename);
 	return false;
+}
+
+DLLEXPORT lbErrCodes LB_CDECL CopyFile(const char* from, const char* to)
+{
+#ifdef WINDOWS
+	return ERR_NONE;
+#endif
+#ifndef OSX
+#ifdef LINUX
+	return ERR_NONE;
+#endif
+#endif
+#ifdef OSX
+	return ERR_NONE;
+#endif
 }
 
 /*...sDLLEXPORT bool LB_CDECL FileExists\40\char \42\filename\41\:0:*/
@@ -1122,16 +1138,6 @@ DLLEXPORT char* LB_CDECL translateText(const char* text) {
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
 
-		if (locale == NULL) {
-			if (translated != NULL)
-			{
-				free(translated);
-				translated = NULL;
-			}
-			if (translated == NULL) translated = (char*) strdup(text);
-			return translated;
-		}
-		
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
@@ -1331,12 +1337,15 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 				}
 				printf("Unload module %s with %d references.\n", name, delMod->libreferences);
 				while (dlclose(delMod->lib) == 0) {
-					if (isVerbose())
-						printf("Unloaded module %s.\n", name);
+					//if (isVerbose())
+					printf("Unloaded module %s.\n", name);
+				}
+				{
+					printf("Error while unloading module: %s\n", dlerror());
+					if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
 				}
 
 				free(delMod->name);
-				delMod->name = NULL;
 				delete delMod;
 			} else {
 				lastMod = temp;
