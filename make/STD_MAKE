@@ -25,18 +25,13 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.150 $
+# * $Revision: 1.148.2.1 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.150 2011/12/18 13:46:20 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.1 2012/06/02 17:13:57 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
-# * Revision 1.150  2011/12/18 13:46:20  lollisoft
-# * Implemented extensible object pattern to break up visitor pattern into one
-# * fixed object tree part and an extensible part that support plugins and
-# * code generation. Code compiles, but is not yet tested.
-# *
-# * Revision 1.149  2011/10/30 15:46:10  lollisoft
-# * Some changes in unit tests.
+# * Revision 1.148.2.1  2012/06/02 17:13:57  lollisoft
+# * Used absolute path into my local develoment drive Q. This did not work on any installation other than my box.
 # *
 # * Revision 1.148  2011/10/15 06:36:12  lollisoft
 # * All current changes including interfaces (starting mass changes).
@@ -596,8 +591,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
@@ -770,7 +765,7 @@ YACC=bison
 
 # Compiler settings for mingw
 
-DEVROOT_MINGW=q:/develop
+DEVROOT_MINGW=$(DEVROOT_MAKE)
 
 STD_INCL_MINGW =-I. -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)mingw$(WATCOM_SLASH_CC)include \
 			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)interfaces \
@@ -1195,7 +1190,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
