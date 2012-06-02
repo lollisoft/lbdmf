@@ -214,7 +214,12 @@ extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
 extern "C" DLLEXPORT const char*	LB_CDECL _getOsType() { return getOsType(); }
-extern "C" DLLEXPORT lbErrCodes	LB_CDECL _CopyFile(const char* from, const char* to) { return CopyFile(from, to); }
+
+namespace lbdmfapi {
+
+extern "C" DLLEXPORT lbErrCodes	LB_CDECL _lbCopyFile(const char* from, const char* to) { return lbdmfapi::lbCopyFile(from, to); }
+
+}
 
 #endif
 
@@ -654,7 +659,9 @@ extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
 	return false;
 }
 
-DLLEXPORT lbErrCodes LB_CDECL CopyFile(const char* from, const char* to)
+namespace lbdmfapi {
+
+DLLEXPORT lbErrCodes LB_CDECL lbCopyFile(const char* from, const char* to)
 {
 #ifdef WINDOWS
 	return ERR_NONE;
@@ -667,6 +674,8 @@ DLLEXPORT lbErrCodes LB_CDECL CopyFile(const char* from, const char* to)
 #ifdef OSX
 	return ERR_NONE;
 #endif
+}
+
 }
 
 /*...sDLLEXPORT bool LB_CDECL FileExists\40\char \42\filename\41\:0:*/
@@ -1215,7 +1224,7 @@ DLLEXPORT char* LB_CDECL translateText(const char* text) {
 /*...e*/
 
 #define NUL '\0'
-char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
+char* LB_CDECL lbstristr(const char *String, const char *Pattern)
 {
 	char *pptr, *sptr, *start;
 
@@ -1244,7 +1253,7 @@ char* LB_STDCALL lbstristr(const char *String, const char *Pattern)
 	return NULL;
 }
 
-char* LB_STDCALL lbstrristr(const char *String, const char *Pattern)
+char* LB_CDECL lbstrristr(const char *String, const char *Pattern)
 {
 	char *r = NULL;
 
@@ -1559,28 +1568,28 @@ ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbErrCodes LB_CDECL lbKey::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
 
-char const* LB_CDECL lbKey::getKeyType() const {
+char const* LB_STDCALL lbKey::getKeyType() const {
 	return "int";
 }
 
-int LB_CDECL lbKey::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
 	return key == ((lbKey*) _key)->key;
 }
 
-int LB_CDECL lbKey::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
 	return key > ((lbKey*) _key)->key;
 }
 
-int LB_CDECL lbKey::lessthan(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
 	return key < ((lbKey*) _key)->key;
 }
 
-char* LB_CDECL lbKey::charrep() const {
+char* LB_STDCALL lbKey::charrep() const {
 	char buf[100];
 	sprintf(buf, "%d", key);
 	return strdup(buf);
@@ -1619,28 +1628,28 @@ ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbErrCodes LB_CDECL lbKey_::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
 
-char const* LB_CDECL lbKey_::getKeyType() const {
+char const* LB_STDCALL lbKey_::getKeyType() const {
 	return "int";
 }
 
-int LB_CDECL lbKey_::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey_::equals(const lb_I_KeyBase* _key) const {
 	return key == ((lbKey_*) _key)->key;
 }
 
-int LB_CDECL lbKey_::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey_::greater(const lb_I_KeyBase* _key) const {
 	return key > ((lbKey_*) _key)->key;
 }
 
-int LB_CDECL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
 	return key < ((lbKey_*) _key)->key;
 }
 
-char* LB_CDECL lbKey_::charrep() const {
+char* LB_STDCALL lbKey_::charrep() const {
 	char buf[100];
 	sprintf(buf, "%d", key);
 	return strdup(buf);
@@ -1671,7 +1680,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
 ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbErrCodes LB_CDECL lbStringKey::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 
 	lb_I_KeyBase* string = NULL;
 
@@ -1687,23 +1696,23 @@ lbErrCodes LB_CDECL lbStringKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-char const * LB_CDECL lbStringKey::getKeyType() const {
+char const * LB_STDCALL lbStringKey::getKeyType() const {
 	return "string";
 }
 
-int LB_CDECL lbStringKey::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbStringKey::equals(const lb_I_KeyBase* _key) const {
 	return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
 }
 
-int LB_CDECL lbStringKey::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbStringKey::greater(const lb_I_KeyBase* _key) const {
 	return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
 }
 
-int LB_CDECL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
 	return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
 }
 
-char* LB_CDECL lbStringKey::charrep() const {
+char* LB_STDCALL lbStringKey::charrep() const {
 	return key;
 }
 /*...e*/
