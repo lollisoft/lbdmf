@@ -1907,7 +1907,7 @@ lbErrCodes LB_STDCALL classname::release(char const* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < 0) { \
-        	if (isLogActivated()) printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, 0, ref); \
+        	if (isLogActivated()) printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, 0, ref.get()); \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \

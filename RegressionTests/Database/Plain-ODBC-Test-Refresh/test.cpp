@@ -59,7 +59,12 @@
 #include <sqlext.h>
 #include <stdio.h>
 #ifdef WINDOWS
+#ifndef __MINGW32__
 #include <iostream.h>
+#endif
+#ifdef __MINGW32__
+#include <iostream>
+#endif
 #endif
 #ifdef LINUX
 #include <iostream>

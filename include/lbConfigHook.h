@@ -80,8 +80,8 @@
 #if defined(__MINGW32__)
  #define IOS ios
  #define COUT std::cout
- #define CIN cin
- #define ENDL endl
+ #define CIN std::cin
+ #define ENDL std::endl
  #define OFSTREAM ofstream
  #include <iostream>
  #include <fstream>

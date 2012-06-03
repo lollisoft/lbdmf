@@ -28,11 +28,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.2 $
+ * $Revision: 1.71.2.3 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.2 2012/05/12 14:25:00 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.3 2012/06/03 16:41:23 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.3  2012/06/03 16:41:23  lollisoft
+ * Got my code compiled against current MinGW.
+ * Changed wxWidgets library from monotithig to multi.
+ *
  * Revision 1.71.2.2  2012/05/12 14:25:00  lollisoft
  * Deactivated mor code within these files before really deleting the files.
  *
@@ -310,19 +314,6 @@
 #include <iostream>
 #include "wx/grid.h"
 
-// Having remaining undefined symbols
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CREATED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_MOVED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_RESIZED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CLOSED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_HIDE_SIZERS is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SHOW_SIZERS is an undefined reference
-#define USE_STYLED_TEXT
-
-#ifdef USE_STYLED_TEXT
-#define WXMAKINGDLL_WXRESIZEABLECONTROL
-#include "wx/resizec.h"
-#endif
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
@@ -1069,10 +1060,6 @@ public:
 	wxWindow* lastButton;
 	wxWindow* deleteButton;
 	wxWindow* addingButton;
-
-#ifdef USE_STYLED_TEXT
-	wxResizeableControlCanvas* m_resizecanvas;	
-#endif
 
 	bool allNaviDisabled;
 	bool noDataAvailable;
