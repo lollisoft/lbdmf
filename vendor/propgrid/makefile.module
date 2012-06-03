@@ -37,7 +37,7 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
 
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 MOD_INCL_MINGW_CPP += -I. -I./include -I $(DEVROOT_MAKE)/wxwin/wx/include

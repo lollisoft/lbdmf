@@ -40,7 +40,7 @@ LIBS = $(BASE_LIBS)	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 #			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqllitefk.lib, \
 
 MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 MINGWLIBS += -ldatabaselayer_sqllite
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \

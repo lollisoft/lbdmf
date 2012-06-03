@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL lbCopyFile::copyFile(lb_I_Unknown* uk) {
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
-	if (!CopyFile(from->charrep(), to->charrep())) {
+	if (lbdmfapi::lbCopyFile(from->charrep(), to->charrep()) != ERR_NONE) {
 		*result = "0";
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_NONE;

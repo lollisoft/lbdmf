@@ -46,12 +46,16 @@
 #include <stdio.h>
 #include <time.h>
 
+#ifdef __MINGW32__
+#include <stdlib.h>
+#endif
+
 #ifdef __WATCOMC__
 #include <string.hpp>
 #endif
 
 #ifdef _MSC_VER
-#define PATH_MAX 512
+#define MAX_PATH 512
 #endif
 
 #include <stdarg.h>
@@ -129,7 +133,7 @@ public:
 
 	void LB_STDCALL _realloc(int add_size);
 
-	char f[PATH_MAX];
+	char f[MAX_PATH];
 	char* logmessage;
 	int lastsize;
 	FILE*	fin;
@@ -191,7 +195,7 @@ lbInputStream::lbInputStream() {
 /*...e*/
 void LB_STDCALL lbInputStream::setFileName(const char* name) {
 	f[0] = 0;
-	strncpy(f, name, PATH_MAX-1);
+	strncpy(f, name, MAX_PATH-1);
 	if (!FileExists(f)) {
 	    _CL_LOG << "Error: File to read from not possible! (" << f << ")" LOG_
 	    _LOG << "Error: File to read from not possible! (" << f << ")" LOG_

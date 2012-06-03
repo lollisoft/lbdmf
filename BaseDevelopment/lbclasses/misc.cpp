@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.56 $
+* $Revision: 1.56.2.1 $
 * $Name:  $
-* $Id: misc.cpp,v 1.56 2011/10/15 21:47:12 lollisoft Exp $
+* $Id: misc.cpp,v 1.56.2.1 2012/06/03 16:41:23 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.56.2.1  2012/06/03 16:41:23  lollisoft
+* Got my code compiled against current MinGW.
+* Changed wxWidgets library from monotithig to multi.
+*
 * Revision 1.56  2011/10/15 21:47:12  lollisoft
 * Removed all code that is obsolete. Current code compiles but still does not run.
 *
@@ -278,7 +282,7 @@
 #include <time.h>
 
 #ifdef _MSC_VER
-#define PATH_MAX 512
+#define MAX_PATH 512
 #endif
 
 #include <stdarg.h>
@@ -364,7 +368,7 @@ private:
 	static clock_t start_time, end_time;
 	static char lastevent[100];
 	static int beinlog;
-	static char f[PATH_MAX];
+	static char f[MAX_PATH];
 	static lbMutex* mutex;
 	static char* logmessage;
 	static int lastsize;
@@ -377,7 +381,7 @@ private:
 int lbLog::level = 0;
 int lbLog::firstlog = 0;
 int lbLog::beinlog = 0;
-char lbLog::f[PATH_MAX];
+char lbLog::f[MAX_PATH];
 char* lbLog::logmessage = NULL;
 int lbLog::lastsize = 0;
 clock_t lbLog::start_time, lbLog::end_time;
