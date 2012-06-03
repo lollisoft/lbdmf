@@ -38,7 +38,8 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 
 MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MINGWLIBS += -lwxWrapperDLL
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \

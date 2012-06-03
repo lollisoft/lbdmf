@@ -50,6 +50,10 @@ typedef enum {
 } LB_PACKET_TYPE;
 /*...e*/
 
+#ifdef LB_DMF_POWER
+#define u_short unsigned short
+#endif
+
 /*...sLB_TRANSFER_DATA:0:*/
 typedef struct {
         u_short                 packet_no;
