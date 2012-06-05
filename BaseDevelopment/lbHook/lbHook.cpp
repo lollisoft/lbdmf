@@ -1290,6 +1290,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 		}
 
 		if (temp->name != NULL) {
+			if (isVerbose()) printf("Test if module %s is %s.\n", temp->name, name);
 			if (strcmp(temp->name, name) == 0) {
 				_Modules* delMod = temp;
 
@@ -1302,7 +1303,7 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 					temp = temp->next;
 				}
 
-				if (isVerbose()) printf("Unloading module %s\n", delMod->name);
+				printf("Unload module %s with %d references.\n", name, delMod->libreferences);
 				if (FreeLibrary(delMod->lib) == 0) {
 					printf("ERROR: Library could not be unloaded!\n");
 				}

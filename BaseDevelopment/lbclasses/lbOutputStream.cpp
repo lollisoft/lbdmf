@@ -135,7 +135,7 @@ public:
 
 	void LB_STDCALL _realloc(int add_size);
 
-	char f[MAX_PATH];
+	char f[PATH_MAX];
 	char* logmessage;
 	//int pre_lastsize;
 	int lastsize;
@@ -221,7 +221,7 @@ void LB_STDCALL lbOutputStream::setBinary() {
 
 void LB_STDCALL lbOutputStream::setFileName(const char* name) {
 	f[0] = 0;
-	strncpy(f, name, MAX_PATH-1);
+	strncpy(f, name, PATH_MAX-1);
 }
 
 const char* LB_STDCALL lbOutputStream::getFileName() {

@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.56.2.1 $
+* $Revision: 1.56.2.2 $
 * $Name:  $
-* $Id: misc.cpp,v 1.56.2.1 2012/06/03 16:41:23 lollisoft Exp $
+* $Id: misc.cpp,v 1.56.2.2 2012/06/05 19:15:43 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.56.2.2  2012/06/05 19:15:43  lollisoft
+* PATH_MAX issue. Added some more logging on Windows part when unloading a module.
+*
 * Revision 1.56.2.1  2012/06/03 16:41:23  lollisoft
 * Got my code compiled against current MinGW.
 * Changed wxWidgets library from monotithig to multi.
@@ -368,7 +371,7 @@ private:
 	static clock_t start_time, end_time;
 	static char lastevent[100];
 	static int beinlog;
-	static char f[MAX_PATH];
+	static char f[PATH_MAX];
 	static lbMutex* mutex;
 	static char* logmessage;
 	static int lastsize;
@@ -381,7 +384,7 @@ private:
 int lbLog::level = 0;
 int lbLog::firstlog = 0;
 int lbLog::beinlog = 0;
-char lbLog::f[MAX_PATH];
+char lbLog::f[PATH_MAX];
 char* lbLog::logmessage = NULL;
 int lbLog::lastsize = 0;
 clock_t lbLog::start_time, lbLog::end_time;
