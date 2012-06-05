@@ -37,7 +37,7 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
         $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
 MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 MINGWLIBS += -L../../src -lwxShapeFramework
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
