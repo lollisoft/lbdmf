@@ -1756,14 +1756,19 @@ lbErrCodes LB_STDCALL classname::release(const char* file, int line) { \
 		} \
 		ref--; \
 		if (ref == 0) { \
+			_CL_LOG << "Info: Instance released: " << #classname << "(" << ptr << "). Instances: " << ref.get() LOG_ \
 			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
 			delete this; \
 			_CL_VERBOSE << "Deleted" LOG_ \
 			return ERR_RELEASED; \
 		} \
 		else { \
-			if (isLogActivated()) printf("Error: Instance %s has been deleted prior!\n", #classname); \
-			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
+			if (ref > 0) { \
+				_CL_LOG << "Info: Instance released: " << #classname << "(" << ptr << "). Instances: " << ref.get() LOG_ \
+			} else { \
+				if (isLogActivated()) printf("Error: Instance %s has been deleted prior!\n", #classname); \
+				_CL_LOG << "Error: Instance has been deleted prior: " << #classname LOG_ \
+			} \
 		} \
 		return ERR_NONE; \
 	} \
