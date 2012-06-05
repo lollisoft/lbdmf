@@ -1927,17 +1927,14 @@ void lb_wxFrame::OnRefreshAll(wxCommandEvent& event) {
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		meta->save();
+
         /*
          * Let the lb_wxGUI class cleanup it's created  and hidden forms.
          * The database form sample is a modal form and may be making the
          * problem, if it is not destroyed here.
          */
-/*
-        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-        PM->initialize();
-        PM->unload();
-*/
 
         // Signalize that I am quitting.
         OnQuitAccepted = true;
@@ -1947,11 +1944,9 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
                 guiCleanedUp = 1;
         }
 
-        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
         meta->unloadApplication();
-
-//      unHookAll();
+		meta->uninitialize();
 
         Close(TRUE);
 }

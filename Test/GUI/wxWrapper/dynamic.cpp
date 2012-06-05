@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.1 2012/06/05 11:54:43 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,13 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.175 $
+ * $Revision: 1.174.2.1 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.1 2012/06/05 11:54:43 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
- * Revision 1.175  2012/01/21 18:39:21  lollisoft
- * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ * Revision 1.174.2.1  2012/06/05 11:54:43  lollisoft
+ * Got a working application initialization and unload. Also autologin works
+ * when loading application model from file.
  *
  * Revision 1.174  2011/10/16 08:40:57  lollisoft
  * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
@@ -2248,6 +2249,7 @@ int MyApp::OnExit() {
 	metaApp->disableStatusbar();
 
 	metaApp->unloadApplication();
+	metaApp->uninitialize();
 
 	_CL_LOG << "Unloaded application." LOG_
 
@@ -2481,15 +2483,14 @@ bool MyApp::OnInit(void)
 
     _LOG << "Start enumerating plugins to call their autorun function." LOG_
 
-	UAP(lb_I_PluginIterator, it)
-	it = PM->getPluginIterator();
-    if (it->beginEnumPlugins()) {
-		while (TRUE) {
-			UAP(lb_I_Plugin, pl)
-			pl = it->nextPlugin();
-			if (pl == NULL) break;
-				pl->autorun();
-			}
+    if (PM->beginEnumPlugins()) {
+
+    while (TRUE) {
+        UAP(lb_I_Plugin, pl)
+        pl = PM->nextPlugin();
+        if (pl == NULL) break;
+            pl->autorun();
+        }
     }
 
 	FlushMenubarQueue();
@@ -3180,17 +3181,12 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * problem, if it is not destroyed here.
   	 */
 
-
 	if (guiCleanedUp == 0) {
 		_CL_LOG << "lb_wxFrame::OnQuit(...) cleans up GUI" LOG_
         	if (gui) gui->cleanup();
         	_CL_LOG << "lb_wxFrame::OnQuit(...) cleaned up GUI" LOG_
         	guiCleanedUp = 1;
 	}
-
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-	PM->unload();
 
 	Close(TRUE);
 }
@@ -3310,7 +3306,9 @@ public:
 	}
 
 	virtual ~cleanUp() {
+		_CL_LOG << "cleanUp::~cleanUp() unloads all modules." LOG_
 		unHookAll();
+		_CL_LOG << "cleanUp::~cleanUp() unloaded all modules." LOG_
 	}
 
 };
@@ -3324,10 +3322,9 @@ public:
 	}
 
 	virtual ~cleanUp() {
-		_CL_LOG << "Call unHookAll()..." LOG_
-		//lbBreak();
+		_CL_LOG << "cleanUp::~cleanUp() unloads all modules." LOG_
 		unHookAll();
-		_CL_LOG << "Called unHookAll()." LOG_
+		_CL_LOG << "cleanUp::~cleanUp() unloaded all modules." LOG_
 	}
 
 };
