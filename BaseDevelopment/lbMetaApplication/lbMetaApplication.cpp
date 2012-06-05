@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.1 $
+ * $Revision: 1.188.2.2 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.1 2012/06/05 11:54:43 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.2 2012/06/05 18:18:13 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.2  2012/06/05 18:18:13  lollisoft
+ * Try to get rid of DLL unload behaviour. Test installation application hangs.
+ *
  * Revision 1.188.2.1  2012/06/05 11:54:43  lollisoft
  * Got a working application initialization and unload. Also autologin works
  * when loading application model from file.
@@ -773,10 +776,6 @@ lb_MetaApplication::lb_MetaApplication() {
 	_dirloc = strdup(".");
 	_loading_object_data = false;
 
-	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
-
-	activeDocuments->setCloning(false);
-
 	REQUEST(getModuleInstance(), lb_I_String, ProcessName)
 
 	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
@@ -836,13 +835,25 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
 	if (LogonApplication != NULL) LogonApplication--;
+	if (LogonUser != NULL) LogonUser--;
+	if (ProcessName != NULL) ProcessName--;
 	if (activeDocuments != NULL) activeDocuments--;
+	if (eman != NULL) {
+		eman--;
+		eman.resetPtr();
+	}
+	if (dispatcher != NULL) {
+		dispatcher--;
+		dispatcher.resetPtr();
+	}
+		
 	if (app != NULL) {
 		app--;
 		app.resetPtr();
 	}
+	if (propertySets != NULL) propertySets--;
+	if (myProperties != NULL) myProperties--;
 
-	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
 	_loaded = false;
 
 	return ERR_NONE;
@@ -3063,6 +3074,11 @@ lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
 
+	if (activeDocuments == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
+		activeDocuments->setCloning(false);
+	}
+	
 	if (LogonApplication == NULL) return NULL;
 
 	QI(LogonApplication, lb_I_KeyBase, key)
@@ -3076,6 +3092,11 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukDoc)
+
+	if (activeDocuments == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
+		activeDocuments->setCloning(false);
+	}
 
 	ukDoc = doc;
 
