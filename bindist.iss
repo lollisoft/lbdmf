@@ -49,10 +49,16 @@ Source: "Q:\Develop\Projects\dll\lbHook.dll"; DestDir: "{app}\Develop\Projects\d
 Source: "Q:\Develop\Projects\dll\lbDynApp.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbPluginManager.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbMetaApplication.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\lbWorkflowEngine.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxWrapperDLL.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\wxmsw28_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\dll\wxmsw28_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\dll\wxmsw26d_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxbase28_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxbase28_xml_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmsw28_adv_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmsw28_core_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmsw28_html_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmsw28_xrc_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+; Monolithic
+;Source: "Q:\Develop\Projects\dll\wxmsw28_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxAUI.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxPropgrid.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbxslt.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -74,6 +80,9 @@ Source: "Q:\develop\Projects\CPP\vendor\wxLua-dist\*.dll"; DestDir: "{app}\Devel
 
 ; --- MinGW Library needed to run my applications.
 Source: "Q:\develop\Tools\mingw\bin\mingwm10.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\mingw\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\mingw\bin\libstdc++-6.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+
 
 ; Stuff for Sqlite based databases
 Source: "Q:\Develop\Projects\dll\sqlite3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
