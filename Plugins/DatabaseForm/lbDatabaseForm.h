@@ -28,11 +28,18 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.3 $
+ * $Revision: 1.71.2.4 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.3 2012/06/03 16:41:23 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.4 2012/06/07 17:29:55 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.4  2012/06/07 17:29:55  lollisoft
+ * Fixed application exit issues. The dispatcher and event manager was
+ * instantiated earlyer than a string or any other class from lbclasses.
+ * The error was hidden a long time when logging was active. This also
+ * instantiated a class (logger) within lbclasses that 'fixed' the order of
+ * module dependencies.
+ *
  * Revision 1.71.2.3  2012/06/03 16:41:23  lollisoft
  * Got my code compiled against current MinGW.
  * Changed wxWidgets library from monotithig to multi.
@@ -792,10 +799,7 @@ public:
 	int			LB_STDCALL getId() { return GetId(); }
 
 	void		LB_STDCALL show() { Show (TRUE); };
-	void		LB_STDCALL destroy() {
-		if (_created) Destroy();
-		_created = false;
-	};
+	void		LB_STDCALL destroy();
 
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);

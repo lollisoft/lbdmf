@@ -152,7 +152,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 	// Too unsave now (Sqlite check fails on selecting sysadmin account)
 	//return true;
 	
-	_LOGERROR << "lbPluginModuleDynamicAppStorage::checkForDatabase() called." LOG_
+	_LOG << "lbPluginModuleDynamicAppStorage::checkForDatabase() called." LOG_
 	
 	if (_check_for_databases_failure_step == -2) return false; // Failed prior. Outer loop must break.
 	
@@ -169,14 +169,14 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 		}
 		
 		if (database == NULL) {
-			_LOGERROR << "lb_MetaApplication::checkForDatabases() Error: Could not load database backend for system db, either plugin or built in version." LOG_
+			_LOG << "lb_MetaApplication::checkForDatabases() Error: Could not load database backend for system db, either plugin or built in version." LOG_
 			
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
 			
 			return false;
 		}
 		if (database->init() != ERR_NONE) {
-			_LOGERROR << "lb_MetaApplication::checkForDatabases() Failed to initialize database." LOG_
+			_LOG << "lb_MetaApplication::checkForDatabases() Failed to initialize database." LOG_
 			
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 			
@@ -191,7 +191,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-		_LOGERROR << "lb_MetaApplication::checkForDatabases() Failed to connect to system database." LOG_
+		_LOG << "lb_MetaApplication::checkForDatabases() Failed to connect to system database." LOG_
 		
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_CONNECT;
 		
@@ -206,17 +206,17 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkForDatabases() {
 			if (((err = sysSchemaQuery->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				return true;
 			} else {
-				_LOGERROR << "lb_MetaApplication::checkForDatabases() Error: No sysadmin account created." LOG_
+				_LOG << "lb_MetaApplication::checkForDatabases() Error: No sysadmin account created." LOG_
 				_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_SCHEMA;
 				return false;
 			}
 		} else {
-			_LOGERROR << "lb_MetaApplication::checkForDatabases() Error: Query for sysadmin account failed." LOG_
+			_LOG << "lb_MetaApplication::checkForDatabases() Error: Query for sysadmin account failed." LOG_
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_SCHEMA;
 			return false;
 		}
 	} else {
-		_LOGERROR << "lb_MetaApplication::checkForDatabases() Error: Could not get query instance for sysadmin account test." LOG_
+		_LOG << "lb_MetaApplication::checkForDatabases() Error: Could not get query instance for sysadmin account test." LOG_
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
 		return false;
 	}
@@ -239,7 +239,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	bool  localInitialisation = false;
 
 
-	_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() called." LOG_
+	_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() called." LOG_
 	
 #ifdef WINDOWS
 	*testSQLFile = ".\\Database\\lbDMF-Sqlite-SystemDB.sql";
@@ -252,7 +252,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
         	if (localInitialisation) {
         		*initialDatabaseLocation = "..\\Database\\";
        		} else {
-			_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+			_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 			return false;
 		}
@@ -273,7 +273,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 		if (FileExists(testSQLFile->charrep())) {
 			*initialDatabaseLocation = "./wxWrapper.app/Contents/Resources/";
 		} else {
-			_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+			_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
 			_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 			return false;
 		}
@@ -303,7 +303,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			} else {
 				/// \todo Implement lookup of bundle.
 				// Try resource directory in bundle.
-				_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+				_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
 				_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 				return false;
 			}
@@ -331,7 +331,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 				if (FileExists("/usr/local/share/lbdmf/database/lbDMF-Sqlite-SystemDB.sql")) {
 					*initialDatabaseLocation = "/usr/local/share/lbdmf/database/";
 				} else {
-					_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
+					_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
 					_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 					return false;
 				}
@@ -340,7 +340,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 	
-	_LOGERROR << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
+	_LOG << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
 	
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -368,7 +368,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 	
 	if (database == NULL) {
-		_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Could not load database backend for system db, either plugin or built in version." LOG_
+		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Could not load database backend for system db, either plugin or built in version." LOG_
 		
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
 		
@@ -376,7 +376,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 
 	if (database->init() != ERR_NONE) {
-		_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to initialize database." LOG_
+		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to initialize database." LOG_
 		
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 		
@@ -385,7 +385,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	
 	
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-		_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to connect to system database. " <<
+		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to connect to system database. " <<
 			"Please set internal default user 'dba' and password 'trainres' or set the environment " <<
 			"variables to those used by the database (lbDMFUser, lbDMFPasswd)." LOG_
 		
@@ -431,7 +431,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 #endif
-			_LOGALWAYS << "Apply the SQL file to the lbDMF application database: " << applicationDatabaseName->charrep() LOG_
+			_LOG << "Apply the SQL file to the lbDMF application database: " << applicationDatabaseName->charrep() LOG_
 			inputApp->setFileName(applicationDatabaseName->charrep());
 			
 			if (!inputApp->open()) {
@@ -448,7 +448,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
-				_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				return false;
 			}
 			
@@ -470,7 +470,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 #endif
-			_LOGALWAYS << "Apply the SQL file to the lbDMF system database: " << systemDatabaseName->charrep() LOG_
+			_LOG << "Apply the SQL file to the lbDMF system database: " << systemDatabaseName->charrep() LOG_
 		
 			inputSys->setFileName(systemDatabaseName->charrep());
 			
@@ -479,7 +479,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 				// Try the path for a typical Windows installation
 				inputSys->setFileName("Database\\lbDMF-Sqlite-SystemDB.sql");
 				if (!inputSys->open()) {
-					_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
+					_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
 					meta->msgBox("Info", "Installation of builtin database failed.");
 					return false;
 				}
@@ -488,7 +488,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			SQL = inputSys->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
-				_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				return false;
 			}
 		} else {
@@ -517,7 +517,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 #endif
-			_LOGALWAYS << "Apply the SQL file to the lbDMF application database: " << applicationDatabaseName->charrep() LOG_
+			_LOG << "Apply the SQL file to the lbDMF application database: " << applicationDatabaseName->charrep() LOG_
 
 			inputApp->setFileName(applicationDatabaseName->charrep());
 			if (!inputApp->open()) {
@@ -525,7 +525,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 				inputApp->setFileName("Database\\lbDMF-PostgreSQL.sql");
 #endif
 				if (!inputApp->open()) {
-					_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
+					_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database. File not found." LOG_
 					meta->msgBox("Info", "Installation of builtin database failed.");
 					return false;
 				}
@@ -535,7 +535,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			
-				_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				*msg = "Installation of system database failed. Check the permissions of the user '";
 				*msg += lbDMFUser;
 				*msg += "'.";
@@ -581,7 +581,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 
 
 lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
-	_LOGERROR << "lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() called." LOG_
+	_LOG << "lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() called." LOG_
 	// Nothing checked yet.
 	_check_for_databases_failure_step = -1;
 
@@ -600,7 +600,7 @@ void LB_STDCALL lbPluginModuleDynamicAppStorage::initialize() {
 
 void LB_STDCALL lbPluginModuleDynamicAppStorage::install() {
 	// The check may have several rounds.
-	_LOGERROR << "lbPluginModuleDynamicAppStorage::install() called." LOG_
+	_LOG << "lbPluginModuleDynamicAppStorage::install() called." LOG_
 	while (!checkForDatabases()) {
 		if (_check_for_databases_failure_step == -2) break; //
 		

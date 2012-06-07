@@ -1,5 +1,7 @@
 rem set TARGET_APPLICATION=Application
 
+set LOGGING=no
+
 if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
 set DEVLW=q:

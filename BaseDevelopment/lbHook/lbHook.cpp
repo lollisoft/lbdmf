@@ -414,7 +414,11 @@ DLLEXPORT void LB_CDECL setVerbose(bool what) {
 /*...e*/
 /*...sDLLEXPORT void LB_CDECL setVerbose\40\bool what\41\:0:*/
 DLLEXPORT void LB_CDECL setLogActivated(bool what) {
+	if (lbLogActivated && !what)
+		_LOG << "Logging will be deactivated." LOG_
 	lbLogActivated = what;
+	if (lbLogActivated && what)
+		_LOG << "Logging has been activated." LOG_
 }
 /*...e*/
 /*...sDLLEXPORT bool LB_CDECL isVerbose\40\\41\:0:*/

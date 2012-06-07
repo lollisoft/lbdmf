@@ -326,13 +326,13 @@ public:
 		ASSERT_EQUALS(true, FileExists(s->charrep()))
 		remove(s->charrep());
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
-		setLogActivated(false);
+		
 		_LOG << "Log a line." LOG_
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
 		// Let the file stay after the test.
-		setLogActivated(true);
+		
 		_LOG << "Unittests have been finished." LOG_
-		setLogActivated(false);
+		
 	}
 
 	void test_Log_creating_logdirectory( void )
@@ -355,9 +355,9 @@ public:
 		deleteDirectory(s->charrep());
 
 		ASSERT_EQUALS(false, DirectoryExists(s->charrep()))
-		setLogActivated(true);
+		
 		_LOG << "Log a line" LOG_
-		setLogActivated(false);
+		
 		ASSERT_EQUALS(true, DirectoryExists(s->charrep()))
 	}
 
@@ -378,7 +378,7 @@ public:
 		puts("test_Log_Log_a_Line");
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-		setLogActivated(true);
+		
 		_LOG << "Log a line." LOG_
 		*s = getLogDirectory();
 		*s += LOGFILE;
@@ -387,7 +387,7 @@ public:
 		//remove(s->charrep());
 		printf("%s\n", s->charrep());
 		//ASSERT_EQUALS(false, FileExists(s->charrep()))
-		setLogActivated(false);
+		
 	}
 
 public:
@@ -819,13 +819,11 @@ public:
 	TEST_FIXTURE( BaseDevelopmentContainer )
 	{
 		TEST_CASE(test_Instanciate_lbContainer)
-		TEST_CASE(test_lbContainer_Order)
 		TEST_CASE(test_lbContainer_InsertString_with_Integer_Key)
 		TEST_CASE(test_lbContainer_lookup_byKey)
 		TEST_CASE(test_lbContainer_lookupNI_byExists)
 		TEST_CASE(test_lbContainer_lookupPostFreed_byExists)
 		TEST_CASE(test_lbContainer_lookupNotInitializedString_byExists)
-		TEST_CASE(test_lbContainer_iterator)
 	}
 	
 	void test_lbContainer_lookupNotInitializedString_byExists( void )
@@ -920,181 +918,6 @@ public:
 		ASSERT_EQUALS( true, c.getPtr() != NULL );
 	}
 
-	void test_lbContainer_iterator( void )
-	{
-		lbErrCodes err = ERR_NONE;
-		puts("test_lbContainer_iterator");
-		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
-
-		ASSERT_EQUALS( true, c.getPtr() != NULL );
-
-
-		UAP(lb_I_KeyBase, key)
-		UAP(lb_I_Unknown, uk)
-		QI(s, lb_I_Unknown, uk)
-		QI(i, lb_I_KeyBase, key)
-
-		*s = "Testvalue1";
-		i->setData(1);
-		c->insert(&uk, &key);
-		*s = "Testvalue2";
-		i->setData(2);
-		c->insert(&uk, &key);
-		*s = "Testvalue3";
-		i->setData(3);
-		c->insert(&uk, &key);
-		*s = "Testvalue4";
-		i->setData(4);
-		c->insert(&uk, &key);
-		*s = "Testvalue5";
-		i->setData(5);
-		c->insert(&uk, &key);
-
-		ASSERT_EQUALS( 5, c->Count() );
-
-		UAP(lb_I_String, resultedString)
-		UAP(lb_I_Unknown, uk1)
-
-		uk1 = c->getElement(&key);
-
-		ASSERT_EQUALS( true, uk1 != NULL );
-
-		c->finishIteration();
-		
-		UAP(lb_I_Iterator, it)
-		UAP(lb_I_Iterator, it1)
-
-		it = c->getIterator();
-		it1 = c->getIterator();
-
-		it->finishIteration();
-		it1->finishIteration();
-		
-		it->hasMoreElements();
-		uk1 = it->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
-		
-		it->hasMoreElements();
-		uk1 = it->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
-		
-
-			it1->hasMoreElements();
-			uk1 = it1->nextElement();
-			QI(uk1, lb_I_String, resultedString)
-			ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
-			
-			it1->hasMoreElements();
-			uk1 = it1->nextElement();
-			QI(uk1, lb_I_String, resultedString)
-			ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
-			
-			it1->hasMoreElements();
-			uk1 = it1->nextElement();
-			QI(uk1, lb_I_String, resultedString)
-			ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
-			
-			it1->hasMoreElements();
-			uk1 = it1->nextElement();
-			QI(uk1, lb_I_String, resultedString)
-			ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
-			
-			it1->hasMoreElements();
-			uk1 = it1->nextElement();
-			QI(uk1, lb_I_String, resultedString)
-			ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
-
-
-		it->hasMoreElements();
-		uk1 = it->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
-		
-		it->hasMoreElements();
-		uk1 = it->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
-		
-		it->hasMoreElements();
-		uk1 = it->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
-	}
-	
-	void test_lbContainer_Order( void )
-	{
-		lbErrCodes err = ERR_NONE;
-		puts("test_lbContainer_Order");
-		UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
-
-		ASSERT_EQUALS( true, c.getPtr() != NULL );
-
-
-		UAP(lb_I_KeyBase, key)
-		UAP(lb_I_Unknown, uk)
-		QI(s, lb_I_Unknown, uk)
-		QI(i, lb_I_KeyBase, key)
-
-		*s = "Testvalue1";
-		i->setData(1);
-		c->insert(&uk, &key);
-		*s = "Testvalue2";
-		i->setData(2);
-		c->insert(&uk, &key);
-		*s = "Testvalue3";
-		i->setData(3);
-		c->insert(&uk, &key);
-		*s = "Testvalue4";
-		i->setData(4);
-		c->insert(&uk, &key);
-		*s = "Testvalue5";
-		i->setData(5);
-		c->insert(&uk, &key);
-
-		ASSERT_EQUALS( 5, c->Count() );
-
-		UAP(lb_I_String, resultedString)
-		UAP(lb_I_Unknown, uk1)
-
-		uk1 = c->getElement(&key);
-
-		ASSERT_EQUALS( true, uk1 != NULL );
-
-		c->finishIteration();
-		
-		c->hasMoreElements();
-		uk1 = c->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue1", resultedString->charrep() );
-		
-		c->hasMoreElements();
-		uk1 = c->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue2", resultedString->charrep() );
-		
-		c->hasMoreElements();
-		uk1 = c->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue3", resultedString->charrep() );
-		
-		c->hasMoreElements();
-		uk1 = c->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue4", resultedString->charrep() );
-		
-		c->hasMoreElements();
-		uk1 = c->nextElement();
-		QI(uk1, lb_I_String, resultedString)
-		ASSERT_EQUALS("Testvalue5", resultedString->charrep() );
-		
-	}
-	
 	void test_lbContainer_lookup_byKey( void )
 	{
 		lbErrCodes err = ERR_NONE;
@@ -1424,7 +1247,7 @@ public:
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
 		m->uninitialize();
-		//ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
+		ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
 	}
 
 	void test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in( void )
@@ -1510,7 +1333,6 @@ public:
 // The first Sqlite base test will cause an application crash at exit, but the second will suceed.
 		TEST_CASE(test_Sqlite_FailingQuery)
 		TEST_CASE(test_Sqlite_ForeignKey)
-		TEST_CASE(test_Sqlite_ColumnOrder)
 	}
 
 
@@ -1605,115 +1427,6 @@ public:
 		ASSERT_EQUALS( ERR_NONE, err3);
     }
 
-	void test_Sqlite_ColumnOrder( void )
-	{
-		lbErrCodes err = ERR_NONE;
-		puts("test_Sqlite_ColumnOrder");
-
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Database, db)
-		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
-		
-		ASSERT_EQUALS( true, db.getPtr() != NULL );
-
-		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
-
-		UAP(lb_I_Query, query)
-
-		query = db->getQuery("UnitTestSqlite", 0);
-
-		ASSERT_EQUALS( true, query != NULL);
-
-        lbErrCodes err1;
-        lbErrCodes err2;
-
-        err1 = query->query(
-			"CREATE TABLE test ("
-			"	id INTEGER PRIMARY KEY,"
-			"	AName BPCHAR,"
-			"	BName BPCHAR"
-			")"
-			, false);
-
-		UAP(lb_I_Container, columns)
-		columns = db->getColumns("UnitTestSqlite");
-		
-		int count = 1;
-		int checked = 0;
-
-		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-		
-		columns->finishIteration();
-		while (columns->hasMoreElements()) {
-			UAP(lb_I_Unknown, ukPage)
-			UAP(lb_I_Container, columnsPageContainer)
-			ukPage = columns->nextElement();
-			QI(ukPage, lb_I_Container, columnsPageContainer)
-
-			
-			columnsPageContainer->finishIteration();
-			while (columnsPageContainer->hasMoreElements()) {
-				UAP(lb_I_Unknown, uk)
-				UAP(lb_I_Parameter, param)
-				uk = columnsPageContainer->nextElement();
-				QI(uk, lb_I_Parameter, param)
-				*name = "4";
-				param->getUAPString(*&name, *&value);
-			
-				if (*value == "test") {
-					*name = "5";
-					param->getUAPString(*&name, *&value);
-					if (count == 1) {
-						ASSERT_EQUALS( "id", value->charrep());
-						checked++;
-					}
-					if (count == 2) {
-						ASSERT_EQUALS( "AName", value->charrep());
-						checked++;
-					}
-					if (count == 3) {
-						ASSERT_EQUALS( "BName", value->charrep());
-						checked++;
-					}
-					count++;
-				}
-			}
-			
-			//columnsPageContainer->finishIteration();
-		}
-
-		UAP(lb_I_DBColumns, DBColumns)
-		
-		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_DBColumns, "Model", DBColumns, "'database plugin'")
-		
-		DBColumns->addPagedConainer(*&columns);
-		
-		count = 1;
-		DBColumns->finishColumnIteration();
-		while (DBColumns->hasMoreColumns()) {
-			DBColumns->setNextColumn();
-			if (strcmp(DBColumns->getColumnTableName(), "test") == 0) {
-				*value = DBColumns->getColumnName();
-				if (count == 1) {
-					ASSERT_EQUALS( "id", value->charrep());
-					checked++;
-				}
-				if (count == 2) {
-					ASSERT_EQUALS( "AName", value->charrep());
-					checked++;
-				}
-				if (count == 3) {
-					ASSERT_EQUALS( "BName", value->charrep());
-					checked++;
-				}
-				count++;
-			}
-		}
-		
-		ASSERT_EQUALS( 6, checked);
-	}
-	
     void test_Sqlite_ForeignKey( void )
     {
 	lbErrCodes err = ERR_NONE;
@@ -2107,104 +1820,26 @@ public:
 	}
 };
 
-class BaseDevelopmentPluginManager : public TestFixture<BaseDevelopmentPluginManager>
-{
-public:
-	TEST_FIXTURE( BaseDevelopmentPluginManager )
-	{
-		TEST_CASE(test_Instantiate)
-		TEST_CASE(test_Enumerate)
-	}
 
 
-public:
-	void setUp()
-	{
-#ifdef __MINGW32__
-		signal(SIGSEGV, sig_handler);
-		signal(SIGABRT, sig_handler);
-#endif
-#ifdef LINUX
-		signal(SIGABRT, sig_handler);
-		signal(SIGTRAP, sig_handler);
-		signal(SIGSEGV, sig_handler);
-		signal(SIGTERM, sig_handler);
-		signal(SIGBUS, sig_handler);
-#endif
-	}
-
-	void tearDown()
-	{
-	}
-
-
-	void test_Instantiate( void )
-	{
-		puts("test_Instantiate");
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-		ASSERT_EQUALS( true, PM.getPtr() != NULL );
-	}
-
-	void test_Enumerate( void )
-	{
-		puts("test_Enumerate");
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-		ASSERT_EQUALS( true, PM.getPtr() != NULL );
-		
-		PM->initialize();
-		
-		UAP(lb_I_PluginIterator, it)
-		it = PM->getPluginIterator();
-		
-		int firstCount = 0;
-		
-		if (it->beginEnumPlugins()) {
-			while (it->nextPlugin() != NULL) firstCount++;
-		}
-		
-		int secondCount = 0;
-
-		if (it->beginEnumPlugins()) {
-			while (it->nextPlugin() != NULL) secondCount++;
-		}
-		ASSERT_EQUALS( firstCount, secondCount );
-		ASSERT_EQUALS( true, firstCount > 0);
-		ASSERT_EQUALS( true, secondCount  > 0);
-		_LOGERROR << "test_Enumerate() iterated over " << firstCount << " plugins." LOG_
-	}
-
-
-	bool LoadSettings()
-	{
-		return true;
-	}
-};
-
-
-
-//DECLARE_FIXTURE( BaseDevelopmentHook )
-//DECLARE_FIXTURE( BaseDevelopmentString )
-//DECLARE_FIXTURE( BaseDevelopmentLogger )
-//DECLARE_FIXTURE( BaseDevelopmentInputStream )
+DECLARE_FIXTURE( BaseDevelopmentHook )
+DECLARE_FIXTURE( BaseDevelopmentString )
+DECLARE_FIXTURE( BaseDevelopmentLogger )
+DECLARE_FIXTURE( BaseDevelopmentInputStream )
 DECLARE_FIXTURE( BaseDevelopmentContainer )
-DECLARE_FIXTURE( BaseDevelopmentPluginManager )
-//DECLARE_FIXTURE( BaseDevelopmentEventManager )
-//DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
-
+DECLARE_FIXTURE( BaseDevelopmentEventManager )
+DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
 // The database tests are faulting at exit of the test application (the Sqlite failing query test is the cause).
 DECLARE_FIXTURE( BaseDevelopmentDatabase )
 
 __attribute__ ((constructor)) void ct() {
-//	USE_FIXTURE( BaseDevelopmentHook )
-//	USE_FIXTURE( BaseDevelopmentString )
-//	USE_FIXTURE( BaseDevelopmentLogger )
-//	USE_FIXTURE( BaseDevelopmentInputStream )
+	USE_FIXTURE( BaseDevelopmentHook )
+	USE_FIXTURE( BaseDevelopmentString )
+	USE_FIXTURE( BaseDevelopmentLogger )
+	USE_FIXTURE( BaseDevelopmentInputStream )
 	USE_FIXTURE( BaseDevelopmentContainer )
-	USE_FIXTURE( BaseDevelopmentPluginManager )
-//	USE_FIXTURE( BaseDevelopmentEventManager )
-//	USE_FIXTURE( BaseDevelopmentMetaApplication )
+	USE_FIXTURE( BaseDevelopmentEventManager )
+	USE_FIXTURE( BaseDevelopmentMetaApplication )
 	USE_FIXTURE( BaseDevelopmentDatabase )
 }
 
