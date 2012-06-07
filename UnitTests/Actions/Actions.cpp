@@ -15,17 +15,14 @@
 
 #include <UIWrapper.h>
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
-
 class TestActions : public TestFixture<TestActions>
 {
 public:
 	TEST_FIXTURE( TestActions )
 	{
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
 		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
 		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
@@ -85,22 +82,16 @@ public:
 		meta->load();
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
-
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 		
-		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 		
 		UAP(lb_I_Container, applications)
 		
-		applications = securityManager->getApplications();
+		applications = meta->getApplications();
 		
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 		
-		setLogActivated(true);
 		long nextActionId = action->execute(*&param);
-		setLogActivated(false);
 		
 		ASSERT_EQUALS( (long)-1, nextActionId )
 		
@@ -487,9 +478,9 @@ public:
 		UAP(lb_I_Unknown, uk_result)
 		QI(params, lb_I_Unknown, uk)
 		
-		setLogActivated(true);
+		
 		disp->dispatch("transformXSLT", *&uk, &uk_result);
-		setLogActivated(false);
+		
 		
 		//int nextStep1 = action->execute(*&params);
 		
@@ -527,7 +518,7 @@ public:
 		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
-		setLogActivated(false);
+		
 		PM->initialize();
 
 		// Use an UI wrapper to fake answers.
@@ -540,13 +531,11 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
 		UAP(lb_I_Container, applications)
 
-		applications = securityManager->getApplications();
+		applications = meta->getApplications();
 
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 
@@ -602,7 +591,7 @@ public:
 		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
-		setLogActivated(false);
+		
 		PM->initialize();
 
 		// Use an UI wrapper to fake answers.
@@ -615,16 +604,14 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
 		UAP(lb_I_Container, applications)
 
-		applications = securityManager->getApplications();
+		applications = meta->getApplications();
 
 		// Must not logged in to load
-		if (!meta->getAutoload() && securityManager->getApplicationID() == 0) meta->loadApplication("user", "lbDMF Manager");
+		if (!meta->getAutoload() && meta->getApplicationID() == 0) meta->loadApplication("user", "lbDMF Manager");
 
 		// Setup the configuration that is needed for this test
 

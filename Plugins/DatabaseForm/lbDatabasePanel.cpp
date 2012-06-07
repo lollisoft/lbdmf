@@ -200,7 +200,7 @@ lbDatabasePanel::lbDatabasePanel()
 /*...e*/
 /*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
 lbDatabasePanel::~lbDatabasePanel() {
-	_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
+	_CL_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
 	lb_I_Unknown* evHandler = (lb_I_Unknown*) this;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, eventName)
@@ -216,6 +216,14 @@ lbDatabasePanel::~lbDatabasePanel() {
 	_LOG << "lbDatabasePanel::~lbDatabasePanel() ready." LOG_
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::destroy() {
+	if (_created) {
+		_LOG << "lbDatabasePanel::destroy() Destroying '" << base_formName << "'" LOG_
+		Destroy();
+	}
+	_created = false;
+}
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\create\40\int parentId\41\:0:*/
 void LB_STDCALL lbDatabasePanel::create(int parentId) {

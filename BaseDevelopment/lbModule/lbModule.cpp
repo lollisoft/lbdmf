@@ -30,11 +30,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.1 $
+ * $Revision: 1.149.2.2 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.1 2012/05/19 05:47:32 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149.2.2 2012/06/07 17:29:55 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.2  2012/06/07 17:29:55  lollisoft
+ * Fixed application exit issues. The dispatcher and event manager was
+ * instantiated earlyer than a string or any other class from lbclasses.
+ * The error was hidden a long time when logging was active. This also
+ * instantiated a class (logger) within lbclasses that 'fixed' the order of
+ * module dependencies.
+ *
  * Revision 1.149.2.1  2012/05/19 05:47:32  lollisoft
  * New workflow module integrated into the build. SQL scripts tewaked.
  *
@@ -2881,8 +2888,6 @@ lbModule::lbModule() {
         
 lbModule::~lbModule() {
 	_CL_LOG << "lbModule::~lbModule() called" LOG_
-	bool a = isLogActivated();
-	setLogActivated(true);
 	if (ref != 0 && isLogActivated()) COUT << "lbModule::~lbModule() Error: Reference count mismatch: " << ref << ENDL;
 
 	if (moduleList != NULL) {
@@ -2890,7 +2895,6 @@ lbModule::~lbModule() {
 		moduleList->release(__FILE__, __LINE__);
 	}
 	_CL_LOG << "lbModule::~lbModule() ready" LOG_
-	setLogActivated(a);
 }
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
