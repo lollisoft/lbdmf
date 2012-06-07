@@ -49,7 +49,6 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbActionsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbActionsModel, lbActionsModel)
@@ -59,21 +58,13 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionsModel)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-void		LB_STDCALL lbActionsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbActionsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
 lbActionsModel::lbActionsModel() {
 	
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionTyp)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionTarget)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionTarget)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
 	
@@ -98,7 +89,7 @@ void		LB_STDCALL lbActionsModel::deleteUnmarked() {
 		setNextAction();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -116,7 +107,7 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 		setNextAction();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -128,13 +119,13 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 }
 
 
-long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, long target, long _id) {
+long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, const char* target, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Source)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, Target)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Target)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -144,7 +135,7 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 	*Name = name;
 	*Source = source;
 	Typ->setData(typ);
-	Target->setData(target);
+	*Target = target;
 	ID->setData(_id);
 	
 	*paramname = "Name";
@@ -156,7 +147,7 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "Target";
-	param->setUAPLong(*&paramname, *&Target);
+	param->setUAPString(*&paramname, *&Target);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 	
@@ -194,7 +185,7 @@ bool  LB_STDCALL lbActionsModel::selectAction(long _id) {
 		*name = "Typ";
 		param->getUAPLong(*&name, *&currentActionTyp);
 		*name = "Target";
-		param->getUAPLong(*&name, *&currentActionTarget);
+		param->setUAPString(*&name, *&currentActionTarget);
 		*name = "marked";
 		param->getUAPLong(*&name, *&marked);
 		
@@ -243,7 +234,7 @@ void  LB_STDCALL lbActionsModel::setNextAction() {
 	*name = "Typ";
 	param->getUAPLong(*&name, *&currentActionTyp);
 	*name = "Target";
-	param->getUAPLong(*&name, *&currentActionTarget);
+	param->getUAPString(*&name, *&currentActionTarget);
 	*name = "marked";
 	param->getUAPLong(*&name, *&marked);
 }
@@ -252,7 +243,7 @@ void  LB_STDCALL lbActionsModel::finishActionIteration() {
 	Actions->finishIteration();
 }
 
-long LB_STDCALL lbActionsModel::getID() {
+long LB_STDCALL lbActionsModel::getActionID() {
 	return currentActionID->getData();
 }
 
@@ -268,8 +259,8 @@ long LB_STDCALL lbActionsModel::getActionTyp() {
 	return currentActionTyp->getData();
 }
 
-long LB_STDCALL lbActionsModel::getActionTarget() {
-	return currentActionTarget->getData();
+char* LB_STDCALL lbActionsModel::getActionTarget() {
+	return currentActionTarget->charrep();
 }
 
 /*...sclass lbPluginActionsModel implementation:0:*/

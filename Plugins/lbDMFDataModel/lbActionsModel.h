@@ -35,16 +35,16 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1);
+	long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _id = -1);
 	bool		LB_STDCALL selectAction(long _id);
 	int			LB_STDCALL getActionCount();
 	bool		LB_STDCALL hasMoreActions();
 	void		LB_STDCALL setNextAction();
 	void		LB_STDCALL finishActionIteration();
 	
-	long		LB_STDCALL getID();
+	long		LB_STDCALL getActionID();
 	long		LB_STDCALL getActionTyp();
-	long		LB_STDCALL getActionTarget();
+	char*		LB_STDCALL getActionTarget();
 
 	char*		LB_STDCALL getActionSource();
 	char*		LB_STDCALL getActionName();
@@ -56,13 +56,10 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionID)
 	UAP(lb_I_Long, currentActionTyp)
-	UAP(lb_I_Long, currentActionTarget)
+	UAP(lb_I_String, currentActionTarget)
 	UAP(lb_I_String, currentActionName)
 	UAP(lb_I_String, currentActionSource)
 	

@@ -326,13 +326,13 @@ public:
 		ASSERT_EQUALS(true, FileExists(s->charrep()))
 		remove(s->charrep());
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
-		setLogActivated(false);
+		
 		_LOG << "Log a line." LOG_
 		ASSERT_EQUALS(false, FileExists(s->charrep()))
 		// Let the file stay after the test.
-		setLogActivated(true);
+		
 		_LOG << "Unittests have been finished." LOG_
-		setLogActivated(false);
+		
 	}
 
 	void test_Log_creating_logdirectory( void )
@@ -355,9 +355,9 @@ public:
 		deleteDirectory(s->charrep());
 
 		ASSERT_EQUALS(false, DirectoryExists(s->charrep()))
-		setLogActivated(true);
+		
 		_LOG << "Log a line" LOG_
-		setLogActivated(false);
+		
 		ASSERT_EQUALS(true, DirectoryExists(s->charrep()))
 	}
 
@@ -378,7 +378,7 @@ public:
 		puts("test_Log_Log_a_Line");
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-		setLogActivated(true);
+		
 		_LOG << "Log a line." LOG_
 		*s = getLogDirectory();
 		*s += LOGFILE;
@@ -387,7 +387,7 @@ public:
 		//remove(s->charrep());
 		printf("%s\n", s->charrep());
 		//ASSERT_EQUALS(false, FileExists(s->charrep()))
-		setLogActivated(false);
+		
 	}
 
 public:
@@ -1247,7 +1247,7 @@ public:
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
 		m->uninitialize();
-		//ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
+		ASSERT_EQUALS( true, m->login("user", "TestUser") == false );
 	}
 
 	void test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in( void )

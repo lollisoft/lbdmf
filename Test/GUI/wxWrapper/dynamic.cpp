@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.1 2012/06/05 11:54:43 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.2 2012/06/07 17:29:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,18 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.1 $
+ * $Revision: 1.174.2.2 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.1 2012/06/05 11:54:43 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.2 2012/06/07 17:29:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.2  2012/06/07 17:29:55  lollisoft
+ * Fixed application exit issues. The dispatcher and event manager was
+ * instantiated earlyer than a string or any other class from lbclasses.
+ * The error was hidden a long time when logging was active. This also
+ * instantiated a class (logger) within lbclasses that 'fixed' the order of
+ * module dependencies.
+ *
  * Revision 1.174.2.1  2012/06/05 11:54:43  lollisoft
  * Got a working application initialization and unload. Also autologin works
  * when loading application model from file.
@@ -2313,6 +2320,10 @@ bool MyApp::OnInit(void)
 	_LOG << "Application " << appname.c_str() << " starts up." LOG_
 
 
+    UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+    UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+    UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+    UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
     UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 	REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
 
@@ -2321,11 +2332,6 @@ bool MyApp::OnInit(void)
     }
 
 	disp->setEventManager(ev_manager.getPtr());
-
-    UAP_REQUEST(getModuleInstance(), lb_I_String, string)
-    UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
-    UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-    UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 
 	// Register Events, that I provide
 
@@ -3357,14 +3363,14 @@ int PASCAL WinMain(HINSTANCE hInstance,
 	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
 	char* LOGGING = getenv("LOGGING");
 
+	// Default
+	setLogActivated(false);
 	if (LOGGING != NULL) {
-		if ((strcmp(LOGGING, "no") != 0) &&
-			(strcmp(LOGGING, "NO") != 0) &&
-			(strcmp(LOGGING, "No") != 0) &&
-			(strcmp(LOGGING, "nO") != 0)) 
-			setLogActivated(false);
-		else
+		if ((strcmp(LOGGING, "no") != 0) && (strcmp(LOGGING, "NO") != 0) && (strcmp(LOGGING, "No") != 0) && (strcmp(LOGGING, "nO") != 0)) 
+		// Activate
 			setLogActivated(true);
+		else
+			setLogActivated(false);
 	}
 	
 	if (CONSOLE_DETACH == NULL) FreeConsole();

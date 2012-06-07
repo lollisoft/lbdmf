@@ -2314,7 +2314,7 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_Long, value)
 		if (value == NULL) {
-			_LOG << "Error: Column is not of type lb_I_Long!" LOG_
+			_LOGERROR << "Error: Column (" << column << ") is not of type lb_I_Long! Query is " << szSql LOG_
 			REQUEST(getModuleInstance(), lb_I_Long, value)
 		}
 	} else {
@@ -5395,6 +5395,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	//meta->setStatusText("Info", "Get primary keys ...");
 
+	_LOGALWAYS << "WARNING: Primary key sequence number is not supported." LOG_
+	
 	columns++;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
@@ -5435,6 +5437,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, longvalue)
 
 			*name = "TableCatalog";
 			*value = (const char*) "";
@@ -5453,8 +5456,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 			param->setUAPString(*&name, *&value);
 
 			*name = "KeySequence";
-			value->setData(pkseq.c_str());
-			param->setUAPString(*&name, *&value);
+			longvalue->setData(0L);
+			param->setUAPLong(*&name, *&longvalue);
 
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)

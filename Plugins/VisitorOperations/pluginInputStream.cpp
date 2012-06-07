@@ -84,7 +84,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
-	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -125,15 +124,15 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*); // { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer*) { _CL_LOG << "visit(lb_I_Transfer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_Data*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
@@ -166,10 +165,6 @@ public:
 	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
-
-	void LB_STDCALL visit(lb_I_TableModule* tableModule);
-
-#ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
@@ -183,8 +178,16 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Types*);
 	void LB_STDCALL visit(lb_I_Action_Steps*);
 	void LB_STDCALL visit(lb_I_Translations*);
+	void LB_STDCALL visit(lb_I_FileLocation*);
+	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
+
 	void LB_STDCALL visit(lb_I_DBReportTextblock*);
 	void LB_STDCALL visit(lb_I_DBReportProperties*);
+
 	void LB_STDCALL visit(lb_I_Reports*);
 	void LB_STDCALL visit(lb_I_ReportParameters*);
 	void LB_STDCALL visit(lb_I_ReportElements*);
@@ -194,13 +197,6 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
 	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
 	void LB_STDCALL visit(lb_I_Action_Parameters*);
-#endif
-	void LB_STDCALL visit(lb_I_FileLocation*);
-	void LB_STDCALL visit(lb_I_DirLocation*);
-	void LB_STDCALL visit(lb_I_DBColumns*);
-	void LB_STDCALL visit(lb_I_DBTables*);
-	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
-	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 
 	bool LB_STDCALL begin(const char* file);
@@ -300,6 +296,52 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Boolean* b) {
 	b->setData(_b);
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionstepparameters->addActionStepParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Parameters* actionparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionparameters->addActionParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 	int count = 0;
 	*iStream >> count;
@@ -358,59 +400,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 	}
 }
 
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_TableModule* tableModule) {
-	tableModule->setOperator(*&iStream);
-	tableModule->ExecuteOperation("ReadFromFile");
-}
-
-#ifdef UNFLEXIBLE_TOBE_REMOVED
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
-	int count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long ID;
-		long ActionID = NULL;
-		char* Description = NULL;
-		char* Name = NULL;
-		char* Value = NULL;
-		char* Interface = NULL;
-		
-		*iStream >> ID;
-		*iStream >> ActionID;
-		*iStream >> Description;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> Interface;
-		
-		actionstepparameters->addActionStepParameter(Description, Name, Value, Interface, ActionID, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Parameters* actionparameters) {
-	int count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long ID;
-		long ActionID = NULL;
-		char* Description = NULL;
-		char* Name = NULL;
-		char* Value = NULL;
-		char* Interface = NULL;
-		
-		*iStream >> ID;
-		*iStream >> ActionID;
-		*iStream >> Description;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> Interface;
-		
-		actionparameters->addActionParameter(Description, Name, Value, Interface, ActionID, ID);
-	}
-}
-
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Step_Transitions* transition) {
 	int count = 0;
 	*iStream >> count;
@@ -448,6 +437,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications_Formulars* application
 		applicationformulars->addRelation(ApplicationID, FormularID, ID);
 	}
 }
+
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Reports* reports) {
 	int count = 0;
@@ -577,283 +567,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Translations* trans) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	int   ID;
-	char* Text = NULL;
-	char* Translated = NULL;
-	char* Language = NULL;
-
-	for (int i = 0; i < count; i++) {
-		// Load a user entry.
-		
-		*iStream >> ID;
-		*iStream >> Text;
-		*iStream >> Translated;
-		*iStream >> Language;
-		
-		trans->addTranslation(Text, Translated, Language, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_FormularParameter* params) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Name = NULL;
-		char* Value = NULL;
-		long  FID;
-		
-		*iStream >> ID;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> FID;
-		
-		params->addParameter(Name, Value, FID, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ApplicationParameter* params) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Name = NULL;
-		char* Value = NULL;
-		long  AID;
-		
-		*iStream >> ID;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> AID;
-		
-		params->addParameter(Name, Value, AID, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
-	// Number of actions
-	int   count = 0;
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Name = NULL;
-		char* Source = NULL;
-		long  Typ;
-		long  Target;
-		
-		*iStream >> ID;
-		*iStream >> Name;
-		*iStream >> Source;
-		*iStream >> Typ;
-		*iStream >> Target;
-		
-		actions->addAction(Name, Typ, Source, Target, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) {
-	// Number of actions
-	int   count = 0;
-	*iStream >> count;
-
-	_LOG << "lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) called." LOG_
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Bezeichnung = NULL;
-		char* What = NULL;
-		long  ActionID;
-		long  OrderNo;
-		long  Type;
-
-		*iStream >> ID;
-		*iStream >> ActionID;
-		*iStream >> OrderNo;
-		*iStream >> Type;
-		*iStream >> Bezeichnung;
-		*iStream >> What;
-		
-		
-		action_steps->addActionStep(Bezeichnung, ActionID, OrderNo, Type, What, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Types* action_types) {
-	// Number of actions
-	int   count = 0;
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Bezeichnung = NULL;
-		char* Handler = NULL;
-		char* Module = NULL;
-		
-		*iStream >> ID;
-		*iStream >> Bezeichnung;
-		*iStream >> Handler;
-		*iStream >> Module;
-		
-		action_types->addActionTypes(Bezeichnung, Handler, Module, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Actions* formular_actions) {
-	// Number of actions
-	int   count = 0;
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		long   ID;
-		char* Event = NULL;
-		long  FormularID;
-		long  ActionID;
-		
-		*iStream >> ID;
-		*iStream >> FormularID;
-		*iStream >> ActionID;
-		*iStream >> Event;
-		
-		formular_actions->addFormularAction(FormularID , ActionID, Event, ID); 
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Fields* formularfields) {
-	// Number of users
-	int   count = 0;
-	int FormularID;
-	int ID;
-	long isFK;
-	char* Name = NULL;
-	char* TableName = NULL;
-	char* DBType = NULL;
-	char* FKName = NULL;
-	char* FKTable = NULL;
-	char* EventName = NULL;
-	
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		
-		*iStream >> ID;
-		*iStream >> Name;
-		*iStream >> TableName;
-		*iStream >> DBType;
-		*iStream >> isFK;
-		*iStream >> FKName;
-		*iStream >> FKTable;
-		*iStream >> FormularID;
-		
-		formularfields->addField(Name, TableName, DBType, (isFK == 1) ? 1 : 0, FKName, FKTable, FormularID, ID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
-	// Number of users
-	int   count = 0;
-	int FormularID;
-	int AnwendungID;
-	int Typ;
-	char* FormularName = NULL;
-	char* MenuName = NULL;
-	char* MenuHilfe = NULL;
-	char* EventName = NULL;
-	char* ToolbarImage = NULL;
-	
-	*iStream >> count;
-_LOG << "Read " << count << " formulars." LOG_
-	for (int i = 0; i < count; i++) {
-		
-		*iStream >> FormularID;
-		*iStream >> FormularName;
-		*iStream >> MenuName;
-		*iStream >> EventName;
-		*iStream >> MenuHilfe;
-		*iStream >> AnwendungID;
-		*iStream >> Typ;
-		*iStream >> ToolbarImage;
-		
-		forms->addFormular(FormularName, ToolbarImage, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Column_Types* columntypes) {
-	// Number of users
-	int   count = 0;
-	long readonly;
-	char* TableName = NULL;
-	char* Name = NULL;
-	char* SpecialColumn = NULL;
-	char* ControlType = NULL;
-	
-	*iStream >> count;
-
-	for (int i = 0; i < count; i++) {
-		
-		*iStream >> TableName;
-		*iStream >> Name;
-		*iStream >> SpecialColumn;
-		*iStream >> ControlType;
-		*iStream >> readonly;
-		
-		columntypes->addType(TableName, Name, SpecialColumn, ControlType, (readonly == 1) ? true : false);
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
-	// Number of applications
-	int   count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long  ID = -1;
-		char* Name = NULL;
-		char* Titel = NULL;
-		char* ModuleName = NULL;
-		char* Functor = NULL;
-		char* Interface = NULL;
-	
-		*iStream >> ID;
-		*iStream >> Name;
-		*iStream >> Titel;
-		*iStream >> ModuleName;
-		*iStream >> Functor;
-		*iStream >> Interface;
-												
-		app->addApplication(Name, Titel, ModuleName, Functor, Interface, ID);
-
-		// Leaky !
-	}
-}
-
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_User_Applications* user_app) {
-	// Number of applications
-	int   count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long  ID = -1;
-		long  UserID = -1;
-		long  AppID = -1;
-	
-		*iStream >> ID;
-		*iStream >> UserID;
-		*iStream >> AppID;
-												
-		user_app->addRelation(AppID, UserID, ID);
-	}
-}
-#endif
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBForeignKeys* fkeys) {
 	// Number of users
 	int   count = 0;
@@ -987,6 +700,157 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
 	}
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Translations* trans) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	int   ID;
+	char* Text = NULL;
+	char* Translated = NULL;
+	char* Language = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> Text;
+		*iStream >> Translated;
+		*iStream >> Language;
+		
+		trans->addTranslation(Text, Translated, Language, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_FormularParameter* params) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  FID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> FID;
+		
+		params->addParameter(Name, Value, FID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ApplicationParameter* params) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  AID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> AID;
+		
+		params->addParameter(Name, Value, AID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Source = NULL;
+		long  Typ;
+		char*  Target;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Source;
+		*iStream >> Typ;
+		*iStream >> Target;
+		
+		actions->addAction(Name, Typ, Source, Target, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	_LOG << "lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) called." LOG_
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Bezeichnung = NULL;
+		char* What = NULL;
+		long  ActionID;
+		long  OrderNo;
+		long  Type;
+
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> OrderNo;
+		*iStream >> Type;
+		*iStream >> Bezeichnung;
+		*iStream >> What;
+		
+		
+		action_steps->addActionStep(Bezeichnung, ActionID, OrderNo, Type, What, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Types* action_types) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Bezeichnung = NULL;
+		char* Handler = NULL;
+		char* Module = NULL;
+		
+		*iStream >> ID;
+		*iStream >> Bezeichnung;
+		*iStream >> Handler;
+		*iStream >> Module;
+		
+		action_types->addActionTypes(Bezeichnung, Handler, Module, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Actions* formular_actions) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Event = NULL;
+		long  FormularID;
+		long  ActionID;
+		
+		*iStream >> ID;
+		*iStream >> FormularID;
+		*iStream >> ActionID;
+		*iStream >> Event;
+		
+		formular_actions->addFormularAction(FormularID , ActionID, Event, ID); 
+	}
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_FileLocation* fileloc) {
 		char*  f = NULL;
 		
@@ -1001,6 +865,132 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DirLocation* fileloc) {
 		*iStream >> f;
 		
 		fileloc->setData(f); 
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Fields* formularfields) {
+	// Number of users
+	int   count = 0;
+	int FormularID;
+	int ID;
+	long isFK;
+	char* Name = NULL;
+	char* TableName = NULL;
+	char* DBType = NULL;
+	char* FKName = NULL;
+	char* FKTable = NULL;
+	char* EventName = NULL;
+	
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> TableName;
+		*iStream >> DBType;
+		*iStream >> isFK;
+		*iStream >> FKName;
+		*iStream >> FKTable;
+		*iStream >> FormularID;
+		
+		formularfields->addField(Name, TableName, DBType, (isFK == 1) ? 1 : 0, FKName, FKTable, FormularID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
+	// Number of users
+	int   count = 0;
+	int FormularID;
+	int AnwendungID;
+	int Typ;
+	char* FormularName = NULL;
+	char* MenuName = NULL;
+	char* MenuHilfe = NULL;
+	char* EventName = NULL;
+	char* ToolbarImage = NULL;
+	
+	*iStream >> count;
+_LOG << "Read " << count << " formulars." LOG_
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> FormularID;
+		*iStream >> FormularName;
+		*iStream >> MenuName;
+		*iStream >> EventName;
+		*iStream >> MenuHilfe;
+		*iStream >> AnwendungID;
+		*iStream >> Typ;
+		*iStream >> ToolbarImage;
+		
+		forms->addFormular(FormularName, ToolbarImage, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Column_Types* columntypes) {
+	// Number of users
+	int   count = 0;
+	long readonly;
+	char* TableName = NULL;
+	char* Name = NULL;
+	char* SpecialColumn = NULL;
+	char* ControlType = NULL;
+	
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> TableName;
+		*iStream >> Name;
+		*iStream >> SpecialColumn;
+		*iStream >> ControlType;
+		*iStream >> readonly;
+		
+		columntypes->addType(TableName, Name, SpecialColumn, ControlType, (readonly == 1) ? true : false);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
+	// Number of applications
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long  ID = -1;
+		char* Name = NULL;
+		char* Titel = NULL;
+		char* ModuleName = NULL;
+		char* Functor = NULL;
+		char* Interface = NULL;
+	
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Titel;
+		*iStream >> ModuleName;
+		*iStream >> Functor;
+		*iStream >> Interface;
+												
+		app->addApplication(Name, Titel, ModuleName, Functor, Interface, ID);
+
+		// Leaky !
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_User_Applications* user_app) {
+	// Number of applications
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long  ID = -1;
+		long  UserID = -1;
+		long  AppID = -1;
+	
+		*iStream >> ID;
+		*iStream >> UserID;
+		*iStream >> AppID;
+												
+		user_app->addRelation(AppID, UserID, ID);
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {

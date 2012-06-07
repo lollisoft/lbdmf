@@ -76,6 +76,8 @@
 #include <stdio.h>
 #ifdef WINDOWS
 
+// Unix definition is missing on Windows
+#define PATH_MAX MAX_PATH
 
 #if defined(__MINGW32__)
  #define IOS ios

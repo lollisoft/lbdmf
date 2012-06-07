@@ -869,10 +869,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
         if (frame->isPanelUsage()) {
                 while (notebook && notebook->GetPageCount() > 0) {
-                        notebook->RemovePage(0);
+                        //notebook->RemovePage(0);
+						closeCurrentPage();
                 }
         }
-
+#ifdef bla
         forms->finishIteration();
         while (forms->hasMoreElements()) {
                 lbErrCodes err = ERR_NONE;
@@ -915,10 +916,10 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
         _LOG << "Detach all database forms from forms list." LOG_
 
         forms->detachAll();
-	forms->deleteAll();
+		forms->deleteAll();
 
         _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-
+#endif
         return ERR_NONE;
 }
 /*...e*/
