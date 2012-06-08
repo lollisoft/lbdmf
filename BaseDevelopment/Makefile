@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.1 $
+# * $Revision: 1.229.2.2 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.1 2012/05/19 05:47:32 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.2 2012/06/08 17:51:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.2  2012/06/08 17:51:30  lollisoft
+# * Building libxml2 with gcc, no longer with OW. Need to add support switching compiler when required.
+# *
 # * Revision 1.229.2.1  2012/05/19 05:47:32  lollisoft
 # * New workflow module integrated into the build. SQL scripts tewaked.
 # *
@@ -1688,7 +1691,7 @@ endif
 	$(MAKE) -s -C $@
 
 ../vendor/libxml2-2.6.29/bakefile: dummy
-	$(MAKE) -s -C $@ -f makefile.lbDMF
+	$(MAKE) -s -C $@ --win32 -f makefile.gcc
 
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
