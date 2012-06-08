@@ -26,6 +26,7 @@ call make_dist_base.bat BaseDevelopment\lbcs
 call make_dist_base.bat BaseDevelopment\lbDB 
 call make_dist_base.bat BaseDevelopment\lbPluginManager
 call make_dist_base.bat BaseDevelopment\lbMetaApplication 
+call make_dist_base.bat BaseDevelopment\lbWorkflowEngine
 call make_dist_base.bat BaseDevelopment\lbModule 
 call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
