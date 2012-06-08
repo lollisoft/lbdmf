@@ -34,7 +34,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (1.0.4-stable-rc2)
+/** \mainpage Distributed Multiplatform Framework (1.0.4-stable-rc3)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -47,18 +47,14 @@
  *
  * Prerequirements:
  *
- * My latest version of binary build tools. <a href="http://sourceforge.net/project/showfiles.php?group_id=70545&package_id=69806">Binary Build Tools</a>
+ * My latest version of binary build tools. <a href="http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc3/lbDMF-BinbuildTools-1.0.4-stable-rc3.exe/download">Binary Build Tools</a>
  *
- * Open Watcom compiler, at least version 1.3, but 1.6 is also tested. <a href="http://www.openwatcom.org">Open Watcom</a>
+ * Latest MinGW compiler (tested version as of release day). <a href="http://www.mingw.org">MinGW</a>
  *
- * The wxWidgets source code. Tested versions are 2.4.2, 2.6.1 and 2.8.4 <a href="http://www.wxwidgets.org">wxWidgets</a>
+ * The wxWidgets source code. Latest version tested is 2.8.11 <a href="http://www.wxwidgets.org">wxWidgets</a>. <b>Note: Additionally to the build instructions for wxWidgets, use mingw32-make instead of make.</b>
  *
- * I have included <a href="http://www.daily.de/RepWrt/">wxReportWriter</a>. This project allows me to create database
- * reports on the fly. But this feature doesn't work under Linux yet. Currently these files have minimal changes compared
- * to the orginal version.
- *
- * One of the following databases: <a href="http://www.mysql.com">MySQL</a>, <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sybase.com">Sybase</a>.
- * Other databases may be possible, but there is not yet a SQL script to setup the database.
+ * Supported databases: <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sqlite.org">Sqlite</a>.
+ * Other databases may be possible, but there is not yet a SQL script to setup the database. The Sqlite database is included in the source tree.
  *
  * \note To get ODBC stuff work properly under Linux you should at least on SuSE Linux 9.1 download unixODBC version 2.2.11,
  * compile and install it. After that, reinstall ODBC driver version 07.03.0200 for UPDATEABLE CURSORS.
