@@ -24,6 +24,7 @@ Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyM
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.2 $
+# * $Revision: 1.229.2.3 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.2 2012/06/08 17:51:30 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.3 2012/06/09 17:56:39 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.3  2012/06/09 17:56:39  lollisoft
+# * Integrated new version of libxml2 and it's build task. Modified other build tasks.
+# *
 # * Revision 1.229.2.2  2012/06/08 17:51:30  lollisoft
 # * Building libxml2 with gcc, no longer with OW. Need to add support switching compiler when required.
 # *
@@ -1351,7 +1354,7 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/libxml2-2.6.29/bakefile \
+	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1437,7 +1440,7 @@ ALLTARGETS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
-	../vendor/libxml2-2.6.29/bakefile \
+	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1690,8 +1693,13 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/libxml2-2.6.29/bakefile: dummy
-	$(MAKE) -s -C $@ --win32 -f makefile.gcc
+../vendor/libxml2-2.8.0/win32/makefile.mingw: dummy
+	../vendor/libxml2-2.8.0/win32/autoconfigure.bat
+
+../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll: dummy ../vendor/libxml2-2.8.0/win32/makefile.mingw
+	$(MAKE) -s -C ../vendor/libxml2-2.8.0/win32 -f makefile.mingw dep libxml
+	cp ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll ../../dll
+	cp ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.lib ../../dll/libs
 
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
