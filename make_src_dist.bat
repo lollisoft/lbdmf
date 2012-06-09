@@ -37,7 +37,7 @@ call make_dist_base.bat vendor\databaselayer
 call make_dist_base.bat vendor\dosdir
 call make_dist_base.bat vendor\propgrid
 call make_dist_base.bat vendor\wxaui-0.9.1
-call make_dist_base.bat vendor\libxml2-2.6.29
+call make_dist_base.bat vendor\libxml2-2.8.0
 call make_dist_base.bat vendor\libxslt-1.1.21
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
