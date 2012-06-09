@@ -53,8 +53,8 @@ MINGWLIBS+= -llibxml2 -llbxslt
 MOD_INCL_MINGW = $(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 
-MOD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
-MOD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+MOD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/include
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/include
 
 
 # use global setup
