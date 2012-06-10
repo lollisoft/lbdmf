@@ -65,6 +65,9 @@ del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.tiff
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.rtf
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.odt
 
+@rem Ensure the source installation will fully recreate required makefiles
+touch %DEVROOT%\BaseDevelopment\Makefile
+
 @REM Make any available XMISettings.xsl configuration files writeable, or simply all.
 attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 
