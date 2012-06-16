@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114 $
+ * $Revision: 1.114.2.1 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.1 2012/06/16 10:19:43 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.1  2012/06/16 10:19:43  lollisoft
+ * Added commands to reference libraries within the application bundle.
+ *
  * Revision 1.114  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -971,91 +974,109 @@ void ObjExt(char *s, char *ObjName, int Len)
 }
 /*...e*/
 
+// Changes the install name to use included versions or locally installed versions (/usr/lib/...)
+void change_install_names(bool included) {
+	//printf("\t\tINSTALLNAMETOOL_WX_PREFIX=`wx-config --prefix`\n");
+	//printf("\t\tINSTALLNAMETOOL_WX_BASENAME=`wx-config --basename`\n");
+	//printf("\t\tINSTALLNAMETOOL_WX_VERSION=`wx-config --version`\n");
+	if (included) {
+		printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id @executable_path/../lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");	
+	} else {
+		printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");	
+	}
+}
+
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeBundleTarget(char* modulename) {
 #ifdef OSX
 #undef UNIX
-  fprintf(stderr, "Writing osx executable target\n");
-  printf("PROGRAM=%s\n", modulename);
-  printf("MKMK_WX_VERSION=`wx-config --version`\n");
-  printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
-
-  // Write Mac OS X Bundle
-  printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
-  printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
-  printf("\t\t-$(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
-  printf("\t\trm -Rf %s.app\n", modulename);
-  printf("\t\tmkdir -p %s.app\n", modulename);
-  printf("\t\tmkdir -p %s.app/Contents\n", modulename);
-  printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
-  printf("\t\tmkdir -p %s.app/Contents/Frameworks\n", modulename);
-
-/// \todo Create module specific framework list to be copied instead.
-
-  printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
-  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
+	fprintf(stderr, "Writing osx executable target\n");
+	printf("PROGRAM=%s\n", modulename);
+	printf("MKMK_WX_VERSION=`wx-config --version`\n");
+	printf("\n%s: $(OBJS)\n", modulename);
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+	
+	// Write Mac OS X Bundle
+	printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
+	printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
+	printf("\t\t-$(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
+	printf("\t\trm -Rf %s.app\n", modulename);
+	printf("\t\tmkdir -p %s.app\n", modulename);
+	printf("\t\tmkdir -p %s.app/Contents\n", modulename);
+	printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
+	printf("\t\tmkdir -p %s.app/Contents/Frameworks\n", modulename);
+	
+	/// \todo Create module specific framework list to be copied instead.
+	
+	printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
+	printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
 #ifdef OSNAME_Panther
-  printf("\t\t-rm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
+	printf("\t\t-rm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
 #endif
-  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
-
-  printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
+	printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
+	
+	printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
+	printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
 #ifdef OSNAME_Panther
-  printf("\t\t-cp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
+	printf("\t\t-cp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
 #endif
-  printf("\t\tcp -R $(prefix)/Library/Frameworks/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
-  printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
-  printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
-  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
-  printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
-  printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
-  printf("\t\t-./postlink-mac.sh\n");
-//  printf("\t\t\n", modulename);
-#endif
+	printf("\t\tcp -R $(prefix)/Library/Frameworks/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
+	printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
+	printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
+	printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+	printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
+	printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 
+	change_install_names(false);
+
+	printf("\t\t-./postlink-mac.sh\n");
+	//  printf("\t\t\n", modulename);
+#endif
+	
 #ifdef UNIX
-  fprintf(stderr, "Writing linux executable target\n");
-  printf("PROGRAM=%s\n", modulename);
-  printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
+	fprintf(stderr, "Writing linux executable target\n");
+	printf("PROGRAM=%s\n", modulename);
+	printf("\n%s: $(OBJS)\n", modulename);
+	printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
 #endif
-
+	
 #ifdef OSX
 #define UNIX
 #endif
-
+	
 #ifdef UNIX
-  printf("install:\n");
-  printf("\t\t$(CP) -Rf $(PROGRAM).app $(bindir)\n");
-
-  printf("install-strip: install\n");
-  printf("\t\t$(STRIP) $(PROGRAM)\n");
-  //printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM).app $(bindir)\n");
+	printf("install:\n");
+	printf("\t\t$(CP) -Rf $(PROGRAM).app $(bindir)\n");
+	
+	printf("install-strip: install\n");
+	printf("\t\t$(STRIP) $(PROGRAM)\n");
+	//printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM).app $(bindir)\n");
 #endif
-
+	
 #ifdef __WATCOMC__
-  char* ModName = strdup(modulename);
-  char** array;
-  int count = split('.', ModName, &array);
-
-  printf("FILE = FIL\n");
-  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
-  printf("LNK=%s.lnk\n", ModName);
-  printf("ifeq ($(COMPILER), WATCOM)\n");
-  printf("COMPILERFLAGS=@$(LNK)\n");
-  printf("endif\n");
-  printf("PROGRAM=%s\n", ModName);
-
-  printf("\n%s.exe: $(OBJS)\n", ModName);
-  printf("\t\t@echo Link %s.exe\n", ModName);
-  printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
-  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
-  printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
-  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
+	char* ModName = strdup(modulename);
+	char** array;
+	int count = split('.', ModName, &array);
+	
+	printf("FILE = FIL\n");
+	printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+	printf("LNK=%s.lnk\n", ModName);
+	printf("ifeq ($(COMPILER), WATCOM)\n");
+	printf("COMPILERFLAGS=@$(LNK)\n");
+	printf("endif\n");
+	printf("PROGRAM=%s\n", ModName);
+	
+	printf("\n%s.exe: $(OBJS)\n", ModName);
+	printf("\t\t@echo Link %s.exe\n", ModName);
+	printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
+	printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+	printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+	printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
+	printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+	printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -1685,9 +1706,15 @@ void write_so_bundleTarget(char* modulename) {
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
 
-// Patch to create dynamic libraries under Mac OS X
+	// Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+	
+	change_install_names(false);
+	
 #undef UNIX
 #endif
 #ifdef UNIX
@@ -1729,7 +1756,13 @@ void write_wx_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(false);
+	
 #undef UNIX
 #endif
 #ifdef UNIX
@@ -1770,7 +1803,13 @@ void write_wx_shared_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(false);
+	
 #undef UNIX
 #endif
 #ifdef UNIX
@@ -1856,8 +1895,14 @@ void write_wx_framework_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
-
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+	
+	change_install_names(false);
+	
+	
   printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
   printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
   printf("\t\techo ln -sf A Current >> mkLinks.sh\n");
@@ -1943,8 +1988,14 @@ void write_framework_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
-
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+	
+	change_install_names(false);
+	
+	
   printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
   printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
   printf("\t\techo ln -sf A Current >> mkLinks.sh\n");
@@ -1984,7 +2035,13 @@ void write_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+	
+	change_install_names(false);
+	
 #endif
 
 #ifndef OSX
@@ -2021,7 +2078,13 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(true);
+	
+	printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+	
+	change_install_names(false);
+	
 #endif
 
 #ifndef OSX
@@ -2058,7 +2121,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.1 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
