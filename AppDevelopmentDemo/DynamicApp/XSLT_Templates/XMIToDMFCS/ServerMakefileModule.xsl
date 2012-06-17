@@ -205,10 +205,10 @@ MOD_INCL=$(STD_INCL) \
         -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
 
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
-LIBS=$(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook
+LIBS=-F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
