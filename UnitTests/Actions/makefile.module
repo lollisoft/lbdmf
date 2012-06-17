@@ -72,7 +72,6 @@ ifeq ($(OSTYPE), linux)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -llbHook
-
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
@@ -87,7 +86,7 @@ ifeq ($(OSTYPE), osx)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=
-LIBS=$(OSX_ARCH) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework MiniCppUnit -framework lbHook
+LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework MiniCppUnit -framework lbHook
 endif    
 
 endif

@@ -138,10 +138,10 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ./include `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ./include `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS= 
-L_OPS=$(L_SOOPS) $(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook -lc /usr/lib/libgcc_s.1.dylib
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook -lc /usr/lib/libgcc_s.1.dylib
 endif
 
 endif
@@ -154,7 +154,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) $(OSX_ARCH)
+L_OPS=$(L_SOOPS)
 endif
 
 endif
