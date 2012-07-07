@@ -1,6 +1,6 @@
 format 73
-"DMFToUML" // DMFToUML
-  revision 3
+"Deployment" // DMFToUML::Deployment
+  revision 1
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,15 +26,51 @@ format 73
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  package_ref 128386 // CRM
+  deploymentview 128002 "CRM_Deployment"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    deploymentdiagram 143490 "Company"
+      package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+      draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+      size A4
+    end
 
-  package_ref 128514 // CRM_Entities
+    deploymentnode 128002 "CRM_Server"
+    end
 
-  package_ref 129794 // Reports
+    deploymentnode 128130 "Database_Server"
+    end
 
-  package_ref 128642 // lbDMF
+    artifact 128130 "CRM_Server"
+      stereotype "executable"
+      associated_artifacts
+      end
+      simplerelation 128258
+	-_->
+	  on deploymentnode_ref 128002 // CRM_Server
+      end
 
-  package_ref 136450 // Components
+      simplerelation 128386
+	-_->
+	  on component_ref 128002 // CRM_Server
+      end
 
-  package_ref 136322 // Deployment
+      simplerelation 128514
+	-_->
+	  on artifact_ref 128258 // CRM_Server_Configuration
+      end
+    end
+
+    artifact 128258 "CRM_Server_Configuration"
+      stereotype "file"
+      associated_artifacts
+      end
+      ncouples 1
+      key "generate" value "generate_jee_jboss_config.xsl"
+    end
+
+    artifact 128386 "Generate_JEE_JBOSS"
+    end
+  end
 end

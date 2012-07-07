@@ -1,6 +1,6 @@
 format 73
-"DMFToUML" // DMFToUML
-  revision 3
+"Components" // DMFToUML::Components
+  revision 1
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,15 +26,41 @@ format 73
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  package_ref 128386 // CRM
+  componentview 128002 "CRM_Components"
+    //component diagram settings
+    package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    componentdiagram 143746 "Server_Components"
+      package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+      draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+      size A4
+    end
 
-  package_ref 128514 // CRM_Entities
+    component 128002 "CRM_Server"
+      stereotype "subsystem"
+      realizing_classes
+	class_ref 129538 // Adresse
+	class_ref 129666 // Angebot
+      end
+      provided_classes
+	class_ref 129538 // Adresse
+	class_ref 129666 // Angebot
+	class_ref 129794 // Angebotspositionen
+	class_ref 129922 // Artikel
+	class_ref 130050 // Auftrag
+	class_ref 130178 // Auftragspositionen
+	class_ref 130306 // Konkurrenten
+	class_ref 130434 // Kontakte
+	class_ref 130562 // Kunde
+	class_ref 130690 // Lieferant
+	class_ref 130818 // Rechnung
+	class_ref 130946 // Rechnungspositionen
+      end
+      ncouples 1
+      key "generate" value "generate_jee_jboss.xsl"
+    end
 
-  package_ref 129794 // Reports
-
-  package_ref 128642 // lbDMF
-
-  package_ref 136450 // Components
-
-  package_ref 136322 // Deployment
+    component 128130 "CRM_Database"
+    end
+  end
 end
