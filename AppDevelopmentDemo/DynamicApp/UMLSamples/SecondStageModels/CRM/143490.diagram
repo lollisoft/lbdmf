@@ -1,0 +1,37 @@
+format 73
+
+deploymentnodecanvas 128002 deploymentnode_ref 128002 // CRM_Server
+  name "Server1"
+  xyzwh 51 138 2000 265 233
+end
+deploymentnodecanvas 128130 deploymentnode_ref 128130 // Database_Server
+  xyzwh 489 141 2000 227 229
+end
+componentcanvas 128514 component_ref 128002 // CRM_Server
+  draw_component_as_icon default show_component_req_prov yes show_component_rea yes show_stereotype_properties default
+  xyzwh 51 429 3005 209 449
+end
+artifactcanvas 130306 artifact_ref 128130 // CRM_Server
+  xyz 339 470 2000
+end
+hubcanvas 130818 xyz 395 251 2005
+artifactcanvas 131330 artifact_ref 128258 // CRM_Server_Configuration
+  xyz 437 590 2000
+end
+artifactcanvas 131714 artifact_ref 128386 // Generate_JEE_JBOSS
+  xyz 421 716 2000
+end
+simplerelationcanvas 130434 simplerelation_ref 128258
+  from ref 130306 z 2001 to ref 128002
+end
+simplerelationcanvas 130562 simplerelation_ref 128386
+  from ref 130306 z 3006 to ref 128514
+end
+line 130946 ----
+  from ref 130818 z 2006 to ref 128130
+line 131202 ----
+  from ref 128002 z 2006 to ref 130818
+simplerelationcanvas 131458 simplerelation_ref 128514
+  from ref 130306 z 2001 to ref 131330
+end
+end
