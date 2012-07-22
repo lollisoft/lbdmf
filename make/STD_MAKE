@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.3 $
+# * $Revision: 1.148.2.4 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.3 2012/06/17 05:36:59 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.4 2012/07/22 07:44:31 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.4  2012/07/22 07:44:31  lollisoft
+# * Any changes before CVS backup
+# *
 # * Revision 1.148.2.3  2012/06/17 05:36:59  lollisoft
 # * Moving $(OSX_ARCH) to a more centralized place to reach all targets the project contains and builds.
 # *
@@ -1475,11 +1478,11 @@ STD_INCL_NODBGMEM = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 ifneq ($(LB_MACOSX_DEPLOYMENT_TARGET), universal)
 
 ifeq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=
+OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
 endif
 
 ifneq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch i386
+OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
 endif
 
 endif
@@ -1491,11 +1494,11 @@ endif
 ifeq ($(MACOSX_DEPLOYMENT_TARGET), universal)
 
 ifeq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch i386 -arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
 endif
 
 ifneq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch i386
+OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
 endif
 
 endif
