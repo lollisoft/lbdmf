@@ -68,9 +68,9 @@ int main(int argc, char** argv) {
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
 		PM->initialize();
-		setLogActivated(true);
+		
 		_CL_LOG << "Global application server is starting..." LOG_
-		setLogActivated(false);
+		
 	
 		/**
 		* This let the app not crashing. But the handler simply
