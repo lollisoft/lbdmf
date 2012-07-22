@@ -1538,6 +1538,43 @@
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_test_application_via_lua" xmi:id="BOUML_EXTEND_0x1f782_0" type="BOUML_0x1f782_0" aggregation="composite"/>
 					</packagedElement>
 				</packagedElement>
+				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x21502_22" name ="Components">
+					<packagedElement xmi:type="uml:Component" xmi:id="BOUML_0x1f402_6" name="CRM_Server">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="subsystem"/>
+							<taggedValue tag="generate" value="generate_jee_jboss.xsl"/>
+						</xmi:Extension>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_0_0x1f402_6" supplier="BOUML_0x1fa02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fa02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_1_0x1f402_6" supplier="BOUML_0x1fa82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fa82_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_2_0x1f402_6" supplier="BOUML_0x1fb02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fb02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_3_0x1f402_6" supplier="BOUML_0x1fb82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fb82_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_4_0x1f402_6" supplier="BOUML_0x1fc02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fc02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_5_0x1f402_6" supplier="BOUML_0x1fc82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fc82_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_6_0x1f402_6" supplier="BOUML_0x1fd02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fd02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_7_0x1f402_6" supplier="BOUML_0x1fd82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fd82_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_8_0x1f402_6" supplier="BOUML_0x1fe02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fe02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_9_0x1f402_6" supplier="BOUML_0x1fe82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1fe82_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_10_0x1f402_6" supplier="BOUML_0x1ff02_4" client="BOUML_0x1f402_6" contract="BOUML_0x1ff02_4"/>
+						<interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="BOUML_PROV_11_0x1f402_6" supplier="BOUML_0x1ff82_4" client="BOUML_0x1f402_6" contract="BOUML_0x1ff82_4"/>
+						<realization xmi:type="uml:ComponentRealization" xmi:id="BOUML_REA_0_0x1f402_6" supplier="BOUML_0x1fa02_4" client="BOUML_0x1f402_6" realizingClassifier="BOUML_0x1fa02_4"/>
+						<realization xmi:type="uml:ComponentRealization" xmi:id="BOUML_REA_1_0x1f402_6" supplier="BOUML_0x1fa82_4" client="BOUML_0x1f402_6" realizingClassifier="BOUML_0x1fa82_4"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Component" xmi:id="BOUML_0x1f482_6" name="CRM_Database">
+					</packagedElement>
+				</packagedElement>
+				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x21482_22" name ="Deployment">
+					<packagedElement xmi:type="uml:Node" xmi:id="BOUML_0x1f402_7" name="CRM_Server">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Node" xmi:id="BOUML_0x1f482_7" name="Database_Server">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Artifact" xmi:id="BOUML_0x1f482_8" name="CRM_Server">
+						<xmi:Extension extender="Bouml"><stereotype name="executable"/></xmi:Extension>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f502_9" client="BOUML_0x1f482_8" supplier="BOUML_0x1f402_7">
+					</packagedElement>
+					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f582_9" client="BOUML_0x1f482_8" supplier="BOUML_0x1f402_6">
+					</packagedElement>
+				</packagedElement>
 			</packagedElement>
 		</packagedElement>
 		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_0" name="float"/>
