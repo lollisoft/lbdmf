@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.3 $
+# * $Revision: 1.229.2.4 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.3 2012/06/09 17:56:39 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.4 2012/07/22 07:44:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.4  2012/07/22 07:44:31  lollisoft
+# * Any changes before CVS backup
+# *
 # * Revision 1.229.2.3  2012/06/09 17:56:39  lollisoft
 # * Integrated new version of libxml2 and it's build task. Modified other build tasks.
 # *
