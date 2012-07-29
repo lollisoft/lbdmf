@@ -41,6 +41,9 @@
 
 <xsl:variable name="TargetDBType">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
+	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 </xsl:variable>
@@ -95,6 +98,7 @@
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
+-- Creating a database script for targetdatabase='<xsl:value-of select="$targetdatabase"/>' TargetDBType='<xsl:value-of select="$TargetDBType"/>'
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 		<!-- Generate System database definition -->
 		<xsl:variable name="AppName"><xsl:value-of select="@name"/></xsl:variable>
@@ -198,18 +202,6 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
-delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
-and parametername = '<xsl:value-of select="@name"/>';
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
-</xsl:if>
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
-delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
-and parametername = '<xsl:value-of select="@name"/>';
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
-</xsl:if>
-
-
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
 <xsl:if test="$datatype='image'">
@@ -289,17 +281,6 @@ insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of sele
 	<UML:DataType xmi.idref="BOUML_datatype_1"/>
 </UML:StructuralFeature.type>
 -->
-
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
-delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
-and parametername = '<xsl:value-of select="@name"/>';
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
-</xsl:if>
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
-delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
-and parametername = '<xsl:value-of select="@name"/>';
-insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
-</xsl:if>
 
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
