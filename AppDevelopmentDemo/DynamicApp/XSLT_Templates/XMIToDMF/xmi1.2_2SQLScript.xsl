@@ -52,6 +52,7 @@
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
+
 <!-- ************************************************* -->
 
   <xsl:template match="text()|@*">
