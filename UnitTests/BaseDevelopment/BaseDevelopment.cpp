@@ -1833,6 +1833,7 @@ DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
 DECLARE_FIXTURE( BaseDevelopmentDatabase )
 
 __attribute__ ((constructor)) void ct() {
+/*
 	USE_FIXTURE( BaseDevelopmentHook )
 	USE_FIXTURE( BaseDevelopmentString )
 	USE_FIXTURE( BaseDevelopmentLogger )
@@ -1841,6 +1842,7 @@ __attribute__ ((constructor)) void ct() {
 	USE_FIXTURE( BaseDevelopmentEventManager )
 	USE_FIXTURE( BaseDevelopmentMetaApplication )
 	USE_FIXTURE( BaseDevelopmentDatabase )
+*/
 }
 
 

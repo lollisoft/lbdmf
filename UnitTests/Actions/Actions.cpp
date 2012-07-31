@@ -20,13 +20,15 @@ class TestActions : public TestFixture<TestActions>
 public:
 	TEST_FIXTURE( TestActions )
 	{
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+/*
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
 		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
 		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
 		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
+*/
 	}
 
 	void test_Delegated_Action_lbGetIdForFormValue( void ) {
@@ -531,6 +533,8 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
+		setLogActivated(true);
+		
 		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
 		UAP(lb_I_Container, applications)
@@ -567,6 +571,9 @@ public:
 		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
 		#endif
 
+
+		writeGoodXsl("template-good.xsl");
+		
 		myUIWrapper->setAnswer("yes");
 		myUIWrapper->setFileAnswer("template-good.xsl");
 		int nextStep1 = action->execute(*&params);
@@ -641,6 +648,8 @@ public:
 		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
 		#endif
 
+		writeBadXsl("template-fail.xsl");
+		
 		myUIWrapper->setAnswer("yes");
 		myUIWrapper->setFileAnswer("template-fail.xsl");
 		int nextStep1 = action->execute(*&params);

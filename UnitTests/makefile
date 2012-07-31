@@ -112,6 +112,7 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
 	Actions \
@@ -127,6 +128,7 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
 	Actions \
@@ -142,6 +144,7 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
 	Actions \
@@ -158,6 +161,7 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=framework
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
 	Actions \
@@ -174,6 +178,7 @@ TARGETFRAMEWORK=dll
 TARGETDLLMINGW=dll_target_mingw
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
 	Actions \
@@ -183,6 +188,8 @@ endif
 
 
 all_targets: $(ALLTARGETS)
+
+
 
 distclean:
 	@for d in $(ALLTARGETS); do \
@@ -203,6 +210,10 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 endif
 
 ifeq ($(OSTYPE), linux-debian-ppc)
@@ -210,7 +221,10 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
-	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 endif
 
@@ -219,7 +233,10 @@ ifeq ($(OSTYPE), linux)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
-	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 endif
 
@@ -228,7 +245,10 @@ ifeq ($(OSTYPE), osx)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
-	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 endif
 
@@ -248,7 +268,7 @@ clean:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
 
 install:
-	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target -e prefix=$(prefix) install; done 
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done 
 
 install-strip:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install-strip; done
