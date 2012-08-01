@@ -512,9 +512,10 @@ public:
 		puts("test_Delegated_Action_lbDMFXslt_selfexporting");
 		// Preload lbClasses DLL with this line !
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
-		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 		UAP(lb_I_DelegatedAction, action)
 
 		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
@@ -522,6 +523,8 @@ public:
 		ASSERT_EQUALS(true, action != NULL)
 		
 		PM->initialize();
+		PM->runInstallers();
+
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
@@ -533,7 +536,7 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
-		setLogActivated(true);
+		//setLogActivated(true);
 		
 		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
@@ -583,6 +586,9 @@ public:
 
 		// Test for a 'linear action'
 		ASSERT_EQUALS(-1, nextStep1)
+		
+		meta->unloadApplication();
+		meta->uninitialize();
 	}
 
 	void test_Delegated_Action_lbDMFXslt_selfexporting_failure( void )
