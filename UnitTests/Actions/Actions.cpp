@@ -20,14 +20,15 @@ class TestActions : public TestFixture<TestActions>
 public:
 	TEST_FIXTURE( TestActions )
 	{
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
+		//TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
+		//TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
+		//TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
+		//TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 /*
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
-		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
-		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
-		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
-		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 */
 	}
 
@@ -108,8 +109,8 @@ public:
 
 		// They are registered as event handlers
 		
-		//UAP(lb_I_DelegatedAction, action)
-		//action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbWriteStringToFile");
+		UAP(lb_I_DelegatedAction, action)
+		action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbWriteStringToFile");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, source)
@@ -143,7 +144,7 @@ public:
 		
 		disp->dispatch("writeStringToFile", *&uk, &uk_result);
 		
-		//int nextStep1 = action->execute(*&params);
+		int nextStep1 = action->execute(*&params);
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 		
