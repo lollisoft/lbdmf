@@ -115,6 +115,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -131,6 +132,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -147,6 +149,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -164,6 +167,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -181,6 +185,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -259,6 +264,11 @@ BaseDevelopment: dummy
 Actions: dummy
 	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 
 TestRunner: dummy
 	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
