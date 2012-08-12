@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.4 $
+# * $Revision: 1.148.2.5 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.4 2012/07/22 07:44:31 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.5 2012/08/12 07:04:45 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.5  2012/08/12 07:04:45  lollisoft
+# * Corrected build settings for wxWidgets library usage.
+# *
 # * Revision 1.148.2.4  2012/07/22 07:44:31  lollisoft
 # * Any changes before CVS backup
 # *
@@ -601,8 +604,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
@@ -670,7 +673,7 @@ endif
 
 MINGWLIBS = -L$(DEVROOT_MAKE)/projects/dll -llbHook
 
-MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)_core$(WX_DEBUG) -lwxbase$(WX_VERSION)_xml$(WX_DEBUG) -lwxmsw$(WX_VERSION)_adv$(WX_DEBUG) -lwxmsw$(WX_VERSION)_xrc$(WX_DEBUG)
+MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)$(WX_DEBUG)_core -lwxbase$(WX_VERSION)$(WX_DEBUG)_xml -lwxmsw$(WX_VERSION)$(WX_DEBUG)_adv -lwxmsw$(WX_VERSION)$(WX_DEBUG)_xrc
 
 ifeq ($(DEBUG_MEMORY), no)
 BASE_LIBS =
