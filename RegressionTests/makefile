@@ -142,7 +142,8 @@ ALLTARGETS = \
 	PluginByInterfaceAndNamespace \
 	Parameter \
 	PluginTranslationsModel \
-	PluginTest
+	PluginTest \
+	TestGDB
 
 endif
 
@@ -207,6 +208,10 @@ Memory: dummy
 
 UAPLeakTest: dummy
 	$(MAKE) -C $@ -e MODULE=UAPLeakTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+TestGDB: dummy
+	$(MAKE) -C $@ -e MODULE=TestGDB -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 Basetypes: dummy
