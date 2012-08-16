@@ -132,11 +132,13 @@ int main(int argc, char *argv[]) {
 	{
 		mm = getModuleInstance();
 		
-		
-		_CL_LOG << "Test basetypes" LOG_
-		
-		UAP_REQUEST(mm, lb_I_Long, l1)
-		UAP_REQUEST(mm, lb_I_Long, l2)
+		UAP(lb_I_Long, l1)
+		UAP(lb_I_Long, l2)
+	
+		REQUEST(mm, lb_I_Long, l1)
+		REQUEST(mm, lb_I_Long, l2)
+	
+		COUT << "Test basetypes" << "\n";
 		
 		l1->setData(1);
 		l2->setData(1);
