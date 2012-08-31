@@ -548,10 +548,22 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values 
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
-'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>')); 
+delete from formular_actions where formular IN 
+	(select id from "formulare" where anwendungid IN
+		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
+		name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$otherClassName"/>');
+delete from action_parameters where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$otherClassName"/>');
+delete from actions where name = '<xsl:value-of select="$otherClassName"/>';
 
-insert into formular_actions (formular, action, event) values ((select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>'), 
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>')); 
+
+insert into formular_actions (formular, action, event) values (
+(select id from "formulare" where anwendungid in 
+ (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') 
+	and name = '<xsl:value-of select="$thisClassName"/>'), 
 (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 </xsl:if>
