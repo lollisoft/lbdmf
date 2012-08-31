@@ -23,8 +23,9 @@ public:
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL setStatusText(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL showMsgBox(lb_I_Unknown* uk);
 
-	void LB_STDCALL setAnswer(char* what);
+	void LB_STDCALL addAnswer(char* what, bool last);
 	void LB_STDCALL setFileAnswer(char* what);
 
 public:
@@ -40,7 +41,9 @@ protected:
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_String, LogonApplication)
 
-	UAP(lb_I_String, answer)
+	UAP(lb_I_Container, answerList)
+	
 	UAP(lb_I_String, fileanswer)
+	
+	int numberOfAnswers;
 };
-

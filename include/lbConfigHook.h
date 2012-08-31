@@ -318,8 +318,8 @@
 
 #ifndef SOLARIS
 #define _CL_LOG \
-	if (isLogActivated()) { \
-        COUT << __FILE__ << ", " << __LINE__ << ": "
+	if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOG1 COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
 #ifdef SOLARIS
@@ -405,6 +405,7 @@
 
 class lbStringKey;
 
+
 #ifdef __MINGW32__
 extern "C" DLLEXPORT bool 		LB_CDECL _isVerbose();
 extern "C" DLLEXPORT bool 		LB_CDECL _isLogActivated();
@@ -450,6 +451,7 @@ extern "C" DLLEXPORT char*		LB_CDECL _translateText(const char* text);
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 extern "C" DLLEXPORT const char*		LB_CDECL _getOsType();
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line);
 
 namespace lbdmfapi {
 
@@ -458,6 +460,8 @@ extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _lbCopyFile(const char* from, const c
 }
 
 #endif
+
+extern "C" DLLEXPORT lbErrCodes LB_CDECL requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line);
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
 
