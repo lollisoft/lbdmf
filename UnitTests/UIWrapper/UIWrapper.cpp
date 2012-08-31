@@ -13,51 +13,7 @@
 #define LOGFILE "/myLog.log"
 #endif
 
-class UIWrapper : public lb_I_Application,
-public lb_I_EventHandler
-{
-public:
-	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
-	lbErrCodes LB_STDCALL setUserName(const char* user);
-	lbErrCodes LB_STDCALL setApplicationName(const char* app);
-    lbErrCodes LB_STDCALL save();
-    lbErrCodes LB_STDCALL load();
-	lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
-	lbErrCodes LB_STDCALL uninitialize();
-	lbErrCodes LB_STDCALL run();
-	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
-	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
-	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
-	lb_I_EventManager* LB_STDCALL getEVManager( void );
-
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
-	lb_I_Unknown* LB_STDCALL getUnknown();
-
-
-	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL setStatusText(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
-
-	void LB_STDCALL setAnswer(char* what);
-	void LB_STDCALL setFileAnswer(char* what);
-
-public:
-	UIWrapper();
-	virtual ~UIWrapper();
-
-	DECLARE_LB_UNKNOWN()
-
-protected:
-	lb_I_GUI* gui;
-	UAP(lb_I_EventManager, eman)
-	UAP(lb_I_Dispatcher, dispatcher)
-	UAP(lb_I_String, LogonUser)
-	UAP(lb_I_String, LogonApplication)
-
-	UAP(lb_I_String, answer)
-	UAP(lb_I_String, fileanswer)
-};
+#include <UIWrapper.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(UIWrapper)
 	ADD_INTERFACE(lb_I_Application)
@@ -68,8 +24,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 UIWrapper::UIWrapper() {
 	
 	gui = NULL;
-	REQUEST(getModuleInstance(), lb_I_String, answer)
+	REQUEST(getModuleInstance(), lb_I_Container, answerList)
 	REQUEST(getModuleInstance(), lb_I_String, fileanswer)
+	
+	numberOfAnswers = 0;
+	
 	printf("Instance of lb_I_Application created\n");
 	_LOG << "Instance of lb_I_Application created" LOG_
 }
@@ -82,8 +41,24 @@ void LB_STDCALL UIWrapper::setFileAnswer(char* what) {
 	*fileanswer = what;
 }
 
-void LB_STDCALL UIWrapper::setAnswer(char* what) {
+void LB_STDCALL UIWrapper::addAnswer(char* what, bool last) {
+	numberOfAnswers++;
+	
+	UAP(lb_I_Unknown, uk);
+	UAP(lb_I_KeyBase, keyAnswerNumber)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AnswerNumber)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, answer)
+	
+	QI(AnswerNumber, lb_I_KeyBase, keyAnswerNumber)
+	QI(answer, lb_I_Unknown, uk)
+	
 	*answer = what;
+	AnswerNumber->setData(numberOfAnswers);
+
+	answerList->insert(&uk, &keyAnswerNumber);
+
+	if (last == TRUE)
+		numberOfAnswers = 0;
 }
 
 lbErrCodes LB_STDCALL UIWrapper::askOpenFileReadStream(lb_I_Unknown* uk) {
@@ -141,20 +116,51 @@ lbErrCodes LB_STDCALL UIWrapper::setStatusText(lb_I_Unknown* uk) {
         return err;
 }
 
+lbErrCodes LB_STDCALL UIWrapper::showMsgBox(lb_I_Unknown* uk) {
+        lbErrCodes err = ERR_NONE;
+
+        UAP(lb_I_Parameter, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, title)
+        QI(uk, lb_I_Parameter, param)
+
+        parameter->setData("msg");
+        param->getUAPString(*&parameter, *&msg);
+        parameter->setData("title");
+        param->getUAPString(*&parameter, *&title);
+
+        printf("Message title: %s\nMessage: %s\n", title->charrep(), msg->charrep());
+
+        return err;
+}
+
 lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, answer)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 
 	UAP(lb_I_Parameter, param)
 	QI(uk, lb_I_Parameter, param)
 
+	UAP(lb_I_KeyBase, keyAnswerNumber)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AnswerNumber)
+	QI(AnswerNumber, lb_I_KeyBase, keyAnswerNumber)
+	numberOfAnswers++;
+	AnswerNumber->setData(numberOfAnswers);
+
+	UAP(lb_I_Unknown, ukAnswer)
+	ukAnswer = answerList->getElement(&keyAnswerNumber);
+	QI(ukAnswer, lb_I_String, answer)
+	
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
 
 	printf("Question: %s\n", msg->charrep());
+	printf("Answer: %s\n", answer->charrep());
 
     parameter->setData("result");
     result->setData(answer->charrep());
@@ -168,6 +174,7 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL UIWrapper::registerEventHandler(lb_I_Dispatcher* disp) {
 	lb_I_EventHandler* eh = (lb_I_EventHandler*) this;
 
+	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::showMsgBox, "showMsgBox");
 	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askYesNo, "askYesNo");
 //	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::setStatusText, "setStatusText");
 	disp->addEventHandlerFn(eh, (lbEvHandler) &UIWrapper::askOpenFileReadStream, "askOpenFileReadStream");
@@ -226,6 +233,7 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 	// To be implemented in a separate application module
 
 	int askYesNo;
+	int showMsgBox;
 	int setStatusText;
 	int askOpenFileReadStream;
 
@@ -233,10 +241,13 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 
 	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+
 	eman->registerEvent("askYesNo", askYesNo);
 	printf("Registered event ID=%d for askYesNo.\n", askYesNo);
-//	eman->registerEvent("setStatusText", setStatusText);
-//	printf("Registered event ID=%d for setStatusText.\n", setStatusText);
+	eman->registerEvent("showMsgBox", showMsgBox);
+	printf("Registered event ID=%d for showMsgBox.\n", showMsgBox);
+	eman->registerEvent("setStatusText", setStatusText);
+	printf("Registered event ID=%d for setStatusText.\n", setStatusText);
 	eman->registerEvent("askOpenFileReadStream", askOpenFileReadStream);
 	printf("Registered event ID=%d for askOpenFileReadStream.\n", askOpenFileReadStream);
 

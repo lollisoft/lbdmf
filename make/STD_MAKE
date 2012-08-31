@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.5 $
+# * $Revision: 1.148.2.6 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.5 2012/08/12 07:04:45 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.6 2012/08/31 11:25:54 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.6  2012/08/31 11:25:54  lollisoft
+# * Changes to replace UAP with template based smart pointer.
+# *
 # * Revision 1.148.2.5  2012/08/12 07:04:45  lollisoft
 # * Corrected build settings for wxWidgets library usage.
 # *
@@ -813,7 +816,7 @@ CCMINGW=gcc
 CPPMINGW=g++
 
 ifeq ($(MODE), _DEBUG)
-MINGW_DEBUG= -g
+MINGW_DEBUG= -gdwarf-2 -g3
 endif
 
 ifneq ($(MODE), _DEBUG)

@@ -20,8 +20,20 @@ class TestMainUseCases : public TestFixture<TestMainUseCases>
 public:
 	TEST_FIXTURE( TestMainUseCases )
 	{
+		#ifdef WINDOWS
+		setLogDirectory(".\\custom_logdir");
+		#endif
+		#ifdef LINUX
+		setLogDirectory("./custom_logdir");
+		#endif
+
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_with_badxsl)
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_SecondStageUMLModel)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_import_InitialUMLModel)
+
 /*
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
@@ -29,6 +41,260 @@ public:
 		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
 		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 */
+	}
+
+	void test_Delegated_Action_lbDMFXslt_import_SecondStageUMLModel( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_import_SecondStageUMLModel");
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XmiFile)
+		
+		*XslSystemFile = getenv("DEVROOT");
+		*XmiFile = getenv("DEVROOT");
+		*XslSettingsFile = getenv("DEVROOT");
+		
+		ASSERT_EQUALS(true, XslSystemFile != NULL)
+		ASSERT_EQUALS(true, XslSystemFile->charrep() != NULL)
+		
+		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\importUML-SystemDB.xsl";
+		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\importUML-ApplicationDB.xsl";
+		*XslSettingsFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xmi";
+		*XmiFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi";
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP(lb_I_DelegatedAction, action)
+
+		disp->setEventManager(eman.getPtr());
+
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
+		
+		ASSERT_EQUALS(true, action != NULL)
+		
+		PM->initialize();
+		PM->runInstallers();
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", true);
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+
+		meta->fireEvent("writeXMISettings");
+		meta->firePropertyChangeEvent("UML import settingsSystem database backend type", "Sqlite");
+		meta->firePropertyChangeEvent("UML import settingsApplication database backend type", "Sqlite");
+
+		#ifdef WINDOWS
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", XslSettingsFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", XslSystemFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", XslApplicationFile->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl");
+		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+		
+		int unused;
+		
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
+
+		setLogActivated(true);
+		meta->fireEvent("importUMLXMIDocIntoApplication");
+		setLogActivated(false);
+	}
+	
+	void test_Delegated_Action_lbDMFXslt_import_InitialUMLModel( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_import_InitialUMLModel");
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XmiFile)
+		
+		*XslSystemFile = getenv("DEVROOT");
+		*XslApplicationFile = getenv("DEVROOT");
+		*XmiFile = getenv("DEVROOT");
+		*XslSettingsFile = getenv("DEVROOT");
+		
+		ASSERT_EQUALS(true, XslSystemFile != NULL)
+		ASSERT_EQUALS(true, XslSystemFile->charrep() != NULL)
+		
+		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
+		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
+		*XslSettingsFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xmi";
+		*XmiFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\CDKatalog.xmi";
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP(lb_I_DelegatedAction, action)
+
+		disp->setEventManager(eman.getPtr());
+
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
+		
+		ASSERT_EQUALS(true, action != NULL)
+		
+		PM->initialize();
+		PM->runInstallers();
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", true);
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		//setLogActivated(true);
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		//setLogActivated(false);
+
+		meta->fireEvent("writeXMISettings");
+		meta->firePropertyChangeEvent("UML import settingsSystem database backend type", "Sqlite");
+		meta->firePropertyChangeEvent("UML import settingsApplication database backend type", "Sqlite");
+		
+		#ifdef WINDOWS
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", XslSettingsFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", XslSystemFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", XslApplicationFile->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl");
+		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+		
+		int unused;
+		
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
+
+		setLogActivated(true);
+		meta->fireEvent("importUMLXMIDocIntoApplication");
+		setLogActivated(false);
+		meta->msgBox("Test", "Test Message");
+	}
+	
+	void test_Delegated_Action_lbDMFXslt_selfexporting_with_badxsl( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_selfexporting_with_badxsl");
+		// Preload lbClasses DLL with this line !
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP(lb_I_DelegatedAction, action)
+
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
+
+		ASSERT_EQUALS(true, action != NULL)
+		
+		PM->initialize();
+		PM->runInstallers();
+
+
+		// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", true);
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		UAP(lb_I_Container, applications)
+
+		applications = meta->getApplications();
+
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+
+		// Setup the configuration that is needed for this test
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, path)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, File)
+
+		*path = ".";
+
+		#ifdef WINDOWS
+		*File = path->charrep();
+		*File += "\\";
+		*File += "XMISettings.xsl";
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", File->charrep());
+		*File = path->charrep();
+		*File += "\\";
+		*File += "template.xsl";
+		meta->firePropertyChangeEvent("UML export settingsXSL file for UML export", File->charrep());
+		*File = path->charrep();
+		*File += "\\lbDMFManager.xmi";
+		meta->firePropertyChangeEvent("UML export settingsXMI UML export file", File->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl");
+		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+
+
+		writeBadXsl("template-bad.xsl");
+		
+		myUIWrapper->addAnswer("yes", true);
+		myUIWrapper->setFileAnswer("template-bad.xsl");
+		int nextStep1 = action->execute(*&params);
+
+		// Test for a 'linear action'
+		ASSERT_EQUALS(0, nextStep1)
 	}
 
 	void test_Delegated_Action_lbDMFXslt_selfexporting( void )
@@ -101,20 +367,16 @@ public:
 
 		writeGoodXsl("template-good.xsl");
 		
-		myUIWrapper->setAnswer("yes");
+		myUIWrapper->addAnswer("yes", true);
 		myUIWrapper->setFileAnswer("template-good.xsl");
 		int nextStep1 = action->execute(*&params);
 
-		// Crashes in the next test as probably old event handlers get called.
-		//meta->uninitialize();
-
 		// Test for a 'linear action'
 		ASSERT_EQUALS(-1, nextStep1)
-		
-		meta->unloadApplication();
-		//meta->uninitialize();
 	}
 
+	
+	
 public:
 	void setUp()
 	{
@@ -137,6 +399,8 @@ public:
 
 	void tearDown()
 	{
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		meta->unloadApplication();
 	}
 
 	void makePluginName(char* path, char* module, char*& result) {
