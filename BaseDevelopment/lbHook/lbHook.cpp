@@ -214,6 +214,7 @@ extern "C" DLLEXPORT void		LB_CDECL _unHookAll() { unHookAll(); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstrristr(const char *String, const char *Pattern) { return lbstrristr(String, Pattern); }
 extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const char *Pattern) { return lbstristr(String, Pattern); }
 extern "C" DLLEXPORT const char*	LB_CDECL _getOsType() { return getOsType(); }
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line) { return requestHelper(mm, iface, variable, file, line); }
 
 namespace lbdmfapi {
 
@@ -225,6 +226,18 @@ extern "C" DLLEXPORT lbErrCodes	LB_CDECL _lbCopyFile(const char* from, const cha
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf) { return new lbStringKey(buf); }
 
+extern "C" DLLEXPORT lbErrCodes LB_CDECL requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line) {
+  	UAP(lb_I_Unknown, ukvariable)
+  	mm->request(iface, &ukvariable);
+  	if (ukvariable != NULL) {
+	  	ukvariable->queryInterface(iface, variable, file, line);
+		ukvariable.setFile(file);
+		ukvariable.setLine(line);
+	} else {
+		return ERR_MODULE_NOT_FOUND;
+	}
+	return ERR_NONE;
+} 
 
 
 /*...sDLLEXPORT void createLogInstance\40\\41\:0:*/

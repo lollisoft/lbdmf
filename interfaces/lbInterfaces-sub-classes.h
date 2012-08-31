@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.1 $
+ * $Revision: 1.106.2.2 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.1 2012/05/12 21:16:25 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.2 2012/08/31 11:25:54 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.2  2012/08/31 11:25:54  lollisoft
+ * Changes to replace UAP with template based smart pointer.
+ *
  * Revision 1.106.2.1  2012/05/12 21:16:25  lollisoft
  * Added documentation to string interface.
  *
@@ -1644,63 +1647,6 @@ void LB_STDCALL classname::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const 
 }
 /*...e*/
 
-/*...e*/
-/*...sclass lb_I_Module:0:*/
-class lb_I_Module : 
-                public lb_I_Unknown,
-                public lb_I_Requestable 
-{
-public:
-
-	virtual char* LB_STDCALL getCreationLoc(const char* addr) = 0;
-    virtual void LB_STDCALL notify_create(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0) = 0;
-    virtual void LB_STDCALL notify_add(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
-    virtual void LB_STDCALL notify_release(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
-    virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, const char* implName, const char* file, int line) = 0;
-
-    virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, const char* implName, const char* file = "", int line = 0) = 0;
-
-        /**
-         * This function loads a module and stores the modulehandle in an array
-         * or a list. If the object is destroyed, the loaded modules are
-         * automatically unloaded (the array/list).
-         */
-        virtual lbErrCodes LB_STDCALL load(const char* name) = 0;
-
-	virtual lbErrCodes LB_STDCALL preload(const char* name) = 0;
-
-	virtual void LB_STDCALL printReferences(const char* addr) = 0;        
-        
-        /**
-         * The module getModuleInstance() is responsible for creating any instances, that are
-         * available. This implementation knows that the directory of functors
-         * for instances are stored in an XML file (DTD file v1.3).
-         *
-         * The current implementation for this in the function request is not the
-         * intention for the interface lb_I_Requestable.
-         *
-         * The new function for this may be:
-         */
-
-
-        /**
-         * get back a lb_I_String for a functor or a lb_I_Container for a list of
-         * them. The errcode helps to decide.
-         */
-        virtual lbErrCodes LB_STDCALL getFunctors(const char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
-        virtual lbErrCodes LB_STDCALL getInstance(const char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
-        
-        /**
-         *
-         */
-        
-        //virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
-        virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
-        
-        virtual lbErrCodes LB_STDCALL makeInstance(const char* functor, const char* module, lb_I_Unknown** instance) = 0;
-        
-        virtual char* LB_STDCALL getCreationLoc() const = 0;
-};
 /*...e*/
 /*...sclass lb_I_Instance:0:*/
 class lb_I_Instance : public lb_I_KeyBase {

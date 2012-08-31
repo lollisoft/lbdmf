@@ -1804,6 +1804,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	doc = xmlReadMemory((char const*) xmidoc->charrep(), strlen(xmidoc->charrep()), (char const*) XMIURL, NULL, 0);
 	if (doc == NULL) {
 		_LOG << "Error: Failed to load in-memory XMI document as an XML document." LOG_
+		metaapp->msgBox("Error", "Failed to load in-memory XMI document as an XML document.");
 		return err; 
 	}
 	
@@ -1991,7 +1992,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				_LOG << "Database schema has been created." LOG_
 				free(result);
 			}
-		}	
+		} else {
+			_LOG << "Error: Could not open specified XSL file: " << XSLFileApplicationDatabase->charrep() LOG_
+		}
 	}
 	
 	// Read the stylesheet document to import application definition into system database
@@ -2205,7 +2208,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				sampleQuery->enableFKCollecting();
 				free(result);
 			}
-		}	
+		} else {
+			_LOG << "Error: Could not open specified XSL file: " << XSLFileSystemDatabase->charrep() LOG_
+		}
 	}
 
 	xmlFreeDoc(doc);

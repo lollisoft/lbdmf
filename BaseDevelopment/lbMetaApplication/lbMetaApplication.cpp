@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.2 $
+ * $Revision: 1.188.2.3 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.2 2012/06/05 18:18:13 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.3 2012/08/31 11:25:54 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.3  2012/08/31 11:25:54  lollisoft
+ * Changes to replace UAP with template based smart pointer.
+ *
  * Revision 1.188.2.2  2012/06/05 18:18:13  lollisoft
  * Try to get rid of DLL unload behaviour. Test installation application hangs.
  *
@@ -2574,6 +2577,11 @@ void LB_STDCALL lb_MetaApplication::msgBox(const char* title, const char* msg) {
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 
+	int event = 0;
+	
+	eman->resolveEvent("showMsgBox", event);
+	
+	printf("showMsgBox will be dispatched (%d)...\n", event);
 	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -3633,8 +3641,8 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(const char* EvName, int & E
 	if (events == NULL) _CL_LOG << "Nullpointer detected (events)!" LOG_
 	if (*&sk == NULL) _CL_LOG << "Nullpointer detected (sk)!" LOG_
 	if (events->exists(&sk) == 1) {
-		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert" LOG_
-		resolveEvent(EvName, EvNr);
+		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert (" << EvName << ")" LOG_
+		resolveEvent(EvName, EvNr);		
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/

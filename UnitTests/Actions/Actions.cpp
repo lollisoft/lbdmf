@@ -393,7 +393,7 @@ public:
 
 		writeGoodXsl("template-good.xsl");
 		
-		myUIWrapper->setAnswer("yes");
+		myUIWrapper->addAnswer("yes", true);
 		myUIWrapper->setFileAnswer("template-good.xsl");
 		int nextStep1 = action->execute(*&params);
 
@@ -472,7 +472,7 @@ public:
 
 		writeBadXsl("template-fail.xsl");
 		
-		myUIWrapper->setAnswer("yes");
+		myUIWrapper->addAnswer("yes", true);
 		myUIWrapper->setFileAnswer("template-fail.xsl");
 		int nextStep1 = action->execute(*&params);
 
@@ -731,6 +731,6 @@ public:
 DECLARE_FIXTURE( TestActions )
 
 __attribute__ ((constructor)) void ct() {
-	USE_FIXTURE( TestActions )
+	//USE_FIXTURE( TestActions )
 }
 
