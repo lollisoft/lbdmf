@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 2
+  revision 3
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -82,6 +82,16 @@ ${inlines}
       classrelation 128130 // <aggregation>
 	relation_ref 128002 // <aggregation>
       end
+
+      attribute 134914 "Beschreibung"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 128130 "Musiker"
@@ -118,6 +128,7 @@ ${inlines}
 
       classrelation 128002 // <aggregation>
 	relation 128002 o---
+	  stereotype "masterdetail_action"
 	  a role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -127,7 +138,16 @@ ${inlines}
 "
 	    classrelation_ref 128130 // <aggregation>
       end
-    end
 
+      attribute 135042 "Alter"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
   end
 end
