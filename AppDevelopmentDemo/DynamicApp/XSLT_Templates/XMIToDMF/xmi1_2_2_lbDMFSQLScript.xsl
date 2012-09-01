@@ -556,10 +556,10 @@ delete from formular_actions where formular IN
 		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
 		name = '<xsl:value-of select="$thisClassName"/>');
 delete from action_steps where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$otherClassName"/>');
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
 delete from action_parameters where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$otherClassName"/>');
-delete from actions where name = '<xsl:value-of select="$otherClassName"/>';
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
 values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
@@ -569,7 +569,7 @@ insert into formular_actions (formular, action, event) values (
 (select id from "formulare" where anwendungid in 
  (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') 
 	and name = '<xsl:value-of select="$thisClassName"/>'), 
-(select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
+(select id from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 </xsl:if>
 </xsl:if>
