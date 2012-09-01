@@ -530,14 +530,17 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
 <xsl:if test="$assocname1=''">
-insert into actions (name, typ, source, target) values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
+insert into actions (name, typ, source, target)
+values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
 </xsl:if>
 <xsl:if test="$assocname1!=''">
-insert into actions (name, typ, source, target) values ('<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0);
+insert into actions (name, typ, source, target)
+values ('<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0);
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
-'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, currval('actions_id_seq')); 
+'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
+currval('actions_id_seq')); 
 
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
@@ -558,7 +561,9 @@ delete from action_parameters where actionid IN
 	(select ID from actions where name = '<xsl:value-of select="$otherClassName"/>');
 delete from actions where name = '<xsl:value-of select="$otherClassName"/>';
 
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>')); 
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
+(select id from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>')); 
 
 insert into formular_actions (formular, action, event) values (
 (select id from "formulare" where anwendungid in 
