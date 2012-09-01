@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 3
+  revision 4
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -79,8 +79,8 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128130 // <aggregation>
-	relation_ref 128002 // <aggregation>
+      classrelation 128130 // (Musiker)
+	relation_ref 128002 // Musiker
       end
 
       attribute 134914 "Beschreibung"
@@ -126,17 +126,17 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128002 // <aggregation>
-	relation 128002 o---
+      classrelation 128002 // (Musiker)
+	relation 128002 o--- name "Musiker"
 	  stereotype "masterdetail_action"
 	  a role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128002 // <aggregation>
+	    classrelation_ref 128002 // (Musiker)
 	  b role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128130 // <aggregation>
+	    classrelation_ref 128130 // (Musiker)
       end
 
       attribute 135042 "Alter"
