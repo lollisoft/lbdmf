@@ -92,6 +92,10 @@ public:
   static int TranslateErrorCode(int nCode);
 
 private:
+  /// Check if the query is a DDL statement. If so, only DDL should be used.
+  bool IsDDLStatement(const wxString& strQuery);
+
+
   wxArrayString arrFKCols;
   wxArrayString arrPKCols;
   wxArrayString arrPKTables;
