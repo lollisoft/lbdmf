@@ -169,6 +169,13 @@ void SqliteDatabaseLayer::RollBack()
   RunQuery(_("rollback transaction;"), false);
 }
 
+bool SqliteDatabaseLayer::IsDDLStatement(const wxString& strQuery)
+{
+	return !(strQuery.Upper().Contains(_("SKIP REWRITE"))) && 
+			(strQuery.Upper().Contains(_("CREATE ")) || strQuery.Upper().Contains(_("ALTER ")));
+}
+
+
 // query database
 bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 {
@@ -180,7 +187,7 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
   wxArrayString QueryArray;
 
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
+	if (IsDDLStatement(strQuery)) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 		wxString rewrittenQuery;
@@ -203,9 +210,9 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 		int nReturn = sqlite3_exec(m_pDatabase, (const char*) rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
 		if (szErrorMessage != NULL)
 		{
-	        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
-	        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-			SetErrorMessage(strErrorMessage);
+			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+			strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+			printf(strErrorMessage.c_str());
 			sqlite3_free(szErrorMessage);
 			return NULL;
 		}
@@ -233,10 +240,8 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 
     if (szErrorMessage != NULL)
     {
-        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
-        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		SetErrorMessage(strErrorMessage);
-		sqlite3_free(szErrorMessage);
+      strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+      sqlite3_free(szErrorMessage);
     }
 
     if (nReturn != SQLITE_OK)
@@ -260,7 +265,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
   {
     wxArrayString QueryArray;
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
+	if (IsDDLStatement(strQuery)) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 
@@ -289,8 +294,9 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		SetErrorMessage(strErrorMessage);
-
+	printf("\n");
+	printf(strErrorMessage);
+	printf("\nSQL: \n%s", rewrittenQuery.c_str());
         sqlite3_free(szErrorMessage);
           ThrowDatabaseException();
         return NULL;
@@ -305,7 +311,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			{
 				SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 				strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-				SetErrorMessage(strErrorMessage);
+				printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
 				sqlite3_free(szErrorMessage);
 				ThrowDatabaseException();
 				return NULL;
@@ -328,7 +334,6 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-		SetErrorMessage(strErrorMessage);
         sqlite3_free(szErrorMessage);
         ThrowDatabaseException();
         return NULL;

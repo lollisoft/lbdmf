@@ -176,7 +176,7 @@ protected:
 	void LogResultSetForCleanup(DatabaseResultSet* pResultSet);
   /// Add prepared statement object pointer to the list for "garbage collection"
 	void LogStatementForCleanup(PreparedStatement* pStatement);
-  
+    
 private:
   int GetSingleResultInt(const wxString& strSQL, const wxVariant* field);
   wxString GetSingleResultString(const wxString& strSQL, const wxVariant* field);
