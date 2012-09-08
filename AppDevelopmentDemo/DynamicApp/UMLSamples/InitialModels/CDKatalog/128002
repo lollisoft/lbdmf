@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 4
+  revision 5
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -79,7 +79,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128130 // (Musiker)
+      classrelation 128130 // Musiker
 	relation_ref 128002 // Musiker
       end
 
@@ -108,6 +108,7 @@ ${inlines}
       
       attribute 128258 "Name"
 	private explicit_type "string"
+	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -136,7 +137,7 @@ ${inlines}
 	  b role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128130 // (Musiker)
+	    classrelation_ref 128130 // Musiker
       end
 
       attribute 135042 "Alter"
