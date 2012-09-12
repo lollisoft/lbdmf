@@ -285,9 +285,6 @@ lbDynamicApplication::lbDynamicApplication() {
         
         gui = NULL;
 
-        _overwriteDatabase = false;
-		_writeXMISettings = false;
-        
         dirty = false;
 
         haveLoadedDBModel = false;
@@ -346,6 +343,23 @@ lbDynamicApplication::lbDynamicApplication() {
         *GeneralDBSchemaname = "public";
 
         *lastExportedApp = "";
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		*name = "_overwriteDatabase";
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+ 
+		if (SomeBaseSettings == NULL) {
+			_overwriteDatabase = false;
+		} else {
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_overwriteDatabase = !ov->getData();
+		}
+
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -375,8 +389,27 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 
 lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
-        
-        _overwriteDatabase = !_overwriteDatabase;
+ 
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		*name = "_overwriteDatabase";
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+ 
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			&ov = false;
+		} else {
+			bool b;
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_overwriteDatabase = !ov->getData();
+		}
+ 
+		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
+		meta->setPropertySet("CodeGenMenuSettings", *&SomeBaseSettings);
         
         return err;
 }
@@ -439,6 +472,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
         return err;
 }
 
+///\todo Add an interceptor to include application specific properties and refactor out.
 lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
@@ -501,7 +535,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 fileXSL->setData(XSLFileApplicationDatabase->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-
+				
+				
+// Wird zuerst geladen und hat leeren String
                 parameterXSL->setData("System database backend type");
                 paramXSLDatabaseBackendSystem->setData(XSLDatabaseBackendSystem->getData());
                 paramXSL->setUAPString(*&parameterXSL, *&paramXSLDatabaseBackendSystem);
@@ -659,6 +695,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setupSystemDatabase(lb_I_Unknown* uk
         return ERR_NONE;
 }
 
+///\todo Add interception handler for extensions per event
 lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown* uk) {
         _CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
 
@@ -744,25 +781,57 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
 										}
                 }
-/*
-                if (strcmp(key->charrep(), "UML import settingsAsk for other XSL files") == 0) {
-                                        value->toLower();
-                                        if (strcmp(value->charrep(), "true") == 0) {
-                                                UseOtherXSLFile->setData(true);
-                                        } else {
-                                                UseOtherXSLFile->setData(false);
-                                        }
-                }
-*/
+
                 if (strcmp(key->charrep(), "UML import settingsXSL file for import settings") == 0) {
                         if (XSLFileImportSettings != NULL) XSLFileImportSettings->setData(value->charrep());
                 }
 				// The new import settings to which database backend is used
                 if (strcmp(key->charrep(), "UML import settingsApplication database backend type") == 0) {
                         if (XSLDatabaseBackendApplication != NULL) XSLDatabaseBackendApplication->setData(value->charrep());
+						///\todo Add saving changed value as default settings value
+										UAP(lb_I_Parameter, SomeBaseSettings)
+										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+										UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+										if (SomeBaseSettings != NULL) {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+											*name = "XSLDatabaseBackendApplication";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										} else {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+											REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+											*name = "XSLDatabaseBackendApplication";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										}
                 }
+
                 if (strcmp(key->charrep(), "UML import settingsSystem database backend type") == 0) {
                         if (XSLDatabaseBackendSystem != NULL) XSLDatabaseBackendSystem->setData(value->charrep());
+						///\todo Add saving changed value as default settings value
+										UAP(lb_I_Parameter, SomeBaseSettings)
+										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+										UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+										if (SomeBaseSettings != NULL) {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+											*name = "XSLDatabaseBackendSystem";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendSystem);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										} else {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+											REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+											*name = "XSLDatabaseBackendSystem";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendSystem);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										}
                 }
 
                 if (strcmp(key->charrep(), "UML import settingsXSL file for system database") == 0) {
@@ -853,6 +922,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
         temp_params->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
         *paramname = "XSLFileApplicationDatabase";
         temp_params->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
+
+        *paramname = "XSLDatabaseBackendSystem";
+        temp_params->setUAPString(*&paramname, *&XSLDatabaseBackendSystem);
+        *paramname = "XSLDatabaseBackendApplication";
+        temp_params->setUAPString(*&paramname, *&XSLDatabaseBackendApplication);
+
         *paramname = "XMIFileUMLProject";
         temp_params->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
         *paramname = "XMIFileUMLProjectExport";
@@ -863,7 +938,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 
         metaapp->delPropertySet("DynamicAppDefaultSettings");
         metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
-
+///\todo Why have I commented this and then added partial above per property?
         //metaapp->setActiveDocument(*&document);
 
         return ERR_NONE;
@@ -2988,6 +3063,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                                 document->setUAPString(*&param, *&UMLImportTargetDBPass);
                                         }
 */
+// Zum Zeitpunkt sind die Parameter nicht vorhanden (DB)
                                         editProperties(NULL);
                                 }
                         }
