@@ -403,17 +403,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, SomeBaseSettings)
 	
-		*name = "_overwriteDatabase";
+		*name = "overwriteDatabase";
 	
 		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
  
 		if (SomeBaseSettings == NULL) {
 			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
 			ov->setData(false);
+			_overwriteDatabase = false;
 		} else {
 			bool b;
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
 			_overwriteDatabase = !ov->getData();
+			ov->setData(!ov->getData());
 		}
  
 		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
@@ -432,17 +434,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, SomeBaseSettings)
 	
-		*name = "_writeXMISettings";
+		*name = "writeXMISettings";
 	
 		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
  
 		if (SomeBaseSettings == NULL) {
 			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
 			ov->setData(false);
+			_writeXMISettings = false;
 		} else {
 			bool b;
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
 			_writeXMISettings = !ov->getData();
+			ov->setData(!ov->getData());
 		}
  
 		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
