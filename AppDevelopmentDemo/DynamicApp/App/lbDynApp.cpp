@@ -349,17 +349,25 @@ lbDynamicApplication::lbDynamicApplication() {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP(lb_I_Parameter, SomeBaseSettings)
 	
-		*name = "_overwriteDatabase";
-	
 		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+
+		*name = "overwriteDatabase";
  
 		if (SomeBaseSettings == NULL) {
 			_overwriteDatabase = false;
 		} else {
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
-			_overwriteDatabase = !ov->getData();
+			_overwriteDatabase = ov->getData();
 		}
 
+		*name = "writeXMISettings";
+ 
+		if (SomeBaseSettings == NULL) {
+			_writeXMISettings = false;
+		} else {
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_writeXMISettings = ov->getData();
+		}
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -401,7 +409,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) 
  
 		if (SomeBaseSettings == NULL) {
 			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
-			&ov = false;
+			ov->setData(false);
 		} else {
 			bool b;
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
@@ -409,7 +417,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) 
 		}
  
 		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
-		meta->setPropertySet("CodeGenMenuSettings", *&SomeBaseSettings);
+
+		meta->delPropertySet("CodeGenMenuSettings");
+		meta->addPropertySet(*&SomeBaseSettings, "CodeGenMenuSettings");
         
         return err;
 }
@@ -417,7 +427,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) 
 lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
         
-        _writeXMISettings = !_writeXMISettings;
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		*name = "_writeXMISettings";
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+ 
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			ov->setData(false);
+		} else {
+			bool b;
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_writeXMISettings = !ov->getData();
+		}
+ 
+		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
+
+		meta->delPropertySet("CodeGenMenuSettings");
+		meta->addPropertySet(*&SomeBaseSettings, "CodeGenMenuSettings");
         
         return err;
 }
@@ -3177,6 +3208,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
         eman->registerEvent("writeXMISettings", unused);
         dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::writeXMISettings, "writeXMISettings");
         metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "writeXMISettings", "");
+
+		if (_writeXMISettings)
+			metaapp->toggleEvent("writeXMISettings");
+		if (_overwriteDatabase)
+			metaapp->toggleEvent("overwriteDatabase");
+
         
         return ERR_NONE;
 }
