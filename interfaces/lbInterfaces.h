@@ -1030,6 +1030,7 @@ PRIMARY KEY (id),
 	class lb_I_TestMethod;
 	class lb_I_CryptoStream;
 	class lb_I_DispatchInterceptor;
+	class lb_I_ChainingDispatchInterceptor;
 	class lb_I_InputStream;
 	class lb_I_Applications;
 	class lb_I_PluginManager;
@@ -1736,6 +1737,7 @@ UAPDECL(lb_I_TestFixture)
 UAPDECL(lb_I_TestMethod)
 UAPDECL(lb_I_CryptoStream)
 UAPDECL(lb_I_DispatchInterceptor)
+UAPDECL(lb_I_ChainingDispatchInterceptor)
 UAPDECL(lb_I_InputStream)
 UAPDECL(lb_I_Applications)
 UAPDECL(lb_I_PluginManager)
@@ -3219,6 +3221,10 @@ public:
 	virtual lbErrCodes LB_STDCALL addInterceptedInstance(lb_I_Unknown* intercepted) = 0;
 
 	virtual lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance) = 0;
+};
+
+class lb_I_ChainingDispatchInterceptor : public lb_I_DispatchInterceptor {
+
 };
 
 class lb_I_DatabaseForm;
