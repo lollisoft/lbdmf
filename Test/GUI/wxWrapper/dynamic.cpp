@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.2 2012/06/07 17:29:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.3 2012/09/16 07:16:15 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.2 $
+ * $Revision: 1.174.2.3 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.2 2012/06/07 17:29:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.3 2012/09/16 07:16:15 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.3  2012/09/16 07:16:15  lollisoft
+ * Moved call to plugin installers after creation of the splash screen.
+ *
  * Revision 1.174.2.2  2012/06/07 17:29:55  lollisoft
  * Fixed application exit issues. The dispatcher and event manager was
  * instantiated earlyer than a string or any other class from lbclasses.
@@ -2412,7 +2415,7 @@ bool MyApp::OnInit(void)
 	 * Do not move this after the splash screen as it may block when any
 	 * installer asks the user something.
 	 */
-	PM->runInstallers();
+//	PM->runInstallers();
 /*
 	if (metaApp->usingSystemDatabaseBackend()) {
 		_LOG << "Have system database backend switch: true" LOG_
@@ -2476,6 +2479,9 @@ bool MyApp::OnInit(void)
 		wxGUI->splashCreated();
 	}
 #endif
+
+	PM->runInstallers();
+
 	wxYield();
 
     if (metaApp != NULL) {
@@ -2511,7 +2517,7 @@ bool MyApp::OnInit(void)
     	_LOG << "Raised splash." LOG_
     }
 #endif
-
+	
     if (metaApp != NULL) metaApp->run();
 
     return TRUE;
