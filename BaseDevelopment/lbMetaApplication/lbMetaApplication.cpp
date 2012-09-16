@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.3 $
+ * $Revision: 1.188.2.4 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.3 2012/08/31 11:25:54 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.4 2012/09/16 07:36:27 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.4  2012/09/16 07:36:27  lollisoft
+ * Added a todo for chaining dispatcher functionality.
+ *
  * Revision 1.188.2.3  2012/08/31 11:25:54  lollisoft
  * Changes to replace UAP with template based smart pointer.
  *
@@ -947,7 +950,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
 	_autoload = !_autoload;
-
 	return ERR_NONE;
 }
 
@@ -4241,6 +4243,9 @@ lbErrCodes LB_STDCALL lb_EvHandler::removeInterceptedInstance(lb_I_Unknown* inte
 lbErrCodes LB_STDCALL lb_EvHandler::setInterceptor(lb_I_DispatchInterceptor* evHandlerInstance, lbInterceptor evHandler_Before, lbInterceptor evHandler_After) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lb_EvHandler::setInterceptor() called." LOG_
+
+///\todo Add distinction between non chaining and chaining dispatch interceptor	
+	
 	_evHandlerInstance_interceptor = evHandlerInstance;
 	ev_interceptor_Before = evHandler_Before;
 	ev_interceptor_After = evHandler_After;
