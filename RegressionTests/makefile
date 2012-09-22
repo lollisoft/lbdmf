@@ -106,7 +106,8 @@ ALLTARGETS = \
 	MetaApplication \
 	Events \
 	Translation \
-	PluginTest
+	PluginTest \
+	TestGDB
 
 endif
 
