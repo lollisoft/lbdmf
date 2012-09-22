@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.6 $
+# * $Revision: 1.148.2.7 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.6 2012/08/31 11:25:54 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.7 2012/09/22 03:47:27 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.7  2012/09/22 03:47:27  lollisoft
+# * Reverted Mac OS X target cross compile settings.
+# *
 # * Revision 1.148.2.6  2012/08/31 11:25:54  lollisoft
 # * Changes to replace UAP with template based smart pointer.
 # *
@@ -1484,11 +1487,13 @@ STD_INCL_NODBGMEM = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 ifneq ($(LB_MACOSX_DEPLOYMENT_TARGET), universal)
 
 ifeq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+#OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+OSX_ARCH=-arch ppc
 endif
 
 ifneq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+#OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+OSX_ARCH=-arch i386
 endif
 
 endif
@@ -1500,11 +1505,13 @@ endif
 ifeq ($(MACOSX_DEPLOYMENT_TARGET), universal)
 
 ifeq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+#OSX_ARCH=-arch ppc -mmacosx-version-min=10.3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+OSX_ARCH=-arch ppc
 endif
 
 ifneq ($(OSPLATFORM_), powerpc)
-OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+#OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+OSX_ARCH=-arch i386
 endif
 
 endif
