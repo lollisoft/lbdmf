@@ -65,6 +65,7 @@ endif
 
 _MODULE=$(MODULE)
 
+
 ifeq ($(TARGET), tvision_dll)
 makefile: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
@@ -95,6 +96,38 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	>> makefile
 endif
 
+ifeq ($(TARGET), tvision_dll_target_mingw)
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f include/tv/configtv.h
+	@rm -f $(_MODULE).bak	
+	$(MKMK) $(TARGET) $(_MODULE) .,include,include/tv,include/cl,include/win32 \
+	classes/*.cc \
+	classes/win32/*.cc \
+	classes/wingr/*.cc \
+	classes/winnt/*.cc \
+	compat/*.c \
+	compat/*.cc \
+	names/*.cc \
+	stream/*.cc \
+	intl/dummy/*.c \
+	misc.cc \
+	newstr.cc \
+	msgbox.cc \
+	histlist.cc \
+	drivers2.cc \
+	>> makefile
+endif
+
+
+
 ifeq ($(TARGET), tvision_usr_dll)
 makefile: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
@@ -111,7 +144,39 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	*.cpp >> makefile
 endif
 
+ifeq ($(TARGET), tvision_usr_dll_target_mingw)
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f include/tv/configtv.h
+	@rm -f $(_MODULE).bak	
+	$(MKMK) $(TARGET) $(_MODULE) .,include,include/tv,include/cl,include/win32 \
+	*.cpp >> makefile
+endif
+
 ifeq ($(TARGET), tvision_exe)
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).exe >> makefile
+	@rm -f $(_MODULE).bak
+	$(MKMK) exe $(_MODULE) .,include,include/tv,include/cl,include/win32 \
+	*.cc *.cpp \
+	>> makefile
+endif
+
+ifeq ($(TARGET), tvision_exe_target_mingw)
 makefile: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
