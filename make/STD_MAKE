@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.7 $
+# * $Revision: 1.148.2.8 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.7 2012/09/22 03:47:27 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.8 2012/10/01 05:45:14 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.8  2012/10/01 05:45:14  lollisoft
+# * No debug.
+# *
 # * Revision 1.148.2.7  2012/09/22 03:47:27  lollisoft
 # * Reverted Mac OS X target cross compile settings.
 # *
@@ -610,8 +613,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
