@@ -20,7 +20,12 @@ else
 RELPATH_MAKE=\Projects\CPP
 RELPATH=//Projects//CPP
 endif
-include $(DEVROOT)$(RELPATH)\make\STD_MAKE
+include $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/STD_MAKE
+
+# Rule to overcome the possible override of path with recursive make
+
+DEVROOT_MINGW=$(DEVLW)/$(BASE_MAKE)
+
 endif
 
 ifeq ($(OSTYPE), linux-debian-ppc)

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.4 $
+# * $Revision: 1.229.2.5 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.4 2012/07/22 07:44:31 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.5 2012/10/03 20:56:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.5  2012/10/03 20:56:38  lollisoft
+# * Modified make system to work with current cygwin make and with MinGW compilers together.
+# *
 # * Revision 1.229.2.4  2012/07/22 07:44:31  lollisoft
 # * Any changes before CVS backup
 # *
@@ -851,7 +854,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
+DEVROOT_MAKE=/cygdrive/q/$(BASE_MAKE)
 endif
 
 ifeq ($(OSTYPE), Cross_OW)
@@ -1332,8 +1335,8 @@ TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 
-TARGET_TV_DLL=tvision_dll
-TARGET_TV_EXE=tvision_exe
+TARGET_TV_DLL=tvision_dll$(TARGET_SELECTOR)
+TARGET_TV_EXE=tvision_exe$(TARGET_SELECTOR)
 TARGETYACC=yacc
 TARGETLEX=lex
 
@@ -2063,6 +2066,7 @@ endif
 endif
 endif
 endif
+	echo $(MAKE) -s -C $@
 	$(MAKE) -s -C $@
 ifeq ($(OSTYPE), solaris)
 	$(MAKE) -s -C $@ install-strip
