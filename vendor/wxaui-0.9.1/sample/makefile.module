@@ -37,14 +37,12 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib, \
         $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
-MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxmsw$(WX_VERSION)_html$(WX_DEBUG) -lwxWrapperDLL -lwxAUI -llbHook
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include
-#MOD_INCL_MINGW_CPP += -I../wxWrapperDLL 
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/wxwin/wx/include 
-#MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
