@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.8 $
+# * $Revision: 1.148.2.9 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.8 2012/10/01 05:45:14 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.9 2012/10/03 20:56:38 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.9  2012/10/03 20:56:38  lollisoft
+# * Modified make system to work with current cygwin make and with MinGW compilers together.
+# *
 # * Revision 1.148.2.8  2012/10/01 05:45:14  lollisoft
 # * No debug.
 # *
@@ -609,6 +612,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 # Set standard compiler
+
 COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
@@ -680,7 +684,9 @@ ifeq ($(DEBUG_MEMORY), yes)
   endif	
 endif
 
-MINGWLIBS = -L$(DEVROOT_MAKE)/projects/dll -llbHook
+# Fix to let MinGW find the lbHook library
+
+MINGWLIBS = -L$(DEVLW)/$(BASE_MAKE)/projects/dll -llbHook
 
 MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)$(WX_DEBUG)_core -lwxbase$(WX_VERSION)$(WX_DEBUG)_xml -lwxmsw$(WX_VERSION)$(WX_DEBUG)_adv -lwxmsw$(WX_VERSION)$(WX_DEBUG)_xrc
 
@@ -925,7 +931,7 @@ LINK     = $(LINK_WATCOM)
 L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
 
-CP =cp
+CP =cp -f
 EXEDIR =$(DEVROOT_MAKE)/Projects/bin
 DLLDIR =$(DEVROOT_MAKE)/Projects/dll
 PLUGINDIR =$(DEVROOT_MAKE)/Projects/plugins

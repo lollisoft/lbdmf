@@ -32,10 +32,12 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I$(DEVROOT_MINGW)$(RELPATH)/Test/GUI/wxWrapperDLL -I$(DEVROOT_MINGW)/wxwin/wx/include -I$(DEVROOT_MINGW)$(RELPATH)/vendor/propgrid/include 
 
 MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 MINGWLIBS += -lwxWrapperDLL
@@ -77,8 +79,6 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 /INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
 endif
 ifeq ($(COMPILER), WATCOM)
-MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapperDLL -I$(DEVROOT_MAKE)/wxwin/wx/include -I$(DEVROOT_MAKE)$(RELPATH)/vendor/propgrid/include 
-
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\projects\\CPP\\Test\\GUI\\wxWrapperDLL -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/propgrid/include 
 

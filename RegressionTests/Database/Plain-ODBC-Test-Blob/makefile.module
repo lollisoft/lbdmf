@@ -34,7 +34,7 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,$(DEVROOT_MAKE)
 
 MOD_INCL_MINGW=$(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
-MINGWLIBS= -L$(DEVROOT_MAKE)/projects/dll/ -llbHook -lodbc32 
+MINGWLIBS= -L$(DEVROOT_MINGW)/projects/dll/ -llbHook -lodbc32 
 
 # use global setup
 #COMPILER=MICROSOFT
