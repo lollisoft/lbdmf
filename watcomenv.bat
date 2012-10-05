@@ -36,6 +36,7 @@ set BASE_MAKE=develop
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+set DEVROOT_MAKE_BASE=/cygdrive/q/%BASE_MAKE%
 
 goto BEGINENVIRONMENT:
 
@@ -50,6 +51,7 @@ set BASE_MAKE=lbDMF/develop
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+set DEVROOT_MAKE_BASE=/cygdrive/c/%BASE_MAKE%
 
 goto BEGINENVIRONMENT:
 
@@ -82,6 +84,7 @@ set MSVCDir=%DEVLW%\%BASE%\Tools\MSC\VC98
 
 @rem Alias to the linux environment
 set OSTYPE=%OS%
+set OSNAME=%OS%
 
 rem Basic Runtime settings
 set RUNROOT=%DEVLW%\%BASE%\projects

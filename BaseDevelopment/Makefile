@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.5 $
+# * $Revision: 1.229.2.6 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.5 2012/10/03 20:56:38 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.6 2012/10/05 07:08:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.6  2012/10/05 07:08:51  lollisoft
+# * Moved deployment specific stuff to environment file.
+# *
 # * Revision 1.229.2.5  2012/10/03 20:56:38  lollisoft
 # * Modified make system to work with current cygwin make and with MinGW compilers together.
 # *
@@ -854,7 +857,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-DEVROOT_MAKE=/cygdrive/q/$(BASE_MAKE)
+DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
 endif
 
 ifeq ($(OSTYPE), Cross_OW)
