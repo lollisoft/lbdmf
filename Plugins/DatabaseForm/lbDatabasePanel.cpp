@@ -4087,7 +4087,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				}
 			}
 		} else {
-			_LOG << "Control '" << name->charrep() << "' nicht gefunden." LOG_
+			_LOG << "Control '" << name->charrep() << "' nicht gefunden. Database query: " << SQLString->charrep() LOG_
 		}
 	}
 
