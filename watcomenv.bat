@@ -1,15 +1,29 @@
 if EXIST readme.txt goto WEITER:
 set DEVLW=%%DEVLW%%
 set DEVROOT=%%DEVROOT%%
-echo ------------------------------------------------------------------------ >> readme.txt
-echo *                  Basic development settings                          * >> readme.txt
-echo ------------------------------------------------------------------------ >> readme.txt
-echo * You have started lbDMF Develop the first time. Please read           * >> readme.txt
-echo * lbDMF Help at your desktop for further instructions.                 * >> readme.txt
-echo *                                                                      * >> readme.txt
-echo * If you don't find the help icon, download the latest                 * >> readme.txt
-echo * documentation install package from my sourceforge project site.      * >> readme.txt 
-echo ------------------------------------------------------------------------ >> readme.txt 
+echo ------------------------------------------------------------------------------ >> readme.txt
+echo *                  Basic development settings                                * >> readme.txt
+echo ------------------------------------------------------------------------------ >> readme.txt
+echo * You have started lbDMF Develop the first time. Wait until wxWidgets        * >> readme.txt
+echo * got built if you opted for a build. If that is finished, reopen            * >> readme.txt
+echo * lbDMF Develop and type make.                                               * << readme.txt
+echo ------------------------------------------------------------------------------ >> readme.txt 
+echo * If you don't have opted for building wxWigets, the library and MinGW must  * >> readme.txt
+echo * be installed manually. Folders for that look respectively like this:       * >> readme.txt
+echo * C:\lbDMF\Develop\wxwin\wx (wx is the base folder for wxWidgets)            * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\MinGW (MinGW is the base for the compiler stuff)    * >> readme.txt
+echo *                                                                            * << readme.txt
+echo * Also install the lbDMF Build tools at the same place as the source code.   * << readme.txt
+echo ------------------------------------------------------------------------------ >> readme.txt 
+echo * If installation and building is finished, type wxWrapper and enjoy running * << readme.txt
+echo * the lbDMF Manager prototype (default login: user, password: TestUser)      * << readme.txt
+echo ------------------------------------------------------------------------------ >> readme.txt 
+echo * Important note: If you have chosen to install in another location,         * >> readme.txt
+echo * update the watcomenv.bat file environment variables DEVLW, BASE, BASE_MAKE * >> readme.txt
+echo * and DEVROOT_MAKE_BASE respectively                                         * >> readme.txt
+echo ------------------------------------------------------------------------------ >> readme.txt 
+echo * Download the latest documentation and follow the modeling quickstart.      * >> readme.txt 
+echo ------------------------------------------------------------------------------ >> readme.txt 
 start notepad readme.txt
 exit
 
