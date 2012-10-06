@@ -566,7 +566,13 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 		   "Otherwise, you currently work in a local initial database version.\n\n"
 		   "And you are automatically logged in as an 'administrator'.\n\n"
 		   "For security considerations please change the password for\n"
-		   "your user account, wich is currently the default 'user'.");
+		   "your user account, wich is currently the default 'user'\n\n."
+
+		   "Known issues: The prototype doesn't cope with empty tables when using\n"
+		   "Sqlite. To overcome this, use a Sqlite database browser to setup sample data.\n"
+		   "Using a properly set up ODBC database (tested is PostgreSQL), no problems are\n"
+		   "known."
+		   );
 
 	// While the plugin get's initialized meta->load() must have been called to enable the following two functions.
 	meta->setUserName("user");
