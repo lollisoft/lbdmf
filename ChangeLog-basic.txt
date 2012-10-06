@@ -1,109 +1,578 @@
+2012-10-06 21:15  lollisoft
+
+	* buildwxWidgets_MinGW.bat: Changed download link for binary build
+	  tools.
+
+2012-10-06 19:56  lollisoft
+
+	* watcomenv.bat: Moved the known issues section at the bottom.
+
+2012-10-06 19:52  lollisoft
+
+	* dist.iss: Added also the icon to the desktop symbol.
+
+2012-10-06 16:33  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Changed line breaks.
+
+2012-10-06 16:08  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Fixed typo.
+
+2012-10-06 16:06  lollisoft
+
+	* Test/GUI/wxWrapper/: splash.png, Inkscape Icons/Splash
+	  Screen.svg: Changed version in splash screen
+
+2012-10-06 15:49  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed release name
+
+2012-10-06 12:53  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/128002,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/128002.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/CDKatalog.prj,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp: Fixed CDKatalog related
+	  bugs. Added known issues about the applivation to be unable to cope
+	  with empty Sqlite tables.
+
+2012-10-06 12:47  lollisoft
+
+	* watcomenv.bat: Added known issues to the initial startup text.
+
+2012-10-06 12:47  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Added known issues to the initial startup dialog.
+
+2012-10-06 10:44  lollisoft
+
+	* dist.iss: Added an icon.
+
+2012-10-06 10:41  lollisoft
+
+	* watcomenv.bat: Changed the initial startup documentation.
+
+2012-10-06 06:41  lollisoft
+
+	* Plugins/: DatabaseForm/lbDatabasePanel.cpp,
+	  DatabaseLayerGateway/lbDB.cpp: Fixed NULL pointer issue when an
+	  invalid model is used.
+
+2012-10-05 09:09  lollisoft
+
+	* bin-buildtools-dist.iss: Added missing files.
+
+2012-10-05 09:08  lollisoft
+
+	* watcomenv.bat, BaseDevelopment/Makefile: Moved deployment
+	  specific stuff to environment file.
+
+2012-10-05 05:21  lollisoft
+
+	* bin-buildtools-dist.iss: Replaced old build tools with newer ones
+	  that will be usable on Windows 7.
+
+2012-10-03 23:03  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Recursive include bugfix.
+
+2012-10-03 22:56  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  BaseDevelopment/Makefile, make/STD_MAKE, make/makefile.template,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/lbXSLTTransformer/makefile.module,
+	  RegressionTests/Basetypes/makefile.module,
+	  RegressionTests/ContainerTest/makefile.module,
+	  RegressionTests/Database/makefile.module,
+	  RegressionTests/Database/DatabaseLayerWrapperTest/makefile.module,
+	  RegressionTests/Database/FKTest/makefile.module,
+	  RegressionTests/Database/Plain-ODBC-Test/makefile.module,
+	  RegressionTests/Database/Plain-ODBC-Test-Blob/makefile.module,
+	  RegressionTests/Database/Plain-ODBC-Test-Refresh/makefile.module,
+	  RegressionTests/Events/makefile.module,
+	  RegressionTests/Memory/makefile.module,
+	  RegressionTests/MetaApplication/makefile.module,
+	  RegressionTests/Parameter/makefile.module,
+	  RegressionTests/PluginByInterfaceAndNamespace/makefile.module,
+	  RegressionTests/PluginTest/makefile.module,
+	  RegressionTests/PluginTranslationsModel/makefile.module,
+	  RegressionTests/TestGDB/makefile.module,
+	  RegressionTests/TestUMLImport/makefile.module,
+	  RegressionTests/Translation/makefile.module,
+	  RegressionTests/UAPLeakTest/makefile.module,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module,
+	  Test/GUI/wxWrapper/makefile.module,
+	  Test/GUI/wxWrapperDLL/makefile.module: Modified make system to
+	  work with current cygwin make and with MinGW compilers together.
+
+2012-10-01 07:45  lollisoft
+
+	* make/STD_MAKE: No debug.
+
+2012-10-01 07:43  lollisoft
+
+	* make/makefile.configure: Added build rules for tvision using
+	  MinGW
+
+2012-09-22 05:50  lollisoft
+
+	* RegressionTests/makefile: Added a test for the GDB issue (can't
+	  debug if mixed versions are used: gdb / gcc - most probably).
+
+2012-09-22 05:47  lollisoft
+
+	* make/STD_MAKE: Reverted Mac OS X target cross compile settings.
+
+2012-09-20 04:49  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog.xmi:
+	  Initial
+
+2012-09-16 17:17  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Fixed storing and
+	  restoring properties.
+
+2012-09-16 09:50  lollisoft
+
+	* interfaces/lbInterfaces.h: Added chaining dispatcher interface -
+	  not ready.
+
+2012-09-16 09:36  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Added a
+	  todo for chaining dispatcher functionality.
+
+2012-09-16 09:22  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Corrected
+	  property handling and restore features.
+
+2012-09-16 09:16  lollisoft
+
+	* Test/GUI/wxWrapper/dynamic.cpp: Moved call to plugin installers
+	  after creation of the splash screen.
+
+2012-09-12 07:04  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Added code to
+	  save and restore overwrite database flag. But not tested yet.
+
+2012-09-01 22:37  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
+	  Corrected delete rule creation.
+
+2012-09-01 22:15  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
+	  Repeatable import works at least for actions when code gets
+	  generated.
+
+2012-08-31 13:25  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
+	  BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  include/lbConfigHook.h, interfaces/lbInterfaces-sub-classes.h,
+	  interfaces/lbInterfaces.h, make/STD_MAKE,
+	  UnitTests/Actions/Actions.cpp,
+	  UnitTests/TestMainUseCases/TestMainUseCases.cpp,
+	  UnitTests/UIWrapper/UIWrapper.cpp, UnitTests/include/UIWrapper.h:
+	  Changes to replace UAP with template based smart pointer.
+
+2012-08-31 13:22  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  xmi1.2_2SQLScript.xsl, xmi1_2_2_lbDMFSQLScript.xsl: Corrected XMI
+	  1.2 import
+
+2012-08-16 08:36  lollisoft
+
+	* RegressionTests/Basetypes/Basetypes.cpp: Changes to test against
+	  Windows GDB debugging problems.
+
+2012-08-16 08:32  lollisoft
+
+	* RegressionTests/TestGDB/TestGDB.cpp: Added testd for typeinfo
+	  without rtti.
+
+2012-08-12 13:19  lollisoft
+
+	* RegressionTests/TestGDB/: TestGDB.cpp, UAPDecl.h, UAPTempl.h:
+	  Rewritten the UAP macro and using a template at least works for
+	  debugger.  The hard stuff comes when rewriting the real code.
+
+2012-08-12 09:37  lollisoft
+
+	* RegressionTests/TestGDB/TestGDB.cpp: In the previous version a
+	  break point could be set at DoTest(), but not at main.  In the
+	  current version breaking both, DoTest() and Dotest1() points to the
+	  same line of code. Why is that happen?
+
+2012-08-12 09:06  lollisoft
+
+	* RegressionTests/: TestGDB/TestGDB.cpp, TestGDB/makefile.module,
+	  makefile: Small test application to test debugging my kind of
+	  code.
+
+2012-08-12 09:04  lollisoft
+
+	* make/STD_MAKE: Corrected build settings for wxWidgets library
+	  usage.
+
+2012-08-02 07:44  lollisoft
+
+	* UnitTests/Actions/Actions.cpp: These tests are passing.
+
+2012-08-02 07:26  lollisoft
+
+	* UnitTests/BaseDevelopment/BaseDevelopment.cpp: Activating those
+	  tests that currently are passing.  Helps to concentrate on failing
+	  tests stepwise.
+
+2012-08-02 07:19  lollisoft
+
+	* UnitTests/: TestMainUseCases/TestMainUseCases.cpp,
+	  TestMainUseCases/makefile.module, makefile, Actions/Actions.cpp:
+	  Copied code from actions tests to main use case tests. Currently two
+	  tests work together, because the metaapplication will not get
+	  uninitialized.
+
+2012-08-01 08:04  lollisoft
+
+	* UnitTests/Actions/Actions.cpp: UnitTest
+	  test_Delegated_Action_lbDMFXslt_selfexporting passed.  This is a
+	  sample for testing the main application functionality (usecases).
+
+2012-07-31 08:58  lollisoft
+
+	* UnitTests/: makefile, Actions/Actions.cpp, Actions/UIWrapper.cpp,
+	  Actions/UIWrapper.h, Actions/makefile.module,
+	  BaseDevelopment/BaseDevelopment.cpp, UIWrapper/UIWrapper.cpp,
+	  UIWrapper/makefile.module, include/UIWrapper.h: Added a new
+	  module that contains the UIWrapper.  Deactivated most tests to start
+	  creating tests by my primary use cases.
+
+2012-07-29 10:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  xmi1.2_2SQLScript.xsl, xmi1_2_2_lbDMFSQLScript.xsl: Added chenges
+	  to detect database system properties from application settings.
+	  (Taken from HEAD).
+
+2012-07-22 09:44  lollisoft
+
+	* TODO, BaseDevelopment/Makefile,
+	  BaseDevelopment/lbDB/makefile.module,
+	  BaseDevelopment/lbclasses/makefile.module, make/STD_MAKE: Any
+	  changes before CVS backup
+
+2012-06-17 07:53  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMFCS/:
+	  ProxyMakefileModule.xsl, ServerMakefileModule.xsl: Removed all
+	  remaining $(OSX_ARCH) occurences in makefile.module files and
+	  templates.
+
+2012-06-17 07:51  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/makefile.module:
+	  Removed all remaining $(OSX_ARCH) occurences in makefile.module
+	  files.
+
+2012-06-17 07:36  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  BaseDevelopment/lbDB/makefile.module,
+	  BaseDevelopment/lbHook/makefile.module,
+	  BaseDevelopment/lbMetaApplication/makefile.module,
+	  BaseDevelopment/lbModule/makefile.module,
+	  BaseDevelopment/lbPluginManager/makefile.module,
+	  BaseDevelopment/lbWorkflowEngine/makefile.module,
+	  BaseDevelopment/lbclasses/makefile.module,
+	  BaseDevelopment/lbcs/makefile.module,
+	  BaseDevelopment/lbtransfer/makefile.module, make/STD_MAKE,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/TestPlugin/makefile.module,
+	  Plugins/UserFeedback/makefile.module,
+	  Plugins/VisitorOperations/makefile.module,
+	  Plugins/lbBasicEventHandlers/makefile.module,
+	  Plugins/lbDMFDataModel/makefile.module,
+	  Plugins/lbFileOperationsPlugin/makefile.module,
+	  Plugins/lbXSLTTransformer/makefile.module,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module,
+	  UnitTests/Actions/makefile.module,
+	  UnitTests/BaseDevelopment/makefile.module,
+	  UnitTests/MiniCppUnit/makefile.module: Moving $(OSX_ARCH) to a
+	  more centralized place to reach all targets the project contains and
+	  builds.
+
+2012-06-16 12:19  lollisoft
+
+	* vendor/mkmk/mkmk.cpp: Added commands to reference libraries
+	  within the application bundle.
+
+2012-06-14 07:12  lollisoft
+
+	* lbdmf.spec: Changed to new release.
+
+2012-06-10 17:52  lollisoft
+
+	* make_src_dist.bat: Added a touch command to ensure the source
+	  distribution will recreate the makefiles.
+
+2012-06-10 17:46  lollisoft
+
+	* installMinGW.bat, wxWidgets-config.gcc, buildwxWidgets_MinGW.bat,
+	  dist.iss: Successful build of the source installation package on
+	  a VirtualBox instance (WindowsXP).
+
+2012-06-10 08:10  lollisoft
+
+	* buildwxWidgets_MinGW.bat: Do not clean a previous build.
+	  Deactivated path to bakefile.
+
+2012-06-09 23:56  lollisoft
+
+	* bindist.iss, make_src_dist.bat, watcomenv.bat,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  Plugins/lbXSLTTransformer/makefile.module: More include path
+	  changes relating to libxml2 version update.
+
+2012-06-09 19:56  lollisoft
+
+	* dist.iss, BaseDevelopment/Makefile: Integrated new version of
+	  libxml2 and it's build task. Modified other build tasks.
+
+2012-06-09 06:54  lollisoft
+
+	* buildwxWidgets_MinGW.bat: Initial wxWidgets MinGW build script.
+
+2012-06-08 19:51  lollisoft
+
+	* BaseDevelopment/Makefile: Building libxml2 with gcc, no longer
+	  with OW. Need to add support switching compiler when required.
+
+2012-06-08 19:49  lollisoft
+
+	* interfaces/lbInterfaces.h: Updated doxygen documentation.
+
+2012-06-08 19:42  lollisoft
+
+	* make_src_dist.bat: Added lbWorkflowEngine into source
+	  distribution.
+
+2012-06-08 19:38  lollisoft
+
+	* bindist.iss, docdist.iss, bin-buildtools-dist.iss, dist.iss:
+	  Changed version number for next release.
+
+2012-06-07 19:29  lollisoft
+
+	* binsample.bat,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
+	  BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbModule/lbModule.cpp,
+	  BaseDevelopment/lbclasses/lbobject.cpp,
+	  BaseDevelopment/lbclasses/lbthread.cpp,
+	  BaseDevelopment/lbcs/appcs.cpp, include/lbConfigHook.h,
+	  interfaces/lbInterfaces.h, Plugins/DatabaseForm/lbDatabaseForm.h,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.h,
+	  Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  UnitTests/Actions/Actions.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp: Fixed application
+	  exit issues. The dispatcher and event manager was instantiated
+	  earlyer than a string or any other class from lbclasses.  The error
+	  was hidden a long time when logging was active. This also
+	  instantiated a class (logger) within lbclasses that 'fixed' the
+	  order of module dependencies.
+
+2012-06-05 21:15  lollisoft
+
+	* BaseDevelopment/: lbHook/lbHook.cpp, lbclasses/lbInputStream.cpp,
+	  lbclasses/lbOutputStream.cpp, lbclasses/misc.cpp: PATH_MAX issue.
+	  Added some more logging on Windows part when unloading a module.
+
+2012-06-05 20:18  lollisoft
+
+	* bindist.iss,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Try to
+	  get rid of DLL unload behaviour. Test installation application
+	  hangs.
+
+2012-06-05 13:54  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  interfaces/lbInterfaces.h, Test/GUI/wxWrapper/dynamic.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Got a working application
+	  initialization and unload. Also autologin works when loading
+	  application model from file.
+
+2012-06-03 18:41  lollisoft
+
+	* BaseDevelopment/lbclasses/lbInputStream.cpp,
+	  BaseDevelopment/lbclasses/lbOutputStream.cpp,
+	  BaseDevelopment/lbclasses/misc.cpp,
+	  Plugins/DatabaseForm/lbDatabaseForm.h,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/lbFileOperationsPlugin/lbCopyFile.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Blob/test.cpp,
+	  RegressionTests/Database/Plain-ODBC-Test-Refresh/test.cpp,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module,
+	  Test/GUI/wxWrapper/makefile.module,
+	  Test/GUI/wxWrapperDLL/makefile.module, include/lbConfigHook.h,
+	  interfaces/lbInterfaces-sub-transfer.h,
+	  interfaces/lbInterfaces.h, make/STD_MAKE: Got my code compiled
+	  against current MinGW.  Changed wxWidgets library from monotithig to
+	  multi.
+
+2012-06-02 19:17  lollisoft
+
+	* BaseDevelopment/lbHook/lbHook.cpp: Namespaces lbCopyFile. Fixed
+	  calling convention for usage with current MinGW.
+
+2012-06-02 19:16  lollisoft
+
+	* include/lbConfigHook.h: Namespaces lbCopyFile. Fixed macro
+	  declaration for usage with current MinGW.
+
+2012-06-02 19:13  lollisoft
+
+	* make/STD_MAKE: Used absolute path into my local develoment drive
+	  Q. This did not work on any installation other than my box.
+
+2012-05-31 07:44  lollisoft
+
+	* mkchangelog.sh, BaseDevelopment/lbHook/lbHook.cpp,
+	  include/lbConfigHook.h,
+	  Plugins/lbFileOperationsPlugin/lbCopyFile.cpp,
+	  Plugins/lbFileOperationsPlugin/lbCopyFile.h: Added (empty)
+	  CopyFile function in lbHook.  Added new plugin using CopyFile to
+	  enable this functionality in activities.
+
+2012-05-19 07:47  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl,
+	  BaseDevelopment/Makefile, BaseDevelopment/lbModule/lbModule.cpp,
+	  Database/lbDMF-Sqlite-SystemDB.sql,
+	  Plugins/UserFeedback/makefile.module: New workflow module
+	  integrated into the build. SQL scripts tewaked.
+
+2012-05-12 23:20  lollisoft
+
+	* BaseDevelopment/lbWorkflowEngine/: lbFormularActions.cpp,
+	  lbFormularActions.h, lbSqlQueryAction.h: Code cleanup and made
+	  formularactions loadable at runtime.
+
+2012-05-12 23:16  lollisoft
+
+	* interfaces/lbInterfaces-sub-classes.h: Added documentation to
+	  string interface.
+
+2012-05-12 23:15  lollisoft
+
+	* interfaces/lbInterfaces.h: Added two new interfaces to improve
+	  and refactor activities.
+
+2012-05-12 16:25  lollisoft
+
+	* Plugins/DatabaseForm/: lbDatabaseForm.h,
+	  lbDetailMasterAction.cpp, lbMasterDetailAction.cpp,
+	  lbOpAqueAction.cpp, lbSqlQueryAction.cpp: Deactivated mor code
+	  within these files before really deleting the files.
+
+2012-05-12 13:50  lollisoft
+
+	* Plugins/DatabaseForm/: Actions.cpp, formularactions.cpp,
+	  lbDatabaseForm.h, lbDatabasePanel.cpp,
+	  lbDatabaseTableViewPanel.cpp: Changes to get the refactored
+	  activity classes from lbWorkflowEngine.
+
+2012-05-12 08:29  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLApplicationTables.xsl:
+	  Copied from version 1.14 into branch as these changes were published
+	  in last release.
+
+2012-05-12 06:40  lollisoft
+
+	* BaseDevelopment/lbWorkflowEngine/: lbActionTransitionLogic.cpp,
+	  lbActionTransitionLogic.h, lbActions.cpp, lbActions.h,
+	  lbDetailMasterAction.cpp, lbDetailMasterAction.h,
+	  lbFormularActions.cpp, lbFormularActions.h,
+	  lbMasterDetailAction.cpp, lbMasterDetailAction.h,
+	  lbOpAqueAction.cpp, lbOpAqueAction.h, lbSqlQueryAction.cpp,
+	  lbSqlQueryAction.h, makefile.module: Moved action implementation
+	  out of DatabaseForm plugin and replaced wx related code with my own.
+
+2012-05-08 08:45  lollisoft
+
+	* Plugins/DatabaseForm/Actions.cpp: Bugfix for new transition
+	  support.
+
+2012-05-01 07:08  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Added some more log messages.
+
+2012-04-26 06:00  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  importUML-ApplicationDB.xsl, importUML-SystemDB.xsl: Fixed the
+	  import issue on Sqlite.
+
+2012-04-23 08:39  lollisoft
+
+	* bindist.iss: Added user feedback plugin.
+
+2012-04-22 23:34  lollisoft
+
+	* ChangeLog-basic.txt: Branch release changes for
+	  lbDMF-1.0.4-stable-rc2.
+
 2012-04-22 20:05  lollisoft
 
 	* Test/GUI/wxWrapper/postlink-mac.sh: Changed release name.
-
-2012-04-22 19:13  lollisoft
-
-	* Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Splash
-	  Screen changes.
-
-2012-04-22 19:07  lollisoft
-
-	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
-	  interfaces/lbInterfaces.h: Changed version numbers.
-
-2012-04-22 19:05  lollisoft
-
-	* Test/GUI/wxWrapper/splash.png, BaseDevelopment/splash.png: Copied
-	  version new version into the branch for the branch release.
-
-2012-04-22 18:53  lollisoft
-
-	* make_src_dist.sh: Corrected checkout to match the branch.
-
-2012-04-22 18:19  lollisoft
-
-	* lbdmf.spec: Changed revision number.
-
-2012-04-22 17:38  lollisoft
-
-	* Plugins/makefile: Added osx and other targets to compile that I
-	  have forgotten.
-
-2012-04-22 12:35  lollisoft
-
-	* Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Copied
-	  version 1.17 into the branch for the branch release.
-
-2012-04-22 12:13  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Copied version 1.13 into
-	  the branch for the branch release.
-
-2012-04-21 13:00  lollisoft
-
-	* interfaces/lbInterfaces-sub-ui.h,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Added support methods for a
-	  new user feedback plugin.
-
-2012-04-21 12:55  lollisoft
-
-	* Plugins/UserFeedback/lbUserFeedback.cpp: Corrected menu texts.
-
-2012-04-21 12:44  lollisoft
-
-	* Plugins/UserFeedback/lbUserFeedback.cpp: Changed menu text to
-	  match those in the toolbars.
-
-2012-04-21 12:30  lollisoft
-
-	* Plugins/: UserFeedback/lbUserFeedback.cpp,
-	  UserFeedback/lbUserFeedback.h, UserFeedback/makefile.module,
-	  UserFeedback/plugin.cpp, makefile: A new user feedback plugin.
-
-2012-04-21 12:01  lollisoft
-
-	* Test/GUI/wxWrapper/toolbarimages/: nicubunu_Smiley_Cool.png,
-	  nicubunu_Smiley_Puzzled.png: Added icons for user feedback.
-
-2012-04-21 11:49  lollisoft
-
-	* Test/GUI/wxWrapper/toolbarimages/: nicubunu_Smiley_Happy.png,
-	  nicubunu_Smiley_Sad.png: Added icons for user feedback.
-
-2012-04-11 08:27  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/:
-	  128002, 128002.diagram, CDKatalog.prj: Enhanced the model that
-	  now gets also properly generated with DevExpress SCSF template.
-
-2012-04-09 19:48  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/:
-	  128002, 128002.diagram, CDKatalog.prj, generation_settings,
-	  stereotypes: Added new tables into the sample.
-
-2012-04-09 19:46  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/: App/lbDynApp.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp: Added new
-	  settings to support database backend type setting per application
-	  and system.
-
-2012-01-01 15:43  lollisoft
-
-	* Plugins/lbDMFDataModel/lbFormularsModel.cpp: Fixed the field
-	  order swapping bug.
-
-2011-12-10 07:30  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
-	  128130, 128258.diagram, 133250.diagram: Minor changes like page
-	  size.
 
