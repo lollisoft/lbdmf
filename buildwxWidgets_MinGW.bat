@@ -21,8 +21,8 @@ echo IF NOT EXIST %DRIVE%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
 echo call installMinGW.bat >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DRIVE%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
-echo wget http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc2/lbDMF-BinbuildTools-1.0.4-stable-rc2.exe/download >> doBuildWx.bat
-echo lbDMF-BinbuildTools-1.0.4-stable-rc2.exe /SILENT /DIR=%DRIVE%\lbDMF >> doBuildWx.bat
+echo wget http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc3/lbDMF-BinbuildTools-1.0.4-stable-rc3.exe/download >> doBuildWx.bat
+echo lbDMF-BinbuildTools-1.0.4-stable-rc3.exe /SILENT /DIR=%DRIVE%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
 echo wget http://sourceforge.net/projects/wxwindows/files/2.8.12/wxMSW-2.8.12-Setup.exe/download >> doBuildWx.bat
