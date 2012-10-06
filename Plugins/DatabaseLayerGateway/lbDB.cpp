@@ -405,7 +405,7 @@ public:
 
 	/** \brief Create meta information.
 	 */
-	void						LB_STDCALL createMetaInformation();
+	lbErrCodes					LB_STDCALL createMetaInformation();
 
 	/** \brief Destroy meta information.
 	 */
@@ -1427,7 +1427,7 @@ lbDatabaseLayerQuery::~lbDatabaseLayerQuery() {
 }
 
 
-void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	lbErrCodes err = ERR_NONE;
 	int count = 0;
 	// Be sure
@@ -1472,7 +1472,14 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 
 				// Store the number of primary keys for the table of the first column.
 				/// \todo Joins and multible tables not supported yet.
-				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
+				wxString tableCheck = metadata->GetTableForColumn(1);
+				
+				if (tableCheck == "") {
+					_LOGERROR << "Error: lbDatabaseLayerQuery::createMetaInformation() can not retrieve table for first column (" << column.c_str() << ", SQL: " << szSql << ")" LOG_
+					return ERR_DB_QUERYFAILED;
+				}
+				
+				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(tableCheck);
 
 				wxString table = metadata->GetTableForColumn(column);
 				*tablename = table.c_str();
@@ -1510,6 +1517,7 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	if (getColumns() != count) {
 		_LOG << "Error: Number of reported columns not equal to expected!" LOG_
 	}
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
@@ -1856,7 +1864,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		if (theResult != NULL) {
 			_CL_VERBOSE << "Have got a resultset for '" << szSql << "'" LOG_
 			_dataFetched = false;
-			createMetaInformation();
+			if (createMetaInformation() != ERR_NONE) {
+				_LOGERROR << "Error: Could not create meta information for query: " << szSql LOG_
+				return ERR_DB_QUERYFAILED;
+			}
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
 
