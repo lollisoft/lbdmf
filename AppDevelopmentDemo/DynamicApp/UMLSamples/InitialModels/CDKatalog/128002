@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 5
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -79,18 +79,35 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128130 // Musiker
-	relation_ref 128002 // Musiker
+      classrelation 128130 // (Name)
+	relation_ref 128002 // Name
       end
 
-      attribute 134914 "Beschreibung"
-	private explicit_type "string"
+      attribute 135042 "ReleaseDatum"
+	private explicit_type "date"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 141570 // (Titel)
+	relation 141186 o--- name "Titel"
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141570 // (Titel)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141698 // (Titel)
+      end
+
+      classrelation 148354 // Type
+	relation_ref 147714 // Type
       end
     end
 
@@ -108,7 +125,6 @@ ${inlines}
       
       attribute 128258 "Name"
 	private explicit_type "string"
-	stereotype "visible"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -127,20 +143,102 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128002 // (Musiker)
-	relation 128002 o--- name "Musiker"
+      classrelation 128002 // (Name)
+	relation 128002 o--- name "Name"
 	  stereotype "masterdetail_action"
 	  a role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128002 // (Musiker)
+	    classrelation_ref 128002 // (Name)
 	  b role_name "" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128130 // Musiker
+	    classrelation_ref 128130 // (Name)
       end
 
-      attribute 135042 "Alter"
+      classrelation 141314 // (Name)
+	relation 141058 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141314 // (Name)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141442 // (Name)
+      end
+
+      attribute 141826 "Gruppe"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 134658 "Media"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 134914 "Type"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 148226 // (Type)
+	relation 147714 o--- name "Type"
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148226 // (Type)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148354 // Type
+      end
+    end
+
+    class 141186 "Track"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 141570 "Titel"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 141698 "Laenge"
 	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -148,6 +246,14 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 141442 // (Name)
+	relation_ref 141058 // Name
+      end
+
+      classrelation 141698 // (Titel)
+	relation_ref 141186 // Titel
       end
     end
   end
