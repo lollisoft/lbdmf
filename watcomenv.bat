@@ -4,11 +4,6 @@ set DEVROOT=%%DEVROOT%%
 echo --------------------------------------------------------------------------------- >> readme.txt
 echo *                        Basic development settings                             * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt
-echo * Known issues: The prototype doesn't cope with empty tables when using         * >> readme.txt
-echo * Sqlite. To overcome this, use a Sqlite database browser to setup sample data. * >> readme.txt
-echo * Using a properly set up ODBC database (tested is PostgreSQL), no problems are * >> readme.txt
-echo * known.                                                                        * >> readme.txt
-echo --------------------------------------------------------------------------------- >> readme.txt
 echo * You have started lbDMF Develop the first time. Wait until wxWidgets           * >> readme.txt
 echo * got built if you opted for a build. If that is finished, reopen               * >> readme.txt
 echo * lbDMF Develop and type make.                                                  * >> readme.txt
@@ -28,6 +23,11 @@ echo * update the watcomenv.bat file environment variables DEVLW, BASE, BASE_MAK
 echo * and DEVROOT_MAKE_BASE respectively                                            * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * Download the latest documentation and follow the modeling quickstart.         * >> readme.txt 
+echo --------------------------------------------------------------------------------- >> readme.txt
+echo * KNOWN ISSUES: The prototype doesn't cope with empty tables when using         * >> readme.txt
+echo * Sqlite. To overcome this, use a Sqlite database browser to setup sample data. * >> readme.txt
+echo * Using a properly set up ODBC database (tested is PostgreSQL), no problems are * >> readme.txt
+echo * known.                                                                        * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 start notepad readme.txt
 exit
