@@ -6,6 +6,6 @@
 <xsl:variable name="targetdatabase" select="'Sqlite'"/><!-- Mapped from system database backend in the properties window group UML import settings -->
 <xsl:variable name="execute_droprules" select="'no'"/>
 <xsl:variable name="database_name" select="'CDKatalog'"/>
-<xsl:variable name="database_user" select="'dba'"/>
-<xsl:variable name="database_pass" select="'trainres'"/>
+<xsl:variable name="database_user" select="'&lt;dbuser&gt;'"/>
+<xsl:variable name="database_pass" select="'&lt;dbpass&gt;'"/>
 </xsl:stylesheet>
