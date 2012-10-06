@@ -802,7 +802,11 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
 
-				ReplacementColumnQuery->query(buffer);
+				if (ReplacementColumnQuery->query(buffer) != ERR_NONE) {
+					_LOGERROR << "Error: Query to get combobox filled has hailed. (" << buffer << ")" LOG_
+					meta->msgBox("Error", "Filling combobox failed. Check your model.");
+					return;
+				}
 
 				lbErrCodes DBerr = ReplacementColumnQuery->first();
 

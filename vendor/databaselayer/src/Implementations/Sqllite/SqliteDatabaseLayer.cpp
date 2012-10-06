@@ -776,6 +776,9 @@ wxArrayString SqliteDatabaseLayer::GetColumns(const wxString& table)
     wxCharBuffer tableNameBuffer = ConvertToUnicodeStream(table);
     wxString query = wxString::Format(_("SELECT * FROM '%s' LIMIT 0;"), table.c_str());
     pResult = ExecuteQuery(query);
+	  
+	if (pResult == NULL) return returnArray;
+	  
     pResult->Next();
     pMetaData = pResult->GetMetaData();
 
