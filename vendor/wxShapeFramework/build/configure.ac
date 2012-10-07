@@ -1,6 +1,6 @@
 # ======================================================================================
 # Author: Francesco Montorsi
-# RCS-ID: $Id: configure.ac,v 1.1 2011/04/20 20:00:02 lollisoft Exp $
+# RCS-ID: $Id: configure.ac,v 1.1.2.1 2012/10/07 16:06:26 lollisoft Exp $
 #
 # A basic "configure.ac" for a wxCode component.
 # See
@@ -15,7 +15,7 @@
 # NOTE: you'll want to replace the first string in [] brackets with the name of your
 #       component, the second string with its version and third one with your mail
 #       (so that users will be able to contact you in case they have problems)
-AC_INIT([wxsf], [1.11.0 beta], [michal.bliznak@tiscali.cz])
+AC_INIT([wxsf], [1.12.1 beta], [michal.bliznak@tiscali.cz])
 AC_CONFIG_AUX_DIR(build)        # this is needed, don't touch it
 
 # ENABLES/DISABLES THE DEBUG MODE FOR THIS CONFIGURE SCRIPT
