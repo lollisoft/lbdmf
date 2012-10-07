@@ -2,7 +2,7 @@
 
 # Author:        Francesco Montorsi
 # Creation date: 4/8/2005
-# RCS-ID:        $Id: changeroot.sh,v 1.1 2011/04/20 20:00:02 lollisoft Exp $
+# RCS-ID:        $Id: changeroot.sh,v 1.1.2.1 2012/10/07 16:06:26 lollisoft Exp $
 # Purpose:       changes the user of a CVS local repository altering all 'Root' files.
 #                The old 'Root' files are renamed as 'OldRoot'.
 #
