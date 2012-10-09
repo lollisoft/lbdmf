@@ -1896,10 +1896,14 @@ _CL_LOG << "Connect event handlers" LOG_
 		sampleQuery->first();
 		lbDBRead();
 	} else {
+		/*
 		deactivateActionButtons();
 		nextButton->Disable();
 		lastButton->Disable();
 		deleteButton->Disable();
+		*/
+		lbDBAdd(NULL);
+		//buttonAdd->Enable();
 	}
 	_created = true;
 
