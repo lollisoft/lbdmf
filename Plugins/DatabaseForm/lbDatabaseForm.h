@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.4 $
+ * $Revision: 1.71.2.5 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.4 2012/06/07 17:29:55 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.5 2012/10/10 06:55:25 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.5  2012/10/10 06:55:25  lollisoft
+ * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
+ *
  * Revision 1.71.2.4  2012/06/07 17:29:55  lollisoft
  * Fixed application exit issues. The dispatcher and event manager was
  * instantiated earlyer than a string or any other class from lbclasses.
@@ -801,7 +804,9 @@ public:
 	void		LB_STDCALL show() { Show (TRUE); };
 	void		LB_STDCALL destroy();
 
-/*...sfrom DatabaseForm interface:8:*/
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+	
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
@@ -809,8 +814,6 @@ public:
 	void LB_STDCALL setFilter(const char* filter);
 
 	const char* LB_STDCALL getControlValue(const char* name);
-
-/*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 
@@ -1114,7 +1117,10 @@ public:
 		_created = false;
 	};
 
-/*...sfrom DatabaseForm interface:8:*/
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+
+	/*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
@@ -1460,6 +1466,9 @@ public:
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+		
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
@@ -1650,6 +1659,9 @@ public:
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 	
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+
 	/*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 	

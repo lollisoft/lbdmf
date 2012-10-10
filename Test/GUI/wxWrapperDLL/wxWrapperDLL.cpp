@@ -1078,9 +1078,9 @@ lbErrCodes LB_STDCALL lb_wxGUI::openWebPage(const char* pagename, const char* ur
 
 }
 
-lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) {
-        lbErrCodes err = ERR_NONE;
-
+lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formName) {
+		lbErrCodes err = ERR_NONE;
+	
         _LOG << "lb_wxGUI::addCustomDBForm() called with '" << formName << "'." LOG_
 
         if (frame->isPanelUsage()) {
@@ -1101,7 +1101,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
                 }
         }
 
-        UAP(lb_I_FixedDatabaseForm, _dialog)
+        UAP(lb_I_Form, _dialog)
 
         if (forms == NULL) {
                 REQUEST(getModuleInstance(), lb_I_Container, forms)
@@ -1118,7 +1118,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
         uk = forms->getElement(&key);
 
         if (uk != NULL) {
-                QI(uk, lb_I_FixedDatabaseForm, _dialog)
+                QI(uk, lb_I_Form, _dialog)
         }
 
         if (_dialog.getPtr() == NULL) {
@@ -1136,7 +1136,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
                 uk = forms->getElement(&key);
 
                 if (uk != NULL) {
-                        QI(uk, lb_I_FixedDatabaseForm, _dialog)
+                        QI(uk, lb_I_Form, _dialog)
                 }
 
                 //_dialog->setName(formName);
