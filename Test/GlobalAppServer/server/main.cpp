@@ -14,7 +14,8 @@ void handler(int sig) {
 	exit(0);
 }
 
-BOOL CtrlHandler( DWORD fdwCtrlType ) 
+#ifdef WINDOWS
+bool CtrlHandler( DWORD fdwCtrlType ) 
 { 
   switch( fdwCtrlType ) 
   { 
@@ -57,7 +58,7 @@ BOOL CtrlHandler( DWORD fdwCtrlType )
       return FALSE; 
   } 
 } 
- 
+#endif
 
 
 
@@ -78,7 +79,9 @@ int main(int argc, char** argv) {
 		*/
 #ifndef WINDOWS
 		signal(SIGINT, handler);
+#ifndef OSX
 		signal(SIGBREAK, handler);
+#endif
 		signal(SIGTERM, handler);
 #endif
 

@@ -42,3 +42,5 @@ public:
 	virtual void LB_STDCALL registerBackend(char* backend, char* server) = 0;
 };
 		
+UAPDECL(lb_I_ApplicationBus)
+UAPDECL(lb_I_ApplicationBus_ProtocolTarget)

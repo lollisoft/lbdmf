@@ -21,3 +21,5 @@ public:
       
 };
 		
+UAPDECL(lb_I_FaxNumber)
+UAPDECL(lb_I_FaxNumber_ProtocolTarget)
