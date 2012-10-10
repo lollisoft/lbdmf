@@ -95,8 +95,6 @@ extern "C" {
 #include <wx/file.h>
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...sdoc:0:*/
@@ -226,6 +224,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	return ERR_NONE;
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseDialog::init() {
+	
+}
+
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	char prefix[100] = "";
@@ -481,8 +484,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

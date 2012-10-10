@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.1 $
+ * $Revision: 1.43.2.2 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.1 2012/04/21 11:00:00 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.2 2012/10/10 06:55:26 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.2  2012/10/10 06:55:26  lollisoft
+ * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
+ *
  * Revision 1.43.2.1  2012/04/21 11:00:00  lollisoft
  * Added support methods for a new user feedback plugin.
  *
@@ -537,7 +540,7 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
-	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName);
+	virtual lb_I_Form* LB_STDCALL addCustomForm(lb_I_Form* form, const char* formName);
 
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass);
 

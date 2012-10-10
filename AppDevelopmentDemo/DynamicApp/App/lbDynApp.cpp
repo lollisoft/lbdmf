@@ -139,7 +139,7 @@ public:
          * or by using plugin technology and simply let the plugin let do this work. Therefore
          * the plugin must either be activated before reading in the configuration.
          */
-        lbErrCodes LB_STDCALL getCustomDBForm(lb_I_Unknown* uk);
+        lbErrCodes LB_STDCALL getCustomForm(lb_I_Unknown* uk);
 
         /** \brief Print a report over menu/toolbar entry.
          * A report may be based on a form, thus it's query is the data source.
@@ -152,7 +152,7 @@ public:
         /** \brief Use dynamic versions again.
          *
          */
-        lbErrCodes LB_STDCALL resetCustomDBFormsToDynamic(lb_I_Unknown* uk);
+        lbErrCodes LB_STDCALL resetCustomFormsToDynamic(lb_I_Unknown* uk);
 
         /** \brief Load database model.
          * Must be used before exporting to XML.
@@ -1753,7 +1753,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
         return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
+///\todo To support basic lb_I_Form typed windows, add getCustomForm.
+
+/* Am I able to include a dynamic version of database form representation using diagrams?
+ *
+ * Eventual features are:
+ *
+ * Display all elements in the query as 'classes' with their actual data omitted, but also display
+ * the type information. That way I would see, for sample, all forms, or all forms per application.
+ * The focus to a current application can be shown in the title or otherwise in diagram form.
+ *
+ * The extra function for this could also be an interceptor to handle new interfaces before the intercepted
+ * handler. Thus the extensibility for any kind of custom forms is available by design.
+ */
+
+lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
 
@@ -1768,7 +1782,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
         metaapp->setStatusText("Info", "Loading custom database formular ...");
 
         if (gui != NULL) {
-                UAP(lb_I_FixedDatabaseForm, dbForm)
+                UAP(lb_I_Form, Form)
                 UAP(lb_I_Integer, eventID)
 
                 QI(uk, lb_I_Integer, eventID)
@@ -1801,7 +1815,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                 typ->setData(forms->getTyp());
 
                 *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
-                *sql += "FixedDBForm_";
+                *sql += "FixedForm_";
                 *sql += forms->getName();
                 *sql += "'";
 
@@ -1822,35 +1836,31 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                                         _interface = q->getAsString(3);
                                         namesp = q->getAsString(4);
 
-                                        if (*_interface == "lb_I_FixedDatabaseForm") {
-                                                UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-                                                UAP(lb_I_Plugin, pl)
-                                                UAP(lb_I_Unknown, ukPl)
+										UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+										UAP(lb_I_Plugin, pl)
+										UAP(lb_I_Unknown, ukPl)
 
-                                                pl = PM->getFirstMatchingPlugin("lb_I_FixedDatabaseForm", namesp->charrep());
+										pl = PM->getFirstMatchingPlugin(_interface->charrep(), namesp->charrep());
 
-                                                if (pl == NULL) {
-                                                        return ERR_NONE;
-                                                }
+										if (pl == NULL) {
+											_LOGERROR << "Error: Could not find a fixed form as plugin to be opened." LOG_
+											return ERR_NONE;
+										}
+									
+										if (pl != NULL) {
+											ukPl = pl->getImplementation();
+										
+											QI(ukPl, lb_I_Form, Form)
 
-                                                if (pl != NULL) {
-                                                        ukPl = pl->getImplementation();
+											Form = gui->addCustomForm(Form.getPtr(), forms->getName());
 
-                                                        QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
-
-                                                                dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
-
-                                                        if (dbForm != NULL) {
-                                                                dbForm->show();
-                                                                metaapp->setStatusText("Info", "Database form created. Ready.");
-                                                        } else {
-                                                                metaapp->setStatusText("Info", "Error: Database form was not loaded by the GUI !");
-                                                        }
-                                                }
-                                        } else {
-                                                metaapp->setStatusText("Info", "Error: Unsupported interface !");
-                                                // Unsupported
-                                        }
+											if (Form != NULL) {
+												Form->show();
+												metaapp->setStatusText("Info", "Fixed form created. Ready.");
+											} else {
+												metaapp->setStatusText("Info", "Error: Fixed form was not loaded by the GUI !");
+											}
+										}
                                 }
                         } else {
                                 _LOG << "Error: Query to get target formular failed. (" << sql->charrep() << ")" LOG_
@@ -1862,7 +1872,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
         return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomFormsToDynamic(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
         if(systemdatabase == NULL) {
@@ -3191,9 +3201,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
 
         *editMenu = _trans("&Edit");
         *menuEntry = _trans("Set all forms back to dynamic");
-        eman->registerEvent("resetCustomDBFormsToDynamic", unused);
-        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomDBFormsToDynamic, "resetCustomDBFormsToDynamic");
-        metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomDBFormsToDynamic", "");
+        eman->registerEvent("resetCustomFormsToDynamic", unused);
+        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomFormsToDynamic, "resetCustomFormsToDynamic");
+        metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomFormsToDynamic", "");
 
         *editMenu = _trans("&Edit");
         *menuEntry = _trans("Execute SQL query");
@@ -3561,10 +3571,11 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                                         eman->registerEvent(EventName->charrep(), unused);
 
+									///\todo: To implement a third type (lb_I_Form), use a switch statement.
                                         if (Typ->getData() == 1L)
                                                 dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
                                         else
-                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
 
                                         metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
@@ -3657,7 +3668,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 if (Typ->getData() == 1L)
                                         dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
                                 else
-                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
 
                                 metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
@@ -3700,7 +3711,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                                 if (Typ->getData() == 1L)
                                                         dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
                                                 else
-                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
 
                                                 metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
