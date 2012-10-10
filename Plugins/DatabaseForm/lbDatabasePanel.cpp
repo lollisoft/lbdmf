@@ -1257,6 +1257,10 @@ bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(const char* sql,
 	return result;
 }
 
+void LB_STDCALL lbDatabasePanel::init() {
+	
+}
+
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	lbErrCodes err = ERR_NONE;

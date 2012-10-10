@@ -35,19 +35,6 @@
 class lb_I_ColumnBinding;
 class lb_I_MVC_View;
 
-// Table Module pattern may be the best here.
-class lb_I_TableModule : public lb_I_ExtensibleObject
-{
-public:
-	virtual long		LB_STDCALL get_id() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
 /*...sclass lb_I_Query:0:*/
 /**
  * \brief A SQL Query interface.
@@ -136,13 +123,13 @@ public:
 	 */
 	virtual void LB_STDCALL skipPeeking() = 0;
 
-	/**
-	 * \brief Set the SQL query.
-	 *
-	 * Set the SQL query string to be used.
-	 */
-	virtual lbErrCodes LB_STDCALL query(const char* q, bool bind = true) = 0;
-		
+        /**
+         * \brief Set the SQL query.
+         *
+         * Set the SQL query string to be used.
+         */
+        virtual lbErrCodes LB_STDCALL query(const char* q, bool bind = true) = 0;
+
 	/**
 	 * \brief Bind columns, if not yet have bound.
 	 *
@@ -1144,11 +1131,6 @@ class lb_I_FixedDatabaseForm :
 	public lb_I_Form
 	{
 public:
-	/** \brief Initialize the form.
-	 *
-	 */
-	virtual void LB_STDCALL init() = 0;
-
 	/**
 	 * \brief Get the used SQL query.
 	 *

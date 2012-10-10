@@ -1321,6 +1321,10 @@ void lbDatabaseTableViewPanel::OnCellValueChanged( wxGridEvent& ev ) {
     ev.Skip();
 }
 
+void LB_STDCALL lbDatabaseTableViewPanel::init() {
+	
+}
+
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	lbErrCodes err = ERR_NONE;
