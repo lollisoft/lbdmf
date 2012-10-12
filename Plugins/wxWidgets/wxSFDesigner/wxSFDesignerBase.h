@@ -8,7 +8,7 @@
 
 class wxSFDesignerBase :
 	public lb_I_Form,
-	public wxPanel {
+	public wxSFShapeCanvas {
 public:
 	wxSFDesignerBase();
 	virtual ~wxSFDesignerBase();
@@ -57,7 +57,7 @@ public:
 
 	void OnDispatch(wxCommandEvent& event);
 	void OnImageButtonClick(wxCommandEvent& event);
-	void OnMouseMove(wxMouseEvent& evt);
+	//void OnMouseMove(wxMouseEvent& evt);
 
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
@@ -100,6 +100,8 @@ public:
 	char* base_formName;
 	char* formName;
 	char* untranslated_formName;
+		
+	wxSFDiagramManager* currentDiagramManager;
 };
 
 #endif //PLUGIN_wxSFDesigner
