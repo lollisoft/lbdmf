@@ -61,6 +61,10 @@ extern "C" {
 #include <wx/wizard.h>
 #include <wx/image.h>
 
+
+#include <wx/wxsf/wxShapeFramework.h>
+
+
 // Include base class definition
 #include <wxSFDesignerBase.h>
 

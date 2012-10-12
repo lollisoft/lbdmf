@@ -63,6 +63,9 @@ extern "C" {
 #include <wx/wizard.h>
 #include <wx/image.h>
 
+
+#include <wx/wxsf/wxShapeFramework.h>
+
 // Include base class definition
 #include <wxSFDesignerBase.h>
 #include <wxSFDesignerAnwendungenImplementation.h> 
@@ -120,6 +123,16 @@ void LB_STDCALL Anwendungen::init() {
 	sprintf(prefix, "%p", this);
 
 	_LOG << "Anwendungen::init() called." LOG_
+	
+	currentDiagramManager = new wxSFDiagramManager();
+	SetDiagramManager(currentDiagramManager);	
+	
+	AddStyle(sfsGRID_USE);
+	AddStyle(sfsGRID_SHOW);
+	// distances between grid lines can be modified via following function:
+	SetGridLineMult(10);
+	// grid line style can be set as follows:
+	SetGridStyle(wxSHORT_DASH);
 }
 
 class lbPluginAnwendungen : public lb_I_PluginImpl {
