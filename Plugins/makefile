@@ -103,6 +103,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
@@ -156,6 +157,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+wxWidgets/wxSFDesigner: dummy
+	$(MAKE) -C $@ -e MODULE=lbwxSFDesigner -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 UserFeedback: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
