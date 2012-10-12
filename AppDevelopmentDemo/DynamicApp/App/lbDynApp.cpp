@@ -1814,10 +1814,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
 
                 typ->setData(forms->getTyp());
 
-                *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
-                *sql += "FixedForm_";
-                *sql += forms->getName();
-                *sql += "'";
+                *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where ID = ";
+				*sql += typ->charrep();
 
                 _LOG << "Query for custom database formular (" << forms->getName() << "): " << sql->charrep() LOG_
 
