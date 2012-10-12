@@ -96,7 +96,7 @@ lb_I_Unknown* LB_STDCALL wxSFDesignerBase::getUnknown() {
 }
 
 void LB_STDCALL wxSFDesignerBase::windowIsClosing(lb_I_Window* w) {
-
+	_LOG << "wxSFDesignerBase::windowIsClosing() called." LOG_
 }
 
 char*	   LB_STDCALL wxSFDesignerBase::getFormName() { 
@@ -156,6 +156,15 @@ void wxSFDesignerBase::OnDispatch(wxCommandEvent& event ) {
                 }
                 break;
         }
+}
+
+void LB_STDCALL wxSFDesignerBase::destroy()
+{
+	if (_created) {
+		_LOG << "lbDatabasePanel::destroy() Destroying '" << base_formName << "'" LOG_
+		Destroy();
+	}
+	_created = false;
 }
 
 void LB_STDCALL wxSFDesignerBase::create(int parentId) {
