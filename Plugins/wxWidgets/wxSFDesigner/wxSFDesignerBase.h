@@ -30,10 +30,8 @@ public:
 	int  LB_STDCALL getId() { return GetId(); }
 
 	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() {
-	    //Destroy();
-	};
-	
+	void LB_STDCALL destroy();
+		
 	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);

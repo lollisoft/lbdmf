@@ -68,11 +68,11 @@ extern "C" {
 #include <wxSFDesignerAnwendungenImplementation.h> 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(Anwendungen)
-        ADD_INTERFACE(lb_I_Form)
+	ADD_INTERFACE(lb_I_Window)
+	ADD_INTERFACE(lb_I_Form)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOfAnwendungen, Anwendungen)
-
 
 lbErrCodes LB_STDCALL Anwendungen::setData(lb_I_Unknown* uk) {
 		lbErrCodes err = ERR_NONE;
