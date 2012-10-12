@@ -1,0 +1,164 @@
+# Define your module based settings
+
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#			 Ginsterweg 4
+#
+#			 65760 Eschborn (germany)
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+MOD_INCL_CPP=$(STD_INCL_CPP)
+OBJDEP=
+SLASH=/
+WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
+	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
+	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+	
+MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += $(MINGWLIBS_WXGUI)
+MINGWLIBS += -lwxWrapperDLL 
+MINGWLIBS += -llbHook
+
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
+
+LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
+	libr $(WATCOMLIBS)$(SLASH)user32.lib \
+	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comdlg32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comctl32.lib \
+	libr $(WATCOMLIBS)$(SLASH)advapi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)shell32.lib \
+	libr $(WATCOMLIBS)$(SLASH)ole32.lib \
+	libr $(WATCOMLIBS)$(SLASH)oleaut32.lib \
+	libr $(WATCOMLIBS)$(SLASH)uuid.lib \
+	libr $(WATCOMLIBS)$(SLASH)rpcrt4.lib \
+	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
+	libr $(WATCOMLIBS)$(SLASH)winmm.lib
+
+
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT) /I $(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT) /NODEFAULT:MSVCRTD
+MODULE=wxwrapper
+APPVER=3.50 # 4.0
+CPU=i386
+LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
+/pdb:"$(OUTDIR)\$(MODULE).pdb" \
+/out:"$(OUTDIR)\$(MODULE).exe" \
+/INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
+endif
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include
+
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
+		
+C_DLLOPS= $(C_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
+
+CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
+		
+CPP_DLLOPS= $(CPP_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
+
+ifeq ($(MODE), _DEBUG)
+C_EXEOPS+= /D__WXDEBUG__
+C_DLLOPS+= /D__WXDEBUG__
+CPP_EXEOPS+= /D__WXDEBUG__
+CPP_DLLOPS+= /D__WXDEBUG__
+endif
+
+CPP_DLLOPS+= /DWXMAKINGDLL_WXRESIZEABLECONTROL
+
+		
+LINKFLAGS = $(L_EXEOPS)
+endif
+
+endif
+
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+endif    
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+L_OPS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` 
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=$(HOME)/lib/lbHook.so 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+endif    
+
+endif
