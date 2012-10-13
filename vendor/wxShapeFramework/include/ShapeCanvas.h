@@ -332,7 +332,7 @@ public:
 	 * \brief Snap shapes to canvas grid On/Off.
 	 * \param use TRUE if the grid should be used, otherwise FALSE.
 	 */
-	void UseGrid(bool use){m_Settings.m_fUseGrid = use;}
+.	void UseGrid(bool use){m_Settings.m_fUseGrid = use;}
 	/*! \brief Functions returns TRUE if the canvas grid is used. */
 	bool IsGridShown(){return m_Settings.m_fShowGrid;}
 	/*!
