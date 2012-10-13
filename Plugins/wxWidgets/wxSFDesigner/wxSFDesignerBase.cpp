@@ -60,6 +60,8 @@ extern "C" {
 
 #include <wx/wizard.h>
 #include <wx/image.h>
+#include <wx/textdlg.h>
+#include <wx/filename.h>
 
 
 #include <wx/wxsf/wxShapeFramework.h>
@@ -77,6 +79,8 @@ wxSFDesignerBase::wxSFDesignerBase()
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
+	
+	ToolMode = 0;
 }
 
 wxSFDesignerBase::~wxSFDesignerBase() {
@@ -103,6 +107,33 @@ void LB_STDCALL wxSFDesignerBase::windowIsClosing(lb_I_Window* w) {
 	_LOG << "wxSFDesignerBase::windowIsClosing() called." LOG_
 }
 
+lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher* dispatcher) {
+	char eventName[100] = "";
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev)
+
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+	
+	int temp;
+	
+	char* designermenu = strdup(_trans("&Anwendungsdesigner"));
+	
+	metaapp->addToolBar("Anwendungsdesigner");
+	
+	sprintf(eventName, "%pModeNone", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry(designermenu, "Select", eventName, "");
+	metaapp->addToolBarButton("Anwendungsdesigner", "Select", eventName, "mouse_cursor.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetSelectMode, eventName);
+	
+}
+
+
+lbErrCodes LB_STDCALL wxSFDesignerBase::lbSetSelectMode(lb_I_Unknown* uk) {
+	ToolMode = 0;
+	return ERR_NONE;
+}
+
 char*	   LB_STDCALL wxSFDesignerBase::getFormName() { 
 	return formName; 
 }
@@ -125,6 +156,157 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::addTextField(const char* name, int x, in
 
 lbErrCodes LB_STDCALL wxSFDesignerBase::addOwnerDrawn(const char* name, int x, int y, int w, int h) {
 	return ERR_NONE;
+}
+
+void wxSFDesignerBase::OnMouseMove(wxMouseEvent& event) {
+	wxSFShapeBase* pShape = GetShapeUnderCursor();
+
+	if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape)))
+		wxSFShapeCanvas::OnMouseMove(event);
+
+	if (pShape == NULL)
+		wxSFShapeCanvas::OnMouseMove(event);
+}
+
+void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
+{
+    wxSFShapeBase *pShape = NULL;
+	wxSFGridShape *pGrid = NULL;
+		
+	switch(ToolMode)
+	{
+		case 1:
+		{
+			pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFFlexGridShape), event.GetPosition(), sfDONT_SAVE_STATE);
+			if(pShape)
+			{
+			    pGrid = (wxSFGridShape*)pShape;
+
+				// set visual style
+			    pGrid->SetFill(*wxTRANSPARENT_BRUSH);
+			    pGrid->SetBorder(wxPen(*wxBLACK, 1, wxDOT));
+				pGrid->SetDimensions(2, 2);
+				pGrid->AcceptChild(wxT("All"));
+				pGrid->AcceptConnection(wxT("All"));
+                pGrid->AcceptSrcNeighbour(wxT("All"));
+                pGrid->AcceptTrgNeighbour(wxT("All"));
+				
+				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFBitmapShape), event.GetPosition(), sfDONT_SAVE_STATE);
+				
+				// create relative path
+				wxFileName path( "toolbarimages/kthememgr.png" );
+				path.MakeRelativeTo( wxGetCwd() );
+				
+				// create image from BMP file
+				((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
+				
+				// set shape policy
+				pShape->AcceptConnection(wxT("All"));
+				pShape->AcceptSrcNeighbour(wxT("All"));
+				pShape->AcceptTrgNeighbour(wxT("All"));
+				
+				pGrid->InsertToGrid(0, 0, pShape);
+
+				pShape = NULL;
+				
+				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFEditTextShape), event.GetPosition(), sfDONT_SAVE_STATE);
+				
+				if(pShape)
+                {
+					((wxSFTextShape*)pShape)->SetText("Name der Anwendung");
+					
+                    // set alignment
+                    pShape->SetVAlign(wxSFShapeBase::valignTOP);
+                    pShape->SetHAlign(wxSFShapeBase::halignCENTER);
+                    pShape->SetVBorder(10);
+					
+                    // set shapes policy
+                    pShape->AcceptConnection(wxT("All"));
+                    pShape->AcceptSrcNeighbour(wxT("All"));
+                    pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
+                    pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
+
+					pGrid->InsertToGrid(1, 1, pShape);
+				}
+				pGrid->Update();
+			}
+		}
+			break;
+		case 2:
+		{
+			pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFFlexGridShape), event.GetPosition(), sfDONT_SAVE_STATE);
+			if(pShape)
+			{
+			    pGrid = (wxSFGridShape*)pShape;
+				
+				// set visual style
+			    pGrid->SetFill(*wxTRANSPARENT_BRUSH);
+			    pGrid->SetBorder(wxPen(*wxBLACK, 1, wxDOT));
+				pGrid->SetDimensions(2, 2);
+				pGrid->AcceptChild(wxT("All"));
+				pGrid->AcceptConnection(wxT("All"));
+                pGrid->AcceptSrcNeighbour(wxT("All"));
+                pGrid->AcceptTrgNeighbour(wxT("All"));
+				
+				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFBitmapShape), event.GetPosition(), sfDONT_SAVE_STATE);
+				
+				// create relative path
+				wxFileName path( "toolbarimages/kpersonalizer.png" );
+				path.MakeRelativeTo( wxGetCwd() );
+				
+				// create image from BMP file
+				((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
+				
+				// set shape policy
+				pShape->AcceptConnection(wxT("All"));
+				pShape->AcceptSrcNeighbour(wxT("All"));
+				pShape->AcceptTrgNeighbour(wxT("All"));
+				
+				pGrid->InsertToGrid(0, 0, pShape);
+				
+				pShape = NULL;
+				
+				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFEditTextShape), event.GetPosition(), sfDONT_SAVE_STATE);
+				
+				if(pShape)
+                {
+					((wxSFTextShape*)pShape)->SetText("Name des Formulars");
+					
+                    // set alignment
+                    pShape->SetVAlign(wxSFShapeBase::valignTOP);
+                    pShape->SetHAlign(wxSFShapeBase::halignCENTER);
+                    pShape->SetVBorder(10);
+					
+                    // set shapes policy
+                    pShape->AcceptConnection(wxT("All"));
+                    pShape->AcceptSrcNeighbour(wxT("All"));
+                    pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
+                    pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
+					
+					pGrid->InsertToGrid(1, 1, pShape);
+                }
+				pGrid->Update();
+			}
+		}
+			break;
+		default:
+			// do default actions
+			wxSFShapeBase* pShape = GetShapeUnderCursor();
+			
+			if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape)))
+				wxSFShapeCanvas::OnLeftDown(event);
+			
+			if (pShape == NULL)
+				wxSFShapeCanvas::OnLeftDown(event);
+	}
+	
+	if( pShape )
+	{
+	    SaveCanvasState();
+
+        pShape->Refresh();
+		pGrid->Refresh();
+	}
 }
 
 void wxSFDesignerBase::OnDispatch(wxCommandEvent& event ) {

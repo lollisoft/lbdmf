@@ -59,6 +59,28 @@ public:
 	void OnImageButtonClick(wxCommandEvent& event);
 	//void OnMouseMove(wxMouseEvent& evt);
 
+
+	// Call this to enable basic event handler setup
+	lbErrCodes LB_STDCALL registerBaseEventHandler(lb_I_Dispatcher* dispatcher);
+
+	lbErrCodes LB_STDCALL lbSetSelectMode(lb_I_Unknown* uk);
+		
+		
+/*		
+	lbErrCodes LB_STDCALL lbShapeAdd(lb_I_Unknown* uk);
+		
+	lbErrCodes LB_STDCALL lbShapeRemove(lb_I_Unknown* uk);
+		
+	lbErrCodes LB_STDCALL lbShapeSelect(lb_I_Unknown* uk);
+*/
+		
+	// public virtual functions
+	virtual void OnLeftDown(wxMouseEvent& event);
+	virtual void OnMouseMove(wxMouseEvent& event);
+	
+		
+		
+		
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 	UAP(lb_I_String, SQLString)
@@ -100,6 +122,9 @@ public:
 	char* base_formName;
 	char* formName;
 	char* untranslated_formName;
+		
+		
+	int ToolMode;	
 		
 	wxSFDiagramManager* currentDiagramManager;
 };

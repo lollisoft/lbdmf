@@ -92,7 +92,7 @@ Anwendungen::Anwendungen()
 {
 	_CL_LOG << "Anwendungen::Anwendungen() called." LOG_
 	formName = strdup("Anwendungen");
-}
+	}
 
 Anwendungen::~Anwendungen() {
 	_CL_LOG << "Anwendungen::~Anwendungen() called." LOG_
@@ -101,14 +101,57 @@ Anwendungen::~Anwendungen() {
 lbErrCodes LB_STDCALL Anwendungen::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
 	char eventName[100] = "";
-	
-	//sprintf(eventName, "%pDatabaseFirst", this);
-	//dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbDBFirst, eventName);
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev)
 
+	dispatcher->setEventManager(ev.getPtr());
+
+	registerBaseEventHandler(dispatcher);
+	
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+
+	int temp;
+
+	char* designermenu = strdup(_trans("&Anwendungsdesigner"));
+	
+	metaapp->addToolBar("Anwendungsdesigner");
+	
+	sprintf(eventName, "%pModeApplication", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry(designermenu, "Anwendungen designen", eventName, "");
+	metaapp->addToolBarButton("Anwendungsdesigner", "Anwendung", eventName, "kthememgr.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetAnwendungenMode, eventName);
+	
+	
+	sprintf(eventName, "%pModeFormular", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry(designermenu, "Formulare designen", eventName, "");
+	metaapp->addToolBarButton("Anwendungsdesigner", "Formular", eventName, "kpersonalizer.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareMode, eventName);
 	
 	return ERR_NONE;
 }
 
+
+lbErrCodes LB_STDCALL Anwendungen::lbSetAnwendungenMode(lb_I_Unknown* uk) {
+	ToolMode = 1;
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL Anwendungen::lbSetFormulareMode(lb_I_Unknown* uk) {
+	ToolMode = 2;
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL Anwendungen::lbMouseDown(lb_I_Unknown* uk) {
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL Anwendungen::lbMouseUp(lb_I_Unknown* uk) {
+	
+	return ERR_NONE;
+}
 
 
 // Formular init routine
@@ -126,6 +169,12 @@ void LB_STDCALL Anwendungen::init() {
 	
 	currentDiagramManager = new wxSFDiagramManager();
 	SetDiagramManager(currentDiagramManager);	
+
+	GetDiagramManager()->ClearAcceptedShapes();
+	GetDiagramManager()->AcceptShape(wxT("All"));
+	GetHistoryManager().SetMode(wxSFCanvasHistory::histUSE_SERIALIZATION);
+	SaveCanvasState();
+	
 	
 	AddStyle(sfsGRID_USE);
 	AddStyle(sfsGRID_SHOW);
@@ -133,6 +182,10 @@ void LB_STDCALL Anwendungen::init() {
 	SetGridLineMult(10);
 	// grid line style can be set as follows:
 	SetGridStyle(wxSHORT_DASH);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	
+	registerEventHandler(*&dispatcher);
 }
 
 class lbPluginAnwendungen : public lb_I_PluginImpl {
