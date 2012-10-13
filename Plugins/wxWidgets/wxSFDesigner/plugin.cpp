@@ -156,10 +156,10 @@ void LB_STDCALL lbPluginModulewxSFDesignerBase::install() {
 		if (err == ERR_DB_NODATA) {
 			err = q->first();
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				_LOG << "No modification to dynamic formular 'Anwendungen' definition needed." LOG_
+				_LOG << "No modification to dynamic formular 'Anwendungsdesigner' definition needed." LOG_
 			} else {
 				// Install custom form
-				_LOG << "Modification to dynamic formular 'Anwendungen' definition needed." LOG_
+				_LOGALWAYS << "Modification to dynamic formular 'Anwendungsdesigner' definition needed." LOG_
 				q->query("insert into formulartypen (namespace, beschreibung, handlerinterface) values ('FixedForm_SFDesigner_Anwendungen', 'Designer for applications and related forms', 'lb_I_Form')");
 				
 				q = database->getQuery("lbDMF", 0);
@@ -169,22 +169,34 @@ void LB_STDCALL lbPluginModulewxSFDesignerBase::install() {
 					UAP(lb_I_String, ID)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 					err = q->first();
-					_LOG << "Try to get new type ID for 'Anwendungen'." LOG_
+					_LOGALWAYS << "Try to add designer for 'Anwendungen'." LOG_
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-						ID = q->getAsString(1);
+						ID = q->getAsString(2);
 						
-						*SQL = "update formulare set typ = ";
-						*SQL += ID->charrep();
-						*SQL += " where name = 'Anwendungen' and anwendungid = 1";
+						*SQL = "insert into formulare ('name', 'menuname', 'menuhilfe', 'eventname', 'toolbarimage', 'typ', 'anwendungid') values (";
+						*SQL += "'Designer - Anwendungen', 'Anwendungsdesigner', 'DSL Anwendungsdesigner', 'designAnwendungen', 'newApplication.png', (select ID from formulartypen where namespace = 'FixedForm_SFDesigner_Anwendungen'), (select ID from 'Anwendungen' where name = 'lbDMF Manager')";
+						*SQL += ")";
 						
-						_LOG << "Install custom formular 'Anwendungen'." LOG_
+						_LOG << "Install custom formular 'DesignAnwendungen'." LOG_
 						
-						q = database->getQuery("lbDMF", 0);
-						q->skipFKCollecting();
+						err = q->query(SQL->charrep());
 						
-						if (q->query(SQL->charrep()) != ERR_NONE) {
-							_LOG << "Installation of custom formular 'Anwendungen' failed." LOG_
+						if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+							_LOGALWAYS << "Installation of custom formular 'Anwendungen' failed." LOG_
+						} else {
+							*SQL = "insert into anwendungen_formulare ('anwendungid', 'formularid') values (";
+							*SQL += "(select ID from anwendungen where name = 'lbDMF Manager'), (select ID from formulare where name = 'Designer - Anwendungen')";
+							*SQL += ")";
+							
+							_LOGALWAYS << "Install custom formular association." LOG_
+							
+							err = q->query(SQL->charrep());
+							
+							if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+								_LOGALWAYS << "Installation of custom formular 'DesignAnwendungen' failed." LOG_
+							}
 						}
+
 					} else {
 						_LOG << "Failed to re-read the ID for the currently inserted formular type ('Anwendungen') ! Query: " << sql->charrep() LOG_
 					}

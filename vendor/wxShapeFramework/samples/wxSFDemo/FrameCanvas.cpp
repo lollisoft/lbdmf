@@ -98,7 +98,7 @@ void FrameCanvas::OnLeftDown(wxMouseEvent& event)
 	{
 	case MainFrm::modeBITMAP:
 		{
-			wxFileDialog dlg(this, wxT("Load bitmap image..."), wxGetCwd(), wxT(""), wxT("BMP Files (*.bmp)|*.bmp"), wxOPEN  | wxFD_FILE_MUST_EXIST);
+			wxFileDialog dlg(this, wxT("Load bitmap image..."), wxGetCwd(), wxT(""), wxT("BMP Files (*.bmp)|*.bmp|PNG Files (*.png)|*.png"), wxOPEN  | wxFD_FILE_MUST_EXIST);
 
 			if(dlg.ShowModal() == wxID_OK)
 			{
@@ -110,7 +110,7 @@ void FrameCanvas::OnLeftDown(wxMouseEvent& event)
 				    path.MakeRelativeTo( wxGetCwd() );
 
                     // create image from BMP file
-					((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_BMP );
+					((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
 
 					// set shape policy
 					pShape->AcceptConnection(wxT("All"));
