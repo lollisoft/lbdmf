@@ -162,6 +162,71 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::addOwnerDrawn(const char* name, int x, i
 	return ERR_NONE;
 }
 
+wxSFShapeBase* LB_STDCALL wxSFDesignerBase::createModelElement(wxSFGridShape *&pGrid, wxMouseEvent& event, const char* Text, const char* iconName) {
+    wxSFShapeBase *pShape = NULL;
+
+	// Used for subclassing
+	if (pGrid == NULL)
+		pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFFlexGridShape), event.GetPosition(), sfDONT_SAVE_STATE);
+	else 
+		pShape = pGrid;
+	
+	if(pShape)
+	{
+		pGrid = (wxSFGridShape*)pShape;
+		
+		// set visual style
+		pGrid->SetFill(*wxTRANSPARENT_BRUSH);
+		pGrid->SetBorder(wxPen(*wxBLACK, 1, wxDOT));
+		pGrid->SetDimensions(2, 2);
+		pGrid->AcceptChild(wxT("All"));
+		pGrid->AcceptConnection(wxT("All"));
+		pGrid->AcceptSrcNeighbour(wxT("All"));
+		pGrid->AcceptTrgNeighbour(wxT("All"));
+		
+		pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFBitmapShape), event.GetPosition(), sfDONT_SAVE_STATE);
+		
+		// create relative path
+		wxFileName path( iconName );
+		path.MakeRelativeTo( wxGetCwd() );
+		
+		// create image from BMP file
+		((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
+		
+		// set shape policy
+		pShape->AcceptConnection(wxT("All"));
+		pShape->AcceptSrcNeighbour(wxT("All"));
+		pShape->AcceptTrgNeighbour(wxT("All"));
+		
+		pGrid->InsertToGrid(0, 0, pShape);
+		
+		pShape = NULL;
+		
+		pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFEditTextShape), event.GetPosition(), sfDONT_SAVE_STATE);
+		
+		if(pShape)
+		{
+			((wxSFTextShape*)pShape)->SetText(Text);
+			
+			// set alignment
+			pShape->SetVAlign(wxSFShapeBase::valignTOP);
+			pShape->SetHAlign(wxSFShapeBase::halignCENTER);
+			pShape->SetVBorder(10);
+			
+			// set shapes policy
+			pShape->AcceptConnection(wxT("All"));
+			pShape->AcceptSrcNeighbour(wxT("All"));
+			pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
+			pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
+			
+			pGrid->InsertToGrid(1, 1, pShape);
+		}
+		pGrid->Update();
+	}
+	return pShape;
+}
+
+
 void wxSFDesignerBase::OnMouseMove(wxMouseEvent& event) {
 	wxSFShapeBase* pShape = GetShapeUnderCursor();
 
@@ -181,116 +246,26 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 	{
 		case 1:
 		{
-			pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFFlexGridShape), event.GetPosition(), sfDONT_SAVE_STATE);
-			if(pShape)
-			{
-			    pGrid = (wxSFGridShape*)pShape;
-
-				// set visual style
-			    pGrid->SetFill(*wxTRANSPARENT_BRUSH);
-			    pGrid->SetBorder(wxPen(*wxBLACK, 1, wxDOT));
-				pGrid->SetDimensions(2, 2);
-				pGrid->AcceptChild(wxT("All"));
-				pGrid->AcceptConnection(wxT("All"));
-                pGrid->AcceptSrcNeighbour(wxT("All"));
-                pGrid->AcceptTrgNeighbour(wxT("All"));
-				
-				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFBitmapShape), event.GetPosition(), sfDONT_SAVE_STATE);
-				
-				// create relative path
-				wxFileName path( "toolbarimages/kthememgr.png" );
-				path.MakeRelativeTo( wxGetCwd() );
-				
-				// create image from BMP file
-				((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
-				
-				// set shape policy
-				pShape->AcceptConnection(wxT("All"));
-				pShape->AcceptSrcNeighbour(wxT("All"));
-				pShape->AcceptTrgNeighbour(wxT("All"));
-				
-				pGrid->InsertToGrid(0, 0, pShape);
-
-				pShape = NULL;
-				
-				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFEditTextShape), event.GetPosition(), sfDONT_SAVE_STATE);
-				
-				if(pShape)
-                {
-					((wxSFTextShape*)pShape)->SetText("Name der Anwendung");
-					
-                    // set alignment
-                    pShape->SetVAlign(wxSFShapeBase::valignTOP);
-                    pShape->SetHAlign(wxSFShapeBase::halignCENTER);
-                    pShape->SetVBorder(10);
-					
-                    // set shapes policy
-                    pShape->AcceptConnection(wxT("All"));
-                    pShape->AcceptSrcNeighbour(wxT("All"));
-                    pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
-                    pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
-
-					pGrid->InsertToGrid(1, 1, pShape);
-				}
-				pGrid->Update();
-			}
+			pShape = createModelElement(pGrid, event, "Name der Anwendung", "toolbarimages/kthememgr.png");
 		}
 			break;
 		case 2:
 		{
-			pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFFlexGridShape), event.GetPosition(), sfDONT_SAVE_STATE);
-			if(pShape)
-			{
-			    pGrid = (wxSFGridShape*)pShape;
-				
-				// set visual style
-			    pGrid->SetFill(*wxTRANSPARENT_BRUSH);
-			    pGrid->SetBorder(wxPen(*wxBLACK, 1, wxDOT));
-				pGrid->SetDimensions(2, 2);
-				pGrid->AcceptChild(wxT("All"));
-				pGrid->AcceptConnection(wxT("All"));
-                pGrid->AcceptSrcNeighbour(wxT("All"));
-                pGrid->AcceptTrgNeighbour(wxT("All"));
-				
-				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFBitmapShape), event.GetPosition(), sfDONT_SAVE_STATE);
-				
-				// create relative path
-				wxFileName path( "toolbarimages/kpersonalizer.png" );
-				path.MakeRelativeTo( wxGetCwd() );
-				
-				// create image from BMP file
-				((wxSFBitmapShape*)pShape)->CreateFromFile( path.GetFullPath(), wxBITMAP_TYPE_PNG );
-				
-				// set shape policy
-				pShape->AcceptConnection(wxT("All"));
-				pShape->AcceptSrcNeighbour(wxT("All"));
-				pShape->AcceptTrgNeighbour(wxT("All"));
-				
-				pGrid->InsertToGrid(0, 0, pShape);
-				
-				pShape = NULL;
-				
-				pShape = GetDiagramManager()->AddShape(CLASSINFO(wxSFEditTextShape), event.GetPosition(), sfDONT_SAVE_STATE);
-				
-				if(pShape)
-                {
-					((wxSFTextShape*)pShape)->SetText("Name des Formulars");
-					
-                    // set alignment
-                    pShape->SetVAlign(wxSFShapeBase::valignTOP);
-                    pShape->SetHAlign(wxSFShapeBase::halignCENTER);
-                    pShape->SetVBorder(10);
-					
-                    // set shapes policy
-                    pShape->AcceptConnection(wxT("All"));
-                    pShape->AcceptSrcNeighbour(wxT("All"));
-                    pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
-                    pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
-					
-					pGrid->InsertToGrid(1, 1, pShape);
-                }
-				pGrid->Update();
-			}
+			pShape = createModelElement(pGrid, event, "Name des Formulars", "toolbarimages/kpersonalizer.png");
+		}
+			break;
+		case 3:
+		{
+            if(GetMode() == modeREADY)
+            {
+                StartInteractiveConnection(CLASSINFO(wxSFLineShape), event.GetPosition());
+				// interactive connection can be created also from existing object for example
+				// if some connection properties should be modified before the connection creation
+				// process is started:
+                //StartInteractiveConnection(new wxSFLineShape(), event.GetPosition());
+            }
+            else
+                wxSFShapeCanvas::OnLeftDown(event);
 		}
 			break;
 		default:

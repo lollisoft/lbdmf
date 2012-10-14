@@ -127,6 +127,13 @@ lbErrCodes LB_STDCALL Anwendungen::registerEventHandler(lb_I_Dispatcher* dispatc
 	metaapp->addToolBarButton(toolgroupname->charrep(), "Neues Formular", eventName, "kpersonalizer.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareMode, eventName);
 	
+	
+	sprintf(eventName, "%pModeConnect", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Verbinde Formular mit Anwendung", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Verbinde Formular mit Anwendung", eventName, "app_formulare.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareConnectMode, eventName);
+	
 	return ERR_NONE;
 }
 
@@ -138,6 +145,11 @@ lbErrCodes LB_STDCALL Anwendungen::lbSetAnwendungenMode(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL Anwendungen::lbSetFormulareMode(lb_I_Unknown* uk) {
 	ToolMode = 2;
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL Anwendungen::lbSetFormulareConnectMode(lb_I_Unknown* uk) {
+	ToolMode = 3;
 	return ERR_NONE;
 }
 
