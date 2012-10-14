@@ -174,7 +174,7 @@ void LB_STDCALL lbPluginModulewxSFDesignerBase::install() {
 						ID = q->getAsString(2);
 						
 						*SQL = "insert into formulare ('name', 'menuname', 'menuhilfe', 'eventname', 'toolbarimage', 'typ', 'anwendungid') values (";
-						*SQL += "'Designer - Anwendungen', 'Anwendungsdesigner', 'DSL Anwendungsdesigner', 'designAnwendungen', 'newApplication.png', (select ID from formulartypen where namespace = 'FixedForm_SFDesigner_Anwendungen'), (select ID from 'Anwendungen' where name = 'lbDMF Manager')";
+						*SQL += "'Designer (Anwendungen)', 'Anwendungsdesigner', 'DSL Anwendungsdesigner', 'designAnwendungen', 'newApplication.png', (select ID from formulartypen where namespace = 'FixedForm_SFDesigner_Anwendungen'), (select ID from 'Anwendungen' where name = 'lbDMF Manager')";
 						*SQL += ")";
 						
 						_LOG << "Install custom formular 'DesignAnwendungen'." LOG_
@@ -185,7 +185,7 @@ void LB_STDCALL lbPluginModulewxSFDesignerBase::install() {
 							_LOGALWAYS << "Installation of custom formular 'Anwendungen' failed." LOG_
 						} else {
 							*SQL = "insert into anwendungen_formulare ('anwendungid', 'formularid') values (";
-							*SQL += "(select ID from anwendungen where name = 'lbDMF Manager'), (select ID from formulare where name = 'Designer - Anwendungen')";
+							*SQL += "(select ID from anwendungen where name = 'lbDMF Manager'), (select ID from formulare where name = 'Designer (Anwendungen)')";
 							*SQL += ")";
 							
 							_LOGALWAYS << "Install custom formular association." LOG_
