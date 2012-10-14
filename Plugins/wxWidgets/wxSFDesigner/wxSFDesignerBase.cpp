@@ -241,7 +241,7 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 {
     wxSFShapeBase *pShape = NULL;
 	wxSFGridShape *pGrid = NULL;
-		
+	
 	switch(ToolMode)
 	{
 		case 1:
@@ -256,16 +256,21 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 			break;
 		case 3:
 		{
-            if(GetMode() == modeREADY)
-            {
-                StartInteractiveConnection(CLASSINFO(wxSFLineShape), event.GetPosition());
-				// interactive connection can be created also from existing object for example
-				// if some connection properties should be modified before the connection creation
-				// process is started:
-                //StartInteractiveConnection(new wxSFLineShape(), event.GetPosition());
-            }
-            else
-                wxSFShapeCanvas::OnLeftDown(event);
+			// do default actions
+			wxSFShapeBase* pShape = GetShapeUnderCursor();
+			
+			if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape))) {
+				if(GetMode() == modeREADY)
+				{
+					StartInteractiveConnection(CLASSINFO(wxSFLineShape), event.GetPosition());
+					// interactive connection can be created also from existing object for example
+					// if some connection properties should be modified before the connection creation
+					// process is started:
+					//StartInteractiveConnection(new wxSFLineShape(), event.GetPosition());
+				}
+				else
+					wxSFShapeCanvas::OnLeftDown(event);
+			}
 		}
 			break;
 		default:
@@ -282,7 +287,7 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 	if( pShape )
 	{
 	    SaveCanvasState();
-
+		
         pShape->Refresh();
 		pGrid->Refresh();
 	}
