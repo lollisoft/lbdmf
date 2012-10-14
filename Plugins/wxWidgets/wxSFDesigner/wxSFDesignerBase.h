@@ -64,6 +64,11 @@ public:
 	lbErrCodes LB_STDCALL registerBaseEventHandler(lb_I_Dispatcher* dispatcher);
 
 	lbErrCodes LB_STDCALL lbSetAutoLayout(lb_I_Unknown* uk);
+
+	///\brief Called automatically. Do not implement, but intercept.
+	lbErrCodes LB_STDCALL lbLoadModel(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL lbSaveModel(lb_I_Unknown* uk);
 		
 	lbErrCodes LB_STDCALL lbSetSelectMode(lb_I_Unknown* uk);
 		
