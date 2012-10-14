@@ -3525,7 +3525,10 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
         lbErrCodes err = ERR_NONE;
+		bool toolbaradded = false;
+		bool designertoolbaradded = false;
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuNameTool)
 
         _LOG << "Load application formulars of '" << app << "' with ID = '" << meta->getApplicationID() << "' for user '" << user << "'." LOG_
 
@@ -3533,7 +3536,6 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
                 UAP_REQUEST(getModuleInstance(), lb_I_Long, AppIDComp)
                 int unused;
-                bool toolbaradded = false;
                 AppID->setData(meta->getApplicationID());
 
                 _LOG << "Load the formulars by document ..." LOG_
@@ -3566,27 +3568,35 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 Typ->setData(forms->getTyp());
 
                                 if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
-
-                                        eman->registerEvent(EventName->charrep(), unused);
+									eman->registerEvent(EventName->charrep(), unused);
 
 									///\todo: To implement a third type (lb_I_Form), use a switch statement.
-                                        if (Typ->getData() == 1L)
-                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                        else
-                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+									if (Typ->getData() == 1L) {
+										*MenuNameTool = _trans(app);
+										dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+									} else {
+										dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+										*MenuNameTool = _trans(app);
+										*MenuNameTool += " (Designer)";
+										if (designertoolbaradded == false) {
+											metaapp->addToolBar(MenuNameTool->charrep());
+											designertoolbaradded = true;
+										}
+									}
+									
+									
+									metaapp->addMenuEntry(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), "");
 
-                                        metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+									if (strcmp(ToolBarImage->charrep(), "") != 0) {
+										if (toolbaradded == false) {
+											metaapp->addToolBar(app);
+											toolbaradded = true;
+										}
 
-                                        if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                                if (toolbaradded == false) {
-                                                        metaapp->addToolBar(app);
-                                                        toolbaradded = true;
-                                                }
+										ToolBarImage->trim();
 
-                                                ToolBarImage->trim();
-
-                                                metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
-                                        }
+										metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+									}
 
                                 } else {
                                         _CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -3663,23 +3673,31 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                                 eman->registerEvent(EventName->charrep(), unused);
 
-                                if (Typ->getData() == 1L)
-                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                else
-                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+							if (Typ->getData() == 1L) {
+								*MenuNameTool = _trans(app);
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+							} else {
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+								*MenuNameTool = _trans(app);
+								*MenuNameTool += " (Designer)";
+								if (designertoolbaradded == false) {
+									metaapp->addToolBar(MenuNameTool->charrep());
+									designertoolbaradded = true;
+								}
+							}
 
-                                metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+							metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
-                                if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                        if (toolbaradded == false) {
-                                                metaapp->addToolBar(app);
-                                                toolbaradded = true;
-                                        }
+							if (strcmp(ToolBarImage->charrep(), "") != 0) {
+								if (toolbaradded == false) {
+									metaapp->addToolBar(app);
+									toolbaradded = true;
+								}
 
-                                        ToolBarImage->trim();
+								ToolBarImage->trim();
 
-                                        metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
-                                }
+								metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+							}
 
                         } else {
                                 _CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -3706,22 +3724,30 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                         if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
                                                 eman->registerEvent(EventName->charrep(), unused);
 
-                                                if (Typ->getData() == 1L)
-                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                                else
-                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
-
+											if (Typ->getData() == 1L) {
+												*MenuNameTool = _trans(app);
+												dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+											} else {
+												dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+												*MenuNameTool = _trans(app);
+												*MenuNameTool += " (Designer)";
+												if (designertoolbaradded == false) {
+													metaapp->addToolBar(MenuNameTool->charrep());
+													designertoolbaradded = true;
+												}
+											}
+											
                                                 metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
                                                 if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                                        if (toolbaradded == false) {
+													if (toolbaradded == false) {
                                                                 metaapp->addToolBar(app);
                                                                 toolbaradded = true;
                                                         }
 
                                                         ToolBarImage->trim();
 
-                                                        metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+													metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
                                                 }
 
                                         } else {
