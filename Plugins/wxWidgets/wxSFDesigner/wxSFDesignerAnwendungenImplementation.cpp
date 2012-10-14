@@ -112,21 +112,19 @@ lbErrCodes LB_STDCALL Anwendungen::registerEventHandler(lb_I_Dispatcher* dispatc
 
 	int temp;
 
-	char* designermenu = strdup(_trans("&Anwendungsdesigner"));
-	
-	metaapp->addToolBar("Anwendungsdesigner");
+	metaapp->addToolBar(toolgroupname->charrep());
 	
 	sprintf(eventName, "%pModeApplication", evHandler);
 	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(designermenu, "Anwendungen designen", eventName, "");
-	metaapp->addToolBarButton("Anwendungsdesigner", "Anwendung", eventName, "kthememgr.png");
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Neue Anwendung", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Neue Anwendung", eventName, "kthememgr.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetAnwendungenMode, eventName);
 	
 	
 	sprintf(eventName, "%pModeFormular", evHandler);
 	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(designermenu, "Formulare designen", eventName, "");
-	metaapp->addToolBarButton("Anwendungsdesigner", "Formular", eventName, "kpersonalizer.png");
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Neues Formular", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Neues Formular", eventName, "kpersonalizer.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareMode, eventName);
 	
 	return ERR_NONE;
