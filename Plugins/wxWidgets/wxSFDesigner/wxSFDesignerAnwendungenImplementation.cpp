@@ -193,6 +193,8 @@ void LB_STDCALL Anwendungen::init() {
 	// grid line style can be set as follows:
 	SetGridStyle(wxSHORT_DASH);
 	
+	AddStyle(sfsPROCESS_MOUSEWHEEL);
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	registerEventHandler(*&dispatcher);

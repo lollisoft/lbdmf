@@ -282,6 +282,14 @@ wxSFShapeBase* LB_STDCALL wxSFDesignerBase::createModelElement(wxSFGridShape *&p
 	return pShape;
 }
 
+void wxSFDesignerBase::OnMouseWheel(wxMouseEvent& event)
+{
+	// do default actions
+	wxSFShapeCanvas::OnMouseWheel(event);
+	
+	SetScale(double(GetScale() * 50)/50);
+	Refresh(false);
+}
 
 void wxSFDesignerBase::OnMouseMove(wxMouseEvent& event) {
 	wxSFShapeBase* pShape = GetShapeUnderCursor();
@@ -333,7 +341,7 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 			// do default actions
 			wxSFShapeBase* pShape = GetShapeUnderCursor();
 			
-			if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape)))
+			if (pShape != NULL && (pShape->IsKindOf(CLASSINFO(wxSFGridShape)) || pShape->IsKindOf(CLASSINFO(wxSFLineShape))))
 				wxSFShapeCanvas::OnLeftDown(event);
 			
 			if (pShape == NULL)

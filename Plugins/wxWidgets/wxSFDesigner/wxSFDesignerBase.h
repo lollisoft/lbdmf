@@ -58,6 +58,7 @@ public:
 	void OnDispatch(wxCommandEvent& event);
 	void OnImageButtonClick(wxCommandEvent& event);
 	//void OnMouseMove(wxMouseEvent& evt);
+	virtual void OnMouseWheel(wxMouseEvent& event);
 
 
 	// Call this to enable basic event handler setup
