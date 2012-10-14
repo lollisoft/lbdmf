@@ -43,6 +43,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
 	VisitorOperations \
@@ -63,6 +64,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
@@ -83,6 +85,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
@@ -128,6 +131,7 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	VisitorOperations \
 	DatabaseForm \
