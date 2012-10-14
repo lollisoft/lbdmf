@@ -133,6 +133,18 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 	metaapp->addToolBarButton(toolgroupname->charrep(), "Design", eventName, "mouse_cursor.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetSelectMode, eventName);
 	
+	sprintf(eventName, "%pLoadModel", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry("File", "Design laden", eventName, "");
+	metaapp->addToolBarButton("Main Toolbar", "Design laden", eventName, "document-open.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbLoadModel, eventName);
+	
+	sprintf(eventName, "%pSaveModel", evHandler);
+	ev->registerEvent(eventName, temp);
+	metaapp->addMenuEntry("File", "Design speichern", eventName, "");
+	metaapp->addToolBarButton("Main Toolbar", "Design speichern", eventName, "document-save.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSaveModel, eventName);
+	
 	
 	wxArrayString arrLayouts = m_AutoLayout.GetRegisteredAlgorithms();
 
@@ -150,6 +162,15 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetAutoLayout, eventName);
 	}
 }
+
+lbErrCodes LB_STDCALL wxSFDesignerBase::lbLoadModel(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL wxSFDesignerBase::lbSaveModel(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
 
 lbErrCodes LB_STDCALL wxSFDesignerBase::lbSetAutoLayout(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, reversedEvent)
