@@ -92,7 +92,7 @@ Anwendungen::Anwendungen()
 {
 	_CL_LOG << "Anwendungen::Anwendungen() called." LOG_
 	formName = strdup("Anwendungen");
-	}
+}
 
 Anwendungen::~Anwendungen() {
 	_CL_LOG << "Anwendungen::~Anwendungen() called." LOG_
