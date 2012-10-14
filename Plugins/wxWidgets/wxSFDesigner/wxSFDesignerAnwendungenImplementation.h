@@ -28,6 +28,8 @@ public:
 	
 	lbErrCodes LB_STDCALL lbSetFormulareMode(lb_I_Unknown* uk);
 
+	lbErrCodes LB_STDCALL lbSetFormulareConnectMode(lb_I_Unknown* uk);
+
 	lbErrCodes LB_STDCALL lbMouseDown(lb_I_Unknown* uk);	
 
 	lbErrCodes LB_STDCALL lbMouseUp(lb_I_Unknown* uk);
