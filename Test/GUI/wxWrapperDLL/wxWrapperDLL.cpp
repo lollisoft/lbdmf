@@ -1111,7 +1111,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formN
         UAP(lb_I_KeyBase, key)
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData(form->getFormName());
+        fName->setData(formName);
 
         QI(fName, lb_I_KeyBase, key)
 
@@ -1139,7 +1139,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formN
                         QI(uk, lb_I_Form, _dialog)
                 }
 
-                //_dialog->setName(formName);
+                _dialog->setName(formName);
 
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
