@@ -86,6 +86,8 @@ wxSFDesignerBase::wxSFDesignerBase()
 
 	REQUEST(getModuleInstance(), lb_I_String, toolmenuname)
 	*toolmenuname = _trans("&Designer");
+	
+	REQUEST(getModuleInstance(), lb_I_String, LayoutMenuBaseName)
 }
 
 wxSFDesignerBase::~wxSFDesignerBase() {
@@ -122,7 +124,7 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 	int temp;
 	
 	
-	metaapp->addMenu(toolmenuname->charrep());
+	metaapp->addMenuBar(toolmenuname->charrep());
 	metaapp->addToolBar(toolgroupname->charrep());
 	
 	sprintf(eventName, "%pModeSelect", evHandler);
@@ -130,8 +132,41 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 	metaapp->addMenuEntry(toolmenuname->charrep(), "Design", eventName, "");
 	metaapp->addToolBarButton(toolgroupname->charrep(), "Design", eventName, "mouse_cursor.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetSelectMode, eventName);
+	
+	
+	wxArrayString arrLayouts = m_AutoLayout.GetRegisteredAlgorithms();
+
+	sprintf(eventName, "%pModeLayout", evHandler);
+	*LayoutMenuBaseName = eventName;
+
+
+	metaapp->addMenuBar("Layout");
+
+	for( size_t i = 0; i < arrLayouts.GetCount(); ++i )
+	{
+		sprintf(eventName, "%pModeLayout%s", evHandler, arrLayouts[i].c_str());
+		ev->registerEvent(eventName, temp);
+		metaapp->addMenuEntry("Layout", arrLayouts[i].c_str(), eventName, "");
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetAutoLayout, eventName);
+	}
 }
 
+lbErrCodes LB_STDCALL wxSFDesignerBase::lbSetAutoLayout(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, reversedEvent)
+	UAP(lb_I_Integer, eventID)
+	QI(uk, lb_I_Integer, eventID)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
+	
+	*reversedEvent = eventName;
+	free (eventName);
+	
+	reversedEvent->replace(LayoutMenuBaseName->charrep(), "");
+	
+	m_AutoLayout.Layout( this, reversedEvent->charrep() );
+	SaveCanvasState();
+	return ERR_NONE;
+}
 
 lbErrCodes LB_STDCALL wxSFDesignerBase::lbSetSelectMode(lb_I_Unknown* uk) {
 	ToolMode = 0;
