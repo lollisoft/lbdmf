@@ -3581,6 +3581,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 										if (designertoolbaradded == false) {
 											metaapp->addToolBar(MenuNameTool->charrep());
 											designertoolbaradded = true;
+											metaapp->addMenuBar(MenuNameTool->charrep(), ed);
 										}
 									}
 									
@@ -3683,6 +3684,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 								if (designertoolbaradded == false) {
 									metaapp->addToolBar(MenuNameTool->charrep());
 									designertoolbaradded = true;
+									metaapp->addMenuBar(MenuNameTool->charrep(), ed);
 								}
 							}
 
@@ -3734,6 +3736,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 												if (designertoolbaradded == false) {
 													metaapp->addToolBar(MenuNameTool->charrep());
 													designertoolbaradded = true;
+													metaapp->addMenuBar(MenuNameTool->charrep(), ed);
 												}
 											}
 											
