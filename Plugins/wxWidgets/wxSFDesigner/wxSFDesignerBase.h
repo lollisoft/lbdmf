@@ -79,7 +79,9 @@ public:
 	virtual void OnMouseMove(wxMouseEvent& event);
 	
 		
-		
+	UAP(lb_I_String, toolgroupname)
+	UAP(lb_I_String, toolmenuname)
+	
 		
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)

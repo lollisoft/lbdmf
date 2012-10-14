@@ -81,6 +81,11 @@ wxSFDesignerBase::wxSFDesignerBase()
 	_created = false;
 	
 	ToolMode = 0;
+	REQUEST(getModuleInstance(), lb_I_String, toolgroupname)
+	*toolgroupname = "Designer";
+
+	REQUEST(getModuleInstance(), lb_I_String, toolmenuname)
+	*toolmenuname = _trans("&Designer");
 }
 
 wxSFDesignerBase::~wxSFDesignerBase() {
@@ -116,16 +121,15 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 	
 	int temp;
 	
-	char* designermenu = strdup(_trans("&Anwendungsdesigner"));
 	
-	metaapp->addToolBar("Anwendungsdesigner");
+	metaapp->addMenu(toolmenuname->charrep());
+	metaapp->addToolBar(toolgroupname->charrep());
 	
-	sprintf(eventName, "%pModeNone", evHandler);
+	sprintf(eventName, "%pModeSelect", evHandler);
 	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(designermenu, "Select", eventName, "");
-	metaapp->addToolBarButton("Anwendungsdesigner", "Select", eventName, "mouse_cursor.png");
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Design", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Design", eventName, "mouse_cursor.png");
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetSelectMode, eventName);
-	
 }
 
 
