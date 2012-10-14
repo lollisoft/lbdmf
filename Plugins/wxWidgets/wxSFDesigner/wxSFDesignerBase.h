@@ -63,6 +63,8 @@ public:
 	// Call this to enable basic event handler setup
 	lbErrCodes LB_STDCALL registerBaseEventHandler(lb_I_Dispatcher* dispatcher);
 
+	lbErrCodes LB_STDCALL lbSetAutoLayout(lb_I_Unknown* uk);
+		
 	lbErrCodes LB_STDCALL lbSetSelectMode(lb_I_Unknown* uk);
 		
 		
@@ -84,6 +86,7 @@ public:
 		
 	UAP(lb_I_String, toolgroupname)
 	UAP(lb_I_String, toolmenuname)
+	UAP(lb_I_String, LayoutMenuBaseName)
 	
 		
 	UAP(lb_I_Database, database)
@@ -132,6 +135,7 @@ public:
 	int ToolMode;	
 		
 	wxSFDiagramManager* currentDiagramManager;
+	wxSFAutoLayout m_AutoLayout;
 };
 
 #endif //PLUGIN_wxSFDesigner
