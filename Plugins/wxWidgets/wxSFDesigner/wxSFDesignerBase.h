@@ -82,6 +82,8 @@ public:
 	lbErrCodes LB_STDCALL lbShapeSelect(lb_I_Unknown* uk);
 */
 
+	
+	bool LB_STDCALL isDesignShape(wxSFShapeBase* pShape);
 		
 	wxSFShapeBase* LB_STDCALL createModelElement(wxSFGridShape *&pGrid, wxMouseEvent& event, const char* Name, const char* iconName);	
 		

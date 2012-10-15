@@ -70,6 +70,11 @@ extern "C" {
 // Include base class definition
 #include <wxSFDesignerBase.h>
 
+#include <lbDMFApplicationShape.h>
+#include <lbDMFFormularShape.h>
+
+
+
 // Begin implementation code
 
 wxSFDesignerBase::wxSFDesignerBase() 
@@ -218,6 +223,17 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::addOwnerDrawn(const char* name, int x, i
 	return ERR_NONE;
 }
 
+bool LB_STDCALL wxSFDesignerBase::isDesignShape(wxSFShapeBase* pShape) {
+	if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFFlexGridShape)))
+		return true;
+	
+	if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFBitmapShape)))
+		return true;	
+	
+	return false;
+}
+
+
 wxSFShapeBase* LB_STDCALL wxSFDesignerBase::createModelElement(wxSFGridShape *&pGrid, wxMouseEvent& event, const char* Text, const char* iconName) {
     wxSFShapeBase *pShape = NULL;
 
@@ -254,6 +270,11 @@ wxSFShapeBase* LB_STDCALL wxSFDesignerBase::createModelElement(wxSFGridShape *&p
 		pShape->AcceptSrcNeighbour(wxT("All"));
 		pShape->AcceptTrgNeighbour(wxT("All"));
 		
+		
+		pShape->SetStyle(wxSFShapeBase::sfsALWAYS_INSIDE | wxSFShapeBase::sfsHOVERING | wxSFShapeBase::sfsPROCESS_DEL | wxSFShapeBase::sfsPROPAGATE_DRAGGING | wxSFShapeBase::sfsPROPAGATE_SELECTION);
+		
+		pGrid->AddChild(pShape);
+
 		pGrid->InsertToGrid(0, 0, pShape);
 		
 		pShape = NULL;
@@ -275,6 +296,11 @@ wxSFShapeBase* LB_STDCALL wxSFDesignerBase::createModelElement(wxSFGridShape *&p
 			pShape->AcceptTrgNeighbour(wxT("wxSFTextShape"));
 			pShape->AcceptTrgNeighbour(wxT("wxSFEditTextShape"));
 			
+			
+			pShape->SetStyle(wxSFShapeBase::sfsALWAYS_INSIDE | wxSFShapeBase::sfsHOVERING | wxSFShapeBase::sfsPROCESS_DEL | wxSFShapeBase::sfsPROPAGATE_DRAGGING | wxSFShapeBase::sfsPROPAGATE_SELECTION);
+
+			pGrid->AddChild(pShape);
+			
 			pGrid->InsertToGrid(1, 1, pShape);
 		}
 		pGrid->Update();
@@ -294,7 +320,7 @@ void wxSFDesignerBase::OnMouseWheel(wxMouseEvent& event)
 void wxSFDesignerBase::OnMouseMove(wxMouseEvent& event) {
 	wxSFShapeBase* pShape = GetShapeUnderCursor();
 
-	if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape)))
+	if (isDesignShape(pShape))
 		wxSFShapeCanvas::OnMouseMove(event);
 
 	if (pShape == NULL)
@@ -310,12 +336,12 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 	{
 		case 1:
 		{
-			pShape = createModelElement(pGrid, event, "Name der Anwendung", "toolbarimages/kthememgr.png");
+			pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFApplicationShape), event.GetPosition(), sfDONT_SAVE_STATE);
 		}
 			break;
 		case 2:
 		{
-			pShape = createModelElement(pGrid, event, "Name des Formulars", "toolbarimages/kpersonalizer.png");
+			pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularShape), event.GetPosition(), sfDONT_SAVE_STATE);
 		}
 			break;
 		case 3:
@@ -323,7 +349,11 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 			// do default actions
 			wxSFShapeBase* pShape = GetShapeUnderCursor();
 			
-			if (pShape != NULL && pShape->IsKindOf(CLASSINFO(wxSFGridShape))) {
+			while (pShape && pShape->GetParentShape()) {
+				pShape = pShape->GetParentShape();
+			}
+			
+			if (isDesignShape(pShape)) {
 				if(GetMode() == modeREADY)
 				{
 					StartInteractiveConnection(CLASSINFO(wxSFLineShape), event.GetPosition());
@@ -341,9 +371,14 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 			// do default actions
 			wxSFShapeBase* pShape = GetShapeUnderCursor();
 			
-			if (pShape != NULL && (pShape->IsKindOf(CLASSINFO(wxSFGridShape)) || pShape->IsKindOf(CLASSINFO(wxSFLineShape))))
+			if (isDesignShape(pShape) ) 
+			{
 				wxSFShapeCanvas::OnLeftDown(event);
-			
+			} else {
+				if ((pShape != NULL) && pShape->IsKindOf(CLASSINFO(wxSFLineShape)))
+					wxSFShapeCanvas::OnLeftDown(event);
+			}
+
 			if (pShape == NULL)
 				wxSFShapeCanvas::OnLeftDown(event);
 	}
@@ -353,7 +388,8 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 	    SaveCanvasState();
 		
         pShape->Refresh();
-		pGrid->Refresh();
+		if (pGrid)
+			pGrid->Refresh();
 	}
 }
 
