@@ -460,7 +460,44 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 
 <xsl:if test="$assocname!=''">
 <xsl:if test="$TargetDBType = 'Sqlite'">
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+-- ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$assocname"/>" ) REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+<xsl:if test="$execute_droprules = 'yes'">
+--DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ins";
+--DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_upd";
+--DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_del";
+DELETE FROM "lbDMF_ForeignKeys" WHERE 
+"PKTable" = '<xsl:value-of select="$thisClassName"/>' AND
+"PKColumn" = 'ID' AND
+"FKTable" = '<xsl:value-of select="$otherClassName"/>' AND
+"FKColumn" = '<xsl:value-of select="$thisClassName"/>';
+
+</xsl:if>
+
+
+--ALTER TABLE "<xsl:value-of select="$otherClassName"/>" 
+--ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID" 
+--FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/>" ) 
+--REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="$assocname"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$assocname"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/> violates foreign key <xsl:value-of select="$assocname"/>(ID)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_upd" BEFORE UPDATE ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="$assocname"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$assocname"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/> violates foreign key <xsl:value-of select="$assocname"/>(ID)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_del" BEFORE DELETE ON <xsl:value-of select="$thisClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT <xsl:value-of select="$assocname"/> FROM <xsl:value-of select="$otherClassName"/> WHERE <xsl:value-of select="$assocname"/> = old.ID) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key <xsl:value-of select="$otherClassName"/>(<xsl:value-of select="$assocname"/>)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$thisClassName"/>', 'ID', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$assocname"/>');
 
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
