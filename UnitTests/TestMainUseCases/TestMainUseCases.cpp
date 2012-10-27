@@ -302,8 +302,9 @@ public:
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col3) values('Test')"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
 		
-		// Test fails because metainformation could not be gathered on empty tables
+		// Test fails because metainformation could not be gathered. This is because aggregated columns have no associated columns :-)
 		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum from 'CD'"))
@@ -314,20 +315,34 @@ public:
 
 		import_Initial_TestModel(myUIWrapper, "CDKatalogAddedDescription.xmi");
 
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
 		
 		puts("Import No:3");
 
+		// Uncomment to gather logs (with generated SQL sqripts and other logs)
+		//setLogActivated(true);
 		import_Initial_TestModel(myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi");
+		//setLogActivated(false);
 
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
+
+		// Check that ReleaseDatum is failing, thus no more present
 		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, Description from 'CD'"))
+
+		UAP(lb_I_Database, db1)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db1, "'database plugin'")
+
+		// Ensure that the SQL query has really changed to the last imported definition
+		
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"Musiker\" , \"Media\" , \"Description\" from \"CD\" order by \"ID\""))
+		
+		// Export the last application model into a XML file
+		meta->fireEvent("evtExportApplicationToXML");
 	}
 	
 	lbErrCodes CheckBySQLQuery(lb_I_Database* db, const char* dbName, const char* SQL) {
@@ -337,6 +352,31 @@ public:
 		ASSERT_EQUALS( true, query != NULL);
 
 		lbErrCodes err = query->query(SQL, false);
+		
+		return err;
+	}
+	
+	bool CheckBySQLQuery(lb_I_Database* db, const char* dbName, const char* SQL, int row, int column, const char* equals_to) {
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery(dbName, 0);
+		ASSERT_EQUALS( true, query != NULL);
+
+		lbErrCodes err = query->query(SQL, false);
+		
+		if (err == ERR_NONE)
+		{
+			err = query->first();
+			
+			while (row-- > 0 && ((err = query->next()) == ERR_NONE) || err == WARN_DB_NODATA)
+			;
+			
+			UAP(lb_I_String, col)
+			
+			col = query->getAsString(column);
+			
+			return *col == equals_to;
+		}
 		
 		return err;
 	}
