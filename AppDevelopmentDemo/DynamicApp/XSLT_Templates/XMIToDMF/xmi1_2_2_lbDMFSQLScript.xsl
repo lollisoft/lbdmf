@@ -169,7 +169,8 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 --INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', 'style.png', GetOrCreateApplication('<xsl:value-of select="$applicationname"/>'), 1);
 INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./UML:ModelElement.taggedValue[@tag='toolbarimage']/@value"/>', id, 1 FROM "anwendungen" where name = '<xsl:value-of select="$applicationname"/>';
 
-
+-- Cleanup
+DELETE FROM "formular_parameters" where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'));
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
