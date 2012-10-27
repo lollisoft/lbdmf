@@ -95,6 +95,10 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
+DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else

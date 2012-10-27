@@ -32,7 +32,9 @@ public:
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_with_badxsl)
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_SecondStageUMLModel)
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_import_InitialUMLModel)
+		
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_InitialUMLModel)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
 
 /*
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
@@ -126,6 +128,218 @@ public:
 		meta->fireEvent("importUMLXMIDocIntoApplication");
 		setLogActivated(false);
 	}
+
+	void ChangeProperty(const char* _name, const char* _value)
+	{
+        lbErrCodes err = ERR_NONE;
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+
+        // Get name of changed property
+        const char* PropertyName = _name;
+
+        const char* PropValue = _value;
+
+        UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+        UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
+
+        int PropertyEvent;
+
+        eman->resolveEvent(PropertyName, PropertyEvent);
+
+        name->setData("eventId");
+        evId->setData(PropertyEvent);
+        param->setUAPInteger(*&name, *&evId);
+
+        name->setData("value");
+        value->setData(PropValue);
+        param->setUAPString(*&name, *&value);
+
+        name->setData("name");
+        value->setData(PropertyName);
+        param->setUAPString(*&name, *&value);
+
+        UAP(lb_I_Unknown, uk)
+        QI(param, lb_I_Unknown, uk)
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+        UAP(lb_I_Unknown, uk_result)
+        QI(result, lb_I_Unknown, uk_result)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		dispatcher->setEventManager(eman.getPtr());
+
+        dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
+}
+	
+	void import_Initial_TestModel(UIWrapper* UI, const char* modelFile) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XmiFile)
+		
+		*XslSystemFile = getenv("DEVROOT");
+		*XslApplicationFile = getenv("DEVROOT");
+		*XmiFile = getenv("DEVROOT");
+		*XslSettingsFile = getenv("DEVROOT");
+		
+		ASSERT_EQUALS(true, XslSystemFile != NULL)
+		ASSERT_EQUALS(true, XslSystemFile->charrep() != NULL)
+		
+		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
+		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
+		*XslSettingsFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xsl";
+
+		*XmiFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\";
+		*XmiFile += modelFile;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP(lb_I_DelegatedAction, action)
+
+		disp->setEventManager(eman.getPtr());
+
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
+		
+		ASSERT_EQUALS(true, action != NULL)
+		
+		meta->firePropertyChangeEvent("UML import settingsSystem database backend type", "Sqlite");
+		meta->firePropertyChangeEvent("UML import settingsApplication database backend type", "Sqlite");
+		
+		#ifdef WINDOWS
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", XslSettingsFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", XslSystemFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", XslApplicationFile->charrep());
+		meta->firePropertyChangeEvent("UML import settingsXMI UML input file", XmiFile->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXSL file for import settings", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for system database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXSL file for application database", "../../../AppDevelopment/XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl");
+		meta->firePropertyChangeEvent("UML import settingsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+		
+		int unused;
+		
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
+
+		meta->fireEvent("importUMLXMIDocIntoApplication");
+	}
+	
+	/* This test tries to verify adding a column and then removing another column in a table.
+	 * First the target database is validated and then, not yet, the application definition tables will be validated.
+	 */
+	void test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel");
+
+		remove("CDKatalog.db3");
+		remove("CRM.db3");
+		remove("lbDMF.db3");
+		remove("lbDMF Manager.daf");
+		remove("MetaApp.mad");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		PM->initialize();
+		PM->runInstallers();
+	
+
+			// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		//setLogActivated(true);
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		//setLogActivated(false);
+
+	
+		ChangeProperty("Application Database settingsDB Name", "CDKatalog");
+		ChangeProperty("UML import settingsSystem database backend type", "Sqlite");
+		ChangeProperty("UML import settingsApplication database backend type", "Sqlite");
+
+		meta->fireEvent("writeXMISettings");
+
+		puts("Import No:1");
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", false);
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", false);
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", true);
+
+		UAP(lb_I_Database, db)
+        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
+
+		import_Initial_TestModel(myUIWrapper, "CDKatalogStartTest.xmi");
+
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col3) values('Test')"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
+		
+		// Test fails because metainformation could not be gathered on empty tables
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum from 'CD'"))
+		
+		meta->fireEvent("overwriteDatabase");
+		
+		puts("Import No:2");
+
+		import_Initial_TestModel(myUIWrapper, "CDKatalogAddedDescription.xmi");
+
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
+		
+		puts("Import No:3");
+
+		import_Initial_TestModel(myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi");
+
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, Description from 'CD'"))
+	}
+	
+	lbErrCodes CheckBySQLQuery(lb_I_Database* db, const char* dbName, const char* SQL) {
+		UAP(lb_I_Query, query)
+
+		query = db->getQuery(dbName, 0);
+		ASSERT_EQUALS( true, query != NULL);
+
+		lbErrCodes err = query->query(SQL, false);
+		
+		return err;
+	}
 	
 	void test_Delegated_Action_lbDMFXslt_import_InitialUMLModel( void )
 	{
@@ -209,9 +423,9 @@ public:
 		
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
 
-		setLogActivated(true);
+		//setLogActivated(true);
 		meta->fireEvent("importUMLXMIDocIntoApplication");
-		setLogActivated(false);
+		//setLogActivated(false);
 		meta->msgBox("Test", "Test Message");
 	}
 	
