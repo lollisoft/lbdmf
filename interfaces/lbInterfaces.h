@@ -2964,6 +2964,10 @@ public:
 	virtual lbErrCodes LB_STDCALL resolveEvent(const char* EvName, int & evNr) = 0;
 
 	virtual char* LB_STDCALL reverseEvent(int evNr) = 0;
+	
+	/**\brief Used by the dispatcher in detachInstance
+	 */
+	virtual lbErrCodes LB_STDCALL unregisterEvent(const char* EvName) = 0;
 
 protected:
 
