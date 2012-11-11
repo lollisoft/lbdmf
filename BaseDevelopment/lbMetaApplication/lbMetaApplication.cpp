@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.4 $
+ * $Revision: 1.188.2.5 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.4 2012/09/16 07:36:27 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.5 2012/11/11 08:25:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.5  2012/11/11 08:25:42  lollisoft
+ * Added new function to unregister an event.
+ *
  * Revision 1.188.2.4  2012/09/16 07:36:27  lollisoft
  * Added a todo for chaining dispatcher functionality.
  *
@@ -3727,6 +3730,13 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(const char* EvName, int & ev
 
 	return ERR_NONE;
 }
+
+lbErrCodes LB_STDCALL lb_EventManager::unregisterEvent(const char* EvName) {
+	lbErrCodes err = NULL_NONE;
+	
+	return err;
+}
+
 
 char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	lbErrCodes err = ERR_NONE;
