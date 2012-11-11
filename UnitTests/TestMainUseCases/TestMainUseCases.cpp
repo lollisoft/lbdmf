@@ -34,8 +34,11 @@ public:
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_SecondStageUMLModel)
 		
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_InitialUMLModel)
-		TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
 
+		//TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
+
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2)
+		
 /*
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
 		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
@@ -231,6 +234,54 @@ public:
 		meta->fireEvent("importUMLXMIDocIntoApplication");
 	}
 	
+	void export_XMI2_Model(UIWrapper* UI, const char* modelFile)
+	{
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XslExportFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XmiFile)
+		
+		*XslSettingsFile = getenv("DEVROOT");
+		*XslExportFile = getenv("DEVROOT");
+		//*XmiFile = getenv("DEVROOT");
+	
+		*XslSettingsFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToXMI\\XMISettings.xsl";
+		*XslExportFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToXMI\\gen_DMFToXMI.xsl";
+
+		//*XmiFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\";
+		*XmiFile = modelFile;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		UAP(lb_I_DelegatedAction, action)
+
+		disp->setEventManager(eman.getPtr());
+
+		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
+		
+		ASSERT_EQUALS(true, action != NULL)
+		
+		//meta->firePropertyChangeEvent("UML import settingsSystem database backend type", "Sqlite");
+		//meta->firePropertyChangeEvent("UML import settingsApplication database backend type", "Sqlite");
+		
+		#ifdef WINDOWS
+		meta->firePropertyChangeEvent("UML export settingsXMI UML export file", XmiFile->charrep());
+		meta->firePropertyChangeEvent("UML export settingsXSL file for export settings", XslSettingsFile->charrep());
+		meta->firePropertyChangeEvent("UML export settingsXSL file for UML export", XslExportFile->charrep());
+		#endif
+
+		#ifdef LINUX
+		meta->firePropertyChangeEvent("UML import settingsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
+		#endif
+		
+		int unused;
+		
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
+
+		meta->fireEvent("exportApplicationConfigurationToUMLXMIDoc");
+	}
+	
 	/* This test tries to verify adding a column and then removing another column in a table.
 	 * First the target database is validated and then, not yet, the application definition tables will be validated.
 	 */
@@ -343,6 +394,79 @@ public:
 		
 		// Export the last application model into a XML file
 		meta->fireEvent("evtExportApplicationToXML");
+	}
+	
+	void test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2( void )
+	{
+		puts("test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2");
+
+		remove("CDKatalog.db3");
+		remove("CRM.db3");
+		remove("lbDMF.db3");
+		remove("lbDMF Manager.daf");
+		remove("MetaApp.mad");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		PM->initialize();
+		PM->runInstallers();
+	
+
+			// Use an UI wrapper to fake answers.
+		UIWrapper* myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		//setLogActivated(true);
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		//setLogActivated(false);
+
+	
+		ChangeProperty("Application Database settingsDB Name", "CDKatalog");
+		ChangeProperty("UML import settingsSystem database backend type", "Sqlite");
+		ChangeProperty("UML import settingsApplication database backend type", "Sqlite");
+
+		meta->fireEvent("writeXMISettings");
+
+		puts("Import No:1");
+
+		myUIWrapper->addAnswer("no", false);
+		myUIWrapper->addAnswer("yes", false);
+		myUIWrapper->addAnswer("yes", true);
+
+		UAP(lb_I_Database, db)
+        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
+
+		int unused;
+		int unused1;
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
+		
+		import_Initial_TestModel(myUIWrapper, "CDKatalogStartTest.xmi");
+
+		//meta->unloadApplication();
+		//meta->loadApplication("user", "CDKatalog");
+		
+		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused1))
+
+		ASSERT_EQUALS(unused, unused1)
+		
+		export_XMI2_Model(myUIWrapper, "CDKatalogStartTest_XMI2.xmi");
 	}
 	
 	lbErrCodes CheckBySQLQuery(lb_I_Database* db, const char* dbName, const char* SQL) {
