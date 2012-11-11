@@ -28,18 +28,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.77.2.1 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.78 2011/10/29 06:03:58 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.77.2.1 2012/11/11 08:25:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
- * Revision 1.78  2011/10/29 06:03:58  lollisoft
- * Refactored application model (and it's model classes) into separate files to enable code generation.
- * The code generation is planned for the model classes and the composite container for the model.
- * Refactored out the login and user management from meta application due to the fact that it is a
- * distinct feature the meta application should not provide. The code has been moved to a security
- * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
- * available.
+ * Revision 1.77.2.1  2012/11/11 08:25:42  lollisoft
+ * Added new function to unregister an event.
  *
  * Revision 1.77  2011/09/27 06:29:42  lollisoft
  * Fixed some issues reported by CppCheck.
@@ -339,51 +334,51 @@ public lb_I_MetaApplication,
 public lb_I_EventHandler
 {
 public:
-	lbErrCodes 				LB_STDCALL save();
-	lbErrCodes 				LB_STDCALL load();
-	lbErrCodes 				LB_STDCALL setGUI(lb_I_GUI* _gui);
-	lbErrCodes 				LB_STDCALL setUserName(const char* user);
-	lbErrCodes 				LB_STDCALL setApplicationName(const char* app);
-	void	   				LB_STDCALL setAutorefreshData(bool b);
-	void	   				LB_STDCALL setGUIMaximized(bool b);
-	bool	   				LB_STDCALL getGUIMaximized();
-	void	   				LB_STDCALL setAutoload(bool b);
-	void	  				LB_STDCALL setAutoselect(bool b);
-	bool	   				LB_STDCALL getAutorefreshData();
-	bool	   				LB_STDCALL getAutoload();
-	bool	   				LB_STDCALL getAutoselect();
-	char*	   				LB_STDCALL getDirLocation();
-	void	   				LB_STDCALL setDirLocation(const char* dirloc);
+	lbErrCodes LB_STDCALL save();
+	lbErrCodes LB_STDCALL load();
+	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
+	lbErrCodes LB_STDCALL setUserName(const char* user);
+	lbErrCodes LB_STDCALL setApplicationName(const char* app);
+	void	   LB_STDCALL setAutorefreshData(bool b);
+	void	   LB_STDCALL setGUIMaximized(bool b);
+	bool	   LB_STDCALL getGUIMaximized();
+	void	   LB_STDCALL setAutoload(bool b);
+	void	   LB_STDCALL setAutoselect(bool b);
+	bool	   LB_STDCALL getAutorefreshData();
+	bool	   LB_STDCALL getAutoload();
+	bool	   LB_STDCALL getAutoselect();
+	char*	   LB_STDCALL getDirLocation();
+	void	   LB_STDCALL setDirLocation(const char* dirloc);
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	lbErrCodes 				LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
-	lbErrCodes 				LB_STDCALL uninitialize();
-	lbErrCodes 				LB_STDCALL run();
-	lbErrCodes 				LB_STDCALL getGUI(lb_I_GUI** _gui);
-	lbErrCodes 				LB_STDCALL getUserName(lb_I_String** user);
-	lbErrCodes 				LB_STDCALL getApplicationName(lb_I_String** app);
-	lb_I_EventManager*		getEVManager( void );
+	lbErrCodes LB_STDCALL initialize(const char* user = NULL, const char* app = NULL);
+	lbErrCodes LB_STDCALL uninitialize();
+	lbErrCodes LB_STDCALL run();
+	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	lb_I_EventManager * getEVManager( void );
 	/**
 	 * Load the real application.
 	 */
-	lbErrCodes 				LB_STDCALL loadApplication(const char* user, const char* app);
-	lbErrCodes 				LB_STDCALL unloadApplication();
-	lbErrCodes 				LB_STDCALL addToolBar(const char* toolbarName);
-	lbErrCodes 				LB_STDCALL removeToolBar(const char* toolbarName);
-	lbErrCodes 				LB_STDCALL addToolBarButton(const char* toolbarName, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry = NULL);
-	lbErrCodes 				LB_STDCALL removeToolBarButton(const char* toolbarName, const char* entry);
-	lbErrCodes 				LB_STDCALL toggleToolBarButton(const char* toolbarName, const char* entry);
+	lbErrCodes LB_STDCALL loadApplication(const char* user, const char* app);
+	lbErrCodes LB_STDCALL unloadApplication();
+	lbErrCodes LB_STDCALL addToolBar(const char* toolbarName);
+	lbErrCodes LB_STDCALL removeToolBar(const char* toolbarName);
+	lbErrCodes LB_STDCALL addToolBarButton(const char* toolbarName, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL removeToolBarButton(const char* toolbarName, const char* entry);
+	lbErrCodes LB_STDCALL toggleToolBarButton(const char* toolbarName, const char* entry);
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	lbErrCodes 				LB_STDCALL addMenuBar(const char* name, const char* after = NULL);
+	lbErrCodes LB_STDCALL addMenuBar(const char* name, const char* after = NULL);
 	/**
 	 * Add a menu behind the last.
 	 */
-	lbErrCodes 				LB_STDCALL addMenu(const char* name);
+	lbErrCodes LB_STDCALL addMenu(const char* name);
 	/**
 	 * Add a menu entry in the named menu after given entry,
 	 * if provided. The handler must be registered.
@@ -394,33 +389,37 @@ public:
 	 *	char* evHandler:	The name of a registered event handler, that handle this
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
-	lbErrCodes 				LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
-	lbErrCodes 				LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
-	lbErrCodes 				LB_STDCALL enableEvent(const char* name);
-	lbErrCodes 				LB_STDCALL disableEvent(const char* name);
-	lbErrCodes 				LB_STDCALL toggleEvent(const char* name);
-	lbErrCodes 				LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h);
-	lbErrCodes 				LB_STDCALL addLabel(const char* text, int x, int y, int w, int h);
-	lbErrCodes 				LB_STDCALL addTextField(const char* name, int x, int y, int w, int h);
-	lb_I_InputStream* 		LB_STDCALL askOpenFileReadStream(const char* extentions);
-	bool			  		LB_STDCALL askYesNo(const char* msg);
-	void			  		LB_STDCALL msgBox(const char* title, const char* msg);
-	void 					LB_STDCALL addStatusBar();
-	void 					LB_STDCALL addStatusBar_TextArea(const char* name);
-	void 					LB_STDCALL setStatusText(const char* name, const char* value, bool call_yield = true);
-	void 					LB_STDCALL disableStatusbar();
+	lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	lbErrCodes LB_STDCALL enableEvent(const char* name);
+	lbErrCodes LB_STDCALL disableEvent(const char* name);
+	lbErrCodes LB_STDCALL toggleEvent(const char* name);
+	lbErrCodes LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addLabel(const char* text, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addTextField(const char* name, int x, int y, int w, int h);
+	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(const char* extentions);
+	bool			  LB_STDCALL askYesNo(const char* msg);
+	void			  LB_STDCALL msgBox(const char* title, const char* msg);
+	void LB_STDCALL addStatusBar();
+	void LB_STDCALL addStatusBar_TextArea(const char* name);
+	void LB_STDCALL setStatusText(const char* name, const char* value, bool call_yield = true);
+	void LB_STDCALL disableStatusbar();
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
-	lbErrCodes 				LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false);
-	lbErrCodes 				LB_STDCALL registerPropertyChangeEventGroup(const char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
-	lb_I_Parameter* 		LB_STDCALL getParameter();
-	void					LB_STDCALL setActiveApplication(const char* name);
-	lb_I_Unknown*			LB_STDCALL getActiveDocument();
-	void					LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
+	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false);
+	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(const char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
+	lb_I_Parameter* LB_STDCALL getParameter();
+	bool LB_STDCALL login(const char* user, const char* pass);
+	lb_I_Container* LB_STDCALL getApplications();
+	long LB_STDCALL getApplicationID();
+	void		LB_STDCALL setActiveApplication(const char* name);
+	lb_I_Unknown*	LB_STDCALL getActiveDocument();
+	void		LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
 	void                    LB_STDCALL setPropertyPaneLayoutFloating();
 	void                    LB_STDCALL setPropertyPaneLayoutLeft();
 	void                    LB_STDCALL showPropertyPanel();
+	lb_I_Applications*		LB_STDCALL getApplicationModel();
 	void                    LB_STDCALL setLoadFromDatabase(bool b);
 	bool                    LB_STDCALL getLoadFromDatabase();
 	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, const char* setname);
@@ -440,11 +439,12 @@ public:
 	void					LB_STDCALL setProcessName(const char* name);
 	lb_I_String*			LB_STDCALL getProcessName();
 
-	lbErrCodes 				LB_STDCALL addToolBarTool(const char* toolbarName, const char* tooltype, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry);
+	DECLARE_LB_UNKNOWN()
+	lbErrCodes LB_STDCALL addToolBarTool(const char* toolbarName, const char* tooltype, const char* entry, const char* evHandler, const char* toolbarimage, const char* afterentry);
 	
 
-	lb_I_Unknown* 			LB_STDCALL getUnknown();
-	lbErrCodes 				LB_STDCALL loadSubModules();
+	lb_I_Unknown* LB_STDCALL getUnknown();
+	lbErrCodes LB_STDCALL loadSubModules();
 
 /*...sWrapper for some usual GUI functions:8:*/
 /*...e*/
@@ -472,27 +472,14 @@ public:
 	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, const char* prefix);
 
-	//lb_I_Applications*		LB_STDCALL getApplicationModel();
-	//bool 					LB_STDCALL login(const char* user, const char* pass);
-
+	
+	
 
 public:
 	lb_MetaApplication();
 	virtual ~lb_MetaApplication();
 
-	DECLARE_LB_UNKNOWN()
-
 protected:
-#ifdef OLD_TIGHT_DEPENDENCY	
-	/// \brief Applications stored in file or database.
-	UAP(lb_I_Applications, Applications)
-	/// \brief Users stored in file or database.
-	UAP(lb_I_UserAccounts, Users)
-	/// \brief Users to Applications mapping stored in file or database.
-	UAP(lb_I_User_Applications, User_Applications)
-	//	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
-#endif
-
 	lb_I_GUI* gui;
 	
 	char* moduleName;
@@ -511,6 +498,14 @@ protected:
 	
 	// To store propertysets
 	UAP(lb_I_Parameter, propertySets)
+	
+	/// \brief Applications stored in file or database.
+	UAP(lb_I_Applications, Applications)
+	/// \brief Users stored in file or database.
+	UAP(lb_I_UserAccounts, Users)
+	/// \brief Users to Applications mapping stored in file or database.
+	UAP(lb_I_User_Applications, User_Applications)
+//	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 
 	/// Types of databases available.
 	UAP(lb_I_Container, availableDatabaseTypes)
@@ -642,7 +637,7 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEvent(const char* EvName, int & EvNr);
 	virtual lbErrCodes LB_STDCALL resolveEvent(const char* EvName, int & evNr);
 	virtual char* LB_STDCALL reverseEvent(int evNr);
-
+	virtual lbErrCodes LB_STDCALL unregisterEvent(const char* EvName);
 public:
 	lb_EventManager();
 	virtual ~lb_EventManager();
