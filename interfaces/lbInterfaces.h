@@ -3315,6 +3315,27 @@ public:
 };
 /*...e*/
 
+/** \brief A simulated application can be used to automate tasks.
+ * This interface is mainly intented for automated unit tests who interact with an user interface.
+ * The automated task didn't need an user sitting on a computer to always click the same menus and answer the same questions.
+ * The automated task can be setup with a set of answers done automatically and thus enables unatended tasks done in unit tests.
+ *
+ * As an additional feature, it may be implemented a generic event handling answering mechanism.
+ */
+class lb_I_SimulatedApplication : public lb_I_Application {
+public:
+	/** \brief Answer to a yes or no question.
+	 * The answer is specified by the what parameter. The last parameter indicated end of record for answers.
+	 * The last answer in a set must be flagged with last = true. No second set can and should be recorded.
+	 */
+	virtual void LB_STDCALL addAnswer(char* what, bool last) = 0;
+	
+	/** \brief Answer with a filename.
+	 * The askOpenFileReadStream memberfunction in lb_I_MetaApplication can be automated to answer by what.
+	 */
+	virtual void LB_STDCALL setFileAnswer(char* what) = 0;
+};
+
 /*...slbDMF ORM:0:*/
 /*...sclass lb_I_MetaApplication:0:*/
 /**
@@ -3494,6 +3515,9 @@ public:
 	 *
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL) = 0;
+
+	virtual lbErrCodes LB_STDCALL removeMenuBar(const char* name) = 0;
+	virtual lbErrCodes LB_STDCALL removeMenuEntry(const char* in_menu, const char* entry) = 0;
 
 	/** \brief Enable a given event.
 	 *
@@ -5085,6 +5109,11 @@ public:
 	 */
 	virtual void LB_STDCALL initialize() = 0;
 
+	/**
+	 * Let the plugin uninitialize it self - later :-)
+	 */
+	//virtual void LB_STDCALL uninitialize() = 0;
+
 	/** \brief Autorun this plugin.
 	 * Implement this function for autorun capabilities.
 	 */
@@ -5349,6 +5378,7 @@ UAPDECL(lb_I_GUI)
 UAPDECL(lb_I_Form)
 UAPDECL(lb_I_EvHandler)
 UAPDECL(lb_I_Application)
+UAPDECL(lb_I_SimulatedApplication)
 UAPDECL(lb_I_UserAccounts)
 UAPDECL(lb_I_User_Applications)
 UAPDECL(lb_I_PluginImpl)

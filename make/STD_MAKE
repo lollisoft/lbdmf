@@ -25,11 +25,16 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.9 $
+# * $Revision: 1.148.2.10 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.9 2012/10/03 20:56:38 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.10 2012/11/18 08:38:19 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.10  2012/11/18 08:38:19  lollisoft
+# * Many changes that help improving unit tests. They mainly include application
+# * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+# * doubled, data isn't valid (NULL pointer).
+# *
 # * Revision 1.148.2.9  2012/10/03 20:56:38  lollisoft
 # * Modified make system to work with current cygwin make and with MinGW compilers together.
 # *
@@ -617,8 +622,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 

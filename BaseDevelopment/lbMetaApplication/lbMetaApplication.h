@@ -28,11 +28,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77.2.1 $
+ * $Revision: 1.77.2.2 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.77.2.1 2012/11/11 08:25:42 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.77.2.2 2012/11/18 08:38:19 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.77.2.2  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
  * Revision 1.77.2.1  2012/11/11 08:25:42  lollisoft
  * Added new function to unregister an event.
  *
@@ -391,6 +396,10 @@ public:
 	 */
 	lbErrCodes LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
 	lbErrCodes LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	
+	lbErrCodes LB_STDCALL removeMenuBar(const char* name);
+	lbErrCodes LB_STDCALL removeMenuEntry(const char* in_menu, const char* entry);
+	
 	lbErrCodes LB_STDCALL enableEvent(const char* name);
 	lbErrCodes LB_STDCALL disableEvent(const char* name);
 	lbErrCodes LB_STDCALL toggleEvent(const char* name);
@@ -473,7 +482,9 @@ public:
 	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, const char* prefix);
 
 	
-	
+	void					LB_STDCALL initApplicationSwitcher();
+	void					LB_STDCALL deinitApplicationSwitcher();
+	lbErrCodes				LB_STDCALL switchApplication(lb_I_Unknown* uk);
 
 public:
 	lb_MetaApplication();

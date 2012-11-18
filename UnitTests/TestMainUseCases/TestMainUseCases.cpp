@@ -35,8 +35,11 @@ public:
 		
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_import_InitialUMLModel)
 
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
-
+		// require a new functionality to reload applications. This is because each test  runs their own application instance.
+		
+		TEST_CASE(test_Reload_Different_Application)
+		
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2)
 		
 /*
@@ -87,7 +90,8 @@ public:
 		PM->runInstallers();
 
 		// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
@@ -175,9 +179,9 @@ public:
 		dispatcher->setEventManager(eman.getPtr());
 
         dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
-}
+	}
 	
-	void import_Initial_TestModel(UIWrapper* UI, const char* modelFile) {
+	void import_Initial_TestModel(lb_I_SimulatedApplication* UI, const char* modelFile) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
@@ -234,7 +238,7 @@ public:
 		meta->fireEvent("importUMLXMIDocIntoApplication");
 	}
 	
-	void export_XMI2_Model(UIWrapper* UI, const char* modelFile)
+	void export_XMI2_Model(lb_I_SimulatedApplication* UI, const char* modelFile)
 	{
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslExportFile)
@@ -282,6 +286,84 @@ public:
 		meta->fireEvent("exportApplicationConfigurationToUMLXMIDoc");
 	}
 	
+	lbErrCodes FireEvent(const char* name)
+	{
+		lbErrCodes err = ERR_NONE;
+		int eventID = -1;
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+
+		eman->resolveEvent((const char*) name, eventID);
+		dispatcher->setEventManager(eman.getPtr());
+
+		param->setData(eventID);
+
+		UAP(lb_I_Unknown, uk)
+		QI(param, lb_I_Unknown, uk)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+		UAP(lb_I_Unknown, uk_result)
+		QI(result, lb_I_Unknown, uk_result)
+
+		return dispatcher->dispatch(eventID, uk.getPtr(), &uk_result);
+	}
+	
+	void test_Reload_Different_Application( void )
+	{
+		puts("test_Reload_Different_Application");
+
+		remove("CDKatalog.db3");
+		remove("CRM.db3");
+		remove("lbDMF.db3");
+		remove("lbDMF Manager.daf");
+		remove("MetaApp.mad");
+
+		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+		PM->initialize();
+		PM->runInstallers();
+
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
+		
+        myUIWrapper->initialize();
+
+		// Be sure to not autoload
+		meta->load();
+		meta->setAutoload(false);
+		meta->initialize("user", "lbDMF Manager");
+
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+
+		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
+		
+		ASSERT_EQUALS(ERR_NONE, FireEvent("exportApplicationConfigurationToUMLXMIDoc"))
+
+		meta->unloadApplication();
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+
+		int unused;
+
+		// The registered events must also be unregistered.
+		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
+		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("exportApplicationToXMLBuffer", unused))
+		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
+
+		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("exportApplicationConfigurationToUMLXMIDoc"))
+		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("exportApplicationToXMLBuffer"))
+		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("importUMLXMIDocIntoApplication"))
+
+		meta->loadApplication("user", "CDKatalog");
+
+		meta->unloadApplication();
+}
+	
 	/* This test tries to verify adding a column and then removing another column in a table.
 	 * First the target database is validated and then, not yet, the application definition tables will be validated.
 	 */
@@ -295,6 +377,8 @@ public:
 		remove("lbDMF Manager.daf");
 		remove("MetaApp.mad");
 
+		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -304,7 +388,8 @@ public:
 	
 
 			// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
@@ -347,7 +432,7 @@ public:
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
 
-		import_Initial_TestModel(myUIWrapper, "CDKatalogStartTest.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi");
 
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col3) values('Test')"))
@@ -364,7 +449,7 @@ public:
 		
 		puts("Import No:2");
 
-		import_Initial_TestModel(myUIWrapper, "CDKatalogAddedDescription.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi");
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
@@ -374,7 +459,7 @@ public:
 
 		// Uncomment to gather logs (with generated SQL sqripts and other logs)
 		//setLogActivated(true);
-		import_Initial_TestModel(myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi");
 		//setLogActivated(false);
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
@@ -394,6 +479,8 @@ public:
 		
 		// Export the last application model into a XML file
 		meta->fireEvent("evtExportApplicationToXML");
+		
+		meta->unloadApplication();
 	}
 	
 	void test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2( void )
@@ -405,6 +492,9 @@ public:
 		remove("lbDMF.db3");
 		remove("lbDMF Manager.daf");
 		remove("MetaApp.mad");
+		remove("CDKatalogStartTest_XMI2.xmi");
+
+		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -415,7 +505,8 @@ public:
 	
 
 			// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
@@ -428,6 +519,9 @@ public:
 		
 		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
+		// Application behaviour saves the state for overwriteDatabase. Thus reseting it here is required.
+		meta->delPropertySet("CodeGenMenuSettings");
+		
 		//setLogActivated(true);
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 		//setLogActivated(false);
@@ -450,6 +544,8 @@ public:
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
 
+		ASSERT_EQUALS(true, FileExists("CDKatalog.db3"))
+				
 		int unused;
 		int unused1;
 		
@@ -457,16 +553,30 @@ public:
 
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
 		
-		import_Initial_TestModel(myUIWrapper, "CDKatalogStartTest.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi");
 
-		//meta->unloadApplication();
-		//meta->loadApplication("user", "CDKatalog");
+		meta->unloadApplication();
+		meta->uninitialize();
+		meta->load();
+		meta->setAutoload(false);
+
+		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
+	
+		meta->initialize("user", "CDKatalog");
+
+		//setLogActivated(true);
+		
+		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+	
+		meta->loadApplication("user", "CDKatalog");
 		
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused1))
 
 		ASSERT_EQUALS(unused, unused1)
 		
-		export_XMI2_Model(myUIWrapper, "CDKatalogStartTest_XMI2.xmi");
+		export_XMI2_Model(*&myUIWrapper, "CDKatalogStartTest_XMI2.xmi");
+
+		meta->unloadApplication();
 	}
 	
 	lbErrCodes CheckBySQLQuery(lb_I_Database* db, const char* dbName, const char* SQL) {
@@ -545,7 +655,8 @@ public:
 		PM->runInstallers();
 
 		// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
@@ -613,7 +724,8 @@ public:
 
 
 		// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
@@ -695,7 +807,8 @@ public:
 
 
 		// Use an UI wrapper to fake answers.
-		UIWrapper* myUIWrapper = new UIWrapper();
+		UAP(lb_I_SimulatedApplication, myUIWrapper)
+		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
 
