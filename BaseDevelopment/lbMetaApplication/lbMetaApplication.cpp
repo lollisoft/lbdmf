@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.5 $
+ * $Revision: 1.188.2.6 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.5 2012/11/11 08:25:42 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.6 2012/11/18 08:38:19 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.6  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
  * Revision 1.188.2.5  2012/11/11 08:25:42  lollisoft
  * Added new function to unregister an event.
  *
@@ -840,6 +845,12 @@ lb_I_String*	LB_STDCALL lb_MetaApplication::getProcessName() {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
+	deinitApplicationSwitcher();
+
+	removeToolBar("Main Toolbar");
+	
+	dispatcher->detachInstance((lb_I_EventHandler*) this);
+
 	if (User_Applications != NULL) User_Applications--;
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
@@ -865,6 +876,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 
 	_loaded = false;
 
+	// Rebuild instances as of constructor initializarion
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+	dispatcher->setEventManager(eman.getPtr());
+	REQUEST(getModuleInstance(), lb_I_String, ProcessName)
+	
 	return ERR_NONE;
 }
 
@@ -1496,6 +1513,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 		}
 	}
 
+	addMenuBar(_trans("&Applications"));
+	initApplicationSwitcher();
+
 	addToolBar("Main Toolbar");
 
 	addStatusBar();
@@ -1576,6 +1596,81 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Integer, ID)
+	QI(uk, lb_I_Integer, ID)
+	
+	if (ID != NULL)
+	{
+		UAP_REQUEST(getModuleInstance(), lb_I_String, eventname)
+		*eventname = eman->reverseEvent(ID->getData());
+		
+		if (!(*eventname == "")) {
+			eventname->replace("switch to ", "");
+			UAP_REQUEST(getModuleInstance(), lb_I_String, user)
+			*user = LogonUser->charrep();
+			
+			unloadApplication();
+			uninitialize();
+			load();
+
+			initialize(user->charrep(), eventname->charrep());
+			_logged_in = true;
+			loadApplication(user->charrep(), eventname->charrep());
+		}
+	}
+}
+
+void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher() {
+	UAP(lb_I_Container, apps)
+	
+	apps = getApplications();
+	
+	while (apps->hasMoreElements() == 1)
+	{
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_String, m)
+		uk = apps->nextElement();
+		QI(uk, lb_I_String, m)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, me)
+		
+		*me = "switch to ";
+		*me += m->charrep();
+		
+		int temp;
+		
+		removeMenuEntry(_trans("&Applications"), me->charrep());
+	}
+	removeMenuBar(_trans("&Applications"));
+}
+
+void                    LB_STDCALL lb_MetaApplication::initApplicationSwitcher() {
+	UAP(lb_I_Container, apps)
+	
+	apps = getApplications();
+	
+	while (apps->hasMoreElements() == 1)
+	{
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_String, m)
+		uk = apps->nextElement();
+		QI(uk, lb_I_String, m)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, me)
+		
+		*me = "switch to ";
+		*me += m->charrep();
+		
+		int temp;
+		
+		eman->registerEvent(me->charrep(), temp);
+		addMenuEntry(_trans("&Applications"), me->charrep(), me->charrep(), "");
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::switchApplication, temp);
+	}
+}
 
 void                    LB_STDCALL lb_MetaApplication::setPropertyPaneLayoutFloating() {
 
@@ -2404,6 +2499,30 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(const char* name, const cha
 	return err;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::removeMenuBar(const char* name) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+
+	parameter->setData("name");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("RemoveMenuBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
+/*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenu\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(const char* name) {
 	return ERR_NONE;
@@ -3018,6 +3137,35 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(const char* in_menu, cons
 	return ERR_NONE;
 }
 /*...e*/
+/*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::removeMenuEntry(const char* in_menu, const char* entry) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+
+
+	parameter->setData("menubar");
+	value->setData(in_menu);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("menuname");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("RemoveMenuEntry", uk.getPtr(), &uk_result);
+
+	return ERR_NONE;
+}
+/*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuEntryCheckable\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry) {
 	lbErrCodes err = ERR_NONE;
@@ -3066,7 +3214,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_m
 long LB_STDCALL lb_MetaApplication::getApplicationID() {
 	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
 		Applications->selectApplication(LogonApplication->charrep());
-
+		_LOGERROR << "lb_MetaApplication::getApplicationID() returns ID for " << LogonApplication->charrep() LOG_
 		return Applications->getApplicationID();
 	} else {
 		if (!_logged_in) {
@@ -3619,7 +3767,6 @@ lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 /*...slb_EventManager\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_EventManager::registerEvent(const char* EvName, int & EvNr) {
 	lbErrCodes err = ERR_NONE;
-	int newId = maxEvId + 1;
 
 /*...sInit containers:8:*/
 	if (events == NULL) {
@@ -3654,39 +3801,59 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(const char* EvName, int & E
 /*...sdetermine id:8:*/
 	if (freeIds->Count() == 0) {
 		maxEvId++;
+
+/*...sinsert new event:8:*/
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerData)
+		integerData->setData(maxEvId);
+
+		UAP(lb_I_Unknown, idata)
+		QI(integerData, lb_I_Unknown, idata)
+
+		events->insert(&idata, &sk);
+
+		UAP(lb_I_KeyBase, ik)
+		QI(integerData, lb_I_Unknown, ik)
+
+		UAP(lb_I_Unknown, sdata)
+		QI(stringData, lb_I_Unknown, sdata)
+
+		reverse_events->insert(&sdata, &ik);
+
+		EvNr = maxEvId;
+/*...e*/
 	} else {
-		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_KeyBase, key)
 
 		key = freeIds->getKeyAt(freeIds->Count());
-		uk = freeIds->getElementAt(freeIds->Count());
-
-		freeIds->remove(&key);
 
 		UAP(lb_I_Integer, i)
-		QI(uk, lb_I_Integer, i)
+		QI(key, lb_I_Integer, i)
 
-		newId = i->getData();
+		_LOGERROR << "Reuse event with ID = " << i->charrep() << " as " << EvName LOG_
+		
+		freeIds->finishIteration();
+		freeIds->remove(&key);
+
+		int newId = i->getData();
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerData)
+		integerData->setData(newId);
+
+		UAP(lb_I_Unknown, idata)
+		QI(integerData, lb_I_Unknown, idata)
+
+		events->insert(&idata, &sk);
+
+		UAP(lb_I_KeyBase, ik)
+		QI(integerData, lb_I_Unknown, ik)
+
+		UAP(lb_I_Unknown, sdata)
+		QI(stringData, lb_I_Unknown, sdata)
+
+		reverse_events->insert(&sdata, &ik);
+
+		EvNr = newId;
 	}
-/*...e*/
-/*...sinsert new event:8:*/
-	UAP_REQUEST(getModuleInstance(), lb_I_Integer, integerData)
-	integerData->setData(maxEvId);
-
-	UAP(lb_I_Unknown, idata)
-	QI(integerData, lb_I_Unknown, idata)
-
-	events->insert(&idata, &sk);
-
-	UAP(lb_I_KeyBase, ik)
-	QI(integerData, lb_I_Unknown, ik)
-
-	UAP(lb_I_Unknown, sdata)
-	QI(stringData, lb_I_Unknown, sdata)
-
-	reverse_events->insert(&sdata, &ik);
-
-	EvNr = maxEvId;
 /*...e*/
 
 	if (events->exists(&sk) != 1) {
@@ -3732,8 +3899,41 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(const char* EvName, int & ev
 }
 
 lbErrCodes LB_STDCALL lb_EventManager::unregisterEvent(const char* EvName) {
-	lbErrCodes err = NULL_NONE;
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP(lb_I_KeyBase, sk)
+		
+	if (events == NULL) {
+		_CL_VERBOSE << "Error: No events registered yet, thus event name not found: " << EvName LOG_
+		return ERR_EVENT_NOTREGISTERED;
+	}
 	
+	*s = EvName;
+	QI(s, lb_I_KeyBase, sk)
+
+	if (events->exists(&sk) == 1) {
+		int EvNr = 0;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+		UAP(lb_I_KeyBase, ik)
+		resolveEvent(EvName, EvNr);
+		i->setData(EvNr);
+		QI(i, lb_I_KeyBase, ik)
+		
+		events->remove(&sk);
+		reverse_events->remove(&ik);
+
+		// Recycle an event number
+		UAP(lb_I_KeyBase, KeyToRecycle)
+		UAP(lb_I_Unknown, EventToRecycle)
+		QI(sk, lb_I_Unknown, EventToRecycle)
+		QI(ik, lb_I_KeyBase, KeyToRecycle)
+		
+		if (freeIds->exists(&KeyToRecycle) == 0) {
+			freeIds->insert(&EventToRecycle, &KeyToRecycle);
+		}
+	}
+
 	return err;
 }
 
@@ -3896,6 +4096,7 @@ void LB_STDCALL lb_Dispatcher::detachInstance(lb_I_EventHandler* evHandlerInstan
 
 		while (handlersToDelete->hasMoreElements() == 1) {
 			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Integer, i)
 			UAP(lb_I_KeyBase, key)
 
 			uk = handlersToDelete->nextElement();
@@ -3903,6 +4104,12 @@ void LB_STDCALL lb_Dispatcher::detachInstance(lb_I_EventHandler* evHandlerInstan
 
 			dispatcher->finishIteration();
 			dispatcher->remove(&key);
+			
+			QI(key, lb_I_Integer, i)
+			
+			_LOGERROR << "Unregister event handler reversed as " << evManager->reverseEvent(i->getData()) << " with ID = " << i->charrep() LOG_
+			
+			evManager->unregisterEvent(evManager->reverseEvent(i->getData()));
 		}
 	}
 }

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.4 2012/10/09 05:39:48 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.5 2012/11/18 08:38:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.4 $
+ * $Revision: 1.174.2.5 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.4 2012/10/09 05:39:48 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.5 2012/11/18 08:38:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.5  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
  * Revision 1.174.2.4  2012/10/09 05:39:48  lollisoft
  * Removed old code from the very beginning.
  *
@@ -791,11 +796,15 @@ public wxApp
 	 */
 	lbErrCodes LB_STDCALL addMenuBar(lb_I_Unknown* uk);
 
+	lbErrCodes LB_STDCALL removeMenuBar(lb_I_Unknown* uk);
+	
 	/**
 	 * Event handler to add a menu entry in a given menu bar name.
 	 * \note These handlers should not called by the user of lbDMF. The programmer would use lb_I_MetaApplication to abstract from the real GUI implementation.
 	 */
 	lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL removeMenuEntry(lb_I_Unknown* uk);
 
 	/** \brief Enable an event.
 	 *
@@ -866,7 +875,9 @@ protected:
 
         int AddMenu;
         int AddMenuBar;
+		int RemoveMenuBar;
         int AddMenuEntry;
+        int RemoveMenuEntry;
         int AddLabel;
         int AddTextField;
         int AddButton;
@@ -1031,11 +1042,13 @@ bool MyApp::OnInit(void)
 
 	ev_manager->registerEvent("AddMenu", AddMenu);
 	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+	ev_manager->registerEvent("RemoveMenuBar", RemoveMenuBar);
 	ev_manager->registerEvent("AddButton", AddButton);
 
 	ev_manager->registerEvent("showLeft", AddButton);
 
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+	ev_manager->registerEvent("RemoveMenuEntry", RemoveMenuEntry);
 	ev_manager->registerEvent("AddLabel", AddLabel);
 	ev_manager->registerEvent("AddTextField", AddTextField);
 	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
@@ -1214,6 +1227,8 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenu, "AddMenu");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuBar, "AddMenuBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuEntry, "AddMenuEntry");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::removeMenuBar, "RemoveMenuBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::removeMenuEntry, "RemoveMenuEntry");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
@@ -1555,6 +1570,105 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 									&lb_wxFrame::OnDispatch );
 	}
 
+
+	return ERR_NONE;
+/*...e*/
+}
+/*...e*/
+/*...sremoveMenuBar\9\\9\\9\Handler:0:*/
+lbErrCodes LB_STDCALL MyApp::removeMenuBar(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	if (frame == NULL) {
+		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
+	} else {
+		parameter->setData("name");
+		param->getUAPString(*&parameter, *&name);
+
+		wxMenuBar* mbar = frame->getMenuBar();
+
+		int pos = 0;
+
+		if (mbar) {
+			wxString m = wxString(name->getData());
+			pos = mbar->FindMenu(m);
+			
+			if (pos != wxNOT_FOUND)
+			{
+				mbar->Remove(pos);
+			}
+		}
+	}
+
+	return err;
+}
+/*...e*/
+/*...saddMenuEntry\9\\9\Handler:0:*/
+/**
+ * Add a menu entry to a specific menubar.
+ *
+ * Params:
+ *	menubar:	Name of menubar
+ *	menuname:	Name of menu entry
+ *	handlername:	Name of handler
+ */
+lbErrCodes LB_STDCALL MyApp::removeMenuEntry(lb_I_Unknown* uk) {
+/*...scode:0:*/
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menubar)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menuname)
+
+
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	if (frame == NULL) {
+		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
+	} else {
+		parameter->setData("menubar");
+		param->getUAPString(*&parameter, *&menubar);
+		parameter->setData("menuname");
+		param->getUAPString(*&parameter, *&menuname);
+
+		if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL)) {
+			_LOG << "Error: There are some parameters with NULL pointers!" LOG_
+			return err;
+		}
+
+		_LOG << "Remove a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "'" LOG_
+
+		wxMenuBar* mbar = frame->getMenuBar();
+
+		int index;
+
+		index = mbar->FindMenu(wxString(menubar->getData()));
+
+		if (index == wxNOT_FOUND) {
+			_LOGERROR << "ERROR: Programming error. Forgotten to create the required menu. Do it here." LOG_
+			return err;
+		}
+
+		wxMenu* menu = mbar->GetMenu(index);
+
+		int mid = menu->FindItem(menuname->charrep());
+		
+		if (mid != wxNOT_FOUND)
+		{
+			menu->Destroy(mid);
+		}
+	}
 
 	return ERR_NONE;
 /*...e*/

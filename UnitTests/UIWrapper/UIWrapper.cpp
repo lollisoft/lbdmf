@@ -17,6 +17,7 @@
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(UIWrapper)
 	ADD_INTERFACE(lb_I_Application)
+	ADD_INTERFACE(lb_I_SimulatedApplication)
 END_IMPLEMENT_LB_UNKNOWN()
 
 //IMPLEMENT_FUNCTOR(instanceOfApplication, UIWrapper)
@@ -35,6 +36,10 @@ UIWrapper::UIWrapper() {
 
 UIWrapper::~UIWrapper() {
 	_LOG << "Instance of lb_I_Application destroyed" LOG_
+	
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+	
+	dispatcher->detachInstance(evHandler);
 }
 
 void LB_STDCALL UIWrapper::setFileAnswer(char* what) {

@@ -187,6 +187,10 @@ protected:
          */
         void LB_STDCALL activateDBForms(const char* user, const char* app);
 
+        /** \brief Unload the database forms.
+         */
+        void LB_STDCALL deactivateDBForms(const char* user, const char* app);
+
         void LB_STDCALL loadDataFromActiveDocument();
         void LB_STDCALL saveDataToActiveDocument();
 
@@ -2236,6 +2240,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 
         _CL_LOG << "lbDynamicApplication::uninitialize() called." LOG_
 
+        deactivateDBForms(LogonUser->charrep(), LogonApplication->charrep());
+		
         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
         UAP(lb_I_Unknown, ukPl)
@@ -3521,6 +3527,19 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
         metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
 
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
+}
+
+void LB_STDCALL lbDynamicApplication::deactivateDBForms(const char* user, const char* app) {
+        lbErrCodes err = ERR_NONE;
+
+        _LOG << "Unload application formulars of '" << app << "' with ID = '" << metaapp->getApplicationID() << "' for user '" << user << "'." LOG_
+
+		char* ed = strdup(_trans("&Edit"));
+		char* menu = strdup(_trans(app));
+		metaapp->removeMenuBar(menu);
+		metaapp->removeToolBar(menu);
+		free(ed);
+		free(menu);
 }
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {

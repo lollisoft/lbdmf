@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.2 $
+ * $Revision: 1.43.2.3 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.2 2012/10/10 06:55:26 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.3 2012/11/18 08:38:19 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
  * Revision 1.43.2.2  2012/10/10 06:55:26  lollisoft
  * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
  *
