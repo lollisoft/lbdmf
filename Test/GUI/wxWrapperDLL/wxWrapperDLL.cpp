@@ -1946,6 +1946,8 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
         }
 
 
+		// Done in OnExit in dynamic.cpp. Calling this twice actually let the datastructure be uninitialized
+		// and thus the second call to deinitApplicationSwitcher fails
         meta->unloadApplication();
 		meta->uninitialize();
 
