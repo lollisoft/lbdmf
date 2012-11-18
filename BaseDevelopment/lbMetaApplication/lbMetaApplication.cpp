@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.6 $
+ * $Revision: 1.188.2.7 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.6 2012/11/18 08:38:19 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.7 2012/11/18 09:26:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.7  2012/11/18 09:26:30  lollisoft
+ * Fixed application unload and reload issue.
+ *
  * Revision 1.188.2.6  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
  * reload capabilities, but that didn't yet work in GUI. Some menu entries are
@@ -845,11 +848,13 @@ lb_I_String*	LB_STDCALL lb_MetaApplication::getProcessName() {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
-	deinitApplicationSwitcher();
-
-	removeToolBar("Main Toolbar");
 	
-	dispatcher->detachInstance((lb_I_EventHandler*) this);
+	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
+	if (Applications != NULL) {
+		deinitApplicationSwitcher();
+		removeToolBar("Main Toolbar");
+		dispatcher->detachInstance((lb_I_EventHandler*) this);
+	}
 
 	if (User_Applications != NULL) User_Applications--;
 	if (Users != NULL) Users--;
