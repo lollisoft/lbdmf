@@ -1,4 +1,4 @@
-class UIWrapper : public lb_I_Application,
+class UIWrapper : public lb_I_SimulatedApplication,
 public lb_I_EventHandler
 {
 public:
