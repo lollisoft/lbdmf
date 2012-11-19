@@ -2518,8 +2518,9 @@ wxPoint lb_wxFrame::GetStartPosition()
 {
     static int x = 0;
     x += 20;
-    wxPoint pt = ClientToScreen(wxPoint(0,0));
-    return wxPoint(pt.x + x, pt.y + x);
+    //wxPoint pt = ClientToScreen(::wxGetMousePosition());
+    //return wxPoint(pt.x + x, pt.y + x);
+	return ::wxGetMousePosition();
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
@@ -2540,9 +2541,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 
 #ifdef USE_WXAUI
                 tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
-                m_mgr.DetachPane(tb);
-                m_mgr.Update();
-                tb->Destroy();
+				if (tb != NULL) {
+					m_mgr.DetachPane(tb);
+					m_mgr.Update();
+					tb->Destroy();
+				}
 #endif
         }
 
@@ -2926,9 +2929,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
-        stb_areas++;
-        int* new_stb_withs = new int [stb_areas];
-        int* old_stb_withs;
 
         UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
         UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -2950,6 +2950,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
         QI(name, lb_I_KeyBase, key)
 
         if (key != NULL) {
+			if (statusbar_name_mappings->exists(&key) == 0) {
+				int* new_stb_withs = new int [stb_areas];
+				int* old_stb_withs;
+
+				stb_areas++;
+
                 for (int i = 1; i < stb_areas; i++) {
                         new_stb_withs[i-1] = stb_withs[i-1];
                 }
@@ -2966,6 +2972,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
                 statusbar_name_mappings->insert(&value, &key);
 
                 err = ERR_NONE;
+			}
         }
 
         return err;

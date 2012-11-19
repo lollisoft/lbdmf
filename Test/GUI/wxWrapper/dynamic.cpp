@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.5 2012/11/18 08:38:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.6 2012/11/19 07:38:57 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.5 $
+ * $Revision: 1.174.2.6 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.5 2012/11/18 08:38:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.6 2012/11/19 07:38:57 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.6  2012/11/19 07:38:57  lollisoft
+ * Fixed remaining reload issues.
+ *
  * Revision 1.174.2.5  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
  * reload capabilities, but that didn't yet work in GUI. Some menu entries are
@@ -1139,7 +1142,7 @@ bool MyApp::OnInit(void)
     {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-		6000, frame, -1, wxDefaultPosition, wxDefaultSize,
+		6000, frame, -1, ::wxGetMousePosition(), wxDefaultSize,
 #ifndef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
@@ -1528,7 +1531,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 			}
 		}
 
-		_LOG << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
+		_LOGERROR << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
 
 
 		if (param->Count() > 3) {
@@ -1603,7 +1606,8 @@ lbErrCodes LB_STDCALL MyApp::removeMenuBar(lb_I_Unknown* uk) {
 			
 			if (pos != wxNOT_FOUND)
 			{
-				mbar->Remove(pos);
+				wxMenu* menu = mbar->Remove(pos);
+				delete menu;
 			}
 		}
 	}
