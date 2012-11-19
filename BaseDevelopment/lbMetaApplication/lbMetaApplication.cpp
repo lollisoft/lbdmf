@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.7 $
+ * $Revision: 1.188.2.8 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.7 2012/11/18 09:26:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.8 2012/11/19 07:38:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.8  2012/11/19 07:38:57  lollisoft
+ * Fixed remaining reload issues.
+ *
  * Revision 1.188.2.7  2012/11/18 09:26:30  lollisoft
  * Fixed application unload and reload issue.
  *
@@ -851,9 +854,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	
 	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
 	if (Applications != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
+
 		deinitApplicationSwitcher();
 		removeToolBar("Main Toolbar");
 		dispatcher->detachInstance((lb_I_EventHandler*) this);
+				
+		*menuEntry = _trans("Log to logfile");
+		removeMenuEntry(_trans("&File"), menuEntry->charrep());
+		*menuEntry = _trans("Login");
+		removeMenuEntry(_trans("&File"), menuEntry->charrep());
 	}
 
 	if (User_Applications != NULL) User_Applications--;
@@ -1619,11 +1629,15 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 			
 			unloadApplication();
 			uninitialize();
+			
+			bool tempautoload = getAutoload();
 			load();
 
+			setAutoload(false);
 			initialize(user->charrep(), eventname->charrep());
 			_logged_in = true;
 			loadApplication(user->charrep(), eventname->charrep());
+			setAutoload(tempautoload);
 		}
 	}
 }
