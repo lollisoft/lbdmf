@@ -105,9 +105,14 @@
 #endif
 
 #ifndef OSX
+#ifdef LINUX
 #define wxAuiPaneInfo wxPaneInfo
 #define wxAuiManager wxFrameManager
 #include <manager.h>
+#endif
+#ifdef WINDOWS
+#include <wx/aui/aui.h>
+#endif
 #endif
 
 #ifdef OSX
