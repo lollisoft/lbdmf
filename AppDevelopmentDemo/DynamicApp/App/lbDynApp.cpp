@@ -2234,14 +2234,54 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
         return NULL;
 }
 /*...e*/
+
+void LB_STDCALL lbDynamicApplication::deactivateDBForms(const char* user, const char* app) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuNameTool)
+	
+	_LOG << "Unload application formulars of '" << app << "' with ID = '" << metaapp->getApplicationID() << "' for user '" << user << "'." LOG_
+	
+	*MenuNameTool = _trans(app);
+	metaapp->removeMenuBar(MenuNameTool->charrep());
+	metaapp->removeToolBar(MenuNameTool->charrep());
+	
+	*MenuNameTool += " (Designer)";
+	
+	metaapp->removeMenuBar(MenuNameTool->charrep());
+	metaapp->removeToolBar(MenuNameTool->charrep());
+}
+
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
         lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, editMenu)
 
         _CL_LOG << "lbDynamicApplication::uninitialize() called." LOG_
 
         deactivateDBForms(LogonUser->charrep(), LogonApplication->charrep());
 		
+	*editMenu = strdup(_trans("&Edit"));
+	
+	*menuEntry = _trans("Set all forms back to dynamic");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("Execute SQL query");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("overwrite database while import");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("write default XMISettings file");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	metaapp->removeMenuEntry(_trans("&File"), "export Application to XML");
+	metaapp->removeMenuEntry(_trans("&File"), "export Application to UML (as XMI file)");
+	metaapp->removeMenuEntry(_trans("&File"), "import Application from UML (as XMI file)");	
+	
+	metaapp->removeMenuBar(editMenu->charrep());
+	metaapp->removeMenuBar("&Help");	
+
         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
         UAP(lb_I_Unknown, ukPl)
@@ -3529,19 +3569,6 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }
 
-void LB_STDCALL lbDynamicApplication::deactivateDBForms(const char* user, const char* app) {
-        lbErrCodes err = ERR_NONE;
-
-        _LOG << "Unload application formulars of '" << app << "' with ID = '" << metaapp->getApplicationID() << "' for user '" << user << "'." LOG_
-
-		char* ed = strdup(_trans("&Edit"));
-		char* menu = strdup(_trans(app));
-		metaapp->removeMenuBar(menu);
-		metaapp->removeToolBar(menu);
-		free(ed);
-		free(menu);
-}
-
 void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
         lbErrCodes err = ERR_NONE;
 		bool toolbaradded = false;
@@ -3561,7 +3588,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                 char* ed = strdup(_trans("&Edit"));
                 char* menu = strdup(_trans(app));
-                metaapp->addMenuBar(menu, ed);
+                //metaapp->addMenuBar(menu, ed);
                 free(ed);
                 free(menu);
 
@@ -3670,7 +3697,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                 char* menu = strdup(_trans(app));
 
-                metaapp->addMenuBar(menu, ed);
+                //metaapp->addMenuBar(menu, ed);
 
                 free(ed);
                 free(menu);
