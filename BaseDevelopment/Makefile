@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.6 $
+# * $Revision: 1.229.2.7 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.6 2012/10/05 07:08:51 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.7 2012/11/19 13:31:55 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.7  2012/11/19 13:31:55  lollisoft
+# * Fixed Windows based issues and replaced wxAUI library with built in wxWidgets AUI version.
+# *
 # * Revision 1.229.2.6  2012/10/05 07:08:51  lollisoft
 # * Moved deployment specific stuff to environment file.
 # *
@@ -958,12 +961,12 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
 	../UnitTests
 
 # Don't compile these every time.
 #	../vendor/propgrid \
+#	../vendor/wxaui-0.9.1/sample \
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF \
 #	../vendor/tvision/examples/dlgdsn \
@@ -1359,7 +1362,6 @@ ALLTARGETS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
-	../vendor/wxaui-0.9.1/src \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1380,6 +1382,7 @@ ALLTARGETS = \
 #	lbcs \
 #	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/wxaui-0.9.1/src \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
 # When including this target, the include path for sql.h must pount to ./sqlite/src
