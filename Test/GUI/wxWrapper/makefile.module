@@ -40,7 +40,7 @@ MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxWrapperDLL -llbHook
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
+#MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
 MOD_INCL_MINGW_CPP += -I../wxWrapperDLL 
 MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
 MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/propgrid/include 
