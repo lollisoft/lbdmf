@@ -38,7 +38,7 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 
-MINGWLIBS += $(MINGWLIBS_WXGUI) -Wl,--subsystem,windows -mthreads -mwindows -lwxPropgrid -lwxAUI 
+MINGWLIBS += $(MINGWLIBS_WXGUI) -Wl,--subsystem,windows -mthreads -mwindows -lwxPropgrid
 
 MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include 
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I ../include 
