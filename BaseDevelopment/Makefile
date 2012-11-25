@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.7 $
+# * $Revision: 1.229.2.8 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.7 2012/11/19 13:31:55 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.8 2012/11/25 08:37:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.8  2012/11/25 08:37:30  lollisoft
+# * Moved wxShapeFramework build before plugins.
+# *
 # * Revision 1.229.2.7  2012/11/19 13:31:55  lollisoft
 # * Fixed Windows based issues and replaced wxAUI library with built in wxWidgets AUI version.
 # *
@@ -1045,9 +1048,9 @@ ALLTARGETS = \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
 	../Test/Console/XML \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
-	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	../vendor/wxARG/src \
@@ -1280,6 +1283,7 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
@@ -1310,6 +1314,7 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
