@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.8 $
+# * $Revision: 1.229.2.9 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.8 2012/11/25 08:37:30 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.9 2012/11/25 09:03:49 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.9  2012/11/25 09:03:49  lollisoft
+# * Missed the wsShapeFramework targets on Linux.
+# *
 # * Revision 1.229.2.8  2012/11/25 08:37:30  lollisoft
 # * Moved wxShapeFramework build before plugins.
 # *
@@ -1912,6 +1915,14 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ -e MODULE=libmpatrol -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
+
+../vendor/wxShapeFramework/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
+../vendor/wxShapeFramework/example: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
