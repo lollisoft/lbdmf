@@ -107,15 +107,15 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL) -I ../linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 endif    
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I ../linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 endif    
 
 ifeq ($(OSTYPE), osx)
