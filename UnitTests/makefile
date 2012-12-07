@@ -223,46 +223,6 @@ UIWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
-endif
-
-ifeq ($(OSTYPE), linux-debian-ppc)
-
-MiniCppUnit: dummy
-	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-	$(MAKE) -C $@ install
-
-UIWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-endif
-
-ifeq ($(OSTYPE), linux)
-
-MiniCppUnit: dummy
-	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-	$(MAKE) -C $@ install
-
-UIWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-endif
-
-ifeq ($(OSTYPE), osx)
-
-MiniCppUnit: dummy
-	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-UIWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-endif
-
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
@@ -279,6 +239,106 @@ TestMainUseCases: dummy
 TestRunner: dummy
 	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+endif
+
+ifeq ($(OSTYPE), linux)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+endif
+
+ifeq ($(OSTYPE), osx)
+
+MiniCppUnit: dummy
+	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+endif
 
 clean:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
