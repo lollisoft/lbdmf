@@ -230,6 +230,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 UIWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
@@ -242,6 +243,7 @@ ifeq ($(OSTYPE), linux)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 UIWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
