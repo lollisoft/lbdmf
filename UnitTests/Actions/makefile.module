@@ -64,19 +64,19 @@ endif
 
 ifeq ($(OSTYPE), solaris)
 MODULE=lbClasses
-MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -lUIWrapper -llbHook
 endif    
 
 ifeq ($(OSTYPE), linux)
 MODULE=lbClasses
-MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -lUIWrapper -llbHook
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
 MODULE=lbClasses
-MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+MOD_INCL=$(STD_INCL) -I ../include
 VENDORLIBS=-L$(prefix)/lib -lMiniCppUnit -lUIWrapper -llbHook
 endif    
 
