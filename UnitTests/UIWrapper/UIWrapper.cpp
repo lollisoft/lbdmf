@@ -62,7 +62,7 @@ void LB_STDCALL UIWrapper::addAnswer(char* what, bool last) {
 
 	answerList->insert(&uk, &keyAnswerNumber);
 
-	if (last == TRUE)
+	if (last == true)
 		numberOfAnswers = 0;
 }
 
