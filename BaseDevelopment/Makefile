@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.9 $
+# * $Revision: 1.229.2.10 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.9 2012/11/25 09:03:49 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.10 2012/12/07 05:09:49 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.10  2012/12/07 05:09:49  lollisoft
+# * Activated building UnitTests on solaris, linux and ppc linux.
+# *
 # * Revision 1.229.2.9  2012/11/25 09:03:49  lollisoft
 # * Missed the wsShapeFramework targets on Linux.
 # *
@@ -913,6 +916,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
+	../UnitTests \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../AppDevelopment
 endif
@@ -923,6 +927,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
+	../UnitTests \
 	../RegressionTests \
 	../AppDevelopment
 endif
@@ -932,6 +937,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
+	../UnitTests \
 	../RegressionTests
 endif
 
@@ -950,12 +956,14 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), solaris)
 BASEDIRECTORIES= \
 	../Plugins \
+	../UnitTests \
 	../Modules
 endif
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../UnitTests \
 	../Modules
 endif
 endif
