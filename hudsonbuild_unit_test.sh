@@ -36,4 +36,4 @@ CRUISECONTROL=yes
 export CRUISECONTROL
 
 make install
-$(pwd)/bin/lbDMFUnitTest
+$(pwd)/bin/lbDMFUnitTests
