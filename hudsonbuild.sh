@@ -4,7 +4,7 @@ echo all: BaseDevelopment > makefile
 echo \# >> makefile
 
 #echo Updating full source tree to be save
-cvs update -d
+#cvs update -d
 
 echo export DEVROOT=`pwd` >> makefile
 echo export prefix=`pwd` >> makefile
@@ -32,17 +32,11 @@ echo dummy: >> makefile
 echo \ >> makefile
 echo BaseDevelopment: dummy >> makefile
 echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> makefile
+
+echo \ >> makefile
+echo install: dummy >> makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> makefile
+
 CRUISECONTROL=yes
 export CRUISECONTROL
 make
-cd BaseDevelopment
-CRUISECONTROL=
-export CRUISECONTROL
-make -e prefix=`pwd`/.. install
-cd ..
-LD_LIBRARY_PATH=$(pwd)/lib
-export LD_LIBRARY_PATH
-PLUGIN_DIR=$(pwd)/plugins
-export PLUGIN_DIR
-$(pwd)/bin/lbDMFUnitTests
-
