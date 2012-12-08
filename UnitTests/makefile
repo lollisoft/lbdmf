@@ -250,7 +250,7 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@ install
 
 UIWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=libUIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
@@ -285,7 +285,7 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@ install
 
 UIWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=libUIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
