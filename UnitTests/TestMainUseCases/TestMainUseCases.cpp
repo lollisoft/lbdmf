@@ -325,7 +325,9 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+		puts("Initialize plugin system");
 		PM->initialize();
+		puts("Run plugin installers");
 		PM->runInstallers();
 
 		UAP(lb_I_SimulatedApplication, myUIWrapper)
@@ -334,16 +336,21 @@ public:
         myUIWrapper->initialize();
 
 		// Be sure to not autoload
+		puts("Load meta application");
 		meta->load();
 		meta->setAutoload(false);
+		puts("Initialize meta application");
 		meta->initialize("user", "lbDMF Manager");
 
 		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 
+		puts("Load application lbDMF Manager");
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 		
+		puts("Export application model to UML XMI file");
 		ASSERT_EQUALS(ERR_NONE, FireEvent("exportApplicationConfigurationToUMLXMIDoc"))
 
+		puts("Unload application");
 		meta->unloadApplication();
 	
 		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
@@ -355,10 +362,16 @@ public:
 		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("exportApplicationToXMLBuffer", unused))
 		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
 
+		puts("Export application model to UML XMI file");
 		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("exportApplicationConfigurationToUMLXMIDoc"))
+		
+		puts("Export application to buffer");
 		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("exportApplicationToXMLBuffer"))
+
+		puts("Import CDKatalog");
 		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("importUMLXMIDocIntoApplication"))
 
+		puts("Load CDKatalog");
 		meta->loadApplication("user", "CDKatalog");
 
 		meta->unloadApplication();
