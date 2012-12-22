@@ -325,15 +325,18 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
-		puts("Initialize plugin system");
-		PM->initialize();
-		puts("Run plugin installers");
-		PM->runInstallers();
-
 		UAP(lb_I_SimulatedApplication, myUIWrapper)
 		myUIWrapper = new UIWrapper();
 		
         myUIWrapper->initialize();
+
+		// Answer the ODBC failure question with yes (Sqlite instead)
+		myUIWrapper->addAnswer("yes", true);
+
+		puts("Initialize plugin system");
+		PM->initialize();
+		puts("Run plugin installers");
+		PM->runInstallers();
 
 		// Be sure to not autoload
 		puts("Load meta application");
