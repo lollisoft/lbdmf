@@ -1367,10 +1367,6 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 					//if (isVerbose())
 					printf("Unloaded module %s.\n", name);
 				}
-				{
-					printf("Error while unloading module: %s\n", dlerror());
-					if (isVerbose()) printf("ERROR: Library could not be unloaded!\n");
-				}
 
 				free(delMod->name);
 				delete delMod;
