@@ -1452,7 +1452,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 metaapp->showPropertyPanel(*&params);
         } else {
                 REQUEST(getModuleInstance(), lb_I_InputStream, importfile)
-                importfile->setFileName(XMIFileUMLProject->getData());
+///\todo Make return value bool to indicate missing file.
+		importfile->setFileName(XMIFileUMLProject->getData());
         }
 
 
@@ -1507,7 +1508,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                                 fOp->end();
                                 dirty = true; /// \todo Detect if really made dirty.
                         } else {
-                                // No file found. Create one from database...
+                                // No file found to import from. 
+        			metaapp->setStatusText("Info", "Importing from UML (XMI) file failed. File missing.");
                         }
                 }
         }
