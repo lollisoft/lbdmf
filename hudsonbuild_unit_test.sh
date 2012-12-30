@@ -2,11 +2,13 @@
 
 CRUISECONTROL=
 export CRUISECONTROL
-make -e prefix=`pwd` install
+
 LD_LIBRARY_PATH=$(pwd)/lib
 export LD_LIBRARY_PATH
 PLUGIN_DIR=$(pwd)/plugins
 export PLUGIN_DIR
+
+make -e prefix=`pwd` -C BaseDevelopment install
 
 # Remove all wxWidgets based plugins that are not installed in a console based application.
 # wxWidgets based stuff does not make sense here as I did not use wsWidgets outside of GUI.
