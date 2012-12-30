@@ -334,6 +334,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+        SetErrorMessage(strErrorMessage);
         sqlite3_free(szErrorMessage);
         ThrowDatabaseException();
         return NULL;
