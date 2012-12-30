@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CRUISECONTROL=
+CRUISECONTROL=yes
 export CRUISECONTROL
 
 LD_LIBRARY_PATH=$(pwd)/lib
