@@ -21,5 +21,11 @@ rm $(pwd)/plugins/lbLoginWizard.*
 rm $(pwd)/plugins/lbwxSFDesigner.*
 rm $(pwd)/plugins/UserFeedback.*
 
+# Prepare local application directory
+
+rm -rf $HOME/.lbDMF
+mkdir $HOME/.lbDMF
+cp Database/* $HOME/.lbDMF
+
 
 $(pwd)/bin/lbDMFUnitTests
