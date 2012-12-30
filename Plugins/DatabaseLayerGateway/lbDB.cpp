@@ -2019,17 +2019,20 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 
 						int count = 0;
 						if (tempResult && tempResult->Next()) {
-							count++;
 							wxString value = tempResult->GetResultString(1);
-							//_LOG << "Fill ID list with item " << value.c_str() LOG_
-							currentCursorview.Add(value);
-							while (tempResult->Next()) {
+///\todo Why gets the value empty in my unit test?
+							//if (value != "") {
 								count++;
-								value = tempResult->GetResultString(1);
 								//_LOG << "Fill ID list with item " << value.c_str() LOG_
 								currentCursorview.Add(value);
-								if (count == max_in_cursor) break;
-							}
+								while (tempResult->Next()) {
+									count++;
+									value = tempResult->GetResultString(1);
+									//_LOG << "Fill ID list with item " << value.c_str() LOG_
+									currentCursorview.Add(value);
+									if (count == max_in_cursor) break;
+								}
+							//}
 						}
 						cursor = 0;
 						max_in_cursor = count;
@@ -2038,7 +2041,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 						currentdbLayer->CloseResultSet(theResult);
 						currentdbLayer->CloseResultSet(tempResult);
 
-						selectCurrentRow();
+						if (count > 0) {
+							selectCurrentRow();
+						} else {
+							return ERR_DB_NODATA;
+						}
 					} else {
 						cursorFeature = false;
 					}
