@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.12 $
+# * $Revision: 1.148.2.13 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.12 2012/12/30 08:20:50 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.13 2012/12/30 09:58:52 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.13  2012/12/30 09:58:52  lollisoft
+# * Need a debug build for hudson user.
+# *
 # * Revision 1.148.2.12  2012/12/30 08:20:50  lollisoft
 # * Deactivated debugging.
 # *
@@ -1231,7 +1234,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=no
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
