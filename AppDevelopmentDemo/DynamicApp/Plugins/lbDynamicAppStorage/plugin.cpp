@@ -556,7 +556,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	getenv("HOME");
 #endif
 	*installdir = home;
-	*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
+	//*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
 	meta->setDirLocation(installdir->charrep());
 #endif
 	meta->msgBox("Info",
