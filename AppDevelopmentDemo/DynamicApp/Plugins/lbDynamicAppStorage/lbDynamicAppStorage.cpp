@@ -1339,7 +1339,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	if (SomeBaseSettings == NULL || SomeBaseSettings->Count() == 0) {
 		// Firstly let them empty
 		_LOG << "Initialize the dynamic app import settings..." LOG_
-		*UMLImportTargetDBName = "CRM";
+		*UMLImportTargetDBName = "lbDMF";
 		*UMLImportTargetDBUser = "<dbuser>";
 		*UMLImportTargetDBPass = "<dbpass>";
 		*GeneralDBSchemaname = "public";
@@ -1351,7 +1351,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		//UseOtherXSLFile->setData(true);
 
 		*XSLDatabaseBackendSystem = "Sqlite";
-		*XSLDatabaseBackendApplication = "PostgreSQL";
+		*XSLDatabaseBackendApplication = "Sqlite";
 
 #ifdef WINDOWS
 		///\todo Change the used files to refer the HOME versions.
@@ -1372,7 +1372,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		//installXSLFilesToHome();
         XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi");
         XMIFileUMLProjectExport->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/Export.xmi");
-	XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
+		XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("/usr/share/lbdmf/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("/usr/share/lbdmf/DMFToXMI/XMISettings.xsl");
         XSLFileSystemDatabase->setData("/usr/share/lbdmf/XMIToDMF/importUML-SystemDB.xsl");

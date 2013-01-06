@@ -316,7 +316,7 @@ lbDynamicApplication::lbDynamicApplication() {
         REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
 
 		*XSLDatabaseBackendSystem = "Sqlite";
-		*XSLDatabaseBackendApplication = "PostgreSQL";
+		*XSLDatabaseBackendApplication = "Sqlite";
 
 #ifdef WINDOWS
         XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
