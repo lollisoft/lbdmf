@@ -530,6 +530,21 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
+
+-- ActionID from assocname2 = <xsl:value-of select="$assocname2"/> converted is <xsl:value-of select="$assocname1"/>
+
+<xsl:if test="$TargetDBType = 'Sqlite'">
+delete from formular_actions where formular IN 
+	(select id from "formulare" where anwendungid IN
+		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
+		name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from action_parameters where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
+</xsl:if>
+
 <xsl:if test="$assocname1=''">
 insert into actions (name, typ, source, target)
 values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
@@ -552,16 +567,6 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values 
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
-delete from formular_actions where formular IN 
-	(select id from "formulare" where anwendungid IN
-		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
-		name = '<xsl:value-of select="$thisClassName"/>');
-delete from action_steps where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from action_parameters where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
-
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
 values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
 (select id from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>')); 
