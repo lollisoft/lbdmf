@@ -55,19 +55,19 @@
 
 #include <lbCopyFile.h>
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbCopyFile)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbCopyFileImpl)
 ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbCopyFile::lbCopyFile() {
+lbCopyFileImpl::lbCopyFileImpl() {
 	
 }
 
-lbCopyFile::~lbCopyFile() {
+lbCopyFileImpl::~lbCopyFileImpl() {
 	
 }
 
-lb_I_Unknown* lbCopyFile::getUnknown() {
+lb_I_Unknown* lbCopyFileImpl::getUnknown() {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Unknown, uk)
 	
@@ -76,23 +76,23 @@ lb_I_Unknown* lbCopyFile::getUnknown() {
 	return uk.getPtr();
 }
 
-lbErrCodes LB_STDCALL lbCopyFile::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbCopyFileImpl::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_LOG << "lbCopyFile::setData(...) not implemented yet" LOG_
+	_CL_LOG << "lbCopyFileImpl::setData(...) not implemented yet" LOG_
 	
 	return ERR_NOT_IMPLEMENTED;
 }
 
-lbErrCodes LB_STDCALL lbCopyFile::registerEventHandler(lb_I_Dispatcher* disp) {
+lbErrCodes LB_STDCALL lbCopyFileImpl::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	int temp;
 	eman->registerEvent("copyFile", temp);
 
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbCopyFile::copyFile, "copyFile");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbCopyFileImpl::copyFile, "copyFile");
 }
 
-lbErrCodes LB_STDCALL lbCopyFile::copyFile(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbCopyFileImpl::copyFile(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, from) // Where to write to
 	UAP_REQUEST(getModuleInstance(), lb_I_String, to) // Where to write to
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result) // Result for activity
@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL lbCopyFile::copyFile(lb_I_Unknown* uk) {
 		return ERR_PARAM_WRONG_TYPE;
 	}
 	
-	if (lbdmfapi::lbCopyFile(from->charrep(), to->charrep()) != ERR_NONE) {
+	if (::lbCopyFile(from->charrep(), to->charrep()) != ERR_NONE) {
 		*result = "0";
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_NONE;
@@ -219,7 +219,7 @@ bool LB_STDCALL lbPluginCopyFile::canAutorun() {
 lbErrCodes LB_STDCALL lbPluginCopyFile::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
-	lbCopyFile* XSLTTransformer = new lbCopyFile();
+	lbCopyFileImpl* XSLTTransformer = new lbCopyFileImpl();
 		
 	QI(XSLTTransformer, lb_I_Unknown, ukTransformer) 
 	
@@ -242,7 +242,7 @@ lb_I_Unknown* LB_STDCALL lbPluginCopyFile::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (ukTransformer == NULL) {
-		lbCopyFile* transformer = new lbCopyFile();
+		lbCopyFileImpl* transformer = new lbCopyFileImpl();
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)
 	} else {
@@ -260,7 +260,7 @@ lb_I_Unknown* LB_STDCALL lbPluginCopyFile::getImplementation() {
 		
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 		
-		lbCopyFile* transformer = new lbCopyFile();
+		lbCopyFileImpl* transformer = new lbCopyFileImpl();
 		
 		
 		QI(transformer, lb_I_Unknown, ukTransformer)

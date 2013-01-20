@@ -216,11 +216,8 @@ extern "C" DLLEXPORT char*      LB_CDECL _lbstristr(const char *String, const ch
 extern "C" DLLEXPORT const char*	LB_CDECL _getOsType() { return getOsType(); }
 extern "C" DLLEXPORT lbErrCodes LB_CDECL _requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line) { return requestHelper(mm, iface, variable, file, line); }
 
-namespace lbdmfapi {
-
-extern "C" DLLEXPORT lbErrCodes	LB_CDECL _lbCopyFile(const char* from, const char* to) { return lbdmfapi::lbCopyFile(from, to); }
-
-}
+extern "C" DLLEXPORT lbErrCodes	LB_CDECL _lbCopyFile(const char* from, const char* to) { return lbCopyFile(from, to); }
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _lbCopyDirectory(const char* fromDirectory, const char* toDirectory)  { return lbCopyDirectory(fromDirectory, toDirectory); }
 
 #endif
 
@@ -676,8 +673,6 @@ extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
 	return false;
 }
 
-namespace lbdmfapi {
-
 DLLEXPORT lbErrCodes LB_CDECL lbCopyFile(const char* from, const char* to)
 {
 #ifdef WINDOWS
@@ -693,6 +688,19 @@ DLLEXPORT lbErrCodes LB_CDECL lbCopyFile(const char* from, const char* to)
 #endif
 }
 
+DLLEXPORT lbErrCodes LB_CDECL lbCopyDirectory(const char* fromDirectory, const char* toDirectory)
+{
+#ifdef WINDOWS
+	return ERR_NONE;
+#endif
+#ifndef OSX
+#ifdef LINUX
+	return ERR_NONE;
+#endif
+#endif
+#ifdef OSX
+	return ERR_NONE;
+#endif
 }
 
 /*...sDLLEXPORT bool LB_CDECL FileExists\40\char \42\filename\41\:0:*/
