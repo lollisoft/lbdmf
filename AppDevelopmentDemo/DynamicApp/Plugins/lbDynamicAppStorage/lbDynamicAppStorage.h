@@ -91,6 +91,9 @@ public:
 	lbErrCodes	LB_STDCALL save(lb_I_Database* oDB);
 	
 	UAP(lb_I_Unknown, op)
+		
+private:
+	const char** LB_STDCALL convertParameters(lb_I_Parameter* params);
 };
 
 DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImportExport)

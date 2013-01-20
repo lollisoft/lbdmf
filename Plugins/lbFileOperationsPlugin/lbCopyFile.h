@@ -29,13 +29,13 @@
 /**
  * \brief Provides an event handler to copy files or directories.
  */
-class lbCopyFile: 
+class lbCopyFileImpl: 
 public lb_I_VisitableHelper,
 public lb_I_EventHandler
 {
 public:
-	lbCopyFile();
-	virtual ~lbCopyFile();
+	lbCopyFileImpl();
+	virtual ~lbCopyFileImpl();
 
 	DECLARE_LB_UNKNOWN()
 	
