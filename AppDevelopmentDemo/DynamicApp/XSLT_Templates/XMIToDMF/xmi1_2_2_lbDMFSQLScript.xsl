@@ -31,12 +31,19 @@
 
 <xsl:output method="text" indent="no"/>
 
+<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
+<xsl:param name="XSLDatabaseBackendSystem"/>
+<xsl:param name="XSLDatabaseBackendApplication"/>
+<xsl:param name="overwriteDatabase"/>
+
+<xsl:variable name="targetdatabase"><xsl:if test="XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
+
 <!-- ********** Select your database target ********** -->
 
 <!--
 <xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
 -->
-<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+<xsl:variable name="DefaultDatabaseSystem" select="'Sqlite'"/>
 
 
 <xsl:variable name="TargetDBType">

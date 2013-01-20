@@ -453,11 +453,8 @@ extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 extern "C" DLLEXPORT const char*		LB_CDECL _getOsType();
 extern "C" DLLEXPORT lbErrCodes LB_CDECL _requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line);
 
-namespace lbdmfapi {
-
 extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _lbCopyFile(const char* from, const char* to);
-
-}
+extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _lbCopyDirectory(const char* fromDirectory, const char* toDirectory);
 
 #endif
 
@@ -551,11 +548,8 @@ extern "C" DLLEXPORT void LB_CDECL uninitLocale();
 extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename);
 extern "C" DLLEXPORT bool LB_CDECL FileExists(char *filename);
 
-namespace lbdmfapi {
-
 extern "C" DLLEXPORT lbErrCodes LB_CDECL lbCopyFile(const char* from, const char* to);
-
-}
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbCopyDirectory(const char* fromDirectory, const char* toDirectory);
 
 extern "C" DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name);
 /*...sDLLEXPORT lbErrCodes LB_CDECL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/

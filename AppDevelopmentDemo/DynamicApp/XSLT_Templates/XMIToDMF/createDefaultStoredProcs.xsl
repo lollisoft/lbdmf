@@ -29,6 +29,14 @@
 <xsl:import href="XMISettings.xsl"/>
 <xsl:output method="text"/>
 
+<xsl:param name="UMLImportDBName"/>
+<xsl:param name="UMLImportDBUser"/>
+<xsl:param name="UMLImportDBPass"/>
+
+<xsl:variable name="database_name"><xsl:if test="UMLImportDBName=''"><xsl:value-of select="$settingsfile_database_name"/></xsl:if><xsl:if test="UMLImportDBName!=''"><xsl:value-of select="$UMLImportDBName"/></xsl:if></xsl:variable>
+<xsl:variable name="database_user"><xsl:if test="UMLImportDBUser=''"><xsl:value-of select="$settingsfile_database_user"/></xsl:if><xsl:if test="UMLImportDBUser!=''"><xsl:value-of select="$UMLImportDBUser"/></xsl:if></xsl:variable>
+<xsl:variable name="database_pass"><xsl:if test="UMLImportDBPass=''"><xsl:value-of select="$settingsfile_database_pass"/></xsl:if><xsl:if test="UMLImportDBPass!=''"><xsl:value-of select="$UMLImportDBPass"/></xsl:if></xsl:variable>
+
 <xsl:template name="createDefaultStoredProcs">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>

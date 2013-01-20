@@ -99,6 +99,14 @@ public:
 	 */
 	bool					LB_STDCALL installDatabase();
 
+	/** \brief Test if templates have been copied.
+	 * If the templates not have been copied to the user's home directory ($HOME/.lbdmf), return false.
+	 * Don't use this function on Mac OS X systems. There the templates are located in the application bundle.
+	 */
+	bool					LB_STDCALL checkTemplatesCopied();
+	
+	void					LB_STDCALL copyTemplates();
+	
 	DECLARE_PLUGINS()
 	
 	UAP(lb_I_MetaApplication, meta)
@@ -585,6 +593,26 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	return true;
 }
 
+bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkTemplatesCopied() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, installdir)
+	char* home =
+#if defined(WINDOWS)
+	getenv("USERPROFILE");
+	*installdir = home;
+	*installdir += "\\.lbDMF";
+#endif
+#if defined(UNIX) || defined(LINUX) //|| defined(OSX)
+	getenv("HOME");
+	*installdir = home;
+	*installdir += "/lbDMF";
+#endif
+	return DirectoryExists(installdir->charrep());
+}
+
+void LB_STDCALL lbPluginModuleDynamicAppStorage::copyTemplates()
+{
+	
+}
 
 lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
 	_LOG << "lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() called." LOG_
@@ -667,6 +695,14 @@ void LB_STDCALL lbPluginModuleDynamicAppStorage::install() {
 	if (_check_for_databases_failure_step == -2) {
 		meta->msgBox("Error", "Setup of databases, required by this application failed!");
 	}
+	
+/// \todo Implement the case if the application bundle is installed in the application folder.
+#ifndef OSX
+	if (!checkTemplatesCopied())
+	{
+		copyTemplates();
+	}
+#endif
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDynamicAppStorage::setData(lb_I_Unknown* uk) {
