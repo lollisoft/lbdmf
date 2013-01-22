@@ -1653,9 +1653,18 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::setData(lb_I_Unknown*) {
 		return ERR_NOT_IMPLEMENTED;
 }
 
+void LB_STDCALL lbDynamicAppBoUMLImportExport::cleanupParameters(const char** params) {
+	for (int i = 0; i < 17; i++) {
+		if (params[i] != NULL) free((char*)(params[i]));
+	}
+	free((char**)params);
+}
+// Caller must cleanup the string array.
 const char** LB_STDCALL lbDynamicAppBoUMLImportExport::convertParameters(lb_I_Parameter* document) {
 	const char** params = (const char**)malloc( 17 * sizeof(char*));
-	params[0] = NULL;
+	for (int i = 0; i < 17; i++) {
+		params[i] = NULL;
+	}
 
 	if (document != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -1681,18 +1690,18 @@ const char** LB_STDCALL lbDynamicAppBoUMLImportExport::convertParameters(lb_I_Pa
 		document->getUAPString(*&param, *&DBPass);
 
 		
-		params[0] = "XSLDatabaseBackendSystem";
-		params[1] = XSLDatabaseBackendSystem->charrep();
-		params[2] = "XSLDatabaseBackendApplication";
-		params[3] = XSLDatabaseBackendApplication->charrep();
-		params[4] = "overwriteDatabase";
-		params[5] = overwrite->charrep();
-		params[6] = "UMLImportDBName";
-		params[7] = DBName->charrep();
-		params[8] = "UMLImportDBUser";
-		params[9] = DBUser->charrep();
-		params[10] = "UMLImportDBPass";
-		params[11] = DBPass->charrep();
+		params[0] = strdup("XSLDatabaseBackendSystem");
+		params[1] = strdup(XSLDatabaseBackendSystem->charrep());
+		params[2] = strdup("XSLDatabaseBackendApplication");
+		params[3] = strdup(XSLDatabaseBackendApplication->charrep());
+		params[4] = strdup("overwriteDatabase");
+		params[5] = strdup(overwrite->charrep());
+		params[6] = strdup("UMLImportDBName");
+		params[7] = strdup(DBName->charrep());
+		params[8] = strdup("UMLImportDBUser");
+		params[9] = strdup(DBUser->charrep());
+		params[10] = strdup("UMLImportDBPass");
+		params[11] = strdup(DBPass->charrep());
 		params[12] = 0;
 	}
 	
@@ -1941,6 +1950,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 
 			res = xsltApplyStylesheet(cur, doc, xsltParameters);
 
+			cleanupParameters(xsltParameters);
+			
 			_LOG << "Save resulting document as a string." LOG_
 
 			if (res == NULL) {
@@ -2160,6 +2171,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			
 			res = xsltApplyStylesheet(cur, doc, xsltParameters);
 			
+			cleanupParameters(xsltParameters);
+
 			if (res == NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				
@@ -2474,6 +2487,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		
 		res = xsltApplyStylesheet(cur, doc, xsltParameters);
 		
+		cleanupParameters(xsltParameters);
+
 		_LOG << "Save resulting document as a string." LOG_
 			
 		if (res == NULL) {
