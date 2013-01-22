@@ -36,9 +36,14 @@
 <xsl:param name="XSLDatabaseBackendApplication"/>
 <xsl:param name="overwriteDatabase"/>
 
-<xsl:variable name="targetdatabase"><xsl:if test="XSLDatabaseBackendApplication=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="XSLDatabaseBackendApplication!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
-<xsl:variable name="execute_droprules"><xsl:if test="XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_execute_droprules"/></xsl:if><xsl:if test="overwriteDatabase!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
-
+<xsl:variable name="targetdatabase">
+<xsl:if test="$XSLDatabaseBackendApplication=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if>
+<xsl:if test="$XSLDatabaseBackendApplication!=''"><xsl:value-of select="$XSLDatabaseBackendApplication"/></xsl:if>
+</xsl:variable>
+<xsl:variable name="execute_droprules">
+<xsl:if test="$overwriteDatabase=''"><xsl:value-of select="$settingsfile_execute_droprules"/></xsl:if>
+<xsl:if test="$overwriteDatabase!=''"><xsl:value-of select="$overwriteDatabase"/></xsl:if>
+</xsl:variable>
 
 <!-- ********** Select your database target ********** -->
 
@@ -109,7 +114,13 @@
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
--- Creating a database script for '<xsl:value-of select="$targetdatabase"/>'
+
+
+-- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
+-- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
+-- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
+
+-- xmi1.2_2SQLScript.xsl: Creating a database script for '<xsl:value-of select="$targetdatabase"/>'
 
 <!-- Create some required functions -->
 

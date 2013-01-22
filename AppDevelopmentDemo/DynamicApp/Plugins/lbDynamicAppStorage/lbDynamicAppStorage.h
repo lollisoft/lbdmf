@@ -93,7 +93,8 @@ public:
 	UAP(lb_I_Unknown, op)
 		
 private:
-	const char** LB_STDCALL convertParameters(lb_I_Parameter* params);
+	const char**	LB_STDCALL convertParameters(lb_I_Parameter* params);
+	void			LB_STDCALL cleanupParameters(const char** params);
 };
 
 DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImportExport)
