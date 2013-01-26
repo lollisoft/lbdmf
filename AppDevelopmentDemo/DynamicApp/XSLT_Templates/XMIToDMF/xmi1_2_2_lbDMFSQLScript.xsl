@@ -36,7 +36,7 @@
 <xsl:param name="XSLDatabaseBackendApplication"/>
 <xsl:param name="overwriteDatabase"/>
 
-<xsl:variable name="targetdatabase"><xsl:if test="XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
+<xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
 
 <!-- ********** Select your database target ********** -->
 

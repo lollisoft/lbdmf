@@ -36,6 +36,13 @@
 
 <xsl:output method="text"/>
 
+<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
+<xsl:param name="XSLDatabaseBackendSystem"/>
+<xsl:param name="XSLDatabaseBackendApplication"/>
+<xsl:param name="overwriteDatabase"/>
+
+<xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
+
 <!-- ********** Select your database target ********** -->
 
 <!--
@@ -69,6 +76,11 @@
 
 
 	<xsl:template match="/">
+-- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
+-- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
+-- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
+
+-- Params targetdatabase generated: <xsl:value-of select="$targetdatabase"/>
 
 --
 -- SQL script created for <xsl:value-of select="$TargetDBType"/>
@@ -258,14 +270,6 @@ INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "
 	<xsl:when test="$TargetDBType='Sqlite'">
 -- Generate statemachine for <xsl:value-of select="$ID"/>
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
-
--- Delete old statemachine
-delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'));
-delete from "action_step_transitions" where "description" = '_<xsl:value-of select="$ID"/>';
-delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>');
-delete from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>';
-
-
 
 -- A form validator should be used before saving the changes to the database
 
