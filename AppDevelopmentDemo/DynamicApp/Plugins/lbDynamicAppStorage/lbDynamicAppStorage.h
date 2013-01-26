@@ -95,6 +95,8 @@ public:
 private:
 	const char**	LB_STDCALL convertParameters(lb_I_Parameter* params);
 	void			LB_STDCALL cleanupParameters(const char** params);
+		
+	char*			LB_STDCALL packParameter(const char* value);
 };
 
 DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImportExport)

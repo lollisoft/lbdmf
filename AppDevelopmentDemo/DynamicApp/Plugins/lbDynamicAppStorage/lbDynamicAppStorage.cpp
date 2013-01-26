@@ -1659,6 +1659,18 @@ void LB_STDCALL lbDynamicAppBoUMLImportExport::cleanupParameters(const char** pa
 	}
 	free((char**)params);
 }
+
+char*			LB_STDCALL lbDynamicAppBoUMLImportExport::packParameter(const char* value) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tempString)
+	
+	*tempString = "'";
+	*tempString += value;
+	*tempString += "'";
+	
+	return strdup(tempString->charrep());
+}
+
+
 // Caller must cleanup the string array.
 const char** LB_STDCALL lbDynamicAppBoUMLImportExport::convertParameters(lb_I_Parameter* document) {
 	const char** params = (const char**)malloc( 17 * sizeof(char*));
@@ -1689,19 +1701,26 @@ const char** LB_STDCALL lbDynamicAppBoUMLImportExport::convertParameters(lb_I_Pa
 		*param = "UMLImportDBPass";
 		document->getUAPString(*&param, *&DBPass);
 
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tempString)
+		
+		*tempString = "'";
+		*tempString += XSLDatabaseBackendSystem->charrep();
+		*tempString += "'";
+		
 		
 		params[0] = strdup("XSLDatabaseBackendSystem");
-		params[1] = strdup(XSLDatabaseBackendSystem->charrep());
+		params[1] = packParameter(XSLDatabaseBackendSystem->charrep());
 		params[2] = strdup("XSLDatabaseBackendApplication");
-		params[3] = strdup(XSLDatabaseBackendApplication->charrep());
+		params[3] = packParameter(XSLDatabaseBackendApplication->charrep());
 		params[4] = strdup("overwriteDatabase");
-		params[5] = strdup(overwrite->charrep());
+		params[5] = packParameter(overwrite->charrep());
 		params[6] = strdup("UMLImportDBName");
-		params[7] = strdup(DBName->charrep());
+		params[7] = packParameter(DBName->charrep());
 		params[8] = strdup("UMLImportDBUser");
-		params[9] = strdup(DBUser->charrep());
+		params[9] = packParameter(DBUser->charrep());
 		params[10] = strdup("UMLImportDBPass");
-		params[11] = strdup(DBPass->charrep());
+		params[11] = packParameter(DBPass->charrep());
 		params[12] = 0;
 	}
 	
