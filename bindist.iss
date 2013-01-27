@@ -60,7 +60,7 @@ Source: "Q:\Develop\Projects\dll\wxmsw28_html_gcc_custom.dll"; DestDir: "{app}\D
 Source: "Q:\Develop\Projects\dll\wxmsw28_xrc_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ; Monolithic
 ;Source: "Q:\Develop\Projects\dll\wxmsw28_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\wxAUI.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\dll\wxAUI.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wxPropgrid.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbxslt.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbDatabaseForm.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;

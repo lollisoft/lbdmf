@@ -37,5 +37,12 @@ echo set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin >> doBuildWx.bat
 echo set Path=%Path%;%MINGWBIN% >> doBuildWx.bat
 echo mingw32-make -f makefile.gcc all >> doBuildWx.bat
 echo copy %WXDIR%\lib\gcc_dll\*.dll %DEVLW%\%BASE%\Projects\dll >> doBuildWx.bat
+echo IF NOT EXIST %DRIVE%\lbDMF\XSLT ( >> doBuildWx.bat
+echo xcopy %DRIVE%\lbDMF\Develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates %DRIVE%\lbDMF >> doBuildWx.bat
+echo move %DRIVE%\lbDMF\XSLT_Templates %DRIVE%\lbDMF\XSLT >> doBuildWx.bat
+echo ) >> doBuildWx.bat
+echo IF NOT EXIST %DRIVE%\lbDMF\UMLSamples ( >> doBuildWx.bat
+echo xcopy %DRIVE%\lbDMF\Develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples %DRIVE%\lbDMF >> doBuildWx.bat
+echo ) >> doBuildWx.bat
 
 call watcomenv.bat doBuildWx.bat
