@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.13 $
+# * $Revision: 1.148.2.14 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.13 2012/12/30 09:58:52 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.14 2013/01/27 15:52:25 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.14  2013/01/27 15:52:25  lollisoft
+# * Release build. Added MinGW target switch to start support -m32 only (Sqlite).
+# *
 # * Revision 1.148.2.13  2012/12/30 09:58:52  lollisoft
 # * Need a debug build for hudson user.
 # *
@@ -631,8 +634,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
@@ -841,6 +844,9 @@ endif
 CCMINGW=gcc
 CPPMINGW=g++
 
+# Sqlite could be compiled in 32Bit only
+MINGW_ARCH=-m32
+
 ifeq ($(MODE), _DEBUG)
 MINGW_DEBUG= -gdwarf-2 -g3
 endif
@@ -850,11 +856,11 @@ MINGW_DEBUG=
 endif
 
 
-C_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG)
-CPP_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG)
+C_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG) $(MINGW_ARCH)
+CPP_MINGW_DLLOPS=-DWINDOWS $(MINGW_DEBUG) $(MINGW_ARCH)
 
-C_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG)
-CPP_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG)
+C_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG) $(MINGW_ARCH)
+CPP_MINGW_EXEOPS=-DWINDOWS $(MINGW_DEBUG) $(MINGW_ARCH)
 
 # Microsoft
 OUTDIR=.
