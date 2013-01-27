@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.10 $
+# * $Revision: 1.229.2.11 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.10 2012/12/07 05:09:49 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.11 2013/01/27 15:53:00 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.11  2013/01/27 15:53:00  lollisoft
+# * Moved target to be build earlyer.
+# *
 # * Revision 1.229.2.10  2012/12/07 05:09:49  lollisoft
 # * Activated building UnitTests on solaris, linux and ppc linux.
 # *
@@ -1390,9 +1393,9 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Doc/html \
-	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	lbcs \
