@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 36
+  revision 37
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1177,7 +1177,7 @@ ${inlines}
 	send_signal_action
 	ncouples 3
 	key "signal" value "showMsgBox"
-	key "msg" value "Os Type is {OSType}. ApplicationId is ''{SaveApplicationID}''"
+	key "msg" value "Os Type is {OSType}. ApplicationId is {SaveApplicationID}"
 	key "title" value "Operating system and selected application..."
 	flow 197250 "<flow>"
 	  on activitynode_ref 148354 // decision
