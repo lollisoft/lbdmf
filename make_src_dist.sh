@@ -5,7 +5,7 @@ ARCH=`arch`
 
 if [ "$1" == "" ]; then
 	echo No version parameter given.
-	echo Sample: $0 0.7.1
+	echo Sample: $0 1.0.4_stable_rc4 
 	exit;
 fi
 
