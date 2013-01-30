@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 34
+  revision 35
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1128,7 +1128,7 @@ ${inlines}
 	key "filename" value "{file}"
 	key "source" value "{memorybuffer}"
 	flow 190722 "<flow>"
-	  on activityaction_ref 174722 // activity action Show OS Type
+	  on activityaction_ref 174722 // activity action Show OS Type and AppId
 	end
       end
 
@@ -1173,12 +1173,12 @@ ${inlines}
 	end
       end
 
-      activityaction 174722 "Show OS Type"
+      activityaction 174722 "Show OS Type and AppId"
 	send_signal_action
 	ncouples 3
 	key "signal" value "showMsgBox"
-	key "msg" value "Os Type is {OSType}"
-	key "title" value "Betriebssystem..."
+	key "msg" value "Os Type is {OSType}. ApplicationId is '{SaveApplicationID}'"
+	key "title" value "Operating system and selected application..."
 	flow 197250 "<flow>"
 	  on activitynode_ref 148354 // decision
 	end
