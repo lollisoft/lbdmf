@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.11 $
+# * $Revision: 1.229.2.12 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.11 2013/01/27 15:53:00 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.12 2013/01/30 04:50:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.12  2013/01/30 04:50:50  lollisoft
+# * Corrected rpm istallation.
+# *
 # * Revision 1.229.2.11  2013/01/27 15:53:00  lollisoft
 # * Moved target to be build earlyer.
 # *
@@ -1561,6 +1564,11 @@ install:
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
+	mkdir -p $(prefix)/share/lbdmf/TurboVision
+	mkdir -p $(prefix)/share/lbdmf/wxLua
+	mkdir -p $(prefix)/share/lbdmf/wxActiveRecords
+	mkdir -p $(prefix)/share/lbdmf/lbDMFDataViewModel
+	mkdir -p $(prefix)/share/lbdmf/lbDMFFixedFormular
 	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
@@ -1595,6 +1603,11 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
+	mkdir -p $(prefix)/share/lbdmf/TurboVision
+	mkdir -p $(prefix)/share/lbdmf/wxLua
+	mkdir -p $(prefix)/share/lbdmf/wxActiveRecords
+	mkdir -p $(prefix)/share/lbdmf/lbDMFDataViewModel
+	mkdir -p $(prefix)/share/lbdmf/lbDMFFixedFormular
 	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
@@ -1606,6 +1619,11 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/*.xsl $(prefix)/share/lbdmf/lbDMFDataViewModel
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular/*.xsl $(prefix)/share/lbdmf/lbDMFFixedFormular
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/*.xsl $(prefix)/share/lbdmf/TurboVision
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords/*.xsl $(prefix)/share/lbdmf/wxActiveRecords
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua/*.xsl $(prefix)/share/lbdmf/wxLua
 	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
 	mv "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi" "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi"
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
