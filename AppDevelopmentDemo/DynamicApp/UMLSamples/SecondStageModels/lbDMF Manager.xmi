@@ -523,7 +523,7 @@
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="title" value="Operating system and selected application..."/>
 								<taggedValue tag="signal" value="showMsgBox"/>
-								<taggedValue tag="msg" value="Os Type is {OSType}. ApplicationId is '{SaveApplicationID}'"/>
+								<taggedValue tag="msg" value="Os Type is {OSType}. ApplicationId is ''{SaveApplicationID}''"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x30282_40"/>
 							<incoming xmi:idref="BOUML_0x2e902_40"/>
