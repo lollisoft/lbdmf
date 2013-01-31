@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.6 2012/11/19 07:38:57 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.7 2013/01/31 06:46:47 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.6 $
+ * $Revision: 1.174.2.7 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.6 2012/11/19 07:38:57 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.7 2013/01/31 06:46:47 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.7  2013/01/31 06:46:47  lollisoft
+ * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
+ *
  * Revision 1.174.2.6  2012/11/19 07:38:57  lollisoft
  * Fixed remaining reload issues.
  *
@@ -1025,7 +1028,7 @@ bool MyApp::OnInit(void)
     }
 
 	wxString appname = GetAppName();
-	_LOG << "Application " << appname.c_str() << " starts up." LOG_
+	_LOGALWAYS << "Application " << appname.c_str() << " starts up." LOG_
 
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, string)
