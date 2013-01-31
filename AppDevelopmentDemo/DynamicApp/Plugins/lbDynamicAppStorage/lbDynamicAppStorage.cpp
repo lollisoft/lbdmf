@@ -1340,8 +1340,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		// Firstly let them empty
 		_LOG << "Initialize the dynamic app import settings..." LOG_
 		*UMLImportTargetDBName = "lbDMF";
-		*UMLImportTargetDBUser = "<dbuser>";
-		*UMLImportTargetDBPass = "<dbpass>";
+		*UMLImportTargetDBUser = "dbuser";
+		*UMLImportTargetDBPass = "dbpass";
 		*GeneralDBSchemaname = "public";
 
 		*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
