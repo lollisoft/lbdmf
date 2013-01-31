@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.8 $
+ * $Revision: 1.188.2.9 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.8 2012/11/19 07:38:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.9 2013/01/31 06:46:46 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.9  2013/01/31 06:46:46  lollisoft
+ * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
+ *
  * Revision 1.188.2.8  2012/11/19 07:38:57  lollisoft
  * Fixed remaining reload issues.
  *
@@ -1623,6 +1626,9 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 		*eventname = eman->reverseEvent(ID->getData());
 		
 		if (!(*eventname == "")) {
+			UAP(lb_I_String, appNameTemp)
+			appNameTemp = getProcessName();
+			
 			eventname->replace("switch to ", "");
 			UAP_REQUEST(getModuleInstance(), lb_I_String, user)
 			*user = LogonUser->charrep();
@@ -1634,6 +1640,7 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 			load();
 
 			setAutoload(false);
+			setProcessName(appNameTemp->charrep());
 			initialize(user->charrep(), eventname->charrep());
 			_logged_in = true;
 			loadApplication(user->charrep(), eventname->charrep());
