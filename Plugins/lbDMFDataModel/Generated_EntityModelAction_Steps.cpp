@@ -149,7 +149,7 @@ lbErrCodes LB_STDCALL Action_StepsModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL Action_StepsModel::addAction_Steps(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID) {
+long  LB_STDCALL Action_StepsModel::add(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __bezeichnung)
@@ -239,7 +239,7 @@ void		LB_STDCALL Action_StepsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL Action_StepsModel::selectAction_Steps(long user_id) {
+bool LB_STDCALL Action_StepsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -293,15 +293,15 @@ void LB_STDCALL Action_StepsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL Action_StepsModel::getAction_StepsCount() {
+int  LB_STDCALL Action_StepsModel::Count() {
 	return Action_Steps->Count();
 }
 
-bool  LB_STDCALL Action_StepsModel::hasMoreAction_Steps() {
+bool  LB_STDCALL Action_StepsModel::hasMoreElements() {
 	return (Action_Steps->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL Action_StepsModel::setNextAction_Steps() {
+void  LB_STDCALL Action_StepsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -329,7 +329,7 @@ void  LB_STDCALL Action_StepsModel::setNextAction_Steps() {
 	
 }
 
-void  LB_STDCALL Action_StepsModel::finishAction_StepsIteration() {
+void  LB_STDCALL Action_StepsModel::finishIteration() {
 	Action_Steps->finishIteration();
 }
 

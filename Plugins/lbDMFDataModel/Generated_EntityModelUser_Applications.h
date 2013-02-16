@@ -37,13 +37,13 @@ public:
 	User_ApplicationsModel();
 	virtual ~User_ApplicationsModel();
 
-	long		LB_STDCALL addUser_Applications(long _userid, long _anwendungenid,  long _User_ApplicationsID = -1);
+	long		LB_STDCALL add(long _userid, long _anwendungenid,  long _User_ApplicationsID = -1);
 
-	bool		LB_STDCALL selectUser_Applications(long _id);
-	int			LB_STDCALL getUser_ApplicationsCount();
-	bool		LB_STDCALL hasMoreUser_Applications();
-	void		LB_STDCALL setNextUser_Applications();
-	void		LB_STDCALL finishUser_ApplicationsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	long		LB_STDCALL get_userid();

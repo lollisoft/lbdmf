@@ -152,7 +152,7 @@ lbErrCodes LB_STDCALL ReportElementsModel::addExtension(const char* contextnames
 }
 #endif
 
-long  LB_STDCALL ReportElementsModel::addReportElements(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID) {
+long  LB_STDCALL ReportElementsModel::add(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -254,7 +254,7 @@ void		LB_STDCALL ReportElementsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL ReportElementsModel::selectReportElements(long user_id) {
+bool LB_STDCALL ReportElementsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -314,15 +314,15 @@ void LB_STDCALL ReportElementsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL ReportElementsModel::getReportElementsCount() {
+int  LB_STDCALL ReportElementsModel::Count() {
 	return ReportElements->Count();
 }
 
-bool  LB_STDCALL ReportElementsModel::hasMoreReportElements() {
+bool  LB_STDCALL ReportElementsModel::hasMoreElements() {
 	return (ReportElements->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL ReportElementsModel::setNextReportElements() {
+void  LB_STDCALL ReportElementsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -356,7 +356,7 @@ void  LB_STDCALL ReportElementsModel::setNextReportElements() {
 	
 }
 
-void  LB_STDCALL ReportElementsModel::finishReportElementsIteration() {
+void  LB_STDCALL ReportElementsModel::finishIteration() {
 	ReportElements->finishIteration();
 }
 

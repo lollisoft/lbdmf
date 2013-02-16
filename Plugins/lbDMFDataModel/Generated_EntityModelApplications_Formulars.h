@@ -37,13 +37,13 @@ public:
 	Applications_FormularsModel();
 	virtual ~Applications_FormularsModel();
 
-	long		LB_STDCALL addApplications_Formulars(long _anwendungid, long _formularid,  long _Applications_FormularsID = -1);
+	long		LB_STDCALL add(long _anwendungid, long _formularid,  long _Applications_FormularsID = -1);
 
-	bool		LB_STDCALL selectApplications_Formulars(long _id);
-	int			LB_STDCALL getApplications_FormularsCount();
-	bool		LB_STDCALL hasMoreApplications_Formulars();
-	void		LB_STDCALL setNextApplications_Formulars();
-	void		LB_STDCALL finishApplications_FormularsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	long		LB_STDCALL get_anwendungid();

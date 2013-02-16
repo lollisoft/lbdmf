@@ -37,13 +37,13 @@ public:
 	ApplicationsModel();
 	virtual ~ApplicationsModel();
 
-	long		LB_STDCALL addApplications(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID = -1);
+	long		LB_STDCALL add(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID = -1);
 
-	bool		LB_STDCALL selectApplications(long _id);
-	int			LB_STDCALL getApplicationsCount();
-	bool		LB_STDCALL hasMoreApplications();
-	void		LB_STDCALL setNextApplications();
-	void		LB_STDCALL finishApplicationsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_titel();

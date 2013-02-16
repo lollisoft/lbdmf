@@ -69,6 +69,7 @@ UserAccountsModel::UserAccountsModel() {
     REQUEST(getModuleInstance(), lb_I_String, currentuserid)
     REQUEST(getModuleInstance(), lb_I_String, currentvorname)
     REQUEST(getModuleInstance(), lb_I_String, currentname)
+    REQUEST(getModuleInstance(), lb_I_String, currentsecret)
 
 	
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserAccountsID)
@@ -148,13 +149,14 @@ lbErrCodes LB_STDCALL UserAccountsModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL UserAccountsModel::addUserAccounts(const char* _passwort, const char* _userid, const char* _vorname, const char* _name,  long _UserAccountsID) {
+long  LB_STDCALL UserAccountsModel::add(const char* _passwort, const char* _userid, const char* _vorname, const char* _name, const char* _secret,  long _UserAccountsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __passwort)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __userid)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __vorname)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
+    UAP_REQUEST(getModuleInstance(), lb_I_String, __secret)
 
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, __UserAccountsID)
@@ -168,6 +170,7 @@ long  LB_STDCALL UserAccountsModel::addUserAccounts(const char* _passwort, const
     *__userid = _userid;
     *__vorname = _vorname;
     *__name = _name;
+    *__secret = _secret;
 
 	
 	__UserAccountsID->setData(_UserAccountsID);
@@ -180,6 +183,8 @@ long  LB_STDCALL UserAccountsModel::addUserAccounts(const char* _passwort, const
     param->setUAPString(*&paramname, *&__vorname);
     *paramname = "name";
     param->setUAPString(*&paramname, *&__name);
+    *paramname = "secret";
+    param->setUAPString(*&paramname, *&__secret);
 
 
 	*paramname = "UserAccountsID";
@@ -234,7 +239,7 @@ void		LB_STDCALL UserAccountsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL UserAccountsModel::selectUserAccounts(long user_id) {
+bool LB_STDCALL UserAccountsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -259,6 +264,8 @@ bool LB_STDCALL UserAccountsModel::selectUserAccounts(long user_id) {
     param->getUAPString(*&paramname, *&currentvorname);
     *paramname = "name";
     param->getUAPString(*&paramname, *&currentname);
+    *paramname = "secret";
+    param->getUAPString(*&paramname, *&currentsecret);
 
 
 		*paramname = "UserAccountsID";
@@ -286,15 +293,15 @@ void LB_STDCALL UserAccountsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL UserAccountsModel::getUserAccountsCount() {
+int  LB_STDCALL UserAccountsModel::Count() {
 	return UserAccounts->Count();
 }
 
-bool  LB_STDCALL UserAccountsModel::hasMoreUserAccounts() {
+bool  LB_STDCALL UserAccountsModel::hasMoreElements() {
 	return (UserAccounts->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL UserAccountsModel::setNextUserAccounts() {
+void  LB_STDCALL UserAccountsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -311,6 +318,8 @@ void  LB_STDCALL UserAccountsModel::setNextUserAccounts() {
     param->getUAPString(*&paramname, *&currentvorname);
     *paramname = "name";
     param->getUAPString(*&paramname, *&currentname);
+    *paramname = "secret";
+    param->getUAPString(*&paramname, *&currentsecret);
 
 	*paramname = "UserAccountsID";
 	param->getUAPLong(*&paramname, *&currentUserAccountsID);
@@ -320,7 +329,7 @@ void  LB_STDCALL UserAccountsModel::setNextUserAccounts() {
 	
 }
 
-void  LB_STDCALL UserAccountsModel::finishUserAccountsIteration() {
+void  LB_STDCALL UserAccountsModel::finishIteration() {
 	UserAccounts->finishIteration();
 }
 
@@ -343,6 +352,10 @@ char* LB_STDCALL UserAccountsModel::get_vorname() {
 
 char* LB_STDCALL UserAccountsModel::get_name() {
 	return currentname->charrep();
+}
+
+char* LB_STDCALL UserAccountsModel::get_secret() {
+	return currentsecret->charrep();
 }
 
 

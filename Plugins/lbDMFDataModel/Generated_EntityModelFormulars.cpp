@@ -151,7 +151,7 @@ lbErrCodes LB_STDCALL FormularsModel::addExtension(const char* contextnamespace,
 }
 #endif
 
-long  LB_STDCALL FormularsModel::addFormulars(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID) {
+long  LB_STDCALL FormularsModel::add(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -249,7 +249,7 @@ void		LB_STDCALL FormularsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL FormularsModel::selectFormulars(long user_id) {
+bool LB_STDCALL FormularsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -307,15 +307,15 @@ void LB_STDCALL FormularsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL FormularsModel::getFormularsCount() {
+int  LB_STDCALL FormularsModel::Count() {
 	return Formulars->Count();
 }
 
-bool  LB_STDCALL FormularsModel::hasMoreFormulars() {
+bool  LB_STDCALL FormularsModel::hasMoreElements() {
 	return (Formulars->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL FormularsModel::setNextFormulars() {
+void  LB_STDCALL FormularsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -347,7 +347,7 @@ void  LB_STDCALL FormularsModel::setNextFormulars() {
 	
 }
 
-void  LB_STDCALL FormularsModel::finishFormularsIteration() {
+void  LB_STDCALL FormularsModel::finishIteration() {
 	Formulars->finishIteration();
 }
 

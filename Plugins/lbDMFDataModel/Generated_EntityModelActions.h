@@ -37,13 +37,13 @@ public:
 	ActionsModel();
 	virtual ~ActionsModel();
 
-	long		LB_STDCALL addActions(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID = -1);
+	long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID = -1);
 
-	bool		LB_STDCALL selectActions(long _id);
-	int			LB_STDCALL getActionsCount();
-	bool		LB_STDCALL hasMoreActions();
-	void		LB_STDCALL setNextActions();
-	void		LB_STDCALL finishActionsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_target();

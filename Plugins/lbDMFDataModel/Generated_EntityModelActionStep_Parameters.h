@@ -37,13 +37,13 @@ public:
 	ActionStep_ParametersModel();
 	virtual ~ActionStep_ParametersModel();
 
-	long		LB_STDCALL addActionStep_Parameters(const char* _description, const char* _name, const char* _value, const char* _interface, long _action_step_id,  long _ActionStep_ParametersID = -1);
+	long		LB_STDCALL add(const char* _description, const char* _name, const char* _value, const char* _interface, long _action_step_id,  long _ActionStep_ParametersID = -1);
 
-	bool		LB_STDCALL selectActionStep_Parameters(long _id);
-	int			LB_STDCALL getActionStep_ParametersCount();
-	bool		LB_STDCALL hasMoreActionStep_Parameters();
-	void		LB_STDCALL setNextActionStep_Parameters();
-	void		LB_STDCALL finishActionStep_ParametersIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_description();

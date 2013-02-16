@@ -37,13 +37,13 @@ public:
 	ReportsModel();
 	virtual ~ReportsModel();
 
-	long		LB_STDCALL addReports(const char* _description, const char* _name,  long _ReportsID = -1);
+	long		LB_STDCALL add(const char* _description, const char* _name,  long _ReportsID = -1);
 
-	bool		LB_STDCALL selectReports(long _id);
-	int			LB_STDCALL getReportsCount();
-	bool		LB_STDCALL hasMoreReports();
-	void		LB_STDCALL setNextReports();
-	void		LB_STDCALL finishReportsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_description();
