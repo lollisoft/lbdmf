@@ -147,7 +147,7 @@ lbErrCodes LB_STDCALL ReportParametersModel::addExtension(const char* contextnam
 }
 #endif
 
-long  LB_STDCALL ReportParametersModel::addReportParameters(long _value, const char* _name, long _reportid,  long _ReportParametersID) {
+long  LB_STDCALL ReportParametersModel::add(long _value, const char* _name, long _reportid,  long _ReportParametersID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __value)
@@ -229,7 +229,7 @@ void		LB_STDCALL ReportParametersModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL ReportParametersModel::selectReportParameters(long user_id) {
+bool LB_STDCALL ReportParametersModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -279,15 +279,15 @@ void LB_STDCALL ReportParametersModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL ReportParametersModel::getReportParametersCount() {
+int  LB_STDCALL ReportParametersModel::Count() {
 	return ReportParameters->Count();
 }
 
-bool  LB_STDCALL ReportParametersModel::hasMoreReportParameters() {
+bool  LB_STDCALL ReportParametersModel::hasMoreElements() {
 	return (ReportParameters->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL ReportParametersModel::setNextReportParameters() {
+void  LB_STDCALL ReportParametersModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -311,7 +311,7 @@ void  LB_STDCALL ReportParametersModel::setNextReportParameters() {
 	
 }
 
-void  LB_STDCALL ReportParametersModel::finishReportParametersIteration() {
+void  LB_STDCALL ReportParametersModel::finishIteration() {
 	ReportParameters->finishIteration();
 }
 

@@ -37,13 +37,13 @@ public:
 	ReportElementsModel();
 	virtual ~ReportElementsModel();
 
-	long		LB_STDCALL addReportElements(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID = -1);
+	long		LB_STDCALL add(const char* _name, const char* _description, long _x, long _y, long _w, long _h, long _reportid, long _typ,  long _ReportElementsID = -1);
 
-	bool		LB_STDCALL selectReportElements(long _id);
-	int			LB_STDCALL getReportElementsCount();
-	bool		LB_STDCALL hasMoreReportElements();
-	void		LB_STDCALL setNextReportElements();
-	void		LB_STDCALL finishReportElementsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_name();

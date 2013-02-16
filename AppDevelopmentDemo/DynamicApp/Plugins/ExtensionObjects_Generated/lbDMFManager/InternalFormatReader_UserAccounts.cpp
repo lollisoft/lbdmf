@@ -119,6 +119,7 @@ void LB_STDCALL UserAccountsInternalFormatReaderExtension::execute() {
 		char* _userid = NULL;
 		char* _vorname = NULL;
 		char* _name = NULL;
+		char* _secret = NULL;
 	
 		*iStream >> _ID;
 
@@ -126,7 +127,8 @@ void LB_STDCALL UserAccountsInternalFormatReaderExtension::execute() {
 		*iStream >> _userid;
 		*iStream >> _vorname;
 		*iStream >> _name;
-		owningObject->addUserAccounts(_passwort, _userid, _vorname, _name,  _ID);
+		*iStream >> _secret;
+		owningObject->addUserAccounts(_passwort, _userid, _vorname, _name, _secret,  _ID);
 
 		// Leaky !
 	}

@@ -120,7 +120,8 @@ void LB_STDCALL UserAccountsXMLWriterExtension::execute() {
 		"\" passwort=\"" << owningObject->get_passwort() <<
 		"\" userid=\"" << owningObject->get_userid() <<
 		"\" vorname=\"" << owningObject->get_vorname() <<
-		"\" name=\"" << owningObject->get_name() << "\"/>" << "\n";
+		"\" name=\"" << owningObject->get_name() <<
+		"\" secret=\"" << owningObject->get_secret() << "\"/>" << "\n";
 	}
 	*oStream << "</users>" << "\n";
 }

@@ -37,13 +37,13 @@ public:
 	Action_StepsModel();
 	virtual ~Action_StepsModel();
 
-	long		LB_STDCALL addAction_Steps(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1);
+	long		LB_STDCALL add(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1);
 
-	bool		LB_STDCALL selectAction_Steps(long _id);
-	int			LB_STDCALL getAction_StepsCount();
-	bool		LB_STDCALL hasMoreAction_Steps();
-	void		LB_STDCALL setNextAction_Steps();
-	void		LB_STDCALL finishAction_StepsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_bezeichnung();

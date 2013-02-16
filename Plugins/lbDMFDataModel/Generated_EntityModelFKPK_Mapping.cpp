@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL FKPK_MappingModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL FKPK_MappingModel::addFKPK_Mapping(const char* _pktable, const char* _pkname, const char* _fktable, const char* _fkname,  long _FKPK_MappingID) {
+long  LB_STDCALL FKPK_MappingModel::add(const char* _pktable, const char* _pkname, const char* _fktable, const char* _fkname,  long _FKPK_MappingID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __pktable)
@@ -234,7 +234,7 @@ void		LB_STDCALL FKPK_MappingModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL FKPK_MappingModel::selectFKPK_Mapping(long user_id) {
+bool LB_STDCALL FKPK_MappingModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -286,15 +286,15 @@ void LB_STDCALL FKPK_MappingModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL FKPK_MappingModel::getFKPK_MappingCount() {
+int  LB_STDCALL FKPK_MappingModel::Count() {
 	return FKPK_Mapping->Count();
 }
 
-bool  LB_STDCALL FKPK_MappingModel::hasMoreFKPK_Mapping() {
+bool  LB_STDCALL FKPK_MappingModel::hasMoreElements() {
 	return (FKPK_Mapping->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL FKPK_MappingModel::setNextFKPK_Mapping() {
+void  LB_STDCALL FKPK_MappingModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -320,7 +320,7 @@ void  LB_STDCALL FKPK_MappingModel::setNextFKPK_Mapping() {
 	
 }
 
-void  LB_STDCALL FKPK_MappingModel::finishFKPK_MappingIteration() {
+void  LB_STDCALL FKPK_MappingModel::finishIteration() {
 	FKPK_Mapping->finishIteration();
 }
 

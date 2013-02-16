@@ -37,13 +37,13 @@ public:
 	Action_TypesModel();
 	virtual ~Action_TypesModel();
 
-	long		LB_STDCALL addAction_Types(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID = -1);
+	long		LB_STDCALL add(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID = -1);
 
-	bool		LB_STDCALL selectAction_Types(long _id);
-	int			LB_STDCALL getAction_TypesCount();
-	bool		LB_STDCALL hasMoreAction_Types();
-	void		LB_STDCALL setNextAction_Types();
-	void		LB_STDCALL finishAction_TypesIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_bezeichnung();

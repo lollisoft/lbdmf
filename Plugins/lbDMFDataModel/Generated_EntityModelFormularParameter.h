@@ -37,13 +37,13 @@ public:
 	FormularParameterModel();
 	virtual ~FormularParameterModel();
 
-	long		LB_STDCALL addFormularParameter(const char* _parametervalue, const char* _parametername, long _formularid,  long _FormularParameterID = -1);
+	long		LB_STDCALL add(const char* _parametervalue, const char* _parametername, long _formularid,  long _FormularParameterID = -1);
 
-	bool		LB_STDCALL selectFormularParameter(long _id);
-	int			LB_STDCALL getFormularParameterCount();
-	bool		LB_STDCALL hasMoreFormularParameter();
-	void		LB_STDCALL setNextFormularParameter();
-	void		LB_STDCALL finishFormularParameterIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_parametervalue();

@@ -37,13 +37,13 @@ public:
 	TranslationsModel();
 	virtual ~TranslationsModel();
 
-	long		LB_STDCALL addTranslations(const char* _translated, const char* _text, const char* _language,  long _TranslationsID = -1);
+	long		LB_STDCALL add(const char* _translated, const char* _text, const char* _language,  long _TranslationsID = -1);
 
-	bool		LB_STDCALL selectTranslations(long _id);
-	int			LB_STDCALL getTranslationsCount();
-	bool		LB_STDCALL hasMoreTranslations();
-	void		LB_STDCALL setNextTranslations();
-	void		LB_STDCALL finishTranslationsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_translated();

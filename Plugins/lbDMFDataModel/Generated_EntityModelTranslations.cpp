@@ -147,7 +147,7 @@ lbErrCodes LB_STDCALL TranslationsModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL TranslationsModel::addTranslations(const char* _translated, const char* _text, const char* _language,  long _TranslationsID) {
+long  LB_STDCALL TranslationsModel::add(const char* _translated, const char* _text, const char* _language,  long _TranslationsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __translated)
@@ -229,7 +229,7 @@ void		LB_STDCALL TranslationsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL TranslationsModel::selectTranslations(long user_id) {
+bool LB_STDCALL TranslationsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -279,15 +279,15 @@ void LB_STDCALL TranslationsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL TranslationsModel::getTranslationsCount() {
+int  LB_STDCALL TranslationsModel::Count() {
 	return Translations->Count();
 }
 
-bool  LB_STDCALL TranslationsModel::hasMoreTranslations() {
+bool  LB_STDCALL TranslationsModel::hasMoreElements() {
 	return (Translations->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL TranslationsModel::setNextTranslations() {
+void  LB_STDCALL TranslationsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -311,7 +311,7 @@ void  LB_STDCALL TranslationsModel::setNextTranslations() {
 	
 }
 
-void  LB_STDCALL TranslationsModel::finishTranslationsIteration() {
+void  LB_STDCALL TranslationsModel::finishIteration() {
 	Translations->finishIteration();
 }
 

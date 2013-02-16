@@ -149,7 +149,7 @@ lbErrCodes LB_STDCALL ApplicationsModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL ApplicationsModel::addApplications(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID) {
+long  LB_STDCALL ApplicationsModel::add(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __titel)
@@ -239,7 +239,7 @@ void		LB_STDCALL ApplicationsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL ApplicationsModel::selectApplications(long user_id) {
+bool LB_STDCALL ApplicationsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -293,15 +293,15 @@ void LB_STDCALL ApplicationsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL ApplicationsModel::getApplicationsCount() {
+int  LB_STDCALL ApplicationsModel::Count() {
 	return Applications->Count();
 }
 
-bool  LB_STDCALL ApplicationsModel::hasMoreApplications() {
+bool  LB_STDCALL ApplicationsModel::hasMoreElements() {
 	return (Applications->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL ApplicationsModel::setNextApplications() {
+void  LB_STDCALL ApplicationsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -329,7 +329,7 @@ void  LB_STDCALL ApplicationsModel::setNextApplications() {
 	
 }
 
-void  LB_STDCALL ApplicationsModel::finishApplicationsIteration() {
+void  LB_STDCALL ApplicationsModel::finishIteration() {
 	Applications->finishIteration();
 }
 

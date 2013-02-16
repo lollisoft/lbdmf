@@ -146,7 +146,7 @@ lbErrCodes LB_STDCALL Applications_FormularsModel::addExtension(const char* cont
 }
 #endif
 
-long  LB_STDCALL Applications_FormularsModel::addApplications_Formulars(long _anwendungid, long _formularid,  long _Applications_FormularsID) {
+long  LB_STDCALL Applications_FormularsModel::add(long _anwendungid, long _formularid,  long _Applications_FormularsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __anwendungid)
@@ -224,7 +224,7 @@ void		LB_STDCALL Applications_FormularsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL Applications_FormularsModel::selectApplications_Formulars(long user_id) {
+bool LB_STDCALL Applications_FormularsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -272,15 +272,15 @@ void LB_STDCALL Applications_FormularsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL Applications_FormularsModel::getApplications_FormularsCount() {
+int  LB_STDCALL Applications_FormularsModel::Count() {
 	return Applications_Formulars->Count();
 }
 
-bool  LB_STDCALL Applications_FormularsModel::hasMoreApplications_Formulars() {
+bool  LB_STDCALL Applications_FormularsModel::hasMoreElements() {
 	return (Applications_Formulars->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL Applications_FormularsModel::setNextApplications_Formulars() {
+void  LB_STDCALL Applications_FormularsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -302,7 +302,7 @@ void  LB_STDCALL Applications_FormularsModel::setNextApplications_Formulars() {
 	
 }
 
-void  LB_STDCALL Applications_FormularsModel::finishApplications_FormularsIteration() {
+void  LB_STDCALL Applications_FormularsModel::finishIteration() {
 	Applications_Formulars->finishIteration();
 }
 

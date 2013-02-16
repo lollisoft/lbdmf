@@ -37,13 +37,13 @@ public:
 	Action_Step_TransitionsModel();
 	virtual ~Action_Step_TransitionsModel();
 
-	long		LB_STDCALL addAction_Step_Transitions(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID = -1);
+	long		LB_STDCALL add(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID = -1);
 
-	bool		LB_STDCALL selectAction_Step_Transitions(long _id);
-	int			LB_STDCALL getAction_Step_TransitionsCount();
-	bool		LB_STDCALL hasMoreAction_Step_Transitions();
-	void		LB_STDCALL setNextAction_Step_Transitions();
-	void		LB_STDCALL finishAction_Step_TransitionsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_expression();
