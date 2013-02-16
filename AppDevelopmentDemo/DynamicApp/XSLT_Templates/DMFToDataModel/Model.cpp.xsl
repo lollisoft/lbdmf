@@ -235,7 +235,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormName"/>Model::addExtension(cons
 }
 #endif
 
-long  LB_STDCALL <xsl:value-of select="$FormName"/>Model::add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+long  LB_STDCALL <xsl:value-of select="$FormName"/>Model::add(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">/* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 <xsl:otherwise><xsl:choose>
@@ -370,7 +370,7 @@ void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL <xsl:value-of select="$FormName"/>Model::select<xsl:value-of select="$FormName"/>(long user_id) {
+bool LB_STDCALL <xsl:value-of select="$FormName"/>Model::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -439,15 +439,15 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>Model::unmark() {
 	marked-&gt;setData((long) 0);
 }
 
-int  LB_STDCALL <xsl:value-of select="$FormName"/>Model::get<xsl:value-of select="$FormName"/>Count() {
+int  LB_STDCALL <xsl:value-of select="$FormName"/>Model::Count() {
 	return <xsl:value-of select="$FormName"/>-&gt;Count();
 }
 
-bool  LB_STDCALL <xsl:value-of select="$FormName"/>Model::hasMore<xsl:value-of select="$FormName"/>() {
+bool  LB_STDCALL <xsl:value-of select="$FormName"/>Model::hasMoreElements() {
 	return (<xsl:value-of select="$FormName"/>-&gt;hasMoreElements() == 1);
 }
 
-void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of select="$FormName"/>() {
+void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -490,7 +490,7 @@ void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::setNext<xsl:value-of s
 	
 }
 
-void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::finish<xsl:value-of select="$FormName"/>Iteration() {
+void  LB_STDCALL <xsl:value-of select="$FormName"/>Model::finishIteration() {
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
 }
 
