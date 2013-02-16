@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL ActionsModel::addExtension(const char* contextnamespace, l
 }
 #endif
 
-long  LB_STDCALL ActionsModel::addActions(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID) {
+long  LB_STDCALL ActionsModel::add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __target)
@@ -234,7 +234,7 @@ void		LB_STDCALL ActionsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL ActionsModel::selectActions(long user_id) {
+bool LB_STDCALL ActionsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -286,15 +286,15 @@ void LB_STDCALL ActionsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL ActionsModel::getActionsCount() {
+int  LB_STDCALL ActionsModel::Count() {
 	return Actions->Count();
 }
 
-bool  LB_STDCALL ActionsModel::hasMoreActions() {
+bool  LB_STDCALL ActionsModel::hasMoreElements() {
 	return (Actions->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL ActionsModel::setNextActions() {
+void  LB_STDCALL ActionsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -320,7 +320,7 @@ void  LB_STDCALL ActionsModel::setNextActions() {
 	
 }
 
-void  LB_STDCALL ActionsModel::finishActionsIteration() {
+void  LB_STDCALL ActionsModel::finishIteration() {
 	Actions->finishIteration();
 }
 

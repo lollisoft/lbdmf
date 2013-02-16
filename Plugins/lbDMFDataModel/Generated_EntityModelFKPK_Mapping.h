@@ -37,13 +37,13 @@ public:
 	FKPK_MappingModel();
 	virtual ~FKPK_MappingModel();
 
-	long		LB_STDCALL addFKPK_Mapping(const char* _pktable, const char* _pkname, const char* _fktable, const char* _fkname,  long _FKPK_MappingID = -1);
+	long		LB_STDCALL add(const char* _pktable, const char* _pkname, const char* _fktable, const char* _fkname,  long _FKPK_MappingID = -1);
 
-	bool		LB_STDCALL selectFKPK_Mapping(long _id);
-	int			LB_STDCALL getFKPK_MappingCount();
-	bool		LB_STDCALL hasMoreFKPK_Mapping();
-	void		LB_STDCALL setNextFKPK_Mapping();
-	void		LB_STDCALL finishFKPK_MappingIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_pktable();

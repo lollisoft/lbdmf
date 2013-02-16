@@ -151,7 +151,7 @@ lbErrCodes LB_STDCALL Formular_FieldsModel::addExtension(const char* contextname
 }
 #endif
 
-long  LB_STDCALL Formular_FieldsModel::addFormular_Fields(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID) {
+long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __fkname)
@@ -249,7 +249,7 @@ void		LB_STDCALL Formular_FieldsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL Formular_FieldsModel::selectFormular_Fields(long user_id) {
+bool LB_STDCALL Formular_FieldsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -307,15 +307,15 @@ void LB_STDCALL Formular_FieldsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL Formular_FieldsModel::getFormular_FieldsCount() {
+int  LB_STDCALL Formular_FieldsModel::Count() {
 	return Formular_Fields->Count();
 }
 
-bool  LB_STDCALL Formular_FieldsModel::hasMoreFormular_Fields() {
+bool  LB_STDCALL Formular_FieldsModel::hasMoreElements() {
 	return (Formular_Fields->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL Formular_FieldsModel::setNextFormular_Fields() {
+void  LB_STDCALL Formular_FieldsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -347,7 +347,7 @@ void  LB_STDCALL Formular_FieldsModel::setNextFormular_Fields() {
 	
 }
 
-void  LB_STDCALL Formular_FieldsModel::finishFormular_FieldsIteration() {
+void  LB_STDCALL Formular_FieldsModel::finishIteration() {
 	Formular_Fields->finishIteration();
 }
 

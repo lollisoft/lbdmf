@@ -37,13 +37,13 @@ public:
 	ApplicationParameterModel();
 	virtual ~ApplicationParameterModel();
 
-	long		LB_STDCALL addApplicationParameter(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID = -1);
+	long		LB_STDCALL add(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID = -1);
 
-	bool		LB_STDCALL selectApplicationParameter(long _id);
-	int			LB_STDCALL getApplicationParameterCount();
-	bool		LB_STDCALL hasMoreApplicationParameter();
-	void		LB_STDCALL setNextApplicationParameter();
-	void		LB_STDCALL finishApplicationParameterIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_parametername();

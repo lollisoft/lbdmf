@@ -146,7 +146,7 @@ lbErrCodes LB_STDCALL ReportElementTypesModel::addExtension(const char* contextn
 }
 #endif
 
-long  LB_STDCALL ReportElementTypesModel::addReportElementTypes(const char* _name, const char* _description,  long _ReportElementTypesID) {
+long  LB_STDCALL ReportElementTypesModel::add(const char* _name, const char* _description,  long _ReportElementTypesID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -224,7 +224,7 @@ void		LB_STDCALL ReportElementTypesModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL ReportElementTypesModel::selectReportElementTypes(long user_id) {
+bool LB_STDCALL ReportElementTypesModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -272,15 +272,15 @@ void LB_STDCALL ReportElementTypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL ReportElementTypesModel::getReportElementTypesCount() {
+int  LB_STDCALL ReportElementTypesModel::Count() {
 	return ReportElementTypes->Count();
 }
 
-bool  LB_STDCALL ReportElementTypesModel::hasMoreReportElementTypes() {
+bool  LB_STDCALL ReportElementTypesModel::hasMoreElements() {
 	return (ReportElementTypes->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL ReportElementTypesModel::setNextReportElementTypes() {
+void  LB_STDCALL ReportElementTypesModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -302,7 +302,7 @@ void  LB_STDCALL ReportElementTypesModel::setNextReportElementTypes() {
 	
 }
 
-void  LB_STDCALL ReportElementTypesModel::finishReportElementTypesIteration() {
+void  LB_STDCALL ReportElementTypesModel::finishIteration() {
 	ReportElementTypes->finishIteration();
 }
 

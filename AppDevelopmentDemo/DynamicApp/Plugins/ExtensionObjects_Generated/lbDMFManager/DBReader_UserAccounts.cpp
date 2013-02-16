@@ -118,7 +118,7 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 
 	q->skipFKCollecting();
 
-	if (q->query("select passwort, userid, vorname, name,  id from users") != ERR_NONE) {
+	if (q->query("select passwort, userid, vorname, name, secret,  id from users") != ERR_NONE) {
 		_LOG << "Error: Access to application table failed. Read UserAccounts would be skipped." LOG_
 		return;
 	}
@@ -134,6 +134,7 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 		UAP(lb_I_String, quserid)
 		UAP(lb_I_String, qvorname)
 		UAP(lb_I_String, qname)
+		UAP(lb_I_String, qsecret)
 
 		// Copy values
 
@@ -141,9 +142,10 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 		quserid = q->getAsString(2);
 		qvorname = q->getAsString(3);
 		qname = q->getAsString(4);
-		qID = q->getAsLong(5);
+		qsecret = q->getAsString(5);
+		qID = q->getAsLong(6);
 
-		owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(),  qID->getData());
+		owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -153,9 +155,10 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 			quserid = q->getAsString(2);
 			qvorname = q->getAsString(3);
 			qname = q->getAsString(4);
-			qID = q->getAsLong(5);
+			qsecret = q->getAsString(5);
+			qID = q->getAsLong(6);
 
-			owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(),  qID->getData());
+			owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
 		}
 	}
 }

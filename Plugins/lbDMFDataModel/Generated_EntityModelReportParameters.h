@@ -37,13 +37,13 @@ public:
 	ReportParametersModel();
 	virtual ~ReportParametersModel();
 
-	long		LB_STDCALL addReportParameters(long _value, const char* _name, long _reportid,  long _ReportParametersID = -1);
+	long		LB_STDCALL add(long _value, const char* _name, long _reportid,  long _ReportParametersID = -1);
 
-	bool		LB_STDCALL selectReportParameters(long _id);
-	int			LB_STDCALL getReportParametersCount();
-	bool		LB_STDCALL hasMoreReportParameters();
-	void		LB_STDCALL setNextReportParameters();
-	void		LB_STDCALL finishReportParametersIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	long			LB_STDCALL get_value();

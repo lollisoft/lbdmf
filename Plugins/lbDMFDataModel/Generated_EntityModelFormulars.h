@@ -37,13 +37,13 @@ public:
 	FormularsModel();
 	virtual ~FormularsModel();
 
-	long		LB_STDCALL addFormulars(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID = -1);
+	long		LB_STDCALL add(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID = -1);
 
-	bool		LB_STDCALL selectFormulars(long _id);
-	int			LB_STDCALL getFormularsCount();
-	bool		LB_STDCALL hasMoreFormulars();
-	void		LB_STDCALL setNextFormulars();
-	void		LB_STDCALL finishFormularsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_name();

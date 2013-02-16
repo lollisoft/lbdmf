@@ -149,7 +149,7 @@ lbErrCodes LB_STDCALL Column_TypesModel::addExtension(const char* contextnamespa
 }
 #endif
 
-long  LB_STDCALL Column_TypesModel::addColumn_Types(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID) {
+long  LB_STDCALL Column_TypesModel::add(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
@@ -239,7 +239,7 @@ void		LB_STDCALL Column_TypesModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL Column_TypesModel::selectColumn_Types(long user_id) {
+bool LB_STDCALL Column_TypesModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -293,15 +293,15 @@ void LB_STDCALL Column_TypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL Column_TypesModel::getColumn_TypesCount() {
+int  LB_STDCALL Column_TypesModel::Count() {
 	return Column_Types->Count();
 }
 
-bool  LB_STDCALL Column_TypesModel::hasMoreColumn_Types() {
+bool  LB_STDCALL Column_TypesModel::hasMoreElements() {
 	return (Column_Types->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL Column_TypesModel::setNextColumn_Types() {
+void  LB_STDCALL Column_TypesModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -329,7 +329,7 @@ void  LB_STDCALL Column_TypesModel::setNextColumn_Types() {
 	
 }
 
-void  LB_STDCALL Column_TypesModel::finishColumn_TypesIteration() {
+void  LB_STDCALL Column_TypesModel::finishIteration() {
 	Column_Types->finishIteration();
 }
 

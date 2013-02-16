@@ -37,13 +37,13 @@ public:
 	Column_TypesModel();
 	virtual ~Column_TypesModel();
 
-	long		LB_STDCALL addColumn_Types(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID = -1);
+	long		LB_STDCALL add(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID = -1);
 
-	bool		LB_STDCALL selectColumn_Types(long _id);
-	int			LB_STDCALL getColumn_TypesCount();
-	bool		LB_STDCALL hasMoreColumn_Types();
-	void		LB_STDCALL setNextColumn_Types();
-	void		LB_STDCALL finishColumn_TypesIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_name();

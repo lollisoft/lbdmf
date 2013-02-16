@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL Action_Step_TransitionsModel::addExtension(const char* con
 }
 #endif
 
-long  LB_STDCALL Action_Step_TransitionsModel::addAction_Step_Transitions(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID) {
+long  LB_STDCALL Action_Step_TransitionsModel::add(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __expression)
@@ -234,7 +234,7 @@ void		LB_STDCALL Action_Step_TransitionsModel::deleteMarked() {
 	}
 }
 
-bool LB_STDCALL Action_Step_TransitionsModel::selectAction_Step_Transitions(long user_id) {
+bool LB_STDCALL Action_Step_TransitionsModel::selectById(long user_id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
@@ -286,15 +286,15 @@ void LB_STDCALL Action_Step_TransitionsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL Action_Step_TransitionsModel::getAction_Step_TransitionsCount() {
+int  LB_STDCALL Action_Step_TransitionsModel::Count() {
 	return Action_Step_Transitions->Count();
 }
 
-bool  LB_STDCALL Action_Step_TransitionsModel::hasMoreAction_Step_Transitions() {
+bool  LB_STDCALL Action_Step_TransitionsModel::hasMoreElements() {
 	return (Action_Step_Transitions->hasMoreElements() == 1);
 }
 
-void  LB_STDCALL Action_Step_TransitionsModel::setNextAction_Step_Transitions() {
+void  LB_STDCALL Action_Step_TransitionsModel::setNextElement() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
@@ -320,7 +320,7 @@ void  LB_STDCALL Action_Step_TransitionsModel::setNextAction_Step_Transitions() 
 	
 }
 
-void  LB_STDCALL Action_Step_TransitionsModel::finishAction_Step_TransitionsIteration() {
+void  LB_STDCALL Action_Step_TransitionsModel::finishIteration() {
 	Action_Step_Transitions->finishIteration();
 }
 

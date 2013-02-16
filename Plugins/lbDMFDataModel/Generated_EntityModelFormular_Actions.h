@@ -37,13 +37,13 @@ public:
 	Formular_ActionsModel();
 	virtual ~Formular_ActionsModel();
 
-	long		LB_STDCALL addFormular_Actions(const char* _event, long _action, long _formular,  long _Formular_ActionsID = -1);
+	long		LB_STDCALL add(const char* _event, long _action, long _formular,  long _Formular_ActionsID = -1);
 
-	bool		LB_STDCALL selectFormular_Actions(long _id);
-	int			LB_STDCALL getFormular_ActionsCount();
-	bool		LB_STDCALL hasMoreFormular_Actions();
-	void		LB_STDCALL setNextFormular_Actions();
-	void		LB_STDCALL finishFormular_ActionsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_event();

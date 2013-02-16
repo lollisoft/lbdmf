@@ -37,13 +37,13 @@ public:
 	Formular_FieldsModel();
 	virtual ~Formular_FieldsModel();
 
-	long		LB_STDCALL addFormular_Fields(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID = -1);
+	long		LB_STDCALL add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID = -1);
 
-	bool		LB_STDCALL selectFormular_Fields(long _id);
-	int			LB_STDCALL getFormular_FieldsCount();
-	bool		LB_STDCALL hasMoreFormular_Fields();
-	void		LB_STDCALL setNextFormular_Fields();
-	void		LB_STDCALL finishFormular_FieldsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_fkname();

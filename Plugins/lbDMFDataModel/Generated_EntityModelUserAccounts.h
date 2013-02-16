@@ -37,19 +37,20 @@ public:
 	UserAccountsModel();
 	virtual ~UserAccountsModel();
 
-	long		LB_STDCALL addUserAccounts(const char* _passwort, const char* _userid, const char* _vorname, const char* _name,  long _UserAccountsID = -1);
+	long		LB_STDCALL add(const char* _passwort, const char* _userid, const char* _vorname, const char* _name, const char* _secret,  long _UserAccountsID = -1);
 
-	bool		LB_STDCALL selectUserAccounts(long _id);
-	int			LB_STDCALL getUserAccountsCount();
-	bool		LB_STDCALL hasMoreUserAccounts();
-	void		LB_STDCALL setNextUserAccounts();
-	void		LB_STDCALL finishUserAccountsIteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 
 	char*		LB_STDCALL get_passwort();
 	char*		LB_STDCALL get_userid();
 	char*		LB_STDCALL get_vorname();
 	char*		LB_STDCALL get_name();
+	char*		LB_STDCALL get_secret();
 
 	long		LB_STDCALL get_id();
 
@@ -76,6 +77,8 @@ public:
 	UAP(lb_I_String, currentvorname)
 			
 	UAP(lb_I_String, currentname)
+			
+	UAP(lb_I_String, currentsecret)
 			
 
 	
