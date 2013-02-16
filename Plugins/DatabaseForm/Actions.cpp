@@ -39,6 +39,8 @@
 order by src_actionid
 */
 
+class lb_I_Action;
+
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
 
@@ -104,6 +106,8 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...slbAction:0:*/
@@ -248,7 +252,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				expression = query->getAsString(2);
 				src_actionid = query->getAsLong(3);
 				dst_actionid = query->getAsLong(4);
-				stepTransitions->addTransition(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 				err = query->next();
 			}
@@ -258,7 +262,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				expression = query->getAsString(2);
 				src_actionid = query->getAsLong(3);
 				dst_actionid = query->getAsLong(4);
-				stepTransitions->addTransition(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 			}
 		}
@@ -268,28 +272,28 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, src_actionid)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, dst_actionid)
 
-		allTransitions->finishActionStepTransitionIteration();
-		while (allTransitions->hasMoreActionStepTransitions()) {
-			allTransitions->setNextActionStepTransition();
+		allTransitions->finishAction_Step_TransitionsIteration();
+		while (allTransitions->hasMoreAction_Step_Transitions()) {
+			allTransitions->setNextAction_Step_Transitions();
 
-			if (step->getData() == allTransitions->getActionStepTransitionSrcActionID() || step->getData() == allTransitions->getActionStepTransitionDstActionID()) {
-				*description = allTransitions->getActionStepTransitionDescription();
-				*expression = allTransitions->getActionStepTransitionDecision();
-				src_actionid->setData(allTransitions->getActionStepTransitionSrcActionID());
-				dst_actionid->setData(allTransitions->getActionStepTransitionDstActionID());
-				stepTransitions->addTransition(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+			if (step->getData() == allTransitions->get_src_actionid() || step->getData() == allTransitions->get_dst_actionid()) {
+				*description = allTransitions->get_description();
+				*expression = allTransitions->get_expression();
+				src_actionid->setData(allTransitions->get_src_actionid());
+				dst_actionid->setData(allTransitions->get_dst_actionid());
+				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 			}
 		}
 	}
 
-	if (stepTransitions->getActionStepTransitionsCount() == 0) {
+	if (stepTransitions->getAction_Step_TransitionsCount() == 0) {
 		_LOG << "Warning: Do not have any transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 	}
 
 
 	if (found == true) {
-		_LOG << "Info: Have " << stepTransitions->getActionStepTransitionsCount() << " transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
+		_LOG << "Info: Have " << stepTransitions->getAction_Step_TransitionsCount() << " transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 		stepTransitions++;
 		return stepTransitions.getPtr();
 	}
@@ -363,7 +367,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 				err = query->next();
 			}
@@ -376,7 +380,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
@@ -386,19 +390,19 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 		UAP_REQUEST(getModuleInstance(), lb_I_String, _interface)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, description)
 
-		allActionStepParameters->finishActionStepParameterIteration();
-		while (allActionStepParameters->hasMoreActionStepParameters()) {
-			allActionStepParameters->setNextActionStepParameter();
+		allActionStepParameters->finishActionStep_ParametersIteration();
+		while (allActionStepParameters->hasMoreActionStep_Parameters()) {
+			allActionStepParameters->setNextActionStep_Parameters();
 
-			if (step->getData() == allActionStepParameters->getActionStepParameterActionID()) {
-				*name = allActionStepParameters->getActionStepParameterName();
-				*value = allActionStepParameters->getActionStepParameterValue();
-				*_interface = allActionStepParameters->getActionStepParameterInterface();
-				*description = allActionStepParameters->getActionStepParameterDescription();
+			if (step->getData() == allActionStepParameters->get_action_step_id()) {
+				*name = allActionStepParameters->get_name();
+				*value = allActionStepParameters->get_value();
+				*_interface = allActionStepParameters->get_interface();
+				*description = allActionStepParameters->get_description();
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);		
 				
-				stepParameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
@@ -501,25 +505,28 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 		return 0;
 	}
 
-	if (trans->getActionStepTransitionsCount() == 0) {
+	if (trans->getAction_Step_TransitionsCount() == 0) {
 		_LOG << "Warning: Do not have any transitions in trans object!" LOG_
 	}
 
-	trans->finishActionStepTransitionIteration();
-	while (trans->hasMoreActionStepTransitions()) {
-		trans->setNextActionStepTransition();
+	trans->finishAction_Step_TransitionsIteration();
+	while (trans->hasMoreAction_Step_Transitions()) {
+		trans->setNextAction_Step_Transitions();
 
-		if (trans->getActionStepTransitionSrcActionID() == id) {
+		if (trans->get_src_actionid() == id) {
 			// First use a simple expression without any Lex & Yacc parser
 			long dst_actionid;
 			long src_actionid;
 			wxString expression;
+///\todo Choose new or old?
+//			expression = trans->get_expression();
+//			dst_actionid = trans->get_dst_actionid();
+//			src_actionid = trans->get_src_actionid();
 			expression = trans->getActionStepTransitionDecision();
 			dst_actionid = trans->getActionStepTransitionDstActionID();
 			src_actionid = trans->getActionStepTransitionSrcActionID();
 
-
-			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->getActionStepTransitionID() <<
+			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->get_id() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
 
 			if (expression.find("==") != -1) {
@@ -653,11 +660,11 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		UAP(lb_I_KeyBase, keybase)
 		QI(key, lb_I_KeyBase, keybase)
 
-		appActionSteps->selectActionStep(id->getData());
-		appActionTypes->selectActionType(appActionSteps->getActionStepType());
+		appActionSteps->selectAction_Steps(id->getData());
+		appActionTypes->selectAction_Types(appActionSteps->get_type());
 
-		*action_handler = appActionTypes->getActionTypeHandler();
-		*module = appActionTypes->getActionTypeModule();
+		*action_handler = appActionTypes->get_action_handler();
+		*module = appActionTypes->get_module();
 
 		module->trim();
 		action_handler->trim();
@@ -666,21 +673,21 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		*key += *&action_handler;
 
 		if (*key == "") {
-			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
-				_LOG << appActionTypes->getActionTypeBezeichnung() << " for action '" << appActionSteps->getActionStepBezeichnung() << "' ignored yet." LOG_
+			if (strcmp(appActionTypes->get_bezeichnung(), "InitialNode") == 0) {
+				_LOG << appActionTypes->get_bezeichnung() << " for action '" << appActionSteps->get_bezeichnung() << "' ignored yet." LOG_
 				// If the delegated action doesn't support transitions, do it here.
 
 				return getNextStepId(*&trans, *&params, id->getData());
 			}
-			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "FinalNode") == 0) {
-				_LOG << appActionTypes->getActionTypeBezeichnung() << " for action '" << appActionSteps->getActionStepBezeichnung() << "' ignored yet." LOG_
+			if (strcmp(appActionTypes->get_bezeichnung(), "FinalNode") == 0) {
+				_LOG << appActionTypes->get_bezeichnung() << " for action '" << appActionSteps->get_bezeichnung() << "' ignored yet." LOG_
 				return 0; // Stop processing
 			}
 		}
 
 		_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() <<
-		"' for action ID = " << id->charrep() << ", type = " << appActionTypes->getActionTypeBezeichnung() <<
-		" and name = " << appActionSteps->getActionStepBezeichnung() LOG_
+		"' for action ID = " << id->charrep() << ", type = " << appActionTypes->get_bezeichnung() <<
+		" and name = " << appActionSteps->get_bezeichnung() LOG_
 
 		if (actions->exists(&keybase) == 0) {
 			/*...sInstanciate one and insert into actions:32:*/
@@ -956,31 +963,31 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 		actionidcmp->setData(myActionID);
 
-		appActionSteps->finishActionStepIteration();
-		while (appActionSteps->hasMoreActionSteps()) {
-			appActionSteps->setNextActionStep();
+		appActionSteps->finishAction_StepsIteration();
+		while (appActionSteps->hasMoreAction_Steps()) {
+			appActionSteps->setNextAction_Steps();
 			_LOG << "Sort entry ..." LOG_
-			actionid->setData(appActionSteps->getActionStepActionID());
+			actionid->setData(appActionSteps->get_actionid());
 
 			if (actionidcmp->equals(*&actionid)) {
-			    _LOG << "Sort action steps by ordering column: " << appActionSteps->getActionStepOrderNo() << "." LOG_
-				order->setData(appActionSteps->getActionStepOrderNo());
-				stepid->setData(appActionSteps->getActionStepID());
+			    _LOG << "Sort action steps by ordering column: " << appActionSteps->get_a_order_nr() << "." LOG_
+				order->setData(appActionSteps->get_a_order_nr());
+				stepid->setData(appActionSteps->get_id());
 				sortedActionSteps->insert(&uk, &key);
 
-				appActionTypes->finishActionTypeIteration();
-				appActionTypes->selectActionType(appActionSteps->getActionStepType());
+				appActionTypes->finishAction_TypesIteration();
+				appActionTypes->selectAction_Types(appActionSteps->get_type());
 
-				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->getActionTypeBezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->getActionStepType() LOG_
+				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->get_bezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->get_type() LOG_
 
-				if (strcmp(appActionTypes->getActionTypeBezeichnung(), "InitialNode") == 0) {
-					_LOG << "Found initial node. " << appActionSteps->getActionStepID() << " with order number " << key->charrep() LOG_
+				if (strcmp(appActionTypes->get_bezeichnung(), "InitialNode") == 0) {
+					_LOG << "Found initial node. " << appActionSteps->get_id() << " with order number " << key->charrep() LOG_
 					isNonLinearActivity = true;
 					initialNode->setData(order->getData());
 				}
 			}
 		}
-		appActionSteps->finishActionStepIteration();
+		appActionSteps->finishAction_StepsIteration();
 
 		sortedActionSteps->finishIteration();
 
@@ -1003,8 +1010,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			long nextStep = delegate(*&params);
 			if (nextStep > 0) {
 				// The sortedActionSteps key is based on order number (not on step number)
-				appActionSteps->selectActionStep(nextStep);
-				order->setData(appActionSteps->getActionStepOrderNo());
+				appActionSteps->selectAction_Steps(nextStep);
+				order->setData(appActionSteps->get_a_order_nr());
 				sortedActionSteps->position(&key); // Set the iterator position to the next step to be executed.
 			} else {
 				if (nextStep == 0) {

@@ -12,11 +12,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.2 $
+ * $Revision: 1.115 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.2 2012/10/03 21:03:30 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.115 2013/02/16 10:36:27 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.115  2013/02/16 10:36:27  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.114.2.2  2012/10/03 21:03:30  lollisoft
  * Recursive include bugfix.
  *
@@ -2126,7 +2130,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.2 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.115 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

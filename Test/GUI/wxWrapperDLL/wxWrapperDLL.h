@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.3 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.3 2012/11/18 08:38:19 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.44 2013/02/16 10:36:27 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.44  2013/02/16 10:36:27  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
  * reload capabilities, but that didn't yet work in GUI. Some menu entries are

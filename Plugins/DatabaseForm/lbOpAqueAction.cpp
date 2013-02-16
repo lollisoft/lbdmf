@@ -93,12 +93,11 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#define USE_EXRERNAL_FORMULARACTIONS
-
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
-#ifndef USE_EXRERNAL_FORMULARACTIONS
-
+#define USE_EXRERNAL_FORMULARACTIONS
 /*...lbOpAqueOperation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbOpAqueOperation)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -200,8 +199,8 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectAction_Steps(myActionID);
+			*What = appActionSteps->get_what();
 
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.

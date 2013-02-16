@@ -28,11 +28,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbDetailMasterAction.h,v 1.1.2.1 2012/05/12 04:40:17 lollisoft Exp $
+ * $Id: lbDetailMasterAction.h,v 1.2 2013/02/16 10:36:25 lollisoft Exp $
  *
  * $Log: lbDetailMasterAction.h,v $
+ * Revision 1.2  2013/02/16 10:36:25  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.1.2.1  2012/05/12 04:40:17  lollisoft
  * Moved action implementation out of DatabaseForm plugin and replaced wx related code with my own.
  *

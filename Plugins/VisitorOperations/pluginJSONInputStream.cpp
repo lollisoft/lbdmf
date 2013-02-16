@@ -84,6 +84,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
+	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -110,7 +111,7 @@ public:
 	void LB_STDCALL visit(lb_I_EventManager*) { _CL_LOG << "visit(lb_I_EventManager*)" LOG_ }
 	void LB_STDCALL visit(lb_I_EventMapper*) { _CL_LOG << "visit(lb_I_EventMapper*)" LOG_ }
 	void LB_STDCALL visit(lb_I_EvHandler*) { _CL_LOG << "visit(lb_I_EvHandler*)" LOG_ }
-		void LB_STDCALL visit(lb_I_Dispatcher*);// { _CL_LOG << "visit(lb_I_Dispatcher*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Dispatcher*);// { _CL_LOG << "visit(lb_I_Dispatcher*)" LOG_ }
 	void LB_STDCALL visit(lb_I_InputStream*) { _CL_LOG << "visit(lb_I_InputStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_OutputStream*) { _CL_LOG << "visit(lb_I_OutputStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_FileOperation*) { _CL_LOG << "visit(lb_I_FileOperation*)" LOG_ }
@@ -124,23 +125,23 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*); // { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer*) { _CL_LOG << "visit(lb_I_Transfer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_Data*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_DataObject*) { _CL_LOG << "visit(lb_I_Transfer_DataObject*)" LOG_ }
-		void LB_STDCALL visit(lb_I_Thread*) { _CL_LOG << "visit(lb_I_Thread*)" LOG_ }
-		void LB_STDCALL visit(lb_I_Mutex*) { _CL_LOG << "visit(lb_I_Mutex*)" LOG_ }
-		void LB_STDCALL visit(lb_I_CriticalSection*) { _CL_LOG << "visit(lb_I_CriticalSection*)" LOG_ }
-		void LB_STDCALL visit(lb_I_Lock*) { _CL_LOG << "visit(lb_I_Lock*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Thread*) { _CL_LOG << "visit(lb_I_Thread*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Mutex*) { _CL_LOG << "visit(lb_I_Mutex*)" LOG_ }
+	void LB_STDCALL visit(lb_I_CriticalSection*) { _CL_LOG << "visit(lb_I_CriticalSection*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Lock*) { _CL_LOG << "visit(lb_I_Lock*)" LOG_ }
 		
 
 	void LB_STDCALL visit(lb_I_ThreadImplementation*) { _CL_LOG << "visit(lb_I_ThreadImplementation*)" LOG_ }
@@ -159,12 +160,18 @@ public:
 	void LB_STDCALL visit(lb_I_CryptoStream*) { _CL_LOG << "visit(lb_I_CryptoStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DispatchInterceptor*) { _CL_LOG << "visit(lb_I_DispatchInterceptor*)" LOG_ }
 	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ExtensionObject*) { _CL_LOG << "visit(lb_I_ExtensionObject*)" LOG_ }
 
 /*...e*/
 
 	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
+
+	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
+	void LB_STDCALL visit(lb_I_DocumentVersion*);
+
+	#ifdef UNFLEXIBLE_TOBE_REMOVED
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
@@ -178,16 +185,8 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Types*);
 	void LB_STDCALL visit(lb_I_Action_Steps*);
 	void LB_STDCALL visit(lb_I_Translations*);
-	void LB_STDCALL visit(lb_I_FileLocation*);
-	void LB_STDCALL visit(lb_I_DirLocation*);
-	void LB_STDCALL visit(lb_I_DBColumns*);
-	void LB_STDCALL visit(lb_I_DBTables*);
-	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
-	void LB_STDCALL visit(lb_I_DBForeignKeys*);
-
 	void LB_STDCALL visit(lb_I_DBReportTextblock*);
 	void LB_STDCALL visit(lb_I_DBReportProperties*);
-
 	void LB_STDCALL visit(lb_I_Reports*);
 	void LB_STDCALL visit(lb_I_ReportParameters*);
 	void LB_STDCALL visit(lb_I_ReportElements*);
@@ -197,15 +196,24 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
 	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
 	void LB_STDCALL visit(lb_I_Action_Parameters*);
+#endif
 
+	void LB_STDCALL visit(lb_I_FileLocation*);
+	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 	bool LB_STDCALL begin(const char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
 	void LB_STDCALL end();
 
+	void LB_STDCALL setContextNamespace(const char* _namespace);
 	lb_I_Stream* LB_STDCALL getStream();
 
 	UAP(lb_I_InputStream, iStream)
+	UAP(lb_I_String, contextNamespace)
 };
 
 
@@ -231,7 +239,7 @@ lbErrCodes LB_STDCALL lbJSONInputStream::setData(lb_I_Unknown* uk) {
 lbJSONInputStream::lbJSONInputStream() 
 {
 	_CL_LOG << "lbJSONInputStream::lbJSONInputStream() called." LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
 }
 /*...e*/
 /*...slbJSONInputStream\58\\58\\126\lbJSONInputStream\40\\41\:0:*/
@@ -272,6 +280,11 @@ bool LB_STDCALL lbJSONInputStream::begin(lb_I_Stream* stream) {
 	return false;
 }
 
+void lbJSONInputStream::setContextNamespace(const char* _namespace) {
+	_LOG << "lbJSONInputStream::setContextNamespace('" << _namespace << "') called." LOG_
+	*contextNamespace = _namespace;
+}
+
 void LB_STDCALL lbJSONInputStream::visit(lb_I_Streamable* pm) {
 	if (iStream != NULL) {
 		// Project manager has a private implementation. Use existing fromFile function.
@@ -294,52 +307,6 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_Boolean* b) {
 	bool _b = NULL;
 	*iStream >> _b;
 	b->setData(_b);
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
-	int count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long ID;
-		long ActionID = NULL;
-		char* Description = NULL;
-		char* Name = NULL;
-		char* Value = NULL;
-		char* Interface = NULL;
-		
-		*iStream >> ID;
-		*iStream >> ActionID;
-		*iStream >> Description;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> Interface;
-		
-		actionstepparameters->addActionStepParameter(Description, Name, Value, Interface, ActionID, ID);
-	}
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_Action_Parameters* actionparameters) {
-	int count = 0;
-	*iStream >> count;
-	
-	for (int i = 0; i < count; i++) {
-		long ID;
-		long ActionID = NULL;
-		char* Description = NULL;
-		char* Name = NULL;
-		char* Value = NULL;
-		char* Interface = NULL;
-		
-		*iStream >> ID;
-		*iStream >> ActionID;
-		*iStream >> Description;
-		*iStream >> Name;
-		*iStream >> Value;
-		*iStream >> Interface;
-		
-		actionparameters->addActionParameter(Description, Name, Value, Interface, ActionID, ID);
-	}
 }
 
 void LB_STDCALL lbJSONInputStream::visit(lb_I_Parameter* params) {
@@ -400,6 +367,76 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_Parameter* params) {
 	}
 }
 
+void LB_STDCALL lbJSONInputStream::visit(lb_I_ExtensibleObject* tableModule) {
+	UAP(lb_I_ExtensionObject, extension) 
+	extension = tableModule->getExtension(*&contextNamespace);
+	
+	if (extension != NULL) {
+		UAP(lb_I_Unknown, uk)
+		QI(tableModule, lb_I_Unknown, uk)
+		extension->setOwningObject(*&uk);
+
+		UAP(lb_I_VisitorExtension, visitorExtension)
+		QI(extension, lb_I_VisitorExtension, visitorExtension)
+	
+		if (visitorExtension != NULL) {
+			visitorExtension->setOperator(this);
+			visitorExtension->execute();
+		}
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DocumentVersion*) {
+
+}
+
+#ifdef UNFLEXIBLE_TOBE_REMOVED
+void LB_STDCALL lbJSONInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionstepparameters->addActionStepParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ActionID = NULL;
+		char* Description = NULL;
+		char* Name = NULL;
+		char* Value = NULL;
+		char* Interface = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> Description;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> Interface;
+		
+		actionparameters->addActionParameter(Description, Name, Value, Interface, ActionID, ID);
+	}
+}
+
 void LB_STDCALL lbJSONInputStream::visit(lb_I_Action_Step_Transitions* transition) {
 	int count = 0;
 	*iStream >> count;
@@ -437,7 +474,6 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_Applications_Formulars* applicatio
 		applicationformulars->addRelation(ApplicationID, FormularID, ID);
 	}
 }
-
 
 void LB_STDCALL lbJSONInputStream::visit(lb_I_Reports* reports) {
 	int count = 0;
@@ -564,139 +600,6 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_UserAccounts* users) {
 		*iStream >> Pass;
 		
 		users->addAccount(User, Pass, UID);
-	}
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_DBForeignKeys* fkeys) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	int   ID;
-	int KeySequence;
-	int UpdateRule;
-	int DeleteRule;
-
-	char* PKTableCatalog = NULL;
-	char* PKTableSchema = NULL;
-	char* PKTableName = NULL;
-	char* PKColumnName = NULL;
-
-	char* FKTableCatalog = NULL;
-	char* FKTableSchema = NULL;
-	char* FKTableName = NULL;
-	char* FKColumnName = NULL;
-
-
-	for (int i = 0; i < count; i++) {
-		// Load a user entry.
-		
-		*iStream >> ID;
-		*iStream >> PKTableCatalog;
-		*iStream >> PKTableSchema;
-		*iStream >> PKTableName;
-		*iStream >> PKColumnName;
-
-		*iStream >> FKTableCatalog;
-		*iStream >> FKTableSchema;
-		*iStream >> FKTableName;
-		*iStream >> FKColumnName;
-
-		*iStream >> KeySequence;
-		*iStream >> UpdateRule;
-		*iStream >> DeleteRule;
-		
-		fkeys->addForeignKey(	PKTableCatalog, PKTableSchema, PKTableName, PKColumnName,
-								FKTableCatalog, FKTableSchema, FKTableName, FKColumnName,
-								KeySequence, UpdateRule, DeleteRule, ID);
-	}
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	long ID;
-	long KeySequence;
-
-	char* TableCatalog = NULL;
-	char* TableSchema = NULL;
-	char* TableName = NULL;
-	char* ColumnName = NULL;
-	char* ColumnName_V2 = NULL;
-
-
-	for (int i = 0; i < count; i++) {
-		// Load a user entry.
-		
-		*iStream >> ID;
-		*iStream >> TableCatalog;
-		*iStream >> TableSchema;
-		*iStream >> TableName;
-		*iStream >> ColumnName;
-		*iStream >> KeySequence;
-		*iStream >> ColumnName_V2;
-		
-		pkeys->addPrimaryKey(TableCatalog, TableSchema, TableName, ColumnName, KeySequence, ColumnName_V2, ID);
-	}
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_DBColumns* columns) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	long   ID;
-	char* name = NULL;
-	char* comment = NULL;
-	char* typ = NULL;
-	int   len;
-	int   isNullable;
-	char* PKTable = NULL;
-	char* PKField = NULL;
-	char* tablename = NULL;
-
-	for (int i = 0; i < count; i++) {
-		// Load a user entry.
-		
-		*iStream >> ID;
-		*iStream >> name;
-		*iStream >> comment;
-		*iStream >> typ;
-		*iStream >> len;
-		*iStream >> PKTable;
-		*iStream >> PKField;
-		*iStream >> tablename;
-		*iStream >> isNullable;
-		
-		columns->addColumn(name, comment, typ, len, (isNullable == 1) ? true : false, PKTable, PKField, tablename, ID);
-	}
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_DBTables* tables) {
-	// Number of users
-	int   count = 0;
-	*iStream >> count;
-
-	int   ID;
-	char* catalog = NULL;
-	char* schema = NULL;
-	char* name = NULL;
-	char* type = NULL;
-	char* remarks = NULL;
-
-	for (int i = 0; i < count; i++) {
-		// Load a user entry.
-		
-		*iStream >> ID;
-		*iStream >> catalog;
-		*iStream >> schema;
-		*iStream >> name;
-		*iStream >> type;
-		*iStream >> remarks;
-		
-		tables->addTable(catalog, schema, name, type, remarks, ID);
 	}
 }
 
@@ -851,22 +754,6 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_Formular_Actions* formular_actions
 	}
 }
 
-void LB_STDCALL lbJSONInputStream::visit(lb_I_FileLocation* fileloc) {
-		char*  f = NULL;
-		
-		*iStream >> f;
-		
-		fileloc->setData(f); 
-}
-
-void LB_STDCALL lbJSONInputStream::visit(lb_I_DirLocation* fileloc) {
-		char*  f = NULL;
-		
-		*iStream >> f;
-		
-		fileloc->setData(f); 
-}
-
 void LB_STDCALL lbJSONInputStream::visit(lb_I_Formular_Fields* formularfields) {
 	// Number of users
 	int   count = 0;
@@ -991,6 +878,155 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_User_Applications* user_app) {
 												
 		user_app->addRelation(AppID, UserID, ID);
 	}
+}
+#endif
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	int   ID;
+	int KeySequence;
+	int UpdateRule;
+	int DeleteRule;
+
+	char* PKTableCatalog = NULL;
+	char* PKTableSchema = NULL;
+	char* PKTableName = NULL;
+	char* PKColumnName = NULL;
+
+	char* FKTableCatalog = NULL;
+	char* FKTableSchema = NULL;
+	char* FKTableName = NULL;
+	char* FKColumnName = NULL;
+
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> PKTableCatalog;
+		*iStream >> PKTableSchema;
+		*iStream >> PKTableName;
+		*iStream >> PKColumnName;
+
+		*iStream >> FKTableCatalog;
+		*iStream >> FKTableSchema;
+		*iStream >> FKTableName;
+		*iStream >> FKColumnName;
+
+		*iStream >> KeySequence;
+		*iStream >> UpdateRule;
+		*iStream >> DeleteRule;
+		
+		fkeys->addForeignKey(	PKTableCatalog, PKTableSchema, PKTableName, PKColumnName,
+								FKTableCatalog, FKTableSchema, FKTableName, FKColumnName,
+								KeySequence, UpdateRule, DeleteRule, ID);
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	long ID;
+	long KeySequence;
+
+	char* TableCatalog = NULL;
+	char* TableSchema = NULL;
+	char* TableName = NULL;
+	char* ColumnName = NULL;
+	char* ColumnName_V2 = NULL;
+
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> TableCatalog;
+		*iStream >> TableSchema;
+		*iStream >> TableName;
+		*iStream >> ColumnName;
+		*iStream >> KeySequence;
+		*iStream >> ColumnName_V2;
+		
+		pkeys->addPrimaryKey(TableCatalog, TableSchema, TableName, ColumnName, KeySequence, ColumnName_V2, ID);
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DBColumns* columns) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	long   ID;
+	char* name = NULL;
+	char* comment = NULL;
+	char* typ = NULL;
+	int   len;
+	int   isNullable;
+	char* PKTable = NULL;
+	char* PKField = NULL;
+	char* tablename = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> name;
+		*iStream >> comment;
+		*iStream >> typ;
+		*iStream >> len;
+		*iStream >> PKTable;
+		*iStream >> PKField;
+		*iStream >> tablename;
+		*iStream >> isNullable;
+		
+		columns->addColumn(name, comment, typ, len, (isNullable == 1) ? true : false, PKTable, PKField, tablename, ID);
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DBTables* tables) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	int   ID;
+	char* catalog = NULL;
+	char* schema = NULL;
+	char* name = NULL;
+	char* type = NULL;
+	char* remarks = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> catalog;
+		*iStream >> schema;
+		*iStream >> name;
+		*iStream >> type;
+		*iStream >> remarks;
+		
+		tables->addTable(catalog, schema, name, type, remarks, ID);
+	}
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_FileLocation* fileloc) {
+		char*  f = NULL;
+		
+		*iStream >> f;
+		
+		fileloc->setData(f); 
+}
+
+void LB_STDCALL lbJSONInputStream::visit(lb_I_DirLocation* fileloc) {
+		char*  f = NULL;
+		
+		*iStream >> f;
+		
+		fileloc->setData(f); 
 }
 
 void LB_STDCALL lbJSONInputStream::visit(lb_I_MetaApplication* app) {
@@ -1146,12 +1182,15 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginJSONInputStream)
@@ -1170,9 +1209,14 @@ lbErrCodes LB_STDCALL lbPluginJSONInputStream::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+void LB_STDCALL lbPluginJSONInputStream::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
+}
+
 lbPluginJSONInputStream::lbPluginJSONInputStream() {
 	_CL_VERBOSE << "lbPluginJSONInputStream::lbPluginJSONInputStream() called.\n" LOG_
-	
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginJSONInputStream::~lbPluginJSONInputStream() {
@@ -1202,6 +1246,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONInputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbJSONInputStream* InputStream = new lbJSONInputStream();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -1221,6 +1266,7 @@ lb_I_Unknown* LB_STDCALL lbPluginJSONInputStream::getImplementation() {
 	
 		lbJSONInputStream* InputStream = new lbJSONInputStream();
 		
+		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	}

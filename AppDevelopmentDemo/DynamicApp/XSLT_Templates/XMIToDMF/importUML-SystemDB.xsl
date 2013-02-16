@@ -271,6 +271,14 @@ INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "
 -- Generate statemachine for <xsl:value-of select="$ID"/>
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
 
+-- Delete old statemachine
+delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'));
+delete from "action_step_transitions" where "description" = '_<xsl:value-of select="$ID"/>';
+delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>');
+delete from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>';
+
+
+
 -- A form validator should be used before saving the changes to the database
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');

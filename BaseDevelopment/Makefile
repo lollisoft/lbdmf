@@ -1,11 +1,33 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.12 $
+# * $Revision: 1.236 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.12 2013/01/30 04:50:50 lollisoft Exp $
+# * $Id: Makefile,v 1.236 2013/02/16 10:36:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.236  2013/02/16 10:36:25  lollisoft
+# * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+# * Several files were conflicting and resolved in this checkin.
+# *
+# * Revision 1.235  2012/02/11 07:34:38  lollisoft
+# * Added touch Makefile for the clean target.
+# *
+# * Revision 1.234  2011/12/30 16:31:11  lollisoft
+# * Added new target DBTool.
+# *
+# * Revision 1.233  2011/10/30 17:13:47  lollisoft
+# * Missed passing prefix in install target.
+# *
+# * Revision 1.232  2011/10/30 11:08:37  lollisoft
+# * Removed the -.
+# *
+# * Revision 1.231  2011/10/30 10:16:19  lollisoft
+# * Added ../UnitTests target to normal build.
+# *
+# * Revision 1.230  2011/10/30 08:40:59  lollisoft
+# * Added building unit tests in CRUISECONTROL mode.
+# *
 # * Revision 1.229.2.12  2013/01/30 04:50:50  lollisoft
 # * Corrected rpm istallation.
 # *
@@ -935,6 +957,7 @@ BASEDIRECTORIES= \
 	../Modules \
 	../UnitTests \
 	../RegressionTests \
+	../UnitTests \
 	../AppDevelopment
 endif
 
@@ -1392,6 +1415,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
+	../Test/Console/DBTool \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
@@ -1529,7 +1553,7 @@ ifndef RPMBUILD
 
 install:
 	for sub_target in $(ALLDIRS); do \
-		$(MAKE) -C $$sub_target install; \
+		$(MAKE) -C $$sub_target -e prefix=$(prefix) install; \
 	done
 	$(MAKE) -C ../AppDevelopment install
 
@@ -1662,6 +1686,7 @@ $(prefix)/plugins:
 	-mkdir -p $@
 
 clean:
+	touch Makefile
 	@for d in $(ALLDIRS); do \
 	  $(MAKE) -C $$d clean; \
 	done
@@ -1796,6 +1821,10 @@ endif
 
 ../Test/Console/XML: dummy
 	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/Console/DBTool: dummy
+	$(MAKE) -s -C $@ -e MODULE=DBTool -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy

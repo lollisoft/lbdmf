@@ -34,7 +34,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (1.0.4-stable-rc3)
+/** \mainpage Distributed Multiplatform Framework (1.0.4-stable-rc4)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -47,7 +47,7 @@
  *
  * Prerequirements:
  *
- * My latest version of binary build tools. <a href="http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc3/lbDMF-BinbuildTools-1.0.4-stable-rc3.exe/download">Binary Build Tools</a>
+ * My latest version of binary build tools. <a href="http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc4/lbDMF-BinbuildTools-1.0.4-stable-rc4.exe/download">Binary Build Tools</a>
  *
  * Latest MinGW compiler (tested version as of release day). <a href="http://www.mingw.org">MinGW</a>
  *
@@ -979,6 +979,18 @@ PRIMARY KEY (id),
 	// Base interface for visitors
 	class lb_I_Aspect;
 
+	// The data model of the main application is currently not extensible without modifying all the visitor implementations. This is a pain.
+	// To enable this I have refactored the code so that the data model could be much simpler extended without touching existing code. Also
+	// now I found a candidate to enable extension without recompilation of the existing code by applying the extension object pattern.
+	// To further simplifying the code change I like to do the following:
+	//
+	// Pass the namespace for each visitor plugin into the plugin instance itself. This allows for a mapping between the plugin (classname) and the
+	// namespace to forward to the extension lookup mechanism to find a counterpart for sample for the XML writer visitor implementation.
+
+	class lb_I_ExtensibleObject; // Marker interface to identify an extensible object
+	class lb_I_ExtensionObject; // Marker interface for the extension object
+	
+	class lb_I_SecurityProvider;
 	class lb_I_VisitableHelper;
 	class lb_I_Streamable;
 	class lb_I_Integer;
@@ -1006,6 +1018,7 @@ PRIMARY KEY (id),
 	class lb_I_DatabaseReport;
 	class lb_I_Project;
 	class lb_I_Stream;
+	class lb_I_InputStream;
 	class lb_I_CodeGenerator;
 	class lb_I_ProjectManager;
 	class lb_I_GUIApp;
@@ -1019,13 +1032,16 @@ PRIMARY KEY (id),
 	class lb_I_Transfer;
 	class lb_I_ThreadImplementation;
 	class lb_I_Column_Types;
-	class lb_I_Formular_Fields;
+
+//	class lb_I_Formular_Fields;
+//	class lb_I_Action_Parameters;
+//	class lb_I_ActionStep_Parameters;
+	class lb_I_Applications;
+
 	class lb_I_FixedDatabaseForm;
 	class lb_I_DBReportTextblock;
 	class lb_I_DBReportProperties;
 	class lb_I_DirLocation;
-	class lb_I_Action_Parameters;
-	class lb_I_ActionStep_Parameters;
 	class lb_I_TestFixture;
 	class lb_I_TestMethod;
 	class lb_I_CryptoStream;
@@ -3062,6 +3078,103 @@ class lb_I_VisitableHelper : public lb_I_Unknown {
 	
 };
 
+class lb_I_ExtensibleObject : public lb_I_Unknown {
+public:
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace) = 0;
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace) = 0;
+	
+	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) = 0;
+	virtual lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) = 0;
+};
+
+#define DECLARE_EXTENSIBLEOBJECT() \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace); \
+	lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace); \
+\
+	lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension); \
+	lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension); \
+\
+	UAP(lb_I_Container, preAddedExtensions)
+	
+
+#define IMPLEMENT_EXTENSIBLEOBJECT(classname) \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(lb_I_String* contextnamespace) { \
+	UAP(lb_I_ExtensionObject, exObject) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
+	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
+	*ns = contextnamespace->charrep(); \
+	*ns += "_"; \
+	*ns += getClassName(); \
+	QI(ns, lb_I_KeyBase, nsKey) \
+	if (preAddedExtensions == NULL) { \
+		REQUEST(getModuleInstance(), lb_I_Container, preAddedExtensions) \
+		preAddedExtensions->setCloning(false); \
+	} \
+	if (preAddedExtensions->exists(&nsKey)) { \
+		UAP(lb_I_Unknown, ukEx) \
+		ukEx = preAddedExtensions->getElement(&nsKey); \
+		QI(ukEx, lb_I_ExtensionObject, exObject) \
+		if (exObject == NULL) return NULL; \
+		exObject++; \
+		return *&exObject; \
+	} \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, errMsg) \
+	*errMsg = "Failed to lookup matching object extension by combined namespace"; \
+	*errMsg += ns->charrep(); \
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, ns->charrep(), exObject, errMsg) \
+	if (exObject == NULL) return NULL; \
+	preAddedExtensions->insert(&ukexObject, &nsKey); \
+	exObject++; \
+	return *&exObject; \
+} \
+lb_I_ExtensionObject*	LB_STDCALL classname::getExtension(const char* contextnamespace) { \
+	UAP(lb_I_ExtensionObject, exObject) \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ns) \
+	UAP_REQUEST(getModuleInstance(), lb_I_KeyBase, nsKey) \
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM) \
+	*ns = contextnamespace; \
+	*ns += "_"; \
+	*ns += getClassName(); \
+	QI(ns, lb_I_KeyBase, nsKey) \
+	if (preAddedExtensions == NULL) { \
+		REQUEST(getModuleInstance(), lb_I_Container, preAddedExtensions) \
+		preAddedExtensions->setCloning(false); \
+	} \
+	if (preAddedExtensions->exists(&nsKey)) { \
+		UAP(lb_I_Unknown, ukEx) \
+		ukEx = preAddedExtensions->getElement(&nsKey); \
+		QI(ukEx, lb_I_ExtensionObject, exObject) \
+		if (exObject == NULL) return NULL; \
+		exObject++; \
+		return *&exObject; \
+	} \
+	UAP_REQUEST(getModuleInstance(), lb_I_String, errMsg) \
+	*errMsg = "Failed to lookup matching object extension by combined namespace"; \
+	*errMsg += ns->charrep(); \
+	AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_ExtensionObject, ns->charrep(), exObject, errMsg) \
+	if (exObject == NULL) return NULL; \
+	preAddedExtensions->insert(&ukexObject, &nsKey); \
+	exObject++; \
+	return *&exObject; \
+} \
+lbErrCodes		LB_STDCALL classname::addExtension(lb_I_String* name, lb_I_ExtensionObject* extension) {\
+	_LOG << "Error: " << #classname << "::addExtension(() not yet implemented." LOG_ \
+	return ERR_NONE; \
+} \
+lbErrCodes		LB_STDCALL classname::addExtension(const char* name, lb_I_ExtensionObject* extension) { \
+	_LOG << "Error: " << #classname << "::addExtension(() not yet implemented." LOG_ \
+	return ERR_NONE; \
+}
+
+/** \brief An extension for a extensible class.
+ *
+ */
+class lb_I_ExtensionObject : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL setOwningObject(lb_I_Unknown* owning) = 0;
+};
+
 /*...sclass lb_I_DispatchRequest:0:*/
 /**
  * \brief An attempt to create a request packet, that could be predefined.
@@ -3234,6 +3347,7 @@ class lb_I_ChainingDispatchInterceptor : public lb_I_DispatchInterceptor {
 class lb_I_DatabaseForm;
 class lb_I_GUI;
 class lb_I_Form;
+class lb_I_DocumentVersion;
 
 /*...sclass lb_I_Frame:0:*/
 /**
@@ -3312,6 +3426,10 @@ public:
 	 */
 	virtual lb_I_EventManager* LB_STDCALL getEVManager() = 0;
 
+	/** \brief Set the information that the application model is old.
+	 * The flag isOld identifies an older version. The version is optional.
+	 */
+	virtual void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL) = 0;
 };
 /*...e*/
 
@@ -3335,7 +3453,6 @@ public:
 	 */
 	virtual void LB_STDCALL setFileAnswer(char* what) = 0;
 };
-
 /*...slbDMF ORM:0:*/
 /*...sclass lb_I_MetaApplication:0:*/
 /**
@@ -3585,24 +3702,6 @@ public:
 	 */
 	virtual lb_I_Parameter* LB_STDCALL getParameter() = 0;
 
-
-	/** \brief Login to the application.
-	 *
-	 * See description of addUserAccount.
-	 */
-	virtual bool LB_STDCALL login(const char* user, const char* pass) = 0;
-
-	/** \brief get a list of applications.
-	 *
-	 * This function builds a list of application based on the user rights.
-	 */
-	virtual lb_I_Container* LB_STDCALL getApplications() = 0;
-
-	/** \brief Get the ID of an application.
-	 *
-	 */
-	virtual long LB_STDCALL getApplicationID() = 0;
-
 	/** \brief Set the active application.
 	 */
 	virtual void			LB_STDCALL setActiveApplication(const char* name) = 0;
@@ -3626,8 +3725,6 @@ public:
 	virtual bool			LB_STDCALL isPropertyPaneLayoutLeft() = 0;
 
 	virtual void			LB_STDCALL showPropertyPanel() = 0;
-
-	virtual lb_I_Applications* LB_STDCALL getApplicationModel() = 0;
 
 	/** \brief Set loading of application from database.
 	 */
@@ -3720,622 +3817,6 @@ public:
 };
 /*...e*/
 
-/*...sclass lb_I_UserAccounts:0:*/
-class lb_I_UserAccounts : public lb_I_Unknown {
-public:
-	/** \brief Add an user account and get it's ID.
-	 *
-	 * This function only works, when a super user has already logged in.
-	 * If there is no such user and no database available, the current user
-	 * id would be used for a local super user.
-	 *
-	 * The database's stored super user has more priority over the local.
-	 * Locally logged in super users didn't get access to the user accounts
-	 * in the database. So if the database is back any how, the user must
-	 * login to the database's super user.
-	 *
-	 * If the passwords are inconsistent and the database is available again,
-	 * the user must login arain to the database's user.
-	 *
-	 * If all that is ok, the super user could transfer the users to the local
-	 * copy of users.
-	 *
-	 * Any better solutions ?
-	 *
-	 * Parameters:
-	 *
-	 *		_id would be automatically generated, if no third parameter is given.
-	 *		This is the case, when the new entry would be added from user interaction and
-	 *		later stored in the database.
-	 *
-	 *		It would be the best to directly store the new entry in the database and retrieve
-	 *		the id for furter linking of applications to users.
-	 *
-	 * Returns -1, if given id exists (then repeat without that id).
-	 * Returns -2, if user exists.
-	 */
-	virtual long		LB_STDCALL addAccount(const char* _user, const char* _pass, long _id = -1) = 0;
-
-	/** \brief Select current user.
-	 *
-	 * Direct access by the given login name.
-	 */
-	virtual bool		LB_STDCALL selectAccount(const char* _user) = 0;
-
-	/** \brief Select current user.
-	 *
-	 * Direct access by the given user number.
-	 */
-	virtual bool		LB_STDCALL selectAccount(long user_id) = 0;
-
-	/** \brief Get the number of users.
-	 */
-	virtual long		LB_STDCALL getUserCount() = 0;
-
-	/** \brief Begin or indicate end of iteration.
-	 */
-	virtual bool		LB_STDCALL hasMoreUsers() = 0;
-
-	/** \brief Iterate to next user.
-	 */
-	virtual void		LB_STDCALL setNextUser() = 0;
-
-	/** \brief Stop iteration.
-	 */
-	virtual void		LB_STDCALL finishUserIteration() = 0;
-
-	/** \brief Get current user name (iteration).
-	 */
-	virtual char*		LB_STDCALL getUserName() = 0;
-
-	/** \brief Get current user id.
-	 */
-	virtual long		LB_STDCALL getUserID() = 0;
-
-	/** \brief Get current user password.
-	 */
-	virtual char*		LB_STDCALL getUserPassword() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Applications:0:*/
-class lb_I_Applications : public lb_I_Unknown {
-public:
-	/** \brief Add a new application.
-	 *
-	 * The given _id is used for later linking of users to specific applications.
-	 * Using _id's default value indicates a new entry in the database. Else a readout from stream/database.
-	 * When using default id value, internally a 'virtual' id must be assigned, to be able to store relations.
-	 *
-	 * To avoid extra functions, these 'virtual' id's would be negative. This could be determined my the
-	 * database stream handler.
-	 */
-	virtual long LB_STDCALL addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id = -1) = 0;
-
-	/** \brief Select current application.
-	 *
-	 * Direct access by application name.
-	 */
-	virtual bool LB_STDCALL selectApplication(const char* application) = 0;
-
-	/** \brief Select current application.
-	 *
-	 * Direct access by application id.
-	 */
-	virtual bool LB_STDCALL selectApplication(long _id) = 0;
-
-	/** \brief Get the number of applications.
-	 */
-	virtual int LB_STDCALL getApplicationCount() = 0;
-
-	/** \brief Begin or indicate end of iteration.
-	 */
-	virtual bool		LB_STDCALL hasMoreApplications() = 0;
-
-	/** \brief Iterate to next application.
-	 */
-	virtual void		LB_STDCALL setNextApplication() = 0;
-
-	/** \brief Stop iteration.
-	 */
-	virtual void		LB_STDCALL finishApplicationIteration() = 0;
-
-	/** \brief Get current application name (iteration).
-	 */
-	virtual char*		LB_STDCALL getApplicationName() = 0;
-
-	/** \brief Get current application name (iteration).
-	 */
-	virtual char*		LB_STDCALL getApplicationTitle() = 0;
-
-	/** \brief Get current application name (iteration).
-	 */
-	virtual char*		LB_STDCALL getApplicationFunctor() = 0;
-
-	/** \brief Get current application name (iteration).
-	 */
-	virtual char*		LB_STDCALL getApplicationModule() = 0;
-
-	/** \brief Get current application name (iteration).
-	 */
-	virtual char*		LB_STDCALL getApplicationInterface() = 0;
-
-	/** \brief Get current applications user id.
-	 *
-	 * Each application entry has an associated id.
-	 */
-	virtual long		LB_STDCALL getApplicationID() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-class lb_I_Applications_Formulars : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addRelation(long app_id, long form_id, long _id = -1) = 0;
-
-	/** \brief Select relation by id.
-	 */
-	virtual bool		LB_STDCALL selectRelation(long _id) = 0;
-	virtual int			LB_STDCALL getRelationCount() = 0;
-	virtual bool		LB_STDCALL hasMoreRelations() = 0;
-	virtual void		LB_STDCALL setNextRelation() = 0;
-	virtual void		LB_STDCALL finishRelationIteration() = 0;
-
-	virtual long		LB_STDCALL getApplicationID() = 0;
-	virtual long		LB_STDCALL getFormularID() = 0;
-	virtual long		LB_STDCALL getID() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-
-/*...sclass lb_I_User_Applications:0:*/
-class lb_I_User_Applications : public lb_I_Unknown {
-public:
-	/** \brief Add a new application.
-	 *
-	 * The given _id is used for later linking of users to specific applications.
-	 * Using _id's default value indicates a new entry in the database. Else a readout from stream/database.
-	 * When using default id value, internally a 'virtual' id must be assigned, to be able to store relations.
-	 *
-	 * To avoid extra functions, these 'virtual' id's would be negative. This could be determined my the
-	 * database stream handler.
-	 */
-	virtual long LB_STDCALL addRelation(long app_id, long user_id, long _id = -1) = 0;
-
-	/** \brief Select relation by id.
-	 */
-	virtual bool LB_STDCALL selectRelation(long _id) = 0;
-
-	/** \brief Hide entities, not related to filter.
-	 *
-	 * Multiple filters are logically or'ed, but different filter names are and'ed.
-	 */
-	virtual bool LB_STDCALL addFilter(const char* filter, const char* value) = 0;
-
-	/** \brief Remove filter.
-	 *
-	 * Removes all or specified filter(s).
-	 */
-	virtual bool LB_STDCALL resetFilter(const char* filter = "") = 0;
-
-	/** \brief Get the number of applications.
-	 */
-	virtual int LB_STDCALL getRelationCount() = 0;
-
-	/** \brief Begin or indicate end of iteration.
-	 */
-	virtual bool		LB_STDCALL hasMoreRelations() = 0;
-
-	/** \brief Iterate to next application.
-	 */
-	virtual void		LB_STDCALL setNextRelation() = 0;
-
-	/** \brief Stop iteration.
-	 */
-	virtual void		LB_STDCALL finishRelationIteration() = 0;
-
-	/** \brief Get current applications id.
-	 *
-	 * Each application entry has an associated id.
-	 */
-	virtual long		LB_STDCALL getApplicationID() = 0;
-
-	/** \brief Get current users id.
-	 *
-	 */
-	virtual long		LB_STDCALL getUserID() = 0;
-
-	virtual long		LB_STDCALL getID() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Formulars:0:*/
-class lb_I_Formulars : public lb_I_Unknown {
-public:
-	/** \brief Ignore all other data.
-	 *
-	 * This will be used to ignore all data not from the specific application.
-	 */
-	//virtual void		LB_STDCALL setApplicationFilter(long anwendung_id) = 0;
-
-	virtual long		LB_STDCALL addFormular(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
-	virtual bool		LB_STDCALL selectFormular(long _id) = 0;
-	virtual int			LB_STDCALL getFormularCount() = 0;
-	virtual bool		LB_STDCALL hasMoreFormulars() = 0;
-	virtual void		LB_STDCALL setNextFormular() = 0;
-	virtual void		LB_STDCALL finishFormularIteration() = 0;
-
-	virtual char*		LB_STDCALL getName() = 0;
-	virtual char*		LB_STDCALL getMenuName() = 0;
-	virtual char*		LB_STDCALL getToolbarImage() = 0;
-	virtual char*		LB_STDCALL getEventName() = 0;
-	virtual char*		LB_STDCALL getMenuHelp() = 0;
-	virtual long		LB_STDCALL getApplicationID() = 0;
-	virtual long		LB_STDCALL getTyp() = 0;
-	virtual long		LB_STDCALL getFormularID() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Formulars:0:*/
-class lb_I_Formular_Fields : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addField(const char* name, const char* tablename, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid = -1) = 0;
-	virtual bool		LB_STDCALL selectField(long _id) = 0;
-	virtual int			LB_STDCALL getFieldCount() = 0;
-	virtual bool		LB_STDCALL hasMoreFields() = 0;
-	virtual void		LB_STDCALL setNextField() = 0;
-	virtual void		LB_STDCALL finishFieldsIteration() = 0;
-
-	virtual char*		LB_STDCALL getName() = 0;
-	virtual char*		LB_STDCALL getTableName() = 0;
-	virtual char*		LB_STDCALL getDBType() = 0;
-	virtual char*		LB_STDCALL getFKName() = 0;
-	virtual char*		LB_STDCALL getFKTable() = 0;
-	virtual long		LB_STDCALL getFormularID() = 0;
-	virtual long		LB_STDCALL getID() = 0;
-	virtual bool		LB_STDCALL isFK() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Formulars:0:*/
-class lb_I_Column_Types : public lb_I_Unknown {
-public:
-	// const char* tablename, const char* name are together the logically key
-	virtual long		LB_STDCALL addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly) = 0;
-	virtual bool		LB_STDCALL selectType(const char* tablename, const char* name) = 0;
-	virtual int			LB_STDCALL getTypeCount() = 0;
-	virtual bool		LB_STDCALL hasMoreTypes() = 0;
-	virtual void		LB_STDCALL setNextType() = 0;
-	virtual void		LB_STDCALL finishTypeIteration() = 0;
-
-	virtual char*		LB_STDCALL getTableName() = 0;
-	virtual char*		LB_STDCALL getName() = 0;
-	virtual char*		LB_STDCALL getSpecialColumn() = 0;
-	virtual char*		LB_STDCALL getControlType() = 0;
-	virtual bool		LB_STDCALL getReadonly() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-
-/*...sclass lb_I_ParameterTable:0:*/
-class lb_I_ParameterTable : public lb_I_Unknown {
-public:
-	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
-
-	virtual int			LB_STDCALL getParameterCount() = 0;
-	virtual bool		LB_STDCALL hasMoreParameters() = 0;
-	virtual void		LB_STDCALL setNextParameter() = 0;
-	virtual void		LB_STDCALL finishParameterIteration() = 0;
-
-	virtual long		LB_STDCALL getParameterID() = 0;
-	virtual char*		LB_STDCALL getParameterName() = 0;
-	virtual char*		LB_STDCALL getParameterValue() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_FormularParameter:0:*/
-class lb_I_FormularParameter : public lb_I_ParameterTable {
-public:
-	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long formular_id, long _id = -1) = 0;
-	virtual long		LB_STDCALL getFormularID() = 0;
-	virtual char*		LB_STDCALL getParameter(const char* name, long formular_id) = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_ApplicationParameter:0:*/
-class lb_I_ApplicationParameter : public lb_I_ParameterTable {
-public:
-	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long anwendungs_id, long _id = -1) = 0;
-	virtual long		LB_STDCALL getApplicationID() = 0;
-	virtual char*		LB_STDCALL getParameter(const char* name, long application_id) = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_FKPK_Mapping:0:*/
-class lb_I_FKPK_Mapping : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addMapping(const char* PKTable, const char* PKName, const char* FKTable, const char* FKName, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectMapping(long _id) = 0;
-	virtual int		LB_STDCALL getMappingCount() = 0;
-	virtual bool		LB_STDCALL hasMoreMappings() = 0;
-	virtual void		LB_STDCALL setNextMapping() = 0;
-	virtual void		LB_STDCALL finishMappingIteration() = 0;
-
-	virtual long		LB_STDCALL getMappingID() = 0;
-	virtual char*		LB_STDCALL getPKTable() = 0;
-	virtual char*		LB_STDCALL getPKName() = 0;
-	virtual char*		LB_STDCALL getFKTable() = 0;
-	virtual char*		LB_STDCALL getFKName() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Actions:0:*/
-class lb_I_Actions : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectAction(long _id) = 0;
-	virtual int			LB_STDCALL getActionCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActions() = 0;
-	virtual void		LB_STDCALL setNextAction() = 0;
-	virtual void		LB_STDCALL finishActionIteration() = 0;
-
-	virtual long		LB_STDCALL getActionID() = 0;
-	virtual long		LB_STDCALL getActionTyp() = 0;
-	virtual char*		LB_STDCALL getActionTarget() = 0;
-
-	virtual char*		LB_STDCALL getActionSource() = 0;
-	virtual char*		LB_STDCALL getActionName() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Action_Steps:0:*/
-class lb_I_Action_Steps : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
-	virtual int			LB_STDCALL getActionStepCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
-	virtual void		LB_STDCALL setNextActionStep() = 0;
-	virtual void		LB_STDCALL finishActionStepIteration() = 0;
-
-	virtual long		LB_STDCALL getActionStepID() = 0;
-	virtual long		LB_STDCALL getActionStepActionID() = 0;
-	virtual long		LB_STDCALL getActionStepOrderNo() = 0;
-	virtual long		LB_STDCALL getActionStepType() = 0;
-
-	virtual char*		LB_STDCALL getActionStepBezeichnung() = 0;
-	virtual char*		LB_STDCALL getActionStepWhat() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Action_Steps:0:*/
-class lb_I_Action_Step_Transitions : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addTransition(const char* decision, long src_actionid, long dst_actionid, const char* description, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectTransition(long _id) = 0;
-	virtual int			LB_STDCALL getActionStepTransitionsCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActionStepTransitions() = 0;
-	virtual void		LB_STDCALL setNextActionStepTransition() = 0;
-	virtual void		LB_STDCALL finishActionStepTransitionIteration() = 0;
-
-	virtual long		LB_STDCALL getActionStepTransitionID() = 0;
-	virtual long		LB_STDCALL getActionStepTransitionSrcActionID() = 0;
-	virtual long		LB_STDCALL getActionStepTransitionDstActionID() = 0;
-
-	virtual char*		LB_STDCALL getActionStepTransitionDecision() = 0;
-	virtual char*		LB_STDCALL getActionStepTransitionDescription() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Action_Types:0:*/
-class lb_I_Action_Types : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectActionType(long _id) = 0;
-	virtual int			LB_STDCALL getActionTypesCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
-	virtual void		LB_STDCALL setNextActionType() = 0;
-	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
-
-	virtual long		LB_STDCALL getActionTypeID() = 0;
-
-	virtual char*		LB_STDCALL getActionTypeBezeichnung() = 0;
-	virtual char*		LB_STDCALL getActionTypeHandler() = 0;
-	virtual char*		LB_STDCALL getActionTypeModule() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Action_Types:0:*/
-class lb_I_Action_Parameters : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addActionParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectActionParameter(long _id) = 0;
-	virtual int			LB_STDCALL getActionParametersCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActionParameters() = 0;
-	virtual void		LB_STDCALL setNextActionParameter() = 0;
-	virtual void		LB_STDCALL finishActionParameterIteration() = 0;
-
-	virtual long		LB_STDCALL getActionParameterID() = 0;
-	virtual long		LB_STDCALL getActionParameterActionID() = 0;
-
-	virtual char*		LB_STDCALL getActionParameterDescription() = 0;
-	virtual char*		LB_STDCALL getActionParameterName() = 0;
-	virtual char*		LB_STDCALL getActionParameterValue() = 0;
-	virtual char*		LB_STDCALL getActionParameterInterface() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Action_Types:0:*/
-class lb_I_ActionStep_Parameters : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addActionStepParameter(const char* description, const char* name, const char* value, const char* _interface, long actionid, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectActionStepParameter(long _id) = 0;
-	virtual int			LB_STDCALL getActionStepParametersCount() = 0;
-	virtual bool		LB_STDCALL hasMoreActionStepParameters() = 0;
-	virtual void		LB_STDCALL setNextActionStepParameter() = 0;
-	virtual void		LB_STDCALL finishActionStepParameterIteration() = 0;
-
-	virtual long		LB_STDCALL getActionStepParameterID() = 0;
-	virtual long		LB_STDCALL getActionStepParameterActionID() = 0;
-
-	virtual char*		LB_STDCALL getActionStepParameterDescription() = 0;
-	virtual char*		LB_STDCALL getActionStepParameterName() = 0;
-	virtual char*		LB_STDCALL getActionStepParameterValue() = 0;
-	virtual char*		LB_STDCALL getActionStepParameterInterface() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Formular_Actions:0:*/
-class lb_I_Formular_Actions : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addFormularAction(long formular, long action, const char* event, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectFormularAction(long _id) = 0;
-	virtual int		LB_STDCALL getFormularActionsCount() = 0;
-	virtual bool		LB_STDCALL hasMoreFormularActions() = 0;
-	virtual void		LB_STDCALL setNextFormularAction() = 0;
-	virtual void		LB_STDCALL finishFormularActionIteration() = 0;
-
-	virtual long		LB_STDCALL getFormularActionID() = 0;
-	virtual long		LB_STDCALL getFormularActionFormularID() = 0;
-	virtual long		LB_STDCALL getFormularActionActionID() = 0;
-
-	virtual char*		LB_STDCALL getFormularActionEvent() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
-
-/*...sclass lb_I_Translations:0:*/
-class lb_I_Translations : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addTranslation(const char* text, const char* translated, const char* language, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectTranslation(long _id) = 0;
-	virtual bool		LB_STDCALL selectText(const char* text, const char* language) = 0;
-	virtual int		LB_STDCALL getTranslationsCount() = 0;
-	virtual bool		LB_STDCALL hasMoreTranslations() = 0;
-	virtual void		LB_STDCALL setNextTranslation() = 0;
-	virtual void		LB_STDCALL finishTranslationIteration() = 0;
-
-	virtual long		LB_STDCALL getTranslationID() = 0;
-	virtual char*		LB_STDCALL getTranslationText() = 0;
-	virtual char*		LB_STDCALL getTranslationTranslated() = 0;
-	virtual char*		LB_STDCALL getTranslationLanguage() = 0;
-
-	virtual bool		LB_STDCALL ismarked() = 0;
-	virtual void		LB_STDCALL mark() = 0;
-	virtual void		LB_STDCALL unmark() = 0;
-
-	virtual void		LB_STDCALL deleteUnmarked() = 0;
-	virtual void		LB_STDCALL deleteMarked() = 0;
-};
-/*...e*/
 /** \brief A class to store database table information.
  *
  * This is the internal storage for database table information. It will be used in the visitor plugin to transfer
@@ -4473,119 +3954,6 @@ public:
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
-
-/** \brief A class to store report information.
- *
- * This is the internal storage for report information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML.
- */
-class lb_I_Reports : public lb_I_Unknown {
-public:
-/// \todo Probably add a report type to add support for other reporting engines.
-	virtual long		LB_STDCALL addReport(const char* name, const char* description, long _id = -1) = 0;
-
-	virtual bool		LB_STDCALL selectReport(long _id) = 0;
-	virtual int			LB_STDCALL getReportCount() = 0;
-	virtual bool		LB_STDCALL hasMoreReports() = 0;
-	virtual void		LB_STDCALL setNextReport() = 0;
-	virtual void		LB_STDCALL finishReportIteration() = 0;
-
-	virtual long		LB_STDCALL getReportID() = 0;
-	virtual char*		LB_STDCALL getReportName() = 0;
-	virtual char*		LB_STDCALL getReportDescription() = 0;
-};
-
-/** \brief A class to store report parameter information.
- *
- * This is the internal storage for report parameter information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML.
- */
-class lb_I_ReportParameters : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addParameter(long reportid, const char* name, const char* value, long _id = -1) = 0;
-
-	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
-	virtual int			LB_STDCALL getParameterCount() = 0;
-	virtual bool		LB_STDCALL hasMoreParameters() = 0;
-	virtual void		LB_STDCALL setNextParameter() = 0;
-	virtual void		LB_STDCALL finishParameterIteration() = 0;
-
-	virtual long		LB_STDCALL getReportID() = 0;
-	virtual long		LB_STDCALL getParameterID() = 0;
-	virtual char*		LB_STDCALL getParameterName() = 0;
-	virtual char*		LB_STDCALL getParameterValue() = 0;
-};
-
-/** \brief A class to store report elements information.
- *
- * This is the internal storage for report elements information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML.
- */
-class lb_I_ReportElements : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addElement(long reportid, const char* name, long typ, long x, long y, long w, long h, const char* description, long _id = -1) = 0;
-
-	virtual bool		LB_STDCALL selectElement(long _id) = 0;
-	virtual int			LB_STDCALL getElementCount() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishElementIteration() = 0;
-
-	virtual long		LB_STDCALL getElementReportID() = 0;
-	virtual long		LB_STDCALL getElementID() = 0;
-	virtual char*		LB_STDCALL getElementName() = 0;
-	virtual char*		LB_STDCALL getElementDescription() = 0;
-	virtual long		LB_STDCALL getElementTyp() = 0;
-	virtual long		LB_STDCALL getElementX() = 0;
-	virtual long		LB_STDCALL getElementY() = 0;
-	virtual long		LB_STDCALL getElementW() = 0;
-	virtual long		LB_STDCALL getElementH() = 0;
-};
-
-/** \brief A class to store report element types information.
- *
- * This is the internal storage for report element types information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML.
- */
-class lb_I_ReportElementTypes : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addElementType(const char* name, const char* description, long _id = -1) = 0;
-
-	virtual bool		LB_STDCALL selectElementType(long _id) = 0;
-	virtual int			LB_STDCALL getElementTypeCount() = 0;
-	virtual bool		LB_STDCALL hasMoreElementTypes() = 0;
-	virtual void		LB_STDCALL setNextElementType() = 0;
-	virtual void		LB_STDCALL finishElementTypeIteration() = 0;
-
-	virtual long		LB_STDCALL getElementID() = 0;
-	virtual char*		LB_STDCALL getElementName() = 0;
-	virtual char*		LB_STDCALL getElementDescription() = 0;
-};
-
-/** \brief A class to store report texts information.
- *
- * This is the internal storage for report texts information. It will be used in the visitor plugin to transfer
- * the data between database meta information and internal file format or XML.
- */
-class lb_I_ReportTexts : public lb_I_Unknown {
-public:
-	virtual long		LB_STDCALL addText(long elementid, long line, const char* text, long _id = -1) = 0;
-
-	virtual bool		LB_STDCALL selectText(long _id) = 0;
-	virtual int			LB_STDCALL getTextCount() = 0;
-	virtual bool		LB_STDCALL hasMoreTexts() = 0;
-	virtual void		LB_STDCALL setNextText() = 0;
-	virtual void		LB_STDCALL finishTextIteration() = 0;
-
-	virtual char*		LB_STDCALL getText() = 0;
-	virtual long		LB_STDCALL getLine() = 0;
-	virtual long		LB_STDCALL getElementID() = 0;
-	virtual long		LB_STDCALL getID() = 0;
-};
-
-
-
-
 /*...e*/
 
 /*...slbDMF Plugin interfaces:0:*/
@@ -4593,6 +3961,32 @@ class lb_I_Plugin;
 class lb_I_PluginImpl;
 class lb_I_PluginModule;
 class lb_I_ApplicationServerModul;
+
+/** \brief A new iterator interface for plugins.
+ * As I have discovered that using a container and an inerator at once is impractical when using the same container at moltible places eithet threaded
+ * in a recursive context, this should solve the issue that a plugin can corrupt an iteration when it self loads a plugin.
+ * This is an iterator pattern based implementation. The disadvantages of modifying the contents while iterating are not covered in lb_I_PluginManager,
+ * thus the user has to do that.
+ */
+class lb_I_PluginIterator : public lb_I_VisitableHelper {
+public:
+	/** \brief Starts listing of plugins.
+	 *
+	 * As of lb_I_Container interface, this is similar to the beginning of
+	 * enumerating its objects.
+	 */
+	virtual bool LB_STDCALL beginEnumPlugins() = 0;
+
+	/** \brief Get the next plugin.
+	 *
+	 * Gets the next plugin handle instance. This does not
+	 * load an instance of the plugin implementation. But it
+	 * loads the module.
+	 *
+	 * To finally use the plugin, you must attach to it.
+	 */
+	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+};
 
 /*...sclass lb_I_PluginManager:0:*/
 /** \brief The plugin manager
@@ -4626,6 +4020,11 @@ public:
 	 */
 	virtual void LB_STDCALL unload() = 0;
 
+	/** \brief Get the iterator for common plugins.
+	 * The server and unit test plugins are not yet changed.
+	 */
+	virtual lb_I_PluginIterator* LB_STDCALL getPluginIterator() = 0;
+#ifdef bla	
 	/** \brief Starts listing of plugins.
 	 *
 	 * As of lb_I_Container interface, this is similar to the beginning of
@@ -4642,6 +4041,7 @@ public:
 	 * To finally use the plugin, you must attach to it.
 	 */
 	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+#endif
 
 	/** \brief Starts listing of server plugins.
 	 *
@@ -4788,6 +4188,8 @@ void LB_STDCALL cls::enumPlugins() { \
 		Plugins--; \
 	} \
 	REQUEST(getModuleInstance(), lb_I_Container, Plugins)
+	
+//	Plugins->setCloning(false);
 
 #define ADD_PLUGIN(plugin, namespace) \
 	UAP_REQUEST(getModuleInstance(), lb_I_Plugin, P##plugin##namespace) \
@@ -5158,8 +4560,18 @@ public:
 	 * instance to be able to create new instances.
 	 */
 	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0;
+	
+	/** \brief Forward the namespace where the plugin resides in.
+	 * The namespace is required to enable forwarding the namespace as a context to be reused in further
+	 * plugin instanciations. Especially in the extensible object pattern I need this to find corresponding
+	 * extensions to the used visitor implementation.
+	 */
+	virtual void LB_STDCALL setNamespace(const char* _namespace) = 0;
 };
 /*...e*/
+
+
+
 
 /** \brief An application server module.
  * This is an attempt to enable server side modules. They should either
@@ -5203,151 +4615,6 @@ class lb_I_Proxy {
 /*...e*/
 
 class lb_I_Parameter;
-
-/*...slbDMF Formular action interfaces:0:*/
-/**
- * \brief This interface is intended as a way to delegate actions.
- *
- * Actions may be issued with buttons, validations or any other source like
- * timer events. The goal of this attempt is to abstract the action so it can
- * be simply used in a form without knowing the type of the action target.
- */
-class lb_I_Action : public lb_I_Unknown {
-public:
-
-	/** \brief Execute the action with the given parameter list.
-	 */
-	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
-
-	/** \brief What is my action (from the database).
-	 */
-	virtual void LB_STDCALL setActionID(long id) = 0;
-};
-
-class lb_I_ActionTransitionLogic : public lb_I_Unknown {
-	/** \brief Set the action step ID.
-	 */
-	virtual void LB_STDCALL setActionID(long id) = 0;
-
-	/** \brief Compute the next step ID.
-	 * This is usually only one ID, except in a desicion. In a Desicion the one is returned whose guard matches.
-	 */
-	virtual long LB_STDCALL getNextStepId() = 0;
-	
-	/** \brief Compute transitions.
-	 * This method executes all transitions.
-	 */
-	virtual lbErrCodes LB_STDCALL executeTransitions() = 0;
-
-	/** \brief Set the transitions to be operated upon.
-	 */
-	virtual void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions) = 0;
-	
-	/** \brief Forward parameters.
-	 * The transition logic probably relies upon parameters.
-	 */
-	virtual void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams) = 0;
-};
-
-/// \todo Think about the interface name.
-/**
- * \brief This interface is intended as a way to delegate action steps.
- *
- * Means, that the main action (lb_I_Action) could have multiple steps,
- * to be performed for one action, that may be visible with a button for
- * example.
- */
-class lb_I_DelegatedAction : public lb_I_Unknown {
-public:
-	/** \brief The delegated action.
-	 * Initially this function did not give back a long value. Now the long value returned means the next
-	 * action step (ID) to be executed. When -1 is returned a linear action is used and no 'jumps' are used
-	 * for this action.
-	 *
-	 * If an ID other than -1 and 0 is returned the next step is the action step with the returned ID.
-	 * If 0 is returned, the processing of the action will be stopped.
-	 * A value other than -1 and 0 could be returned if there is given a transition object that describes the
-	 * possible values returned.
-	 */
-	virtual long LB_STDCALL execute(lb_I_Parameter* params) = 0;
-	virtual void LB_STDCALL setActionID(long id) = 0;
-	/** \brief Set a transition object.
-	 * Use this function to activate an action step than is non linear, thus it could have more than one outgoing
-	 * transition.
-	 *
-	 * Nonlinear actionsteps are those you could create with an UML Activity diagram and translate it to the underlying
-	 * datastructure representing the activity as an action with actionsteps.
-	 *
-	 * If an actionstep has transitions with expressions the used expression identifers must be passed in the params container to execute
-	 * the expression (mostly this should be a boolean expression).
-	 */
-	virtual void LB_STDCALL setTransitions(lb_I_Action_Step_Transitions* myTransitions) = 0;
-
-	/** \brief Each action step probably has some parameters.
-	 * Some of the execution parameters are system parameters that do not have anything todo with bussiness logic.
-	 * The current implementation of the passed parameter source field and source form are too weak. These parameters
-	 * should be configured in the action parameters list and the code should pass them based on that configuration.
-	 *
-	 * Due to the two step implementation of actions and action steps and the truth that action steps sometimes need
-	 * parameters passed trough from the action I define two different sets of action parameters. One for the action
-	 * and one per action step.
-	 *
-	 * These action parameter sets are informations about what should be passed to the action or action step. It is not
-	 * the instance of those parameters. The instances must be passed by the execute method.
-	 */
-	virtual void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams) = 0;
-
-};
-/*...e*/
-
-/** \brief Interface to manage formular actions.
- */
-class lb_I_FormularAction_Manager : public lb_I_VisitableHelper {
-public:
-	/** \brief Add a mapping from event name to it's action ID.
-	 */
-	virtual void addRegisteredAction(long ActionID, const char* eventName) = 0;
-
-	/** \brief ID of action target.
-	 *
-	 * Get the ID of the action target based on the 'what' data field.
-	 * This is needed, when
-	 */
-	virtual char* getActionTargetID(const char* reversed_event) = 0;
-
-	/** \brief ID of action target as long.
-	 *
-	 * Get the ID of the action target based on the 'what' data field.
-	 * This is needed, when
-	 */
-	virtual long getActionTargetIDLong(const char* reversed_event) = 0;
-
-	/** \brief Source field of the action. */
-	virtual char* getActionSourceDataField(const char* reversed_event) = 0;
-
-	/** \brief ID for the action. */
-	virtual long getActionID(const char* reversed_event) = 0;
-
-	/** \brief Get the action instance.
-	 *
-	 * This function creates the requested action instance, stores it for caching and
-	 * then returns a reference to it.
-	 */
-	virtual lb_I_Action* getAction(long id) = 0;
-
-	/** \brief Validate the form.
-	 *
-	 * Use this function to check, if the data has a correct state.
-	 */
-	virtual bool validate() = 0;
-
-	/** \brief Update master/detail views and related views.
-	 *
-	 * Use this function to update related views. This may master/detail views and
-	 * possibly views, containing data fields related to any open views.
-	 */
-	virtual bool update() = 0;
-};
 
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
