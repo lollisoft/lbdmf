@@ -1,0 +1,406 @@
+format 73
+
+activitynodecanvas 141058 activitynode_ref 141698 // initial_node
+  xyz 122.87 9.83 2000
+end
+activitynodecanvas 141186 activitynode_ref 141826 // activity_final
+  xyz 119.86 1625.74 2000
+end
+activityactioncanvas 141314 activityaction_ref 147970 // activity action Generate System Application (Mac)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 789.71 286.48 2000 315 41
+end
+activityactioncanvas 141570 activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 6.57 46.01 2000 253 41
+end
+activityactioncanvas 141698 activityaction_ref 154754 // activity action write memorybuffer to file
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 16.63 109.26 2000 233 41
+end
+activityactioncanvas 141826 activityaction_ref 167810 // activity action Not yet supported
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 57.46 665 2000 151 41
+end
+activityactioncanvas 141954 activityaction_ref 167938 // activity action Generate System Application (Windows)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 560.71 408.21 2006 327 41
+end
+activityactioncanvas 142082 activityaction_ref 168066 // activity action Generate System Application (Unix)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 831.56 223.84 2000 325 41
+end
+activityactioncanvas 142210 activityaction_ref 168194 // activity action NOP
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 82.31 1498.07 2000 101 61
+end
+activityactioncanvas 142338 activityaction_ref 174722 // activity action Show what I am
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 58.6 167.35 2000 149 40
+end
+activitynodecanvas 142466 activitynode_ref 148354 // decision
+  xyz 119.71 224.89 2000
+end
+activitynodecanvas 142594 activitynode_ref 148482 // decision
+  xyz 119.71 287.67 2000
+end
+activitynodecanvas 142722 activitynode_ref 148610 // decision
+  xyz 120.54 347.68 2000
+end
+activityactioncanvas 146690 activityaction_ref 181250 // activity action IsMyDevEnvironment
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 232.75 348.03 2000 203 41
+end
+activitynodecanvas 147074 activitynode_ref 155138 // decision
+  xyz 322.09 412.76 2000
+end
+activityactioncanvas 147458 activityaction_ref 181378 // activity action Generate System Application (Windows installed)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 143.09 485.95 2005 383 45
+end
+activityactioncanvas 150018 activityaction_ref 187906 // activity action Create System Database SQL Script (Windows)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 536.7 689 2000 375 41
+end
+activityactioncanvas 150274 activityaction_ref 188034 // activity action Create Application Database SQL Script (Windows)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 524.6 818.2 2000 401 41
+end
+activityactioncanvas 150530 activityaction_ref 188162 // activity action Create System Database SQL Script (Mac)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 777.3 897.3 2000 341 41
+end
+activityactioncanvas 150786 activityaction_ref 188290 // activity action Create Application Database SQL Script (Mac)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 765.3 1004.6 2000 365 41
+end
+activityactioncanvas 151042 activityaction_ref 188418 // activity action Create System Database SQL Script (Linux)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 819.9 1074.6 2000 345 41
+end
+activityactioncanvas 151298 activityaction_ref 188546 // activity action Create Application Database SQL Script (Linux)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 806.8 1187.3 2000 373 41
+end
+activityactioncanvas 151554 activityaction_ref 188674 // activity action Create System Database SQL Script (Windows installed)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 228.3 618.2 2000 441 41
+end
+activityactioncanvas 151810 activityaction_ref 188802 // activity action Create Application Database SQL Script (Windows installed)
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 216.2 766.4 2005 465 41
+end
+activitynodecanvas 155522 activitynode_ref 161666 // decision
+  xyz 598 1190.2 2000
+end
+activityactioncanvas 155778 activityaction_ref 195458 // activity action write System DDL to file
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 508.9 1410 2000 205 41
+end
+activityactioncanvas 156546 activityaction_ref 195586 // activity action write Application DDL to file
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 494.9 1508.2 2000 233 41
+end
+activityactioncanvas 157826 activityaction_ref 195714 // activity action write combined DDL for PostgreSQL
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 179.7 1412.8 2000 293 41
+end
+activityactioncanvas 159106 activityaction_ref 195842 // activity action Combine DDL files in transition
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 201.8 1183.2 2000 249 52
+end
+activityactioncanvas 161026 activityaction_ref 195970 // activity action Show generated for Windows installed
+  show_infonote default drawing_language default show_stereotype_properties default
+  show_opaque_action_definition default
+  xyzwh 238 554 2011 310 40
+end
+flowcanvas 142850 flow_ref 184194 // <flow>
+  
+  from ref 141058 z 2001 to ref 141570
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 143106 flow_ref 169090 // 
+  
+  from ref 141570 z 2001 to ref 141698
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 143234 "<<transformation>>
+file = lala.xml"
+    xyzwh 288.91 70.74 2001 175 55
+end
+flowcanvas 143618 flow_ref 190722 // <flow>
+  
+  from ref 141698 z 2001 to ref 142338
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 143746 flow_ref 183554 // <flow>
+  
+  from ref 141826 z 2001 to ref 142210
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 144130 flow_ref 184066 // <flow>
+  
+  from ref 142210 z 2001 to ref 141186
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 144258 "<<transformation>>
+result = 1"
+    xyzwh 174.91 1563.02 2001 175 57
+end
+flowcanvas 144514 flow_ref 197250 // <flow>
+  
+  from ref 142338 z 2001 to ref 142466
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 144642 flow_ref 197378 // <flow>
+  
+  from ref 142466 z 2001 to ref 142594
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 144770 flow_ref 197762 // <flow>
+  
+  from ref 142466 z 2001 label "[OSType == \"Unix\"]" xyz 435 222 2001 to ref 142082
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 162178 "<<transformation>>
+BasePath = /home/lothar/develop/Projects/CPP"
+    xyzwh 315 142 2001 363 58
+end
+flowcanvas 144898 flow_ref 197506 // <flow>
+  
+  from ref 142594 z 2001 to ref 142722
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 145026 flow_ref 197890 // <flow>
+  
+  from ref 142594 z 2001 label "[OSType == \"Mac\"]" xyz 415 284 2001 to ref 141314
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 162434 "<<transformation>>
+BasePath = /Users/lothar/develop/Projects/CPP"
+    xyzwh 711 133 2001 365 58
+end
+flowcanvas 145282 flow_ref 198274 // <flow>
+  
+  from ref 142722 z 2001 to ref 141826
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 146946 flow_ref 204802 // <flow>
+  
+  from ref 142722 z 2001 label "[OSType == \"Windows\"]" xyz 154 326 2001 to ref 146690
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 147202 flow_ref 204930 // <flow>
+  
+  from ref 146690 z 2001 to ref 147074
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 147330 flow_ref 205058 // <flow>
+  decenter_begin 458
+  
+  from ref 147074 z 2007 label "[result == 1]" xyz 421 404 2007 to ref 141954
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 161794 "<<transformation>>
+BasePath = \\\\develop\\\\Projects\\\\CPP"
+    xyzwh 498 335 2007 288 58
+end
+flowcanvas 147714 flow_ref 205186 // <flow>
+  
+  from ref 147074 z 2006 label "[result == 0]" xyz 238 455 2006 to ref 147458
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 161538 "<<transformation>>
+BasePath = \\\\lbDMF"
+    xyzwh 537 459 2006 177 58
+end
+flowcanvas 152194 flow_ref 211970 // <flow>
+  
+  from ref 151554 z 2006 to ref 151810
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 154882 "<<transformation>>
+systemDDL = {stepout}"
+    xyzwh 216.3 687.3 2006 203 61
+end
+flowcanvas 152450 flow_ref 212226 // <flow>
+  
+  from ref 141954 z 2007 to ref 150018
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 152834 flow_ref 212354 // <flow>
+  
+  from ref 150018 z 2001 to ref 150274
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 156930 "<<transformation>>
+systemDDL = {stepout}"
+    xyzwh 740.6 746.5 2001 188 58
+end
+flowcanvas 153346 flow_ref 212610 // <flow>
+  
+  from ref 141314 z 2001 to ref 150530
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 153730 flow_ref 212738 // <flow>
+  
+  from ref 150530 z 2001 to ref 150786
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 157186 "<<transformation>>
+systemDDL = {stepout}"
+    xyzwh 738.8 942 2001 188 58
+end
+flowcanvas 154114 flow_ref 212994 // <flow>
+  
+  from ref 142082 z 2001 to ref 151042
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 154498 flow_ref 213122 // <flow>
+  
+  from ref 151042 z 2001 to ref 151298
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 157442 "<<transformation>>
+systemDDL = {stepout}"
+    xyzwh 779.7 1121.1 2001 188 58
+end
+flowcanvas 156034 flow_ref 220034 // <flow>
+  
+  from ref 155522 z 2001 label "[backend == DatabaseLayerGateway]" xyz 532 1319 2001 to ref 155778
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 156802 flow_ref 220162 // <flow>
+  
+  from ref 155778 z 2001 to ref 156546
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 157698 flow_ref 220290 // <flow>
+  
+  from ref 156546 z 2001 to ref 142210
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 158082 flow_ref 220418 // <flow>
+  
+  from ref 157826 z 2001 to ref 142210
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 158594 flow_ref 220674 // <flow>
+  
+  from ref 151298 z 2001 to ref 155522
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 160770 "<<transformation>>
+applicationDDL = {stepout}"
+    xyzwh 687.2 1232 2001 215 58
+end
+flowcanvas 158722 flow_ref 220802 // <flow>
+  
+  from ref 150786 z 2001 to ref 155522
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 160514 "<<transformation>>
+applicationDDL = {stepout}"
+    xyzwh 566.8 1045.2 2001 215 58
+end
+flowcanvas 158850 flow_ref 220930 // <flow>
+  
+  from ref 150274 z 2001 to ref 155522
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 160258 "<<transformation>>
+applicationDDL = {stepout}"
+    xyzwh 490.3 866.3 2001 215 58
+end
+flowcanvas 158978 flow_ref 221058 // <flow>
+  
+  from ref 151810 z 2006 to ref 155522
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 160002 "<<transformation>>
+applicationDDL = {stepout}"
+    xyzwh 273.7 923.1 2006 215 58
+end
+flowcanvas 159234 flow_ref 221186 // <flow>
+  
+  from ref 155522 z 2001 to ref 159106
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 159490 "<<transformation>>
+CombinedDDL = {applicationDDL}"
+    xyzwh 270.1 1077.8 2001 270 58
+end
+flowcanvas 159362 flow_ref 221314 // <flow>
+  
+  from ref 159106 z 2001 to ref 157826
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+  transformation 
+  information 159746 "<<transformation>>
+CombinedDDL += {systemDDL}"
+    xyzwh 161.2 1247.9 2001 253 58
+end
+flowcanvas 161282 flow_ref 221442 // <flow>
+  
+  from ref 147458 z 2012 to ref 161026
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+flowcanvas 161410 flow_ref 221570 // <flow>
+  
+  from ref 161026 z 2012 to ref 151554
+  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+end
+line 143362 -_-_
+  from ref 143106 z 2002 to ref 143234
+line 144386 -_-_
+  from ref 144130 z 2002 to ref 144258
+line 155010 -_-_
+  from ref 152194 z 2007 to ref 154882
+line 157058 -_-_
+  from ref 152834 z 2002 to ref 156930
+line 157314 -_-_
+  from ref 153730 z 2002 to ref 157186
+line 157570 -_-_
+  from ref 154498 z 2002 to ref 157442
+line 159618 -_-_
+  from ref 159234 z 2002 to ref 159490
+line 159874 -_-_
+  from ref 159362 z 2002 to ref 159746
+line 160130 -_-_
+  from ref 158978 z 2007 to ref 160002
+line 160386 -_-_
+  from ref 158850 z 2002 to ref 160258
+line 160642 -_-_
+  from ref 158722 z 2002 to ref 160514
+line 160898 -_-_
+  from ref 158594 z 2002 to ref 160770
+line 161666 -_-_
+  from ref 147714 z 2007 to ref 161538
+line 161922 -_-_
+  from ref 147330 z 2008 to ref 161794
+line 162306 -_-_
+  from ref 144770 z 2002 to ref 162178
+line 162562 -_-_
+  from ref 145026 z 2002 to ref 162434
+end
