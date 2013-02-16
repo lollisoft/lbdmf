@@ -1,0 +1,37 @@
+format 73
+
+classcanvas 128002 class_ref 151554 // Admin
+  class_drawing_mode actor show_context_mode default show_stereotype_properties default
+  xyz 121 167 2000
+end
+usecasecanvas 128130 usecase_ref 128002 // New User
+  xyzwh 281 186 3005 64 32 label_xy 279 218
+end
+usecasecanvas 128386 usecase_ref 128130 // Select User
+  xyzwh 448 340 3005 64 32 label_xy 439 372
+end
+classcanvas 128514 class_ref 151682 // Finance
+  class_drawing_mode actor show_context_mode default show_stereotype_properties default
+  xyz 23 271 2000
+end
+usecasecanvas 128770 usecase_ref 128258 // create Invoices
+  xyzwh 210 397 3005 64 32 label_xy 187 429
+end
+classcanvas 130050 class_ref 128002 // Benutzer
+  class_drawing_mode default show_context_mode default show_stereotype_properties default
+  xyz 436 167 2000
+end
+line 128258 --->
+  from ref 128002 z 3006 to ref 128130
+line 128642 --->
+  from ref 128514 z 3006 to ref 128386
+line 128898 --->
+  from ref 128514 z 3006 to ref 128770
+simplerelationcanvas 129026 simplerelation_ref 128002
+  from ref 128770 z 3006 stereotype "<<include>>" xyz 313.5 381 3000 to ref 128386
+end
+line 130434 --->
+  from ref 128130 z 3006 to ref 130050
+line 130562 --->
+  from ref 128386 z 3006 to ref 130050
+end
