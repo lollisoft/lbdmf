@@ -142,7 +142,7 @@ public:
 	<xsl:value-of select="$FormName"/>Model();
 	virtual ~<xsl:value-of select="$FormName"/>Model();
 
-	long		LB_STDCALL add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:choose>
+	long		LB_STDCALL add(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:choose>
 <xsl:when test="@isfk='1'">long _<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"> /* Special column _<xsl:value-of select="@name"/> */</xsl:when>
 	<xsl:otherwise><xsl:choose>
@@ -155,11 +155,11 @@ public:
 
 </xsl:for-each> long _<xsl:value-of select="$FormName"/>ID = -1);
 
-	bool		LB_STDCALL select<xsl:value-of select="$FormName"/>(long _id);
-	int			LB_STDCALL get<xsl:value-of select="$FormName"/>Count();
-	bool		LB_STDCALL hasMore<xsl:value-of select="$FormName"/>();
-	void		LB_STDCALL setNext<xsl:value-of select="$FormName"/>();
-	void		LB_STDCALL finish<xsl:value-of select="$FormName"/>Iteration();
+	bool		LB_STDCALL selectById(long _id);
+	int			LB_STDCALL Count();
+	bool		LB_STDCALL hasMoreElements();
+	void		LB_STDCALL setNextElement();
+	void		LB_STDCALL finishIteration();
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
