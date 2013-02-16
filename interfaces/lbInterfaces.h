@@ -1677,6 +1677,41 @@ class UAPTempl {
 #define UAPDECL(classname) \
 typedef UAPTempl<classname> UAP##classname;
 
+/** \brief Helper interface that makes non visitable classes visitable.
+ * A non visitable class is for sample a pure event handler, that forwards
+ * the events to other instances of other classes.
+ *
+ * The interface has no other usage than to have a name in the visitors visit method.
+ */
+class lb_I_VisitableHelper : public lb_I_Unknown {
+	
+};
+
+class lb_I_ExtensibleObject : public lb_I_Unknown {
+public:
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace) = 0;
+	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace) = 0;
+	
+	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) = 0;
+	virtual lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) = 0;
+};
+
+// Table Module pattern may be the best here.
+class lb_I_TableModule : public lb_I_ExtensibleObject
+{
+public:
+	virtual long		LB_STDCALL get_id() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+
+#include <lbInterfaces-lbDMFManager.h>
+
 UAPDECL(lb_I_Unknown)
 UAPDECL(lb_I_CallbackTarget)
 UAPDECL(lb_I_ProtocolTarget)
@@ -3067,25 +3102,6 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL getUnknown() = 0;
 };
 /*...e*/
-
-/** \brief Helper interface that makes non visitable classes visitable.
- * A non visitable class is for sample a pure event handler, that forwards
- * the events to other instances of other classes.
- *
- * The interface has no other usage than to have a name in the visitors visit method.
- */
-class lb_I_VisitableHelper : public lb_I_Unknown {
-	
-};
-
-class lb_I_ExtensibleObject : public lb_I_Unknown {
-public:
-	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace) = 0;
-	virtual lb_I_ExtensionObject*	LB_STDCALL getExtension(const char* contextnamespace) = 0;
-	
-	virtual lbErrCodes		LB_STDCALL addExtension(lb_I_String* contextnamespace, lb_I_ExtensionObject* extension) = 0;
-	virtual lbErrCodes		LB_STDCALL addExtension(const char* contextnamespace, lb_I_ExtensionObject* extension) = 0;
-};
 
 #define DECLARE_EXTENSIBLEOBJECT() \
 	lb_I_ExtensionObject*	LB_STDCALL getExtension(lb_I_String* contextnamespace); \
@@ -4615,6 +4631,55 @@ class lb_I_Proxy {
 /*...e*/
 
 class lb_I_Parameter;
+
+/** \brief Interface to manage formular actions.
+ */
+class lb_I_FormularAction_Manager : public lb_I_VisitableHelper {
+public:
+	/** \brief Add a mapping from event name to it's action ID.
+	 */
+	virtual void addRegisteredAction(long ActionID, const char* eventName) = 0;
+
+	/** \brief ID of action target.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when
+	 */
+	virtual char* getActionTargetID(const char* reversed_event) = 0;
+
+	/** \brief ID of action target as long.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when
+	 */
+	virtual long getActionTargetIDLong(const char* reversed_event) = 0;
+
+	/** \brief Source field of the action. */
+	virtual char* getActionSourceDataField(const char* reversed_event) = 0;
+
+	/** \brief ID for the action. */
+	virtual long getActionID(const char* reversed_event) = 0;
+
+	/** \brief Get the action instance.
+	 *
+	 * This function creates the requested action instance, stores it for caching and
+	 * then returns a reference to it.
+	 */
+	virtual lb_I_Action* getAction(long id) = 0;
+
+	/** \brief Validate the form.
+	 *
+	 * Use this function to check, if the data has a correct state.
+	 */
+	virtual bool validate() = 0;
+
+	/** \brief Update master/detail views and related views.
+	 *
+	 * Use this function to update related views. This may master/detail views and
+	 * possibly views, containing data fields related to any open views.
+	 */
+	virtual bool update() = 0;
+};
 
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>

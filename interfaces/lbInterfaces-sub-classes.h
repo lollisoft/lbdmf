@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.108 $
+ * $Revision: 1.109 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.108 2013/02/16 10:36:27 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.109 2013/02/16 18:23:29 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.109  2013/02/16 18:23:29  lollisoft
+ * Some fixes yet.
+ *
  * Revision 1.108  2013/02/16 10:36:27  lollisoft
  * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
  * Several files were conflicting and resolved in this checkin.
@@ -1216,7 +1219,7 @@ class lb_I_Container : public lb_I_Unknown {
 public:
 	/** \brief Get a separate iterator to enable multible independent itarations.
 	 */
-	virtual lb_I_Iterator* getIterator() = 0;
+	virtual lb_I_Iterator* LB_STDCALL getIterator() = 0;
 
 	/** \brief Number of objects in the container.
 	 *
