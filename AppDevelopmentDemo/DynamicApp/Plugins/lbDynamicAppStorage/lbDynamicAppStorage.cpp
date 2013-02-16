@@ -219,13 +219,13 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 				if (oStream->open()) {
 					oStream->setBinary();
 					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
-					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
-					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+					*oStream << "<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'" << meta->getApplicationDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
+					*oStream << "<xsl:variable name=\"settingsfile_execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_stream_output\" select=\"'no'\"/>\n"; // Writing out to uml would overwrite this here, because first this output must be created.
 					
 					DBName->replace(">", "&gt;");
 					DBName->replace("<", "&lt;");
@@ -234,9 +234,9 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 					DBPass->replace(">", "&gt;");
 					DBPass->replace("<", "&lt;");
 					
-					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
 					
 					/// \todo Write additional XMI settings here.				
 					
@@ -614,6 +614,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendSystem)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 	//UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
@@ -634,6 +636,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	XSLFileUMLExport->accept(*&aspect);
 	XSLFileImportSettings->accept(*&aspect);
 	XSLFileExportSettings->accept(*&aspect);
+	XSLDatabaseBackendSystem->accept(*&aspect);
+	XSLDatabaseBackendApplication->accept(*&aspect);
 	
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_KeyBase, key)
@@ -808,6 +812,18 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "XSLFileExportSettings";
 		QI(XSLFileExportSettings, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
+		
+		*name = "XSLDatabaseBackendSystem";
+		QI(XSLDatabaseBackendSystem, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "XSLDatabaseBackendApplication";
+		QI(XSLDatabaseBackendApplication, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		
+		
+		
 	}		
 	
 	*name = "ApplicationData";
@@ -863,6 +879,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP(lb_I_String, DatabaseSettingNamespace)
+	UAP(lb_I_String, XSLDatabaseBackendSystem)
+	UAP(lb_I_String, XSLDatabaseBackendApplication)
 
 	UAP(lb_I_Boolean, UsePlugin)
 	//UAP(lb_I_Boolean, UseOtherXSLFile)
@@ -993,6 +1011,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FileLocation, XSLFileApplicationDatabase)
 			
+	*name = "XSLDatabaseBackendSystem";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, XSLDatabaseBackendSystem)
+			
+	*name = "XSLDatabaseBackendApplication";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, XSLDatabaseBackendApplication)
+			
 	*name = "DatabaseSettingNamespace";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_String, DatabaseSettingNamespace)
@@ -1087,6 +1113,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		XSLFileUMLExport->accept(*&aspect);
 		XSLFileImportSettings->accept(*&aspect);
 		XSLFileExportSettings->accept(*&aspect);
+		XSLDatabaseBackendSystem->accept(*&aspect);
+		XSLDatabaseBackendApplication->accept(*&aspect);
 		
 		_LOG << "End storing the data" LOG_
 	}
@@ -1304,6 +1332,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, GeneralDBSchemaname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendSystem)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 	//UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
@@ -1319,9 +1349,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	if (SomeBaseSettings == NULL || SomeBaseSettings->Count() == 0) {
 		// Firstly let them empty
 		_LOG << "Initialize the dynamic app import settings..." LOG_
-		*UMLImportTargetDBName = "CRM";
-		*UMLImportTargetDBUser = "<dbuser>";
-		*UMLImportTargetDBPass = "<dbpass>";
+		*UMLImportTargetDBName = "lbDMF";
+		*UMLImportTargetDBUser = "dbuser";
+		*UMLImportTargetDBPass = "dbpass";
 		*GeneralDBSchemaname = "public";
 
 		*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
@@ -1329,6 +1359,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 		UsePlugin->setData(false);
 		//UseOtherXSLFile->setData(true);
+
+		*XSLDatabaseBackendSystem = "Sqlite";
+		*XSLDatabaseBackendApplication = "Sqlite";
 
 #ifdef WINDOWS
 		///\todo Change the used files to refer the HOME versions.
@@ -1349,7 +1382,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		//installXSLFilesToHome();
         XMIFileUMLProject->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi");
         XMIFileUMLProjectExport->setData("/usr/share/lbdmf/UMLSamples/SecondStageModels/Export.xmi");
-	XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
+		XSLFileUMLExport->setData("/usr/share/lbdmf/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("/usr/share/lbdmf/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("/usr/share/lbdmf/DMFToXMI/XMISettings.xsl");
         XSLFileSystemDatabase->setData("/usr/share/lbdmf/XMIToDMF/importUML-SystemDB.xsl");
@@ -1397,7 +1430,13 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileImportSettings);
 		 *name = "XSLFileExportSettings";
 		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileExportSettings);
-	} 
+
+		 *name = "XSLDatabaseBackendSystem";
+		 SomeBaseSettings->getUAPString(*&name, *&XSLDatabaseBackendSystem);
+		 *name = "XSLDatabaseBackendApplication";
+		 SomeBaseSettings->getUAPString(*&name, *&XSLDatabaseBackendApplication);
+		 
+ } 
 
 	*name = "DBTables";
 	QI(dbTables, lb_I_Unknown, uk)
@@ -1438,6 +1477,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	_LOG << "Loaded Use Plugin switch from database: " << UsePlugin->charrep() LOG_
 
+	*name = "XSLDatabaseBackendSystem";
+	QI(XSLDatabaseBackendSystem, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "XSLDatabaseBackendApplication";
+	QI(XSLDatabaseBackendApplication, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
 	*name = "XSLFileUMLExport";
 	QI(XSLFileUMLExport, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
@@ -1616,16 +1663,86 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::setData(lb_I_Unknown*) {
 		return ERR_NOT_IMPLEMENTED;
 }
 
+void LB_STDCALL lbDynamicAppBoUMLImportExport::cleanupParameters(const char** params) {
+	for (int i = 0; i < 17; i++) {
+		if (params[i] != NULL) free((char*)(params[i]));
+	}
+	free((char**)params);
+}
+
+char*			LB_STDCALL lbDynamicAppBoUMLImportExport::packParameter(const char* value) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tempString)
+	
+	*tempString = "'";
+	*tempString += value;
+	*tempString += "'";
+	
+	return strdup(tempString->charrep());
+}
+
+
+// Caller must cleanup the string array.
+const char** LB_STDCALL lbDynamicAppBoUMLImportExport::convertParameters(lb_I_Parameter* document) {
+	const char** params = (const char**)malloc( 17 * sizeof(char*));
+	for (int i = 0; i < 17; i++) {
+		params[i] = NULL;
+	}
+
+	if (document != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendSystem)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, overwrite)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
+		
+		*param = "XSLDatabaseBackendSystem";
+		document->getUAPString(*&param, *&XSLDatabaseBackendSystem);
+		*param = "XSLDatabaseBackendApplication";
+		document->getUAPString(*&param, *&XSLDatabaseBackendApplication);
+		*param = "overwriteDatabase";
+		document->getUAPString(*&param, *&overwrite);
+		
+		*param = "UMLImportDBName";
+		document->getUAPString(*&param, *&DBName);
+		*param = "UMLImportDBUser";
+		document->getUAPString(*&param, *&DBUser);
+		*param = "UMLImportDBPass";
+		document->getUAPString(*&param, *&DBPass);
+
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tempString)
+		
+		*tempString = "'";
+		*tempString += XSLDatabaseBackendSystem->charrep();
+		*tempString += "'";
+		
+		
+		params[0] = strdup("XSLDatabaseBackendSystem");
+		params[1] = packParameter(XSLDatabaseBackendSystem->charrep());
+		params[2] = strdup("XSLDatabaseBackendApplication");
+		params[3] = packParameter(XSLDatabaseBackendApplication->charrep());
+		params[4] = strdup("overwriteDatabase");
+		params[5] = packParameter(overwrite->charrep());
+		params[6] = strdup("UMLImportDBName");
+		params[7] = packParameter(DBName->charrep());
+		params[8] = strdup("UMLImportDBUser");
+		params[9] = packParameter(DBUser->charrep());
+		params[10] = strdup("UMLImportDBPass");
+		params[11] = packParameter(DBPass->charrep());
+		params[12] = 0;
+	}
+	
+	return params;
+}
+
 
 lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStream) {
 	lbErrCodes err = ERR_NONE;
 	xsltStylesheetPtr cur = NULL;
 	xmlDocPtr doc, res;
 	xmlDocPtr stylesheetdoc;
-	
-	const char *params[16 + 1];
-	
-	params[0] = NULL;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 
@@ -1640,7 +1757,12 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, writeXMISettings)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendSystem)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
 
+	*XSLDatabaseBackendSystem = "";
+	*XSLDatabaseBackendApplication = "";
+	
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_Parameter, document)
 	ukDoc = metaapp->getActiveDocument();
@@ -1653,6 +1775,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 		document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
 		*param = "XSLFileApplicationDatabase";
 		document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
+
+		*param = "XSLDatabaseBackendSystem";
+		document->getUAPString(*&param, *&XSLDatabaseBackendSystem);
+		*param = "XSLDatabaseBackendApplication";
+		document->getUAPString(*&param, *&XSLDatabaseBackendApplication);
 
 		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
 
@@ -1674,6 +1801,35 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 		}
     }
 
+	///\todo Add flags to pass as XSLT parameters.
+	
+	if (*writeXMISettings == "yes") {
+		if ((*XSLDatabaseBackendSystem == "") || (*XSLDatabaseBackendSystem == " ") || (*XSLDatabaseBackendApplication == "") || (*XSLDatabaseBackendApplication == " ")) {
+			if (metaapp->askYesNo("You did not specify the database backend system for either system database or application database. This leads to default settings in XSLT.\n\nTo correct that, go to properties group 'UML import settings' and correct that.\n\nWould you stop?")) {
+			return ERR_NONE;
+			}
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = "You start importing an UML model into the following way:\n\nSystemdatabase is ";
+			*msg += XSLDatabaseBackendSystem->charrep();
+			*msg += ",\nApplicationdatabase is ";
+			*msg += XSLDatabaseBackendApplication->charrep();
+			if (*overwrite == "yes")
+				*msg += " and it will be overwritten.\n\nIf there is any error in the following steps, please have activated logging and see there what happens.\n\nWould you stop?";
+			else
+				*msg += ".\n\nIf there is any error in the following steps, please have activated logging and see there what happens.\n\nWould you stop?";
+			
+			if (metaapp->askYesNo(msg->charrep())) {
+			return ERR_NONE;
+			}
+		}
+	} else {
+		if (metaapp->askYesNo("You have not told me to write XMISettings file. This leads to errors if you don't know what you do.\n\nTo set this, go to the Edit menu and check 'write default XMISettings file'.\n\nWould you stop?")) {
+		return ERR_NONE;
+		}
+	}
+	
 	// Write the settings file for the application database here ...
 	
 	
@@ -1687,12 +1843,12 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				if (oStream->open()) {
 					oStream->setBinary();
 					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
-					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
-					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as defined in XSLT document. -->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+					*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+					*oStream << "<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'" << XSLDatabaseBackendApplication->charrep() << "'\"/><!-- Mapped from application database backend in the properties window group UML import settings -->\n";
+					*oStream << "<xsl:variable name=\"settingsfile_execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
 					
 					DBName->replace(">", "&gt;");
 					DBName->replace("<", "&lt;");
@@ -1701,9 +1857,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 					DBPass->replace(">", "&gt;");
 					DBPass->replace("<", "&lt;");
 					
-					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+					*oStream << "<xsl:variable name=\"settingsfile_database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
 					
 					/// \todo Write additional XMI settings here.				
 					
@@ -1730,6 +1886,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	doc = xmlReadMemory((char const*) xmidoc->charrep(), strlen(xmidoc->charrep()), (char const*) XMIURL, NULL, 0);
 	if (doc == NULL) {
 		_LOG << "Error: Failed to load in-memory XMI document as an XML document." LOG_
+		metaapp->msgBox("Error", "Failed to load in-memory XMI document as an XML document.");
 		return err; 
 	}
 	
@@ -1811,14 +1968,19 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			}
 			
 			xmlChar* result = NULL;
-			int len = 0;
 
 			_LOG << "Apply the stylesheet document." LOG_
 
 			xsltTransformContextPtr ctxt;
 
-			res = xsltApplyStylesheet(cur, doc, params);
+			const char ** xsltParameters;
+			// Maps xsltParameters element within document (as lb_I_Parameters instance) if present in document into parameter char array.
+			xsltParameters = convertParameters(*&document);
 
+			res = xsltApplyStylesheet(cur, doc, xsltParameters);
+
+			cleanupParameters(xsltParameters);
+			
 			_LOG << "Save resulting document as a string." LOG_
 
 			if (res == NULL) {
@@ -1832,6 +1994,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				return err;
 			}
 
+			int len = 0;
 			xsltSaveResultToString(&result, &len, res, cur);
 			
 			xsltFreeStylesheet(cur);
@@ -1917,50 +2080,53 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				_LOG << "Database schema has been created." LOG_
 				free(result);
 			}
-		}	
+		} else {
+			_LOG << "Error: Could not open specified XSL file: " << XSLFileApplicationDatabase->charrep() LOG_
+		}
 	}
 	
 	// Read the stylesheet document to import application definition into system database
 	
 	metaapp->setStatusText("Info", "Importing lbDMF application definition ...");
 
-	// Write the settings file for the application database here ...
-	
-	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
-	if (*writeXMISettings == "yes") {
-		if (XSLFileImportSettings->charrep() != NULL) {
-			if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
-				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-				
-				oStream->setFileName(XSLFileImportSettings->charrep());
-				if (oStream->open()) {
-					oStream->setBinary();
-					*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as in XSLT document defined. -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'MSSQL'\"/>-->\n";
-					*oStream << "<!--<xsl:variable name=\"targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
-					*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getSystemDatabaseBackend() << "'\"/><!-- Mapped from Application Database backend in the properties window group General -->\n";
-					*oStream << "<xsl:variable name=\"execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
+	if (metaapp->askYesNo("Would you create the application definition for the application to be imported into the system database ?")) {
 
-					DBName->replace(">", "&gt;");
-					DBName->replace("<", "&lt;");
-					DBUser->replace(">", "&gt;");
-					DBUser->replace("<", "&lt;");
-					DBPass->replace(">", "&gt;");
-					DBPass->replace("<", "&lt;");
+		// Write the settings file for the application database here ...
+		
+		// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
+		if (*writeXMISettings == "yes") {
+			if (XSLFileImportSettings->charrep() != NULL) {
+				if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
+					UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+					
+					oStream->setFileName(XSLFileImportSettings->charrep());
+					if (oStream->open()) {
+						oStream->setBinary();
+						*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+						*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"' '\"/>--><!-- Mapped to DefaultDatabaseSystem as defined in XSLT document. -->\n";
+						*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'DatabaseLayerGateway'\"/>--><!-- Mapped to Sqlite (in XSLT document) -->\n";
+						*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'MSSQL'\"/>-->\n";
+						*oStream << "<!--<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'PostgreSQL'\"/>-->\n";
+						*oStream << "<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'" << XSLDatabaseBackendSystem->charrep() << "'\"/><!-- Mapped from system database backend in the properties window group UML import settings -->\n";
+						*oStream << "<xsl:variable name=\"settingsfile_execute_droprules\" select=\"'" << overwrite->charrep() << "'\"/>\n";
 
-					*oStream << "<xsl:variable name=\"database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
-					*oStream << "<xsl:variable name=\"database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
-					*oStream << "</xsl:stylesheet>\n";
-					oStream->close();
+						DBName->replace(">", "&gt;");
+						DBName->replace("<", "&lt;");
+						DBUser->replace(">", "&gt;");
+						DBUser->replace("<", "&lt;");
+						DBPass->replace(">", "&gt;");
+						DBPass->replace("<", "&lt;");
+
+						*oStream << "<xsl:variable name=\"settingsfile_database_name\" select=\"'" << DBName->charrep() << "'\"/>\n";
+						*oStream << "<xsl:variable name=\"settingsfile_database_user\" select=\"'" << DBUser->charrep() << "'\"/>\n";
+						*oStream << "<xsl:variable name=\"settingsfile_database_pass\" select=\"'" << DBPass->charrep() << "'\"/>\n";
+						*oStream << "</xsl:stylesheet>\n";
+						oStream->close();
+					}
 				}
 			}
 		}
-	}
 
-	if (metaapp->askYesNo("Would you create the application definition for the application to be imported into the system database ?")) {
 		UAP(lb_I_String, styledoc)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input)
 		
@@ -2025,11 +2191,16 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			cur = xsltParseStylesheetDoc(stylesheetdoc);
 			
 			xmlChar* result = NULL;
-			int len = 0;
 
 			_LOG << "Apply the stylesheet document." LOG_
 
-			res = xsltApplyStylesheet(cur, doc, params);
+			const char ** xsltParameters;
+			// Maps xsltParameters element within document (as lb_I_Parameters instance) if present in document into parameter char array.
+			xsltParameters = convertParameters(*&document);
+			
+			res = xsltApplyStylesheet(cur, doc, xsltParameters);
+			
+			cleanupParameters(xsltParameters);
 
 			if (res == NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
@@ -2043,7 +2214,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			}
 			
 			_LOG << "Save resulting document as a string." LOG_
-
+			int len = 0;
 			xsltSaveResultToString(&result, &len, res, cur);
 			
 			xsltFreeStylesheet(cur);
@@ -2130,7 +2301,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 				sampleQuery->enableFKCollecting();
 				free(result);
 			}
-		}	
+		} else {
+			_LOG << "Error: Could not open specified XSL file: " << XSLFileSystemDatabase->charrep() LOG_
+		}
 	}
 
 	xmlFreeDoc(doc);
@@ -2229,8 +2402,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 			if (oStream->open()) {
 				oStream->setBinary();
 				*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-				*oStream << "<xsl:variable name=\"targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
-				*oStream << "<xsl:variable name=\"stream_output\" select=\"'yes'\"/>\n";
+				*oStream << "<xsl:variable name=\"settingsfile_targetdatabase\" select=\"'" << metaapp->getApplicationDatabaseBackend() << "'\"/>\n";
+				*oStream << "<xsl:variable name=\"settingsfile_stream_output\" select=\"'yes'\"/>\n";
 				
 				/// \todo Write additional XMI settings here.				
 				
@@ -2332,14 +2505,19 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		}
 			
 		xmlChar* result = NULL;
-		int len = 0;
 			
 		_LOG << "Apply the stylesheet document." LOG_
 			
 		xsltTransformContextPtr ctxt;
 		
-		res = xsltApplyStylesheet(cur, doc, params);
-			
+		const char ** xsltParameters;
+		// Maps xsltParameters element within document (as lb_I_Parameters instance) if present in document into parameter char array.
+		xsltParameters = convertParameters(*&document);
+		
+		res = xsltApplyStylesheet(cur, doc, xsltParameters);
+		
+		cleanupParameters(xsltParameters);
+
 		_LOG << "Save resulting document as a string." LOG_
 			
 		if (res == NULL) {
@@ -2354,6 +2532,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 			return err;
 		}
 			
+		int len = 0;
 		xsltSaveResultToString(&result, &len, res, cur);
 			
 		xsltFreeStylesheet(cur);

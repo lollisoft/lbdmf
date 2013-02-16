@@ -26,6 +26,7 @@ call make_dist_base.bat BaseDevelopment\lbcs
 call make_dist_base.bat BaseDevelopment\lbDB 
 call make_dist_base.bat BaseDevelopment\lbPluginManager
 call make_dist_base.bat BaseDevelopment\lbMetaApplication 
+call make_dist_base.bat BaseDevelopment\lbWorkflowEngine
 call make_dist_base.bat BaseDevelopment\lbModule 
 call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
@@ -35,8 +36,9 @@ call make_dist_base.bat vendor\sqlite
 call make_dist_base.bat vendor\databaselayer
 call make_dist_base.bat vendor\dosdir
 call make_dist_base.bat vendor\propgrid
+call make_dist_base.bat vendor\wxShapeFramework
 call make_dist_base.bat vendor\wxaui-0.9.1
-call make_dist_base.bat vendor\libxml2-2.6.29
+call make_dist_base.bat vendor\libxml2-2.8.0
 call make_dist_base.bat vendor\libxslt-1.1.21
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
@@ -63,6 +65,9 @@ del %DEVROOT%\vendor\libxml2-2.6.29\bakefile\watcom\*.obj
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.tiff
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.rtf
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.odt
+
+@rem Ensure the source installation will fully recreate required makefiles
+touch %DEVROOT%\BaseDevelopment\Makefile
 
 @REM Make any available XMISettings.xsl configuration files writeable, or simply all.
 attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*

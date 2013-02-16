@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: wxcode.bkgen,v 1.1 2011/04/20 20:00:02 lollisoft Exp $ -->
+<!-- $Id: wxcode.bkgen,v 1.2 2013/02/16 10:36:28 lollisoft Exp $ -->
 
 <bakefile-gen xmlns="http://www.bakefile.org/schema/bakefile-gen">
 

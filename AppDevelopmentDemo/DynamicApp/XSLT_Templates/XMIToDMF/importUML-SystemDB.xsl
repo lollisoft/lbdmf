@@ -36,6 +36,13 @@
 
 <xsl:output method="text"/>
 
+<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
+<xsl:param name="XSLDatabaseBackendSystem"/>
+<xsl:param name="XSLDatabaseBackendApplication"/>
+<xsl:param name="overwriteDatabase"/>
+
+<xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
+
 <!-- ********** Select your database target ********** -->
 
 <!--
@@ -69,6 +76,11 @@
 
 
 	<xsl:template match="/">
+-- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
+-- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
+-- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
+
+-- Params targetdatabase generated: <xsl:value-of select="$targetdatabase"/>
 
 --
 -- SQL script created for <xsl:value-of select="$TargetDBType"/>

@@ -32,24 +32,20 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxPropgrid.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 
-MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG) -lwxWrapperDLL -llbHook
+MINGWLIBS += $(MINGWLIBS_WXGUI) -Wl,--subsystem,windows -mthreads -mwindows -lwxPropgrid
 
-MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include
-MOD_INCL_MINGW_CPP += -I../include
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/wxwin/wx/include 
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include 
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I ../include 
 
-CPP_MINGW_EXEOPS += -DUSE_WXWRAPPER_DLL -D__WIN32__ -DWINVER=0x0400 -D__WINDOWS95__ -D__WINDOWS__ -D__WXMSW__ -DLB_I_EXTENTIONS -D__WXDEBUG__
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include -I $(DEVROOT_MINGW)/wxwin/wx/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/propgrid/include
+CPP_MINGW_DLLOPS += #-D__WXMSW__
 
-	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
 	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
@@ -115,7 +111,7 @@ endif
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = -DLB_I_EXTENTIONS `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+C_SOOPS_WX = -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
@@ -125,7 +121,17 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
+C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
+VENDORLIBS=-L$(prefix)/lib -llbHook 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LIBS=-lwxPropgrid
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 

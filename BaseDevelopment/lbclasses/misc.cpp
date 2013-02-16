@@ -31,10 +31,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.56 $
+* $Revision: 1.57 $
 * $Name:  $
-* $Id: misc.cpp,v 1.56 2011/10/15 21:47:12 lollisoft Exp $
+* $Id: misc.cpp,v 1.57 2013/02/16 10:36:26 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.57  2013/02/16 10:36:26  lollisoft
+* Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+* Several files were conflicting and resolved in this checkin.
+*
+* Revision 1.56.2.2  2012/06/05 19:15:43  lollisoft
+* PATH_MAX issue. Added some more logging on Windows part when unloading a module.
+*
+* Revision 1.56.2.1  2012/06/03 16:41:23  lollisoft
+* Got my code compiled against current MinGW.
+* Changed wxWidgets library from monotithig to multi.
+*
 * Revision 1.56  2011/10/15 21:47:12  lollisoft
 * Removed all code that is obsolete. Current code compiles but still does not run.
 *
@@ -278,7 +289,7 @@
 #include <time.h>
 
 #ifdef _MSC_VER
-#define PATH_MAX 512
+#define MAX_PATH 512
 #endif
 
 #include <stdarg.h>

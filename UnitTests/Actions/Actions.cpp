@@ -24,12 +24,13 @@ public:
 	TEST_FIXTURE( TestActions )
 	{
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_stopping_because_not_LoggedIn)
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting)
+
 		//TEST_CASE(test_Delegated_Action_lbDMFXslt_selfexporting_failure)
-		TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
-		TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
-		TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
-		TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
+		//TEST_CASE(test_Delegated_Action_lbWriteStringToFile)
+		//TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
+		//TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
+		//TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
 	}
 
 	void test_Delegated_Action_lbGetIdForFormValue( void ) {
@@ -98,199 +99,12 @@ public:
 		
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 		
-		setLogActivated(true);
 		long nextActionId = action->execute(*&param);
-		setLogActivated(false);
 		
 		ASSERT_EQUALS( (long)-1, nextActionId )
 		
 		
 		
-	}
-	
-	void makePluginName(char* path, char* module, char*& result) {
-		char* pluginDir = NULL;
-
-		#ifndef WINDOWS
-		pluginDir = (char*) malloc(strlen(path)+1);
-		pluginDir[0] = 0;
-		strcat(pluginDir, path);
-		#endif
-
-		#ifdef WINDOWS
-		// Overwrites hardcoded path
-		pluginDir = getenv("PLUGIN_DIR");
-		if (pluginDir == NULL) {
-			pluginDir = (char*) malloc(strlen(path)+1);
-			pluginDir[0] = 0;
-			strcat(pluginDir, path);
-		} else {
-			pluginDir = strdup(pluginDir);
-		}
-		#endif
-
-/*...sBuild up pluginModule:64:*/
-		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2+4);
-		pluginModule[0] = 0;
-		strcat(pluginModule, pluginDir);
-#ifdef WINDOWS
-		strcat(pluginModule, "\\");
-		strcat(pluginModule, module);
-		strcat(pluginModule, ".dll");
-#endif
-#ifdef LINUX
-		strcat(pluginModule, "/");
-		strcat(pluginModule, module);
-		strcat(pluginModule, ".so");
-#endif
-#ifndef LINUX
-#ifdef OSX
-		strcat(pluginModule, "/");
-		strcat(pluginModule, module);
-		strcat(pluginModule, ".so");
-#endif
-#endif
-/*...e*/
-
-		result = pluginModule;
-		free(pluginDir);
-	}
-
-	lb_I_String* readStringFromFile(char* filename) {
-		UAP(lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, iStream)
-		
-		iStream->setFileName(filename);
-		
-		iStream->open();
-		
-		s = iStream->getAsString();
-		iStream->close();
-		
-		s++;
-		return s.getPtr();
-	}
-	
-	void writeStringToFile(char* filename, lb_I_String* s) {
-		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-		
-		oStream->setFileName(filename);
-		oStream->setBinary();
-		oStream->open();
-		
-		*oStream << s->charrep();
-		
-		oStream->close();
-	}
-	
-	void writeGoodXsl(char* filename) {
-		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-		
-		oStream->setFileName(filename);
-		if (oStream->open()) {
-			oStream->setBinary();
-			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
-			
-			*oStream << "</xsl:stylesheet>\n";
-			oStream->close();
-		}
-	}
-	
-	
-	void writeGoodXsl(char* filename, char* _template) {
-		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-		
-		oStream->setFileName(filename);
-		if (oStream->open()) {
-			oStream->setBinary();
-			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
-			
-			if (_template != NULL) *oStream << _template;
-			
-			*oStream << "</xsl:stylesheet>\n";
-			oStream->close();
-		}
-	}
-
-	void writeBadXsl(char* filename) {
-		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
-		
-		oStream->setFileName(filename);
-		if (oStream->open()) {
-			oStream->setBinary();
-			*oStream << ".\n";
-			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
-			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
-			
-			*oStream << "</xsl:stylesheet>\n";
-			oStream->close();
-		}
-	}
-	
-	
-	lb_I_DelegatedAction* getActionDelegate(char* _module, char* name) {
-		lbErrCodes err = ERR_NONE;
-		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
-
-#ifdef WINDOWS
-		setLogDirectory(".\\Actions");
-#endif
-#ifdef LINUX
-		setLogDirectory("./Actions");
-#endif
-
-#ifndef LINUX
-#ifdef __WATCOMC__
-#define PREFIX "_"
-#endif
-#ifdef _MSC_VER
-#define PREFIX ""
-#endif
-#ifdef __MINGW32__
-#define PREFIX ""
-#endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
-
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, module)
-		UAP(lb_I_Unknown, result)
-		UAP(lb_I_String, pluginPath)
-
-		ASSERT_EQUALS(true, getModuleInstance() != NULL)
-
-		char* pluginModule = NULL;
-		char* ah = (char*) malloc(strlen(PREFIX)+strlen(name)+1);
-		ah[0] = 0;
-		strcat(ah, PREFIX);
-		strcat(ah, name);
-
-		pluginPath = PM->getPluginDirectory();
-
-		*module = _module;
-
-		makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
-
-		if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-			printf("Error: Plugin not found. (%s)\n", pluginModule);
-		}
-
-		free(pluginModule);
-		pluginModule = NULL;
-
-		ASSERT_EQUALS(true, result != NULL)
-
-		
-
-		UAP(lb_I_DelegatedAction, action)
-		QI(result, lb_I_DelegatedAction, action)
-		action++;
-		return action.getPtr();
 	}
 
 	void test_Delegated_Action_lbWriteStringToFile( void ) {
@@ -300,8 +114,8 @@ public:
 
 		// They are registered as event handlers
 		
-		//UAP(lb_I_DelegatedAction, action)
-		//action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbWriteStringToFile");
+		UAP(lb_I_DelegatedAction, action)
+		action = getActionDelegate("lbFileOperationsPlugin", "instanceOflbWriteStringToFile");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, source)
@@ -335,7 +149,7 @@ public:
 		
 		disp->dispatch("writeStringToFile", *&uk, &uk_result);
 		
-		//int nextStep1 = action->execute(*&params);
+		int nextStep1 = action->execute(*&params);
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 		
@@ -487,9 +301,9 @@ public:
 		UAP(lb_I_Unknown, uk_result)
 		QI(params, lb_I_Unknown, uk)
 		
-		setLogActivated(true);
+		
 		disp->dispatch("transformXSLT", *&uk, &uk_result);
-		setLogActivated(false);
+		
 		
 		//int nextStep1 = action->execute(*&params);
 		
@@ -519,16 +333,19 @@ public:
 		puts("test_Delegated_Action_lbDMFXslt_selfexporting");
 		// Preload lbClasses DLL with this line !
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
-		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 		UAP(lb_I_DelegatedAction, action)
 
 		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
-		setLogActivated(false);
+		
 		PM->initialize();
+		PM->runInstallers();
+
 
 		// Use an UI wrapper to fake answers.
 		UIWrapper* myUIWrapper = new UIWrapper();
@@ -578,7 +395,10 @@ public:
 		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
 		#endif
 
-		myUIWrapper->setAnswer("yes");
+
+		writeGoodXsl("template-good.xsl");
+		
+		myUIWrapper->addAnswer("yes", true);
 		myUIWrapper->setFileAnswer("template-good.xsl");
 		int nextStep1 = action->execute(*&params);
 
@@ -587,6 +407,9 @@ public:
 
 		// Test for a 'linear action'
 		ASSERT_EQUALS(-1, nextStep1)
+		
+		meta->unloadApplication();
+		//meta->uninitialize();
 	}
 
 	void test_Delegated_Action_lbDMFXslt_selfexporting_failure( void )
@@ -602,7 +425,7 @@ public:
 		action = getActionDelegate("lbDMFXslt", "instanceOflbDMFXslt");
 
 		ASSERT_EQUALS(true, action != NULL)
-		setLogActivated(false);
+		
 		PM->initialize();
 
 		// Use an UI wrapper to fake answers.
@@ -654,7 +477,9 @@ public:
 		meta->firePropertyChangeEvent("lbDMF Manager Import DefinitionsXMI UML input file", "../../../AppDevelopment/DynamicApp/ModelExchange/PostbooksUML2.xmi");
 		#endif
 
-		myUIWrapper->setAnswer("yes");
+		writeBadXsl("template-fail.xsl");
+		
+		myUIWrapper->addAnswer("yes", true);
 		myUIWrapper->setFileAnswer("template-fail.xsl");
 		int nextStep1 = action->execute(*&params);
 
@@ -693,6 +518,191 @@ public:
 	}
 
 public:
+	
+	void makePluginName(char* path, char* module, char*& result) {
+		char* pluginDir = NULL;
+
+		#ifndef WINDOWS
+		pluginDir = (char*) malloc(strlen(path)+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, path);
+		#endif
+
+		#ifdef WINDOWS
+		// Overwrites hardcoded path
+		pluginDir = getenv("PLUGIN_DIR");
+		if (pluginDir == NULL) {
+			pluginDir = (char*) malloc(strlen(path)+1);
+			pluginDir[0] = 0;
+			strcat(pluginDir, path);
+		} else {
+			pluginDir = strdup(pluginDir);
+		}
+		#endif
+
+/*...sBuild up pluginModule:64:*/
+		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2+4);
+		pluginModule[0] = 0;
+		strcat(pluginModule, pluginDir);
+#ifdef WINDOWS
+		strcat(pluginModule, "\\");
+		strcat(pluginModule, module);
+		strcat(pluginModule, ".dll");
+#endif
+#ifdef LINUX
+		strcat(pluginModule, "/");
+		strcat(pluginModule, module);
+		strcat(pluginModule, ".so");
+#endif
+#ifndef LINUX
+#ifdef OSX
+		strcat(pluginModule, "/");
+		strcat(pluginModule, module);
+		strcat(pluginModule, ".so");
+#endif
+#endif
+/*...e*/
+
+		result = pluginModule;
+		free(pluginDir);
+	}
+
+	lb_I_String* readStringFromFile(char* filename) {
+		UAP(lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, iStream)
+		
+		iStream->setFileName(filename);
+		
+		iStream->open();
+		
+		s = iStream->getAsString();
+		iStream->close();
+		
+		s++;
+		return s.getPtr();
+	}
+	
+	void writeStringToFile(char* filename, lb_I_String* s) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		oStream->setBinary();
+		oStream->open();
+		
+		*oStream << s->charrep();
+		
+		oStream->close();
+	}
+	
+	void writeGoodXsl(char* filename) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+	
+	void writeGoodXsl(char* filename, char* _template) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			if (_template != NULL) *oStream << _template;
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+
+	void writeBadXsl(char* filename) {
+		UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(filename);
+		if (oStream->open()) {
+			oStream->setBinary();
+			*oStream << ".\n";
+			*oStream << "<xsl:stylesheet version=\"1.1\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:exsl=\"http://exslt.org/common\" extension-element-prefixes=\"exsl\">\n";
+			*oStream << "<xsl:output method=\"text\" indent=\"no\"/>\n";
+			
+			*oStream << "</xsl:stylesheet>\n";
+			oStream->close();
+		}
+	}
+	
+	
+	lb_I_DelegatedAction* getActionDelegate(char* _module, char* name) {
+		lbErrCodes err = ERR_NONE;
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+
+#ifdef WINDOWS
+		setLogDirectory(".\\Actions");
+#endif
+#ifdef LINUX
+		setLogDirectory("./Actions");
+#endif
+
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#ifdef __MINGW32__
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, module)
+		UAP(lb_I_Unknown, result)
+		UAP(lb_I_String, pluginPath)
+
+		ASSERT_EQUALS(true, getModuleInstance() != NULL)
+
+		char* pluginModule = NULL;
+		char* ah = (char*) malloc(strlen(PREFIX)+strlen(name)+1);
+		ah[0] = 0;
+		strcat(ah, PREFIX);
+		strcat(ah, name);
+
+		pluginPath = PM->getPluginDirectory();
+
+		*module = _module;
+
+		makePluginName(pluginPath->charrep(), module->charrep(), pluginModule);
+
+		if (getModuleInstance()->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+			printf("Error: Plugin not found. (%s)\n", pluginModule);
+		}
+
+		free(pluginModule);
+		pluginModule = NULL;
+
+		ASSERT_EQUALS(true, result != NULL)
+
+		
+
+		UAP(lb_I_DelegatedAction, action)
+		QI(result, lb_I_DelegatedAction, action)
+		action++;
+		return action.getPtr();
+	}
+
 	void setUp()
 	{
 #ifdef __MINGW32__
@@ -728,6 +738,6 @@ public:
 DECLARE_FIXTURE( TestActions )
 
 __attribute__ ((constructor)) void ct() {
-	USE_FIXTURE( TestActions )
+	//USE_FIXTURE( TestActions )
 }
 

@@ -28,11 +28,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.74 2012/01/22 11:03:03 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.75 2013/02/16 10:36:26 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.75  2013/02/16 10:36:26  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.74  2012/01/22 11:03:03  lollisoft
  * Added support for custom extension objects.
  * Using that for the formular fields entity to read from
@@ -51,6 +55,26 @@
  * distinct feature the meta application should not provide. The code has been moved to a security
  * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
  * available.
+ *
+ * Revision 1.71.2.5  2012/10/10 06:55:25  lollisoft
+ * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
+ *
+ * Revision 1.71.2.4  2012/06/07 17:29:55  lollisoft
+ * Fixed application exit issues. The dispatcher and event manager was
+ * instantiated earlyer than a string or any other class from lbclasses.
+ * The error was hidden a long time when logging was active. This also
+ * instantiated a class (logger) within lbclasses that 'fixed' the order of
+ * module dependencies.
+ *
+ * Revision 1.71.2.3  2012/06/03 16:41:23  lollisoft
+ * Got my code compiled against current MinGW.
+ * Changed wxWidgets library from monotithig to multi.
+ *
+ * Revision 1.71.2.2  2012/05/12 14:25:00  lollisoft
+ * Deactivated mor code within these files before really deleting the files.
+ *
+ * Revision 1.71.2.1  2012/05/12 11:50:13  lollisoft
+ * Changes to get the refactored activity classes from lbWorkflowEngine.
  *
  * Revision 1.71  2011/10/09 15:22:54  lollisoft
  * Fixed possible issues due to not initialized variables.
@@ -323,19 +347,6 @@
 #include <iostream>
 #include "wx/grid.h"
 
-// Having remaining undefined symbols
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CREATED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_MOVED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_RESIZED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SIBLING_CLOSED is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_HIDE_SIZERS is an undefined reference
-// Error! E2028: int const near wxEVT_COMMAND_SHOW_SIZERS is an undefined reference
-#define USE_STYLED_TEXT
-
-#ifdef USE_STYLED_TEXT
-#define WXMAKINGDLL_WXRESIZEABLECONTROL
-#include "wx/resizec.h"
-#endif
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
@@ -488,6 +499,8 @@ protected:
 
 };
 /*...e*/
+
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 
 /*...sclass lbDetailFormAction:0:*/
 class lbDetailFormAction : public lb_I_DelegatedAction
@@ -683,6 +696,8 @@ protected:
 };
 /*...e*/
 
+#endif
+
 /*...sclass FormularFieldInformation:0:*/
 /** \brief Management of formular fields.
  *
@@ -810,12 +825,11 @@ public:
 	int			LB_STDCALL getId() { return GetId(); }
 
 	void		LB_STDCALL show() { Show (TRUE); };
-	void		LB_STDCALL destroy() {
-		if (_created) Destroy();
-		_created = false;
-	};
+	void		LB_STDCALL destroy();
 
-/*...sfrom DatabaseForm interface:8:*/
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+	
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
@@ -823,8 +837,6 @@ public:
 	void LB_STDCALL setFilter(const char* filter);
 
 	const char* LB_STDCALL getControlValue(const char* name);
-
-/*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 
@@ -1080,10 +1092,6 @@ public:
 	wxWindow* deleteButton;
 	wxWindow* addingButton;
 
-#ifdef USE_STYLED_TEXT
-	wxResizeableControlCanvas* m_resizecanvas;	
-#endif
-
 	bool allNaviDisabled;
 	bool noDataAvailable;
 	bool isAdding;
@@ -1095,7 +1103,7 @@ public:
 	char* untranslated_formName;
 
 	FormularFieldInformation* FFI;
-	FormularActions* fa;
+	UAP(lb_I_FormularAction_Manager, fa)
 
 	lb_I_DatabaseForm* _master;
 	lb_I_DatabaseForm* _detail;
@@ -1133,7 +1141,10 @@ public:
 		_created = false;
 	};
 
-/*...sfrom DatabaseForm interface:8:*/
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+
+	/*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
 	char* LB_STDCALL getQuery();
@@ -1429,7 +1440,7 @@ public:
 	char* untranslated_formName;
 
 	FormularFieldInformation* FFI;
-	FormularActions* fa;
+	UAP(lb_I_FormularAction_Manager, fa)
 
 	lb_I_DatabaseForm* _master;
 	lb_I_DatabaseForm* _detail;
@@ -1481,6 +1492,9 @@ public:
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+		
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 
@@ -1671,6 +1685,9 @@ public:
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { if (_created) Destroy(); };
 	
+	// From lb_I_Form (here unused)
+	void LB_STDCALL init();
+
 	/*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(const char* SQLString, const char* DBName, const char* DBUser, const char* DBPass);
 	

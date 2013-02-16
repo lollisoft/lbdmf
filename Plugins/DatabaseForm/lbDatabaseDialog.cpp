@@ -226,6 +226,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	return ERR_NONE;
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseDialog::init() {
+	
+}
+
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	char prefix[100] = "";

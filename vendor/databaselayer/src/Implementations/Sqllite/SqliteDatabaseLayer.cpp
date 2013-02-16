@@ -169,6 +169,13 @@ void SqliteDatabaseLayer::RollBack()
   RunQuery(_("rollback transaction;"), false);
 }
 
+bool SqliteDatabaseLayer::IsDDLStatement(const wxString& strQuery)
+{
+	return !(strQuery.Upper().Contains(_("SKIP REWRITE"))) && 
+			(strQuery.Upper().Contains(_("CREATE ")) || strQuery.Upper().Contains(_("ALTER ")));
+}
+
+
 // query database
 bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 {
@@ -180,7 +187,7 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
   wxArrayString QueryArray;
 
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
+	if (IsDDLStatement(strQuery)) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 		wxString rewrittenQuery;
@@ -260,7 +267,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
   {
     wxArrayString QueryArray;
 	//                               Skippable when this is in the query. (CREATE UNIQUE INDEX would otherwise propably fail)
-	if ((!strQuery.Upper().Contains(_("SKIP REWRITE"))) && (strQuery.Upper().Contains(_("CREATE")) || strQuery.Upper().Contains(_("ALTER")))) {
+	if (IsDDLStatement(strQuery)) {
 		// Assume, this is a DDL. Rewrite it so that it creates the meta database with information of
 		// foreign keys.
 
@@ -771,6 +778,9 @@ wxArrayString SqliteDatabaseLayer::GetColumns(const wxString& table)
     wxCharBuffer tableNameBuffer = ConvertToUnicodeStream(table);
     wxString query = wxString::Format(_("SELECT * FROM '%s' LIMIT 0;"), table.c_str());
     pResult = ExecuteQuery(query);
+	  
+	if (pResult == NULL) return returnArray;
+	  
     pResult->Next();
     pMetaData = pResult->GetMetaData();
 

@@ -2,6 +2,37 @@ This file describes some things that should be done in the next time.
 
 I also will discuss some problems while the development stages.
 
+24.06.2012	Using a test machine I have determined the following steps that
+		are required to get the source code compiled:
+
+		Compiling from CVS: Get the latest code (opt. from a branch),
+		optionally touch the Makefile in CPP/BaseDevelopment (it may be
+		required due to the case it is older than some makefile.module
+		files that are used to create makefiles per target / module.
+		Especially do touch if you encounter corrupted makefiles.
+		Download unixODBC with at least in version 2.2.12, compile and
+		install it to /usr/local. change into the CPP/BaseDevelopment
+		directory and call . environment-osx.sh (with dot and space).
+		Then type make.
+
+17.06.2012	Compiling unixODBC as a universal binary is not possible within
+		one build step using configure & make & install. The C preproces
+		sor is used and this creates errors about no support for
+		multiple architectures. Testing this with a hello world app
+		showed why: Assembler code is at least one cause.
+		A solution is documented here: 
+		
+		http://acaro.wordpress.com/2008/01/11/
+		using-configure-to-build-macos-universal-binaries/
+
+16.06.2012	Compiling my application on Snow Leopard and running on Leopard
+		is not possible. There will be an error message in dylib trying
+		to load a module. The error is like this: unknown required load
+		command 0x80000022.
+		
+		A hint about the issue is here: http://stackoverflow.com/questions/1738401/libtiff-3-dylib-unknown-required-load-command-0x80000022
+		Or here: https://sourceforge.net/tracker/index.php?func=detail&aid=3481337&group_id=129302&atid=714418
+
 29.05.2011	I have a big issue with releasing phase. It takes always too long to get a release to the public.
 		The cause are too many manual steps in building, deploying and testing. There must be a better solution
 		for this. Some info from my todays chat protocol:

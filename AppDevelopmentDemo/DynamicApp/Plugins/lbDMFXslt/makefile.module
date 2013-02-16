@@ -10,8 +10,8 @@ MINGWLIBS+= -llibxml2 -llbxslt
 MOD_INCL_MINGW = $(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 
-MOD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
-MOD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+MOD_INCL_MINGW += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
 
 
 # use global setup
@@ -60,7 +60,7 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
 MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
 OBJDEP=
-LIBS=$(OSX_ARCH) $(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
+LIBS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
 VENDORLIBS=
 endif    
 

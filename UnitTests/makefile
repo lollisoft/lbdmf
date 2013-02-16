@@ -95,6 +95,10 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
+DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
@@ -112,8 +116,10 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -127,8 +133,10 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -142,8 +150,10 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=so
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -158,8 +168,10 @@ TARGETPLUGIN=soplugin
 TARGETFRAMEWORK=framework
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -174,8 +186,10 @@ TARGETFRAMEWORK=dll
 TARGETDLLMINGW=dll_target_mingw
 
 ALLTARGETS = \
+	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	TestMainUseCases \
 	Actions \
 	TestRunner
 
@@ -203,12 +217,59 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETDLLMINGW) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 endif
 
 ifeq ($(OSTYPE), linux-debian-ppc)
 
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=libMiniCppUnit -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=libUIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
@@ -221,6 +282,32 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=libUIWrapper -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+BaseDevelopment: dummy
+	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+Actions: dummy
+	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+
+TestRunner: dummy
+	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
 endif
 
 ifeq ($(OSTYPE), osx)
@@ -230,7 +317,9 @@ MiniCppUnit: dummy
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
-endif
+UIWrapper: dummy
+	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
@@ -240,9 +329,15 @@ Actions: dummy
 	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
+TestMainUseCases: dummy
+	$(MAKE) -C $@ -e MODULE=TestMainUseCases -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 TestRunner: dummy
 	$(MAKE) -C $@ -e MODULE=lbDMFUnitTests -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+endif
 
 clean:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 

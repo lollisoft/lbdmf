@@ -1144,11 +1144,6 @@ class lb_I_FixedDatabaseForm :
 	public lb_I_Form
 	{
 public:
-	/** \brief Initialize the form.
-	 *
-	 */
-	virtual void LB_STDCALL init() = 0;
-
 	/**
 	 * \brief Get the used SQL query.
 	 *

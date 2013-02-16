@@ -960,7 +960,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 	} else {
 		UAP(lb_I_Long, qID)
 		UAP(lb_I_Long, qTyp)
-		UAP(lb_I_Long, qTarget)
+		UAP(lb_I_String, qTarget)
 		UAP(lb_I_String, qName)
 		UAP(lb_I_String, qSource)
 
@@ -968,18 +968,18 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 		qName = q->getAsString(2);
 		qTyp = q->getAsLong(3);
 		qSource = q->getAsString(4);
-		qTarget = q->getAsLong(5);
+		qTarget = q->getAsString(5);
 
-		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->getData(), qID->getData());
+		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			qID = q->getAsLong(1);
 			qName = q->getAsString(2);
 			qTyp = q->getAsLong(3);
 			qSource = q->getAsString(4);
-			qTarget = q->getAsLong(5);
+			qTarget = q->getAsString(5);
 
-			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->getData(), qID->getData());
+			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qID->getData());
 		}
 	}
 }
@@ -1835,7 +1835,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
 	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
 		_LOG << "Error: No column types found. All column types may be deleted accidantly." LOG_
 	} else {
-		UAP(lb_I_Long, Readonly)
+		UAP(lb_I_String, Readonly)
 		UAP(lb_I_String, TableName)
 		UAP(lb_I_String, Name)
 		UAP(lb_I_String, SpecialColumn)
@@ -1845,18 +1845,18 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
 		Name = q->getAsString(2);
 		SpecialColumn = q->getAsString(3);
 		ControlType = q->getAsString(4);
-		Readonly = q->getAsLong(5);
+		Readonly = q->getAsString(5);
 
-		columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (Readonly->getData() == (long) 1) ? true : false);
+		columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (*Readonly == "true") ? true : false);
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			TableName = q->getAsString(1);
 			Name = q->getAsString(2);
 			SpecialColumn = q->getAsString(3);
 			ControlType = q->getAsString(4);
-			Readonly = q->getAsLong(5);
+			Readonly = q->getAsString(5);
 
-			columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (Readonly->getData() == (long) 1) ? true : false);
+			columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (*Readonly == "true") ? true : false);
 		}
 	}
 }

@@ -342,10 +342,13 @@ lbErrCodes LB_STDCALL lbParameter::getUAPLong(lb_I_String*& parameter, lb_I_Long
 	UAP(lb_I_Long, integer)
 	QI(uk_p_integer, lb_I_Long, integer)
 
-	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	if (integer.getPtr() != NULL) {
+		p->setData(integer->getData());
+		return ERR_NONE;
+	}
 
-
-	return ERR_NONE;
+	_LOGERROR << "Error: Failed to lookup object of type lb_I_Long with name " << pp->charrep() LOG_
+	return ERR_PARAM_NOT_FOUND;
 }
 
 void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) {

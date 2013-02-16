@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.176 2013/02/16 10:36:27 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,13 +51,45 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.175 $
+ * $Revision: 1.176 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.175 2012/01/21 18:39:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.176 2013/02/16 10:36:27 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.176  2013/02/16 10:36:27  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.175  2012/01/21 18:39:21  lollisoft
  * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
+ * Revision 1.174.2.7  2013/01/31 06:46:47  lollisoft
+ * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
+ *
+ * Revision 1.174.2.6  2012/11/19 07:38:57  lollisoft
+ * Fixed remaining reload issues.
+ *
+ * Revision 1.174.2.5  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
+ * Revision 1.174.2.4  2012/10/09 05:39:48  lollisoft
+ * Removed old code from the very beginning.
+ *
+ * Revision 1.174.2.3  2012/09/16 07:16:15  lollisoft
+ * Moved call to plugin installers after creation of the splash screen.
+ *
+ * Revision 1.174.2.2  2012/06/07 17:29:55  lollisoft
+ * Fixed application exit issues. The dispatcher and event manager was
+ * instantiated earlyer than a string or any other class from lbclasses.
+ * The error was hidden a long time when logging was active. This also
+ * instantiated a class (logger) within lbclasses that 'fixed' the order of
+ * module dependencies.
+ *
+ * Revision 1.174.2.1  2012/06/05 11:54:43  lollisoft
+ * Got a working application initialization and unload. Also autologin works
+ * when loading application model from file.
  *
  * Revision 1.174  2011/10/16 08:40:57  lollisoft
  * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
@@ -675,1301 +707,6 @@
     #include <dlfcn.h>
 #endif
 
-#ifndef USE_WXWRAPPER_DLL
-
-class lb_wxGUI;
-
-#ifdef LB_I_EXTENTIONS
-/*...sclass lb_wxFrame:0:*/
-/**
- * \brief This is the main frame implementation.
- *
- * It implements the main event handling interface via OnDispatch.
- */
-class lb_wxFrame :
-		public wxFrame,
-                public lb_I_wxFrame
-{
-public:
-/*...sctors\47\dtors:8:*/
-	/**
-	 * Initialize a default application layout.
-	 */
-        lb_wxFrame():
-        	wxFrame(NULL, -1, _trans("wxWrapper"), wxPoint(50, 50), wxSize(450, 340))
-        {
-        	menu_bar = NULL;
-        	gui = NULL;
-        	guiCleanedUp = 0;
-        }
-
-        virtual ~lb_wxFrame();
-/*...e*/
-public:
-        lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
-
-        DECLARE_LB_UNKNOWN()
-
-	/**
-	 * Set the GUI wrapper instance.
-	 */
-	void setGUI(lb_wxGUI* _gui) { gui = _gui; }
-
-	/**
-	 * Intented to typecast to derived class. Not sure, if this is really stupid.
-	 * Where is it used ?
-	 */
-        virtual lb_wxFrame* getPeer() { return this; }
-
-public:
-        void OnQuit(wxCommandEvent& event);
-        void OnVerbose(wxCommandEvent& event);
-
-        /**
-         * Displays the about form of the application.
-         */
-        void OnAbout(wxCommandEvent& event);
-
-	/**
-	 * Displays the logon wizard dialog.
-	 */
-	void OnRunLogonWizard(wxCommandEvent& WXUNUSED(event));
-
-
-        /**
-         * This dispatcher converts all events to lb_I_Dispatcher events
-         * and forwards them to such a dispatcher.
-         *
-         * wx Handlers are forwarded directly.
-         */
-        void OnDispatch(wxCommandEvent& event);
-
-	/**
-	 * Build the minimal standard menu of the application.
-	 */
-	void OnBuildMenu(wxCommandEvent& event);
-
-	/**
-	 * \deprecated This was only a menu instance pointer check - debug.
-	 */
-	void OnCheck(wxCommandEvent& event);
-
-	/**
-	 * Return the frames menubar. Internal use only.
-	 */
-	wxMenuBar* LB_STDCALL getMenuBar() {
-		return menu_bar;
-	}
-
-
-
-public:
-        /**
-         * Mixin the interface code, so the base of wxFrame can be used.
-         * Simple a dummy code yet.
-         */
-        virtual lb_I_EventCallback LB_STDCALL getEventFunction(char* name) { return NULL; }
-        virtual lbErrCodes LB_STDCALL Connect(char* evName, lb_I_EventCallback evFn) { return ERR_NONE; }
-        virtual lbErrCodes LB_STDCALL getSinkEventList(lb_I_Container* c) { return ERR_NONE; }
-
-        virtual lbErrCodes LB_STDCALL registerEvents(lb_I_EventConnector* object);
-
-        virtual lbErrCodes LB_STDCALL createEventsource(lb_I_EventConnector* object);
-        virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) { return NULL; }
-
-        wxMenuBar* menu_bar;
-
-        lb_wxGUI* gui;
-        int guiCleanedUp;
-
-        UAP(lb_I_EventManager, eman)
-        UAP(lb_I_Dispatcher, dispatcher)
-};
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
-//        ADD_INTERFACE(lb_I_EventSink)
-        ADD_INTERFACE(lb_I_wxFrame)
-END_IMPLEMENT_LB_UNKNOWN()
-
-/*...slbErrCodes lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
-        _LOG << "lb_wxFrame::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-/*...e*/
-/*...slbErrCodes lb_wxFrame\58\\58\registerEvents\40\lb_I_EventConnector\42\ object\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
-        lb_wxFrame* peer = getPeer();
-
-
-
-        ((wxFrame*) peer)->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
-        ((wxFrame*) peer)->Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
-	((wxFrame*) peer)->Connect( DYNAMIC_BUILDMENU, -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
-	((wxFrame*) peer)->Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnVerbose );
-
-
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes lb_wxFrame\58\\58\createEventsource\40\lb_I_EventConnector\42\ object\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object) {
-
-/*...screate a menu:0:*/
-  // Make a menubar
-  wxMenu *file_menu = new wxMenu;
-
-  file_menu->Append(DYNAMIC_ABOUT, _trans("&About\tCtrl-A"));
-  file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
-  file_menu->Append(DYNAMIC_QUIT, _trans("E&xit\tCtrl-x"));
-
-  menu_bar = new wxMenuBar;
-  menu_bar->Append(file_menu, _trans("&File"));
-
-/*...e*/
-
-/*...sset the created menubar:0:*/
-
-  SetMenuBar(menu_bar);
-
-/*...e*/
-        return ERR_NONE;
-}
-/*...e*/
-/*...e*/
-#endif
-
-/*...swxAppSelectPage:0:*/
-class wxAppSelectPage :
-public lb_I_Unknown,
-public lb_I_EventHandler,
-public wxWizardPageSimple
-{
-public:
-
-	wxAppSelectPage() {
-		app = wxString("");
-	}
-
-	virtual ~wxAppSelectPage() {
-	    _CL_VERBOSE << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
-	}
-
-
-	DECLARE_LB_UNKNOWN()
-
-/*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
-	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
-	{
-			//m_bitmap = wxBITMAP(wiztest2);
-
-			sizerMain  = new wxBoxSizer(wxVERTICAL);
-
-			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
-			box = new wxChoice(this, -1);
-
-			sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
-			sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
-
-			SetSizer(sizerMain);
-
-			sizerMain->SetSizeHints(this);
-			sizerMain->Fit(this);
-
-			box->SetFocusFromKbd();
-
-			Centre();
-	}
-
-/*...e*/
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-	
-	wxString LB_STDCALL getSelectedApp() { return app; }
-
-/*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
-	void setLoggedOnUser(char* user) {
-		userid = strdup(user);
-
-		REQUEST(getModuleInstance(), lb_I_Database, database)
-
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-
-		sampleQuery = database->getQuery("lbDMF", 0);
-
-		char buffer[800] = "";
-
-		sprintf(buffer,
-			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
-			"Anwendungen.id = User_Anwendungen.anwendungenid "
-			"inner join Users on User_Anwendungen.userid = Users.id where "
-			"Users.userid = '%s'"
-				, userid);
-
-
-		sampleQuery->skipFKCollecting();
-		sampleQuery->query(buffer);
-		sampleQuery->enableFKCollecting();
-
-		// Clear the box, if it was previously filled due to navigation.
-
-		box->Clear();
-
-		// Fill up the available applications for that user.
-
-		lbErrCodes err = sampleQuery->first();
-
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-
-			UAP_REQUEST(getModuleInstance(), lb_I_String, s1)
-
-			s1 = sampleQuery->getAsString(1);
-
-			box->Append(wxString(s1->charrep()));
-
-			while (err == ERR_NONE) {
-				lbErrCodes err = sampleQuery->next();
-
-				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-					s1 = sampleQuery->getAsString(1);
-
-					box->Append(wxString(s1->charrep()));
-
-					if (err == WARN_DB_NODATA) {
-						break;
-					}
-				}
-			}
-			box->SetSelection(0);
-		}
-
-		sizerMain->Fit(this);
-		//Fit();
-
-		return;
-	}
-/*...e*/
-
-/*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
-	virtual bool TransferDataFromWindow()
-	{
-	        return TRUE;
-	}
-/*...e*/
-
-	void OnWizardPageChanging(wxWizardEvent& event) {
-		if (event.GetDirection()) {
-			int sel = box->GetSelection();
-			app = box->GetString(sel);
-
-			if (!app.IsEmpty()) {
-				UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-
-				char* _app = strdup(app.c_str());
-
-				meta->loadApplication(userid, _app);
-
-				free(_app);
-			}
-		}
-	}
-
-private:
-	wxCheckBox *m_checkbox;
-	char* userid;
-	wxChoice* box;
-	wxString app;
-	wxBoxSizer* sizerMain;
-
-	UAP(lb_I_Database, database)
-	UAP(lb_I_Query, sampleQuery)
-
-	DECLARE_EVENT_TABLE()
-
-
-	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
-	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
-};
-
-BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
-    EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
-END_EVENT_TABLE()
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
-        _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-
-/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
-/*...e*/
-/*...e*/
-
-/*...swxLogonPage:0:*/
-class wxLogonPage :
-public lb_I_Unknown,
-public lb_I_EventHandler,
-public wxWizardPageSimple
-{
-public:
-
-
-DECLARE_LB_UNKNOWN()
-
-	wxLogonPage() {
-
-	}
-
-	virtual ~wxLogonPage() {
-	}
-
-	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
-	{
-	        //m_bitmap = wxBITMAP(wiztest2);
-	}
-
-	char const * LB_STDCALL getTextValue(char* _name);
-
-	void setAppSelectPage(wxAppSelectPage* p) {
-		appselect = p;
-	}
-
-	// wizard event handlers
-	void OnWizardCancel(wxWizardEvent& event)
-	{
-	        if ( wxMessageBox(_T("Do you really want to cancel?"), _T("Question"),
-	                          wxICON_QUESTION | wxYES_NO, this) != wxYES )
-	        {
-	            // not confirmed
-	            event.Veto();
-	        }
-	}
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-
-/*...slbErrCodes LB_STDCALL createPasswdCtrl\40\char\42\ _name\41\:8:*/
-	lbErrCodes LB_STDCALL createPasswdCtrl(char* _name) {
-		char* name = NULL;
-
-		name = strdup(_name);
-
-		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxDefaultSize, wxTE_PASSWORD);
-
-		text->SetName(name);
-
-		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-
-		char* tLabel = new char[strlen(name) + 1];
-
-		tLabel[0] = 0;
-
-		tLabel = strcat(tLabel, name);
-
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
-		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-
-		free(name);
-
-		return ERR_NONE;
-	}
-/*...e*/
-/*...slbErrCodes LB_STDCALL createTextCtrl\40\char\42\ _name\41\:8:*/
-	lbErrCodes LB_STDCALL createTextCtrl(char* _name) {
-		char* name = NULL;
-
-		name = strdup(_name);
-
-		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint());
-
-		text->SetName(name);
-
-		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-
-		char* tLabel = new char[strlen(name) + 1];
-
-		tLabel[0] = 0;
-
-		tLabel = strcat(tLabel, name);
-
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
-		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-
-		free(name);
-
-		return ERR_NONE;
-	}
-/*...e*/
-/*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
-	virtual bool TransferDataFromWindow()
-	{
-		lbErrCodes err = ERR_NONE;
-
-		REQUEST(getModuleInstance(), lb_I_Database, database)
-
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-
-		if (err != ERR_NONE) {
-			char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-			char* buf1 = strdup(_trans("Error"));
-			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
-
-			dialog.ShowModal();
-
-			free(buf);
-			free(buf1);
-		}
-
-		sampleQuery = database->getQuery("lbDMF", 0);
-
-		char buffer[800] = "";
-
-		char* pass = strdup(getTextValue("Passwort:"));
-		char* user = strdup(getTextValue("Benutzer:"));
-
-
-		sampleQuery->skipFKCollecting();
-
-		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
-                	user, pass);
-
-_CL_VERBOSE << "Query for user " << user LOG_
-
-		if (sampleQuery->query(buffer) != ERR_NONE) {
-		    printf("Query for user and password failed\n");
-		    sampleQuery->enableFKCollecting();
-		    return FALSE;
-		}
-
-		sampleQuery->enableFKCollecting();
-
-		err = sampleQuery->first();
-
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			appselect->setLoggedOnUser(user);
-
-			if (pass) free(pass);
-			if (user) free(user);
-
-			return TRUE;
-		} else {
-		        printf("User authentication failed\n");
-
-			if (pass) free(pass);
-			if (user) free(user);
-
-			return FALSE;
-		}
-	}
-/*...e*/
-/*...svoid init\40\wxWindow\42\ parent\41\:8:*/
-	void init(wxWindow* parent)
-	{
-		char prefix[100] = "";
-		sprintf(prefix, "%p", this);
-
-		SetTitle("Login");
-
-		sizerMain  = new wxBoxSizer(wxVERTICAL);
-		sizerHor   = new wxBoxSizer(wxHORIZONTAL);
-		sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
-		sizerLeft  = new wxBoxSizer(wxVERTICAL);
-		sizerRight = new wxBoxSizer(wxVERTICAL);
-
-		int LoginOk;
-		int LoginCancel;
-
-		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
-		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
-
-		char eventName[100] = "";
-
-		dispatcher->setEventManager(eman.getPtr());
-
-		registerEventHandler(dispatcher.getPtr());
-
-		sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
-		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
-
-		createTextCtrl("Benutzer:");
-		createPasswdCtrl("Passwort:");
-
-		//#define CONNECTOR ((wxFrame*) frame)
-		#define CONNECTOR this
-
-		SetAutoLayout(TRUE);
-
-		sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
-		sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
-
-		SetSizer(sizerMain);
-
-		sizerMain->SetSizeHints(this);
-		sizerMain->Fit(this);
-
-		//Centre();
-	}
-/*...e*/
-
-
-	UAP(lb_I_Database, database)
-	UAP(lb_I_Query, sampleQuery)
-
-
-	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
-	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
-
-	wxWindow* OkButton;
-	wxWindow* CancelButton;
-
-	wxString textValue;
-
-	wxBoxSizer* sizerMain;
-	wxBoxSizer* sizerHor;
-	wxBoxSizer* sizerAddRem;
-	wxBoxSizer* sizerLeft;
-	wxBoxSizer* sizerRight;
-
-	wxAppSelectPage* appselect;
-};
-
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(wxLogonPage)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbErrCodes LB_STDCALL wxLogonPage::setData(lb_I_Unknown* uk) {
-        _LOG << "wxLogonPage::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-
-
-/*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxLogonPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
-/*...e*/
-
-/*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
-char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
-
-	wxWindow* w = FindWindowByName(wxString(_name));
-
-	if (w != NULL) {
-        	wxTextCtrl* tx = (wxTextCtrl*) w;
-
-	        textValue = tx->GetValue();
-
-		return textValue.c_str();
-	}
-
-	return "";
-}
-/*...e*/
-/*...e*/
-#endif
-
-#ifndef USE_WXWRAPPER_DLL
-/*...sclass lb_wxGUI:0:*/
-#ifdef LB_I_EXTENTIONS
-
-/*...sclass lb_wxGUI:0:*/
-class lb_wxGUI
-: public lb_I_wxGUI,
-  public lb_I_EventHandler
-
-{
-public:
-/*...sctor\47\dtor:8:*/
-        lb_wxGUI() {
-		#ifdef VERBOSE
-                _LOG << "lb_I_wxGUI object will be created and initialized" LOG_
-		#endif
-
-                eventCount = 0;
-                sampleQuery = NULL;
-                handlersInitialized = FALSE;
-                frame = NULL;
-		dialog = NULL;
-        }
-
-		virtual ~lb_wxGUI() {
-			#ifdef VERBOSE
-	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
-			#endif
-			cleanup();
-		}
-/*...e*/
-
-        DECLARE_LB_UNKNOWN()
-
-/*...sGUI element creation functions:8:*/
-        virtual lb_I_Unknown* LB_STDCALL createFrame();
-        virtual lb_I_Unknown* LB_STDCALL createMenu();
-        virtual lb_I_Unknown* LB_STDCALL createMenuBar();
-        virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
-
-	lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
-
-	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
-
-	lb_I_Form* LB_STDCALL createLoginForm();
-/*...e*/
-
-/*...sGUI element getter functions:8:*/
-        virtual lb_I_Frame* LB_STDCALL getFrame();
-/*...e*/
-
-/*...sEvent related stuff:8:*/
-        /**
-         * Event related code.
-         *
-         * Register an event handler by the event registry.
-         * This is from interface lb_I_EventManager
-         */
-        virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
-
-        /**
-         * This is from lb_I_EventHandler. A event handler must provide
-         * this function, to be able to call it from the dispatcher.
-         */
-        virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
-
-        /**
-         * To be able to recieve any events, it is neccesary to provide the dispatcher.
-         * An other way may be registrering a direct callback, without dispatching it.
-         */
-        virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
-        virtual lbErrCodes LB_STDCALL dispatchEvent(int EvNr, lb_I_Unknown* EvData);
-
-        lbErrCodes LB_STDCALL setDiapatcher(lb_I_Dispatcher* disp);
-        lb_I_Dispatcher* LB_STDCALL getDispatcher();
-
-        /**
-         * Provide a function to interact with event names instead if their ID's.
-         * If the event is not known, it returns ERR_EVENT_UNKNOWN and leaves
-         * the provided EvData untouched.
-         *
-         * As a sample, you may create a new menu in the GUI. This menu is the
-         * new help menu, for that you want provide a basic application about
-         * dialog.
-         *
-         * To be able, creating a simple about dialog, it is neccesary to have
-         * a pointer to the frame, in with the dialog should be displayed.
-         * So first you must query for a frame reference.
-         */
-
-        virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData);
-/*...e*/
-
-/*...sMenu related manipulation and navigation:8:*/
-        /**
-         * Menu manipulation based on current position. The members
-         * deleates this calls to the lb_I_GUI instance.
-         */
-
-        virtual lbErrCodes LB_STDCALL deactivateMenuEntry();
-        virtual lbErrCodes LB_STDCALL activateMenuEntry();
-
-        virtual lbErrCodes LB_STDCALL gotoMenuRoot();
-        virtual lbErrCodes LB_STDCALL gotoMenuEntry(char* entry);
-
-        virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry);
-        virtual lbErrCodes LB_STDCALL insertMenuEntry(lb_I_Unknown* entry);
-
-/*...e*/
-
-        virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg);
-
-        virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp);
-
-/*...sTypical GUI handler\44\ that do not need to be dispatched:8:*/
-	/* The menubar is still present in the demo. At the
-	   first time, a new menubar should not be used.
-	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) { return ERR_NONE; };
-
-	/**
-	 * Add a menu behind the last.
-	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name) { return ERR_NONE; };
-
-	/**
-	 * Add a menu entry in the named menu after given entry,
-	 * if provided. The handler must be registered prior.
-	 *
-	 * Input:
-	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
-	 *	char* entry:		The text for that entry
-	 *	char* evHandler:	The name of a registered event handler, that handle this
-	 *	char* afterentry:	Insert the entry after an exsisting entry
-	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) { return ERR_NONE; };
-
-	/**
-	 * Add a button at a given position.
-	 *
-	 * Input:
-	 *	char* buttonText	The text for that button
-	 *	char* evHandler		The name of a registered event handler, that handle this
-	 *	int x 			X coordinade
-	 *	int y			Y coordinade
-	 *	int w			W coordinade
-	 *	int h			H coordinade
-	 */
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-
-
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-
-
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
-/*...e*/
-
-
-	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
-
-	/*
-	 * Cleanup. This will destroy all possible (hidden) dialogs.
-	 * These dialogs are like the database form sample dialog, wich woild
-	 * be created only once and then reused by ShowModal().
-	 */
-
-	lbErrCodes LB_STDCALL cleanup();
-
-	/**
-	 * \brief Set presentation mode.
-	 *
-	 * This function set's wether the application uses wxNotebooks to show
-	 * database forms inside (lb_Database_Panel) or uses dialog based forms.
-	 */
-	void	LB_STDCALL setNotebookMode(bool mode = TRUE);
-
-	/**
-	 * \brief Get presentation mode.
-	 *
-	 * Returns true, if the mode is notebook and false if it is dialog mode.
-	 */
-	bool	LB_STDCALL isNotebookMode();
-
-	bool _NotebookMode;
-
-        int eventCount;
-
-        lb_I_Unknown* _main_frame;
-        lb_I_Dispatcher* myDispatcher;
-
-        lb_I_Query* sampleQuery;
-
-        bool handlersInitialized;
-
-        lb_I_DatabaseForm* dialog;
-
-        // The frame has the main dispatcher and is a wxEventHandler subclass
-        lb_wxFrame* frame;
-
-	UAP(lb_I_Container, forms)
-	char buffer[100];
-};
-/*...e*/
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxGUI)
-        ADD_INTERFACE(lb_I_wxGUI)
-END_IMPLEMENT_LB_UNKNOWN()
-
-/*...sUnimplemented code:0:*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\setDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
-       _LOG << "lb_wxGUI::setDispatcher() not implemented yet" LOG_
-
-        return ERR_NONE;
-}
-/*...e*/
-
-
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::registerEvent(char* EvName, int & EvNr) {
-       _LOG << "Registering an event" LOG_;
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\addDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::addDispatcher(lb_I_Dispatcher* disp) {
-       _LOG << "Add a sub dispatcher" LOG_;
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\dispatchEvent\40\int EvNr\44\ lb_I_Unknown\42\ EvData\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::dispatchEvent(int EvNr, lb_I_Unknown* EvData) {
-       _LOG << "Dispatch an event" LOG_;
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\queryEvent\40\char\42\ EvName\44\ lb_I_Unknown\42\ EvData\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::queryEvent(char* EvName, lb_I_Unknown* EvData) {
-       _LOG << "Query an event" LOG_;
-        return ERR_NONE;
-}
-/*...e*/
-
-/*...slbErrCodes lb_wxGUI\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::setData(lb_I_Unknown* uk) {
-        _LOG << "lb_wxGUI::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-/*...e*/
-
-/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createMenu\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lb_wxGUI::createMenu() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return NULL;
-}
-/*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createMenuBar\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lb_wxGUI::createMenuBar() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return NULL;
-}
-/*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createMenuEntry\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lb_wxGUI::createMenuEntry() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return NULL;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\deactivateMenuEntry\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::deactivateMenuEntry() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\activateMenuEntry\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::activateMenuEntry() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuRoot\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuRoot() {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\addMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::addMenuEntry(lb_I_Unknown* entry) {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\insertMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...e*/
-
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
-
-// Cleanup is no event handler.
-//        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::cleanup, "wxGUI_Cleanup");
-
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
-
-	/* Destroy all still created forms that are hidden.
-	 * If this would not be taken, the application will hang,
-	 * because these windows are still there.
-	 *
-	 * But the container must be deleted and there seems to be
-	 * a double delete. So I need a removeAll function for the container.
-	 */
-
-	if (forms == NULL) {
-		_CL_LOG << "lb_wxGUI::cleanup() has nothing to clean up." LOG_
-		return ERR_NONE;
-	}
-
-	while (forms->hasMoreElements()) {
-		lbErrCodes err = ERR_NONE;
-
-		lb_I_Unknown* form = forms->nextElement();
-
-		if (!form) continue;
-
-		UAP(lb_I_DatabaseForm, d)
-		QI(form, lb_I_DatabaseForm, d)
-		UAP(lb_I_FixedDatabaseForm, fd)
-		QI(form, lb_I_FixedDatabaseForm, fd)
-
-		/* Really needed here !
-		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-		 *
-		 * So here I must ensure, that the object it self doesn't get deleted in the container.
-		 * wxWidgets should call the destructor of the form.
-		 */
-
-		if (d != NULL) {
-			_CL_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
-			d++;
-			d->destroy();
-			_CL_LOG << "Destroyed the dynamic form." LOG_
-		}
-
-		if (fd != NULL) {
-			_CL_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-			fd++;
-			fd->destroy();
-			_CL_LOG << "Destroyed the custom form." LOG_
-		}
-	}
-
-	forms->detachAll();
-
-    return ERR_NONE;
-}
-/*...e*/
-/*...slb_I_Form\42\ LB_STDCALL lb_wxGUI\58\\58\createLoginForm\40\\41\:0:*/
-lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
-	wxWizard *wizard = new wxWizard(NULL, -1, _T("Anmeldung"));
-
-	wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
-
-	wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
-
-	wxSize size = text->GetBestSize();
-
-	wxLogonPage *page2 = new wxLogonPage(wizard);
-
-	page2
-
-	page2->init(frame);
-
-	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
-	page3
-
-	page2->setAppSelectPage(page3);
-
-
-	page1->SetNext(page2);
-	page2->SetPrev(page1);
-	page2->SetNext(page3);
-	page3->SetPrev(page2);
-
-
-	wizard->SetPageSize(size);
-
-	if ( ! wizard->RunWizard(page1) )
-	{
-	    wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
-            wxICON_INFORMATION | wxOK);
-        }
-
-//	wxString app = page3->getSelectedApp();
-
-	wizard->Destroy();
-
-
-#ifdef bla
-/*...s:0:*/
-
-	lbErrCodes err = ERR_NONE;
-
-	// Locate the form instance in the container
-
-	lbLoginDialog* _dialog = NULL;
-
-	if (forms == NULL) {
-		REQUEST(getModuleInstance(), lb_I_Container, forms)
-	}
-
-	UAP(lb_I_Unknown, uk)
-	UAP(lb_I_KeyBase, key)
-
-	UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-	fName->setData("LoginForm");
-
-	QI(fName, lb_I_KeyBase, key)
-
-	uk = forms->getElement(&key);
-
-	if (uk != NULL) {
-		_dialog = (lbLoginDialog*) *&uk;
-	}
-
-	if (_dialog) {
-		_dialog->Show(TRUE);
-	} else {
-		_dialog = new lbLoginDialog();
-		
-
-		QI(_dialog, lb_I_Unknown, uk)
-
-		forms->insert(&uk, &key);
-
-		delete _dialog;
-		_dialog = NULL;
-
-		uk = forms->getElement(&key);
-
-		if (uk != NULL) {
-		        _dialog = (lbLoginDialog*) *&uk;
-		}
-
-		_dialog->init(frame);
-		_dialog->Show();
-	}
-/*...e*/
-#endif
-	return NULL;
-}
-/*...e*/
-/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) {
-	lbErrCodes err = ERR_NONE;
-
-	// Locate the form instance in the container
-
-	UAP(lb_I_DatabaseForm, _dialog)
-
-	if (forms == NULL) {
-		REQUEST(getModuleInstance(), lb_I_Container, forms)
-	}
-
-	UAP(lb_I_Unknown, uk)
-	UAP(lb_I_KeyBase, key)
-
-	UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-	fName->setData(formName);
-
-	QI(fName, lb_I_KeyBase, key)
-
-	uk = forms->getElement(&key);
-
-	if (uk != NULL) {
-		QI(uk, lb_I_DatabaseForm, _dialog)
-	}
-
-	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
-
-		// SQL query from database has been changed. Recreate the dialog from scratch.
-
-		// Don't delete any forms inside the container
-		forms->detachAll();
-
-		forms->remove(&key);
-
-		_dialog->destroy();
-
-		_dialog.resetPtr();
-	}
-
-	if (_dialog.getPtr() == NULL) {
-		/*
-		 * Try to find a database form plugin, having the interface lb_I_DatabaseForm.
-		 *
-		 * This interface contains one and only one member function to initialize the
-		 * form with a given SQL query, the required database name, login and password.
-		 *
-		 * This demonstrates the extensibleability of the GUI wrapper with the new plugin
-		 * framework.
-		 */
-
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl)
-
-		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-
-		if (pl == NULL) {
-			char* msg = (char*) malloc(200);
-			msg[0] = 0;
-			strcpy(msg, _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
-			msgBox(_trans("Error"), msg);
-			free(msg);
-			return NULL;
-		}
-
-		uk = pl->getImplementation();
-
-		forms->insert(&uk, &key);
-
-		//-------------------------------------------------------
-		// The form has been cloned. Destroy the unused instance.
-		// This avoids application hang at exit.
-
-		UAP(lb_I_DatabaseForm, form)
-		QI(uk, lb_I_DatabaseForm, form)
-
-		form->destroy();
-		form = NULL;
-		//-------------------------------------------------------
-
-		uk = forms->getElement(&key);
-
-		if (uk != NULL) {
-		        QI(uk, lb_I_DatabaseForm, _dialog)
-		}
-
-		_dialog->setName(formName);
-
-		_dialog->init(queryString, DBName, DBUser, DBPass);
-
-	}
-
-	//_dialog->show();
-	_dialog++;
-
-	return _dialog.getPtr();
-}
-/*...e*/
-
-void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
-
-}
-
-/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
-        frame = new lb_wxFrame();
-
-        
-        frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
-
-	frame->setGUI(this);
-
-	#ifdef VERBOSE
-	char ptr[20] = "";
-	sprintf(ptr, "%p", frame);
-
-	_LOG << "Created a lb_wxFrame object at " << ptr LOG_
-        #endif
-
-        return frame;
-}
-/*...e*/
-/*...slb_I_Frame\42\ LB_STDCALL lb_wxGUI\58\\58\getFrame\40\\41\:0:*/
-lb_I_Frame* LB_STDCALL lb_wxGUI::getFrame() {
-        lb_I_Frame* f = NULL;
-
-        _main_frame->queryInterface("lb_I_Frame", (void**) &f, __FILE__, __LINE__);
-
-        return f;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuEntry\40\char\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
-        lbErrCodes err = ERR_NONE;
-        UAP(lb_I_Frame, frame)
-
-        QI(_main_frame, lb_I_Frame, frame)
-
-
-        /**
-         * Create the dispatch request
-         */
-
-
-        UAP_REQUEST(getModuleInstance(), lb_I_DispatchRequest, d_req)
-
-        /**
-         * We get a dispatch responce
-         */
-
-        UAP(lb_I_DispatchResponse, d_res)
-
-        if (d_req.getPtr()) {
-                // d_req must resolve the symbolic request name to its Id.
-                // So it must have an instance from lb_I_EventManager
-                d_req->setRequestName("hasMenuEntry");
-
-                d_res = myDispatcher->dispatch(*&d_req);
-
-                if ((d_res.getPtr()) && (d_res->isOk())) {
-                } else {
-                }
-        }
-
-/*        id (frame->hasMenuEntry(entry)) {
-                if (currentMenuEntry) free(currentMenuEntry);
-                currentMenuEntry = strdup(entry);
-        }
-*/
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
-        wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
-
-        dialog.ShowModal();
-
-        return ERR_NONE;
-}
-/*...e*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
-	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-	UAP(lb_I_KeyBase, key)
-	UAP(lb_I_Unknown, uk)
-
-	fName->setData(name);
-
-	QI(fName, lb_I_KeyBase, key)
-
-	uk = forms->getElement(&key);
-
-	UAP(lb_I_DatabaseForm, w)
-	QI(uk, lb_I_DatabaseForm, w)
-	// Not really needed, because my dialogs are forced to not be smart.
-	w++;
-	return w.getPtr();
-}
-#endif
-/*...e*/
-#endif
-#ifndef LB_I_EXTENTIONS
-class MyFrame;
-#endif
-
 /*...sclass MyApp:0:*/
 // Define a new application type
 
@@ -2072,11 +809,15 @@ public wxApp
 	 */
 	lbErrCodes LB_STDCALL addMenuBar(lb_I_Unknown* uk);
 
+	lbErrCodes LB_STDCALL removeMenuBar(lb_I_Unknown* uk);
+	
 	/**
 	 * Event handler to add a menu entry in a given menu bar name.
 	 * \note These handlers should not called by the user of lbDMF. The programmer would use lb_I_MetaApplication to abstract from the real GUI implementation.
 	 */
 	lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL removeMenuEntry(lb_I_Unknown* uk);
 
 	/** \brief Enable an event.
 	 *
@@ -2147,7 +888,9 @@ protected:
 
         int AddMenu;
         int AddMenuBar;
+		int RemoveMenuBar;
         int AddMenuEntry;
+        int RemoveMenuEntry;
         int AddLabel;
         int AddTextField;
         int AddButton;
@@ -2196,23 +939,6 @@ protected:
 };
 /*...e*/
 
-#ifndef LB_I_EXTENTIONS
-/*...sclass MyFrame:0:*/
-// Define a new frame type
-class MyFrame: public wxFrame
-{ public:
-    MyFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
-
- public:
-    void OnVerbose(wxCommandEvent& event);
-    void OnQuit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-};
-/*...e*/
-#endif
-
-
-
 #ifdef LB_I_EXTENTIONS
 BEGIN_IMPLEMENT_LB_UNKNOWN(MyApp)
 //        ADD_INTERFACE(lb_I_EventConnector)
@@ -2248,6 +974,7 @@ int MyApp::OnExit() {
 	metaApp->disableStatusbar();
 
 	metaApp->unloadApplication();
+	metaApp->uninitialize();
 
 	_CL_LOG << "Unloaded application." LOG_
 
@@ -2308,9 +1035,13 @@ bool MyApp::OnInit(void)
     }
 
 	wxString appname = GetAppName();
-	_LOG << "Application " << appname.c_str() << " starts up." LOG_
+	_LOGALWAYS << "Application " << appname.c_str() << " starts up." LOG_
 
 
+    UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+    UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
+    UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+    UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
     UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 	REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
 
@@ -2320,20 +1051,17 @@ bool MyApp::OnInit(void)
 
 	disp->setEventManager(ev_manager.getPtr());
 
-    UAP_REQUEST(getModuleInstance(), lb_I_String, string)
-    UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
-    UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-    UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
-
 	// Register Events, that I provide
 
 	ev_manager->registerEvent("AddMenu", AddMenu);
 	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+	ev_manager->registerEvent("RemoveMenuBar", RemoveMenuBar);
 	ev_manager->registerEvent("AddButton", AddButton);
 
 	ev_manager->registerEvent("showLeft", AddButton);
 
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+	ev_manager->registerEvent("RemoveMenuEntry", RemoveMenuEntry);
 	ev_manager->registerEvent("AddLabel", AddLabel);
 	ev_manager->registerEvent("AddTextField", AddTextField);
 	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
@@ -2404,23 +1132,8 @@ bool MyApp::OnInit(void)
 	 * Do not move this after the splash screen as it may block when any
 	 * installer asks the user something.
 	 */
-	PM->runInstallers();
-/*
-	if (metaApp->usingSystemDatabaseBackend()) {
-		_LOG << "Have system database backend switch: true" LOG_
-	} else {
-		_LOG << "Have system database backend switch: false" LOG_
-	}
+	//PM->runInstallers();
 
-	if (metaApp->usingApplicationDatabaseBackend()) {
-		_LOG << "Have application database backend switch: true" LOG_
-	} else {
-		_LOG << "Have application database backend switch: false" LOG_
-	}
-
-	_LOG << "Have system database backend: " << metaApp->getSystemDatabaseBackend() LOG_
-	_LOG << "Have application database backend: " << metaApp->getApplicationDatabaseBackend() LOG_
-*/
     wxImage::AddHandler(new wxPNGHandler);
 
     bool no_splash = false;
@@ -2439,7 +1152,7 @@ bool MyApp::OnInit(void)
     {
 		splash = new lbSplashScreen(wxGUI, bitmap,
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-		6000, frame, -1, wxDefaultPosition, wxDefaultSize,
+		6000, frame, -1, ::wxGetMousePosition(), wxDefaultSize,
 #ifndef OSX
 		wxSIMPLE_BORDER|wxSTAY_ON_TOP); //|wxSTAY_ON_TOP);
 #endif
@@ -2468,6 +1181,9 @@ bool MyApp::OnInit(void)
 		wxGUI->splashCreated();
 	}
 #endif
+
+	PM->runInstallers();
+
 	wxYield();
 
     if (metaApp != NULL) {
@@ -2496,15 +1212,7 @@ bool MyApp::OnInit(void)
 	FlushMenuentryQueue();
 
     frame->Show(TRUE);
-
-#ifdef bla //LINUX
-    if (splash != NULL) {
-    	_LOG << "Raise splash." LOG_
-	splash->Raise();
-    	_LOG << "Raised splash." LOG_
-    }
-#endif
-
+	
     if (metaApp != NULL) metaApp->run();
 
     return TRUE;
@@ -2533,6 +1241,8 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenu, "AddMenu");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuBar, "AddMenuBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuEntry, "AddMenuEntry");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::removeMenuBar, "RemoveMenuBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::removeMenuEntry, "RemoveMenuEntry");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
@@ -2832,7 +1542,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 			}
 		}
 
-		_LOG << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
+		_LOGERROR << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
 
 
 		if (param->Count() > 3) {
@@ -2874,6 +1584,106 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 									&lb_wxFrame::OnDispatch );
 	}
 
+
+	return ERR_NONE;
+/*...e*/
+}
+/*...e*/
+/*...sremoveMenuBar\9\\9\\9\Handler:0:*/
+lbErrCodes LB_STDCALL MyApp::removeMenuBar(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	if (frame == NULL) {
+		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
+	} else {
+		parameter->setData("name");
+		param->getUAPString(*&parameter, *&name);
+
+		wxMenuBar* mbar = frame->getMenuBar();
+
+		int pos = 0;
+
+		if (mbar) {
+			wxString m = wxString(name->getData());
+			pos = mbar->FindMenu(m);
+			
+			if (pos != wxNOT_FOUND)
+			{
+				wxMenu* menu = mbar->Remove(pos);
+				delete menu;
+			}
+		}
+	}
+
+	return err;
+}
+/*...e*/
+/*...saddMenuEntry\9\\9\Handler:0:*/
+/**
+ * Add a menu entry to a specific menubar.
+ *
+ * Params:
+ *	menubar:	Name of menubar
+ *	menuname:	Name of menu entry
+ *	handlername:	Name of handler
+ */
+lbErrCodes LB_STDCALL MyApp::removeMenuEntry(lb_I_Unknown* uk) {
+/*...scode:0:*/
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menubar)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menuname)
+
+
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	if (frame == NULL) {
+		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
+	} else {
+		parameter->setData("menubar");
+		param->getUAPString(*&parameter, *&menubar);
+		parameter->setData("menuname");
+		param->getUAPString(*&parameter, *&menuname);
+
+		if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL)) {
+			_LOG << "Error: There are some parameters with NULL pointers!" LOG_
+			return err;
+		}
+
+		_LOG << "Remove a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "'" LOG_
+
+		wxMenuBar* mbar = frame->getMenuBar();
+
+		int index;
+
+		index = mbar->FindMenu(wxString(menubar->getData()));
+
+		if (index == wxNOT_FOUND) {
+			_LOGERROR << "ERROR: Programming error. Forgotten to create the required menu. Do it here." LOG_
+			return err;
+		}
+
+		wxMenu* menu = mbar->GetMenu(index);
+
+		int mid = menu->FindItem(menuname->charrep());
+		
+		if (mid != wxNOT_FOUND)
+		{
+			menu->Destroy(mid);
+		}
+	}
 
 	return ERR_NONE;
 /*...e*/
@@ -3091,216 +1901,6 @@ lbErrCodes LB_STDCALL MyApp::addMenu(lb_I_Unknown* uk) {
 }
 /*...e*/
 #endif
-#ifndef LB_I_EXTENTIONS
-/*...sMyFrame:0:*/
-// My frame constructor
-MyFrame::MyFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
-  wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
-{}
-
-void MyFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) )
-{
-  setVerbose(!isVerbose());
-}
-
-/*...sMyFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
-void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
-{
-  Close(TRUE);
-}
-/*...e*/
-void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
-{
-  wxMessageDialog dialog(this, "This demonstrates dynamic event handling",
-    "About Dynamic", wxYES_NO|wxCANCEL);
-
-  dialog.ShowModal();
-}
-/*...e*/
-#endif
-
-#ifndef USE_WXWRAPPER_DLL
-
-#ifdef LB_I_EXTENTIONS
-/*...slb_wxFrame:0:*/
-// My frame constructor
-lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
-  wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
-{
-	menu_bar = NULL;
-	guiCleanedUp = 0;
-}
-
-lb_wxFrame::~lb_wxFrame() {
-        _CL_LOG << "lb_wxFrame::~lb_wxFrame() called." LOG_
-
-        if (guiCleanedUp == 0) {
-        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() cleans up GUI" LOG_
-                if (gui) gui->cleanup();
-                _CL_LOG << "lb_wxFrame::~lb_wxFrame() cleaned up GUI" LOG_
-                guiCleanedUp = 1;
-        } else {
-        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() GUI has been cleaned up prior." LOG_
-        	_CL_LOG << "********************************************************" LOG_
-        }
-}
-
-void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
-    wxWizard *wizard = new wxWizard(this, -1, _T("Anmeldung"));
-
-    wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
-
-    wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
-
-    wxSize size = text->GetBestSize();
-
-    wxLogonPage *page2 = new wxLogonPage(wizard);
-    wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
-
-    wxWizardPageSimple::Chain(page2, page3);
-
-    wizard->SetPageSize(size);
-
-    if ( wizard->RunWizard(page1) )
-    {
-        wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
-                     wxICON_INFORMATION | wxOK);
-    }
-
-    wizard->Destroy();
-
-
-}
-/*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
-void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
-{
-  	/*
-  	 * Let the lb_wxGUI class cleanup it's created  and hidden forms.
-  	 * The database form sample is a modal form and may be making the
-  	 * problem, if it is not destroyed here.
-  	 */
-
-
-	if (guiCleanedUp == 0) {
-		_CL_LOG << "lb_wxFrame::OnQuit(...) cleans up GUI" LOG_
-        	if (gui) gui->cleanup();
-        	_CL_LOG << "lb_wxFrame::OnQuit(...) cleaned up GUI" LOG_
-        	guiCleanedUp = 1;
-	}
-
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-	PM->unload();
-
-	Close(TRUE);
-}
-
-void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
-    setVerbose(!isVerbose());
-}
-
-/*...e*/
-/*...slb_wxFrame\58\\58\OnAbout\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
-void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
-{
-  char* buf = strdup(_trans("This is the wxWindows GUI wrapper.\nA interface to any application."));
-  char* buf1 = strdup(_trans("About wxWidgets GUI wrapper"));
-  wxMessageDialog dialog(NULL, buf, buf1, wxOK);
-
-  dialog.ShowModal();
-
-  free(buf);
-  free(buf1);
-}
-/*...e*/
-/*...slb_wxFrame\58\\58\OnCheck\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
-void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
-	char ptr[200] = "";
-	sprintf(ptr, "%p for instance %p", menu_bar, this);
-
-	_LOG << "Have this instance now: " << ptr LOG_
-}
-/*...e*/
-/*...slb_wxFrame\58\\58\OnBuildMenu\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
-void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
-	wxMenu *menu = new wxMenu;
-	wxMenuBar* mbar = NULL;
-
-	menu->Append(DYNAMIC_ABOUT, "&About");
-	menu->Append(DYNAMIC_QUIT, "E&xit");
-
-	char ptr[200] = "";
-	sprintf(ptr, "%p for instance %p", menu_bar, this);
-	_LOG << "Request for a menu pointer: " << ptr LOG_
-
-	mbar = getMenuBar();
-	if (menu_bar) menu_bar->Append(menu, "T&est");
-
-}
-/*...e*/
-/*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
-void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
-        switch (event.GetId()) {
-        case DYNAMIC_QUIT:
-                OnQuit(event);
-                break;
-        case DYNAMIC_ABOUT:
-                OnAbout(event);
-                break;
-	case DYNAMIC_VERBOSE:
-		OnVerbose(event);
-		break;
-        case DYNAMIC_BUILDMENU:
-        	{
-        		OnBuildMenu(event);
-        	}
-        	break;
-        default:
-                // Delegate all other events
-                {
-                	lbErrCodes err = ERR_NONE;
-			lb_I_Module* m = getModuleInstance();
-
-			//if (eman == NULL) {
-				REQUEST(m, lb_I_EventManager, eman)
-			//}
-
-			//if (dispatcher == NULL) {
-				REQUEST(m, lb_I_Dispatcher, dispatcher)
-				dispatcher->setEventManager(eman.getPtr());
-			//}
-
-			UAP_REQUEST(m, lb_I_Integer, param)
-
-			param->setData(event.GetId());
-
-			UAP(lb_I_Unknown, uk)
-			QI(param, lb_I_Unknown, uk)
-
-			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result)
-			QI(result, lb_I_Unknown, uk_result)
-
-			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
-                }
-                break;
-        }
-}
-/*...e*/
-
-/*
-void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
-
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	UAP(lb_I_Plugin, pl)
-
-	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport");
-
-}
-*/
-/*...e*/
-#endif
-#endif
 
 /*...sCleanup helper:0:*/
 #ifdef WINDOWS
@@ -3310,7 +1910,9 @@ public:
 	}
 
 	virtual ~cleanUp() {
+		_CL_LOG << "cleanUp::~cleanUp() unloads all modules." LOG_
 		unHookAll();
+		_CL_LOG << "cleanUp::~cleanUp() unloaded all modules." LOG_
 	}
 
 };
@@ -3324,10 +1926,9 @@ public:
 	}
 
 	virtual ~cleanUp() {
-		_CL_LOG << "Call unHookAll()..." LOG_
-		//lbBreak();
+		_CL_LOG << "cleanUp::~cleanUp() unloads all modules." LOG_
 		unHookAll();
-		_CL_LOG << "Called unHookAll()." LOG_
+		_CL_LOG << "cleanUp::~cleanUp() unloaded all modules." LOG_
 	}
 
 };
@@ -3360,14 +1961,14 @@ int PASCAL WinMain(HINSTANCE hInstance,
 	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
 	char* LOGGING = getenv("LOGGING");
 
+	// Default
+	setLogActivated(false);
 	if (LOGGING != NULL) {
-		if ((strcmp(LOGGING, "no") != 0) &&
-			(strcmp(LOGGING, "NO") != 0) &&
-			(strcmp(LOGGING, "No") != 0) &&
-			(strcmp(LOGGING, "nO") != 0)) 
-			setLogActivated(false);
-		else
+		if ((strcmp(LOGGING, "no") != 0) && (strcmp(LOGGING, "NO") != 0) && (strcmp(LOGGING, "No") != 0) && (strcmp(LOGGING, "nO") != 0)) 
+		// Activate
 			setLogActivated(true);
+		else
+			setLogActivated(false);
 	}
 	
 	if (CONSOLE_DETACH == NULL) FreeConsole();

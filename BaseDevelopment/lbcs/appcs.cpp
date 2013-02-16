@@ -1260,9 +1260,9 @@ void LB_STDCALL lbAppServer::run() {
 		return;
 	}
 	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
-	setLogActivated(true);
+	
 	_CL_LOG << "Global application server is started." LOG_
-	setLogActivated(false);
+	
 
 	while (1) {
 		UAP(lb_I_Transfer, clt)
@@ -1275,10 +1275,10 @@ void LB_STDCALL lbAppServer::run() {
 		
 		if ((clt = transfer->accept()) == 0) 
 		{
-			setLogActivated(true);
+			
 			_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
 			_CL_LOG << "lbAppServer::run() error while accepting on a socket" LOG_
-			setLogActivated(false);
+			
 			return;
 		}
 
@@ -1300,21 +1300,21 @@ void LB_STDCALL lbAppServer::run() {
 #endif		
 
 #ifdef USE_MULTITHREAD_CODE
-		setLogActivated(true);
+		
 		_CL_LOG << "Got connection..." LOG_
-		setLogActivated(false);
+		
 
 		UAP(lb_I_Thread, freeThread)
 
 		if (mainThreads == NULL) {
-			setLogActivated(true);
+			
 			_CL_LOG << "Error: No server plugins registered." LOG_
-			setLogActivated(false);
+			
 			continue;
 		}
-		setLogActivated(true);
+		
 		_CL_LOG << "Handle request." LOG_
-		setLogActivated(false);
+		
 		
 		if (mainThreads->Count() < maxThreads)	{
 			REQUEST(getModuleInstance(), lb_I_Thread, freeThread)
@@ -1353,9 +1353,9 @@ void LB_STDCALL lbAppServer::run() {
 				}
 			}
 		} 
-		setLogActivated(true);
+		
 		_CL_LOG << "Run request." LOG_
-		setLogActivated(false);
+		
 		freeThread->run();
 #endif		
 	}
@@ -1388,15 +1388,15 @@ lbErrCodes lbAppServer::_connected(lb_I_Transfer* _clt) {
 	  request->deleteAll();
 	  result->deleteAll();
 	
-		setLogActivated(true);
+		
 		_CL_LOG << "Answer request..." LOG_
-		setLogActivated(false);
+		
 	  if ((rcin = waitForRequest(_clt, *&request)) != ERR_NONE) {
 	    LOG("waitForRequest(_clt, *&request) failed");
 	  } else {
-			setLogActivated(true);
+			
 			_CL_LOG << "Dispatch request..." LOG_
-			setLogActivated(false);
+			
             if ((rc_handler = dispatch(*&request, *&result)) != ERR_NONE) {
 			LOG("handleRequest(*&request, *&result) failed");
 		}
@@ -1405,9 +1405,9 @@ lbErrCodes lbAppServer::_connected(lb_I_Transfer* _clt) {
 LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Request handled, send answer");
 #endif
 /*...e*/
-		setLogActivated(true);
+		
 		_CL_LOG << "Answer request..." LOG_
-		setLogActivated(false);
+		
 		if ((rCOUT = answerRequest(_clt, *&result)) != ERR_NONE) {
 			LOG("answerRequest(_clt, *&result) failed");
 		}
@@ -1619,9 +1619,9 @@ lbErrCodes lbAppServer::makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg
 	result->add(msg);
 	
 	sprintf(buf, "%s Cause: %s", where, msg);
-	setLogActivated(true);
+	
 	_CL_LOG << buf LOG_
-	setLogActivated(false);
+	
 	
 	return ERR_NONE;
 }

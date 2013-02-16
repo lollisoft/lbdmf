@@ -96,6 +96,7 @@ extern "C" {
 #include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 void FormularActions::addRegisteredAction(long ActionID, const char* eventName) {
 	lbErrCodes err = ERR_NONE;
 	if (eventmapping == NULL) {
@@ -369,3 +370,5 @@ long FormularActions::getActionID(const char* what) {
 	return getActionTargetIDLong(what);
 }
 /*...e*/
+
+#endif

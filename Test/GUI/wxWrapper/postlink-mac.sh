@@ -1,10 +1,23 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
-export VERSION=1.0.4-stable-rc1
+export VERSION=1.0.4_stable_rc4
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
+
+mkdir wxWrapper.app/Contents/Resources/XSLT
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include            wxWrapper.app/Contents/Resources/XSLT/include
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI           wxWrapper.app/Contents/Resources/XSLT/DMFToXMI
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF           wxWrapper.app/Contents/Resources/XSLT/XMIToDMF
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel wxWrapper.app/Contents/Resources/XSLT/lbDMFDataViewModel
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular wxWrapper.app/Contents/Resources/XSLT/lbDMFFixedFormular
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision        wxWrapper.app/Contents/Resources/XSLT/TurboVision
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords    wxWrapper.app/Contents/Resources/XSLT/wxActiveRecords
+cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              wxWrapper.app/Contents/Resources/XSLT/wxLua
+
+cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/Resources
+
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 cp -R $HOME/lib wxWrapper.app/Contents
 cp -R $HOME/plugins wxWrapper.app/Contents/Resources
@@ -32,18 +45,10 @@ cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
 mkdir /Volumes/lbDMF-$VERSION/toolbarimages
 cp toolbarimages/*.xpm /Volumes/lbDMF-$VERSION/toolbarimages
 cp toolbarimages/*.png /Volumes/lbDMF-$VERSION/toolbarimages
-cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources
+
 cp ../../../COPYING /Volumes/lbDMF-$VERSION
 cp ../../../license-bindist.txt /Volumes/lbDMF-$VERSION
-mkdir /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include            /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/include
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI           /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/DMFToXMI
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF           /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/XMIToDMF
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/lbDMFDataViewModel
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/lbDMFFixedFormular
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision        /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/TurboVision
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords    /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/wxActiveRecords
-cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              /Volumes/lbDMF-$VERSION/wxWrapper.app/Contents/Resources/XSLT/wxLua
+
 cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf /Volumes/lbDMF-$VERSION/
 
 cat <<EOF >> /Volumes/lbDMF-$VERSION/Readme.txt

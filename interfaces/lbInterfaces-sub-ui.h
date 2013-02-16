@@ -52,7 +52,11 @@ class lb_I_Form :
 	public lb_I_Window, 
 	public lb_I_EventHandler {
 public:
-
+	/** \brief Initialize the form.
+	 *
+	 */
+	virtual void LB_STDCALL init() = 0;
+		
 	
 	/** \brief Set the name of the form
 	 *
@@ -283,7 +287,7 @@ public:
 	 * Expected is a panel based formular, that could be placed into a notebook like
 	 * control or in a dialog based control.
 	 */
-	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) = 0;
+	virtual lb_I_Form* LB_STDCALL addCustomForm(lb_I_Form* form, const char* formName) = 0;
 	
 	virtual void LB_STDCALL closeCurrentPage() = 0;
 	
@@ -298,6 +302,8 @@ public:
 	virtual void LB_STDCALL showPendingMessages() = 0;
 	
 	virtual void LB_STDCALL refreshAll() = 0;
+
+	virtual lbErrCodes LB_STDCALL openWebPage(const char* pagename, const char* url) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/

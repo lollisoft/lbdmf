@@ -31,16 +31,26 @@
 
 <xsl:output method="text" indent="no"/>
 
+<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
+<xsl:param name="XSLDatabaseBackendSystem"/>
+<xsl:param name="XSLDatabaseBackendApplication"/>
+<xsl:param name="overwriteDatabase"/>
+
+<xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
+
 <!-- ********** Select your database target ********** -->
 
 <!--
 <xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
 -->
-<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+<xsl:variable name="DefaultDatabaseSystem" select="'Sqlite'"/>
 
 
 <xsl:variable name="TargetDBType">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
+	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
@@ -167,7 +177,8 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 --INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', 'style.png', GetOrCreateApplication('<xsl:value-of select="$applicationname"/>'), 1);
 INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./UML:ModelElement.taggedValue[@tag='toolbarimage']/@value"/>', id, 1 FROM "anwendungen" where name = '<xsl:value-of select="$applicationname"/>';
 
-
+-- Cleanup
+DELETE FROM "formular_parameters" where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'));
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
@@ -550,11 +561,28 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
+
+-- ActionID from assocname2 = <xsl:value-of select="$assocname2"/> converted is <xsl:value-of select="$assocname1"/>
+
+<xsl:if test="$TargetDBType = 'Sqlite'">
+delete from formular_actions where formular IN 
+	(select id from "formulare" where anwendungid IN
+		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
+		name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from action_parameters where actionid IN 
+	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
+</xsl:if>
+
 <xsl:if test="$assocname1=''">
-insert into actions (name, typ, source, target) values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
+insert into actions (name, typ, source, target)
+values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
 </xsl:if>
 <xsl:if test="$assocname1!=''">
-insert into actions (name, typ, source, target) values ('<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0);
+insert into actions (name, typ, source, target)
+values ('<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0);
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
@@ -570,12 +598,15 @@ delete from formular_actions where formular = GetFormularId(GetOrCreateApplicati
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
-insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
-'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, (select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>')); 
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
+(select id from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>')); 
 
-delete from formular_actions where formular = (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
-insert into formular_actions (formular, action, event) values ((select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>'), 
-(select max(id) from actions where name = '<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
+insert into formular_actions (formular, action, event) values (
+(select id from "formulare" where anwendungid in 
+ (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') 
+	and name = '<xsl:value-of select="$thisClassName"/>'), 
+(select id from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 </xsl:if>
 </xsl:if>

@@ -76,14 +76,27 @@
 #include <stdio.h>
 #ifdef WINDOWS
 
-#define IOS ios
-#define COUT cout
-#define CIN cin
-#define ENDL endl
-#define OFSTREAM ofstream
+// Unix definition is missing on Windows
+#define PATH_MAX MAX_PATH
 
+#if defined(__MINGW32__)
+ #define IOS ios
+ #define COUT std::cout
+ #define CIN std::cin
+ #define ENDL std::endl
+ #define OFSTREAM ofstream
+ #include <iostream>
+ #include <fstream>
+#endif
+#if !defined(__MINGW32__)
+ #define IOS ios
+ #define COUT cout
+ #define CIN cin
+ #define ENDL endl
+ #define OFSTREAM ofstream
  #include <iostream.h>
  #include <fstream.h>
+#endif
 
 #endif
 
@@ -318,8 +331,8 @@
 
 #ifndef SOLARIS
 #define _CL_LOG \
-	if (isLogActivated()) { \
-        COUT << __FILE__ << ", " << __LINE__ << ": "
+	if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOG1 COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
 #ifdef SOLARIS
@@ -405,6 +418,7 @@
 
 class lbStringKey;
 
+
 #ifdef __MINGW32__
 extern "C" DLLEXPORT bool 		LB_CDECL _isVerbose();
 extern "C" DLLEXPORT bool 		LB_CDECL _isLogActivated();
@@ -450,7 +464,14 @@ extern "C" DLLEXPORT char*		LB_CDECL _translateText(const char* text);
 extern "C" DLLEXPORT void		LB_CDECL _uninitLocale();
 extern "C" DLLEXPORT void		LB_CDECL _unHookAll();
 extern "C" DLLEXPORT const char*		LB_CDECL _getOsType();
+extern "C" DLLEXPORT lbErrCodes LB_CDECL _requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line);
+
+extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _lbCopyFile(const char* from, const char* to);
+extern "C" DLLEXPORT lbErrCodes 		LB_CDECL _lbCopyDirectory(const char* fromDirectory, const char* toDirectory);
+
 #endif
+
+extern "C" DLLEXPORT lbErrCodes LB_CDECL requestHelper(lb_I_Module* mm, const char* iface, void** variable, const char* file, int line);
 
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL getStringKey(char* buf);
 
@@ -539,6 +560,9 @@ extern "C" DLLEXPORT void LB_CDECL uninitLocale();
 
 extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename);
 extern "C" DLLEXPORT bool LB_CDECL FileExists(char *filename);
+
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbCopyFile(const char* from, const char* to);
+extern "C" DLLEXPORT lbErrCodes LB_CDECL lbCopyDirectory(const char* fromDirectory, const char* toDirectory);
 
 extern "C" DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name);
 /*...sDLLEXPORT lbErrCodes LB_CDECL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/

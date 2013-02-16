@@ -32,6 +32,11 @@ echo dummy: >> makefile
 echo \ >> makefile
 echo BaseDevelopment: dummy >> makefile
 echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> makefile
+
+echo \ >> makefile
+echo install: dummy >> makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> makefile
+
 CRUISECONTROL=yes
 export CRUISECONTROL
 make

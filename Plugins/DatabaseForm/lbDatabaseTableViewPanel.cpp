@@ -119,8 +119,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::setData(lb_I_Unknown* uk) {
 		UAP(lb_I_DatabaseForm, dbForm)
 		QI(uk, lb_I_DatabaseForm, dbForm)
 
-		fa = ((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa;
-		((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa = NULL;
+		fa = ((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa.getPtr();
+		((lbDatabaseTableViewPanel*) dbForm.getPtr())->fa.resetPtr();
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -141,7 +141,7 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 	base_formName = NULL;
 	noDataAvailable = false;
 	_created = false;
-	fa = NULL;
+	//fa = NULL;
 	FFI = NULL;
     numRows = 30;
     page = 0;
@@ -167,7 +167,7 @@ lbDatabaseTableViewPanel::lbDatabaseTableViewPanel()
 lbDatabaseTableViewPanel::~lbDatabaseTableViewPanel() {
 	_CL_VERBOSE << "lbDatabaseTableViewPanel::~lbDatabaseTableViewPanel() called." LOG_
 
-	if (fa != NULL) delete fa;
+	//if (fa != NULL) delete fa;
 	if (FFI != NULL) delete FFI;
 	free (formName);
 	free (base_formName);
@@ -1326,6 +1326,10 @@ void lbDatabaseTableViewPanel::OnCellValueChanged( wxGridEvent& ev ) {
     ev.Skip();
 }
 
+void LB_STDCALL lbDatabaseTableViewPanel::init() {
+	
+}
+
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const char* DBName, const char* DBUser, const char* DBPass) {
 	lbErrCodes err = ERR_NONE;
@@ -1701,7 +1705,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const cha
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();
@@ -1882,7 +1889,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::activateActionButtons() {
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();
@@ -1921,7 +1931,10 @@ void LB_STDCALL lbDatabaseTableViewPanel::deactivateActionButtons() {
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();

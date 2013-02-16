@@ -43,6 +43,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
+	UserFeedback \
 	TestPlugin \
 	VisitorOperations \
 	DatabaseLayerGateway \
@@ -62,6 +64,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
@@ -81,6 +85,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
@@ -100,6 +106,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
+	UserFeedback \
 	TestPlugin \
 	DatabaseLayerGateway \
 	VisitorOperations \
@@ -123,6 +131,8 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	wxWidgets/wxSFDesigner \
+	UserFeedback \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
@@ -151,6 +161,14 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+wxWidgets/wxSFDesigner: dummy
+	$(MAKE) -C $@ -e MODULE=lbwxSFDesigner -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+UserFeedback: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 lbBasicEventHandlers: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure

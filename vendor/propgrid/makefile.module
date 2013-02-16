@@ -32,15 +32,15 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
 
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I. -I./include -I $(DEVROOT_MAKE)/wxwin/wx/include
+MOD_INCL_MINGW_CPP += -I. -I./include -I $(DEVROOT_MINGW)/wxwin/wx/include
 CPP_MINGW_DLLOPS += -D__WINDOWS__ -D__WXMSW__
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
@@ -138,10 +138,10 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ./include `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ./include `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS= 
-L_OPS=$(L_SOOPS) $(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook -lc /usr/lib/libgcc_s.1.dylib
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook -lc /usr/lib/libgcc_s.1.dylib
 endif
 
 endif
@@ -154,7 +154,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) $(OSX_ARCH)
+L_OPS=$(L_SOOPS)
 endif
 
 endif

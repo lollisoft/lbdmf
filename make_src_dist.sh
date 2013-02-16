@@ -5,7 +5,7 @@ ARCH=`arch`
 
 if [ "$1" == "" ]; then
 	echo No version parameter given.
-	echo Sample: $0 0.7.1
+	echo Sample: $0 1.0.4_stable_rc4 
 	exit;
 fi
 
@@ -21,7 +21,12 @@ if [ "$ARCH" == "ppc" ]; then
 	cd Projects
 fi
 
-cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r HEAD CPP
+# Building HEAD revision
+#cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r HEAD CPP
+
+# Building branch revision
+cvs -d:ext:lollisoft@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r Release_1_0_4_stable_rc1_branch CPP
+
 cp ~/develop/Projects/CPP/Plugins/DatabaseReport/repwrt.cpp CPP/Plugins/DatabaseReport/repwrt.cpp
 cp ~/develop/Projects/CPP/Plugins/DatabaseReport/repwrt.h CPP/Plugins/DatabaseReport/repwrt.h
 

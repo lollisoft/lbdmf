@@ -51,7 +51,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define PATH_MAX 512
+#define MAX_PATH 512
 #endif
 
 #include <stdarg.h>

@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 49
+  revision 37
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -44,12 +44,7 @@ format 73
     show_infonote default drawing_language default show_stereotype_properties default
     classdiagram 133250 "Codegeneration as Workflow"
       draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition yes show_members_visibility default show_members_stereotype yes show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      size A4
-    end
-
-    classdiagram 159490 "Anwendung"
-      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      size A4
+      size A3
     end
 
     classdiagram 128258 "Formulare"
@@ -57,179 +52,7 @@ format 73
       size A4
     end
 
-    class 128770 "Actions"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "cache.png"
-      attribute 130050 "target"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 130178 "source"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 130306 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 152194 "typ"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 128258 // <dependency>
-	relation 128258 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 128258 // <dependency>
-	  b parent class_ref 130562 // actions
-      end
-
-      classrelation 136706 // Aktionsschrittezuordnen (Aktionsschrittezuordnen)
-	relation 133634 ---> name "Aktionsschrittezuordnen"
-	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "Aktionsschrittezuordnen" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 136706 // Aktionsschrittezuordnen (Aktionsschrittezuordnen)
-	  b parent class_ref 129282 // Action_Steps
-	ncouples 1
-	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
-      end
-
-      classrelation 177410 // AktionsParameter (AktionsParameter)
-	relation 174210 ---> name "AktionsParameter"
-	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "AktionsParameter" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 177410 // AktionsParameter (AktionsParameter)
-	  b parent class_ref 171778 // Action_Parameters
-	ncouples 1
-	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
-      end
-    end
-
-    class 129282 "Action_Steps"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "action_steps.png"
-      attribute 131458 "bezeichnung"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 131202 "what"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 131330 "a_order_nr"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 128130 // <dependency>
-	relation 128130 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 128130 // <dependency>
-	  b parent class_ref 130306 // action_steps
-      end
-
-      attribute 151938 "type"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 152066 "actionid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 177538 // ActionstepParameters (ActionstepParameters)
-	relation 174338 ---> name "ActionstepParameters"
-	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "ActionstepParameters" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 177538 // ActionstepParameters (ActionstepParameters)
-	  b parent class_ref 171906 // ActionStep_Parameters
-	ncouples 1
-	key "lbDMF:masterdetail_action:sourcecolumn" value "bezeichnung"
-      end
-    end
-
-    class 128002 "UserAccounts"
+    class 128002 "Benutzer"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -283,16 +106,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 226050 "secret"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
       classrelation 129410 // <dependency>
 	relation 129410 -_->
 	  a default
@@ -308,13 +121,13 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137090 // AnwendungenBenutzer (AnwendungenBenutzer)
-	  b parent class_ref 128386 // User_Applications
+	  b parent class_ref 128386 // AnwendungenBenutzer
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "userid"
       end
     end
 
-    class 128130 "Formulars"
+    class 128130 "Formulare"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -394,7 +207,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137218 // Formular_Parameter (Formular_Parameter)
-	  b parent class_ref 128258 // FormularParameter
+	  b parent class_ref 128258 // Formular_Parameter
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
@@ -406,7 +219,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137346 // Formularaktionenzuordnen (Formularaktionenzuordnen)
-	  b parent class_ref 129026 // Formular_Actions
+	  b parent class_ref 129026 // Formularaktionenzuordnen
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
@@ -441,7 +254,7 @@ ${inlines}
       end
     end
 
-    class 128258 "FormularParameter"
+    class 128258 "Formular_Parameter"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -494,7 +307,7 @@ ${inlines}
       end
     end
 
-    class 128386 "User_Applications"
+    class 128386 "AnwendungenBenutzer"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -537,7 +350,7 @@ ${inlines}
       end
     end
 
-    class 128514 "Applications_Formulars"
+    class 128514 "FormulareAnwendung"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -580,7 +393,7 @@ ${inlines}
       end
     end
 
-    class 128642 "Applications"
+    class 128642 "Anwendungen"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -675,7 +488,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 136834 // Anwendungsparameter (Anwendungsparameter)
-	  b parent class_ref 129154 // ApplicationParameter
+	  b parent class_ref 129154 // Anwendungsparameter
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
@@ -687,12 +500,12 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 136962 // Formulare (Formulare)
-	  b parent class_ref 128130 // Formulars
+	  b parent class_ref 128130 // Formulare
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
 
-      operation 129154 "CreateSystemApplication"
+      operation 129154 "GenerateTurboVision"
 	stereotype "lbDMF:workflow"
 	public explicit_return_type ""
 	nparams 1
@@ -728,7 +541,82 @@ ${inlines}
       end
     end
 
-    class 128898 "Translations"
+    class 128770 "Aktionen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "cache.png"
+      attribute 130050 "target"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130178 "source"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 130306 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152194 "typ"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128258 // <dependency>
+	relation 128258 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 128258 // <dependency>
+	  b parent class_ref 130562 // actions
+      end
+
+      classrelation 136706 // Aktionsschrittezuordnen (Aktionsschrittezuordnen)
+	relation 133634 ---> name "Aktionsschrittezuordnen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Aktionsschrittezuordnen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136706 // Aktionsschrittezuordnen (Aktionsschrittezuordnen)
+	  b parent class_ref 129282 // Aktionsschrittezuordnen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+    end
+
+    class 128898 "Uebersetzungen"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -762,16 +650,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 206210 "language"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
       classrelation 129282 // <dependency>
 	relation 129282 -_->
 	  a default
@@ -781,7 +659,7 @@ ${inlines}
       end
     end
 
-    class 129026 "Formular_Actions"
+    class 129026 "Formularaktionenzuordnen"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -834,7 +712,7 @@ ${inlines}
       end
     end
 
-    class 129154 "ApplicationParameter"
+    class 129154 "Anwendungsparameter"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -848,7 +726,7 @@ ${inlines}
       
       ncouples 1
       key "lbDMF:toolbarimagefile" value "app_params.png"
-      attribute 131074 "parametername"
+      attribute 130946 "parametervalue"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -858,7 +736,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 130946 "parametervalue"
+      attribute 131074 "parametername"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -887,7 +765,80 @@ ${inlines}
       end
     end
 
-    class 129410 "Reports"
+    class 129282 "Aktionsschrittezuordnen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "action_steps.png"
+      attribute 131458 "bezeichnung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131202 "what"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 131330 "a_order_nr"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128130 // <dependency>
+	relation 128130 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 128130 // <dependency>
+	  b parent class_ref 130306 // action_steps
+      end
+
+      attribute 151938 "type"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152066 "actionid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 129410 "Reportdefinitionen"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -936,13 +887,13 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 137474 // Reportparameter (Reportparameter)
-	  b parent class_ref 129538 // ReportParameters
+	  b parent class_ref 129538 // Reportparameter
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
     end
 
-    class 129538 "ReportParameters"
+    class 129538 "Reportparameter"
       visibility package stereotype "form"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -985,199 +936,6 @@ ${inlines}
       end
 
       attribute 152450 "reportid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 178434 "ReportElements"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      attribute 204802 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 204930 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205058 "x"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205186 "y"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205314 "w"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205442 "h"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 184194 // <dependency>
-	relation 180994 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 184194 // <dependency>
-	  b parent class_ref 132482 // report_elements
-      end
-
-      attribute 205826 "reportid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205954 "typ"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 178690 "ReportElementTypes"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      attribute 205570 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 205698 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 184322 // <dependency>
-	relation 181122 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 184322 // <dependency>
-	  b parent class_ref 132354 // report_element_types
-      end
-    end
-
-    class 178562 "ReportTexts"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      attribute 204546 "line"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 204674 "text"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 184066 // <dependency>
-	relation 180866 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 184066 // <dependency>
-	  b parent class_ref 132738 // report_texts
-      end
-
-      attribute 206082 "elementid"
 	protected explicit_type "ForeignKey"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1324,12 +1082,12 @@ ${inlines}
       end
     end
 
-    activity 134658 "CreateSystemApplication"
+    activity 134658 "GenerateTurboVision"
       stereotype "workflow"
       activitydiagram 152962 "CGWorkflow"
 	package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations no shadow default
 	show_infonote default drawing_language default show_stereotype_properties default
-	size A3
+	size A4
       end
 
       activitynode 141698 initial_node ""
@@ -1341,14 +1099,14 @@ ${inlines}
       activitynode 141826 activity_final ""
       end
 
-      activityaction 147970 "Generate System Application (Mac)"
+      activityaction 147970 "Generate TurboVision (Mac)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
-	key "stylesheet" value "{BasePath}/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
+	key "stylesheet" value "./wxWrapper.app/Contents/Resources/XSLT/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
 	key "source" value "{file}"
-	flow 212610 "<flow>"
-	  on activityaction_ref 188162 // activity action Create System Database SQL Script (Mac)
+	flow 183682 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
 	end
       end
 
@@ -1370,7 +1128,7 @@ ${inlines}
 	key "filename" value "{file}"
 	key "source" value "{memorybuffer}"
 	flow 190722 "<flow>"
-	  on activityaction_ref 174722 // activity action Show what I am
+	  on activityaction_ref 174722 // activity action Show OS Type and AppId
 	end
       end
 
@@ -1385,25 +1143,25 @@ ${inlines}
 	end
       end
 
-      activityaction 167938 "Generate System Application (Windows)"
+      activityaction 167938 "Generate TurboVision (Windows)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "{BasePath}\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\DMFToDataModel\\generate.xsl"
-	flow 212226 "<flow>"
-	  on activityaction_ref 187906 // activity action Create System Database SQL Script (Windows)
+	key "stylesheet" value "\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"
+	flow 183810 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
 	end
       end
 
-      activityaction 168066 "Generate System Application (Unix)"
+      activityaction 168066 "Generate TurboVision (Unix)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "{BasePath}/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToDataModel/generate.xsl"
-	flow 212994 "<flow>"
-	  on activityaction_ref 188418 // activity action Create System Database SQL Script (Linux)
+	key "stylesheet" value "/usr/share/lbdmf/TurboVision/gen_TurboVisionFixedFormularClasses.xsl"
+	flow 183938 "<flow>"
+	  on activityaction_ref 168194 // activity action NOP
 	end
       end
 
@@ -1415,12 +1173,12 @@ ${inlines}
 	end
       end
 
-      activityaction 174722 "Show what I am"
+      activityaction 174722 "Show OS Type and AppId"
 	send_signal_action
 	ncouples 3
 	key "signal" value "showMsgBox"
-	key "msg" value "Generate code for {OSType}"
-	key "title" value "System Code Generator"
+	key "msg" value "Os Type is {OSType}. ApplicationId is {SaveApplicationID}"
+	key "title" value "Operating system and selected application..."
 	flow 197250 "<flow>"
 	  on activitynode_ref 148354 // decision
 	end
@@ -1432,9 +1190,8 @@ ${inlines}
 	end
 
 	flow 197762 "<flow>"
-	  on activityaction_ref 168066 // activity action Generate System Application (Unix)
+	  on activityaction_ref 168066 // activity action Generate TurboVision (Unix)
 	    uml_guard "OSType == \"Unix\""
-	      uml_transformation "BasePath = /home/lothar/develop/Projects/CPP"
 	end
       end
 
@@ -1444,9 +1201,8 @@ ${inlines}
 	end
 
 	flow 197890 "<flow>"
-	  on activityaction_ref 147970 // activity action Generate System Application (Mac)
+	  on activityaction_ref 147970 // activity action Generate TurboVision (Mac)
 	    uml_guard "OSType == \"Mac\""
-	      uml_transformation "BasePath = /Users/lothar/develop/Projects/CPP"
 	end
       end
 
@@ -1473,974 +1229,25 @@ ${inlines}
 
       activitynode 155138 decision ""
 	flow 205058 "<flow>"
-	  on activityaction_ref 167938 // activity action Generate System Application (Windows)
+	  on activityaction_ref 167938 // activity action Generate TurboVision (Windows)
 	    uml_guard "result == 1"
-	      uml_transformation "BasePath = \\\\develop\\\\Projects\\\\CPP"
 	end
 
 	flow 205186 "<flow>"
-	  on activityaction_ref 181378 // activity action Generate System Application (Windows installed)
+	  on activityaction_ref 181378 // activity action Generate TurboVision (Windows installed)
 	    uml_guard "result == 0"
-	      uml_transformation "BasePath = \\\\lbDMF"
 	end
       end
 
-      activityaction 181378 "Generate System Application (Windows installed)"
+      activityaction 181378 "Generate TurboVision (Windows installed)"
 	send_signal_action
 	ncouples 3
 	key "signal" value "transformXSLT"
 	key "source" value "{file}"
-	key "stylesheet" value "{BasePath}\\XSLT\\DMFToDataModel\\generate.xsl"
-	flow 221442 "<flow>"
-	  on activityaction_ref 195970 // activity action Show generated for Windows installed
-	end
-      end
-
-      activityaction 187906 "Create System Database SQL Script (Windows)"
-	send_signal_action
-	ncouples 3
-	key "signal" value "transformXSLT"
-	key "source" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF "
-	key "stylesheet" value "Q:\\\\develop\\\\Projects\\\\CPP\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
-	flow 212354 "<flow>"
-	  on activityaction_ref 188034 // activity action Create Application Database SQL Script (Windows)
-	      uml_transformation "systemDDL = {stepout}"
-	end
-      end
-
-      activityaction 188034 "Create Application Database SQL Script (Windows)"
-	send_signal_action
-	flow 220930 "<flow>"
-	  on activitynode_ref 161666 // decision
-	      uml_transformation "applicationDDL = {stepout}"
-	end
-      end
-
-      activityaction 188162 "Create System Database SQL Script (Mac)"
-	send_signal_action
-	flow 212738 "<flow>"
-	  on activityaction_ref 188290 // activity action Create Application Database SQL Script (Mac)
-	      uml_transformation "systemDDL = {stepout}"
-	end
-      end
-
-      activityaction 188290 "Create Application Database SQL Script (Mac)"
-	send_signal_action
-	flow 220802 "<flow>"
-	  on activitynode_ref 161666 // decision
-	      uml_transformation "applicationDDL = {stepout}"
-	end
-      end
-
-      activityaction 188418 "Create System Database SQL Script (Linux)"
-	send_signal_action
-	flow 213122 "<flow>"
-	  on activityaction_ref 188546 // activity action Create Application Database SQL Script (Linux)
-	      uml_transformation "systemDDL = {stepout}"
-	end
-      end
-
-      activityaction 188546 "Create Application Database SQL Script (Linux)"
-	send_signal_action
-	flow 220674 "<flow>"
-	  on activitynode_ref 161666 // decision
-	      uml_transformation "applicationDDL = {stepout}"
-	end
-      end
-
-      activityaction 188674 "Create System Database SQL Script (Windows installed)"
-	send_signal_action
-	ncouples 3
-	key "signal" value "transformXSLT"
-	key "source" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
-	key "stylesheet" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-SystemDB.xsl"
-	flow 211970 "<flow>"
-	  on activityaction_ref 188802 // activity action Create Application Database SQL Script (Windows installed)
-	      uml_transformation "systemDDL = {stepout}"
-	end
-      end
-
-      activityaction 188802 "Create Application Database SQL Script (Windows installed)"
-	send_signal_action
-	ncouples 3
-	key "signal" value "transformXSLT"
-	key "source" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\UMLSamples\\\\SecondStageModels\\\\lbDMF Manager.xmi"
-	key "stylesheet" value "{BasePath}\\\\AppDevelopmentDemo\\\\DynamicApp\\\\XSLT_Templates\\\\XMIToDMF\\\\importUML-ApplicationDB.xsl"
-	flow 221058 "<flow>"
-	  on activitynode_ref 161666 // decision
-	      uml_transformation "applicationDDL = {stepout}"
-	end
-      end
-
-      activitynode 161666 decision ""
-	flow 220034 "<flow>"
-	  on activityaction_ref 195458 // activity action write System DDL to file
-	    uml_guard "backend == DatabaseLayerGateway"
-	end
-
-	flow 221186 "<flow>"
-	  on activityaction_ref 195842 // activity action Combine DDL files in transition
-	      uml_transformation "CombinedDDL = {applicationDDL}"
-	end
-      end
-
-      activityaction 195458 "write System DDL to file"
-	send_signal_action
-	ncouples 3
-	key "signal" value "writeStringToFile"
-	key "source" value "{systemDDL}"
-	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-Sqlite-SystemDB.sql"
-	flow 220162 "<flow>"
-	  on activityaction_ref 195586 // activity action write Application DDL to file
-	end
-      end
-
-      activityaction 195586 "write Application DDL to file"
-	send_signal_action
-	ncouples 3
-	key "signal" value "writeStringToFile"
-	key "source" value "{applicationDDL}"
-	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-Sqlite-SystemDB.sql"
-	flow 220290 "<flow>"
+	key "stylesheet" value "\\lbDMF\\XSLT\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl"
+	flow 205314 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
 	end
-      end
-
-      activityaction 195714 "write combined DDL for PostgreSQL"
-	send_signal_action
-	ncouples 3
-	key "signal" value "writeStringToFile"
-	key "source" value "{CombinedDDL}"
-	key "filename" value "{BasePath}\\\\Database\\\\lbDMF-PostgreSQL.sql"
-	flow 220418 "<flow>"
-	  on activityaction_ref 168194 // activity action NOP
-	end
-      end
-
-      activityaction 195842 "Combine DDL files in transition"
-	opaque_action
-	flow 221314 "<flow>"
-	  on activityaction_ref 195714 // activity action write combined DDL for PostgreSQL
-	      uml_transformation "CombinedDDL += {systemDDL}"
-	end
-      end
-
-      activityaction 195970 "Show generated for Windows installed"
-	send_signal_action
-	ncouples 3
-	key "signal" value "showMsgBox"
-	key "title" value "Plattform"
-	key "msg" value "Es wurde Code in einer Endbenutzer Installation generiert"
-	flow 221570 "<flow>"
-	  on activityaction_ref 188674 // activity action Create System Database SQL Script (Windows installed)
-	end
-      end
-    end
-
-    class 150018 "lbDMFManager"
-      visibility package stereotype "lbDMF:application"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    class 150146 "User"
-      visibility package stereotype "lbDMF:ribbongroup"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 156034 // <dependency>
-	relation 152962 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156034 // <dependency>
-	  b parent class_ref 151170 // Administration
-      end
-    end
-
-    class 150402 "Submenu"
-      visibility package stereotype "lbDMF:ribbonmenu"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 154754 // <dependency>
-	relation 151682 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 154754 // <dependency>
-	  b parent class_ref 150146 // User
-      end
-    end
-
-    class 150530 "NewUser"
-      visibility package stereotype "lbDMF:menuaction"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 155010 // <dependency>
-	relation 151938 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 155010 // <dependency>
-	  b parent class_ref 150146 // User
-      end
-
-      classrelation 155266 // <dependency>
-	relation 152194 -_->
-	  stereotype "creates"
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 155266 // <dependency>
-	  b parent class_ref 128002 // UserAccounts
-      end
-
-      attribute 160898 "MenuImage"
-	protected explicit_type ""
-	stereotype "lbDMF:toolbarimagefile"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 156674 // <dependency>
-	relation 153602 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156674 // <dependency>
-	  b parent class_ref 151554 // Admin
-      end
-    end
-
-    class 151170 "Administration"
-      visibility package stereotype "lbDMF:ribbonpage"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 155906 // <dependency>
-	relation 152834 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 155906 // <dependency>
-	  b parent class_ref 150018 // lbDMFManager
-      end
-    end
-
-    class 151298 "createInvoices"
-      visibility package stereotype "lbDMF:menuaction"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 156162 // <dependency>
-	relation 153090 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156162 // <dependency>
-	  b parent class_ref 150146 // User
-      end
-
-      classrelation 156546 // <dependency>
-	relation 153474 -_->
-	  stereotype "choosen"
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 156546 // <dependency>
-	  b parent class_ref 151426 // SelectUser
-      end
-
-      classrelation 156802 // <dependency>
-	relation 153730 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156802 // <dependency>
-	  b parent class_ref 151682 // Finance
-      end
-    end
-
-    class 151426 "SelectUser"
-      visibility package stereotype "lbDMF:menuaction"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 156290 // <dependency>
-	relation 153218 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156290 // <dependency>
-	  b parent class_ref 150146 // User
-      end
-
-      classrelation 156418 // <dependency>
-	relation 153346 -_->
-	  stereotype "chooses"
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 156418 // <dependency>
-	  b parent class_ref 128002 // UserAccounts
-      end
-
-      classrelation 156930 // <dependency>
-	relation 153858 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 156930 // <dependency>
-	  b parent class_ref 151682 // Finance
-      end
-    end
-
-    class 151554 "Admin"
-      visibility package stereotype "role"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    class 151682 "Finance"
-      visibility package stereotype "role"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    class 158210 "Formular_Fields"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "view_detailed.png"
-      attribute 167810 "fkname"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 167938 "fktable"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 167682 "dbtype"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 191490 "isforeignkey"
-	protected explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 167426 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 167554 "tablename"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 168066 "formularid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 163458 // <dependency>
-	relation 160386 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 163458 // <dependency>
-	  b parent class_ref 158338 // formular_fields
-      end
-    end
-
-    class 164866 "Action_Step_Transitions"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "kate.png"
-      classrelation 170242 // <dependency>
-	relation 167042 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 170242 // <dependency>
-	  b parent class_ref 130178 // action_step_transitions
-      end
-
-      attribute 175362 "expression"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 190978 "src_actionid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 191106 "dst_actionid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 175490 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 164994 "Column_Types"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "kedit.png"
-      classrelation 170370 // <dependency>
-	relation 167170 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 170370 // <dependency>
-	  b parent class_ref 131458 // column_types
-      end
-
-      attribute 176514 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176642 "tablename"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176770 "ro"
-	protected explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176898 "specialcolumn"
-	protected explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 177026 "controltype"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 165122 "FKPK_Mapping"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "kcmdf.png"
-      classrelation 170498 // <dependency>
-	relation 167298 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 170498 // <dependency>
-	  b parent class_ref 131586 // foreignkey_visibledata_mapping
-      end
-
-      attribute 175618 "pktable"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 175746 "pkname"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 175874 "fktable"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176002 "fkname"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 165250 "Action_Types"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "field_types.png"
-      classrelation 170626 // <dependency>
-	relation 167426 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 170626 // <dependency>
-	  b parent class_ref 130434 // action_types
-      end
-
-      attribute 176130 "bezeichnung"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176258 "action_handler"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 176386 "module"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 171778 "Action_Parameters"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "antivirus.png"
-      classrelation 177154 // <dependency>
-	relation 173954 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 177154 // <dependency>
-	  b parent class_ref 129922 // action_parameters
-      end
-
-      attribute 183554 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 183682 "value"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 183810 "interface"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 183938 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 198018 "actionid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 171906 "ActionStep_Parameters"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "ktip.png"
-      classrelation 177282 // <dependency>
-	relation 174082 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 177282 // <dependency>
-	  b parent class_ref 130050 // action_step_parameter
-      end
-
-      attribute 184450 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 184066 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 184194 "value"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 184322 "interface"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 191234 "action_step_id"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-  end
-
-  usecaseview 128002 "lbDMF Manager"
-    //use case diagram settings
-    package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
-    //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
-    //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
-    //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-    //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
-    //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
-    //activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default show_stereotype_properties default
-    usecasediagram 166018 "lbDMF Manager"
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode class shadow default show_stereotype_properties default
-      size A4
-    end
-
-    usecase 128002 "New User"
-      //use case diagram settings
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
-      //sequence diagram settings
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
-      //collaboration diagram settings
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
-      //class diagram settings
-      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      //object diagram settings
-       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
-      //state diagram settings
-      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-      show_activities default region_horizontally default drawing_language default show_stereotype_properties default
-      //activity diagram settings
-      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-      show_infonote default drawing_language default show_stereotype_properties default
-      comment "Ein Administrator legt in der Benutzerverwaltung neue Benutzer an."
-    end
-
-    usecase 128130 "Select User"
-      //use case diagram settings
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
-      //sequence diagram settings
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
-      //collaboration diagram settings
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
-      //class diagram settings
-      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      //object diagram settings
-       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
-      //state diagram settings
-      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-      show_activities default region_horizontally default drawing_language default show_stereotype_properties default
-      //activity diagram settings
-      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-      show_infonote default drawing_language default show_stereotype_properties default
-    end
-
-    usecase 128258 "create Invoices"
-      //use case diagram settings
-      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
-      //sequence diagram settings
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
-      //collaboration diagram settings
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
-      //class diagram settings
-      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      //object diagram settings
-       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
-      //state diagram settings
-      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-      show_activities default region_horizontally default drawing_language default show_stereotype_properties default
-      //activity diagram settings
-      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-      show_infonote default drawing_language default show_stereotype_properties default
-      simplerelation 128002
-	-_->
-	  stereotype "include"
-	  on usecase_ref 128130 // Select User
       end
     end
   end

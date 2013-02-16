@@ -28,11 +28,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.78 2011/10/29 06:03:58 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.79 2013/02/16 10:36:25 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.79  2013/02/16 10:36:25  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.78  2011/10/29 06:03:58  lollisoft
  * Refactored application model (and it's model classes) into separate files to enable code generation.
  * The code generation is planned for the model classes and the composite container for the model.
@@ -40,6 +44,14 @@
  * distinct feature the meta application should not provide. The code has been moved to a security
  * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
  * available.
+ *
+ * Revision 1.77.2.2  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
+ * Revision 1.77.2.1  2012/11/11 08:25:42  lollisoft
+ * Added new function to unregister an event.
  *
  * Revision 1.77  2011/09/27 06:29:42  lollisoft
  * Fixed some issues reported by CppCheck.
@@ -396,15 +408,17 @@ public:
 	 */
 	lbErrCodes 				LB_STDCALL addMenuEntry(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
 	lbErrCodes 				LB_STDCALL addMenuEntryCheckable(const char* in_menu, const char* entry, const char* evHandler, const char* afterentry = NULL);
+	lbErrCodes 				LB_STDCALL removeMenuBar(const char* name);
+	lbErrCodes 				LB_STDCALL removeMenuEntry(const char* in_menu, const char* entry);
 	lbErrCodes 				LB_STDCALL enableEvent(const char* name);
 	lbErrCodes 				LB_STDCALL disableEvent(const char* name);
 	lbErrCodes 				LB_STDCALL toggleEvent(const char* name);
 	lbErrCodes 				LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h);
 	lbErrCodes 				LB_STDCALL addLabel(const char* text, int x, int y, int w, int h);
 	lbErrCodes 				LB_STDCALL addTextField(const char* name, int x, int y, int w, int h);
-	lb_I_InputStream* 		LB_STDCALL askOpenFileReadStream(const char* extentions);
-	bool			  		LB_STDCALL askYesNo(const char* msg);
-	void			  		LB_STDCALL msgBox(const char* title, const char* msg);
+	lb_I_InputStream*		LB_STDCALL askOpenFileReadStream(const char* extentions);
+	bool					LB_STDCALL askYesNo(const char* msg);
+	void					LB_STDCALL msgBox(const char* title, const char* msg);
 	void 					LB_STDCALL addStatusBar();
 	void 					LB_STDCALL addStatusBar_TextArea(const char* name);
 	void 					LB_STDCALL setStatusText(const char* name, const char* value, bool call_yield = true);
@@ -475,6 +489,9 @@ public:
 	//lb_I_Applications*		LB_STDCALL getApplicationModel();
 	//bool 					LB_STDCALL login(const char* user, const char* pass);
 
+	void					LB_STDCALL initApplicationSwitcher();
+	void					LB_STDCALL deinitApplicationSwitcher();
+	lbErrCodes				LB_STDCALL switchApplication(lb_I_Unknown* uk);
 
 public:
 	lb_MetaApplication();
@@ -642,7 +659,7 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEvent(const char* EvName, int & EvNr);
 	virtual lbErrCodes LB_STDCALL resolveEvent(const char* EvName, int & evNr);
 	virtual char* LB_STDCALL reverseEvent(int evNr);
-
+	virtual lbErrCodes LB_STDCALL unregisterEvent(const char* EvName);
 public:
 	lb_EventManager();
 	virtual ~lb_EventManager();

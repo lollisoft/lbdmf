@@ -97,6 +97,7 @@ extern "C" {
 #include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 /*...slbDetailFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDetailFormAction)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -673,3 +674,4 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 }
 /*...e*/
 /*...e*/
+#endif

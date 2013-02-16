@@ -589,7 +589,7 @@
 							<xmi:Extension extender="Bouml">
 								<taggedValue tag="title" value="System Code Generator"/>
 								<taggedValue tag="signal" value="showMsgBox"/>
-								<taggedValue tag="msg" value="Generate code for {OSType}"/>
+								<taggedValue tag="msg" value="Os Type is {OSType}. ApplicationId is {SaveApplicationID}"/>
 							</xmi:Extension>
 							<outgoing xmi:idref="BOUML_0x30282_40"/>
 							<incoming xmi:idref="BOUML_0x2e902_40"/>

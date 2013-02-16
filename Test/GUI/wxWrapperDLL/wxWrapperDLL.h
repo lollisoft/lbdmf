@@ -33,11 +33,26 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43 2011/06/18 17:29:55 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.44 2013/02/16 10:36:27 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.44  2013/02/16 10:36:27  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
+ * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
+ * Many changes that help improving unit tests. They mainly include application
+ * reload capabilities, but that didn't yet work in GUI. Some menu entries are
+ * doubled, data isn't valid (NULL pointer).
+ *
+ * Revision 1.43.2.2  2012/10/10 06:55:26  lollisoft
+ * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
+ *
+ * Revision 1.43.2.1  2012/04/21 11:00:00  lollisoft
+ * Added support methods for a new user feedback plugin.
+ *
  * Revision 1.43  2011/06/18 17:29:55  lollisoft
  * Changed all char* to const char* where a corresponding warning was generated.
  *
@@ -422,6 +437,10 @@ public:
 	/// \brief Toggle a tool from the toolbar.
 	lbErrCodes LB_STDCALL toggleTool_From_ToolBar(lb_I_Unknown* uk);
 	
+		
+	/// \brief Open a web page in a notebook page.
+	lbErrCodes LB_STDCALL openWebPage(lb_I_Unknown* uk);
+
 	/* \brief Enabling posting events programmatically.
 	 * Allows to send an event after this event has been processed.
 	 * As of wxWidgets, wxEvtHandler::AddPendingEvent(wxEvent& event) is used.
@@ -530,10 +549,15 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
-	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName);
+	virtual lb_I_Form* LB_STDCALL addCustomForm(lb_I_Form* form, const char* formName);
 
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass);
 
+		
+	/// \brief Open a web page in a notebook page.
+	virtual lbErrCodes LB_STDCALL openWebPage(const char* pagename, const char* url);
+
+	
 	virtual lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
 

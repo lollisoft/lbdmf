@@ -89,7 +89,13 @@ bool wxSFBitmapShape::CreateFromFile(const wxString& file, wxBitmapType type)
 		m_sBitmapPath = file;
 		if(wxFileExists(m_sBitmapPath))
 		{
-			fSuccess = m_Bitmap.LoadFile(m_sBitmapPath, type);
+			wxImage im = wxImage(m_sBitmapPath, type);
+			im.Rescale(32, 32);
+			
+			m_Bitmap = wxBitmap(im);
+			fSuccess = true;
+			
+			//fSuccess = m_Bitmap.LoadFile(m_sBitmapPath, type);
 
 		}
 		else

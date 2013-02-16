@@ -35,7 +35,7 @@ MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
 
 OBJDEP=
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
-MINGWLIBS= -L$(DEVROOT_MAKE)/projects/dll/ -llbHook -lMiniCppUnit
+MINGWLIBS+= -llbHook -lMiniCppUnit
 
 
 # use global setup

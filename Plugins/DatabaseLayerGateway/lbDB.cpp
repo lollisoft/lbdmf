@@ -405,7 +405,7 @@ public:
 
 	/** \brief Create meta information.
 	 */
-	void						LB_STDCALL createMetaInformation();
+	lbErrCodes					LB_STDCALL createMetaInformation();
 
 	/** \brief Destroy meta information.
 	 */
@@ -1427,7 +1427,7 @@ lbDatabaseLayerQuery::~lbDatabaseLayerQuery() {
 }
 
 
-void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	lbErrCodes err = ERR_NONE;
 	int count = 0;
 	// Be sure
@@ -1472,7 +1472,14 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 
 				// Store the number of primary keys for the table of the first column.
 				/// \todo Joins and multible tables not supported yet.
-				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(metadata->GetTableForColumn(1));
+				wxString tableCheck = metadata->GetTableForColumn(1);
+				
+				if (tableCheck == "") {
+					_LOGERROR << "Error: lbDatabaseLayerQuery::createMetaInformation() can not retrieve table for first column (" << column.c_str() << ", SQL: " << szSql << ")" LOG_
+					return ERR_DB_QUERYFAILED;
+				}
+				
+				numPrimaryKeys = currentdbLayer->GetPrimaryKeys(tableCheck);
 
 				wxString table = metadata->GetTableForColumn(column);
 				*tablename = table.c_str();
@@ -1510,6 +1517,7 @@ void LB_STDCALL lbDatabaseLayerQuery::createMetaInformation() {
 	if (getColumns() != count) {
 		_LOG << "Error: Number of reported columns not equal to expected!" LOG_
 	}
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::destroyMetaInformation() {
@@ -1856,7 +1864,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		if (theResult != NULL) {
 			_CL_VERBOSE << "Have got a resultset for '" << szSql << "'" LOG_
 			_dataFetched = false;
-			createMetaInformation();
+			if (createMetaInformation() != ERR_NONE) {
+				_LOGERROR << "Error: Could not create meta information for query: " << szSql LOG_
+				return ERR_DB_QUERYFAILED;
+			}
 			if (!theResult->Next()) {
 				if (skipFKCollections == 0) prepareFKList();
 
@@ -2008,17 +2019,20 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 
 						int count = 0;
 						if (tempResult && tempResult->Next()) {
-							count++;
 							wxString value = tempResult->GetResultString(1);
-							//_LOG << "Fill ID list with item " << value.c_str() LOG_
-							currentCursorview.Add(value);
-							while (tempResult->Next()) {
+///\todo Why gets the value empty in my unit test?
+							//if (value != "") {
 								count++;
-								value = tempResult->GetResultString(1);
 								//_LOG << "Fill ID list with item " << value.c_str() LOG_
 								currentCursorview.Add(value);
-								if (count == max_in_cursor) break;
-							}
+								while (tempResult->Next()) {
+									count++;
+									value = tempResult->GetResultString(1);
+									//_LOG << "Fill ID list with item " << value.c_str() LOG_
+									currentCursorview.Add(value);
+									if (count == max_in_cursor) break;
+								}
+							//}
 						}
 						cursor = 0;
 						max_in_cursor = count;
@@ -2027,7 +2041,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 						currentdbLayer->CloseResultSet(theResult);
 						currentdbLayer->CloseResultSet(tempResult);
 
-						selectCurrentRow();
+						if (count > 0) {
+							selectCurrentRow();
+						} else {
+							return ERR_DB_NODATA;
+						}
 					} else {
 						cursorFeature = false;
 					}
@@ -2315,7 +2333,7 @@ lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
 		uk = cachedDataColumns->getElement(&key);
 		QI(uk, lb_I_Long, value)
 		if (value == NULL) {
-			_LOG << "Error: Column is not of type lb_I_Long!" LOG_
+			_LOGERROR << "Error: Column (" << column << ") is not of type lb_I_Long! Query is " << szSql LOG_
 			REQUEST(getModuleInstance(), lb_I_Long, value)
 		}
 	} else {
@@ -5398,6 +5416,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	//meta->setStatusText("Info", "Get primary keys ...");
 
+	_LOGALWAYS << "WARNING: Primary key sequence number is not supported." LOG_
+	
 	columns++;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
@@ -5438,6 +5458,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, longvalue)
 
 			*name = "TableCatalog";
 			*value = (const char*) "";
@@ -5456,8 +5477,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getPrimaryKeys(const char* c
 			param->setUAPString(*&name, *&value);
 
 			*name = "KeySequence";
-			value->setData(pkseq.c_str());
-			param->setUAPString(*&name, *&value);
+			longvalue->setData(0L);
+			param->setUAPLong(*&name, *&longvalue);
 
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)

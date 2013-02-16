@@ -95,7 +95,7 @@
 #include <wx/file.h>
 #include <wx/splash.h>
 #include <wx/treebase.h>
-
+#include <wx/html/htmlwin.h>
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
@@ -107,9 +107,14 @@
 #endif
 
 #ifndef OSX
+#ifdef LINUX
 #define wxAuiPaneInfo wxPaneInfo
 #define wxAuiManager wxFrameManager
 #include <manager.h>
+#endif
+#ifdef WINDOWS
+#include <wx/aui/aui.h>
+#endif
 #endif
 
 #ifdef OSX
@@ -623,6 +628,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         eman->registerEvent("addTool_To_ToolBar", temp);
         eman->registerEvent("removeTool_From_ToolBar", temp);
         eman->registerEvent("toggleTool_From_ToolBar", temp);
+        eman->registerEvent("openWebPage", temp);
+
 
 		eman->registerEvent("removeToolBar", temp);
 		eman->registerEvent("showLeftTreeView", _showLeftTreeView);
@@ -643,6 +650,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addTool_To_ToolBar, "addTool_To_ToolBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
+        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::openWebPage, "openWebPage");
 
 		disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftTreeView, "showLeftTreeView");
 
@@ -879,10 +887,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
         if (frame->isPanelUsage()) {
                 while (notebook && notebook->GetPageCount() > 0) {
-                        notebook->RemovePage(0);
+                        //notebook->RemovePage(0);
+						closeCurrentPage();
                 }
         }
-
+#ifdef bla
         forms->finishIteration();
         while (forms->hasMoreElements()) {
                 lbErrCodes err = ERR_NONE;
@@ -925,10 +934,10 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
         _LOG << "Detach all database forms from forms list." LOG_
 
         forms->detachAll();
-	forms->deleteAll();
+		forms->deleteAll();
 
         _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-
+#endif
         return ERR_NONE;
 }
 /*...e*/
@@ -966,9 +975,71 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 }
 /*...e*/
 
-lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) {
-        lbErrCodes err = ERR_NONE;
+lbErrCodes LB_STDCALL lb_wxGUI::openWebPage(const char* pagename, const char* url) {
 
+		wxLaunchDefaultBrowser(url);
+		return ERR_NONE;
+
+        if (frame->isPanelUsage()) {
+                if (!notebook) {
+                        notebook = new wxNotebook(frame, -1);
+                        sizerMain = new wxBoxSizer(wxVERTICAL);
+
+                        frame->SetAutoLayout(TRUE);
+                        notebook->SetAutoLayout(TRUE);
+
+                        sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+
+                        frame->SetSizer(sizerMain);
+#ifdef USE_WXAUI
+                        frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+                        frame->getAUIManager().Update();
+#endif
+                }
+        }
+
+
+		// Remove old Page
+		int num = notebook->GetPageCount();
+		for (int i = 0; i < num; i++) {
+			if (strncmp(notebook->GetPageText(i).c_str(), pagename, strlen(pagename)) == 0) {
+				notebook->DeletePage(i);
+				break; // Bug: The num variable is not updated and will produce an index out of range error.
+			}
+		}
+
+
+		if (frame->isPanelUsage()) {
+				wxHtmlWindow* htw = new wxHtmlWindow(notebook);
+				htw->LoadPage(url);
+				wxWindow* w = htw;
+				w->Fit();
+
+				_LOG << "Add notebook pane with name " << pagename LOG_
+				notebook->AddPage(w, pagename, true);
+
+				if (!frame->IsMaximized()) {
+						notebook->SetSizeHints(w->GetSize());
+						notebook->Fit();
+				}
+
+				if (frame->isSplitted()) {
+						if (!frame->IsMaximized()) frame->Fit();
+				} else {
+						if (!frame->IsMaximized()) {
+
+							frame->SetSizeHints(notebook->GetSize());
+							frame->Fit();
+							frame->Centre();
+						}
+				}
+		}
+
+}
+
+lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formName) {
+		lbErrCodes err = ERR_NONE;
+	
         _LOG << "lb_wxGUI::addCustomDBForm() called with '" << formName << "'." LOG_
 
         if (frame->isPanelUsage()) {
@@ -989,7 +1060,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
                 }
         }
 
-        UAP(lb_I_FixedDatabaseForm, _dialog)
+        UAP(lb_I_Form, _dialog)
 
         if (forms == NULL) {
                 REQUEST(getModuleInstance(), lb_I_Container, forms)
@@ -999,14 +1070,14 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
         UAP(lb_I_KeyBase, key)
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData(form->getFormName());
+        fName->setData(formName);
 
         QI(fName, lb_I_KeyBase, key)
 
         uk = forms->getElement(&key);
 
         if (uk != NULL) {
-                QI(uk, lb_I_FixedDatabaseForm, _dialog)
+                QI(uk, lb_I_Form, _dialog)
         }
 
         if (_dialog.getPtr() == NULL) {
@@ -1024,10 +1095,10 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseF
                 uk = forms->getElement(&key);
 
                 if (uk != NULL) {
-                        QI(uk, lb_I_FixedDatabaseForm, _dialog)
+                        QI(uk, lb_I_Form, _dialog)
                 }
 
-                //_dialog->setName(formName);
+                _dialog->setName(formName);
 
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
@@ -1816,17 +1887,14 @@ void lb_wxFrame::OnRefreshAll(wxCommandEvent& event) {
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		meta->save();
+
         /*
          * Let the lb_wxGUI class cleanup it's created  and hidden forms.
          * The database form sample is a modal form and may be making the
          * problem, if it is not destroyed here.
          */
-/*
-        UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-
-        PM->initialize();
-        PM->unload();
-*/
 
         // Signalize that I am quitting.
         OnQuitAccepted = true;
@@ -1836,11 +1904,11 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
                 guiCleanedUp = 1;
         }
 
-        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
+		// Done in OnExit in dynamic.cpp. Calling this twice actually let the datastructure be uninitialized
+		// and thus the second call to deinitApplicationSwitcher fails
         meta->unloadApplication();
-
-//      unHookAll();
+		meta->uninitialize();
 
         Close(TRUE);
 }
@@ -2409,8 +2477,9 @@ wxPoint lb_wxFrame::GetStartPosition()
 {
     static int x = 0;
     x += 20;
-    wxPoint pt = ClientToScreen(wxPoint(0,0));
-    return wxPoint(pt.x + x, pt.y + x);
+    //wxPoint pt = ClientToScreen(::wxGetMousePosition());
+    //return wxPoint(pt.x + x, pt.y + x);
+	return ::wxGetMousePosition();
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
@@ -2431,9 +2500,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 
 #ifdef USE_WXAUI
                 tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
-                m_mgr.DetachPane(tb);
-                m_mgr.Update();
-                tb->Destroy();
+				if (tb != NULL) {
+					m_mgr.DetachPane(tb);
+					m_mgr.Update();
+					tb->Destroy();
+				}
 #endif
         }
 
@@ -2762,6 +2833,30 @@ lbErrCodes LB_STDCALL lb_wxFrame::toggleTool_From_ToolBar(lb_I_Unknown* uk) {
         return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lb_wxFrame::openWebPage(lb_I_Unknown* uk) {
+        lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+        UAP(lb_I_Parameter, param)
+        QI(uk, lb_I_Parameter, param)
+
+		if (param == NULL) {
+			_LOGERROR << "lb_wxFrame::openWebPage() Error: Called with a wrong parameter type. Expected lb_I_Parameter." LOG_
+			return err;
+		}
+		
+        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, url)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, pagename)
+
+        *parameter = "URL";
+        param->getUAPString(*&parameter, *&url);
+        *parameter = "URL";
+        param->getUAPString(*&parameter, *&pagename);
+
+		gui->openWebPage(pagename->charrep(), url->charrep());
+		
+        return ERR_NONE;
+}
+
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
         wxStatusBar *sb = GetStatusBar();
@@ -2793,9 +2888,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
-        stb_areas++;
-        int* new_stb_withs = new int [stb_areas];
-        int* old_stb_withs;
 
         UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
         UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -2817,6 +2909,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
         QI(name, lb_I_KeyBase, key)
 
         if (key != NULL) {
+			if (statusbar_name_mappings->exists(&key) == 0) {
+				int* new_stb_withs = new int [stb_areas];
+				int* old_stb_withs;
+
+				stb_areas++;
+
                 for (int i = 1; i < stb_areas; i++) {
                         new_stb_withs[i-1] = stb_withs[i-1];
                 }
@@ -2833,6 +2931,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
                 statusbar_name_mappings->insert(&value, &key);
 
                 err = ERR_NONE;
+			}
         }
 
         return err;

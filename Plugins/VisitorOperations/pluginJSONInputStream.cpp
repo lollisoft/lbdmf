@@ -675,7 +675,7 @@ void LB_STDCALL lbJSONInputStream::visit(lb_I_Actions* actions) {
 		char* Name = NULL;
 		char* Source = NULL;
 		long  Typ;
-		long  Target;
+		char*  Target;
 		
 		*iStream >> ID;
 		*iStream >> Name;

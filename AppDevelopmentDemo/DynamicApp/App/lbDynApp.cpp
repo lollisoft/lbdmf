@@ -143,7 +143,7 @@ public:
          * or by using plugin technology and simply let the plugin let do this work. Therefore
          * the plugin must either be activated before reading in the configuration.
          */
-        lbErrCodes LB_STDCALL getCustomDBForm(lb_I_Unknown* uk);
+        lbErrCodes LB_STDCALL getCustomForm(lb_I_Unknown* uk);
 
         /** \brief Print a report over menu/toolbar entry.
          * A report may be based on a form, thus it's query is the data source.
@@ -156,7 +156,7 @@ public:
         /** \brief Use dynamic versions again.
          *
          */
-        lbErrCodes LB_STDCALL resetCustomDBFormsToDynamic(lb_I_Unknown* uk);
+        lbErrCodes LB_STDCALL resetCustomFormsToDynamic(lb_I_Unknown* uk);
 
         /** \brief Load database model.
          * Must be used before exporting to XML.
@@ -198,6 +198,10 @@ protected:
         /** \brief Load the database forms.
          */
         void LB_STDCALL activateDBForms(const char* user, const char* app);
+
+        /** \brief Unload the database forms.
+         */
+        void LB_STDCALL deactivateDBForms(const char* user, const char* app);
 
         void LB_STDCALL loadDataFromActiveDocument();
         void LB_STDCALL saveDataToActiveDocument();
@@ -274,6 +278,10 @@ protected:
 		
 		bool saveToCurrentVersion;
 		
+		// Backend name definition used in XSL templetes for importing UML models into the system database
+		UAP(lb_I_String, XSLDatabaseBackendSystem)
+		// Backend name definition used in XSL templetes for importing UML models into the application database
+		UAP(lb_I_String, XSLDatabaseBackendApplication)
         //UAP(lb_I_Boolean, UseOtherXSLFile)
 
 
@@ -287,9 +295,6 @@ lbDynamicApplication::lbDynamicApplication() {
 
         gui = NULL;
 
-        _overwriteDatabase = false;
-		_writeXMISettings = false;
-        
         dirty = false;
 
         haveLoadedDBModel = false;
@@ -330,6 +335,12 @@ lbDynamicApplication::lbDynamicApplication() {
 		 */
 		CurrentVersion->setData("lb_I_Application", "instanceOfApplication", "lbDynApp", "2.0", lbDynAppInternalFormat->charrep(), "2_0");
 		
+        REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendSystem)
+        REQUEST(getModuleInstance(), lb_I_String, XSLDatabaseBackendApplication)
+
+		*XSLDatabaseBackendSystem = "Sqlite";
+		*XSLDatabaseBackendApplication = "Sqlite";
+
 #ifdef WINDOWS
         XMIFileUMLProject->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\lbDMF Manager.xmi");
         XMIFileUMLProjectExport->setData("c:\\lbDMF\\UMLSamples\\SecondStageModels\\Export.xmi");
@@ -359,6 +370,31 @@ lbDynamicApplication::lbDynamicApplication() {
         *GeneralDBSchemaname = "public";
 
         *lastExportedApp = "";
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+
+		*name = "overwriteDatabase";
+ 
+		if (SomeBaseSettings == NULL) {
+			_overwriteDatabase = false;
+		} else {
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_overwriteDatabase = ov->getData();
+		}
+
+		*name = "writeXMISettings";
+ 
+		if (SomeBaseSettings == NULL) {
+			_writeXMISettings = false;
+		} else {
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_writeXMISettings = ov->getData();
+		}
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -407,8 +443,31 @@ void LB_STDCALL lbDynamicApplication::loadedApplicationVersion(bool isOld, lb_I_
 
 lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
-        
-        _overwriteDatabase = !_overwriteDatabase;
+ 
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		*name = "overwriteDatabase";
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+ 
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			ov->setData(false);
+			_overwriteDatabase = false;
+		} else {
+			bool b;
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_overwriteDatabase = !ov->getData();
+			ov->setData(!ov->getData());
+		}
+ 
+		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
+
+		meta->delPropertySet("CodeGenMenuSettings");
+		meta->addPropertySet(*&SomeBaseSettings, "CodeGenMenuSettings");
         
         return err;
 }
@@ -416,7 +475,30 @@ lbErrCodes LB_STDCALL lbDynamicApplication::overwriteDatabase(lb_I_Unknown* uk) 
 lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
         
-        _writeXMISettings = !_writeXMISettings;
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, ov)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+	
+		*name = "writeXMISettings";
+	
+		SomeBaseSettings = meta->getPropertySet("CodeGenMenuSettings");
+ 
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			ov->setData(false);
+			_writeXMISettings = false;
+		} else {
+			bool b;
+			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+			_writeXMISettings = !ov->getData();
+			ov->setData(!ov->getData());
+		}
+ 
+		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
+
+		meta->delPropertySet("CodeGenMenuSettings");
+		meta->addPropertySet(*&SomeBaseSettings, "CodeGenMenuSettings");
         
         return err;
 }
@@ -507,6 +589,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* u
         return err;
 }
 
+///\todo Add an interceptor to include application specific properties and refactor out.
 lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
@@ -539,6 +622,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fileXSL)
                 UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolXSL)
 
+                UAP_REQUEST(getModuleInstance(), lb_I_String, paramXSLDatabaseBackendSystem)
+                UAP_REQUEST(getModuleInstance(), lb_I_String, paramXSLDatabaseBackendApplication)
 
                 UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -566,6 +651,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 parameterXSL->setData("XSL file for application database");
                 fileXSL->setData(XSLFileApplicationDatabase->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+
+				
+				
+// Wird zuerst geladen und hat leeren String
+                parameterXSL->setData("System database backend type");
+                paramXSLDatabaseBackendSystem->setData(XSLDatabaseBackendSystem->getData());
+                paramXSL->setUAPString(*&parameterXSL, *&paramXSLDatabaseBackendSystem);
+
+                parameterXSL->setData("Application database backend type");
+                paramXSLDatabaseBackendApplication->setData(XSLDatabaseBackendApplication->getData());
+                paramXSL->setUAPString(*&parameterXSL, *&paramXSLDatabaseBackendApplication);
+
+
 
                 metaapp->registerPropertyChangeEventGroup(      parameter->charrep(), *&paramXSL,
                                                                                                   this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
@@ -714,6 +812,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setupSystemDatabase(lb_I_Unknown* uk
         return ERR_NONE;
 }
 
+///\todo Add interception handler for extensions per event
 lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown* uk) {
         _CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
 
@@ -799,18 +898,57 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
 										}
                 }
-/*
-                if (strcmp(key->charrep(), "UML import settingsAsk for other XSL files") == 0) {
-                                        value->toLower();
-                                        if (strcmp(value->charrep(), "true") == 0) {
-                                                UseOtherXSLFile->setData(true);
-                                        } else {
-                                                UseOtherXSLFile->setData(false);
-                                        }
-                }
-*/
+
                 if (strcmp(key->charrep(), "UML import settingsXSL file for import settings") == 0) {
                         if (XSLFileImportSettings != NULL) XSLFileImportSettings->setData(value->charrep());
+                }
+				// The new import settings to which database backend is used
+                if (strcmp(key->charrep(), "UML import settingsApplication database backend type") == 0) {
+                        if (XSLDatabaseBackendApplication != NULL) XSLDatabaseBackendApplication->setData(value->charrep());
+						///\todo Add saving changed value as default settings value
+										UAP(lb_I_Parameter, SomeBaseSettings)
+										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+										UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+										if (SomeBaseSettings != NULL) {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+											*name = "XSLDatabaseBackendApplication";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										} else {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+											REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+											*name = "XSLDatabaseBackendApplication";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										}
+                }
+
+                if (strcmp(key->charrep(), "UML import settingsSystem database backend type") == 0) {
+                        if (XSLDatabaseBackendSystem != NULL) XSLDatabaseBackendSystem->setData(value->charrep());
+						///\todo Add saving changed value as default settings value
+										UAP(lb_I_Parameter, SomeBaseSettings)
+										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
+
+										UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+
+										if (SomeBaseSettings != NULL) {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+											*name = "XSLDatabaseBackendSystem";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendSystem);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										} else {
+											UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+											REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+
+											*name = "XSLDatabaseBackendSystem";
+											SomeBaseSettings->setUAPString(*&name, *&XSLDatabaseBackendSystem);
+											metaapp->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+										}
                 }
 
                 if (strcmp(key->charrep(), "UML import settingsXSL file for system database") == 0) {
@@ -863,6 +1001,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 *paramname = "DatabaseSettingNamespace";
                 document->setUAPString(*&paramname, *&DatabaseSettingNamespace);
 
+                *paramname = "XSLDatabaseBackendSystem";
+                document->setUAPString(*&paramname, *&XSLDatabaseBackendSystem);
+                *paramname = "XSLDatabaseBackendApplication";
+                document->setUAPString(*&paramname, *&XSLDatabaseBackendApplication);
+				
                 saveDataToActiveDocument();
         }
 
@@ -878,7 +1021,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
         temp_params->setUAPString(*&paramname, *&UMLImportTargetDBPass);
         *paramname = "DatabaseSettingNamespace";
         temp_params->setUAPString(*&paramname, *&DatabaseSettingNamespace);
-        *paramname = "UsePlugin";
+
+		*paramname = "XSLDatabaseBackendSystem";
+		document->setUAPString(*&paramname, *&XSLDatabaseBackendSystem);
+		*paramname = "XSLDatabaseBackendApplication";
+		document->setUAPString(*&paramname, *&XSLDatabaseBackendApplication);
+
+		*paramname = "UsePlugin";
         temp_params->setUAPBoolean(*&paramname, *&UsePlugin);
         //*paramname = "UseOtherXSLFile";
         //temp_params->setUAPBoolean(*&paramname, *&UseOtherXSLFile);
@@ -890,6 +1039,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
         temp_params->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
         *paramname = "XSLFileApplicationDatabase";
         temp_params->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
+
+        *paramname = "XSLDatabaseBackendSystem";
+        temp_params->setUAPString(*&paramname, *&XSLDatabaseBackendSystem);
+        *paramname = "XSLDatabaseBackendApplication";
+        temp_params->setUAPString(*&paramname, *&XSLDatabaseBackendApplication);
+
         *paramname = "XMIFileUMLProject";
         temp_params->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
         *paramname = "XMIFileUMLProjectExport";
@@ -900,7 +1055,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 
         metaapp->delPropertySet("DynamicAppDefaultSettings");
         metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
-
+///\todo Why have I commented this and then added partial above per property?
         //metaapp->setActiveDocument(*&document);
 
         return ERR_NONE;
@@ -1386,7 +1541,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 metaapp->showPropertyPanel(*&params);
         } else {
                 REQUEST(getModuleInstance(), lb_I_InputStream, importfile)
-                importfile->setFileName(XMIFileUMLProject->getData());
+///\todo Make return value bool to indicate missing file.
+		importfile->setFileName(XMIFileUMLProject->getData());
         }
 
 
@@ -1441,7 +1597,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                                 fOp->end();
                                 dirty = true; /// \todo Detect if really made dirty.
                         } else {
-                                // No file found. Create one from database...
+                                // No file found to import from. 
+        			metaapp->setStatusText("Info", "Importing from UML (XMI) file failed. File missing.");
                         }
                 }
         }
@@ -1686,7 +1843,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
         return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
+///\todo To support basic lb_I_Form typed windows, add getCustomForm.
+
+/* Am I able to include a dynamic version of database form representation using diagrams?
+ *
+ * Eventual features are:
+ *
+ * Display all elements in the query as 'classes' with their actual data omitted, but also display
+ * the type information. That way I would see, for sample, all forms, or all forms per application.
+ * The focus to a current application can be shown in the title or otherwise in diagram form.
+ *
+ * The extra function for this could also be an interceptor to handle new interfaces before the intercepted
+ * handler. Thus the extensibility for any kind of custom forms is available by design.
+ */
+
+lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
 
@@ -1701,7 +1872,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
         metaapp->setStatusText("Info", "Loading custom database formular ...");
 
         if (gui != NULL) {
-                UAP(lb_I_FixedDatabaseForm, dbForm)
+                UAP(lb_I_Form, Form)
                 UAP(lb_I_Integer, eventID)
 
                 QI(uk, lb_I_Integer, eventID)
@@ -1733,10 +1904,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 
                 typ->setData(FormularsEntity->get_typ());
 
-                *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
-                *sql += "FixedDBForm_";
-                *sql += FormularsEntity->get_name();
-                *sql += "'";
+                *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where ID = ";
+				*sql += typ->charrep();
+
 
                 _LOG << "Query for custom database formular (" << FormularsEntity->get_name() << "): " << sql->charrep() LOG_
 
@@ -1755,6 +1925,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                                         _interface = q->getAsString(3);
                                         namesp = q->getAsString(4);
 
+///\todo Do I need this?
+/*
                                         if (*_interface == "lb_I_FixedDatabaseForm") {
                                                 UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
                                                 UAP(lb_I_Plugin, pl)
@@ -1784,6 +1956,32 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
                                                 metaapp->setStatusText("Info", "Error: Unsupported interface !");
                                                 // Unsupported
                                         }
+*/
+										UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+										UAP(lb_I_Plugin, pl)
+										UAP(lb_I_Unknown, ukPl)
+
+										pl = PM->getFirstMatchingPlugin(_interface->charrep(), namesp->charrep());
+
+										if (pl == NULL) {
+											_LOGERROR << "Error: Could not find a fixed form as plugin to be opened." LOG_
+											return ERR_NONE;
+										}
+									
+										if (pl != NULL) {
+											ukPl = pl->getImplementation();
+										
+											QI(ukPl, lb_I_Form, Form)
+
+											Form = gui->addCustomForm(Form.getPtr(), forms->getName());
+
+											if (Form != NULL) {
+												Form->show();
+												metaapp->setStatusText("Info", "Fixed form created. Ready.");
+											} else {
+												metaapp->setStatusText("Info", "Error: Fixed form was not loaded by the GUI !");
+											}
+										}
                                 }
                         } else {
                                 _LOG << "Error: Query to get target formular failed. (" << sql->charrep() << ")" LOG_
@@ -1795,7 +1993,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
         return err;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomFormsToDynamic(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
 
         if(systemdatabase == NULL) {
@@ -2155,11 +2353,53 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
         return NULL;
 }
 /*...e*/
+
+void LB_STDCALL lbDynamicApplication::deactivateDBForms(const char* user, const char* app) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuNameTool)
+	
+	_LOG << "Unload application formulars of '" << app << "' with ID = '" << metaapp->getApplicationID() << "' for user '" << user << "'." LOG_
+	
+	*MenuNameTool = _trans(app);
+	metaapp->removeMenuBar(MenuNameTool->charrep());
+	metaapp->removeToolBar(MenuNameTool->charrep());
+	
+	*MenuNameTool += " (Designer)";
+	
+	metaapp->removeMenuBar(MenuNameTool->charrep());
+	metaapp->removeToolBar(MenuNameTool->charrep());
+}
+
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
         lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, editMenu)
 
         _CL_LOG << "lbDynamicApplication::uninitialize() called." LOG_
+
+        deactivateDBForms(LogonUser->charrep(), LogonApplication->charrep());
+		
+	*editMenu = strdup(_trans("&Edit"));
+	
+	*menuEntry = _trans("Set all forms back to dynamic");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("Execute SQL query");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("overwrite database while import");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	*menuEntry = _trans("write default XMISettings file");
+	metaapp->removeMenuEntry(editMenu->charrep(), menuEntry->charrep());
+	
+	metaapp->removeMenuEntry(_trans("&File"), "export Application to XML");
+	metaapp->removeMenuEntry(_trans("&File"), "export Application to UML (as XMI file)");
+	metaapp->removeMenuEntry(_trans("&File"), "import Application from UML (as XMI file)");	
+	
+	metaapp->removeMenuBar(editMenu->charrep());
+	metaapp->removeMenuBar("&Help");	
 
         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
@@ -2249,6 +2489,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
                         *name = "XSLFileImportSettings";
                         if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
                         QI(XSLFileImportSettings, lb_I_Unknown, uk)
+                        ApplicationData->insert(&uk, &key);
+
+
+                        *name = "XSLDatabaseBackendSystem";
+                        if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+                        QI(XSLDatabaseBackendSystem, lb_I_Unknown, uk)
+                        ApplicationData->insert(&uk, &key);
+
+                        *name = "XSLDatabaseBackendApplication";
+                        if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+                        QI(XSLDatabaseBackendApplication, lb_I_Unknown, uk)
                         ApplicationData->insert(&uk, &key);
 
                         *name = "XSLFileExportSettings";
@@ -2737,6 +2988,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                                                 document->setUAPString(*&param, *&UMLImportTargetDBPass);
                                         }
 */
+// Zum Zeitpunkt sind die Parameter nicht vorhanden (DB)
                                         editProperties(NULL);
                                 }
                         }
@@ -2829,9 +3081,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
 
         *editMenu = _trans("&Edit");
         *menuEntry = _trans("Set all forms back to dynamic");
-        eman->registerEvent("resetCustomDBFormsToDynamic", unused);
-        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomDBFormsToDynamic, "resetCustomDBFormsToDynamic");
-        metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomDBFormsToDynamic", "");
+        eman->registerEvent("resetCustomFormsToDynamic", unused);
+        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomFormsToDynamic, "resetCustomFormsToDynamic");
+        metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomFormsToDynamic", "");
 
         *editMenu = _trans("&Edit");
         *menuEntry = _trans("Execute SQL query");
@@ -2850,6 +3102,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
         eman->registerEvent("writeXMISettings", unused);
         dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::writeXMISettings, "writeXMISettings");
         metaapp->addMenuEntryCheckable(editMenu->charrep(), menuEntry->charrep(), "writeXMISettings", "");
+
+		if (_writeXMISettings)
+			metaapp->toggleEvent("writeXMISettings");
+		if (_overwriteDatabase)
+			metaapp->toggleEvent("overwriteDatabase");
+
         
         return ERR_NONE;
 }
@@ -2949,6 +3207,17 @@ void LB_STDCALL lbDynamicApplication::saveDataToActiveDocument() {
         QI(GeneralDBSchemaname, lb_I_Unknown, uk)
         if (document->exists(&key) == 1) document->remove(&key);
     document->insert(&uk, &key);
+        
+    *name = "XSLDatabaseBackendApplication";
+        QI(XSLDatabaseBackendApplication, lb_I_Unknown, uk)
+        if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+        
+    *name = "XSLDatabaseBackendSystem";
+        QI(XSLDatabaseBackendSystem, lb_I_Unknown, uk)
+        if (document->exists(&key) == 1) document->remove(&key);
+    document->insert(&uk, &key);
+
 }
 
 void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
@@ -3051,6 +3320,14 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     *name = "GeneralDBSchemaname";
     uk = document->getElement(&key);
         if (uk != NULL) GeneralDBSchemaname->setData(*&uk);
+        
+    *name = "XSLDatabaseBackendApplication";
+    uk = document->getElement(&key);
+        if (uk != NULL) XSLDatabaseBackendApplication->setData(*&uk);
+        
+    *name = "XSLDatabaseBackendSystem";
+    uk = document->getElement(&key);
+        if (uk != NULL) XSLDatabaseBackendSystem->setData(*&uk);
 
 
         // UML import routines currently rely on this.
@@ -3079,6 +3356,12 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
         *name = "GeneralDBSchemaname";
         param->setUAPString(*&name, *&GeneralDBSchemaname);
 
+        *name = "XSLDatabaseBackendApplication";
+        param->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+
+        *name = "XSLDatabaseBackendSystem";
+        param->setUAPString(*&name, *&XSLDatabaseBackendSystem);
+        
         UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
 
         *name = "XSLFileUMLExport";
@@ -3111,6 +3394,11 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
         *name = "GeneralDBSchemaname";
         temp_params->setUAPString(*&name, *&GeneralDBSchemaname);
 
+        *name = "XSLDatabaseBackendApplication";
+        temp_params->setUAPString(*&name, *&XSLDatabaseBackendApplication);
+
+        *name = "XSLDatabaseBackendSystem";
+        temp_params->setUAPString(*&name, *&XSLDatabaseBackendSystem);
 
         metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
 
@@ -3119,7 +3407,10 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
         lbErrCodes err = ERR_NONE;
+		bool toolbaradded = false;
+		bool designertoolbaradded = false;
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuNameTool)
 
         _LOG << "Load application formulars of '" << app << "' with ID = '" << securityManager->getApplicationID() << "' for user '" << user << "'." LOG_
 
@@ -3134,7 +3425,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                 char* ed = strdup(_trans("&Edit"));
                 char* menu = strdup(_trans(app));
-                metaapp->addMenuBar(menu, ed);
+                //metaapp->addMenuBar(menu, ed);
                 free(ed);
                 free(menu);
 
@@ -3160,26 +3451,36 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 Typ->setData(FormularsEntity->get_typ());
 
                                 if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+									eman->registerEvent(EventName->charrep(), unused);
 
-                                        eman->registerEvent(EventName->charrep(), unused);
+									///\todo: To implement a third type (lb_I_Form), use a switch statement.
+									if (Typ->getData() == 1L) {
+										*MenuNameTool = _trans(app);
+										dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+									} else {
+										dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+										*MenuNameTool = _trans(app);
+										*MenuNameTool += " (Designer)";
+										if (designertoolbaradded == false) {
+											metaapp->addToolBar(MenuNameTool->charrep());
+											designertoolbaradded = true;
+											metaapp->addMenuBar(MenuNameTool->charrep(), ed);
+										}
+									}
+									
+									
+									metaapp->addMenuEntry(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), "");
 
-                                        if (Typ->getData() == 1L)
-                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                        else
-                                                dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+									if (strcmp(ToolBarImage->charrep(), "") != 0) {
+										if (toolbaradded == false) {
+											metaapp->addToolBar(app);
+											toolbaradded = true;
+										}
 
-                                        metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+										ToolBarImage->trim();
 
-                                        if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                                if (toolbaradded == false) {
-                                                        metaapp->addToolBar(app);
-                                                        toolbaradded = true;
-                                                }
-
-                                                ToolBarImage->trim();
-
-                                                metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
-                                        }
+										metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+									}
 
                                 } else {
                                         _CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -3233,7 +3534,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                 char* menu = strdup(_trans(app));
 
-                metaapp->addMenuBar(menu, ed);
+                //metaapp->addMenuBar(menu, ed);
 
                 free(ed);
                 free(menu);
@@ -3256,23 +3557,32 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
                                 eman->registerEvent(EventName->charrep(), unused);
 
-                                if (Typ->getData() == 1L)
-                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                else
-                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+							if (Typ->getData() == 1L) {
+								*MenuNameTool = _trans(app);
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+							} else {
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+								*MenuNameTool = _trans(app);
+								*MenuNameTool += " (Designer)";
+								if (designertoolbaradded == false) {
+									metaapp->addToolBar(MenuNameTool->charrep());
+									designertoolbaradded = true;
+									metaapp->addMenuBar(MenuNameTool->charrep(), ed);
+								}
+							}
 
-                                metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+							metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
-                                if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                        if (toolbaradded == false) {
-                                                metaapp->addToolBar(app);
-                                                toolbaradded = true;
-                                        }
+							if (strcmp(ToolBarImage->charrep(), "") != 0) {
+								if (toolbaradded == false) {
+									metaapp->addToolBar(app);
+									toolbaradded = true;
+								}
 
-                                        ToolBarImage->trim();
+								ToolBarImage->trim();
 
-                                        metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
-                                }
+								metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+							}
 
                         } else {
                                 _CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -3299,22 +3609,31 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                         if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
                                                 eman->registerEvent(EventName->charrep(), unused);
 
-                                                if (Typ->getData() == 1L)
-                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-                                                else
-                                                        dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
-
+											if (Typ->getData() == 1L) {
+												*MenuNameTool = _trans(app);
+												dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+											} else {
+												dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomForm, EventName->charrep());
+												*MenuNameTool = _trans(app);
+												*MenuNameTool += " (Designer)";
+												if (designertoolbaradded == false) {
+													metaapp->addToolBar(MenuNameTool->charrep());
+													designertoolbaradded = true;
+													metaapp->addMenuBar(MenuNameTool->charrep(), ed);
+												}
+											}
+											
                                                 metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
                                                 if (strcmp(ToolBarImage->charrep(), "") != 0) {
-                                                        if (toolbaradded == false) {
+													if (toolbaradded == false) {
                                                                 metaapp->addToolBar(app);
                                                                 toolbaradded = true;
                                                         }
 
                                                         ToolBarImage->trim();
 
-                                                        metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+													metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
                                                 }
 
                                         } else {

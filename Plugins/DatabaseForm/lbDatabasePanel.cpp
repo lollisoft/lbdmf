@@ -169,8 +169,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::setData(lb_I_Unknown* uk) {
 	if (dbForm == NULL) {
 		_LOG << "Error: Have no dbForm instance. Unknown classname is " << uk->getClassName() LOG_
 	} else {
-		fa = ((lbDatabasePanel*) dbForm.getPtr())->fa;
-		((lbDatabasePanel*) dbForm.getPtr())->fa = NULL;
+		fa = ((lbDatabasePanel*) dbForm.getPtr())->fa.getPtr();
+		((lbDatabasePanel*) dbForm.getPtr())->fa.resetPtr();
 	}
 
 	return ERR_NOT_IMPLEMENTED;
@@ -195,7 +195,7 @@ lbDatabasePanel::lbDatabasePanel()
 	m_resizecanvas = NULL;
 #endif
 	skipValidation = false;
-	fa = NULL;
+	//fa = NULL;
 	FFI = NULL;
 	if (SQLWhere == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, SQLWhere)
@@ -204,7 +204,7 @@ lbDatabasePanel::lbDatabasePanel()
 /*...e*/
 /*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
 lbDatabasePanel::~lbDatabasePanel() {
-	_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
+	_CL_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
 	lb_I_Unknown* evHandler = (lb_I_Unknown*) this;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, eventName)
@@ -212,7 +212,7 @@ lbDatabasePanel::~lbDatabasePanel() {
 	
 	if (dispatcher != NULL) dispatcher->removeInterceptedInstance(*&eventName, evHandler);
 	
-	if (fa != NULL) delete fa;
+	//if (fa != NULL) delete fa;
 	if (FFI != NULL) delete FFI;
 	free (formName);
 	free (base_formName);
@@ -220,6 +220,14 @@ lbDatabasePanel::~lbDatabasePanel() {
 	_LOG << "lbDatabasePanel::~lbDatabasePanel() ready." LOG_
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::destroy() {
+	if (_created) {
+		_LOG << "lbDatabasePanel::destroy() Destroying '" << base_formName << "'" LOG_
+		Destroy();
+	}
+	_created = false;
+}
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\create\40\int parentId\41\:0:*/
 void LB_STDCALL lbDatabasePanel::create(int parentId) {
@@ -801,7 +809,13 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
 
-				ReplacementColumnQuery->query(buffer);
+				lbErrCodes errREpQuery = ReplacementColumnQuery->query(buffer);
+				
+				if (errREpQuery != ERR_NONE && errREpQuery != ERR_DB_NODATA) {
+					_LOGERROR << "Error: Query to get combobox filled has hailed. (" << buffer << ")" LOG_
+					meta->msgBox("Error", "Filling combobox failed. Check your model.");
+					return;
+				}
 
 				lbErrCodes DBerr = ReplacementColumnQuery->first();
 
@@ -1248,6 +1262,10 @@ bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(const char* sql,
 	// Add code to automatically repair configuration
 
 	return result;
+}
+
+void LB_STDCALL lbDatabasePanel::init() {
+	
 }
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
@@ -1708,8 +1726,11 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
-
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
+		
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();
 
@@ -1886,10 +1907,14 @@ _CL_LOG << "Connect event handlers" LOG_
 		sampleQuery->first();
 		lbDBRead();
 	} else {
+		/*
 		deactivateActionButtons();
 		nextButton->Disable();
 		lastButton->Disable();
 		deleteButton->Disable();
+		*/
+		lbDBAdd(NULL);
+		//buttonAdd->Enable();
 	}
 	_created = true;
 
@@ -1910,7 +1935,10 @@ void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();
@@ -1949,7 +1977,10 @@ void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 		formActions->finishFormular_ActionsIteration();
 		appActions->finishActionsIteration();
 
-		if (fa == NULL) fa = new FormularActions;
+		if (fa == NULL) {
+			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
+			//fa = new FormularActions;
+		}
 
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormulars();
@@ -4077,7 +4108,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				}
 			}
 		} else {
-			_LOG << "Control '" << name->charrep() << "' nicht gefunden." LOG_
+			_LOG << "Control '" << name->charrep() << "' nicht gefunden. Database query: " << SQLString->charrep() LOG_
 		}
 	}
 

@@ -32,15 +32,17 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS)	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)databaselayer_sqllite.lib, \
 			$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 #			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqlite3.lib
 #			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqllitefk.lib, \
 
-MINGWLIBS += -L$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += -L$(wxBase)$(SLASH)gcc_dll -lwxmsw$(WX_VERSION)$(WX_DEBUG)
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I $(DEVROOT_MINGW)/wxwin/wx/include -I $(DEVROOT_MINGW)$(RELPATH)/vendor/databaselayer -I $(DEVROOT_MINGW)$(RELPATH)/vendor/databaselayer/src -I $(DEVROOT_MINGW)$(RELPATH)/vendor/sqlite -I $(DEVROOT_MINGW)$(RELPATH)/vendor/databaselayer/src/Implementations/Sqllite
+
+MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += $(MINGWLIBS_WXGUI)
 MINGWLIBS += -ldatabaselayer_sqllite
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
@@ -80,9 +82,6 @@ endif
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include -i=$(DEVROOT_MAKE)$(RELPATH)\\vendor\\databaselayer -i=$(DEVROOT_MAKE)$(RELPATH)\\vendor\\databaselayer\\src -i=$(DEVROOT_MAKE)$(RELPATH)\\vendor\\sqlite -i=$(DEVROOT_MAKE)$(RELPATH)\\vendor\\databaselayer\\src\\Implementations\\Sqllite
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer/src -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/sqlite -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer/src/Implementations/Sqllite
-
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I $(DEVROOT_MAKE)/wxwin/wx/include -I $(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer -I $(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer/src -I $(DEVROOT_MAKE)$(RELPATH)/vendor/sqlite -I $(DEVROOT_MAKE)$(RELPATH)/vendor/databaselayer/src/Implementations/Sqllite
-
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
 		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
@@ -144,7 +143,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-lc -L$(prefix)/lib -llbdatabaselayer_sqllite #-lc $(prefix)/lib/sqlite3.so
-L_OPS=$(OSX_ARCH) $(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+L_OPS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 
 endif

@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 1.0.4-stable-rc1
-OutputBaseFilename=lbDMF-BinbuildTools-1.0.4-stable-rc1
+AppVerName=lbDMF Binary Build Tools 1.0.4-stable-rc3
+OutputBaseFilename=lbDMF-BinbuildTools-1.0.4-stable-rc3
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -33,18 +33,21 @@ Source: "Q:\develop\Tools\BinBuildTools\mkdir.exe"; DestDir: "{app}\Develop\Proj
 Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\unixfind.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\grep.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygcrypto-0.9.8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygintl-3.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygcrypto-1.0.0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygintl-8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygpcre-0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygz.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygminires.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-;Source: "Q:\develop\Tools\BinBuildTools\cygintl-3.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygintl-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygintl-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygiconv-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygreadline7.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygncursesw-10.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cyggcc_s-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+
+Source: "Q:\develop\Tools\BinBuildTools\cygattr-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
 
 [Icons]

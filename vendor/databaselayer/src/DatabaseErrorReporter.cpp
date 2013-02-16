@@ -24,6 +24,7 @@ int DatabaseErrorReporter::GetErrorCode()
 
 void DatabaseErrorReporter::SetErrorMessage(const wxString& strErrorMessage)
 {
+  printf("DatabaseErrorReporter::SetErrorMessage('%s') called.\n", strErrorMessage.c_str());
   m_strErrorMessage = strErrorMessage;
 }
 

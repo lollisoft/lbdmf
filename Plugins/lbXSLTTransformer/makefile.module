@@ -30,7 +30,7 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
@@ -53,8 +53,8 @@ MINGWLIBS+= -llibxml2 -llbxslt
 MOD_INCL_MINGW = $(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 
-MOD_INCL_MINGW += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
-MOD_INCL_MINGW_CPP += -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
+MOD_INCL_MINGW += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
 
 
 # use global setup
@@ -136,10 +136,10 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS= 
-LIBS=$(OSX_ARCH) $(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
+LIBS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
 endif    
 
 endif

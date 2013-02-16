@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.235 $
+# * $Revision: 1.236 $
 # * $Name:  $
-# * $Id: Makefile,v 1.235 2012/02/11 07:34:38 lollisoft Exp $
+# * $Id: Makefile,v 1.236 2013/02/16 10:36:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.236  2013/02/16 10:36:25  lollisoft
+# * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+# * Several files were conflicting and resolved in this checkin.
+# *
 # * Revision 1.235  2012/02/11 07:34:38  lollisoft
 # * Added touch Makefile for the clean target.
 # *
@@ -23,6 +27,42 @@
 # *
 # * Revision 1.230  2011/10/30 08:40:59  lollisoft
 # * Added building unit tests in CRUISECONTROL mode.
+# *
+# * Revision 1.229.2.12  2013/01/30 04:50:50  lollisoft
+# * Corrected rpm istallation.
+# *
+# * Revision 1.229.2.11  2013/01/27 15:53:00  lollisoft
+# * Moved target to be build earlyer.
+# *
+# * Revision 1.229.2.10  2012/12/07 05:09:49  lollisoft
+# * Activated building UnitTests on solaris, linux and ppc linux.
+# *
+# * Revision 1.229.2.9  2012/11/25 09:03:49  lollisoft
+# * Missed the wsShapeFramework targets on Linux.
+# *
+# * Revision 1.229.2.8  2012/11/25 08:37:30  lollisoft
+# * Moved wxShapeFramework build before plugins.
+# *
+# * Revision 1.229.2.7  2012/11/19 13:31:55  lollisoft
+# * Fixed Windows based issues and replaced wxAUI library with built in wxWidgets AUI version.
+# *
+# * Revision 1.229.2.6  2012/10/05 07:08:51  lollisoft
+# * Moved deployment specific stuff to environment file.
+# *
+# * Revision 1.229.2.5  2012/10/03 20:56:38  lollisoft
+# * Modified make system to work with current cygwin make and with MinGW compilers together.
+# *
+# * Revision 1.229.2.4  2012/07/22 07:44:31  lollisoft
+# * Any changes before CVS backup
+# *
+# * Revision 1.229.2.3  2012/06/09 17:56:39  lollisoft
+# * Integrated new version of libxml2 and it's build task. Modified other build tasks.
+# *
+# * Revision 1.229.2.2  2012/06/08 17:51:30  lollisoft
+# * Building libxml2 with gcc, no longer with OW. Need to add support switching compiler when required.
+# *
+# * Revision 1.229.2.1  2012/05/19 05:47:32  lollisoft
+# * New workflow module integrated into the build. SQL scripts tewaked.
 # *
 # * Revision 1.229  2011/10/15 06:36:11  lollisoft
 # * All current changes including interfaces (starting mass changes).
@@ -857,7 +897,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
+DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
 endif
 
 ifeq ($(OSTYPE), Cross_OW)
@@ -904,6 +944,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
+	../UnitTests \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../AppDevelopment
 endif
@@ -914,6 +955,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
+	../UnitTests \
 	../RegressionTests \
 	../UnitTests \
 	../AppDevelopment
@@ -943,12 +985,14 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), solaris)
 BASEDIRECTORIES= \
 	../Plugins \
+	../UnitTests \
 	../Modules
 endif
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../UnitTests \
 	../Modules
 endif
 endif
@@ -960,12 +1004,12 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
 	../UnitTests
 
 # Don't compile these every time.
 #	../vendor/propgrid \
+#	../vendor/wxaui-0.9.1/sample \
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF \
 #	../vendor/tvision/examples/dlgdsn \
@@ -1030,6 +1074,7 @@ ALLTARGETS = \
 	lbModule \
 	lbMetaApplication \
 	lbclasses \
+	lbWorkflowEngine \
 	lbDB \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1043,9 +1088,9 @@ ALLTARGETS = \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
 	../Test/Console/XML \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
-	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	../vendor/wxARG/src \
@@ -1062,6 +1107,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1105,6 +1151,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1131,6 +1178,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1183,6 +1231,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1209,6 +1258,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1260,6 +1310,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1272,6 +1323,7 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
@@ -1287,6 +1339,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1301,6 +1354,7 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
@@ -1332,8 +1386,8 @@ TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 
-TARGET_TV_DLL=tvision_dll
-TARGET_TV_EXE=tvision_exe
+TARGET_TV_DLL=tvision_dll$(TARGET_SELECTOR)
+TARGET_TV_EXE=tvision_exe$(TARGET_SELECTOR)
 TARGETYACC=yacc
 TARGETLEX=lex
 
@@ -1349,14 +1403,14 @@ ALLTARGETS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
-	../vendor/wxaui-0.9.1/src \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/libxml2-2.6.29/bakefile \
+	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1366,14 +1420,15 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
+	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Doc/html \
-	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	lbcs \
 #	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/wxaui-0.9.1/src \
 #	../vendor/dbwrapcontrols
 # sqlitefk is included in Sqllite target, but may be used separately including this target.
 # When including this target, the include path for sql.h must pount to ./sqlite/src
@@ -1384,6 +1439,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1435,13 +1491,14 @@ ALLTARGETS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
-	../vendor/libxml2-2.6.29/bakefile \
+	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1466,6 +1523,7 @@ ALLDIRS = \
 	lbDB \
 	lbModule \
 	lbclasses \
+	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
@@ -1530,6 +1588,11 @@ install:
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
+	mkdir -p $(prefix)/share/lbdmf/TurboVision
+	mkdir -p $(prefix)/share/lbdmf/wxLua
+	mkdir -p $(prefix)/share/lbdmf/wxActiveRecords
+	mkdir -p $(prefix)/share/lbdmf/lbDMFDataViewModel
+	mkdir -p $(prefix)/share/lbdmf/lbDMFFixedFormular
 	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
@@ -1564,6 +1627,11 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	mkdir -p $(prefix)/share/lbdmf/DMFToXMI
 	mkdir -p $(prefix)/share/lbdmf/database
+	mkdir -p $(prefix)/share/lbdmf/TurboVision
+	mkdir -p $(prefix)/share/lbdmf/wxLua
+	mkdir -p $(prefix)/share/lbdmf/wxActiveRecords
+	mkdir -p $(prefix)/share/lbdmf/lbDMFDataViewModel
+	mkdir -p $(prefix)/share/lbdmf/lbDMFFixedFormular
 	cp $(DEVROOT_MAKE)$(RELPATH)/Database/*.sql $(prefix)/share/lbdmf/database
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
@@ -1575,6 +1643,11 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/*.xsl $(prefix)/share/lbdmf/lbDMFDataViewModel
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular/*.xsl $(prefix)/share/lbdmf/lbDMFFixedFormular
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/TurboVision/*.xsl $(prefix)/share/lbdmf/TurboVision
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxActiveRecords/*.xsl $(prefix)/share/lbdmf/wxActiveRecords
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua/*.xsl $(prefix)/share/lbdmf/wxLua
 	cp -R $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/UMLSamples $(prefix)/share/lbdmf
 	mv "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMF Manager.xmi" "$(prefix)/share/lbdmf/UMLSamples/SecondStageModels/lbDMFManager.xmi"
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
@@ -1694,8 +1767,13 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/libxml2-2.6.29/bakefile: dummy
-	$(MAKE) -s -C $@ -f makefile.lbDMF
+../vendor/libxml2-2.8.0/win32/makefile.mingw: dummy
+	../vendor/libxml2-2.8.0/win32/autoconfigure.bat
+
+../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll: dummy ../vendor/libxml2-2.8.0/win32/makefile.mingw
+	$(MAKE) -s -C ../vendor/libxml2-2.8.0/win32 -f makefile.mingw dep libxml
+	cp ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll ../../dll
+	cp ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.lib ../../dll/libs
 
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
@@ -1896,6 +1974,14 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
+../vendor/wxShapeFramework/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
+../vendor/wxShapeFramework/example: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
@@ -2033,6 +2119,10 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+lbWorkflowEngine: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbWorkflowEngine -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	
 #../Plugins/DatabaseForm: dummy
 #	$(MAKE) -s -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 #	$(MAKE) -s -C $@
@@ -2056,6 +2146,7 @@ endif
 endif
 endif
 endif
+	echo $(MAKE) -s -C $@
 	$(MAKE) -s -C $@
 ifeq ($(OSTYPE), solaris)
 	$(MAKE) -s -C $@ install-strip
