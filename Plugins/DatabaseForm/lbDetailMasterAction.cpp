@@ -93,12 +93,11 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#define USE_EXRERNAL_FORMULARACTIONS
-
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 #ifndef USE_EXRERNAL_FORMULARACTIONS
-
 /*...slbMasterFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbMasterFormAction)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -131,6 +130,20 @@ void LB_STDCALL lbMasterFormAction::setDatabase(lb_I_Database* _db) {
 void LB_STDCALL lbMasterFormAction::setActionID(long id) {
 	myActionID = id;
 }
+
+//		char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
+char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
+	from->finishFormularParameterIteration();
+	
+	while (from->hasMoreFormularParameter()) {
+		from->setNextFormularParameter();
+		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
+			return from->get_parametervalue();
+	}
+	_LOG << "getParameter(...) Error: Parameter not found." LOG_
+	return NULL;
+}
+
 
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\openMasterForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb_I_Parameter* params) {
@@ -223,21 +236,24 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 
 			if ((formParams != NULL) && (forms != NULL)) {
+				UAP(lb_I_SecurityProvider, securityManager)
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-				long AppID = meta->getApplicationID();
+				long AppID = securityManager->getApplicationID();
 
 				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
+					forms->setNextFormulars();
 
-					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
+					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 						UAP(lb_I_DatabaseForm, form)
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, detail)
 
-						long FormularID = forms->getFormularID();
-						*SQL = formParams->getParameter("query", FormularID);
+						long FormularID = forms->get_id();
+						*SQL = lookupParameter(*&formParams, "query", FormularID);
 						form = gui->createDBForm(formularname->charrep(),
 												 SQL->charrep(),
 												 DBName->charrep(),
@@ -519,8 +535,8 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectAction_Steps(myActionID);
+			*What = appActionSteps->get_what();
 
 			*msg = "Open master form (";
 			*msg += What->charrep();

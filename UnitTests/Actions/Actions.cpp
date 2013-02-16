@@ -15,6 +15,9 @@
 
 #include <UIWrapper.h>
 
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
+
 class TestActions : public TestFixture<TestActions>
 {
 public:
@@ -28,8 +31,6 @@ public:
 		//TEST_CASE(test_Delegated_Action_lbReadTextFileToString)
 		//TEST_CASE(test_Delegated_Action_lbGetIdForFormValue)
 		//TEST_CASE(test_Delegated_Action_lbXSLTTransformer)
-/*
-*/
 	}
 
 	void test_Delegated_Action_lbGetIdForFormValue( void ) {
@@ -85,12 +86,16 @@ public:
 		meta->load();
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
+
+		UAP(lb_I_SecurityProvider, securityManager)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 		
-		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
 		
 		UAP(lb_I_Container, applications)
 		
-		applications = meta->getApplications();
+		applications = securityManager->getApplications();
 		
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 		
@@ -352,13 +357,13 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
-		//setLogActivated(true);
-		
-		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+		UAP(lb_I_SecurityProvider, securityManager)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
 
 		UAP(lb_I_Container, applications)
 
-		applications = meta->getApplications();
+		applications = securityManager->getApplications();
 
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 
@@ -433,14 +438,16 @@ public:
 		meta->setAutoload(false);
 		meta->initialize("user", "lbDMF Manager");
 
-		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
+		UAP(lb_I_SecurityProvider, securityManager)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+		ASSERT_EQUALS(true, securityManager->login("user", "TestUser"))
 
 		UAP(lb_I_Container, applications)
 
-		applications = meta->getApplications();
+		applications = securityManager->getApplications();
 
 		// Must not logged in to load
-		if (!meta->getAutoload() && meta->getApplicationID() == 0) meta->loadApplication("user", "lbDMF Manager");
+		if (!meta->getAutoload() && securityManager->getApplicationID() == 0) meta->loadApplication("user", "lbDMF Manager");
 
 		// Setup the configuration that is needed for this test
 

@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.56.2.2 $
+* $Revision: 1.57 $
 * $Name:  $
-* $Id: misc.cpp,v 1.56.2.2 2012/06/05 19:15:43 lollisoft Exp $
+* $Id: misc.cpp,v 1.57 2013/02/16 10:36:26 lollisoft Exp $
 * $Log: misc.cpp,v $
+* Revision 1.57  2013/02/16 10:36:26  lollisoft
+* Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+* Several files were conflicting and resolved in this checkin.
+*
 * Revision 1.56.2.2  2012/06/05 19:15:43  lollisoft
 * PATH_MAX issue. Added some more logging on Windows part when unloading a module.
 *

@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.2 $
+ * $Revision: 1.152 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.2 2012/06/07 17:29:55 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.152 2013/02/16 10:36:25 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.152  2013/02/16 10:36:25  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
+ * Revision 1.151  2012/02/12 11:58:26  lollisoft
+ * Implemented detection of a file version that has no version information.
+ *
+ * Revision 1.150  2012/01/21 18:39:21  lollisoft
+ * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ *
  * Revision 1.149.2.2  2012/06/07 17:29:55  lollisoft
  * Fixed application exit issues. The dispatcher and event manager was
  * instantiated earlyer than a string or any other class from lbclasses.
@@ -635,6 +645,7 @@ public:
 	SkipList();
 	virtual ~SkipList();
 	
+	lb_I_Iterator* LB_STDCALL getIterator();
 	
 	DECLARE_LB_UNKNOWN()
 	DECLARE_LB_I_CONTAINER_IMPL()
@@ -722,6 +733,12 @@ SkipList::SkipList() {
 SkipList::~SkipList() {
 	delete head;
 }
+
+lb_I_Iterator* LB_STDCALL SkipList::getIterator() {
+	_LOG << "SkipList::getIterator() is not implemented." LOG_
+	return NULL;
+}
+
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 
         return count; 
@@ -2010,7 +2027,9 @@ public:
     lbModuleContainer();
     virtual ~lbModuleContainer();
 
-    DECLARE_LB_UNKNOWN()
+	lb_I_Iterator* LB_STDCALL getIterator();
+    
+	DECLARE_LB_UNKNOWN()
 
 // This may be a string container
 
@@ -2303,6 +2322,12 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	else
 	if (strcmp(searchArgument, "lb_I_DirLocation") == 0) {
 		functor = PREFIX "instanceOfDirLocation";
+		module = "lbClasses";
+		found = true;
+	}
+	else
+	if (strcmp(searchArgument, "lb_I_DocumentVersion") == 0) {
+		functor = PREFIX "instanceOflbDocumentVersion";
 		module = "lbClasses";
 		found = true;
 	}
@@ -3503,6 +3528,10 @@ lbModuleContainer::lbModuleContainer() {
 lbModuleContainer::~lbModuleContainer() {
 }
 
+lb_I_Iterator* LB_STDCALL lbModuleContainer::getIterator() {
+	_LOG << "lbModuleContainer::getIterator() is not implemented." LOG_
+	return NULL;
+}
 int LB_STDCALL lbModuleContainer::position(lb_I_KeyBase** const key) {
 	_LOG << "lbModuleContainer::position(lb_I_KeyBase** const key) is not implemented." LOG_
     return 0; 

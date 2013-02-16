@@ -81,6 +81,8 @@
 #include <lbConfigHook.h>
 #endif
 
+#include <lbInterfaces-sub-security.h>
+
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/imaglist.h"
@@ -268,7 +270,10 @@ void wxAppSelectPage::setLoggedOnUser(const char* user) {
 
                 meta->setUserName(userid);
 
-                apps = meta->getApplications();
+				UAP(lb_I_SecurityProvider, securityManager)
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+                apps = securityManager->getApplications();
 
                 box->Clear();
 
@@ -441,17 +446,25 @@ bool wxLogonPage::TransferDataFromWindow() {
         const char* pass = strdup(getTextValue("Passwort:"));
         const char* user = strdup(getTextValue("Benutzer:"));
 
-        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_SecurityProvider, securityManager)
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 
-        if (meta->login(user, pass)) {
+        if (securityManager != NULL && securityManager->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
                 if (pass) free((void*)pass);
                 if (user) free((void*)user);
 
                 return TRUE;
         } else {
-                char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+                char* buf = NULL;
                 char* buf1 = strdup(_trans("Error"));
+
+				if (securityManager != NULL)
+					buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+				else
+					buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
+				
                 wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
                 dialog.ShowModal();
@@ -955,68 +968,9 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wizard->SetPageSize(size);
 
-        if ( ! wizard->RunWizard(page1) )
-        {
-            wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
-            wxICON_INFORMATION | wxOK);
-        }
-
-//      wxString app = page3->getSelectedApp();
-
+        wizard->RunWizard(page1);
         wizard->Destroy();
 
-
-#ifdef bla
-/*...s:0:*/
-
-        lbErrCodes err = ERR_NONE;
-
-        // Locate the form instance in the container
-
-        lbLoginDialog* _dialog = NULL;
-
-        if (forms == NULL) {
-                REQUEST(getModuleInstance(), lb_I_Container, forms)
-        }
-
-        UAP(lb_I_Unknown, uk)
-        UAP(lb_I_KeyBase, key)
-
-        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData("LoginForm");
-
-        QI(fName, lb_I_KeyBase, key)
-
-        uk = forms->getElement(&key);
-
-        if (uk != NULL) {
-                _dialog = (lbLoginDialog*) *&uk;
-        }
-
-        if (_dialog) {
-                _dialog->Show(TRUE);
-        } else {
-                _dialog = new lbLoginDialog();
-                
-
-                QI(_dialog, lb_I_Unknown, uk)
-
-                forms->insert(&uk, &key);
-
-                delete _dialog;
-                _dialog = NULL;
-
-                uk = forms->getElement(&key);
-
-                if (uk != NULL) {
-                        _dialog = (lbLoginDialog*) *&uk;
-                }
-
-                _dialog->init(frame);
-                _dialog->Show();
-        }
-/*...e*/
-#endif
         return NULL;
 }
 /*...e*/

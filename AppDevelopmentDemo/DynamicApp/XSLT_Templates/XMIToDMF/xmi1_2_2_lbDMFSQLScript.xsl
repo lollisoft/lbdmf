@@ -53,13 +53,15 @@
 	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 </xsl:variable>
 <xsl:variable name="TargetDBVersion">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
-
 <!-- ************************************************* -->
 
 
@@ -122,7 +124,6 @@
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
 </xsl:if>
-	
 	
 -- Package: <xsl:value-of select="@name"/>
 -- Skip rewrite
@@ -210,6 +211,18 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+
+
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
 <xsl:if test="$datatype='image'">
@@ -289,6 +302,17 @@ insert into column_types (name, tablename, ro) values ('ID', '<xsl:value-of sele
 	<UML:DataType xmi.idref="BOUML_datatype_1"/>
 </UML:StructuralFeature.type>
 -->
+
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
+delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
+and parametername = '<xsl:value-of select="@name"/>';
+insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
 
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
@@ -562,15 +586,15 @@ values ('<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassN
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
-'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
-currval('actions_id_seq')); 
-
+'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, currval('actions_id_seq')); 
+delete from formular_actions where formular = GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>');
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
 'open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, currval('actions_id_seq')); 
 
+delete from formular_actions where formular = GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>');
 insert into formular_actions (formular, action, event) values (GetFormularId(GetOrCreateApplication('<xsl:value-of select="$package"/>'), '<xsl:value-of select="$thisClassName"/>'), currval('actions_id_seq'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">

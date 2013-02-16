@@ -28,11 +28,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbSqlQueryAction.h,v 1.1.2.2 2012/05/12 21:20:09 lollisoft Exp $
+ * $Id: lbSqlQueryAction.h,v 1.2 2013/02/16 10:36:26 lollisoft Exp $
  *
  * $Log: lbSqlQueryAction.h,v $
+ * Revision 1.2  2013/02/16 10:36:26  lollisoft
+ * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
+ * Several files were conflicting and resolved in this checkin.
+ *
  * Revision 1.1.2.2  2012/05/12 21:20:09  lollisoft
  * Code cleanup and made formularactions loadable at runtime.
  *

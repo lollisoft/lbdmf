@@ -198,8 +198,6 @@ endif
 
 all_targets: $(ALLTARGETS)
 
-
-
 distclean:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d distclean || exit $? ; \
@@ -317,6 +315,7 @@ ifeq ($(OSTYPE), osx)
 MiniCppUnit: dummy
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 UIWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=UIWrapper -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
@@ -344,7 +343,7 @@ clean:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
 
 install:
-	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done 
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target -e prefix=$(prefix) install; done 
 
 install-strip:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install-strip; done

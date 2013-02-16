@@ -92,12 +92,11 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#define USE_EXRERNAL_FORMULARACTIONS
-
+#include <lbInterfaces-sub-security.h>
+#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 #ifndef USE_EXRERNAL_FORMULARACTIONS
-
 void FormularActions::addRegisteredAction(long ActionID, const char* eventName) {
 	lbErrCodes err = ERR_NONE;
 	if (eventmapping == NULL) {
@@ -301,9 +300,9 @@ char* FormularActions::getActionSourceDataField(const char* reversed_event) {
 		
 		
 		if (appActions != NULL) {
-			appActions->selectAction(getActionTargetIDLong(reversed_event));
+			appActions->selectActions(getActionTargetIDLong(reversed_event));
 			_LOG << "Returning action source by event mapping." LOG_
-			return appActions->getActionSource();
+			return appActions->get_source();
 		}
 	}
 	

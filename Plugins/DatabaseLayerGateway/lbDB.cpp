@@ -2238,6 +2238,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
+				_LOG << "lbDatabaseLayerQuery::query() Error: Database operation was unsuccessful: " << currentdbLayer->GetErrorMessage().c_str() << ". Query was: " << q LOG_
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
@@ -5267,6 +5268,8 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(const char* conne
 			*name = "5";
 			param->setUAPString(*&name, *&colName);
 
+			_LOG << "lbDatabaseLayerDatabase::getColumns() got " << TableName->charrep() << ":" << colName->charrep() LOG_
+			
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 //			typeLong->setData((long)colTypeLong);
 //			*name = "DataType";
