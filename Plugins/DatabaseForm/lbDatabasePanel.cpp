@@ -550,14 +550,14 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
 	ID->setData(securityManager->getApplicationID());
 	
-	forms->finishFormularsIteration();
-	while (forms->hasMoreFormulars()) {
-		forms->setNextFormulars();
+	forms->finishIteration();
+	while (forms->hasMoreElements()) {
+		forms->setNextElement();
 		FID->setData(forms->get_anwendungid());
 		
 		if (FID->equals(*&ID)) {
 			if (strcmp(formName, forms->get_name()) == 0) {
-				forms->finishFormularsIteration();
+				forms->finishIteration();
 				formFound = true;
 				_LOG << "Found formular name in datamodel." LOG_
 				break;
@@ -571,9 +571,9 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 	
 	long FormID = forms->get_id();
 	
-	formularfields->finishFormular_FieldsIteration();
-	while (formularfields->hasMoreFormular_Fields()) {
-		formularfields->setNextFormular_Fields();
+	formularfields->finishIteration();
+	while (formularfields->hasMoreElements()) {
+		formularfields->setNextElement();
 		
 		if (formularfields->get_formularid() == FormID) {
 			if (strcmp(formularfields->get_name(), fieldName) == 0) {
@@ -586,7 +586,7 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 				if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
 				
 				definitionFound = true;
-				formularfields->finishFormular_FieldsIteration();
+				formularfields->finishIteration();
 				break;
 			}
 		}
@@ -1722,34 +1722,34 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 
 	//   formulars      <-      NM               ->   actions
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishIteration();
+		formActions->finishIteration();
+		appActions->finishIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 		
-		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+		while (forms->hasMoreElements()) {
+			forms->setNextElement();
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), formName) == 0) {
 					long FormID = forms->get_id();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreElements()) {
+						formActions->setNextElement();
 
 						if (formActions->get_formular() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->get_action();
 							char* eventName = formActions->get_event();
 
-							appActions->selectActions(ActionID);
+							appActions->selectById(ActionID);
 							char* actionName = appActions->get_name();
 
-							appActionTypes->selectAction_Types(appActions->get_typ());
+							appActionTypes->selectById(appActions->get_typ());
 
 							///\todo This should copied to DoValidation.
 							// Helps to faster lookup the action ID from event name
@@ -1931,31 +1931,31 @@ _CL_LOG << "Connect event handlers" LOG_
 void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishIteration();
+		formActions->finishIteration();
+		appActions->finishIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 
-		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+		while (forms->hasMoreElements()) {
+			forms->setNextElement();
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
 					long FormID = forms->get_id();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreElements()) {
+						formActions->setNextElement();
 
 						if (formActions->get_formular() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->get_action();
 							char* eventName = formActions->get_event();
 							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectActions(ActionID);
+							appActions->selectById(ActionID);
 
 							_LOG << "Activate action '" << actionName << "'" LOG_
 
@@ -1973,31 +1973,31 @@ void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishFormularsIteration();
-		formActions->finishFormular_ActionsIteration();
-		appActions->finishActionsIteration();
+		forms->finishIteration();
+		formActions->finishIteration();
+		appActions->finishIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 
-		while (forms->hasMoreFormulars()) {
-			forms->setNextFormulars();
+		while (forms->hasMoreElements()) {
+			forms->setNextElement();
 
 			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
 				if (strcmp(forms->get_name(), base_formName) == 0) {
 					long FormID = forms->get_id();
 
-					while (formActions->hasMoreFormular_Actions()) {
-						formActions->setNextFormular_Actions();
+					while (formActions->hasMoreElements()) {
+						formActions->setNextElement();
 
 						if (formActions->get_formular() == FormID) {
 							// Actions for this formular
 							long ActionID = formActions->get_action();
 							char* eventName = formActions->get_event();
 							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectActions(ActionID);
+							appActions->selectById(ActionID);
 
 							_LOG << "Deactivate action '" << actionName << "'" LOG_
 
@@ -5004,21 +5004,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 
 	long formularID = -1;
 
-	forms->finishFormularsIteration();
-	while (forms->hasMoreFormulars()) {
-		forms->setNextFormulars();
+	forms->finishIteration();
+	while (forms->hasMoreElements()) {
+		forms->setNextElement();
 		if ((forms->get_anwendungid() == securityManager->getApplicationID()) && (strcmp(forms->get_name(), untranslated_formName) == 0)) {
 			formularID = forms->get_id();
 		}
 	}
 
-	formActions->finishFormular_ActionsIteration();
-	while (formActions->hasMoreFormular_Actions()) {
-		formActions->setNextFormular_Actions();
+	formActions->finishIteration();
+	while (formActions->hasMoreElements()) {
+		formActions->setNextElement();
 
 		if (formActions->get_formular() == formularID) {
-			appActions->selectActions(formActions->get_action());
-			appActionTypes->selectAction_Types(appActions->get_typ());
+			appActions->selectById(formActions->get_action());
+			appActionTypes->selectById(appActions->get_typ());
 
 			if (strcmp(appActionTypes->get_bezeichnung(), "FormValidator") == 0) {
 				long actionID = formActions->get_action();
@@ -5026,8 +5026,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 				wxString value;
 				wxString errmsg;
 
-				appActions->selectActions(actionID);
-				appActionTypes->selectAction_Types(appActions->get_typ());
+				appActions->selectById(actionID);
+				appActionTypes->selectById(appActions->get_typ());
 
 				UAP(lb_I_Action, action)
 				action = fa->getAction(fa->getActionID(formActions->get_event()));
@@ -5057,9 +5057,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 				parameter->setData("application");
 
 				_LOG << "Put parameters for configured action parameter list into container." LOG_
-				appActionParameters->finishAction_ParametersIteration();
-				while (appActionParameters->hasMoreAction_Parameters()) {
-					appActionParameters->setNextAction_Parameters();
+				appActionParameters->finishIteration();
+				while (appActionParameters->hasMoreElements()) {
+					appActionParameters->setNextElement();
 					if (appActionParameters->get_actionid() == actionID) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)
@@ -5141,8 +5141,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		wxString value;
 		wxString errmsg;
 
-		appActions->selectActions(actionID);
-		appActionTypes->selectAction_Types(appActions->get_typ());
+		appActions->selectById(actionID);
+		appActionTypes->selectById(appActions->get_typ());
 
 		// Lookup only when action type is a buttonpress
 		if ((strcmp(appActionTypes->get_bezeichnung(), "Buttonpress") == 0)) {
@@ -5299,9 +5299,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 
 		_LOG << "Put parameters for configured action parameter list into container." LOG_
-		appActionParameters->finishAction_ParametersIteration();
-		while (appActionParameters->hasMoreAction_Parameters()) {
-			appActionParameters->setNextAction_Parameters();
+		appActionParameters->finishIteration();
+		while (appActionParameters->hasMoreElements()) {
+			appActionParameters->setNextElement();
 			if (appActionParameters->get_actionid() == actionID) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)

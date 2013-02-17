@@ -139,9 +139,9 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, specialColumn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, columnType)
 
-		columntypes->finishColumn_TypesIteration();
-		while (columntypes->hasMoreColumn_Types()) {
-			columntypes->setNextColumn_Types();
+		columntypes->finishIteration();
+		while (columntypes->hasMoreElements()) {
+			columntypes->setNextElement();
 			
 			*tablename = columntypes->get_tablename();
 			*fieldname = columntypes->get_name();
@@ -175,7 +175,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 			}
 		}
-		columntypes->finishColumn_TypesIteration();
+		columntypes->finishIteration();
 	} else {
 		UAP(lb_I_Database, database)
 		char* dbbackend = meta->getSystemDatabaseBackend();

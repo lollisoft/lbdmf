@@ -252,7 +252,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				expression = query->getAsString(2);
 				src_actionid = query->getAsLong(3);
 				dst_actionid = query->getAsLong(4);
-				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+				stepTransitions->add(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 				err = query->next();
 			}
@@ -262,7 +262,7 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 				expression = query->getAsString(2);
 				src_actionid = query->getAsLong(3);
 				dst_actionid = query->getAsLong(4);
-				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+				stepTransitions->add(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 			}
 		}
@@ -272,28 +272,28 @@ lb_I_Action_Step_Transitions* LB_STDCALL lbAction::loadTransitionsForActionStep(
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, src_actionid)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, dst_actionid)
 
-		allTransitions->finishAction_Step_TransitionsIteration();
-		while (allTransitions->hasMoreAction_Step_Transitions()) {
-			allTransitions->setNextAction_Step_Transitions();
+		allTransitions->finishIteration();
+		while (allTransitions->hasMoreElements()) {
+			allTransitions->setNextElement();
 
 			if (step->getData() == allTransitions->get_src_actionid() || step->getData() == allTransitions->get_dst_actionid()) {
 				*description = allTransitions->get_description();
 				*expression = allTransitions->get_expression();
 				src_actionid->setData(allTransitions->get_src_actionid());
 				dst_actionid->setData(allTransitions->get_dst_actionid());
-				stepTransitions->addAction_Step_Transitions(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
+				stepTransitions->add(expression->charrep(), src_actionid->getData(), dst_actionid->getData(), description->charrep());
 				found = true;
 			}
 		}
 	}
 
-	if (stepTransitions->getAction_Step_TransitionsCount() == 0) {
+	if (stepTransitions->Count() == 0) {
 		_LOG << "Warning: Do not have any transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 	}
 
 
 	if (found == true) {
-		_LOG << "Info: Have " << stepTransitions->getAction_Step_TransitionsCount() << " transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
+		_LOG << "Info: Have " << stepTransitions->Count() << " transitions in stepTransitions object (step id = " << step->getData() << ")!" LOG_
 		stepTransitions++;
 		return stepTransitions.getPtr();
 	}
@@ -367,7 +367,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->add(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 				err = query->next();
 			}
@@ -380,7 +380,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);
 				
-				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->add(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
@@ -390,9 +390,9 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 		UAP_REQUEST(getModuleInstance(), lb_I_String, _interface)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, description)
 
-		allActionStepParameters->finishActionStep_ParametersIteration();
-		while (allActionStepParameters->hasMoreActionStep_Parameters()) {
-			allActionStepParameters->setNextActionStep_Parameters();
+		allActionStepParameters->finishIteration();
+		while (allActionStepParameters->hasMoreElements()) {
+			allActionStepParameters->setNextElement();
 
 			if (step->getData() == allActionStepParameters->get_action_step_id()) {
 				*name = allActionStepParameters->get_name();
@@ -402,7 +402,7 @@ lb_I_ActionStep_Parameters* LB_STDCALL lbAction::loadParametersForActionStep(lb_
 				
 				if (allParameters != NULL) value->substitutePlaceholder(allParameters);		
 				
-				stepParameters->addActionStep_Parameters(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
+				stepParameters->add(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), step->getData());
 				found = true;
 			}
 		}
@@ -505,13 +505,13 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 		return 0;
 	}
 
-	if (trans->getAction_Step_TransitionsCount() == 0) {
+	if (trans->Count() == 0) {
 		_LOG << "Warning: Do not have any transitions in trans object!" LOG_
 	}
 
-	trans->finishAction_Step_TransitionsIteration();
-	while (trans->hasMoreAction_Step_Transitions()) {
-		trans->setNextAction_Step_Transitions();
+	trans->finishIteration();
+	while (trans->hasMoreElements()) {
+		trans->setNextElement();
 
 		if (trans->get_src_actionid() == id) {
 			// First use a simple expression without any Lex & Yacc parser
@@ -519,12 +519,9 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 			long src_actionid;
 			wxString expression;
 ///\todo Choose new or old?
-//			expression = trans->get_expression();
-//			dst_actionid = trans->get_dst_actionid();
-//			src_actionid = trans->get_src_actionid();
-			expression = trans->getActionStepTransitionDecision();
-			dst_actionid = trans->getActionStepTransitionDstActionID();
-			src_actionid = trans->getActionStepTransitionSrcActionID();
+			expression = trans->get_expression();
+			dst_actionid = trans->get_dst_actionid();
+			src_actionid = trans->get_src_actionid();
 
 			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->get_id() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_
@@ -660,8 +657,8 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		UAP(lb_I_KeyBase, keybase)
 		QI(key, lb_I_KeyBase, keybase)
 
-		appActionSteps->selectAction_Steps(id->getData());
-		appActionTypes->selectAction_Types(appActionSteps->get_type());
+		appActionSteps->selectById(id->getData());
+		appActionTypes->selectById(appActionSteps->get_type());
 
 		*action_handler = appActionTypes->get_action_handler();
 		*module = appActionTypes->get_module();
@@ -963,9 +960,9 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 		actionidcmp->setData(myActionID);
 
-		appActionSteps->finishAction_StepsIteration();
-		while (appActionSteps->hasMoreAction_Steps()) {
-			appActionSteps->setNextAction_Steps();
+		appActionSteps->finishIteration();
+		while (appActionSteps->hasMoreElements()) {
+			appActionSteps->setNextElement();
 			_LOG << "Sort entry ..." LOG_
 			actionid->setData(appActionSteps->get_actionid());
 
@@ -975,8 +972,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				stepid->setData(appActionSteps->get_id());
 				sortedActionSteps->insert(&uk, &key);
 
-				appActionTypes->finishAction_TypesIteration();
-				appActionTypes->selectAction_Types(appActionSteps->get_type());
+				appActionTypes->finishIteration();
+				appActionTypes->selectById(appActionSteps->get_type());
 
 				_LOG << "Compare type to determine nonlinear action: '" << appActionTypes->get_bezeichnung() << "' == 'InitialNode'. Actionstep type is " << appActionSteps->get_type() LOG_
 
@@ -987,7 +984,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 				}
 			}
 		}
-		appActionSteps->finishAction_StepsIteration();
+		appActionSteps->finishIteration();
 
 		sortedActionSteps->finishIteration();
 
@@ -1010,7 +1007,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			long nextStep = delegate(*&params);
 			if (nextStep > 0) {
 				// The sortedActionSteps key is based on order number (not on step number)
-				appActionSteps->selectAction_Steps(nextStep);
+				appActionSteps->selectById(nextStep);
 				order->setData(appActionSteps->get_a_order_nr());
 				sortedActionSteps->position(&key); // Set the iterator position to the next step to be executed.
 			} else {
