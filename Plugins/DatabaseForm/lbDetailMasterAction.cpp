@@ -133,10 +133,10 @@ void LB_STDCALL lbMasterFormAction::setActionID(long id) {
 
 //		char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long ApplicationID);
 char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
-	from->finishFormularParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreFormularParameter()) {
-		from->setNextFormularParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -242,8 +242,8 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 				long AppID = securityManager->getApplicationID();
 
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormulars();
+				while (forms->hasMoreElements()) {
+					forms->setNextElement();
 
 					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
@@ -535,7 +535,7 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 
 			*msg = "Open master form (";
