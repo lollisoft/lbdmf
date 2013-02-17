@@ -300,7 +300,7 @@ char* FormularActions::getActionSourceDataField(const char* reversed_event) {
 		
 		
 		if (appActions != NULL) {
-			appActions->selectActions(getActionTargetIDLong(reversed_event));
+			appActions->selectById(getActionTargetIDLong(reversed_event));
 			_LOG << "Returning action source by event mapping." LOG_
 			return appActions->get_source();
 		}

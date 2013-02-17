@@ -234,8 +234,8 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
 				long AppID = securityManager->getApplicationID();
 
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormulars();
+				while (forms->hasMoreElements()) {
+					forms->setNextElement();
 
 					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
 						UAP(lb_I_DatabaseForm, f)
@@ -243,7 +243,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						UAP(lb_I_DatabaseForm, form)
 						long FormularID = forms->get_id();
 						*SQL = lookupParameter(*&formParams, "query", FormularID);
-						forms->finishFormularsIteration();
+						forms->finishIteration();
 						form = gui->createDBForm(formularname->charrep(),
 												 SQL->charrep(),
 												 DBName->charrep(),
@@ -565,7 +565,7 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 
 			*msg = "Open detail form (";

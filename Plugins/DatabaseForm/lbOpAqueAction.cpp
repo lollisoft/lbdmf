@@ -97,7 +97,7 @@ extern "C" {
 #include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
-#define USE_EXRERNAL_FORMULARACTIONS
+#ifndef USE_EXRERNAL_FORMULARACTIONS
 /*...lbOpAqueOperation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbOpAqueOperation)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -199,7 +199,7 @@ long LB_STDCALL lbOpAqueOperation::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
