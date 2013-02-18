@@ -337,8 +337,8 @@ long  LB_STDCALL <xsl:value-of select="$FormName"/>Model::add(<xsl:for-each sele
 void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
-	while (hasMore<xsl:value-of select="$FormName"/>()) {
-		setNext<xsl:value-of select="$FormName"/>();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID-&gt;setData(get_id());
@@ -355,8 +355,8 @@ void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteUnmarked() {
 void		LB_STDCALL <xsl:value-of select="$FormName"/>Model::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	<xsl:value-of select="$FormName"/>-&gt;finishIteration();
-	while (hasMore<xsl:value-of select="$FormName"/>()) {
-		setNext<xsl:value-of select="$FormName"/>();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID-&gt;setData(get_id());

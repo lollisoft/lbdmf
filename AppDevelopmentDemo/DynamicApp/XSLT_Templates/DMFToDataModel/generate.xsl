@@ -91,6 +91,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 	</xsl:call-template>
 </xsl:variable>
 <exsl:document href="{$basedir}/Interfaces/lbInterfaces-{$ApplicationName}.h" method="text">
+#ifndef __LB_INTERFACES_SUB_<xsl:value-of select="$ApplicationName"/>__
+#define __LB_INTERFACES_SUB_<xsl:value-of select="$ApplicationName"/>__
 <!-- === Formular specific template ====================================================================== -->
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -127,6 +129,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
+#endif //__LB_INTERFACES_SUB_<xsl:value-of select="$ApplicationName"/>__
 </exsl:document>
 
 <exsl:document href="{$basedir}/Interfaces/lbInterfaces-{$ApplicationName}-sub-visitor.h" method="text">
