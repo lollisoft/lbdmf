@@ -220,8 +220,8 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatWriterExtension:
 	
 	owningObject-&gt;finish<xsl:value-of select="$FormName"/>Iteration();
 	
-	while (owningObject-&gt;hasMore<xsl:value-of select="$FormName"/>()) {
-		owningObject-&gt;setNext<xsl:value-of select="$FormName"/>();
+	while (owningObject-&gt;hasMoreElements()) {
+		owningObject-&gt;setNextElement();
 		
 		*oStream &lt;&lt; owningObject-&gt;get_id();
 		// Copy values
