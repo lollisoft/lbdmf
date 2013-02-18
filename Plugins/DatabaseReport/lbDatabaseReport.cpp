@@ -695,9 +695,9 @@ long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		}
 	}
 	long first_dst_actionid = -1;
-	transitions->finishAction_Step_TransitionsIteration();
-	while (transitions->hasMoreAction_Step_Transitions()) {
-		transitions->setNextAction_Step_Transitions();
+	transitions->finishIteration();
+	while (transitions->hasMoreElements()) {
+		transitions->setNextElement();
 		// First use a simple expression without any Lex & Yacc parser
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
@@ -1016,12 +1016,12 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 		
 		_LOG << "Prepare report with id = " << id LOG_
 		
-		reports->selectReports(id);
+		reports->selectById(id);
 		
-		reportelements->finishReportElementsIteration();
+		reportelements->finishIteration();
 		
-		while (reportelements->hasMoreReportElements()) {
-			reportelements->setNextReportElements();
+		while (reportelements->hasMoreElements()) {
+			reportelements->setNextElement();
 			_LOG << "Check for report element " << reportelements->get_name() << " with reportid = " << reportelements->get_reportid() LOG_
 			if (reportelements->get_reportid() == id) {
 				
@@ -1041,10 +1041,10 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 						
 						_LOG << "Have a report text block element..." LOG_
 						
-						reporttextblocks->finishReportTextsIteration();
+						reporttextblocks->finishIteration();
 						
-						while (reporttextblocks->hasMoreReportTexts()) {
-							reporttextblocks->setNextReportTexts();
+						while (reporttextblocks->hasMoreElements()) {
+							reporttextblocks->setNextElement();
 							
 							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->get_line() << "'." LOG_
 							if (reporttextblocks->get_elementid() == reportelements->get_id()) {
