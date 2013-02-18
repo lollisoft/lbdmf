@@ -289,7 +289,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>DBReaderExtension::execute() {
 		qID = q-&gt;getAsLong(<xsl:value-of select="position()+1"/></xsl:if>
 </xsl:for-each>);
 
-		owningObject-&gt;add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+		owningObject-&gt;add(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">q<xsl:value-of select="$FieldName"/>-&gt;getData(), </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>
 <xsl:otherwise><xsl:choose>
@@ -331,7 +331,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>DBReaderExtension::execute() {
 </xsl:if>
 </xsl:for-each>);
 
-			owningObject-&gt;add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+			owningObject-&gt;add(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">q<xsl:value-of select="$FieldName"/>-&gt;getData(), </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>
 <xsl:otherwise><xsl:choose>

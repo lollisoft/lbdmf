@@ -217,8 +217,8 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>XMLWriterExtension::execute() 
 	
 	owningObject-&gt;finish<xsl:value-of select="$FormName"/>Iteration();
 	
-	while (owningObject-&gt;hasMore<xsl:value-of select="$FormName"/>()) {
-		owningObject-&gt;setNext<xsl:value-of select="$FormName"/>();
+	while (owningObject-&gt;hasMoreElements()) {
+		owningObject-&gt;setNextElement();
 		*oStream &lt;&lt; 
 		"&lt;entry ID=\"" &lt;&lt; owningObject-&gt;get_id() &lt;&lt; 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>

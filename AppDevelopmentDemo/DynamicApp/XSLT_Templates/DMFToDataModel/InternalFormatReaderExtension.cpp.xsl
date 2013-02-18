@@ -269,7 +269,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatReaderExtension:
 </xsl:choose>
 </xsl:for-each> _ID LOG_
 -->
-		owningObject->add<xsl:value-of select="$FormName"/>(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
+		owningObject->add(<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">_<xsl:value-of select="$FieldName"/>, </xsl:when>
 <xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']"></xsl:when>
 <xsl:otherwise><xsl:choose>
