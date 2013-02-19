@@ -145,7 +145,7 @@ void LB_STDCALL Action_ParametersDBReaderExtension::execute() {
 		qactionid = q->getAsLong(5);
 		qID = q->getAsLong(6);
 
-		owningObject->addAction_Parameters(qname->charrep(), qvalue->charrep(), qinterface->charrep(), qdescription->charrep(), qactionid->getData(),  qID->getData());
+		owningObject->add(qname->charrep(), qvalue->charrep(), qinterface->charrep(), qdescription->charrep(), qactionid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -158,7 +158,7 @@ void LB_STDCALL Action_ParametersDBReaderExtension::execute() {
 			qactionid = q->getAsLong(5);
 			qID = q->getAsLong(6);
 
-			owningObject->addAction_Parameters(qname->charrep(), qvalue->charrep(), qinterface->charrep(), qdescription->charrep(), qactionid->getData(),  qID->getData());
+			owningObject->add(qname->charrep(), qvalue->charrep(), qinterface->charrep(), qdescription->charrep(), qactionid->getData(),  qID->getData());
 		}
 	}
 }

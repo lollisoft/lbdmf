@@ -222,7 +222,7 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 			
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 			
 			*msg = "Execute application (";
@@ -247,13 +247,13 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			if (replacers != NULL) {
 				// Build up the required parameters that may occur in What
 				int I = 0;
-				while (replacers->hasMoreActionStep_Parameters()) {
+				while (replacers->hasMoreElements()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					
 					UAP(lb_I_String, valueSubstituted)
 					
-					replacers->setNextActionStep_Parameters();
+					replacers->setNextElement();
 					
 					*name = replacers->get_name();
 					*value = replacers->get_value();

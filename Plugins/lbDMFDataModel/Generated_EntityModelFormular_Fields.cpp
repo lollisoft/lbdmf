@@ -216,8 +216,8 @@ long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fkt
 void		LB_STDCALL Formular_FieldsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Fields->finishIteration();
-	while (hasMoreFormular_Fields()) {
-		setNextFormular_Fields();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -234,8 +234,8 @@ void		LB_STDCALL Formular_FieldsModel::deleteUnmarked() {
 void		LB_STDCALL Formular_FieldsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Fields->finishIteration();
-	while (hasMoreFormular_Fields()) {
-		setNextFormular_Fields();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

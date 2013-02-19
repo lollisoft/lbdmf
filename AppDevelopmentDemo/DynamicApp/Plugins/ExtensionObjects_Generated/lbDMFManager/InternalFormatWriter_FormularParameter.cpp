@@ -110,13 +110,13 @@ void LB_STDCALL FormularParameterInternalFormatWriterExtension::setOperator(lb_I
 void LB_STDCALL FormularParameterInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getFormularParameterCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishFormularParameterIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreFormularParameter()) {
-		owningObject->setNextFormularParameter();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

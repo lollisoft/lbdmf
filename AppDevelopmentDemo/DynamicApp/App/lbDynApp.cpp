@@ -504,10 +504,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
 }
 
 char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
-	from->finishApplicationParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreApplicationParameter()) {
-		from->setNextApplicationParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -516,10 +516,10 @@ char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_ApplicationParameter
 }
 
 char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
-	from->finishFormularParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreFormularParameter()) {
-		from->setNextFormularParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -528,10 +528,10 @@ char* LB_STDCALL lbDynamicApplication::lookupParameter(lb_I_FormularParameter* f
 }
 
 lbErrCodes LB_STDCALL lbDynamicApplication::lookupApplication(lb_I_Applications* applications, const char* name) {
-	applications->finishApplicationsIteration();
+	applications->finishIteration();
 	
-	while (applications->hasMoreApplications()) {
-		applications->setNextApplications();
+	while (applications->hasMoreElements()) {
+		applications->setNextElement();
 		if (strcmp(applications->get_name(), name) == 0)
 			return ERR_NONE;
 	}
@@ -1879,13 +1879,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
 
                 char* eventName = eman->reverseEvent(eventID->getData());
 
-                if ((FormularsEntity != NULL) && (FormularsEntity->getFormularsCount() > 0)) {
-                        FormularsEntity->finishFormularsIteration();
-                        while (FormularsEntity->hasMoreFormulars()) {
-                                FormularsEntity->setNextFormulars();
+                if ((FormularsEntity != NULL) && (FormularsEntity->Count() > 0)) {
+                        FormularsEntity->finishIteration();
+                        while (FormularsEntity->hasMoreElements()) {
+                                FormularsEntity->setNextElement();
 
                                 if (strcmp(FormularsEntity->get_eventname(), eventName) == 0) {
-                                        FormularsEntity->finishFormularsIteration();
+                                        FormularsEntity->finishIteration();
                                         metaapp->setStatusText("Info", "Found the form by reversing event ID ...");
                                         break;
                                 }
@@ -1973,7 +1973,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
 										
 											QI(ukPl, lb_I_Form, Form)
 
-											Form = gui->addCustomForm(Form.getPtr(), forms->getName());
+											Form = gui->addCustomForm(Form.getPtr(), FormularsEntity->get_name());
 
 											if (Form != NULL) {
 												Form->show();
@@ -2102,13 +2102,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
                 } else {
 #endif
 
-                if ((FormularsEntity != NULL) && (FormularsEntity->getFormularsCount() > 0)) {
-                        FormularsEntity->finishFormularsIteration();
-                        while (FormularsEntity->hasMoreFormulars()) {
-                                FormularsEntity->setNextFormulars();
+                if ((FormularsEntity != NULL) && (FormularsEntity->Count() > 0)) {
+                        FormularsEntity->finishIteration();
+                        while (FormularsEntity->hasMoreElements()) {
+                                FormularsEntity->setNextElement();
 
                                 if (strcmp(FormularsEntity->get_eventname(), eventName) == 0) {
-                                        FormularsEntity->finishFormularsIteration();
+                                        FormularsEntity->finishIteration();
                                         break;
                                 }
                         }
@@ -2357,8 +2357,11 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
 void LB_STDCALL lbDynamicApplication::deactivateDBForms(const char* user, const char* app) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, MenuNameTool)
-	
-	_LOG << "Unload application formulars of '" << app << "' with ID = '" << metaapp->getApplicationID() << "' for user '" << user << "'." LOG_
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+
+	_LOG << "Unload application formulars of '" << app << "' with ID = '" << securityManager->getApplicationID() << "' for user '" << user << "'." LOG_
 	
 	*MenuNameTool = _trans(app);
 	metaapp->removeMenuBar(MenuNameTool->charrep());
@@ -3429,9 +3432,9 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                 free(ed);
                 free(menu);
 
-                Applications_FormularsEntity->finishApplications_FormularsIteration();
-                while (Applications_FormularsEntity->hasMoreApplications_Formulars()) {
-                        Applications_FormularsEntity->setNextApplications_Formulars();
+                Applications_FormularsEntity->finishIteration();
+                while (Applications_FormularsEntity->hasMoreElements()) {
+                        Applications_FormularsEntity->setNextElement();
                         AppIDComp->setData(Applications_FormularsEntity->get_anwendungid());
 
                         _LOG << "Check formular ID = '" << Applications_FormularsEntity->get_formularid() << "' and their application ID = '" << Applications_FormularsEntity->get_anwendungid() << "'." LOG_
@@ -3443,7 +3446,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
 
                                 long FormID = Applications_FormularsEntity->get_formularid();
-                                FormularsEntity->selectFormulars(FormID);
+                                FormularsEntity->selectById(FormID);
 
                                 *EventName = FormularsEntity->get_eventname();
                                 *MenuName = FormularsEntity->get_menuname();
@@ -3487,7 +3490,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
                                 }
                         }
                 }
-                Applications_FormularsEntity->finishApplications_FormularsIteration();
+                Applications_FormularsEntity->finishIteration();
         } else {
                 const char* lbDMFPasswd = getenv("lbDMFPasswd");
                 const char* lbDMFUser   = getenv("lbDMFUser");

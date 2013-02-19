@@ -122,7 +122,7 @@ void LB_STDCALL User_ApplicationsInternalFormatReaderExtension::execute() {
 
 		*iStream >> _userid;
 		*iStream >> _anwendungenid;
-		owningObject->addUser_Applications(_userid, _anwendungenid,  _ID);
+		owningObject->add(_userid, _anwendungenid,  _ID);
 
 		// Leaky !
 	}

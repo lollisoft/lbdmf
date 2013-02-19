@@ -206,8 +206,8 @@ long  LB_STDCALL Column_TypesModel::add(const char* _name, const char* _tablenam
 void		LB_STDCALL Column_TypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Column_Types->finishIteration();
-	while (hasMoreColumn_Types()) {
-		setNextColumn_Types();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -224,8 +224,8 @@ void		LB_STDCALL Column_TypesModel::deleteUnmarked() {
 void		LB_STDCALL Column_TypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Column_Types->finishIteration();
-	while (hasMoreColumn_Types()) {
-		setNextColumn_Types();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

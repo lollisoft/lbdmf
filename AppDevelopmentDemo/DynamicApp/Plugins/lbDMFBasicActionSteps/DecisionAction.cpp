@@ -182,15 +182,15 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 			
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 			
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.
 			
-			transitions->finishAction_Step_TransitionsIteration();
-			while (transitions->hasMoreAction_Step_Transitions()) {
-				transitions->setNextAction_Step_Transitions();
+			transitions->finishIteration();
+			while (transitions->hasMoreElements()) {
+				transitions->setNextElement();
 				// First use a simple expression without any Lex & Yacc parser
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)

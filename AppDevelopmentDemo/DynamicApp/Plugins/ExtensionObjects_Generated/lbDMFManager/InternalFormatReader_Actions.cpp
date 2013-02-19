@@ -126,7 +126,7 @@ void LB_STDCALL ActionsInternalFormatReaderExtension::execute() {
 		*iStream >> _source;
 		*iStream >> _name;
 		*iStream >> _typ;
-		owningObject->addActions(_target, _source, _name, _typ,  _ID);
+		owningObject->add(_target, _source, _name, _typ,  _ID);
 
 		// Leaky !
 	}

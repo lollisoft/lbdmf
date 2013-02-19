@@ -110,10 +110,10 @@ void LB_STDCALL Column_TypesXMLWriterExtension::setOperator(lb_I_Aspect* operati
 void LB_STDCALL Column_TypesXMLWriterExtension::execute() {
 	*oStream << "<column_types>" << "\n";
 	
-	owningObject->finishColumn_TypesIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreColumn_Types()) {
-		owningObject->setNextColumn_Types();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

@@ -427,7 +427,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 	meta->setStatusText("Info", "Write XML document ...");
 	
-	Applications->selectApplications(AppID->getData());
+	Applications->selectById(AppID->getData());
 	Applications->mark();
 
 	if (

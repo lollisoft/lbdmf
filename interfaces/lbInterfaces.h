@@ -4688,6 +4688,7 @@ public:
 #include <lbInterfaces-sub-db.h>
 #include <lbInterfaces-sub-wxWrapper.h>
 #include <lbInterfaces-sub-visitor.h>
+#include <lbInterfaces-sub-security.h>
 
 UAPDECL(lb_I_BinaryData)
 UAPDECL(lb_I_MetaApplication)
@@ -4734,5 +4735,12 @@ UAPDECL(lb_I_Reference)
 UAPDECL(lb_I_StandaloneStreamable)
 UAPDECL(lb_I_FormularAction_Manager)
 UAPDECL(lb_I_Action)
+UAPDECL(lb_I_SecurityProvider)
+UAPDECL(lb_I_Iterator)
+UAPDECL(lb_I_PluginIterator)
+UAPDECL(lb_I_FKPK_Mapping)
+UAPDECL(lb_I_DocumentVersion)
+UAPDECL(lb_I_ExtensionObject)
+UAPDECL(lb_I_VisitorExtension)
 
 #endif // __LB_INTERFACES__

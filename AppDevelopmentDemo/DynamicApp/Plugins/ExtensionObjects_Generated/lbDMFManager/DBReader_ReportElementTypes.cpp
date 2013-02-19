@@ -139,7 +139,7 @@ void LB_STDCALL ReportElementTypesDBReaderExtension::execute() {
 		qdescription = q->getAsString(2);
 		qID = q->getAsLong(3);
 
-		owningObject->addReportElementTypes(qname->charrep(), qdescription->charrep(),  qID->getData());
+		owningObject->add(qname->charrep(), qdescription->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -149,7 +149,7 @@ void LB_STDCALL ReportElementTypesDBReaderExtension::execute() {
 			qdescription = q->getAsString(2);
 			qID = q->getAsLong(3);
 
-			owningObject->addReportElementTypes(qname->charrep(), qdescription->charrep(),  qID->getData());
+			owningObject->add(qname->charrep(), qdescription->charrep(),  qID->getData());
 		}
 	}
 }

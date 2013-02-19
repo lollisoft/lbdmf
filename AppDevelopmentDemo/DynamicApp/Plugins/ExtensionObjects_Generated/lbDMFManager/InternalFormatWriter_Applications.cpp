@@ -110,13 +110,13 @@ void LB_STDCALL ApplicationsInternalFormatWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL ApplicationsInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getApplicationsCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishApplicationsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreApplications()) {
-		owningObject->setNextApplications();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

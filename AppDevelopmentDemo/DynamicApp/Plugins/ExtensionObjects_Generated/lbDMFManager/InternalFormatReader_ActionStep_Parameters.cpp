@@ -128,7 +128,7 @@ void LB_STDCALL ActionStep_ParametersInternalFormatReaderExtension::execute() {
 		*iStream >> _value;
 		*iStream >> _interface;
 		*iStream >> _action_step_id;
-		owningObject->addActionStep_Parameters(_description, _name, _value, _interface, _action_step_id,  _ID);
+		owningObject->add(_description, _name, _value, _interface, _action_step_id,  _ID);
 
 		// Leaky !
 	}

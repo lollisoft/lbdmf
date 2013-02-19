@@ -151,7 +151,7 @@ void LB_STDCALL ReportElementsDBReaderExtension::execute() {
 		qtyp = q->getAsLong(8);
 		qID = q->getAsLong(9);
 
-		owningObject->addReportElements(qname->charrep(), qdescription->charrep(), qx->getData(), qy->getData(), qw->getData(), qh->getData(), qreportid->getData(), qtyp->getData(),  qID->getData());
+		owningObject->add(qname->charrep(), qdescription->charrep(), qx->getData(), qy->getData(), qw->getData(), qh->getData(), qreportid->getData(), qtyp->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -167,7 +167,7 @@ void LB_STDCALL ReportElementsDBReaderExtension::execute() {
 			qtyp = q->getAsLong(8);
 			qID = q->getAsLong(9);
 
-			owningObject->addReportElements(qname->charrep(), qdescription->charrep(), qx->getData(), qy->getData(), qw->getData(), qh->getData(), qreportid->getData(), qtyp->getData(),  qID->getData());
+			owningObject->add(qname->charrep(), qdescription->charrep(), qx->getData(), qy->getData(), qw->getData(), qh->getData(), qreportid->getData(), qtyp->getData(),  qID->getData());
 		}
 	}
 }

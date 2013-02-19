@@ -196,8 +196,8 @@ long  LB_STDCALL Action_TypesModel::add(const char* _bezeichnung, const char* _a
 void		LB_STDCALL Action_TypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Types->finishIteration();
-	while (hasMoreAction_Types()) {
-		setNextAction_Types();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -214,8 +214,8 @@ void		LB_STDCALL Action_TypesModel::deleteUnmarked() {
 void		LB_STDCALL Action_TypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Types->finishIteration();
-	while (hasMoreAction_Types()) {
-		setNextAction_Types();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

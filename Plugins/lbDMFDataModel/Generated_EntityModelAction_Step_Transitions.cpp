@@ -201,8 +201,8 @@ long  LB_STDCALL Action_Step_TransitionsModel::add(const char* _expression, long
 void		LB_STDCALL Action_Step_TransitionsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Step_Transitions->finishIteration();
-	while (hasMoreAction_Step_Transitions()) {
-		setNextAction_Step_Transitions();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -219,8 +219,8 @@ void		LB_STDCALL Action_Step_TransitionsModel::deleteUnmarked() {
 void		LB_STDCALL Action_Step_TransitionsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Action_Step_Transitions->finishIteration();
-	while (hasMoreAction_Step_Transitions()) {
-		setNextAction_Step_Transitions();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

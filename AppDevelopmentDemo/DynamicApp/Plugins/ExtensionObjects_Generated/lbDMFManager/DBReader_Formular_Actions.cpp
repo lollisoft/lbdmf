@@ -141,7 +141,7 @@ void LB_STDCALL Formular_ActionsDBReaderExtension::execute() {
 		qformular = q->getAsLong(3);
 		qID = q->getAsLong(4);
 
-		owningObject->addFormular_Actions(qevent->charrep(), qaction->getData(), qformular->getData(),  qID->getData());
+		owningObject->add(qevent->charrep(), qaction->getData(), qformular->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -152,7 +152,7 @@ void LB_STDCALL Formular_ActionsDBReaderExtension::execute() {
 			qformular = q->getAsLong(3);
 			qID = q->getAsLong(4);
 
-			owningObject->addFormular_Actions(qevent->charrep(), qaction->getData(), qformular->getData(),  qID->getData());
+			owningObject->add(qevent->charrep(), qaction->getData(), qformular->getData(),  qID->getData());
 		}
 	}
 }

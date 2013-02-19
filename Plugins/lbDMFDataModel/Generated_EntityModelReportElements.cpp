@@ -221,8 +221,8 @@ long  LB_STDCALL ReportElementsModel::add(const char* _name, const char* _descri
 void		LB_STDCALL ReportElementsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportElements->finishIteration();
-	while (hasMoreReportElements()) {
-		setNextReportElements();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -239,8 +239,8 @@ void		LB_STDCALL ReportElementsModel::deleteUnmarked() {
 void		LB_STDCALL ReportElementsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ReportElements->finishIteration();
-	while (hasMoreReportElements()) {
-		setNextReportElements();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

@@ -141,7 +141,7 @@ void LB_STDCALL ReportTextsDBReaderExtension::execute() {
 		qelementid = q->getAsLong(3);
 		qID = q->getAsLong(4);
 
-		owningObject->addReportTexts(qline->getData(), qtext->charrep(), qelementid->getData(),  qID->getData());
+		owningObject->add(qline->getData(), qtext->charrep(), qelementid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -152,7 +152,7 @@ void LB_STDCALL ReportTextsDBReaderExtension::execute() {
 			qelementid = q->getAsLong(3);
 			qID = q->getAsLong(4);
 
-			owningObject->addReportTexts(qline->getData(), qtext->charrep(), qelementid->getData(),  qID->getData());
+			owningObject->add(qline->getData(), qtext->charrep(), qelementid->getData(),  qID->getData());
 		}
 	}
 }

@@ -111,7 +111,7 @@ public:
 	 * To easily lookup an extension object by the context, it should be combined with the classname to form a
 	 * new namespace that stands for the implementation of the specific extension object in question.
 	 */
-	virtual void setContextNamespace(const char* _namespace) = 0;
+	virtual void LB_STDCALL setContextNamespace(const char* _namespace) = 0;
 
 // The lb_I_Streamable interface would possibly go impossible
 //virtual void LB_STDCALL visit(lb_I_Unknown*) { printf("Error: Catch all visitor called!\n"); }
