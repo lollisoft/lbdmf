@@ -110,10 +110,10 @@ void LB_STDCALL Action_ParametersXMLWriterExtension::setOperator(lb_I_Aspect* op
 void LB_STDCALL Action_ParametersXMLWriterExtension::execute() {
 	*oStream << "<action_parameters>" << "\n";
 	
-	owningObject->finishAction_ParametersIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreAction_Parameters()) {
-		owningObject->setNextAction_Parameters();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

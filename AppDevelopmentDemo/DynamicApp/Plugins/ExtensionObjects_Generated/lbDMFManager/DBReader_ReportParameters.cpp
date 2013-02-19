@@ -141,7 +141,7 @@ void LB_STDCALL ReportParametersDBReaderExtension::execute() {
 		qreportid = q->getAsLong(3);
 		qID = q->getAsLong(4);
 
-		owningObject->addReportParameters(qvalue->getData(), qname->charrep(), qreportid->getData(),  qID->getData());
+		owningObject->add(qvalue->getData(), qname->charrep(), qreportid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -152,7 +152,7 @@ void LB_STDCALL ReportParametersDBReaderExtension::execute() {
 			qreportid = q->getAsLong(3);
 			qID = q->getAsLong(4);
 
-			owningObject->addReportParameters(qvalue->getData(), qname->charrep(), qreportid->getData(),  qID->getData());
+			owningObject->add(qvalue->getData(), qname->charrep(), qreportid->getData(),  qID->getData());
 		}
 	}
 }

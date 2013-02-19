@@ -124,7 +124,7 @@ void LB_STDCALL TranslationsInternalFormatReaderExtension::execute() {
 		*iStream >> _translated;
 		*iStream >> _text;
 		*iStream >> _language;
-		owningObject->addTranslations(_translated, _text, _language,  _ID);
+		owningObject->add(_translated, _text, _language,  _ID);
 
 		// Leaky !
 	}

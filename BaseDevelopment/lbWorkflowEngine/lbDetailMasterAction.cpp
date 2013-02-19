@@ -77,6 +77,7 @@ extern "C" {
 #endif
 
 #include <lbDetailMasterAction.h>
+#include <lbParameterLookup.h>
 
 /*...slbMasterFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbMasterFormAction)
@@ -203,20 +204,24 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 			if ((formParams != NULL) && (forms != NULL)) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-				long AppID = meta->getApplicationID();
+				UAP(lb_I_SecurityProvider, securityManager)
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+				long AppID = securityManager->getApplicationID();
 
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
+				while (forms->hasMoreElements()) {
+					forms->setNextElement();
 
-					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
+					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 						UAP(lb_I_DatabaseForm, form)
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, detail)
 
-						long FormularID = forms->getFormularID();
-						*SQL = formParams->getParameter("query", FormularID);
+						long FormularID = forms->get_id();
+						//*SQL = formParams->getParameter("query", FormularID);
+						*SQL = lookupParameter(*&formParams, "query", FormularID);
 						form = gui->createDBForm(formularname->charrep(),
 												 SQL->charrep(),
 												 DBName->charrep(),
@@ -498,8 +503,8 @@ long LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectById(myActionID);
+			*What = appActionSteps->get_what();
 
 			*msg = "Open master form (";
 			*msg += What->charrep();

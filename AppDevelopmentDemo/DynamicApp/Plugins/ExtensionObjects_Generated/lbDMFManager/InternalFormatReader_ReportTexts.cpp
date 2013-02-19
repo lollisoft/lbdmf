@@ -124,7 +124,7 @@ void LB_STDCALL ReportTextsInternalFormatReaderExtension::execute() {
 		*iStream >> _line;
 		*iStream >> _text;
 		*iStream >> _elementid;
-		owningObject->addReportTexts(_line, _text, _elementid,  _ID);
+		owningObject->add(_line, _text, _elementid,  _ID);
 
 		// Leaky !
 	}

@@ -196,8 +196,8 @@ long  LB_STDCALL Formular_ActionsModel::add(const char* _event, long _action, lo
 void		LB_STDCALL Formular_ActionsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Actions->finishIteration();
-	while (hasMoreFormular_Actions()) {
-		setNextFormular_Actions();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -214,8 +214,8 @@ void		LB_STDCALL Formular_ActionsModel::deleteUnmarked() {
 void		LB_STDCALL Formular_ActionsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Formular_Actions->finishIteration();
-	while (hasMoreFormular_Actions()) {
-		setNextFormular_Actions();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

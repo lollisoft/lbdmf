@@ -191,8 +191,8 @@ long  LB_STDCALL User_ApplicationsModel::add(long _userid, long _anwendungenid, 
 void		LB_STDCALL User_ApplicationsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	User_Applications->finishIteration();
-	while (hasMoreUser_Applications()) {
-		setNextUser_Applications();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -209,8 +209,8 @@ void		LB_STDCALL User_ApplicationsModel::deleteUnmarked() {
 void		LB_STDCALL User_ApplicationsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	User_Applications->finishIteration();
-	while (hasMoreUser_Applications()) {
-		setNextUser_Applications();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

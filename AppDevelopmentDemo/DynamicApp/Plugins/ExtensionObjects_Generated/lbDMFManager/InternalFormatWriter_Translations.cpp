@@ -110,13 +110,13 @@ void LB_STDCALL TranslationsInternalFormatWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL TranslationsInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getTranslationsCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishTranslationsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreTranslations()) {
-		owningObject->setNextTranslations();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

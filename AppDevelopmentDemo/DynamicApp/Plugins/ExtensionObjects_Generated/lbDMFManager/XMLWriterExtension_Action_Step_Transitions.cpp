@@ -110,10 +110,10 @@ void LB_STDCALL Action_Step_TransitionsXMLWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL Action_Step_TransitionsXMLWriterExtension::execute() {
 	*oStream << "<action_step_transitions>" << "\n";
 	
-	owningObject->finishAction_Step_TransitionsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreAction_Step_Transitions()) {
-		owningObject->setNextAction_Step_Transitions();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

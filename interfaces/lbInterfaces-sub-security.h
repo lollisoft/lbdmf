@@ -1,3 +1,6 @@
+#ifndef __LB_INTERFACES_SUB_SECURITY__
+#define __LB_INTERFACES_SUB_SECURITY__
+
 class lb_I_SecurityProvider :
 	public lb_I_Unknown
 {
@@ -61,3 +64,5 @@ public:
 	virtual lbErrCodes 		LB_STDCALL load() = 0;
 	virtual lbErrCodes		LB_STDCALL uninitialize() = 0;
 };
+
+#endif //__LB_INTERFACES_SUB_SECURITY__

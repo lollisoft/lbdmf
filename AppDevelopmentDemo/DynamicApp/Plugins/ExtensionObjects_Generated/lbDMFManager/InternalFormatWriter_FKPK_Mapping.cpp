@@ -110,13 +110,13 @@ void LB_STDCALL FKPK_MappingInternalFormatWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL FKPK_MappingInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getFKPK_MappingCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishFKPK_MappingIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreFKPK_Mapping()) {
-		owningObject->setNextFKPK_Mapping();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

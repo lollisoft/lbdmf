@@ -176,8 +176,8 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectActionStep(myActionID);
-			*What = appActionSteps->getActionStepWhat();
+			appActionSteps->selectById(myActionID);
+			*What = appActionSteps->get_what();
 
 			*msg = "Execute query (";
 			*msg += What->charrep();

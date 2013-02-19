@@ -215,7 +215,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>XMLWriterExtension::setOperato
 void LB_STDCALL <xsl:value-of select="$FormName"/>XMLWriterExtension::execute() {
 	*oStream &lt;&lt; "&lt;<xsl:value-of select="//lbDMF/formularfields/formular[@formularid=$FormularID]/@tablename"/>&gt;" &lt;&lt; "\n";
 	
-	owningObject-&gt;finish<xsl:value-of select="$FormName"/>Iteration();
+	owningObject-&gt;finishIteration();
 	
 	while (owningObject-&gt;hasMoreElements()) {
 		owningObject-&gt;setNextElement();

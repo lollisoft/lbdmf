@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.195 $
+ * $Revision: 1.196 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.195 2013/02/16 10:36:25 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.196 2013/02/19 06:06:47 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.196  2013/02/19 06:06:47  lollisoft
+ * Renamed some generic container methods to not contain class specific names.
+ *
  * Revision 1.195  2013/02/16 10:36:25  lollisoft
  * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
  * Several files were conflicting and resolved in this checkin.
@@ -890,7 +893,14 @@ lb_I_String*	LB_STDCALL lb_MetaApplication::getProcessName() {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
-	if (Applications != NULL) {
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+
+	UAP(lb_I_Container, apps)
+	apps = securityManager->getApplications();
+		
+	if (apps != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
 
 		deinitApplicationSwitcher();
@@ -1676,9 +1686,13 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 }
 
 void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher() {
+	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+
 	UAP(lb_I_Container, apps)
-	
-	apps = getApplications();
+	apps = securityManager->getApplications();
 	
 	while (apps->hasMoreElements() == 1)
 	{
@@ -1700,9 +1714,13 @@ void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher
 }
 
 void                    LB_STDCALL lb_MetaApplication::initApplicationSwitcher() {
+	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+
 	UAP(lb_I_Container, apps)
-	
-	apps = getApplications();
+	apps = securityManager->getApplications();
 	
 	while (apps->hasMoreElements() == 1)
 	{

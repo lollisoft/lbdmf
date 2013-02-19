@@ -141,7 +141,7 @@ void LB_STDCALL ApplicationParameterDBReaderExtension::execute() {
 		qanwendungid = q->getAsLong(3);
 		qID = q->getAsLong(4);
 
-		owningObject->addApplicationParameter(qparametername->charrep(), qparametervalue->charrep(), qanwendungid->getData(),  qID->getData());
+		owningObject->add(qparametername->charrep(), qparametervalue->charrep(), qanwendungid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -152,7 +152,7 @@ void LB_STDCALL ApplicationParameterDBReaderExtension::execute() {
 			qanwendungid = q->getAsLong(3);
 			qID = q->getAsLong(4);
 
-			owningObject->addApplicationParameter(qparametername->charrep(), qparametervalue->charrep(), qanwendungid->getData(),  qID->getData());
+			owningObject->add(qparametername->charrep(), qparametervalue->charrep(), qanwendungid->getData(),  qID->getData());
 		}
 	}
 }

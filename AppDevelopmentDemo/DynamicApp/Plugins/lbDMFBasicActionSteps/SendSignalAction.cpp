@@ -218,7 +218,7 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectAction_Steps(myActionID);
+			appActionSteps->selectById(myActionID);
 			*What = appActionSteps->get_what();
 
 			*msg = "Send signal to dispatcher (";
@@ -234,14 +234,14 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 
 			// Build up the required parameters (with substituted placeholders) for the configured signal
 			int I = 0;
-			SignalParams->finishActionStep_ParametersIteration();
-			while (SignalParams->hasMoreActionStep_Parameters()) {
+			SignalParams->finishIteration();
+			while (SignalParams->hasMoreElements()) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
 				UAP_REQUEST(getModuleInstance(), lb_I_String, valueSubstituted)
 
-				SignalParams->setNextActionStep_Parameters();
+				SignalParams->setNextElement();
 
 				*name = SignalParams->get_name();
 				*value = SignalParams->get_value();

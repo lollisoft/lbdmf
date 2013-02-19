@@ -126,7 +126,7 @@ void LB_STDCALL Action_Step_TransitionsInternalFormatReaderExtension::execute() 
 		*iStream >> _src_actionid;
 		*iStream >> _dst_actionid;
 		*iStream >> _description;
-		owningObject->addAction_Step_Transitions(_expression, _src_actionid, _dst_actionid, _description,  _ID);
+		owningObject->add(_expression, _src_actionid, _dst_actionid, _description,  _ID);
 
 		// Leaky !
 	}

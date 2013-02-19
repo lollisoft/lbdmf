@@ -143,7 +143,7 @@ void LB_STDCALL FKPK_MappingDBReaderExtension::execute() {
 		qfkname = q->getAsString(4);
 		qID = q->getAsLong(5);
 
-		owningObject->addFKPK_Mapping(qpktable->charrep(), qpkname->charrep(), qfktable->charrep(), qfkname->charrep(),  qID->getData());
+		owningObject->add(qpktable->charrep(), qpkname->charrep(), qfktable->charrep(), qfkname->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -155,7 +155,7 @@ void LB_STDCALL FKPK_MappingDBReaderExtension::execute() {
 			qfkname = q->getAsString(4);
 			qID = q->getAsLong(5);
 
-			owningObject->addFKPK_Mapping(qpktable->charrep(), qpkname->charrep(), qfktable->charrep(), qfkname->charrep(),  qID->getData());
+			owningObject->add(qpktable->charrep(), qpkname->charrep(), qfktable->charrep(), qfkname->charrep(),  qID->getData());
 		}
 	}
 }

@@ -141,7 +141,7 @@ void LB_STDCALL TranslationsDBReaderExtension::execute() {
 		qlanguage = q->getAsString(3);
 		qID = q->getAsLong(4);
 
-		owningObject->addTranslations(qtranslated->charrep(), qtext->charrep(), qlanguage->charrep(),  qID->getData());
+		owningObject->add(qtranslated->charrep(), qtext->charrep(), qlanguage->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -152,7 +152,7 @@ void LB_STDCALL TranslationsDBReaderExtension::execute() {
 			qlanguage = q->getAsString(3);
 			qID = q->getAsLong(4);
 
-			owningObject->addTranslations(qtranslated->charrep(), qtext->charrep(), qlanguage->charrep(),  qID->getData());
+			owningObject->add(qtranslated->charrep(), qtext->charrep(), qlanguage->charrep(),  qID->getData());
 		}
 	}
 }

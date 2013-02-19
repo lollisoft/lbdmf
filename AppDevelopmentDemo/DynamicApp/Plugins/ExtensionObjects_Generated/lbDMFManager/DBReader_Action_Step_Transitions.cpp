@@ -143,7 +143,7 @@ void LB_STDCALL Action_Step_TransitionsDBReaderExtension::execute() {
 		qdescription = q->getAsString(4);
 		qID = q->getAsLong(5);
 
-		owningObject->addAction_Step_Transitions(qexpression->charrep(), qsrc_actionid->getData(), qdst_actionid->getData(), qdescription->charrep(),  qID->getData());
+		owningObject->add(qexpression->charrep(), qsrc_actionid->getData(), qdst_actionid->getData(), qdescription->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -155,7 +155,7 @@ void LB_STDCALL Action_Step_TransitionsDBReaderExtension::execute() {
 			qdescription = q->getAsString(4);
 			qID = q->getAsLong(5);
 
-			owningObject->addAction_Step_Transitions(qexpression->charrep(), qsrc_actionid->getData(), qdst_actionid->getData(), qdescription->charrep(),  qID->getData());
+			owningObject->add(qexpression->charrep(), qsrc_actionid->getData(), qdst_actionid->getData(), qdescription->charrep(),  qID->getData());
 		}
 	}
 }

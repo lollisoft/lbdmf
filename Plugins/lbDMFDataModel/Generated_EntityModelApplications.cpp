@@ -206,8 +206,8 @@ long  LB_STDCALL ApplicationsModel::add(const char* _titel, const char* _name, c
 void		LB_STDCALL ApplicationsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications->finishIteration();
-	while (hasMoreApplications()) {
-		setNextApplications();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -224,8 +224,8 @@ void		LB_STDCALL ApplicationsModel::deleteUnmarked() {
 void		LB_STDCALL ApplicationsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications->finishIteration();
-	while (hasMoreApplications()) {
-		setNextApplications();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

@@ -215,10 +215,10 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatWriterExtension:
 void LB_STDCALL <xsl:value-of select="$FormName"/>InternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject-&gt;get<xsl:value-of select="$FormName"/>Count();
+	count = owningObject-&gt;Count();
 	*oStream &lt;&lt; count;
 	
-	owningObject-&gt;finish<xsl:value-of select="$FormName"/>Iteration();
+	owningObject-&gt;finishIteration();
 	
 	while (owningObject-&gt;hasMoreElements()) {
 		owningObject-&gt;setNextElement();

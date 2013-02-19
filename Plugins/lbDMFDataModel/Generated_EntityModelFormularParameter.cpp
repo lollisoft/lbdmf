@@ -196,8 +196,8 @@ long  LB_STDCALL FormularParameterModel::add(const char* _parametervalue, const 
 void		LB_STDCALL FormularParameterModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	FormularParameter->finishIteration();
-	while (hasMoreFormularParameter()) {
-		setNextFormularParameter();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -214,8 +214,8 @@ void		LB_STDCALL FormularParameterModel::deleteUnmarked() {
 void		LB_STDCALL FormularParameterModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	FormularParameter->finishIteration();
-	while (hasMoreFormularParameter()) {
-		setNextFormularParameter();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

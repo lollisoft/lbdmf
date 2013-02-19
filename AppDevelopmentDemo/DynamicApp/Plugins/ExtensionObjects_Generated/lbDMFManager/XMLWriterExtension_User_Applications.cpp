@@ -110,10 +110,10 @@ void LB_STDCALL User_ApplicationsXMLWriterExtension::setOperator(lb_I_Aspect* op
 void LB_STDCALL User_ApplicationsXMLWriterExtension::execute() {
 	*oStream << "<user_anwendungen>" << "\n";
 	
-	owningObject->finishUser_ApplicationsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreUser_Applications()) {
-		owningObject->setNextUser_Applications();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

@@ -196,8 +196,8 @@ long  LB_STDCALL TranslationsModel::add(const char* _translated, const char* _te
 void		LB_STDCALL TranslationsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Translations->finishIteration();
-	while (hasMoreTranslations()) {
-		setNextTranslations();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -214,8 +214,8 @@ void		LB_STDCALL TranslationsModel::deleteUnmarked() {
 void		LB_STDCALL TranslationsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Translations->finishIteration();
-	while (hasMoreTranslations()) {
-		setNextTranslations();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

@@ -132,7 +132,7 @@ void LB_STDCALL FormularsInternalFormatReaderExtension::execute() {
 		*iStream >> _toolbarimage;
 		*iStream >> _anwendungid;
 		*iStream >> _typ;
-		owningObject->addFormulars(_name, _menuname, _menuhilfe, _eventname, _toolbarimage, _anwendungid, _typ,  _ID);
+		owningObject->add(_name, _menuname, _menuhilfe, _eventname, _toolbarimage, _anwendungid, _typ,  _ID);
 
 		// Leaky !
 	}
