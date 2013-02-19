@@ -122,7 +122,7 @@ void LB_STDCALL ReportElementTypesInternalFormatReaderExtension::execute() {
 
 		*iStream >> _name;
 		*iStream >> _description;
-		owningObject->addReportElementTypes(_name, _description,  _ID);
+		owningObject->add(_name, _description,  _ID);
 
 		// Leaky !
 	}

@@ -110,10 +110,10 @@ void LB_STDCALL ApplicationParameterXMLWriterExtension::setOperator(lb_I_Aspect*
 void LB_STDCALL ApplicationParameterXMLWriterExtension::execute() {
 	*oStream << "<anwendungs_parameter>" << "\n";
 	
-	owningObject->finishApplicationParameterIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreApplicationParameter()) {
-		owningObject->setNextApplicationParameter();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

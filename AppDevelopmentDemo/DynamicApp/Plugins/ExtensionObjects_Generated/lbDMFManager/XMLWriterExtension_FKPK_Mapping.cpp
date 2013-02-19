@@ -110,10 +110,10 @@ void LB_STDCALL FKPK_MappingXMLWriterExtension::setOperator(lb_I_Aspect* operati
 void LB_STDCALL FKPK_MappingXMLWriterExtension::execute() {
 	*oStream << "<foreignkey_visibledata_mapping>" << "\n";
 	
-	owningObject->finishFKPK_MappingIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreFKPK_Mapping()) {
-		owningObject->setNextFKPK_Mapping();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

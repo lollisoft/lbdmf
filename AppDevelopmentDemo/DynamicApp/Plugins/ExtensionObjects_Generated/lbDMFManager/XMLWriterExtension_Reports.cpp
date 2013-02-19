@@ -110,10 +110,10 @@ void LB_STDCALL ReportsXMLWriterExtension::setOperator(lb_I_Aspect* operation) {
 void LB_STDCALL ReportsXMLWriterExtension::execute() {
 	*oStream << "<reports>" << "\n";
 	
-	owningObject->finishReportsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreReports()) {
-		owningObject->setNextReports();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

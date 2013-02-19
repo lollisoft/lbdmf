@@ -154,7 +154,7 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 		qformularid = q->getAsLong(7);
 		qID = q->getAsLong(8);
 
-		owningObject->addFormular_Fields(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->getData(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
+		owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->getData(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -174,7 +174,7 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 			qformularid = q->getAsLong(7);
 			qID = q->getAsLong(8);
 
-			owningObject->addFormular_Fields(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->charrep(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
+			owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->charrep(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
 		}
 	}
 }

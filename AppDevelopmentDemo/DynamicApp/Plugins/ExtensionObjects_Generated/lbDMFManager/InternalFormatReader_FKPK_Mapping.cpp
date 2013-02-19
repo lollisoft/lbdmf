@@ -126,7 +126,7 @@ void LB_STDCALL FKPK_MappingInternalFormatReaderExtension::execute() {
 		*iStream >> _pkname;
 		*iStream >> _fktable;
 		*iStream >> _fkname;
-		owningObject->addFKPK_Mapping(_pktable, _pkname, _fktable, _fkname,  _ID);
+		owningObject->add(_pktable, _pkname, _fktable, _fkname,  _ID);
 
 		// Leaky !
 	}

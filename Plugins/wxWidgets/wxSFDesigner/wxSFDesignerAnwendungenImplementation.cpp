@@ -216,6 +216,9 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
+	void LB_STDCALL setNamespace(const char* _namespace) { }
+
+	
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukActions)

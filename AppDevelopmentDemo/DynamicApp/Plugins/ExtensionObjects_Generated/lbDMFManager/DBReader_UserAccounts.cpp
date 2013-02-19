@@ -145,7 +145,7 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 		qsecret = q->getAsString(5);
 		qID = q->getAsLong(6);
 
-		owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
+		owningObject->add(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -158,7 +158,7 @@ void LB_STDCALL UserAccountsDBReaderExtension::execute() {
 			qsecret = q->getAsString(5);
 			qID = q->getAsLong(6);
 
-			owningObject->addUserAccounts(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
+			owningObject->add(qpasswort->charrep(), quserid->charrep(), qvorname->charrep(), qname->charrep(), qsecret->charrep(),  qID->getData());
 		}
 	}
 }

@@ -155,7 +155,7 @@ void LB_STDCALL Column_TypesDBReaderExtension::execute() {
 		qcontroltype = q->getAsString(5);
 		qID = q->getAsLong(6);
 
-		owningObject->addColumn_Types(qname->charrep(), qtablename->charrep(), qro->getData(), qspecialcolumn->getData(), qcontroltype->charrep(),  qID->getData());
+		owningObject->add(qname->charrep(), qtablename->charrep(), qro->getData(), qspecialcolumn->getData(), qcontroltype->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -178,7 +178,7 @@ void LB_STDCALL Column_TypesDBReaderExtension::execute() {
 			qcontroltype = q->getAsString(5);
 			qID = q->getAsLong(6);
 
-			owningObject->addColumn_Types(qname->charrep(), qtablename->charrep(), qro->charrep(), qspecialcolumn->charrep(), qcontroltype->charrep(),  qID->getData());
+			owningObject->add(qname->charrep(), qtablename->charrep(), qro->charrep(), qspecialcolumn->charrep(), qcontroltype->charrep(),  qID->getData());
 		}
 	}
 }

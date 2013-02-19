@@ -110,13 +110,13 @@ void LB_STDCALL ApplicationParameterInternalFormatWriterExtension::setOperator(l
 void LB_STDCALL ApplicationParameterInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getApplicationParameterCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishApplicationParameterIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreApplicationParameter()) {
-		owningObject->setNextApplicationParameter();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

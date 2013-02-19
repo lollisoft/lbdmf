@@ -143,7 +143,7 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 		qtyp = q->getAsLong(4);
 		qID = q->getAsLong(5);
 
-		owningObject->addActions(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
+		owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -155,7 +155,7 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 			qtyp = q->getAsLong(4);
 			qID = q->getAsLong(5);
 
-			owningObject->addActions(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
+			owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
 		}
 	}
 }

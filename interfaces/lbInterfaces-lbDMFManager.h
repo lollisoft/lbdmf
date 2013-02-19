@@ -1,4 +1,7 @@
 
+#ifndef __LB_INTERFACES_SUB_lbDMFManager__
+#define __LB_INTERFACES_SUB_lbDMFManager__
+
 class lb_I_Actions : public lb_I_TableModule {
 public:
 	virtual long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID = -1) = 0;
@@ -506,3 +509,6 @@ public:
 	virtual void LB_STDCALL setParameter(lb_I_ActionStep_Parameters* myParams) = 0;
 
 };
+
+
+#endif //__LB_INTERFACES_SUB_lbDMFManager__

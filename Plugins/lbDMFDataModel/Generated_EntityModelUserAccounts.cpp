@@ -206,8 +206,8 @@ long  LB_STDCALL UserAccountsModel::add(const char* _passwort, const char* _user
 void		LB_STDCALL UserAccountsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	UserAccounts->finishIteration();
-	while (hasMoreUserAccounts()) {
-		setNextUserAccounts();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -224,8 +224,8 @@ void		LB_STDCALL UserAccountsModel::deleteUnmarked() {
 void		LB_STDCALL UserAccountsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	UserAccounts->finishIteration();
-	while (hasMoreUserAccounts()) {
-		setNextUserAccounts();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

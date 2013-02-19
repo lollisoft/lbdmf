@@ -206,8 +206,8 @@ long  LB_STDCALL ActionStep_ParametersModel::add(const char* _description, const
 void		LB_STDCALL ActionStep_ParametersModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ActionStep_Parameters->finishIteration();
-	while (hasMoreActionStep_Parameters()) {
-		setNextActionStep_Parameters();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -224,8 +224,8 @@ void		LB_STDCALL ActionStep_ParametersModel::deleteUnmarked() {
 void		LB_STDCALL ActionStep_ParametersModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ActionStep_Parameters->finishIteration();
-	while (hasMoreActionStep_Parameters()) {
-		setNextActionStep_Parameters();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

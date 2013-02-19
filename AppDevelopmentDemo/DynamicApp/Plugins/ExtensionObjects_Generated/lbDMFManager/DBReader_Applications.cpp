@@ -145,7 +145,7 @@ void LB_STDCALL ApplicationsDBReaderExtension::execute() {
 		qmodulename = q->getAsString(5);
 		qID = q->getAsLong(6);
 
-		owningObject->addApplications(qtitel->charrep(), qname->charrep(), qinterface->charrep(), qfunctor->charrep(), qmodulename->charrep(),  qID->getData());
+		owningObject->add(qtitel->charrep(), qname->charrep(), qinterface->charrep(), qfunctor->charrep(), qmodulename->charrep(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -158,7 +158,7 @@ void LB_STDCALL ApplicationsDBReaderExtension::execute() {
 			qmodulename = q->getAsString(5);
 			qID = q->getAsLong(6);
 
-			owningObject->addApplications(qtitel->charrep(), qname->charrep(), qinterface->charrep(), qfunctor->charrep(), qmodulename->charrep(),  qID->getData());
+			owningObject->add(qtitel->charrep(), qname->charrep(), qinterface->charrep(), qfunctor->charrep(), qmodulename->charrep(),  qID->getData());
 		}
 	}
 }

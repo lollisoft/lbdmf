@@ -128,7 +128,7 @@ void LB_STDCALL Action_StepsInternalFormatReaderExtension::execute() {
 		*iStream >> _a_order_nr;
 		*iStream >> _type;
 		*iStream >> _actionid;
-		owningObject->addAction_Steps(_bezeichnung, _what, _a_order_nr, _type, _actionid,  _ID);
+		owningObject->add(_bezeichnung, _what, _a_order_nr, _type, _actionid,  _ID);
 
 		// Leaky !
 	}

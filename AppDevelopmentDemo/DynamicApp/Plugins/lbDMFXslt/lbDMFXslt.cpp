@@ -207,10 +207,10 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
 }
 
 lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
-	applications->finishApplicationsIteration();
+	applications->finishIteration();
 	
-	while (applications->hasMoreApplications()) {
-		applications->setNextApplications();
+	while (applications->hasMoreElements()) {
+		applications->setNextElement();
 		if (strcmp(applications->get_name(), name) == 0)
 			return ERR_NONE;
 	}
@@ -219,10 +219,10 @@ lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const c
 }
 
 char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
-	from->finishApplicationParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreApplicationParameter()) {
-		from->setNextApplicationParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -355,7 +355,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		if (strcmp(lookupParameter(*&appParams, "codegenbasedir", id), "") == 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dirloc)
 			if (metaapp->askForDirectory(*&dirloc)) {
-				appParams->addApplicationParameter("codegenbasedir", dirloc->charrep(), id);
+				appParams->add("codegenbasedir", dirloc->charrep(), id);
 				
 				UAP(lb_I_Database, database)
 				

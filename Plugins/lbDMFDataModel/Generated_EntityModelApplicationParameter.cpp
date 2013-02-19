@@ -196,8 +196,8 @@ long  LB_STDCALL ApplicationParameterModel::add(const char* _parametername, cons
 void		LB_STDCALL ApplicationParameterModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	ApplicationParameter->finishIteration();
-	while (hasMoreApplicationParameter()) {
-		setNextApplicationParameter();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -214,8 +214,8 @@ void		LB_STDCALL ApplicationParameterModel::deleteUnmarked() {
 void		LB_STDCALL ApplicationParameterModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	ApplicationParameter->finishIteration();
-	while (hasMoreApplicationParameter()) {
-		setNextApplicationParameter();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

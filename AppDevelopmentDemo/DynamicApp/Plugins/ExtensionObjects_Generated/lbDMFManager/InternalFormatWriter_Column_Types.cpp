@@ -110,13 +110,13 @@ void LB_STDCALL Column_TypesInternalFormatWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL Column_TypesInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getColumn_TypesCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishColumn_TypesIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreColumn_Types()) {
-		owningObject->setNextColumn_Types();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

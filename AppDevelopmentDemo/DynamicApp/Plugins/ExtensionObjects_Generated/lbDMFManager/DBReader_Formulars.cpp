@@ -149,7 +149,7 @@ void LB_STDCALL FormularsDBReaderExtension::execute() {
 		qtyp = q->getAsLong(7);
 		qID = q->getAsLong(8);
 
-		owningObject->addFormulars(qname->charrep(), qmenuname->charrep(), qmenuhilfe->charrep(), qeventname->charrep(), qtoolbarimage->charrep(), qanwendungid->getData(), qtyp->getData(),  qID->getData());
+		owningObject->add(qname->charrep(), qmenuname->charrep(), qmenuhilfe->charrep(), qeventname->charrep(), qtoolbarimage->charrep(), qanwendungid->getData(), qtyp->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -164,7 +164,7 @@ void LB_STDCALL FormularsDBReaderExtension::execute() {
 			qtyp = q->getAsLong(7);
 			qID = q->getAsLong(8);
 
-			owningObject->addFormulars(qname->charrep(), qmenuname->charrep(), qmenuhilfe->charrep(), qeventname->charrep(), qtoolbarimage->charrep(), qanwendungid->getData(), qtyp->getData(),  qID->getData());
+			owningObject->add(qname->charrep(), qmenuname->charrep(), qmenuhilfe->charrep(), qeventname->charrep(), qtoolbarimage->charrep(), qanwendungid->getData(), qtyp->getData(),  qID->getData());
 		}
 	}
 }

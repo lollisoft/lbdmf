@@ -139,7 +139,7 @@ void LB_STDCALL User_ApplicationsDBReaderExtension::execute() {
 		qanwendungenid = q->getAsLong(2);
 		qID = q->getAsLong(3);
 
-		owningObject->addUser_Applications(quserid->getData(), qanwendungenid->getData(),  qID->getData());
+		owningObject->add(quserid->getData(), qanwendungenid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -149,7 +149,7 @@ void LB_STDCALL User_ApplicationsDBReaderExtension::execute() {
 			qanwendungenid = q->getAsLong(2);
 			qID = q->getAsLong(3);
 
-			owningObject->addUser_Applications(quserid->getData(), qanwendungenid->getData(),  qID->getData());
+			owningObject->add(quserid->getData(), qanwendungenid->getData(),  qID->getData());
 		}
 	}
 }

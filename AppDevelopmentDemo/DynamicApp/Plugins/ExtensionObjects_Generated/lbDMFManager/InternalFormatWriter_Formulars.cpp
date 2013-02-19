@@ -110,13 +110,13 @@ void LB_STDCALL FormularsInternalFormatWriterExtension::setOperator(lb_I_Aspect*
 void LB_STDCALL FormularsInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getFormularsCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishFormularsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreFormulars()) {
-		owningObject->setNextFormulars();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

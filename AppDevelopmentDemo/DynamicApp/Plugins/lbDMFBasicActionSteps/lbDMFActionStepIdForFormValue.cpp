@@ -97,10 +97,10 @@ void LB_STDCALL lbDMFIdForFormValue::setParameter(lb_I_ActionStep_Parameters* my
 }
 
 lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
-	applications->finishApplicationsIteration();
+	applications->finishIteration();
 	
-	while (applications->hasMoreApplications()) {
-		applications->setNextApplications();
+	while (applications->hasMoreElements()) {
+		applications->setNextElement();
 		if (strcmp(applications->get_name(), name) == 0)
 			return ERR_NONE;
 	}
@@ -109,10 +109,10 @@ lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const c
 }
 
 char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
-	from->finishApplicationParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreApplicationParameter()) {
-		from->setNextApplicationParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -121,10 +121,10 @@ char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* na
 }
 
 char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
-	from->finishFormularParameterIteration();
+	from->finishIteration();
 	
-	while (from->hasMoreFormularParameter()) {
-		from->setNextFormularParameter();
+	while (from->hasMoreElements()) {
+		from->setNextElement();
 		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
 			return from->get_parametervalue();
 	}
@@ -234,10 +234,10 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 			QI(uk, lb_I_Formulars, formulars)
 			
 			if (formulars != NULL) {
-				formulars->finishFormularsIteration();
+				formulars->finishIteration();
 				
-				while (formulars->hasMoreFormulars()) {
-					formulars->setNextFormulars();
+				while (formulars->hasMoreElements()) {
+					formulars->setNextElement();
 					
 					if (strcmp(formulars->get_name(), currentFormular->charrep()) == 0) {
 						if (formulars->get_anwendungid() == (long) AppID->getData()) {

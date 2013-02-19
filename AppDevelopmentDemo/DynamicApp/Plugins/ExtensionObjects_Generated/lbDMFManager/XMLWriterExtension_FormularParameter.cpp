@@ -110,10 +110,10 @@ void LB_STDCALL FormularParameterXMLWriterExtension::setOperator(lb_I_Aspect* op
 void LB_STDCALL FormularParameterXMLWriterExtension::execute() {
 	*oStream << "<formular_parameters>" << "\n";
 	
-	owningObject->finishFormularParameterIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreFormularParameter()) {
-		owningObject->setNextFormularParameter();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

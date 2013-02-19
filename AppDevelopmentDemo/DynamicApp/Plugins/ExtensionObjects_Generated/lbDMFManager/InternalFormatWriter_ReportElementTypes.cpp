@@ -110,13 +110,13 @@ void LB_STDCALL ReportElementTypesInternalFormatWriterExtension::setOperator(lb_
 void LB_STDCALL ReportElementTypesInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getReportElementTypesCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishReportElementTypesIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreReportElementTypes()) {
-		owningObject->setNextReportElementTypes();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

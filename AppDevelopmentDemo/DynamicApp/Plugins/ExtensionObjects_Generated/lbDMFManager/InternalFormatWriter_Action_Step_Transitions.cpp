@@ -110,13 +110,13 @@ void LB_STDCALL Action_Step_TransitionsInternalFormatWriterExtension::setOperato
 void LB_STDCALL Action_Step_TransitionsInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getAction_Step_TransitionsCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishAction_Step_TransitionsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreAction_Step_Transitions()) {
-		owningObject->setNextAction_Step_Transitions();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values

@@ -110,10 +110,10 @@ void LB_STDCALL UserAccountsXMLWriterExtension::setOperator(lb_I_Aspect* operati
 void LB_STDCALL UserAccountsXMLWriterExtension::execute() {
 	*oStream << "<users>" << "\n";
 	
-	owningObject->finishUserAccountsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreUserAccounts()) {
-		owningObject->setNextUserAccounts();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		*oStream << 
 		"<entry ID=\"" << owningObject->get_id() << 
 

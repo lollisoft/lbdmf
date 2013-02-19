@@ -191,8 +191,8 @@ long  LB_STDCALL Applications_FormularsModel::add(long _anwendungid, long _formu
 void		LB_STDCALL Applications_FormularsModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications_Formulars->finishIteration();
-	while (hasMoreApplications_Formulars()) {
-		setNextApplications_Formulars();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -209,8 +209,8 @@ void		LB_STDCALL Applications_FormularsModel::deleteUnmarked() {
 void		LB_STDCALL Applications_FormularsModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	Applications_Formulars->finishIteration();
-	while (hasMoreApplications_Formulars()) {
-		setNextApplications_Formulars();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

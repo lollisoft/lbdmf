@@ -201,8 +201,8 @@ long  LB_STDCALL FKPK_MappingModel::add(const char* _pktable, const char* _pknam
 void		LB_STDCALL FKPK_MappingModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
 	FKPK_Mapping->finishIteration();
-	while (hasMoreFKPK_Mapping()) {
-		setNextFKPK_Mapping();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());
@@ -219,8 +219,8 @@ void		LB_STDCALL FKPK_MappingModel::deleteUnmarked() {
 void		LB_STDCALL FKPK_MappingModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
 	FKPK_Mapping->finishIteration();
-	while (hasMoreFKPK_Mapping()) {
-		setNextFKPK_Mapping();
+	while (hasMoreElements()) {
+		setNextElement();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 			ID->setData(get_id());

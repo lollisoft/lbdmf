@@ -110,13 +110,13 @@ void LB_STDCALL UserAccountsInternalFormatWriterExtension::setOperator(lb_I_Aspe
 void LB_STDCALL UserAccountsInternalFormatWriterExtension::execute() {
 	int count;
 
-	count = owningObject->getUserAccountsCount();
+	count = owningObject->Count();
 	*oStream << count;
 	
-	owningObject->finishUserAccountsIteration();
+	owningObject->finishIteration();
 	
-	while (owningObject->hasMoreUserAccounts()) {
-		owningObject->setNextUserAccounts();
+	while (owningObject->hasMoreElements()) {
+		owningObject->setNextElement();
 		
 		*oStream << owningObject->get_id();
 		// Copy values
