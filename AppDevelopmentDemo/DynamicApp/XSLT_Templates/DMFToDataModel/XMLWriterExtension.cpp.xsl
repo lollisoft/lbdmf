@@ -104,6 +104,7 @@
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
+	<xsl:param name="XMLEntityName"/>
 /*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
@@ -220,7 +221,7 @@ void LB_STDCALL <xsl:value-of select="$FormName"/>XMLWriterExtension::execute() 
 	while (owningObject-&gt;hasMoreElements()) {
 		owningObject-&gt;setNextElement();
 		*oStream &lt;&lt; 
-		"&lt;entry ID=\"" &lt;&lt; owningObject-&gt;get_id() &lt;&lt; 
+		"&lt;<xsl:value-of select="$XMLEntityName"/> ID=\"" &lt;&lt; owningObject-&gt;get_id() &lt;&lt; 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/>
 <xsl:choose><xsl:when test="@isfk='1'">
 		"\" <xsl:value-of select="$FieldName"/>=\"" &lt;&lt; owningObject-&gt;get_<xsl:value-of select="$FieldName"/>() &lt;&lt;</xsl:when>

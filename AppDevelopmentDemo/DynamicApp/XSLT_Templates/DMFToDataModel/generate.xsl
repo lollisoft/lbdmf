@@ -167,6 +167,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 <!-- === Formular specific template ====================================================================== -->
 // The sub visitor is replaced by a delegation plugin mechanism
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<!-- TODO: Get it from formularparameters or from any mapping here -->
+<xsl:variable name="XMLEntityName" select="'entry'"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName2">
 	<xsl:call-template name="SubstringReplace">
@@ -189,6 +191,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+
+
 <exsl:document href="{$basedir}/Plugins/lbDMFDataModel/Generated_EntityModel{$FormularName2}.h" method="text">
 <xsl:call-template name="Model.h">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
@@ -217,6 +221,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 <xsl:with-param name="FormularID" select="@ID"/>
 <xsl:with-param name="FormName" select="$FormularName2"/>
+<!-- Used for customizing node name -->
+<xsl:with-param name="XMLEntityName" select="$XMLEntityName"/>
 </xsl:call-template>
 </exsl:document>
 
