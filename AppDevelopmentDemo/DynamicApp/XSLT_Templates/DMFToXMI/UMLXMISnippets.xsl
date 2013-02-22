@@ -30,6 +30,11 @@
 
 <xsl:import href="../include/lbDMFBaseTemplates.xsl"/>
 
+<xsl:template name="getXMLEntityName">
+	<xsl:param name="FormularID"/>
+	<xsl:value-of select="//lbDMF/formularparameter/parameter[@formularid=$FormularId][@name='XMLEntityName']/@value"/>
+</xsl:template>
+
 <xsl:template name="WriteXMIClass">
 	<xsl:param name="ApplicationID"/>
 	<xsl:param name="FormularID"/>
@@ -61,6 +66,7 @@
 						&lt;xmi:Extension extender="Bouml"&gt;
 							&lt;stereotype name="form"/&gt;
 							&lt;taggedValue tag="lbDMF:toolbarimagefile" value="<xsl:value-of select="./@toolbarimage"/>"/&gt;
+							&lt;taggedValue tag="lbDMF:xmlentityname" value="<xsl:call-template name="getXMLEntityName"><xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param></xsl:call-template>"/&gt;
 						&lt;/xmi:Extension&gt;
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
@@ -488,6 +494,7 @@
 						&lt;xmi:Extension extender="Bouml"&gt;
 							&lt;stereotype name="form"/&gt;
 							&lt;taggedValue tag="lbDMF:toolbarimagefile" value=""/&gt;
+							&lt;taggedValue tag="lbDMF:xmlentityname" value="<xsl:call-template name="getXMLEntityName"><xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param></xsl:call-template>"/&gt;
 						&lt;/xmi:Extension&gt;
 
 <xsl:for-each select="//lbDMF/dbcolumns/column[@tablename=$FormName]">

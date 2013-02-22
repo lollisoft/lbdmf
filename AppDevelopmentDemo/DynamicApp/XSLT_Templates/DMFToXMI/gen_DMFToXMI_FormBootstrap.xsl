@@ -248,6 +248,14 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 				<xsl:with-param name="Comment" select="'This stereotype is to specify an attribute to be a special image selector control'"/>
 			</xsl:call-template>
 			
+			<xsl:call-template name="createStereotype1">
+				<xsl:with-param name="StereotypeName" select="'xmlentityname'"/>
+				<xsl:with-param name="ApplyableTo" select="'Class'"/>
+				<xsl:with-param name="Comment" select="'This stereotype is to specify an attribute to define the mapping from form name to xml node representation. This is used to make lbDMF Manager v2_0 backward compatiple for sample'"/>
+				<xsl:with-param name="Attr1" select="'xmlentityname'"/>
+				<xsl:with-param name="AttrTyp1" select="'String'"/>
+			</xsl:call-template>
+			
 			<xsl:call-template name="createStereotype">
 				<xsl:with-param name="StereotypeName" select="'test_application_via_lua'"/>
 				<xsl:with-param name="ApplyableTo" select="'Operation'"/>
