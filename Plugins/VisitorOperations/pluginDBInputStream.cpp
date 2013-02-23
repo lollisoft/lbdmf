@@ -1429,7 +1429,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 
 		query_query = db->getQuery("lbDMF", 0);
 
-		*query = "select parametervalue from formular_parameters where formularid = ";
+		*query = "select parametervalue from formular_parameters where parametername = 'query' and formularid = ";
 		*query += FormularID->charrep();
 
 		if (query_query->query(query->charrep()) == ERR_NONE) {
@@ -1705,7 +1705,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		FormularID = q->getAsLong(1);
 		AnwendungID = q->getAsLong(2);
 
-		*query = "select parametervalue from formular_parameters where formularid = ";
+		*query = "select parametervalue from formular_parameters where parametername = 'query' and formularid = ";
 		*query += FormularID->charrep();
 
 		if (query_query->query(query->charrep()) == ERR_NONE) {
