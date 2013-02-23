@@ -207,6 +207,20 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 </xsl:variable>
 
 INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', id, 1 FROM "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>';
+
+<!-- If a XMLNodeName is present, use this to fill formular_parameters to how to generate mapping for fax file nodes per entity -->
+<xsl:variable name="XMLEntityName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='xmlentityname']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='xmlentityname']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:xmlentityname']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:xmlentityname']/@value"/></xsl:if>
+</xsl:variable>
+
+<xsl:if test="$XMLEntityName!=''">
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', '<xsl:value-of select="$XMLEntityName"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
+<xsl:if test="$XMLEntityName=''">
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
+
 <!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildSqliteVisibleFieldMapping">
@@ -355,6 +369,20 @@ select dropformular('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of 
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', getorcreateapplication('<xsl:value-of select="$ApplicationName"/>'), (select id from formulartypen where handlerinterface = 'lb_I_DatabaseForm' and beschreibung = 'Dynamisch aufgebautes Datenbankformular'));
+
+<!-- If a XMLNodeName is present, use this to fill formular_parameters to how to generate mapping for fax file nodes per entity -->
+<xsl:variable name="XMLEntityName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='xmlentityname']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='xmlentityname']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:xmlentityname']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:xmlentityname']/@value"/></xsl:if>
+</xsl:variable>
+
+<xsl:if test="$XMLEntityName!=''">
+insert into formular_parameters (parametername, parametervalue, formularid) VALUES ('XMLEntityName', '<xsl:value-of select="$XMLEntityName"/>', select id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+</xsl:if>
+<xsl:if test="$XMLEntityName=''">
+insert into formular_parameters (parametername, parametervalue, formularid) VALUES ('XMLEntityName', 'entry', select id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+</xsl:if>
+
 <!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildPostgreSQLVisibleFieldMapping">
