@@ -113,6 +113,7 @@
 					<packagedElement xmi:type="uml:Class" name="Formulars" xmi:id="BOUML_0x1f482_4" visibility="package">
 						<xmi:Extension extender="Bouml">
 							<stereotype name="form"/>
+							<taggedValue tag="xmlentityname" value="formular"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kpersonalizer.png"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x1f782_1" visibility="protected">
@@ -185,6 +186,7 @@
 					<packagedElement xmi:type="uml:Class" name="Applications_Formulars" xmi:id="BOUML_0x1f602_4" visibility="package">
 						<xmi:Extension extender="Bouml">
 							<stereotype name="form"/>
+							<taggedValue tag="xmlentityname" value="applicationformular"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="app_formulare.png"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="anwendungid" xmi:id="BOUML_0x24602_1" visibility="protected">
@@ -197,6 +199,7 @@
 					<packagedElement xmi:type="uml:Class" name="Applications" xmi:id="BOUML_0x1f682_4" visibility="package">
 						<xmi:Extension extender="Bouml">
 							<stereotype name="form"/>
+							<taggedValue tag="xmlentityname" value="application"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kthememgr.png"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="titel" xmi:id="BOUML_0x1fb02_1" visibility="protected">
@@ -1152,20 +1155,20 @@
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC0_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC1_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC1_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC1_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC1_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC1_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC2_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC2_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC3_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC3_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC4_0x28882_11"/>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">

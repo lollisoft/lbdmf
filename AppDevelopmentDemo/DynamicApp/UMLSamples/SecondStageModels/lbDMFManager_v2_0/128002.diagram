@@ -29,17 +29,17 @@ classcanvas 129666 class_ref 128642 // Applications
   xyz 613 25 2010
 end
 relationcanvas 128258 relation_ref 132098 // <association>
-  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 213.5 219 3000 to ref 128130
+  from ref 128002 z 1999 stereotype "<<relationship>>" xyz 213 219 3000 to ref 128130
   role_a_pos 383 243 3000 role_b_pos 95 181 3000
   multiplicity_a_pos 425 277 3000 multiplicity_b_pos 95 215 3000
 end
 relationcanvas 128514 relation_ref 131586 // <association>
-  from ref 128386 z 1999 stereotype "<<relationship>>" xyz 381.5 418.5 3000 to ref 128130
+  from ref 128386 z 1999 stereotype "<<relationship>>" xyz 381 418 3000 to ref 128130
   role_a_pos 516 377 3000 role_b_pos 524 495 3000
   multiplicity_a_pos 487 377 3000 multiplicity_b_pos 497 495 3000
 end
 relationcanvas 128770 relation_ref 131970 // <association>
-  from ref 128642 z 1999 stereotype "<<relationship>>" xyz 337.5 145 3000 to ref 128130
+  from ref 128642 z 1999 stereotype "<<relationship>>" xyz 337 145 3000 to ref 128130
   role_a_pos 447 179 3000 role_b_pos 370 97 3000
   multiplicity_a_pos 418 179 3000 multiplicity_b_pos 343 97 3000
 end
@@ -59,7 +59,7 @@ relationcanvas 129410 relation_ref 135554 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129538 relation_ref 134018 // AnwendungenBenutzer
-  from ref 129026 z 3012 label "AnwendungenBenutzer" italic xyz 68.5 467 3012 stereotype "<<masterdetail_action>>" xyz 62.5 486 3012 to ref 129282
+  from ref 129026 z 3012 label "AnwendungenBenutzer" italic xyz 68 467 3012 stereotype "<<masterdetail_action>>" xyz 62 486 3012 to ref 129282
   role_a_pos 212 389 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end

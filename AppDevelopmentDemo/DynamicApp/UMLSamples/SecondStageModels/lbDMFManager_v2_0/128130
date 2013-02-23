@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 50
+  revision 51
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -326,8 +326,9 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      ncouples 1
+      ncouples 2
       key "lbDMF:toolbarimagefile" value "kpersonalizer.png"
+      key "xmlentityname" value "formular"
       attribute 128898 "name"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -549,8 +550,9 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      ncouples 1
+      ncouples 2
       key "lbDMF:toolbarimagefile" value "app_formulare.png"
+      key "xmlentityname" value "applicationformular"
       attribute 148994 "anwendungid"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -592,8 +594,9 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      ncouples 1
+      ncouples 2
       key "lbDMF:toolbarimagefile" value "kthememgr.png"
+      key "xmlentityname" value "application"
       attribute 129794 "titel"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
