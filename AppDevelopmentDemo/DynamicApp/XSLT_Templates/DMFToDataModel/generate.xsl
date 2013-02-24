@@ -168,7 +168,8 @@ Export application code to <xsl:value-of select="$basedir"/>
 // The sub visitor is replaced by a delegation plugin mechanism
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
 <!-- TODO: Get it from formularparameters or from any mapping here -->
-<xsl:variable name="XMLEntityName" select="'entry'"/>
+<xsl:variable name="FormularID" select="@ID"/>
+<xsl:variable name="XMLEntityName" select="//lbDMF/formularparameter/parameter[@formularid=$FormularID][@name='XMLEntityName']/@value"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName2">
 	<xsl:call-template name="SubstringReplace">
