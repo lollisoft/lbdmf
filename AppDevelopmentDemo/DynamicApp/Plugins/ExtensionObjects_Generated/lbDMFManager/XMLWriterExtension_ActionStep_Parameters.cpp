@@ -115,7 +115,7 @@ void LB_STDCALL ActionStep_ParametersXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<actionstepparameter ID=\"" << owningObject->get_id() << 
 
 		"\" description=\"" << owningObject->get_description() <<
 		"\" name=\"" << owningObject->get_name() <<

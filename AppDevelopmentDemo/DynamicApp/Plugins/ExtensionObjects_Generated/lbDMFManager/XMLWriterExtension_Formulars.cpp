@@ -115,7 +115,7 @@ void LB_STDCALL FormularsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<formular ID=\"" << owningObject->get_id() << 
 
 		"\" name=\"" << owningObject->get_name() <<
 		"\" menuname=\"" << owningObject->get_menuname() <<
