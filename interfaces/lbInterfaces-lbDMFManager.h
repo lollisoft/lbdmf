@@ -21,6 +21,44 @@ public:
 			    virtual long LB_STDCALL get_typ() = 0;
 	};
 
+class lb_I_Action_Types : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_bezeichnung() = 0;
+			    virtual char* LB_STDCALL get_action_handler() = 0;
+			    virtual char* LB_STDCALL get_module() = 0;
+			};
+
+class lb_I_Action_Parameters : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _name, const char* _value, const char* _interface, const char* _description, long _actionid,  long _Action_ParametersID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_name() = 0;
+			    virtual char* LB_STDCALL get_value() = 0;
+			    virtual char* LB_STDCALL get_interface() = 0;
+			    virtual char* LB_STDCALL get_description() = 0;
+			    virtual long LB_STDCALL get_actionid() = 0;
+	};
+
 class lb_I_Action_Steps : public lb_I_TableModule {
 public:
 	virtual long		LB_STDCALL add(const char* _bezeichnung, const char* _what, long _a_order_nr, long _type, long _actionid,  long _Action_StepsID = -1) = 0;
@@ -40,6 +78,45 @@ public:
 			    virtual long LB_STDCALL get_type() = 0;
 	    virtual long LB_STDCALL get_actionid() = 0;
 	};
+
+class lb_I_ActionStep_Parameters : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _description, const char* _name, const char* _value, const char* _interface, long _action_step_id,  long _ActionStep_ParametersID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_description() = 0;
+			    virtual char* LB_STDCALL get_name() = 0;
+			    virtual char* LB_STDCALL get_value() = 0;
+			    virtual char* LB_STDCALL get_interface() = 0;
+			    virtual long LB_STDCALL get_action_step_id() = 0;
+	};
+
+class lb_I_Action_Step_Transitions : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_expression() = 0;
+			    virtual long LB_STDCALL get_src_actionid() = 0;
+	    virtual long LB_STDCALL get_dst_actionid() = 0;
+	    virtual char* LB_STDCALL get_description() = 0;
+			};
 
 class lb_I_UserAccounts : public lb_I_TableModule {
 public:
@@ -61,6 +138,61 @@ public:
 			    virtual char* LB_STDCALL get_secret() = 0;
 			};
 
+class lb_I_Applications : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_titel() = 0;
+			    virtual char* LB_STDCALL get_name() = 0;
+			    virtual char* LB_STDCALL get_interface() = 0;
+			    virtual char* LB_STDCALL get_functor() = 0;
+			    virtual char* LB_STDCALL get_modulename() = 0;
+			};
+
+class lb_I_ApplicationParameter : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_parametername() = 0;
+			    virtual char* LB_STDCALL get_parametervalue() = 0;
+			    virtual long LB_STDCALL get_anwendungid() = 0;
+	};
+
+class lb_I_Applications_Formulars : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(long _anwendungid, long _formularid,  long _Applications_FormularsID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual long LB_STDCALL get_anwendungid() = 0;
+	    virtual long LB_STDCALL get_formularid() = 0;
+	};
+
 class lb_I_Formulars : public lb_I_TableModule {
 public:
 	virtual long		LB_STDCALL add(const char* _name, const char* _menuname, const char* _menuhilfe, const char* _eventname, const char* _toolbarimage, long _anwendungid, long _typ,  long _FormularsID = -1) = 0;
@@ -81,6 +213,24 @@ public:
 			    virtual char* LB_STDCALL get_toolbarimage() = 0;
 			    virtual long LB_STDCALL get_anwendungid() = 0;
 	    virtual long LB_STDCALL get_typ() = 0;
+	};
+
+class lb_I_Formular_Actions : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _event, long _action, long _formular,  long _Formular_ActionsID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_event() = 0;
+			    virtual long LB_STDCALL get_action() = 0;
+	    virtual long LB_STDCALL get_formular() = 0;
 	};
 
 class lb_I_FormularParameter : public lb_I_TableModule {
@@ -118,43 +268,6 @@ public:
 	    virtual long LB_STDCALL get_anwendungenid() = 0;
 	};
 
-class lb_I_Applications_Formulars : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(long _anwendungid, long _formularid,  long _Applications_FormularsID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual long LB_STDCALL get_anwendungid() = 0;
-	    virtual long LB_STDCALL get_formularid() = 0;
-	};
-
-class lb_I_Applications : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _titel, const char* _name, const char* _interface, const char* _functor, const char* _modulename,  long _ApplicationsID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_titel() = 0;
-			    virtual char* LB_STDCALL get_name() = 0;
-			    virtual char* LB_STDCALL get_interface() = 0;
-			    virtual char* LB_STDCALL get_functor() = 0;
-			    virtual char* LB_STDCALL get_modulename() = 0;
-			};
-
 class lb_I_Translations : public lb_I_TableModule {
 public:
 	virtual long		LB_STDCALL add(const char* _translated, const char* _text, const char* _language,  long _TranslationsID = -1) = 0;
@@ -172,42 +285,6 @@ public:
 			    virtual char* LB_STDCALL get_text() = 0;
 			    virtual char* LB_STDCALL get_language() = 0;
 			};
-
-class lb_I_Formular_Actions : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _event, long _action, long _formular,  long _Formular_ActionsID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_event() = 0;
-			    virtual long LB_STDCALL get_action() = 0;
-	    virtual long LB_STDCALL get_formular() = 0;
-	};
-
-class lb_I_ApplicationParameter : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _parametername, const char* _parametervalue, long _anwendungid,  long _ApplicationParameterID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_parametername() = 0;
-			    virtual char* LB_STDCALL get_parametervalue() = 0;
-			    virtual long LB_STDCALL get_anwendungid() = 0;
-	};
 
 class lb_I_Reports : public lb_I_TableModule {
 public:
@@ -324,25 +401,6 @@ public:
 			    virtual long LB_STDCALL get_formularid() = 0;
 	};
 
-class lb_I_Action_Step_Transitions : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _expression, long _src_actionid, long _dst_actionid, const char* _description,  long _Action_Step_TransitionsID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_expression() = 0;
-			    virtual long LB_STDCALL get_src_actionid() = 0;
-	    virtual long LB_STDCALL get_dst_actionid() = 0;
-	    virtual char* LB_STDCALL get_description() = 0;
-			};
-
 class lb_I_Column_Types : public lb_I_TableModule {
 public:
 	virtual long		LB_STDCALL add(const char* _name, const char* _tablename, bool _ro, bool _specialcolumn, const char* _controltype,  long _Column_TypesID = -1) = 0;
@@ -381,64 +439,6 @@ public:
 			    virtual char* LB_STDCALL get_fktable() = 0;
 			    virtual char* LB_STDCALL get_fkname() = 0;
 			};
-
-class lb_I_Action_Types : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _bezeichnung, const char* _action_handler, const char* _module,  long _Action_TypesID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_bezeichnung() = 0;
-			    virtual char* LB_STDCALL get_action_handler() = 0;
-			    virtual char* LB_STDCALL get_module() = 0;
-			};
-
-class lb_I_Action_Parameters : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _name, const char* _value, const char* _interface, const char* _description, long _actionid,  long _Action_ParametersID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_name() = 0;
-			    virtual char* LB_STDCALL get_value() = 0;
-			    virtual char* LB_STDCALL get_interface() = 0;
-			    virtual char* LB_STDCALL get_description() = 0;
-			    virtual long LB_STDCALL get_actionid() = 0;
-	};
-
-class lb_I_ActionStep_Parameters : public lb_I_TableModule {
-public:
-	virtual long		LB_STDCALL add(const char* _description, const char* _name, const char* _value, const char* _interface, long _action_step_id,  long _ActionStep_ParametersID = -1) = 0;
-
-	virtual bool		LB_STDCALL selectById(long _id) = 0;
-	virtual int			LB_STDCALL Count() = 0;
-	virtual bool		LB_STDCALL hasMoreElements() = 0;
-	virtual void		LB_STDCALL setNextElement() = 0;
-	virtual void		LB_STDCALL finishIteration() = 0;
-
-	// Derived from lb_I_TableModule
-	//virtual long LB_STDCALL get_id() = 0;
-
-    virtual char* LB_STDCALL get_description() = 0;
-			    virtual char* LB_STDCALL get_name() = 0;
-			    virtual char* LB_STDCALL get_value() = 0;
-			    virtual char* LB_STDCALL get_interface() = 0;
-			    virtual long LB_STDCALL get_action_step_id() = 0;
-	};
 
 /*...slbDMF Formular action interfaces:0:*/
 /**
