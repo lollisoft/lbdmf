@@ -115,7 +115,7 @@ void LB_STDCALL Formular_ActionsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<action ID=\"" << owningObject->get_id() << 
 
 		"\" event=\"" << owningObject->get_event() <<
 		"\" action=\"" << owningObject->get_action() <<

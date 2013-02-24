@@ -115,7 +115,7 @@ void LB_STDCALL Applications_FormularsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<applicationformular ID=\"" << owningObject->get_id() << 
 
 		"\" anwendungid=\"" << owningObject->get_anwendungid() <<
 		"\" formularid=\"" << owningObject->get_formularid() << "\"/>" << "\n";

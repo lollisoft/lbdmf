@@ -115,7 +115,7 @@ void LB_STDCALL Action_Step_TransitionsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<actionsteptransition ID=\"" << owningObject->get_id() << 
 
 		"\" expression=\"" << owningObject->get_expression() <<
 		"\" src_actionid=\"" << owningObject->get_src_actionid() <<

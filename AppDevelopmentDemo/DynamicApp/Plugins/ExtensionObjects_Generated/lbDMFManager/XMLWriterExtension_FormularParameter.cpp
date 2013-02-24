@@ -115,7 +115,7 @@ void LB_STDCALL FormularParameterXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<parameter ID=\"" << owningObject->get_id() << 
 
 		"\" parametervalue=\"" << owningObject->get_parametervalue() <<
 		"\" parametername=\"" << owningObject->get_parametername() <<

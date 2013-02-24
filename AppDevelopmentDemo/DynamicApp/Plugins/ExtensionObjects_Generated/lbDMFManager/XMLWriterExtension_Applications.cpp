@@ -115,7 +115,7 @@ void LB_STDCALL ApplicationsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<application ID=\"" << owningObject->get_id() << 
 
 		"\" titel=\"" << owningObject->get_titel() <<
 		"\" name=\"" << owningObject->get_name() <<
