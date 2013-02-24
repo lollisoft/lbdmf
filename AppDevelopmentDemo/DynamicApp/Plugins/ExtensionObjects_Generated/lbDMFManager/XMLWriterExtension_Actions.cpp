@@ -115,7 +115,7 @@ void LB_STDCALL ActionsXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<action ID=\"" << owningObject->get_id() << 
 
 		"\" target=\"" << owningObject->get_target() <<
 		"\" source=\"" << owningObject->get_source() <<

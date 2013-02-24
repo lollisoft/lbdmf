@@ -115,7 +115,7 @@ void LB_STDCALL Column_TypesXMLWriterExtension::execute() {
 	while (owningObject->hasMoreElements()) {
 		owningObject->setNextElement();
 		*oStream << 
-		"<entry ID=\"" << owningObject->get_id() << 
+		"<columntype ID=\"" << owningObject->get_id() << 
 
 		"\" name=\"" << owningObject->get_name() <<
 		"\" tablename=\"" << owningObject->get_tablename() <<
