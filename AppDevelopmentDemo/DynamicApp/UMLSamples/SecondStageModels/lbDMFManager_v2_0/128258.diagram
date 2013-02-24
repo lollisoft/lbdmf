@@ -46,7 +46,7 @@ classcanvas 130178 class_ref 128514 // Applications_Formulars
 end
 relationcanvas 128386 relation_ref 134146 // Formular_Parameter
   from ref 128130 z 1999 label "Formular_Parameter" italic xyz 348 731 1999 stereotype "<<masterdetail_action>>" xyz 334 745 3000 to ref 128258
-  role_a_pos 238 773 3000 no_role_b
+  role_a_pos 218 774 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128642 relation_ref 133890 // Formulare
@@ -61,7 +61,7 @@ relationcanvas 128898 relation_ref 134018 // AnwendungenBenutzer
 end
 relationcanvas 129410 relation_ref 133634 // Aktionsschrittezuordnen
   from ref 129154 z 1999 label "Aktionsschrittezuordnen" italic xyz 311 218 1999 stereotype "<<masterdetail_action>>" xyz 307 233 3000 to ref 129282
-  role_a_pos 333 277 3000 no_role_b
+  role_a_pos 371 292 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129794 relation_ref 133762 // Anwendungsparameter
@@ -71,7 +71,7 @@ relationcanvas 129794 relation_ref 133762 // Anwendungsparameter
 end
 relationcanvas 130050 relation_ref 134274 // Formularaktionenzuordnen
   from ref 128130 z 1999 label "Formularaktionenzuordnen" italic xyz 341 665 1999 stereotype "<<masterdetail_action>>" xyz 348 684 3000 to ref 129922
-  role_a_pos 278 622 3000 no_role_b
+  role_a_pos 188 612 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 end
