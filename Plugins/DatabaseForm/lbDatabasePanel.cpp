@@ -2486,6 +2486,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::setName(const char* name, const char* app
 	if (formName) free(formName);
 	if (untranslated_formName) free(untranslated_formName);
 
+	_LOG << "lbDatabasePanel::setName(" << name << ", " << ((appention) ? appention : "") << ") called." LOG_
+	
 	char* transl = _trans((const char*) name);
 
 	char* temp = (char*) malloc(strlen(transl)+1);
@@ -3281,7 +3283,7 @@ SkipHandleSimpleFilter:
 		}
 	}
 
-	SetName(formName);
+	SetLabel(formName);
 }
 /*...e*/
 
@@ -3772,7 +3774,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		}
 	}
 
-	SetName(formName);
+	SetLabel(formName);
 }
 /*...e*/
 
@@ -3884,7 +3886,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		sampleQuery->setAutoRefresh(meta->getAutorefreshData());
 	}
 
-	SetName(formName);
+	SetLabel(formName);
 
 	int columns = sampleQuery->getColumns();
 
@@ -4108,7 +4110,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 
 		*newTitle += ": Update failed !";
 
-		SetName(newTitle->charrep());
+		SetLabel(newTitle->charrep());
 
 		if (meta->askYesNo("Error while updating data. Would you re - read the current data and retry ?")) {
 			sampleQuery->reopen();
@@ -4127,7 +4129,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBRead\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
-	SetName(formName);
+	SetLabel(formName);
 
   lbDBClear();
 
@@ -4586,7 +4588,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 			_LOG << newTitle->charrep() LOG_
 
-			SetName(_trans(newTitle->charrep()));
+			SetLabel(_trans(newTitle->charrep()));
 		} else {
 			// Delete fields and set foreign key columns to NULL
 
@@ -4826,7 +4828,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 		_LOG << newTitle->charrep() LOG_
 
-		SetName(_trans(newTitle->charrep()));
+		SetLabel(_trans(newTitle->charrep()));
 	} else {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
 
@@ -4900,7 +4902,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 							newTitle->setData(formName);
 							*newTitle += ": Add failed !";
 							_LOG << newTitle->charrep() LOG_
-							SetName(_trans(newTitle->charrep()));
+							SetLabel(_trans(newTitle->charrep()));
 							_LOG << "Fatal: Adding a new record failed." LOG_
 						}
 					}
