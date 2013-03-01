@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.9 $
+ * $Revision: 1.188.2.10 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.9 2013/01/31 06:46:46 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.10 2013/03/01 06:49:29 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.10  2013/03/01 06:49:29  lollisoft
+ * Do not log this as error.
+ *
  * Revision 1.188.2.9  2013/01/31 06:46:46  lollisoft
  * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
  *
@@ -3240,7 +3243,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_m
 long LB_STDCALL lb_MetaApplication::getApplicationID() {
 	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
 		Applications->selectApplication(LogonApplication->charrep());
-		_LOGERROR << "lb_MetaApplication::getApplicationID() returns ID for " << LogonApplication->charrep() LOG_
+		_LOG << "lb_MetaApplication::getApplicationID() returns ID for " << LogonApplication->charrep() LOG_
 		return Applications->getApplicationID();
 	} else {
 		if (!_logged_in) {
