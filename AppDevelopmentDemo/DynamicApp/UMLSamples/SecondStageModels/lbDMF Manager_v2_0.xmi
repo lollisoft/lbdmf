@@ -305,7 +305,7 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:toolbarimagefile"/></xmi:Extension>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="Formular_Parameter" xmi:id="BOUML_0x21802_0" visibility="protected" association="BOUML_ASSOC_0x21802_0" aggregation="none">
+						<ownedAttribute xmi:type="uml:Property" name="FormularParameter" xmi:id="BOUML_0x21802_0" visibility="protected" association="BOUML_ASSOC_0x21802_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f502_4"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:masterdetail_action"/>
@@ -1090,7 +1090,7 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x1f782_0" client="BOUML_0x1f482_4" supplier="BOUML_0x20382_4">
 					</packagedElement>
-					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x21802_0" name="Formular_Parameter" visibility="protected">
+					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x21802_0" name="FormularParameter" visibility="protected">
 						<memberEnd xmi:idref="BOUML_0x21802_0"/>
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_REVERSE_0x21802_0" association="BOUML_ASSOC_0x21802_0" visibility="private" type="BOUML_0x1f482_4" aggregation="none" isNavigable="false"/>
 						<memberEnd  xmi:idref="BOUML_REVERSE_0x21802_0"/>
@@ -1170,16 +1170,16 @@
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC1_0x28882_11" type="BOUML_0x1f482_5" association="BOUML_UCAC1_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC2_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC2_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC2_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC2_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC2_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC2_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC3_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x25002_4" association="BOUML_UCAC3_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC3_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC3_0x28882_11"/>
 						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC3_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC3_0x28882_11"/>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC4_0x28882_11">
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x1f402_4" association="BOUML_UCAC4_0x28882_11"/>
-						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f402_5" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC4_0x28882_11" type="BOUML_0x25082_4" association="BOUML_UCAC4_0x28882_11"/>
+						<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC4_0x28882_11" type="BOUML_0x1f502_5" association="BOUML_UCAC4_0x28882_11"/>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f502_22" name ="lbDMFManager_Entities">
