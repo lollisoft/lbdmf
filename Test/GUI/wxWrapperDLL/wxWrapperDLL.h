@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.3 $
+ * $Revision: 1.43.2.4 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.3 2012/11/18 08:38:19 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.4 2013/03/01 07:04:25 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.4  2013/03/01 07:04:25  lollisoft
+ * Fixed the close dialogs issue.
+ *
  * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
  * reload capabilities, but that didn't yet work in GUI. Some menu entries are
@@ -530,7 +533,6 @@ public:
 		dialog = NULL;
 		sizerMain = NULL;
 		splashOpened = false;
-
 	}
 
 	virtual ~lb_wxGUI() { 
@@ -712,6 +714,7 @@ public:
 	
 	UAP(lb_I_String, pendingMessages)
 	UAP(lb_I_Container, forms)
+	UAP(lb_I_Container, openedDialogs)
 	char buffer[100];
 };
 /*...e*/

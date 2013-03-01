@@ -878,53 +878,52 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 						closeCurrentPage();
                 }
         }
-#ifdef bla
-        forms->finishIteration();
-        while (forms->hasMoreElements()) {
-                lbErrCodes err = ERR_NONE;
+		
+		if (openedDialogs != NULL) {
+			while (openedDialogs->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, s)
+				
+				uk = openedDialogs->nextElement();
+				QI(uk, lb_I_String, s);
+				
+				
+				forms->finishIteration();
+				while (forms->hasMoreElements()) {
+					lbErrCodes err = ERR_NONE;
 
-                lb_I_Unknown* form = forms->nextElement();
+					lb_I_Unknown* form = forms->nextElement();
 
-                if (!form) continue;
+					if (!form) continue;
 
-                _LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
+					_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
 
-                UAP(lb_I_DatabaseForm, d)
-                QI(form, lb_I_DatabaseForm, d)
-                UAP(lb_I_FixedDatabaseForm, fd)
-                QI(form, lb_I_FixedDatabaseForm, fd)
-
-                /* Really needed here !
-                * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-                *
-                * So here I must ensure, that the object it self doesn't get deleted in the container.
-                * wxWidgets should call the destructor of the form.
-                */
-
-                if (d != NULL) {
+					UAP(lb_I_DatabaseForm, d)
+					QI(form, lb_I_DatabaseForm, d)
+					UAP(lb_I_FixedDatabaseForm, fd)
+					QI(form, lb_I_FixedDatabaseForm, fd)
+					
+					if (d != NULL && *s == d->getName()) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
 
                         //d->reopen(); // Avoid invalid database object while closing.
                         d->destroy();
                         d.resetPtr();
                         _LOG << "Destroyed the dynamic form." LOG_
-                }
+					}
 
-                if (fd != NULL) {
-                        _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-                        fd->destroy();
-                        fd.resetPtr();
-                        _LOG << "Destroyed the custom form." LOG_
-                }
-        }
+					if (fd != NULL && *s == d->getName()) {
+							_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+							fd->destroy();
+							fd.resetPtr();
+							_LOG << "Destroyed the custom form." LOG_
+					}
+				}
+			}
+			forms->detachAll();
+			forms->deleteAll();
+		}
 
-        _LOG << "Detach all database forms from forms list." LOG_
-
-        forms->detachAll();
-		forms->deleteAll();
-
-        _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-#endif
         return ERR_NONE;
 }
 /*...e*/
@@ -1374,7 +1373,18 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
-                }
+                } else {
+						if (openedDialogs == NULL) {
+							REQUEST(getModuleInstance(), lb_I_Container, openedDialogs);
+						}
+						UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+						UAP(lb_I_Unknown, nuk)
+						*name = key->charrep();
+						QI(name, lb_I_Unknown, nuk)
+						if (openedDialogs->exists(&key) == 0) {
+							openedDialogs->insert(&nuk, &key);
+						}
+				}
 
                 _LOG << "Set formname to " << formName LOG_
                 _dialog->setName(formName);
@@ -1424,6 +1434,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
         app->enableEvent("ShowPropertyPanel");
 
+		if (!findDBForm(formName)) {
+			_LOGERROR << "Error: Form not found after creating it!" LOG_
+		}
+		
         return _dialog.getPtr();
 }
 /*...e*/
@@ -1557,6 +1571,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         wxWindow* W = ::wxFindWindowByName(wxString(name));
         if (W == NULL) {
+                _LOG << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1571,7 +1586,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
         uk = forms->getElement(&key);
 
         if (uk == NULL) {
-                _CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+                _LOGERROR << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1581,8 +1596,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         if (w != NULL) {
                 w++;
+                _LOG << "Form with name '" << name << "' found." LOG_
                 return w.getPtr();
         }
+		_LOGERROR << "Error: Form with name '" << name << "' is not lb_I_DatabaseForm." LOG_
         return NULL;
 }
 /*...e*/
