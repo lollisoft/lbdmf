@@ -237,12 +237,14 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						_LOG << "Search the masterform '" << masterForm->charrep() << "'." LOG_
 						f = gui->findDBForm(masterForm->charrep());
 						if (f == NULL) {
-							_LOG << "Error: Bail out, no master form found." LOG_
+							_LOGERROR << "Error: Bail out, no master form found. (" << masterForm->charrep() << ")" LOG_
 
+							/*
 							if (detailForm != NULL) {
 								// Cleanup
 								detailForm->destroy();
 							}
+							*/
 
 							return false;
 						}
