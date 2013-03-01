@@ -33,14 +33,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.43.2.4 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.44 2013/02/16 10:36:27 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.4 2013/03/01 07:04:25 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
- * Revision 1.44  2013/02/16 10:36:27  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
+ * Revision 1.43.2.4  2013/03/01 07:04:25  lollisoft
+ * Fixed the close dialogs issue.
  *
  * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
@@ -534,7 +533,6 @@ public:
 		dialog = NULL;
 		sizerMain = NULL;
 		splashOpened = false;
-
 	}
 
 	virtual ~lb_wxGUI() { 
@@ -716,6 +714,7 @@ public:
 	
 	UAP(lb_I_String, pendingMessages)
 	UAP(lb_I_Container, forms)
+	UAP(lb_I_Container, openedDialogs)
 	char buffer[100];
 };
 /*...e*/
