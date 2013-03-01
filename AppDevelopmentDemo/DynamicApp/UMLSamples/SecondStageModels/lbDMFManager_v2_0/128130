@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 52
+  revision 54
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -903,13 +903,13 @@ ${inlines}
 	  b parent class_ref 131970 // formulare
       end
 
-      classrelation 137218 // Formular_Parameter (Formular_Parameter)
-	relation 134146 ---> name "Formular_Parameter"
+      classrelation 137218 // FormularParameter (FormularParameter)
+	relation 134146 ---> name "FormularParameter"
 	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "Formular_Parameter" protected
+	  a role_name "FormularParameter" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 137218 // Formular_Parameter (Formular_Parameter)
+	    classrelation_ref 137218 // FormularParameter (FormularParameter)
 	  b parent class_ref 128258 // FormularParameter
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
