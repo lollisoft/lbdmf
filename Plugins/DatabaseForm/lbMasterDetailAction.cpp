@@ -93,11 +93,12 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
+#define USE_EXRERNAL_FORMULARACTIONS
+
 #include <lbDatabaseForm.h>
 
 #ifndef USE_EXRERNAL_FORMULARACTIONS
+
 /*...slbDetailFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDetailFormAction)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -134,7 +135,7 @@ void LB_STDCALL lbDetailFormAction::setActionID(long id) {
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
-	_LOG "lbDetailFormAction::openDetailForm() called." LOG_
+	_LOG << "lbDetailFormAction::openDetailForm() called." LOG_
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, actionID)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -156,6 +157,8 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
 
+	_LOG << "lbDetailFormAction::openDetailForm(Detailform: '" << formularname->charrep() << "', Masterform: '" << masterForm->charrep() << "') called" LOG_
+	
 	UAP(lb_I_GUI, gui)
 	meta->getGUI(&gui);
 
@@ -173,7 +176,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	}
 
 	if (detailForm != NULL) {
-		_CL_VERBOSE << "Show previously created form." LOG_
+		_LOG << "Show previously created detail form." LOG_
 
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
@@ -228,22 +231,19 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 
 			if ((formParams != NULL) && (forms != NULL)) {
-				UAP(lb_I_SecurityProvider, securityManager)
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-				long AppID = securityManager->getApplicationID();
+				long AppID = meta->getApplicationID();
 
-				while (forms->hasMoreElements()) {
-					forms->setNextElement();
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
 
-					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
+					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
 						UAP(lb_I_DatabaseForm, form)
-						long FormularID = forms->get_id();
-						*SQL = lookupParameter(*&formParams, "query", FormularID);
-						forms->finishIteration();
+						long FormularID = forms->getFormularID();
+						*SQL = formParams->getParameter("query", FormularID);
+						forms->finishFormularIteration();
 						form = gui->createDBForm(formularname->charrep(),
 												 SQL->charrep(),
 												 DBName->charrep(),
@@ -565,8 +565,8 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectById(myActionID);
-			*What = appActionSteps->get_what();
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
 
 			*msg = "Open detail form (";
 			*msg += What->charrep();
