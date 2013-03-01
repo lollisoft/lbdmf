@@ -81,8 +81,6 @@
 #include <lbConfigHook.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
-
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/imaglist.h"
@@ -270,10 +268,7 @@ void wxAppSelectPage::setLoggedOnUser(const char* user) {
 
                 meta->setUserName(userid);
 
-				UAP(lb_I_SecurityProvider, securityManager)
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-                apps = securityManager->getApplications();
+                apps = meta->getApplications();
 
                 box->Clear();
 
@@ -446,25 +441,17 @@ bool wxLogonPage::TransferDataFromWindow() {
         const char* pass = strdup(getTextValue("Passwort:"));
         const char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-        if (securityManager != NULL && securityManager->login(user, pass)) {
+        if (meta->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
                 if (pass) free((void*)pass);
                 if (user) free((void*)user);
 
                 return TRUE;
         } else {
-                char* buf = NULL;
+                char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
                 char* buf1 = strdup(_trans("Error"));
-
-				if (securityManager != NULL)
-					buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-				else
-					buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
-				
                 wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
                 dialog.ShowModal();
@@ -891,53 +878,52 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 						closeCurrentPage();
                 }
         }
-#ifdef bla
-        forms->finishIteration();
-        while (forms->hasMoreElements()) {
-                lbErrCodes err = ERR_NONE;
+		
+		if (openedDialogs != NULL) {
+			while (openedDialogs->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, s)
+				
+				uk = openedDialogs->nextElement();
+				QI(uk, lb_I_String, s);
+				
+				
+				forms->finishIteration();
+				while (forms->hasMoreElements()) {
+					lbErrCodes err = ERR_NONE;
 
-                lb_I_Unknown* form = forms->nextElement();
+					lb_I_Unknown* form = forms->nextElement();
 
-                if (!form) continue;
+					if (!form) continue;
 
-                _LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
+					_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
 
-                UAP(lb_I_DatabaseForm, d)
-                QI(form, lb_I_DatabaseForm, d)
-                UAP(lb_I_FixedDatabaseForm, fd)
-                QI(form, lb_I_FixedDatabaseForm, fd)
-
-                /* Really needed here !
-                * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-                *
-                * So here I must ensure, that the object it self doesn't get deleted in the container.
-                * wxWidgets should call the destructor of the form.
-                */
-
-                if (d != NULL) {
+					UAP(lb_I_DatabaseForm, d)
+					QI(form, lb_I_DatabaseForm, d)
+					UAP(lb_I_FixedDatabaseForm, fd)
+					QI(form, lb_I_FixedDatabaseForm, fd)
+					
+					if (d != NULL && *s == d->getName()) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
 
                         //d->reopen(); // Avoid invalid database object while closing.
                         d->destroy();
                         d.resetPtr();
                         _LOG << "Destroyed the dynamic form." LOG_
-                }
+					}
 
-                if (fd != NULL) {
-                        _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-                        fd->destroy();
-                        fd.resetPtr();
-                        _LOG << "Destroyed the custom form." LOG_
-                }
-        }
+					if (fd != NULL && *s == d->getName()) {
+							_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+							fd->destroy();
+							fd.resetPtr();
+							_LOG << "Destroyed the custom form." LOG_
+					}
+				}
+			}
+			forms->detachAll();
+			forms->deleteAll();
+		}
 
-        _LOG << "Detach all database forms from forms list." LOG_
-
-        forms->detachAll();
-		forms->deleteAll();
-
-        _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-#endif
         return ERR_NONE;
 }
 /*...e*/
@@ -968,9 +954,68 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wizard->SetPageSize(size);
 
-        wizard->RunWizard(page1);
+        if ( ! wizard->RunWizard(page1) )
+        {
+            wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
+            wxICON_INFORMATION | wxOK);
+        }
+
+//      wxString app = page3->getSelectedApp();
+
         wizard->Destroy();
 
+
+#ifdef bla
+/*...s:0:*/
+
+        lbErrCodes err = ERR_NONE;
+
+        // Locate the form instance in the container
+
+        lbLoginDialog* _dialog = NULL;
+
+        if (forms == NULL) {
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
+        }
+
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_KeyBase, key)
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
+        fName->setData("LoginForm");
+
+        QI(fName, lb_I_KeyBase, key)
+
+        uk = forms->getElement(&key);
+
+        if (uk != NULL) {
+                _dialog = (lbLoginDialog*) *&uk;
+        }
+
+        if (_dialog) {
+                _dialog->Show(TRUE);
+        } else {
+                _dialog = new lbLoginDialog();
+                
+
+                QI(_dialog, lb_I_Unknown, uk)
+
+                forms->insert(&uk, &key);
+
+                delete _dialog;
+                _dialog = NULL;
+
+                uk = forms->getElement(&key);
+
+                if (uk != NULL) {
+                        _dialog = (lbLoginDialog*) *&uk;
+                }
+
+                _dialog->init(frame);
+                _dialog->Show();
+        }
+/*...e*/
+#endif
         return NULL;
 }
 /*...e*/
@@ -1328,7 +1373,18 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
-                }
+                } else {
+						if (openedDialogs == NULL) {
+							REQUEST(getModuleInstance(), lb_I_Container, openedDialogs);
+						}
+						UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+						UAP(lb_I_Unknown, nuk)
+						*name = key->charrep();
+						QI(name, lb_I_Unknown, nuk)
+						if (openedDialogs->exists(&key) == 0) {
+							openedDialogs->insert(&nuk, &key);
+						}
+				}
 
                 _LOG << "Set formname to " << formName LOG_
                 _dialog->setName(formName);
@@ -1378,6 +1434,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
         app->enableEvent("ShowPropertyPanel");
 
+		if (!findDBForm(formName)) {
+			_LOGERROR << "Error: Form not found after creating it!" LOG_
+		}
+		
         return _dialog.getPtr();
 }
 /*...e*/
@@ -1511,6 +1571,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         wxWindow* W = ::wxFindWindowByName(wxString(name));
         if (W == NULL) {
+                _LOG << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1525,7 +1586,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
         uk = forms->getElement(&key);
 
         if (uk == NULL) {
-                _CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+                _LOGERROR << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1535,8 +1596,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         if (w != NULL) {
                 w++;
+                _LOG << "Form with name '" << name << "' found." LOG_
                 return w.getPtr();
         }
+		_LOGERROR << "Error: Form with name '" << name << "' is not lb_I_DatabaseForm." LOG_
         return NULL;
 }
 /*...e*/
