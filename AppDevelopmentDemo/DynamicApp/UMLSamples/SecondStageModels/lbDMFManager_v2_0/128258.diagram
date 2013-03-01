@@ -44,13 +44,13 @@ classcanvas 130178 class_ref 128514 // Applications_Formulars
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 320 882 3005
 end
-relationcanvas 128386 relation_ref 134146 // Formular_Parameter
-  from ref 128130 z 1999 label "Formular_Parameter" italic xyz 348 731 1999 stereotype "<<masterdetail_action>>" xyz 334 745 3000 to ref 128258
+relationcanvas 128386 relation_ref 134146 // FormularParameter
+  from ref 128130 z 1999 label "FormularParameter" italic xyz 346 751 1999 stereotype "<<masterdetail_action>>" xyz 334 745 3000 to ref 128258
   role_a_pos 218 774 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128642 relation_ref 133890 // Formulare
-  from ref 128514 z 1999 label "Formulare" italic xyz 624 528 1999 stereotype "<<masterdetail_action>>" xyz 592 556 3000 to ref 128130
+  from ref 128514 z 1999 label "Formulare" italic xyz 640 549 1999 stereotype "<<masterdetail_action>>" xyz 592 556 3000 to ref 128130
   role_a_pos 688 606 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
