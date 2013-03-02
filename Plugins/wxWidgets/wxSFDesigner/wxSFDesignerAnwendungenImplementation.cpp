@@ -70,6 +70,10 @@ extern "C" {
 #include <wxSFDesignerBase.h>
 #include <wxSFDesignerAnwendungenImplementation.h> 
 
+#include <lbDMFApplicationShape.h>
+#include <lbDMFFormularShape.h>
+
+
 BEGIN_IMPLEMENT_LB_UNKNOWN(Anwendungen)
 	ADD_INTERFACE(lb_I_Window)
 	ADD_INTERFACE(lb_I_Form)
@@ -198,6 +202,79 @@ void LB_STDCALL Anwendungen::init() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	registerEventHandler(*&dispatcher);
+	
+	// Start generating diagram from model data
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP(lb_I_Applications, applications)
+	UAP(lb_I_Formulars, forms)
+	
+	applications = meta->getApplicationModel();
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, model)
+	
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, activedocument)
+	ukDoc = meta->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, activedocument)
+
+	*param = "ApplicationData";
+	model->setCloning(false);
+	activedocument->getUAPContainer(*&param, *&model);	
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+
+
+	*name = "Formulars";
+	uk = model->getElement(&key);
+	QI(uk, lb_I_Formulars, forms)
+
+	int x_distance = 50;
+	int y_distance = 50;
+	
+	int x_offset = 0;
+	int y_offset = 0;
+	
+	applications->finishApplicationIteration();
+	while (applications->hasMoreApplications()) {
+		applications->setNextApplication();
+		
+		wxSFShapeBase *pShape = NULL;
+		pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFApplicationShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
+
+		((lbDMFApplicationShape*)pShape)->SetApplicationName(wxString(applications->getApplicationName()));
+		
+		pShape->Update();
+		
+		long AppID = applications->getApplicationID();
+		
+		forms->finishFormularIteration();
+		while (forms->hasMoreFormulars()) {
+			y_offset++;
+			x_offset++;
+		
+			forms->setNextFormular();
+		
+			wxSFShapeBase *pFormShape = NULL;
+			pFormShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
+
+			((lbDMFFormularShape*)pFormShape)->SetFormularName(wxString(forms->getName()));
+		
+			pFormShape->Update();
+		
+			GetDiagramManager()->CreateConnection(pShape->GetId(), pFormShape->GetId(), true);
+		
+			x_offset--;
+		}
+	}
+	
+	m_AutoLayout.Layout( this, "Mesh" );
+	SaveCanvasState();
+
 }
 
 class lbPluginAnwendungen : public lb_I_PluginImpl {
@@ -216,9 +293,6 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
-
-	
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukActions)

@@ -1,3 +1,4 @@
+#include <wx/string.h>
 #include <lbDMFApplicationShape.h>
 #include <wx/filename.h>
 
@@ -21,6 +22,10 @@ lbDMFApplicationShape::lbDMFApplicationShape(const lbDMFApplicationShape& obj)
 
 lbDMFApplicationShape::~lbDMFApplicationShape()
 {
+}
+
+void lbDMFApplicationShape::SetApplicationName(const wxString& name) {
+	m_pModelName->SetText(name);
 }
 
 

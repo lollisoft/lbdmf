@@ -20,6 +20,8 @@ public:
     // destructor
     virtual ~lbDMFApplicationShape();
 
+	
+	void SetApplicationName(const wxString& name);
 protected:
 };
 
