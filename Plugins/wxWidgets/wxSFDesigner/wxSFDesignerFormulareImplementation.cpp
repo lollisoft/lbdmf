@@ -68,23 +68,23 @@ extern "C" {
 
 // Include base class definition
 #include <wxSFDesignerBase.h>
-#include <wxSFDesignerAnwendungenImplementation.h> 
+#include <wxSFDesignerFormulareImplementation.h> 
 
-#include <lbDMFApplicationShape.h>
 #include <lbDMFFormularShape.h>
+#include <lbDMFFormularFieldShape.h>
 
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(Anwendungen)
+BEGIN_IMPLEMENT_LB_UNKNOWN(Formulare)
 	ADD_INTERFACE(lb_I_Window)
 	ADD_INTERFACE(lb_I_Form)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfAnwendungen, Anwendungen)
+IMPLEMENT_FUNCTOR(instanceOfFormulare, Formulare)
 
-lbErrCodes LB_STDCALL Anwendungen::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL Formulare::setData(lb_I_Unknown* uk) {
 		lbErrCodes err = ERR_NONE;
 		
-        _CL_VERBOSE << "Anwendungen::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "Formulare::setData(...) not implemented yet" LOG_
 
 		UAP(lb_I_Form, dbForm)
 		QI(uk, lb_I_Form, dbForm)
@@ -92,17 +92,17 @@ lbErrCodes LB_STDCALL Anwendungen::setData(lb_I_Unknown* uk) {
         return ERR_NOT_IMPLEMENTED;
 }
 
-Anwendungen::Anwendungen() 
+Formulare::Formulare() 
 {
-	_CL_LOG << "Anwendungen::Anwendungen() called." LOG_
-	formName = strdup("Anwendungen");
+	_CL_LOG << "Formulare::Formulare() called." LOG_
+	formName = strdup("Formulare");
 }
 
-Anwendungen::~Anwendungen() {
-	_CL_LOG << "Anwendungen::~Anwendungen() called." LOG_
+Formulare::~Formulare() {
+	_CL_LOG << "Formulare::~Formulare() called." LOG_
 }
 
-lbErrCodes LB_STDCALL Anwendungen::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+lbErrCodes LB_STDCALL Formulare::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
 	char eventName[100] = "";
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
@@ -117,52 +117,40 @@ lbErrCodes LB_STDCALL Anwendungen::registerEventHandler(lb_I_Dispatcher* dispatc
 	int temp;
 
 	metaapp->addToolBar(toolgroupname->charrep());
-	
-	sprintf(eventName, "%pModeApplication", evHandler);
+		
+	sprintf(eventName, "%pModeFormularField", evHandler);
 	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(toolmenuname->charrep(), "Neue Anwendung", eventName, "");
-	metaapp->addToolBarButton(toolgroupname->charrep(), "Neue Anwendung", eventName, "kthememgr.png");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetAnwendungenMode, eventName);
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Neues Feld", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Neues Feld", eventName, "formular_field.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Formulare::lbSetFormularFieldMode, eventName);
 	
 	
-	sprintf(eventName, "%pModeFormular", evHandler);
+	sprintf(eventName, "%pModeFieldConnect", evHandler);
 	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(toolmenuname->charrep(), "Neues Formular", eventName, "");
-	metaapp->addToolBarButton(toolgroupname->charrep(), "Neues Formular", eventName, "kpersonalizer.png");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareMode, eventName);
-	
-	
-	sprintf(eventName, "%pModeConnect", evHandler);
-	ev->registerEvent(eventName, temp);
-	metaapp->addMenuEntry(toolmenuname->charrep(), "Verbinde Formular mit Anwendung", eventName, "");
-	metaapp->addToolBarButton(toolgroupname->charrep(), "Verbinde Formular mit Anwendung", eventName, "app_formulare.png");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Anwendungen::lbSetFormulareConnectMode, eventName);
+	metaapp->addMenuEntry(toolmenuname->charrep(), "Verbinde Formularfeld mit Formular", eventName, "");
+	metaapp->addToolBarButton(toolgroupname->charrep(), "Verbinde Formularfeld mit Formular", eventName, "formular_field_connect.png");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &Formulare::lbSetFormularFieldConnectMode, eventName);
 	
 	return ERR_NONE;
 }
 
 
-lbErrCodes LB_STDCALL Anwendungen::lbSetAnwendungenMode(lb_I_Unknown* uk) {
-	ToolMode = 1;
+lbErrCodes LB_STDCALL Formulare::lbSetFormularFieldMode(lb_I_Unknown* uk) {
+	ToolMode = 4;
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL Anwendungen::lbSetFormulareMode(lb_I_Unknown* uk) {
-	ToolMode = 2;
+lbErrCodes LB_STDCALL Formulare::lbSetFormularFieldConnectMode(lb_I_Unknown* uk) {
+	ToolMode = 5;
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL Anwendungen::lbSetFormulareConnectMode(lb_I_Unknown* uk) {
-	ToolMode = 3;
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL Anwendungen::lbMouseDown(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL Formulare::lbMouseDown(lb_I_Unknown* uk) {
 	
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL Anwendungen::lbMouseUp(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL Formulare::lbMouseUp(lb_I_Unknown* uk) {
 	
 	return ERR_NONE;
 }
@@ -174,12 +162,12 @@ lbErrCodes LB_STDCALL Anwendungen::lbMouseUp(lb_I_Unknown* uk) {
 
 // Initialization of the form via source code
 
-void LB_STDCALL Anwendungen::init() {
+void LB_STDCALL Formulare::init() {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
-	_LOG << "Anwendungen::init() called." LOG_
+	_LOG << "Formulare::init() called." LOG_
 	
 	currentDiagramManager = new wxSFDiagramManager();
 	SetDiagramManager(currentDiagramManager);	
@@ -207,6 +195,7 @@ void LB_STDCALL Anwendungen::init() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP(lb_I_Applications, applications)
 	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
 	
 	applications = meta->getApplicationModel();
 
@@ -233,57 +222,62 @@ void LB_STDCALL Anwendungen::init() {
 	uk = model->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
 
+	*name = "FormularFields";
+	uk = model->getElement(&key);
+	QI(uk, lb_I_Formular_Fields, formularfields)
+
 	int x_distance = 50;
 	int y_distance = 50;
 	
 	int x_offset = 0;
 	int y_offset = 0;
 	
-	applications->finishApplicationIteration();
-	while (applications->hasMoreApplications()) {
-		applications->setNextApplication();
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
 		
 		wxSFShapeBase *pShape = NULL;
-		pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFApplicationShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
+		pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
 
-		((lbDMFApplicationShape*)pShape)->SetApplicationName(wxString(applications->getApplicationName()));
+		((lbDMFFormularShape*)pShape)->SetFormularName(wxString(forms->getName()));
 		
 		pShape->Update();
 		
-		long AppID = applications->getApplicationID();
+		long FormID = forms->getFormularID();
 		
-		forms->finishFormularIteration();
-		while (forms->hasMoreFormulars()) {
+		formularfields->finishFieldsIteration();
+		while (formularfields->hasMoreFields()) {
 			y_offset++;
 			x_offset++;
 		
-			forms->setNextFormular();
+			formularfields->setNextField();
 		
-			if (AppID == forms->getApplicationID()) {
-				wxSFShapeBase *pFormShape = NULL;
-				pFormShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
+			if (FormID == formularfields->getFormularID()) {
+				wxSFShapeBase *pFormFieldShape = NULL;
+				pFormFieldShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularFieldShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
 
-				((lbDMFFormularShape*)pFormShape)->SetFormularName(wxString(forms->getName()));
+				((lbDMFFormularFieldShape*)pFormFieldShape)->SetFormularFieldName(wxString(formularfields->getName()));
 			
-				pFormShape->Update();
+				pFormFieldShape->Update();
 			
-				GetDiagramManager()->CreateConnection(pShape->GetId(), pFormShape->GetId(), true);
+				GetDiagramManager()->CreateConnection(pShape->GetId(), pFormFieldShape->GetId(), true);
 			}
-
+			
 			x_offset--;
 		}
 	}
 	
 	m_AutoLayout.Layout( this, "Mesh" );
+	m_AutoLayout.Layout( this, "HorizontalTree" );
 	SaveCanvasState();
 
 }
 
-class lbPluginAnwendungen : public lb_I_PluginImpl {
+class lbPluginFormulare : public lb_I_PluginImpl {
 public:
-	lbPluginAnwendungen();
+	lbPluginFormulare();
 	
-	virtual ~lbPluginAnwendungen();
+	virtual ~lbPluginFormulare();
 
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
@@ -300,68 +294,68 @@ public:
 	UAP(lb_I_Unknown, ukActions)
 };
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginAnwendungen)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginFormulare)
         ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbPluginAnwendungen, lbPluginAnwendungen)
+IMPLEMENT_FUNCTOR(instanceOflbPluginFormulare, lbPluginFormulare)
 
-lbErrCodes LB_STDCALL lbPluginAnwendungen::setData(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbPluginFormulare::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "lbPluginAnwendungen::setData(...) called.\n" LOG_
+	_CL_VERBOSE << "lbPluginFormulare::setData(...) called.\n" LOG_
 
     return ERR_NOT_IMPLEMENTED;
 }
 
-lbPluginAnwendungen::lbPluginAnwendungen() {
-	_CL_VERBOSE << "lbPluginAnwendungen::lbPluginAnwendungen() called.\n" LOG_
+lbPluginFormulare::lbPluginFormulare() {
+	_CL_VERBOSE << "lbPluginFormulare::lbPluginFormulare() called.\n" LOG_
 }
 
-lbPluginAnwendungen::~lbPluginAnwendungen() {
-	_CL_VERBOSE << "lbPluginAnwendungen::~lbPluginAnwendungen() called.\n" LOG_
+lbPluginFormulare::~lbPluginFormulare() {
+	_CL_VERBOSE << "lbPluginFormulare::~lbPluginFormulare() called.\n" LOG_
 }
 
-bool LB_STDCALL lbPluginAnwendungen::canAutorun() {
+bool LB_STDCALL lbPluginFormulare::canAutorun() {
 	return false;
 }
 
-lbErrCodes LB_STDCALL lbPluginAnwendungen::autorun() {
+lbErrCodes LB_STDCALL lbPluginFormulare::autorun() {
 	lbErrCodes err = ERR_NONE;
 	return err;
 }
 
-void LB_STDCALL lbPluginAnwendungen::initialize() {
+void LB_STDCALL lbPluginFormulare::initialize() {
 }
 	
-bool LB_STDCALL lbPluginAnwendungen::run() {
+bool LB_STDCALL lbPluginFormulare::run() {
 	return true;
 }
 
-lb_I_Unknown* LB_STDCALL lbPluginAnwendungen::peekImplementation() {
+lb_I_Unknown* LB_STDCALL lbPluginFormulare::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukActions == NULL) {
-		Anwendungen* _Anwendungen = new Anwendungen();
+		Formulare* _Formulare = new Formulare();
 	
-		QI(_Anwendungen, lb_I_Unknown, ukActions)
+		QI(_Formulare, lb_I_Unknown, ukActions)
 	} else {
-		_CL_VERBOSE << "lbPluginAnwendungen::peekImplementation() Implementation already peeked.\n" LOG_
+		_CL_VERBOSE << "lbPluginFormulare::peekImplementation() Implementation already peeked.\n" LOG_
 	}
 	
 	return ukActions.getPtr();
 }
 
-lb_I_Unknown* LB_STDCALL lbPluginAnwendungen::getImplementation() {
+lb_I_Unknown* LB_STDCALL lbPluginFormulare::getImplementation() {
 	lbErrCodes err = ERR_NONE;
 
 	if (ukActions == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
-		Anwendungen* _Anwendungen = new Anwendungen();
+		Formulare* _Formulare = new Formulare();
 	
-		QI(_Anwendungen, lb_I_Unknown, ukActions)
+		QI(_Formulare, lb_I_Unknown, ukActions)
 	}
 	
 	lb_I_Unknown* r = ukActions.getPtr();
@@ -369,7 +363,7 @@ lb_I_Unknown* LB_STDCALL lbPluginAnwendungen::getImplementation() {
 	return r;
 }
 
-void LB_STDCALL lbPluginAnwendungen::releaseImplementation() {
+void LB_STDCALL lbPluginFormulare::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukActions != NULL) {
