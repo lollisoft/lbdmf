@@ -20,6 +20,7 @@ public:
     // destructor
     virtual ~lbDMFFormularShape();
 	
+	void SetFormularName(const wxString& name);
 protected:
 };
 
