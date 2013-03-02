@@ -72,6 +72,7 @@ extern "C" {
 
 #include <lbDMFApplicationShape.h>
 #include <lbDMFFormularShape.h>
+#include <lbDMFFormularFieldShape.h>
 
 
 
@@ -345,6 +346,7 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 		}
 			break;
 		case 3:
+		case 5:
 		{
 			// do default actions
 			wxSFShapeBase* pShape = GetShapeUnderCursor();
@@ -365,6 +367,11 @@ void wxSFDesignerBase::OnLeftDown(wxMouseEvent& event)
 				else
 					wxSFShapeCanvas::OnLeftDown(event);
 			}
+		}
+			break;
+		case 4:
+		{
+			pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularFieldShape), event.GetPosition(), sfDONT_SAVE_STATE);
 		}
 			break;
 		default:
