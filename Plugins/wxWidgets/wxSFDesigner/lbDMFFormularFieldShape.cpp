@@ -11,7 +11,7 @@ lbDMFFormularFieldShape::lbDMFFormularFieldShape()
 	//EnablePropertySerialization(wxT("vertices"), false);
 
     // initialize shape
-    Initialize("toolbarimages/formular_field.png", "Enter form name");
+    Initialize("toolbarimages/formular_field.png", "Enter field name");
 }
 
 lbDMFFormularFieldShape::lbDMFFormularFieldShape(const lbDMFFormularFieldShape& obj)
