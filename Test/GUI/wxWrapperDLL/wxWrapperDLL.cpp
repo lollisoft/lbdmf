@@ -2112,6 +2112,18 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
         }
 
         dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, pname)
+		*pname = PropertyName.c_str();
+		
+		if (pname != NULL && *pname == "Application Database settingsDB Name")
+		{
+			if (PropValue == "") {
+				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), *wxRED, wxPG_DONT_RECURSE);
+			} else {
+				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+			}
+		}
 }
 /*...e*/
 /*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
@@ -2381,6 +2393,19 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 
         if (wxPGIdIsOk(pgid)) {
                 pg->SetPropertyValueString(pgid, s->charrep());
+				
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					if (*s == "") {
+						//wxPGPropArgCls id(pgid);
+						pg->SetPropertyBackgroundColour(pgid, *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(pgid, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
         } else {
 #ifdef USE_PROPGRID_1_2_2
                 pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
