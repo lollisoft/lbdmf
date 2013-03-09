@@ -772,6 +772,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 
                 if (strcmp(key->charrep(), "UML import settingsXMI UML input file") == 0) {
                         XMIFileUMLProject->setData(value->charrep());
+						
+						// When the model changes, the database name may be invalid. So clear the field.
+						*UMLImportTargetDBName = "";
+						editProperties(NULL);
                 }
                 
                 if (strcmp(key->charrep(), "UML export settingsXMI UML export file") == 0) {
