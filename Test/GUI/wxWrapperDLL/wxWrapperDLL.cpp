@@ -2118,7 +2118,7 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 		
 		if (pname != NULL && *pname == "Application Database settingsDB Name")
 		{
-			if (PropValue == "") {
+			if (PropValue.Trim() == "") {
 				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), *wxRED, wxPG_DONT_RECURSE);
 			} else {
 				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
@@ -2412,7 +2412,22 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 #else
                 pg->Append(new wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #endif
-        }
+
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					s->trim();
+				
+					if (*s == "") {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
+
+		}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateBoolean\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
