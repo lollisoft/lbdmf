@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,10 +14,10 @@
    height="1052.3622047"
    id="svg3670"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docbase="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="formulare_app.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1">
   <defs
      id="defs3672">
     <inkscape:perspective
@@ -100,7 +101,7 @@
        xlink:href="#linearGradient15149"
        id="linearGradient15213"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-0.852928,-24.67842)"
+       gradientTransform="translate(-103.1647,-29.845681)"
        x1="244.08923"
        y1="379.15729"
        x2="251.54455"
@@ -123,16 +124,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.3990397"
-     inkscape:cx="310.82898"
-     inkscape:cy="647.36632"
+     inkscape:zoom="4.8381528"
+     inkscape:cx="221.81542"
+     inkscape:cy="654.12781"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="897"
-     inkscape:window-height="839"
-     inkscape:window-x="42"
-     inkscape:window-y="100"
-     showgrid="false" />
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     inkscape:window-x="0"
+     inkscape:window-y="778"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata3675">
     <rdf:RDF>
@@ -141,6 +143,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -186,16 +189,6 @@
        id="image3668"
        x="231.49902"
        y="348.62949" />
-    <path
-       style="fill:url(#linearGradient15213);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:1.1571641px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
-       d="M 229.82399,350.27739 C 245.74536,349.72708 250.69162,357.09153 250.69162,357.09153 L 248.82442,362.64898 C 243.83526,355.75072 238.04713,352.48964 229.82399,350.27739 z "
-       id="path14413"
-       sodipodi:nodetypes="cccc" />
-    <path
-       style="fill:#004204;fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
-       d="M 229.42480,350.06122 C 237.30442,346.92869 239.42712,348.28545 239.42712,348.28545 L 236.89988,355.80687 C 233.97668,355.74504 231.28051,352.50994 229.42480,350.06122 z "
-       id="path14415"
-       sodipodi:nodetypes="cccc" />
     <image
        xlink:href="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/cache.png"
        sodipodi:absref="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/cache.png"
@@ -269,5 +262,48 @@
        inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/action_steps.png"
        inkscape:export-xdpi="63.468727"
        inkscape:export-ydpi="63.468727" />
+    <image
+       y="335.26816"
+       x="121.65584"
+       id="image3958"
+       xlink:href="file:///var/folders/f4/f4PPfiAnETG05pg3A4Z1CE+++TM/-Tmp-/inkscape-clipboard-import"
+       height="32"
+       width="32"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:16.34469795px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="134.41231"
+       y="327.35623"
+       id="text3832"
+       sodipodi:linespacing="125%"
+       transform="scale(0.89520582,1.1170615)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3834"
+         x="134.41231"
+         y="327.35623">Field</tspan></text>
+    <path
+       style="fill:url(#linearGradient15213);fill-opacity:1;fill-rule:evenodd;stroke:none"
+       d="m 127.51221,345.11013 c 15.92137,-0.55031 20.86763,6.81414 20.86763,6.81414 l -1.8672,5.55745 c -4.98916,-6.89826 -10.77729,-10.15934 -19.00043,-12.37159 z"
+       id="path14413"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#004204;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       d="m 127.11302,344.89396 c 7.87962,-3.13253 10.00232,-1.77577 10.00232,-1.77577 l -2.52724,7.52142 c -2.9232,-0.0618 -5.61937,-3.29693 -7.47508,-5.74565 z"
+       id="path14415"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
