@@ -49,8 +49,6 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDynamicAppStorage.h>
 
 // Includes for the libxml / libxslt libraries
@@ -374,16 +372,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 
 	// Mark that data sets, that are related to this application
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-	UAP(lb_I_Unknown, apps)
-	apps = securityManager->getApplicationModel();
-	QI(apps, lb_I_Applications, applications)
+	applications = meta->getApplicationModel();
 	
 	meta->setStatusText("Info", "Write XML document ...");
 	
-	applications->selectById(AppID->getData());
+	applications->selectApplication(AppID->getData());
 	applications->mark();
 
 	if ((forms != NULL) &&
@@ -446,7 +439,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 		meta->setStatusText("Info", "Write XML document (applications) ...");
 		applications->accept(*&aspect);
-		
 		meta->setStatusText("Info", "Write XML document (ApplicationFormulars) ...");
 		ApplicationFormulars->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (forms) ...");
@@ -1277,9 +1269,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	meta->setStatusText("Info", "Load database configuration (forms) ...");
 	forms->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formularfields) ...");
-	aspect->setContextNamespace("DatabaseInputStreamVisitor_BuildFromFormularParameter");
 	formularfields->accept(*&aspect);
-	aspect->setContextNamespace("DatabaseInputStreamVisitor");
 	meta->setStatusText("Info", "Load database configuration (columntypes) ...");
 	columntypes->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formActions) ...");
@@ -1395,8 +1385,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		XSLFileUMLExport->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/XMISettings.xsl");
-        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
-        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
+        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-ApplicationDB.xsl");
 #endif
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
@@ -2592,8 +2582,6 @@ bool LB_STDCALL run();
 lb_I_Unknown* LB_STDCALL peekImplementation();
 lb_I_Unknown* LB_STDCALL getImplementation();
 void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 DECLARE_LB_UNKNOWN()
@@ -2707,8 +2695,6 @@ bool LB_STDCALL run();
 lb_I_Unknown* LB_STDCALL peekImplementation();
 lb_I_Unknown* LB_STDCALL getImplementation();
 void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 DECLARE_LB_UNKNOWN()
@@ -2821,8 +2807,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
