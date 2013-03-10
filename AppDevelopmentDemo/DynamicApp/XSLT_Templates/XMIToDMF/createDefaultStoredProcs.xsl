@@ -29,19 +29,16 @@
 <xsl:import href="XMISettings.xsl"/>
 <xsl:output method="text"/>
 
-<xsl:param name="UMLImportDBName"/>
-<xsl:param name="UMLImportDBUser"/>
-<xsl:param name="UMLImportDBPass"/>
-
-<xsl:variable name="database_name"><xsl:if test="UMLImportDBName=''"><xsl:value-of select="$settingsfile_database_name"/></xsl:if><xsl:if test="UMLImportDBName!=''"><xsl:value-of select="$UMLImportDBName"/></xsl:if></xsl:variable>
-<xsl:variable name="database_user"><xsl:if test="UMLImportDBUser=''"><xsl:value-of select="$settingsfile_database_user"/></xsl:if><xsl:if test="UMLImportDBUser!=''"><xsl:value-of select="$UMLImportDBUser"/></xsl:if></xsl:variable>
-<xsl:variable name="database_pass"><xsl:if test="UMLImportDBPass=''"><xsl:value-of select="$settingsfile_database_pass"/></xsl:if><xsl:if test="UMLImportDBPass!=''"><xsl:value-of select="$UMLImportDBPass"/></xsl:if></xsl:variable>
-
 <xsl:template name="createDefaultStoredProcs">
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
+	
+	<xsl:param name="database_name"/>
+	<xsl:param name="database_user"/>
+	<xsl:param name="database_pass"/>
+
 	<xsl:choose>
 		<xsl:when test="$TargetDatabaseType='PostgreSQL'">
 -- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
@@ -267,6 +264,7 @@ drop table tempactions;
 -- Skip rewrite
 -- To ignore this statement in the Sqlite rewrite parser. This statement should match to Sqlite syntax.
 -- Create default indexes for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
+-- Using database settings as of name=<xsl:value-of select="$database_name"/>, user=<xsl:value-of select="$database_user"/>
 
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_userid" on "users" (userid);
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_formulartypen_hi_ns" on "formulartypen" (handlerinterface, namespace, handlermodule);
@@ -335,7 +333,7 @@ delete from formulare where anwendungid in (select id from anwendungen where nam
 
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
-INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT id, lastapp FROM "users" WHERE "userid" = 'user';
+INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT users.id,anwendungen.id FROM "users" inner join anwendungen where anwendungen.name = '<xsl:value-of select="$ApplicationName"/>';
 <xsl:if test="$ApplicationName = 'lbDMF Manager'">
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', 'dba', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'trainres', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
