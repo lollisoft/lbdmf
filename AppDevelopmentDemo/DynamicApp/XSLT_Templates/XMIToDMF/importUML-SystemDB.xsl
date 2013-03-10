@@ -41,6 +41,14 @@
 <xsl:param name="XSLDatabaseBackendApplication"/>
 <xsl:param name="overwriteDatabase"/>
 
+<xsl:param name="UMLImportDBName"/>
+<xsl:param name="UMLImportDBUser"/>
+<xsl:param name="UMLImportDBPass"/>
+
+<xsl:variable name="database_name"><xsl:if test="$UMLImportDBName=''"><xsl:value-of select="$settingsfile_database_name"/></xsl:if><xsl:if test="$UMLImportDBName!=''"><xsl:value-of select="$UMLImportDBName"/></xsl:if></xsl:variable>
+<xsl:variable name="database_user"><xsl:if test="$UMLImportDBUser=''"><xsl:value-of select="$settingsfile_database_user"/></xsl:if><xsl:if test="$UMLImportDBUser!=''"><xsl:value-of select="$UMLImportDBUser"/></xsl:if></xsl:variable>
+<xsl:variable name="database_pass"><xsl:if test="$UMLImportDBPass=''"><xsl:value-of select="$settingsfile_database_pass"/></xsl:if><xsl:if test="$UMLImportDBPass!=''"><xsl:value-of select="$UMLImportDBPass"/></xsl:if></xsl:variable>
+
 <xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
 
 <!-- ********** Select your database target ********** -->
@@ -95,12 +103,17 @@
 		</xsl:variable>
 		
 -- Application is <xsl:value-of select="$AppName"/>. Package is <xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/../@name"/>
+-- Using database settings as of name=<xsl:value-of select="$database_name"/>, user=<xsl:value-of select="$database_user"/>
 		
 		<xsl:call-template name="createDefaultStoredProcs">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="ApplicationName" select="$AppName"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
+
 		</xsl:call-template>	
 	
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
@@ -270,6 +283,14 @@ INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "
 	<xsl:when test="$TargetDBType='Sqlite'">
 -- Generate statemachine for <xsl:value-of select="$ID"/>
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
+
+-- Delete old statemachine
+delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'));
+delete from "action_step_transitions" where "description" = '_<xsl:value-of select="$ID"/>';
+delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>');
+delete from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>';
+
+
 
 -- A form validator should be used before saving the changes to the database
 

@@ -114,6 +114,14 @@
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
+-- Creating a database script for '<xsl:value-of select="$targetdatabase"/>'
+
+
+-- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
+-- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
+-- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
+
+-- xmi1.2_2SQLScript.xsl: Creating a database script for '<xsl:value-of select="$targetdatabase"/>'
 
 
 -- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
