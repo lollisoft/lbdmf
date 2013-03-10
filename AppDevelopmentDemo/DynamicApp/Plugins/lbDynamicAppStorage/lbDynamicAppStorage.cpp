@@ -1385,8 +1385,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		XSLFileUMLExport->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/XMISettings.xsl");
-        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
-        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
+        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-ApplicationDB.xsl");
 #endif
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
