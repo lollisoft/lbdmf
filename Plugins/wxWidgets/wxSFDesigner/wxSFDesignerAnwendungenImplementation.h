@@ -33,4 +33,8 @@ public:
 	lbErrCodes LB_STDCALL lbMouseDown(lb_I_Unknown* uk);	
 
 	lbErrCodes LB_STDCALL lbMouseUp(lb_I_Unknown* uk);
+	
+private:	
+	void OnTextChanged(wxSFShapeTextEvent& event);
+	
 };

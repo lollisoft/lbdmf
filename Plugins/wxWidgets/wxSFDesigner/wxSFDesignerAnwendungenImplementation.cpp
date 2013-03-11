@@ -277,7 +277,21 @@ void LB_STDCALL Anwendungen::init() {
 	m_AutoLayout.Layout( this, "Mesh" );
 	SaveCanvasState();
 
+	Connect(wxEVT_SF_TEXT_CHANGE, wxSFShapeTextEventHandler(Anwendungen::OnTextChanged), NULL, this);
 }
+
+void Anwendungen::OnTextChanged(wxSFShapeTextEvent& event)
+{
+    // get changed text shape
+    wxSFEditTextShape* pText = (wxSFEditTextShape*)event.GetShape();
+	
+    if( pText )
+    {
+		pText->Update();
+		_LOG << "Shape Text of " << pText->GetParentShape()->GetId() << " changed to " << event.GetText().c_str() LOG_
+    }
+}
+
 
 class lbPluginAnwendungen : public lb_I_PluginImpl {
 public:
