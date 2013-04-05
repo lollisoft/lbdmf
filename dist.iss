@@ -33,6 +33,8 @@ Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyM
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\activateACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
@@ -51,4 +53,5 @@ Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
 Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall
+Filename: "{app}\activateACE.bat"; Description: "Get ACE framework (will be flagged for download)"; Flags: shellexec postinstall
 Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Start building wxWidgets library (will be downloaded)"; Flags: shellexec postinstall
