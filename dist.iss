@@ -43,6 +43,8 @@ Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir:
 
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
+Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+
 
 
 [Icons]
