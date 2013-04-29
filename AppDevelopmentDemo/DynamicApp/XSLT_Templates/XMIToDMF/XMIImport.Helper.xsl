@@ -1,4 +1,4 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:UML="org.omg.xmi.namespace.UML" exclude-result-prefixes="UML">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -26,29 +26,18 @@
             
             65760 Eschborn (germany)
 -->
+
 <xsl:output method="text"/>
 
 <!-- Handling of found associations -->
 
-<xsl:template name="Translate.Association.Sqlite">
-    <xsl:param name="ID"/><!--  -->
-    <xsl:param name="ReferencingClassID"/><!--  -->
-    <xsl:param name="ReferencedClassID"/><!--  -->
-	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
-    <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
-	
--- Create a foreign key relation for <xsl:value-of select="$ReferencingClassID"/> to <xsl:value-of select="$ReferencedClassID"/>	
-	
-</xsl:template>
-
-<xsl:template name="Translate.BuildForeignColumns.Sqlite">
+<xsl:template name="Helper.Lookup.Association">
     <xsl:param name="ID"/><!--  -->
     <xsl:param name="ClassID"/><!--  -->
-    <xsl:param name="AssocuationID"/><!--  -->
-    <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
-	
--- Create a foreign key column for <xsl:value-of select="//UML:Class[@xmi.id=$ClassID]/@name"/> with association <xsl:value-of select="//UML:Class[@xmi.id=$AssocuationID]/@name"/>
-	
+<!--<xsl:value-of select="//UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../../../@xmi.id"/>-->
+<xsl:for-each select="*">
+<xsl:value-of select="@xmi.idref"/>
+</xsl:for-each>
 </xsl:template>
 
 </xsl:stylesheet>
