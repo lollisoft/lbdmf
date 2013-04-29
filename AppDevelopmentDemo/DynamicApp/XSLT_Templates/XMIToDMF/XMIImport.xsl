@@ -72,6 +72,17 @@
 <xsl:template match="UML:Namespace.ownedElement/UML:Class">
 -- Class '<xsl:value-of select="@name"/>' in model (xmi.id <xsl:value-of select="@xmi.id"/>).
    <xsl:apply-templates select="UML:Classifier.feature/UML:Attribute"/>
+<xsl:variable name="ClassId" select="@xmi.id"/>
+	<!-- Takes all, but I want one -->
+	<!--<xsl:apply-templates select="//UML:Association.connection/UML:AssociationEnd"/>-->
+	<!-- Does not work -->
+	<!--<xsl:apply-templates select="//UML:Association.connection/UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassId]"/>-->
+
+	<!-- The only known solution to me yet is using for-each and filter -->
+	<xsl:call-template name="Translate.BuildForeignColumns">
+	<xsl:with-param name="ClassID" select="$ClassId"/>
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+	</xsl:call-template>
 </xsl:template>
 
 <xsl:template match="UML:Namespace.ownedElement/UML:Association">
