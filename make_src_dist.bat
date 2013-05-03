@@ -76,3 +76,4 @@ attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\docdist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bin-buildtools-dist.iss
+"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\templatedist.iss
