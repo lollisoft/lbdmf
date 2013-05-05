@@ -1,0 +1,262 @@
+<?xml version = '1.0' encoding = 'UTF-8' ?>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sun Apr 28 09:28:31 CEST 2013'>
+  <XMI.header>    <XMI.documentation>
+      <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
+      <XMI.exporterVersion>0.34(6) revised on $Date: 2013/05/05 06:31:21 $ </XMI.exporterVersion>
+    </XMI.documentation>
+    <XMI.metamodel xmi.name="UML" xmi.version="1.4"/></XMI.header>
+  <XMI.content>
+    <UML:Model xmi.id = 'BOUML_0x19b0660' name = 'CDKatalog' isSpecification = 'false'
+      isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+      <UML:Namespace.ownedElement>
+        <UML:Package xmi.id = 'BOUML_0x19b1ed0' name = 'CDKatalog' isSpecification = 'false'
+          isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+          <UML:Namespace.ownedElement>
+            <UML:Class xmi.id = 'BOUML_0x19b1d30' name = 'CD' visibility = 'public'
+              isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'
+              isActive = 'false'>
+              <UML:Classifier.feature>
+                <UML:Attribute xmi.id = 'BOUML_0x19b1a60' name = 'Titel' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_0'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+                <UML:Attribute xmi.id = 'BOUML_0x19b19b0' name = 'Laenge' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_1'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+                <UML:Attribute xmi.id = 'BOUML_0x19b1840' name = 'ReleaseDatum' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_2'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+              </UML:Classifier.feature>
+            </UML:Class>
+            <UML:Association xmi.id = 'BOUML_0x19b1780' name = '(Titel)' isSpecification = 'false'
+              isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+              <UML:Association.connection>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A63'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'none'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A61'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A62'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1b50'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A66'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'aggregate'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A64'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A65'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1d30'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+              </UML:Association.connection>
+            </UML:Association>
+            <UML:Class xmi.id = 'BOUML_0x19b1c90' name = 'Musiker' visibility = 'public'
+              isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'
+              isActive = 'false'>
+              <UML:Classifier.feature>
+                <UML:Attribute xmi.id = 'BOUML_0x19b1340' name = 'Name' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_0'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+                <UML:Attribute xmi.id = 'BOUML_0x19b1290' name = 'Vorname' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_0'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+                <UML:Attribute xmi.id = 'BOUML_0x19b1120' name = 'Gruppe' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_3'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+              </UML:Classifier.feature>
+            </UML:Class>
+            <UML:Association xmi.id = 'BOUML_0x19b1570' name = '(Name)' isSpecification = 'false'
+              isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+              <UML:Association.connection>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6E'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'none'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6C'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6D'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1d30'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A71'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'aggregate'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6F'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A70'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1c90'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+              </UML:Association.connection>
+            </UML:Association>
+            <UML:Association xmi.id = 'BOUML_0x19b11d0' name = '(Name)' isSpecification = 'false'
+              isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+              <UML:Association.connection>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A75'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'none'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A73'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A74'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1b50'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A78'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'aggregate'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A76'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A77'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1c90'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+              </UML:Association.connection>
+            </UML:Association>
+            <UML:Class xmi.id = 'BOUML_0x19b1bf0' name = 'Media' visibility = 'public'
+              isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'
+              isActive = 'false'>
+              <UML:Classifier.feature>
+                <UML:Attribute xmi.id = 'BOUML_0x19b0410' name = 'Type' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_0'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+              </UML:Classifier.feature>
+            </UML:Class>
+            <UML:Association xmi.id = 'BOUML_0x19b13f0' name = '(Type)' isSpecification = 'false'
+              isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
+              <UML:Association.connection>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7E'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'none'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7C'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7D'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1d30'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+                <UML:AssociationEnd xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A81'
+                  name = '' visibility = 'private' isSpecification = 'false' isNavigable = 'true'
+                  aggregation = 'aggregate'>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7F'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:ModelElement.taggedValue>
+                    <UML:TaggedValue xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A80'
+                      isSpecification = 'false'/>
+                  </UML:ModelElement.taggedValue>
+                  <UML:AssociationEnd.participant>
+                    <UML:Class xmi.idref = 'BOUML_0x19b1bf0'/>
+                  </UML:AssociationEnd.participant>
+                </UML:AssociationEnd>
+              </UML:Association.connection>
+            </UML:Association>
+            <UML:Class xmi.id = 'BOUML_0x19b1b50' name = 'Track' visibility = 'public'
+              isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'
+              isActive = 'false'>
+              <UML:Classifier.feature>
+                <UML:Attribute xmi.id = 'BOUML_0x19b0360' name = 'Titel' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_0'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+                <UML:Attribute xmi.id = 'BOUML_0x19b02b0' name = 'Laenge' visibility = 'private'
+                  isSpecification = 'false' ownerScope = 'instance'>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = 'BOUML_datatype_1'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
+              </UML:Classifier.feature>
+            </UML:Class>
+          </UML:Namespace.ownedElement>
+        </UML:Package>
+        <UML:DataType xmi.id = 'BOUML_datatype_3' name = 'bool' visibility = 'private'
+          isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'/>
+        <UML:DataType xmi.id = 'BOUML_datatype_2' name = 'date' visibility = 'private'
+          isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'/>
+        <UML:DataType xmi.id = 'BOUML_datatype_1' name = 'int' visibility = 'private'
+          isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'/>
+        <UML:DataType xmi.id = 'BOUML_datatype_0' name = 'string' visibility = 'private'
+          isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A61'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A64'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6C'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A6F'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A73'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A76'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7C'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+    <UML:Stereotype xmi.id = '-64--88--106-30-186617fb:13e4f65dd21:-8000:0000000000000A7F'
+      name = 'masterdetail_action' isSpecification = 'false' isRoot = 'false'
+      isLeaf = 'false' isAbstract = 'false'/>
+  </XMI.content>
+</XMI>
