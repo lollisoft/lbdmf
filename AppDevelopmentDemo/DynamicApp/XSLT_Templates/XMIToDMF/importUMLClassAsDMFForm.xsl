@@ -83,8 +83,9 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
     <xsl:param name="ApplicationID"/>
     <xsl:param name="ApplicationName"/>
     <xsl:param name="FormularID"/>
+<xsl:variable name="classtype" select="//packagedElement[@xmi:id=$FormularID]/xmi:Extension/stereotype/@name"/>
 	<xsl:choose>
-		<xsl:when test="./xmi:Extension/stereotype/@name='form'">
+		<xsl:when test="$classtype='form'">
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Dependency'][@client=$FormularID]">
 			<xsl:variable name="SupplyerClassID" select="@supplier"/>
 			<xsl:variable name="SupplierClassStereoType" select="//packagedElement[@xmi:id=$SupplyerClassID]/xmi:Extension/stereotype/@name"/>
@@ -195,6 +196,9 @@ INSERT INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "p
 		<xsl:with-param name="FormularID" select="@xmi:id"/>
 	</xsl:call-template></xsl:variable>
 
+<xsl:variable name="FormularName" select="@name"/>	
+<xsl:variable name="ThisFormularId" select="@xmi:id"/>	
+	
 <xsl:if test="$tablename!=''">
 
 <xsl:variable name="classname" select="@name"/>
@@ -273,6 +277,55 @@ SELECT 'query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Pr
 <xsl:variable name="Aggregation" select="@aggregation"/>
 <xsl:if test="$Aggregation='none'"><xsl:if test="@association=''">
 <xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>"', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+
+<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+<xsl:variable name="Aggregation" select="@aggregation"/>
+<xsl:choose>
+	<xsl:when test="@name=''">
+	</xsl:when>
+	<xsl:when test="@association!=''">
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
+		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
+		<xsl:choose>
+			<xsl:when test="$datatype='bigstring'"></xsl:when>
+			<xsl:when test="$datatype='image'"></xsl:when>
+<xsl:otherwise>
+<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
+<xsl:choose>
+<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'String', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:when>
+<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Bit', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:when>
+<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:when>
+<xsl:otherwise>
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Undefined', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:otherwise>
+</xsl:choose>
+</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:Class'">
+<xsl:variable name="otherClassID" select="//ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref=$ThisFormularId]/../../@xmi:id"/>
+<xsl:variable name="VisibleField" select="//ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref=$ThisFormularId]/../xmi:Extension/taggedValue[@tag='lbDMF:masterdetail_action:sourcecolumn']/@value"/>
+<xsl:variable name="othertablename"><xsl:call-template name="lookupEntityName">
+		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+		<xsl:with-param name="FormularID" select="$otherClassID"/>
+	</xsl:call-template></xsl:variable>
+
+-- otherClassID <xsl:value-of select="$otherClassID"/>	
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 1, '<xsl:value-of select="$VisibleField"/>', '<xsl:value-of select="$othertablename"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
+</xsl:otherwise>
+		</xsl:choose>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+
 
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', '<xsl:value-of select="@name"/>', 1);
