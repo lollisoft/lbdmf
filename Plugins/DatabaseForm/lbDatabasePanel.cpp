@@ -1154,7 +1154,12 @@ bool LB_STDCALL lbDatabasePanel::checkMissingNotNullableColumns(const char* sql,
 	UAP(lb_I_Query, checkQuery)
 
 	checkQuery = database->getQuery(_DBName->charrep(), 0);
-	checkQuery->query(SQLString->charrep(), true);
+	if ((err = checkQuery->query(SQLString->charrep(), true)) != ERR_NONE) {
+		if (err == ERR_DB_QUERYFAILED) {
+			_LOG << "lbDatabasePanel::checkMissingNotNullableColumns() Error: Could not analyse for missing mandatory fields. Query probably failed while gathering meta information." LOG_
+			return false;
+		}
+	}
 
 	int cols = checkQuery->getColumns();
 
