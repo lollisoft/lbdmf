@@ -2238,7 +2238,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
-				_LOG << "lbDatabaseLayerQuery::query() Error: Database operation was unsuccessful: " << currentdbLayer->GetErrorMessage().c_str() << ". Query was: " << q LOG_
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
@@ -3040,6 +3039,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	*name = columnName;
+	
+	_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") called." LOG_
+	
 	if (theResult == NULL) {
 		_CL_VERBOSE << "Error: No resultset available. Try reopen." LOG_
 		if (reopen() != ERR_NONE) {
@@ -3072,6 +3074,8 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 			QI(key, lb_I_Integer, index)
 			cachedColumnNames->finishIteration();
 
+			_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") checks column mapping with key: " << key->charrep() LOG_
+			
 			if (cachedColumnTableNames->exists(&key) == 1) {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_String, table)
@@ -5268,8 +5272,6 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(const char* conne
 			*name = "5";
 			param->setUAPString(*&name, *&colName);
 
-			_LOG << "lbDatabaseLayerDatabase::getColumns() got " << TableName->charrep() << ":" << colName->charrep() LOG_
-			
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 //			typeLong->setData((long)colTypeLong);
 //			*name = "DataType";
