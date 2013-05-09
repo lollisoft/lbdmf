@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 13
+  revision 17
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -764,6 +764,16 @@ ${inlines}
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
       end
+
+      attribute 170114 "purpose"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 130946 "anwendungs_parameter"
@@ -1470,7 +1480,7 @@ ${inlines}
 	key "lbDMF:relationship:order" value ""
       end
 
-      classrelation 154882 // dbtypeid (<association>)
+      classrelation 154882 // <association>
 	relation_ref 151554 // <association>
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value ""
@@ -2300,7 +2310,7 @@ ${inlines}
 	  b role_name "dbtypeid" multiplicity "1" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 154882 // dbtypeid (<association>)
+	    classrelation_ref 154882 // <association>
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""

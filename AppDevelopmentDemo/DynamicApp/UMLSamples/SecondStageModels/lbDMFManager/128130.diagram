@@ -30,27 +30,27 @@ relationcanvas 128258 relation_ref 131842 // <association>
   multiplicity_a_pos 157 183 3000 multiplicity_b_pos 312 359 3000
 end
 relationcanvas 128642 relation_ref 132610 // <association>
-  from ref 128130 z 1999 stereotype "<<relationship>>" xyz 384.5 216 3000 to ref 128514
+  from ref 128130 z 1999 stereotype "<<relationship>>" xyz 384 216 3000 to ref 128514
   role_a_pos 478 152 3000 role_b_pos 431 261 3000
   multiplicity_a_pos 448 152 3000 multiplicity_b_pos 401 261 3000
 end
 relationcanvas 131714 relation_ref 131586 // <association>
-  from ref 131586 z 1999 stereotype "<<relationship>>" xyz 37.5 415.5 3000 to ref 128002
-  role_a_pos 101 206 3000 role_b_pos 130 634 3000
-  multiplicity_a_pos 68 206 3000 multiplicity_b_pos 100 634 3000
+  from ref 131586 z 1999 stereotype "<<relationship>>" xyz 36.5 415 3000 to ref 128002
+  role_a_pos 98 202 3000 role_b_pos 126 636 3000
+  multiplicity_a_pos 69 202 3000 multiplicity_b_pos 99 636 3000
 end
 relationcanvas 131842 relation_ref 132226 // <association>
-  from ref 128130 z 1999 stereotype "<<relationship>>" xyz 175 542.5 3000 to ref 131586
-  role_a_pos 171 634 3000 role_b_pos 332 461 3000
-  multiplicity_a_pos 141 634 3000 multiplicity_b_pos 302 461 3000
+  from ref 128130 z 1999 stereotype "<<relationship>>" xyz 179 543 3000 to ref 131586
+  role_a_pos 174 636 3000 role_b_pos 335 461 3000
+  multiplicity_a_pos 147 636 3000 multiplicity_b_pos 306 461 3000
 end
 relationcanvas 132226 relation_ref 151426 // <association>
-  from ref 131970 z 3006 stereotype "<<relationship>>" xyz 468.5 366 3000 to ref 128130
+  from ref 131970 z 3006 stereotype "<<relationship>>" xyz 468 366 3000 to ref 128130
   role_a_pos 447 354 3000 no_role_b
   multiplicity_a_pos 445 390 3000 multiplicity_b_pos 608 356 3000
 end
 relationcanvas 132354 relation_ref 151554 // <association>
-  from ref 132098 z 2001 stereotype "<<relationship>>" xyz 627 478.5 3000 to ref 131970
+  from ref 132098 z 2001 stereotype "<<relationship>>" xyz 627 478 3000 to ref 131970
   no_role_a role_b_pos 699 490 3000
   multiplicity_a_pos 671 451 3000 multiplicity_b_pos 668 490 3000
 end

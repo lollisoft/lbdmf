@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 38
+  revision 42
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -124,6 +124,164 @@ ${inlines}
 	  b parent class_ref 128386 // AnwendungenBenutzer
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "userid"
+      end
+    end
+
+    class 150402 "DBType"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "field_types.png"
+      attribute 162818 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162946 "description"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 155266 // <dependency>
+	relation 151938 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 155266 // <dependency>
+	  b parent class_ref 150146 // dbtype
+      end
+    end
+
+    class 150274 "FormularFields"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "formular_field.png"
+      classrelation 155010 // <dependency>
+	relation 151682 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 155010 // <dependency>
+	  b parent class_ref 150018 // formularfields
+      end
+
+      attribute 161922 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163458 "dbtype"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162050 "tablename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162178 "isfk"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162306 "fkname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162434 "fktable"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 155394 // DBType (DBType)
+	relation 152066 ---> name "DBType"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "DBType" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155394 // DBType (DBType)
+	  b parent class_ref 150402 // DBType
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+
+      attribute 163074 "formularid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163202 "dbtypeid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 
@@ -255,303 +413,7 @@ ${inlines}
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
-    end
 
-    class 150274 "FormularFields"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "formular_field.png"
-      classrelation 155010 // <dependency>
-	relation 151682 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 155010 // <dependency>
-	  b parent class_ref 150018 // formularfields
-      end
-
-      attribute 161922 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 163458 "dbtype"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 162050 "tablename"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 162178 "isfk"
-	protected explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 162306 "fkname"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 162434 "fktable"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 155394 // DBType (DBType)
-	relation 152066 ---> name "DBType"
-	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "DBType" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155394 // DBType (DBType)
-	  b parent class_ref 150402 // DBType
-	ncouples 1
-	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
-      end
-
-      attribute 163074 "formularid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 163202 "dbtypeid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 150402 "DBType"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "field_types.png"
-      attribute 162818 "name"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 162946 "description"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 155266 // <dependency>
-	relation 151938 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 155266 // <dependency>
-	  b parent class_ref 150146 // dbtype
-      end
-    end
-
-    class 128258 "Formular_Parameter"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "formular_params.png"
-      attribute 129154 "parametervalue"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 129282 "parametername"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 128770 // <dependency>
-	relation 128770 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 128770 // <dependency>
-	  b parent class_ref 131842 // formular_parameters
-      end
-
-      attribute 151554 "formularid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-    end
-
-    class 128386 "AnwendungenBenutzer"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "User_application.png"
-      attribute 148738 "userid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 148866 "anwendungenid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 138626 // <dependency>
-	relation 135554 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 138626 // <dependency>
-	  b parent class_ref 133122 // user_anwendungen
-      end
-    end
-
-    class 128514 "FormulareAnwendung"
-      visibility package stereotype "form"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 1
-      key "lbDMF:toolbarimagefile" value "app_formulare.png"
-      attribute 148994 "anwendungid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 149122 "formularid"
-	protected explicit_type "ForeignKey"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 138754 // <dependency>
-	relation 135682 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 138754 // <dependency>
-	  b parent class_ref 130818 // anwendungen_formulare
-      end
     end
 
     class 128642 "Anwendungen"
@@ -699,6 +561,180 @@ ${inlines}
 	
 	
 	
+      end
+
+    end
+
+    class 128258 "Formular_Parameter"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "formular_params.png"
+      attribute 129154 "parametervalue"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129282 "parametername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128770 // <dependency>
+	relation 128770 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 128770 // <dependency>
+	  b parent class_ref 131842 // formular_parameters
+      end
+
+      attribute 151554 "formularid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 128386 "AnwendungenBenutzer"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "User_application.png"
+      attribute 148738 "userid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148866 "anwendungenid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 138626 // <dependency>
+	relation 135554 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 138626 // <dependency>
+	  b parent class_ref 133122 // user_anwendungen
+      end
+    end
+
+    class 128514 "FormulareAnwendung"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 1
+      key "lbDMF:toolbarimagefile" value "app_formulare.png"
+      attribute 148994 "anwendungid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149122 "formularid"
+	protected explicit_type "ForeignKey"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 138754 // <dependency>
+	relation 135682 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 138754 // <dependency>
+	  b parent class_ref 130818 // anwendungen_formulare
+      end
+
+      attribute 169986 "purpose"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 168962 // Formulare (Formulare)
+	relation 165634 ---> name "Formulare"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Formulare" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 168962 // Formulare (Formulare)
+	  b parent class_ref 128130 // Formulare
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+
+      classrelation 169090 // Anwendungen (Anwendungen)
+	relation 165762 ---> name "Anwendungen"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Anwendungen" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 169090 // Anwendungen (Anwendungen)
+	  b parent class_ref 128642 // Anwendungen
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
     end
 
@@ -1409,6 +1445,89 @@ ${inlines}
 	flow 205314 "<flow>"
 	  on activityaction_ref 168194 // activity action NOP
 	end
+      end
+    end
+
+    class 156930 "FormularTypen"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 170242 "handlername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 170370 "handlerfunctor"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 170498 "handlerintarface"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 170626 "namespace"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 170754 "beschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 169218 // <dependency>
+	relation 165890 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 169218 // <dependency>
+	  b parent class_ref 132098 // formulartypen
+      end
+
+      classrelation 169346 // Formulare (Formulare)
+	relation 166018 ---> name "Formulare"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Formulare" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 169346 // Formulare (Formulare)
+	  b parent class_ref 128130 // Formulare
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
     end
   end

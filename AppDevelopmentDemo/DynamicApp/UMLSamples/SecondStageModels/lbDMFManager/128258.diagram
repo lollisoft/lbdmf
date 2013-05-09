@@ -2,7 +2,7 @@ format 73
 
 classcanvas 130178 class_ref 128130 // Formulare
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 111 69 2000
+  xyz 110 71 2000
 end
 classcanvas 130306 class_ref 128258 // Formular_Parameter
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -13,13 +13,13 @@ classcanvas 130562 class_ref 128642 // Anwendungen
   xyz 65 492 2006
 end
 relationcanvas 130434 relation_ref 134146 // Formular_Parameter
-  from ref 130178 z 3006 label "Formular_Parameter" italic xyz 293.5 152 3006 stereotype "<<masterdetail_action>>" xyz 278.5 171 3006 to ref 130306
+  from ref 130178 z 3006 label "Formular_Parameter" italic xyz 292 153 3006 stereotype "<<masterdetail_action>>" xyz 277 172 3006 to ref 130306
   role_a_pos 358 146 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130690 relation_ref 133890 // Formulare
-  from ref 130562 z 2007 label "Formulare" italic xyz 128.5 364 2007 stereotype "<<masterdetail_action>>" xyz 75.5 383 2007 to ref 130178
-  role_a_pos 175 284 3000 no_role_b
+  from ref 130562 z 2007 label "Formulare" italic xyz 127 365 2007 stereotype "<<masterdetail_action>>" xyz 74 384 2007 to ref 130178
+  role_a_pos 174 286 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 end

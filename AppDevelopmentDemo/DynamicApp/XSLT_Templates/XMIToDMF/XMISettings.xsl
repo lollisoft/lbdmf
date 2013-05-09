@@ -4,8 +4,8 @@
 <!--<xsl:variable name="settingsfile_targetdatabase" select="'MSSQL'"/>-->
 <!--<xsl:variable name="settingsfile_targetdatabase" select="'PostgreSQL'"/>-->
 <xsl:variable name="settingsfile_targetdatabase" select="'Sqlite'"/><!-- Mapped from system database backend in the properties window group UML import settings -->
-<xsl:variable name="settingsfile_execute_droprules" select="'yes'"/>
-<xsl:variable name="settingsfile_database_name" select="'CDKatalog'"/>
+<xsl:variable name="settingsfile_execute_droprules" select="'no'"/>
+<xsl:variable name="settingsfile_database_name" select="'lbDMF'"/>
 <xsl:variable name="settingsfile_database_user" select="'dbuser'"/>
 <xsl:variable name="settingsfile_database_pass" select="'dbpass'"/>
 </xsl:stylesheet>
