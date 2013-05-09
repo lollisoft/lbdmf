@@ -3039,6 +3039,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	*name = columnName;
+	
+	_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") called." LOG_
+	
 	if (theResult == NULL) {
 		_CL_VERBOSE << "Error: No resultset available. Try reopen." LOG_
 		if (reopen() != ERR_NONE) {
@@ -3071,6 +3074,8 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 			QI(key, lb_I_Integer, index)
 			cachedColumnNames->finishIteration();
 
+			_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") checks column mapping with key: " << key->charrep() LOG_
+			
 			if (cachedColumnTableNames->exists(&key) == 1) {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_String, table)
