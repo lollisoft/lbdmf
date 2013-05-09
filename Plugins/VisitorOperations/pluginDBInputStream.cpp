@@ -1367,6 +1367,76 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) 
 	}
 }
 
+#ifndef USE_OLDMAPPING
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select id, name, tablename, dbtype, isfk, fkname, fktable, formularid from formularfields";
+
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to formular_actions table failed. Read formular_actions would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFormular)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, tablename)
+		UAP(lb_I_String, dbtype)
+		UAP(lb_I_String, isfk)
+		UAP(lb_I_String, fkname)
+		UAP(lb_I_String, fktablename)
+
+		qID = q->getAsLong(1);
+		name = q->getAsString(2);
+		tablename = q->getAsString(3);
+		dbtype = q->getAsString(4);
+		isfk = q->getAsString(5);
+		fkname = q->getAsString(6);
+		fktablename = q->getAsString(7);
+		qFormular = q->getAsLong(8);
+
+		if (*isfk == "true")
+			formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), true, fkname->charrep(), fktablename->charrep(), qFormular->getData());
+		else
+			formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), false, "", "", qFormular->getData());
+			
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			name = q->getAsString(2);
+			tablename = q->getAsString(3);
+			dbtype = q->getAsString(4);
+			isfk = q->getAsString(5);
+			fkname = q->getAsString(6);
+			fktablename = q->getAsString(7);
+			qFormular = q->getAsLong(8);
+
+			if (*isfk == "true")
+				formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), true, fkname->charrep(), fktablename->charrep(), qFormular->getData());
+			else
+				formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), false, "", "", qFormular->getData());
+		}
+	}
+}
+#endif
+
+#ifdef USE_OLDMAPPING
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
 	lbErrCodes err = ERR_NONE;
 	bool showMessage = false;
@@ -1938,6 +2008,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		metaapp->msgBox("Error", messageText->charrep());
 	}
 }
+#endif
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 	lbErrCodes err = ERR_NONE;
