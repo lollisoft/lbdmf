@@ -2174,6 +2174,14 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
 			if (stylesheetdoc == NULL) {
 				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
+
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				
+				*msg = _trans("Failed to load in-memory XMI stylesheet document as an XML document.");
+				*msg += "\n\nStylesheet: ";
+				*msg += (const char*) input->getFileName();
+				metaapp->msgBox(_trans("Error"), msg->charrep());
+
 				return err; 
 			}
 
