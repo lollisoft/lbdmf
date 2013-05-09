@@ -457,6 +457,10 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "== SQL Start ==" LOG_
+				_LOG << "SQL query was: " << SQL->charrep() LOG_
+				_LOG << "== SQL End ==" LOG_
+				
 				return false;
 			}
 			
@@ -497,6 +501,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "== SQL Start ==" LOG_
+				_LOG << "SQL query was: " << SQL->charrep() LOG_
+				_LOG << "== SQL End ==" LOG_
 				return false;
 			}
 		} else {
