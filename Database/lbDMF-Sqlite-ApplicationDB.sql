@@ -1,3 +1,9 @@
+
+
+-- Params XSLDatabaseBackendSystem: 
+-- Params XSLDatabaseBackendApplication: 
+-- Params overwriteDatabase: 
+
 --
 -- SQL script created for Sqlite
 --
@@ -5,15 +11,19 @@
 
 -- Class Benutzer of type FORM found.
 				
+-- Class DBType of type FORM found.
+				
+-- Class FormularFields of type FORM found.
+				
 -- Class Formulare of type FORM found.
+				
+-- Class Anwendungen of type FORM found.
 				
 -- Class Formular_Parameter of type FORM found.
 				
 -- Class AnwendungenBenutzer of type FORM found.
 				
 -- Class FormulareAnwendung of type FORM found.
-				
--- Class Anwendungen of type FORM found.
 				
 -- Class Aktionen of type FORM found.
 				
@@ -29,22 +39,13 @@
 				
 -- Class Reportparameter of type FORM found.
 				
+-- Class FormularTypen of type FORM found.
+				
 -- Class action_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
 -- Generate application table action_parameters for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
-
-CREATE TABLE "report"
-(
-  "report_id" INTEGER PRIMARY KEY,
-  "report_name" BPCHAR,
-  "report_sys" BOOLEAN,
-  "report_source" BPCHAR,
-  "report_descrip" BPCHAR,
-  "report_grade" INTEGER NOT NULL,
-  "report_loaddate" TIMESTAMP
-);
 
 -- CREATE Sqlite TABLE action_parameters
 CREATE TABLE "action_parameters" (
@@ -158,7 +159,8 @@ CREATE TABLE "anwendungen" (
 CREATE TABLE "anwendungen_formulare" (
 	"id" INTEGER PRIMARY KEY,
 	"anwendungid" INTEGER,
-	"formularid" INTEGER
+	"formularid" INTEGER,
+	"purpose" BPCHAR
 );
 
 -- Class anwendungs_parameter of type ENTITY found.
@@ -292,6 +294,25 @@ CREATE TABLE "formulare" (
 	"toolbarimage" BPCHAR,
 	"anwendungid" INTEGER,
 	"typ" INTEGER
+);
+
+-- Class formularfields of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formularfields for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE formularfields
+CREATE TABLE "formularfields" (
+	"id" INTEGER PRIMARY KEY,
+	"name" BPCHAR,
+	"tablename" BPCHAR,
+	"formularid" INTEGER,
+	"dbtypeid" INTEGER,
+	"isfk" BOOLEAN,
+	"fkname" BPCHAR,
+	"fktable" BPCHAR,
+	"dbtype" BPCHAR
 );
 
 -- Class formulartypen of type ENTITY found.
@@ -437,21 +458,37 @@ CREATE TABLE "users" (
 	"vorname" BPCHAR,
 	"userid" BPCHAR,
 	"passwort" BPCHAR,
-	"secret" BPCHAR,
 	"lastapp" INTEGER
+);
+
+-- Class dbtype of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbtype for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbtype
+CREATE TABLE "dbtype" (
+	"id" INTEGER PRIMARY KEY,
+	"name" BPCHAR,
+	"description" BPCHAR
 );
 
 -- Class Benutzer of type FORM found.
 				
+-- Class DBType of type FORM found.
+				
+-- Class FormularFields of type FORM found.
+				
 -- Class Formulare of type FORM found.
+				
+-- Class Anwendungen of type FORM found.
 				
 -- Class Formular_Parameter of type FORM found.
 				
 -- Class AnwendungenBenutzer of type FORM found.
 				
 -- Class FormulareAnwendung of type FORM found.
-				
--- Class Anwendungen of type FORM found.
 				
 -- Class Aktionen of type FORM found.
 				
@@ -466,6 +503,8 @@ CREATE TABLE "users" (
 -- Class Reportdefinitionen of type FORM found.
 				
 -- Class Reportparameter of type FORM found.
+				
+-- Class FormularTypen of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 
@@ -586,6 +625,13 @@ CREATE TABLE "users" (
 
 -- Skipped, due to creation in template 'importApplicationTable'
 
+-- Class formularfields of type ENTITY found.
+
+-- Generate application tables formularfields for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
 -- Class formulartypen of type ENTITY found.
 
 -- Generate application tables formulartypen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
@@ -656,7 +702,18 @@ CREATE TABLE "users" (
 
 -- Skipped, due to creation in template 'importApplicationTable'
 
--- Generate Sqlite application relations for table action_parameters for lbDMFManager_Entities	
+-- Class dbtype of type ENTITY found.
+
+-- Generate application tables dbtype for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Generate Sqlite application relations for table action_parameters for lbDMFManager_Entities
+-- Create table relations for action_parameters
+--ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_parameters" ADD CONSTRAINT "cst_action_parameters_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -679,9 +736,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('actions', 'id', 'action_parameters', 'actionid');
+ 
 
-
--- Generate Sqlite application relations for table action_step_parameter for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table action_step_parameter for lbDMFManager_Entities
+-- Create table relations for action_step_parameter
+--ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_steps_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_step_parameter" ADD CONSTRAINT "cst_action_step_parameter_action_steps_id" FOREIGN KEY ( "action_step_id" ) REFERENCES "action_steps" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -704,9 +765,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('action_steps', 'id', 'action_step_parameter', 'action_step_id');
+ 
 
-
--- Generate Sqlite application relations for table action_step_transitions for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table action_step_transitions for lbDMFManager_Entities
+-- Create table relations for action_step_transitions
+--ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "dst_actionid" ) REFERENCES "action_steps" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -729,8 +794,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('action_steps', 'id', 'action_step_transitions', 'dst_actionid');
+ 
 
-	
+--ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_step_transitions" ADD CONSTRAINT "cst_action_step_transitions_action_steps_id" FOREIGN KEY ( "src_actionid" ) REFERENCES "action_steps" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -753,9 +821,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('action_steps', 'id', 'action_step_transitions', 'src_actionid');
+ 
 
-
--- Generate Sqlite application relations for table action_steps for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table action_steps for lbDMFManager_Entities
+-- Create table relations for action_steps
+--ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_action_types_id" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_action_types_id" FOREIGN KEY ( "type" ) REFERENCES "action_types" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -778,8 +850,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('action_types', 'id', 'action_steps', 'type');
+ 
 
-	
+--ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "action_steps" ADD CONSTRAINT "cst_action_steps_actions_id" FOREIGN KEY ( "actionid" ) REFERENCES "actions" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -802,10 +877,15 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('actions', 'id', 'action_steps', 'actionid');
-
+ 
 
 -- Generate Sqlite application relations for table action_types for lbDMFManager_Entities
--- Generate Sqlite application relations for table actions for lbDMFManager_Entities	
+-- Create table relations for action_types
+-- Generate Sqlite application relations for table actions for lbDMFManager_Entities
+-- Create table relations for actions
+--ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_action_types_id" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "actions" ADD CONSTRAINT "cst_actions_action_types_id" FOREIGN KEY ( "typ" ) REFERENCES "action_types" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -828,10 +908,15 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('action_types', 'id', 'actions', 'typ');
-
+ 
 
 -- Generate Sqlite application relations for table anwendungen for lbDMFManager_Entities
--- Generate Sqlite application relations for table anwendungen_formulare for lbDMFManager_Entities	
+-- Create table relations for anwendungen
+-- Generate Sqlite application relations for table anwendungen_formulare for lbDMFManager_Entities
+-- Create table relations for anwendungen_formulare
+--ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -854,8 +939,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'anwendungen_formulare', 'anwendungid');
+ 
 
-	
+--ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "anwendungen_formulare" ADD CONSTRAINT "cst_anwendungen_formulare_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -878,9 +966,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'anwendungen_formulare', 'formularid');
+ 
 
-
--- Generate Sqlite application relations for table anwendungs_parameter for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table anwendungs_parameter for lbDMFManager_Entities
+-- Create table relations for anwendungs_parameter
+--ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungs_parameter_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "anwendungs_parameter" ADD CONSTRAINT "cst_anwendungs_parameter_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -903,9 +995,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'anwendungs_parameter', 'anwendungid');
+ 
 
-
--- Generate Sqlite application relations for table anwendungsberechtigungen for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table anwendungsberechtigungen for lbDMFManager_Entities
+-- Create table relations for anwendungsberechtigungen
+--ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_formulare_id" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_formulare_id" FOREIGN KEY ( "idformular" ) REFERENCES "formulare" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -928,8 +1024,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'anwendungsberechtigungen', 'idformular');
+ 
 
-	
+--ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_users_id" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "anwendungsberechtigungen" ADD CONSTRAINT "cst_anwendungsberechtigungen_users_id" FOREIGN KEY ( "iduser" ) REFERENCES "users" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -952,13 +1051,21 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('users', 'id', 'anwendungsberechtigungen', 'iduser');
-
+ 
 
 -- Generate Sqlite application relations for table applevel_plugin_registry for lbDMFManager_Entities
+-- Create table relations for applevel_plugin_registry
 -- Generate Sqlite application relations for table codegentarget for lbDMFManager_Entities
+-- Create table relations for codegentarget
 -- Generate Sqlite application relations for table column_types for lbDMFManager_Entities
+-- Create table relations for column_types
 -- Generate Sqlite application relations for table foreignkey_visibledata_mapping for lbDMFManager_Entities
--- Generate Sqlite application relations for table formular_actions for lbDMFManager_Entities	
+-- Create table relations for foreignkey_visibledata_mapping
+-- Generate Sqlite application relations for table formular_actions for lbDMFManager_Entities
+-- Create table relations for formular_actions
+--ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_actions_id" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_actions_id" FOREIGN KEY ( "action" ) REFERENCES "actions" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -981,8 +1088,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('actions', 'id', 'formular_actions', 'action');
+ 
 
-	
+--ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_formulare_id" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formular_actions" ADD CONSTRAINT "cst_formular_actions_formulare_id" FOREIGN KEY ( "formular" ) REFERENCES "formulare" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1005,9 +1115,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'formular_actions', 'formular');
+ 
 
-
--- Generate Sqlite application relations for table formular_parameters for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table formular_parameters for lbDMFManager_Entities
+-- Create table relations for formular_parameters
+--ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formular_parameters_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formular_parameters" ADD CONSTRAINT "cst_formular_parameters_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1030,9 +1144,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'formular_parameters', 'formularid');
+ 
 
-
--- Generate Sqlite application relations for table formulare for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table formulare for lbDMFManager_Entities
+-- Create table relations for formulare
+--ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_anwendungen_id" FOREIGN KEY ( "anwendungid" ) REFERENCES "anwendungen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1055,8 +1173,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'formulare', 'anwendungid');
+ 
 
-	
+--ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formulartypen_id" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formulare" ADD CONSTRAINT "cst_formulare_formulartypen_id" FOREIGN KEY ( "typ" ) REFERENCES "formulartypen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1079,12 +1200,75 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulartypen', 'id', 'formulare', 'typ');
+ 
 
+-- Generate Sqlite application relations for table formularfields for lbDMFManager_Entities
+-- Create table relations for formularfields
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_formularfields_formularid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
+                 THEN RAISE(ABORT, 'formularid violates foreign key formulare(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_formularid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
+                 THEN RAISE(ABORT, 'formularid violates foreign key formulare(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_formularid_del" BEFORE DELETE ON formulare FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT formularid FROM formularfields WHERE formularid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key formularfields(formularid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'formularfields', 'formularid');
+ 
+
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_formularfields_dbtypeid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtypeid violates foreign key dbtype(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_dbtypeid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtypeid violates foreign key dbtype(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_dbtypeid_del" BEFORE DELETE ON dbtype FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbtypeid FROM formularfields WHERE dbtypeid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key formularfields(dbtypeid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtype', 'id', 'formularfields', 'dbtypeid');
+ 
 
 -- Generate Sqlite application relations for table formulartypen for lbDMFManager_Entities
+-- Create table relations for formulartypen
 -- Generate Sqlite application relations for table regressiontest for lbDMFManager_Entities
+-- Create table relations for regressiontest
 -- Generate Sqlite application relations for table report_element_types for lbDMFManager_Entities
--- Generate Sqlite application relations for table report_elements for lbDMFManager_Entities	
+-- Create table relations for report_element_types
+-- Generate Sqlite application relations for table report_elements for lbDMFManager_Entities
+-- Create table relations for report_elements
+--ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_report_element_types_id" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_report_element_types_id" FOREIGN KEY ( "typ" ) REFERENCES "report_element_types" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1107,8 +1291,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('report_element_types', 'id', 'report_elements', 'typ');
+ 
 
-	
+--ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "report_elements" ADD CONSTRAINT "cst_report_elements_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1131,9 +1318,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('reports', 'id', 'report_elements', 'reportid');
+ 
 
-
--- Generate Sqlite application relations for table report_parameters for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table report_parameters for lbDMFManager_Entities
+-- Create table relations for report_parameters
+--ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_report_parameters_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "report_parameters" ADD CONSTRAINT "cst_report_parameters_reports_id" FOREIGN KEY ( "reportid" ) REFERENCES "reports" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1156,9 +1347,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('reports', 'id', 'report_parameters', 'reportid');
+ 
 
-
--- Generate Sqlite application relations for table report_texts for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table report_texts for lbDMFManager_Entities
+-- Create table relations for report_texts
+--ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_texts_report_elements_id" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "report_texts" ADD CONSTRAINT "cst_report_texts_report_elements_id" FOREIGN KEY ( "elementid" ) REFERENCES "report_elements" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1181,11 +1376,17 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('report_elements', 'id', 'report_texts', 'elementid');
-
+ 
 
 -- Generate Sqlite application relations for table reports for lbDMFManager_Entities
+-- Create table relations for reports
 -- Generate Sqlite application relations for table translations for lbDMFManager_Entities
--- Generate Sqlite application relations for table user_anwendungen for lbDMFManager_Entities	
+-- Create table relations for translations
+-- Generate Sqlite application relations for table user_anwendungen for lbDMFManager_Entities
+-- Create table relations for user_anwendungen
+--ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1208,8 +1409,11 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'user_anwendungen', 'anwendungenid');
+ 
 
-	
+--ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_users_id" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "user_anwendungen" ADD CONSTRAINT "cst_user_anwendungen_users_id" FOREIGN KEY ( "userid" ) REFERENCES "users" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1232,9 +1436,13 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('users', 'id', 'user_anwendungen', 'userid');
+ 
 
-
--- Generate Sqlite application relations for table users for lbDMFManager_Entities	
+-- Generate Sqlite application relations for table users for lbDMFManager_Entities
+-- Create table relations for users
+--ALTER TABLE "users" ADD CONSTRAINT "cst_users_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "users" ADD CONSTRAINT "cst_users_anwendungen_id" FOREIGN KEY ( "lastapp" ) REFERENCES "anwendungen" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
@@ -1257,4 +1465,7 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'users', 'lastapp');
+ 
 
+-- Generate Sqlite application relations for table dbtype for lbDMFManager_Entities
+-- Create table relations for dbtype
