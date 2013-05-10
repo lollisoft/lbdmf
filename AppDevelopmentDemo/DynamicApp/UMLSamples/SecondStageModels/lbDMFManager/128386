@@ -1,6 +1,6 @@
 format 73
 "lbDMF" // DMFToUML::lbDMF
-  revision 7
+  revision 6
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -407,37 +407,7 @@ ${inlines}
       end
     end
 
-    class 150274 "menu"
-      visibility package stereotype "stereotype"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 7
-      key "" value ""
-      key "stereotypeSet" value ""
-      key "stereotypeCheck" value ""
-      key "stereotypeSetParameters" value ""
-      key "stereotypeCheckParameters" value ""
-      key "stereotypeApplyOn" value "Class"
-      key "stereotypeIconPath" value ""
-      classrelation 154498 // <unidirectional association>
-	relation 151426 --->
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154498 // <unidirectional association>
-	  b parent class_ref 133506 // Element
-      end
-    end
-
-    class 150658 "menuaction"
+    class 164482 "dropdown"
       visibility package stereotype "stereotype"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -454,102 +424,36 @@ ${inlines}
       key "stereotypeCheck" value ""
       key "stereotypeSetParameters" value ""
       key "stereotypeCheckParameters" value ""
-      key "stereotypeApplyOn" value "Class"
+      key "stereotypeApplyOn" value "Attribute"
       key "stereotypeIconPath" value ""
-      classrelation 154882 // <unidirectional association>
-	relation 151810 --->
+      comment "Defines a formular field to be a dropdown field whose display values are taken from the given table. The display value is given in column."
+      classrelation 178050 // <unidirectional association>
+	relation 174082 --->
 	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 154882 // <unidirectional association>
+	    classrelation_ref 178050 // <unidirectional association>
 	  b parent class_ref 133506 // Element
       end
-    end
 
-    class 150786 "ribbonmenu"
-      visibility package stereotype "stereotype"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
+      attribute 184066 "column"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 6
-      key "stereotypeSet" value ""
-      key "stereotypeCheck" value ""
-      key "stereotypeSetParameters" value ""
-      key "stereotypeCheckParameters" value ""
-      key "stereotypeApplyOn" value "Class"
-      key "stereotypeIconPath" value ""
-      classrelation 155522 // <unidirectional association>
-	relation 152450 --->
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155522 // <unidirectional association>
-	  b parent class_ref 133506 // Element
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
-    end
 
-    class 150914 "ribbonpage"
-      visibility package stereotype "stereotype"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
+      attribute 184194 "table"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 6
-      key "stereotypeSet" value ""
-      key "stereotypeCheck" value ""
-      key "stereotypeSetParameters" value ""
-      key "stereotypeCheckParameters" value ""
-      key "stereotypeApplyOn" value "Class"
-      key "stereotypeIconPath" value ""
-      classrelation 155778 // <unidirectional association>
-	relation 152706 --->
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155778 // <unidirectional association>
-	  b parent class_ref 133506 // Element
-      end
-    end
-
-    class 151042 "ribbongroup"
-      visibility package stereotype "stereotype"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      ncouples 6
-      key "stereotypeSet" value ""
-      key "stereotypeCheck" value ""
-      key "stereotypeSetParameters" value ""
-      key "stereotypeCheckParameters" value ""
-      key "stereotypeApplyOn" value "Class"
-      key "stereotypeIconPath" value ""
-      classrelation 155650 // <unidirectional association>
-	relation 152578 --->
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155650 // <unidirectional association>
-	  b parent class_ref 133506 // Element
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
   end
