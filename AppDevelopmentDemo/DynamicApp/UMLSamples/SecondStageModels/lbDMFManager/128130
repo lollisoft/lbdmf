@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 42
+  revision 43
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -265,23 +265,31 @@ ${inlines}
       end
 
       attribute 163074 "formularid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "formulare"
       end
 
       attribute 163202 "dbtypeid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "dbtype"
       end
     end
 
@@ -383,23 +391,31 @@ ${inlines}
       end
 
       attribute 150274 "anwendungid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
       end
 
       attribute 150402 "typ"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "beschreibung"
+	key "lbDMF:dropdown:table" value "formulartypen"
       end
 
       classrelation 155138 // Fields (FormularFields)
@@ -413,7 +429,6 @@ ${inlines}
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
-
     end
 
     class 128642 "Anwendungen"
@@ -562,7 +577,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     class 128258 "Formular_Parameter"
@@ -608,13 +622,17 @@ ${inlines}
       end
 
       attribute 151554 "formularid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "formulare"
       end
     end
 
@@ -633,23 +651,31 @@ ${inlines}
       ncouples 1
       key "lbDMF:toolbarimagefile" value "User_application.png"
       attribute 148738 "userid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "userid"
+	key "lbDMF:dropdown:table" value "users"
       end
 
       attribute 148866 "anwendungenid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
       end
 
       classrelation 138626 // <dependency>
@@ -676,23 +702,31 @@ ${inlines}
       ncouples 1
       key "lbDMF:toolbarimagefile" value "app_formulare.png"
       attribute 148994 "anwendungid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
       end
 
       attribute 149122 "formularid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "formulare"
       end
 
       classrelation 138754 // <dependency>
@@ -783,13 +817,17 @@ ${inlines}
       end
 
       attribute 152194 "typ"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "bezeichnung"
+	key "lbDMF:dropdown:table" value "action_types"
       end
 
       classrelation 128258 // <dependency>
@@ -889,23 +927,31 @@ ${inlines}
       end
 
       attribute 151682 "action"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "actions"
       end
 
       attribute 151810 "formular"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "formulare"
       end
     end
 
@@ -952,13 +998,17 @@ ${inlines}
       end
 
       attribute 152322 "anwendungid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
       end
     end
 
@@ -1015,23 +1065,31 @@ ${inlines}
       end
 
       attribute 151938 "type"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "bezeichnung"
+	key "lbDMF:dropdown:table" value "action_types"
       end
 
       attribute 152066 "actionid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "actions"
       end
     end
 
@@ -1133,13 +1191,17 @@ ${inlines}
       end
 
       attribute 152450 "reportid"
-	protected explicit_type "ForeignKey"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "reports"
       end
     end
 
@@ -1528,6 +1590,408 @@ ${inlines}
 	  b parent class_ref 128130 // Formulare
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+    end
+
+    class 163970 "Tables"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 176642 // <dependency>
+	relation 172930 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 176642 // <dependency>
+	  b parent class_ref 163458 // dbtable
+      end
+
+      attribute 180866 "catalogname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 180994 "schemaname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 181122 "tablename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 181250 "tabletype"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 181378 "tableremarks"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 177154 // Columns (Columns)
+	relation 173314 ---> name "Columns"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Columns" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 177154 // Columns (Columns)
+	  b parent class_ref 164098 // Columns
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
+      end
+
+      classrelation 177538 // PrimaryKeys (PrimaryKeys)
+	relation 173698 ---> name "PrimaryKeys"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "PrimaryKeys" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 177538 // PrimaryKeys (PrimaryKeys)
+	  b parent class_ref 164354 // PrimaryKeys
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
+      end
+
+      classrelation 177666 // ForeignKeys (ForeignKeys)
+	relation 173826 ---> name "ForeignKeys"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "ForeignKeys" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 177666 // ForeignKeys (ForeignKeys)
+	  b parent class_ref 164226 // ForeignKeys
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
+      end
+    end
+
+    class 164098 "Columns"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 181634 "columnname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 181762 "columnremarks"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 181890 "typename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182018 "columnsize"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182146 "nullable"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182274 "tablename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 177026 // <dependency>
+	relation 173186 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 177026 // <dependency>
+	  b parent class_ref 163586 // dbcolumn
+      end
+
+      attribute 184322 "dbtableid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "tablename"
+	key "lbDMF:dropdown:table" value "dbtable"
+      end
+    end
+
+    class 164354 "PrimaryKeys"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 183426 "tablecatalog"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183298 "tableschema"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183554 "tablename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183682 "columnname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183810 "columnname2"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183938 "keysequence"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 177410 // <dependency>
+	relation 173570 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 177410 // <dependency>
+	  b parent class_ref 163842 // dbprimarykey
+      end
+
+      attribute 184450 "dbtableid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "tablename"
+	key "lbDMF:dropdown:table" value "dbtable"
+      end
+    end
+
+    class 164226 "ForeignKeys"
+      visibility package stereotype "form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 182402 "tablecatalog"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182530 "tableschema"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182658 "tablename"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182786 "tablecolumnname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 182914 "keysequence"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183042 "updaterule"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183170 "deleterule"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 177282 // <dependency>
+	relation 173442 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 177282 // <dependency>
+	  b parent class_ref 163714 // dbforeignkey
+      end
+
+      attribute 184578 "dbtableid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "tablename"
+	key "lbDMF:dropdown:table" value "dbtable"
       end
     end
   end

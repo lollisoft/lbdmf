@@ -226,12 +226,10 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'fktable', 'formularfields', 0, 'String', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f482_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'formularid', 'formularfields', 1, 'name', 'formulare', 'Integer', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f482_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtypeid', 'formularfields', 1, 'name', 'dbtype', 'Integer', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -299,13 +297,11 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'toolbarimage', 'formulare', 0, 'String', id FROM "formulare" WHERE name = 'Formulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f682_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungid', 'formulare', 1, 'name', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'Formulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f682_4	
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'typ', 'formulare', 1, 'name', 'formulartypen', 'Integer', id FROM "formulare" WHERE name = 'Formulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'typ', 'formulare', 1, 'beschreibung', 'formulartypen', 'Integer', id FROM "formulare" WHERE name = 'Formulare' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
@@ -488,8 +484,7 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametername', 'formular_parameters', 0, 'String', id FROM "formulare" WHERE name = 'Formular_Parameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f482_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'formularid', 'formular_parameters', 1, 'name', 'formulare', 'Integer', id FROM "formulare" WHERE name = 'Formular_Parameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -529,13 +524,11 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 SELECT 'query', 'select "userid", "anwendungenid" from "user_anwendungen"', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
-
--- otherClassID BOUML_0x1f402_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'userid', 'user_anwendungen', 1, 'userid', 'users', 'Integer', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f402_4	
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungenid', 'user_anwendungen', 1, 'anwendungenid', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungenid', 'user_anwendungen', 1, 'name', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
@@ -574,12 +567,10 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 SELECT 'query', 'select "anwendungid", "formularid", "purpose" from "anwendungen_formulare"', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
-
--- otherClassID 	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungid', 'anwendungen_formulare', 1, 'name', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID 	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'formularid', 'anwendungen_formulare', 1, 'name', 'formulare', 'Integer', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'purpose', 'anwendungen_formulare', 0, 'String', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
@@ -661,9 +652,8 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'name', 'actions', 0, 'String', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID 	
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'typ', 'actions', 1, 'name', 'action_types', 'Integer', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'typ', 'actions', 1, 'bezeichnung', 'action_types', 'Integer', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
@@ -759,12 +749,10 @@ SELECT 'query', 'select "event", "action", "formular" from "formular_actions"', 
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'event', 'formular_actions', 0, 'String', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f482_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'action', 'formular_actions', 1, 'name', 'actions', 'Integer', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f482_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'formular', 'formular_actions', 1, 'name', 'formulare', 'Integer', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -806,8 +794,7 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametername', 'anwendungs_parameter', 0, 'String', id FROM "formulare" WHERE name = 'Anwendungsparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f682_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungid', 'anwendungs_parameter', 1, 'name', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'Anwendungsparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -853,12 +840,10 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'a_order_nr', 'action_steps', 0, 'Integer', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'type', 'action_steps', 1, 'bezeichnung', 'action_types', 'Integer', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
--- otherClassID BOUML_0x1f702_4	
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'type', 'action_steps', 1, 'name', 'action_types', 'Integer', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
-
-
--- otherClassID BOUML_0x1f702_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'actionid', 'action_steps', 1, 'name', 'actions', 'Integer', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -955,8 +940,7 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'name', 'report_parameters', 0, 'String', id FROM "formulare" WHERE name = 'Reportparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
-
--- otherClassID BOUML_0x1f982_4	
+-- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'reportid', 'report_parameters', 1, 'name', 'reports', 'Integer', id FROM "formulare" WHERE name = 'Reportparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
@@ -1032,6 +1016,942 @@ UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29582_0';
 
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'FormularTypen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
 
+
+		-- Class Tables of type FORM found.
+					
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'Tables');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'Tables', 'Tables verwalten', 'manageTables', 'Edit data of Tables', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Create query for dbtable (BOUML_0x28082_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "catalogname", "schemaname", "tablename", "tabletype", "tableremarks" from "dbtable"', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'catalogname', 'dbtable', 0, 'String', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'schemaname', 'dbtable', 0, 'String', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablename', 'dbtable', 0, 'String', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tabletype', 'dbtable', 0, 'String', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tableremarks', 'dbtable', 0, 'String', id FROM "formulare" WHERE name = 'Tables' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'Tables', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'Tables', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Tables', 1);
+
+
+-- Association from Tables to Columns
+-- From formular 'BOUML_0x28082_4'
+-- To   formular 'BOUML_0x28102_4'
+
+
+
+
+-- Create sqlite based action
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x2b402_0'.
+
+
+
+-- Build up a master detail action
+INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b402_0', 1, 'tablename');	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Columns', 1, 'Columns', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b402_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b402_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b402_0');
+UPDATE actions set name = 'Columns' where name = 'BOUML_0x2b402_0';
+	
+-- Association from Tables to PrimaryKeys
+-- From formular 'BOUML_0x28082_4'
+-- To   formular 'BOUML_0x28202_4'
+
+
+
+
+-- Create sqlite based action
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x2b582_0'.
+
+
+
+-- Build up a master detail action
+INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b582_0', 1, 'tablename');	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for PrimaryKeys', 1, 'PrimaryKeys', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b582_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b582_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b582_0');
+UPDATE actions set name = 'PrimaryKeys' where name = 'BOUML_0x2b582_0';
+	
+-- Association from Tables to ForeignKeys
+-- From formular 'BOUML_0x28082_4'
+-- To   formular 'BOUML_0x28182_4'
+
+
+
+
+-- Create sqlite based action
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x2b602_0'.
+
+
+
+-- Build up a master detail action
+INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b602_0', 1, 'tablename');	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for ForeignKeys', 1, 'ForeignKeys', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b602_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b602_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b602_0');
+UPDATE actions set name = 'ForeignKeys' where name = 'BOUML_0x2b602_0';
+	
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
+		-- Class Columns of type FORM found.
+					
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'Columns');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'Columns', 'Columns verwalten', 'manageColumns', 'Edit data of Columns', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbcolumn', 'dbtableid', 'dbtable', '');
+
+
+-- Create query for dbcolumn (BOUML_0x28102_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "columnname", "columnremarks", "typename", "columnsize", "nullable", "tablename", "dbtableid" from "dbcolumn"', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'columnname', 'dbcolumn', 0, 'String', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'columnremarks', 'dbcolumn', 0, 'String', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'typename', 'dbcolumn', 0, 'String', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'columnsize', 'dbcolumn', 0, 'Integer', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'nullable', 'dbcolumn', 0, 'Bit', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablename', 'dbcolumn', 0, 'String', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtableid', 'dbcolumn', 1, 'tablename', 'dbtable', 'Integer', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'Columns', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'Columns', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Columns', 1);
+
+
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'Columns' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
+		-- Class PrimaryKeys of type FORM found.
+					
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'PrimaryKeys');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'PrimaryKeys', 'PrimaryKeys verwalten', 'managePrimaryKeys', 'Edit data of PrimaryKeys', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbprimarykey', 'dbtableid', 'dbtable', '');
+
+
+-- Create query for dbprimarykey (BOUML_0x28202_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "tablecatalog", "tableschema", "tablename", "columnname", "columnname2", "keysequence", "dbtableid" from "dbprimarykey"', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablecatalog', 'dbprimarykey', 0, 'String', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tableschema', 'dbprimarykey', 0, 'String', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablename', 'dbprimarykey', 0, 'String', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'columnname', 'dbprimarykey', 0, 'String', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'columnname2', 'dbprimarykey', 0, 'String', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'keysequence', 'dbprimarykey', 0, 'Integer', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtableid', 'dbprimarykey', 1, 'tablename', 'dbtable', 'Integer', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'PrimaryKeys', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'PrimaryKeys', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'PrimaryKeys', 1);
+
+
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'PrimaryKeys' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
+		-- Class ForeignKeys of type FORM found.
+					
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'ForeignKeys');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'ForeignKeys', 'ForeignKeys verwalten', 'manageForeignKeys', 'Edit data of ForeignKeys', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbforeignkey', 'dbtableid', 'dbtable', '');
+
+
+-- Create query for dbforeignkey (BOUML_0x28182_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "tablecatalog", "tableschema", "tablename", "tablecolumnname", "keysequence", "updaterule", "deleterule", "dbtableid" from "dbforeignkey"', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablecatalog', 'dbforeignkey', 0, 'String', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tableschema', 'dbforeignkey', 0, 'String', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablename', 'dbforeignkey', 0, 'String', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'tablecolumnname', 'dbforeignkey', 0, 'String', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'keysequence', 'dbforeignkey', 0, 'Integer', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'updaterule', 'dbforeignkey', 0, 'Integer', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'deleterule', 'dbforeignkey', 0, 'Integer', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtableid', 'dbforeignkey', 1, 'tablename', 'dbtable', 'Integer', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'ForeignKeys', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'ForeignKeys', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'ForeignKeys', 1);
+
+
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'ForeignKeys' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
+		-- Class action_parameters of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'action_parameters', '', 'BOUML_0x1fb82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x20982_1', 'int4', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x20a02_1', 'bpchar', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'value', 'BOUML_0x20a82_1', 'bpchar', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'interface', 'BOUML_0x20b02_1', 'bpchar', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x20b82_1', 'bpchar', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'actionid', 'BOUML_0x20382_0', 'int4', -1, 0, 'action_parameters', id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'actions', 'actionid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fb82_4';
+
+		-- Class action_step_parameter of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'action_step_parameter', '', 'BOUML_0x1fc02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x20c02_1', 'int4', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x20c82_1', 'bpchar', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'value', 'BOUML_0x20d02_1', 'bpchar', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'interface', 'BOUML_0x20d82_1', 'bpchar', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x20e02_1', 'bpchar', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'action_step_id', 'BOUML_0x1fe82_0', 'int4', -1, 0, 'action_step_parameter', id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'action_steps', 'action_step_id',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fc02_4';
+
+		-- Class action_step_transitions of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'action_step_transitions', '', 'BOUML_0x1fc82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x20e82_1', 'int4', -1, 0, 'action_step_transitions', id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'expression', 'BOUML_0x20f02_1', 'bpchar', -1, 0, 'action_step_transitions', id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x20f82_1', 'bpchar', -1, 0, 'action_step_transitions', id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dst_actionid', 'BOUML_0x1ff82_0', 'int4', -1, 0, 'action_step_transitions', id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'src_actionid', 'BOUML_0x20082_0', 'int4', -1, 0, 'action_step_transitions', id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'action_steps', 'dst_actionid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'action_steps', 'src_actionid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fc82_4';
+
+		-- Class action_steps of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'action_steps', '', 'BOUML_0x1fd02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21002_1', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'bezeichnung', 'BOUML_0x21082_1', 'bpchar', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'a_order_nr', 'BOUML_0x21102_1', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'what', 'BOUML_0x21182_1', 'bpchar', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_1', 'BOUML_0x1fe02_0', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_2', 'BOUML_0x1ff02_0', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_3', 'BOUML_0x20002_0', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'type', 'BOUML_0x20182_0', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'actionid', 'BOUML_0x20482_0', 'int4', -1, 0, 'action_steps', id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_steps', 'anonymous_role_1',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_steps', 'anonymous_role_2',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_steps', 'anonymous_role_3',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'action_types', 'type',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'actions', 'actionid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fd02_4';
+
+		-- Class action_types of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'action_types', '', 'BOUML_0x1fd82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21202_1', 'int4', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'bezeichnung', 'BOUML_0x21282_1', 'bpchar', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'action_handler', 'BOUML_0x21302_1', 'bpchar', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'module', 'BOUML_0x21382_1', 'bpchar', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_4', 'BOUML_0x20102_0', 'int4', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_5', 'BOUML_0x20282_0', 'int4', -1, 0, 'action_types', id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_types', 'anonymous_role_4',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_types', 'anonymous_role_5',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fd82_4';
+
+		-- Class actions of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'actions', '', 'BOUML_0x1fe02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21402_1', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x21482_1', 'bpchar', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'source', 'BOUML_0x21502_1', 'bpchar', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'target', 'BOUML_0x21582_1', 'bpchar', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'typ', 'BOUML_0x20202_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_6', 'BOUML_0x20302_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_7', 'BOUML_0x20402_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_8', 'BOUML_0x20582_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'actions', 'anonymous_role_6',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'actions', 'anonymous_role_7',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'actions', 'anonymous_role_8',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'action_types', 'typ',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+		-- Class anwendungen of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'anwendungen', '', 'BOUML_0x1fe82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21602_1', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x21682_1', 'bpchar', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'titel', 'BOUML_0x21702_1', 'bpchar', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'modulename', 'BOUML_0x21782_1', 'bpchar', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'functor', 'BOUML_0x21802_1', 'bpchar', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'interface', 'BOUML_0x21882_1', 'bpchar', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_9', 'BOUML_0x20682_0', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_10', 'BOUML_0x20782_0', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_11', 'BOUML_0x20882_0', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_12', 'BOUML_0x20982_0', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_13', 'BOUML_0x20a82_0', 'int4', -1, 0, 'anwendungen', id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'anonymous_role_9',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'anonymous_role_10',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'anonymous_role_11',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'anonymous_role_12',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'anonymous_role_13',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe82_4';
+
+		-- Class anwendungen_formulare of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'anwendungen_formulare', '', 'BOUML_0x1ff02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21902_1', 'int4', -1, 0, 'anwendungen_formulare', id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungid', 'BOUML_0x20602_0', 'int4', -1, 0, 'anwendungen_formulare', id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'formularid', 'BOUML_0x20b82_0', 'int4', -1, 0, 'anwendungen_formulare', id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'purpose', 'BOUML_0x29882_1', 'bpchar', -1, 0, 'anwendungen_formulare', id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'anwendungen', 'anwendungid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulare', 'formularid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1ff02_4';
+
+		-- Class anwendungs_parameter of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'anwendungs_parameter', '', 'BOUML_0x1ff82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21982_1', 'int4', -1, 0, 'anwendungs_parameter', id from dbtable where tableremarks = 'BOUML_0x1ff82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametername', 'BOUML_0x21a02_1', 'bpchar', -1, 0, 'anwendungs_parameter', id from dbtable where tableremarks = 'BOUML_0x1ff82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametervalue', 'BOUML_0x21a82_1', 'bpchar', -1, 0, 'anwendungs_parameter', id from dbtable where tableremarks = 'BOUML_0x1ff82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungid', 'BOUML_0x20702_0', 'int4', -1, 0, 'anwendungs_parameter', id from dbtable where tableremarks = 'BOUML_0x1ff82_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'anwendungen', 'anwendungid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1ff82_4';
+
+		-- Class anwendungsberechtigungen of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'anwendungsberechtigungen', '', 'BOUML_0x20002_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21b02_1', 'int4', -1, 0, 'anwendungsberechtigungen', id from dbtable where tableremarks = 'BOUML_0x20002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'idformular', 'BOUML_0x20c82_0', 'int4', -1, 0, 'anwendungsberechtigungen', id from dbtable where tableremarks = 'BOUML_0x20002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'iduser', 'BOUML_0x21482_0', 'int4', -1, 0, 'anwendungsberechtigungen', id from dbtable where tableremarks = 'BOUML_0x20002_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulare', 'idformular',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20002_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'users', 'iduser',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20002_4';
+
+		-- Class applevel_plugin_registry of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'applevel_plugin_registry', '', 'BOUML_0x20082_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21b82_1', 'int4', -1, 0, 'applevel_plugin_registry', id from dbtable where tableremarks = 'BOUML_0x20082_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungid', 'BOUML_0x21c02_1', 'int4', -1, 0, 'applevel_plugin_registry', id from dbtable where tableremarks = 'BOUML_0x20082_4';
+	
+		-- Class codegentarget of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'codegentarget', '', 'BOUML_0x20102_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21c82_1', 'int4', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x21d02_1', 'bpchar', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'titel', 'BOUML_0x21d82_1', 'bpchar', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'modulename', 'BOUML_0x21e02_1', 'bpchar', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'functor', 'BOUML_0x21e82_1', 'bpchar', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'interface', 'BOUML_0x21f02_1', 'bpchar', -1, 0, 'codegentarget', id from dbtable where tableremarks = 'BOUML_0x20102_4';
+	
+		-- Class column_types of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'column_types', '', 'BOUML_0x20182_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21f82_1', 'int4', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x22002_1', 'bpchar', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x22082_1', 'bpchar', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'ro', 'BOUML_0x22102_1', 'int4', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'specialcolumn', 'BOUML_0x22182_1', 'int4', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'controltype', 'BOUML_0x22202_1', 'bpchar', -1, 0, 'column_types', id from dbtable where tableremarks = 'BOUML_0x20182_4';
+	
+		-- Class foreignkey_visibledata_mapping of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'foreignkey_visibledata_mapping', '', 'BOUML_0x20202_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22282_1', 'int4', -1, 0, 'foreignkey_visibledata_mapping', id from dbtable where tableremarks = 'BOUML_0x20202_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'fkname', 'BOUML_0x22302_1', 'bpchar', -1, 0, 'foreignkey_visibledata_mapping', id from dbtable where tableremarks = 'BOUML_0x20202_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'fktable', 'BOUML_0x22382_1', 'bpchar', -1, 0, 'foreignkey_visibledata_mapping', id from dbtable where tableremarks = 'BOUML_0x20202_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'pkname', 'BOUML_0x22402_1', 'bpchar', -1, 0, 'foreignkey_visibledata_mapping', id from dbtable where tableremarks = 'BOUML_0x20202_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'pktable', 'BOUML_0x22482_1', 'bpchar', -1, 0, 'foreignkey_visibledata_mapping', id from dbtable where tableremarks = 'BOUML_0x20202_4';
+	
+		-- Class formular_actions of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'formular_actions', '', 'BOUML_0x20282_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22502_1', 'int4', -1, 0, 'formular_actions', id from dbtable where tableremarks = 'BOUML_0x20282_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'event', 'BOUML_0x22582_1', 'bpchar', -1, 0, 'formular_actions', id from dbtable where tableremarks = 'BOUML_0x20282_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'action', 'BOUML_0x20502_0', 'int4', -1, 0, 'formular_actions', id from dbtable where tableremarks = 'BOUML_0x20282_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'formular', 'BOUML_0x20d82_0', 'int4', -1, 0, 'formular_actions', id from dbtable where tableremarks = 'BOUML_0x20282_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'actions', 'action',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20282_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulare', 'formular',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20282_4';
+
+		-- Class formular_parameters of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'formular_parameters', '', 'BOUML_0x20302_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22602_1', 'int4', -1, 0, 'formular_parameters', id from dbtable where tableremarks = 'BOUML_0x20302_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametername', 'BOUML_0x22682_1', 'bpchar', -1, 0, 'formular_parameters', id from dbtable where tableremarks = 'BOUML_0x20302_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametervalue', 'BOUML_0x22702_1', 'bpchar', -1, 0, 'formular_parameters', id from dbtable where tableremarks = 'BOUML_0x20302_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'formularid', 'BOUML_0x20e82_0', 'int4', -1, 0, 'formular_parameters', id from dbtable where tableremarks = 'BOUML_0x20302_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulare', 'formularid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20302_4';
+
+		-- Class formulare of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'formulare', '', 'BOUML_0x20382_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22782_1', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x22802_1', 'bpchar', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'menuname', 'BOUML_0x22882_1', 'bpchar', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'menuorder', 'BOUML_0x22902_1', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'eventname', 'BOUML_0x22982_1', 'bpchar', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'menuhilfe', 'BOUML_0x22a02_1', 'bpchar', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'toolbarimage', 'BOUML_0x22a82_1', 'bpchar', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungid', 'BOUML_0x20802_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_14', 'BOUML_0x20b02_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_15', 'BOUML_0x20c02_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_16', 'BOUML_0x20d02_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_17', 'BOUML_0x20e02_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'typ', 'BOUML_0x20f82_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '', 'BOUML_0x25c02_0', 'int4', -1, 0, 'formulare', id from dbtable where tableremarks = 'BOUML_0x20382_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulare', 'anonymous_role_14',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulare', 'anonymous_role_15',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulare', 'anonymous_role_16',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulare', 'anonymous_role_17',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulare', '',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'anwendungen', 'anwendungid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulartypen', 'typ',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20382_4';
+
+		-- Class formularfields of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'formularfields', '', 'BOUML_0x24a02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x27b82_1', 'int4', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x27482_1', 'bpchar', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x27502_1', 'bpchar', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'formularid', 'BOUML_0x25b82_0', 'int4', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtypeid', 'BOUML_0x25d02_0', 'int4', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'isfk', 'BOUML_0x27702_1', 'BOOLEAN', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'fkname', 'BOUML_0x27782_1', 'bpchar', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'fktable', 'BOUML_0x27802_1', 'bpchar', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtype', 'BOUML_0x27e02_1', 'bpchar', -1, 0, 'formularfields', id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'formulare', 'formularid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'dbtype', 'dbtypeid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x24a02_4';
+
+		-- Class formulartypen of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'formulartypen', '', 'BOUML_0x20402_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22b02_1', 'int4', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'handlermodule', 'BOUML_0x22b82_1', 'bpchar', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'handlerfunctor', 'BOUML_0x22c02_1', 'bpchar', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'handlerinterface', 'BOUML_0x22c82_1', 'bpchar', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'namespace', 'BOUML_0x22d02_1', 'bpchar', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'beschreibung', 'BOUML_0x22d82_1', 'bpchar', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_18', 'BOUML_0x20f02_0', 'int4', -1, 0, 'formulartypen', id from dbtable where tableremarks = 'BOUML_0x20402_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulartypen', 'anonymous_role_18',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20402_4';
+
+		-- Class regressiontest of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'regressiontest', '', 'BOUML_0x20482_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22e02_1', 'int4', -1, 0, 'regressiontest', id from dbtable where tableremarks = 'BOUML_0x20482_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'test', 'BOUML_0x22e82_1', 'bpchar', -1, 0, 'regressiontest', id from dbtable where tableremarks = 'BOUML_0x20482_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'btest', 'BOUML_0x22f02_1', 'int4', -1, 0, 'regressiontest', id from dbtable where tableremarks = 'BOUML_0x20482_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'btest1', 'BOUML_0x22f82_1', 'int4', -1, 0, 'regressiontest', id from dbtable where tableremarks = 'BOUML_0x20482_4';
+	
+		-- Class report_element_types of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'report_element_types', '', 'BOUML_0x20502_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23002_1', 'int4', -1, 0, 'report_element_types', id from dbtable where tableremarks = 'BOUML_0x20502_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x23082_1', 'bpchar', -1, 0, 'report_element_types', id from dbtable where tableremarks = 'BOUML_0x20502_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x23102_1', 'bpchar', -1, 0, 'report_element_types', id from dbtable where tableremarks = 'BOUML_0x20502_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_19', 'BOUML_0x21082_0', 'int4', -1, 0, 'report_element_types', id from dbtable where tableremarks = 'BOUML_0x20502_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'report_element_types', 'anonymous_role_19',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20502_4';
+
+		-- Class report_elements of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'report_elements', '', 'BOUML_0x20582_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23182_1', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x23202_1', 'bpchar', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'x', 'BOUML_0x23282_1', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'y', 'BOUML_0x23302_1', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'w', 'BOUML_0x23382_1', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'h', 'BOUML_0x23402_1', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x23482_1', 'bpchar', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'typ', 'BOUML_0x21002_0', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_20', 'BOUML_0x21182_0', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'reportid', 'BOUML_0x21282_0', 'int4', -1, 0, 'report_elements', id from dbtable where tableremarks = 'BOUML_0x20582_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'report_elements', 'anonymous_role_20',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20582_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'report_element_types', 'typ',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20582_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'reports', 'reportid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20582_4';
+
+		-- Class report_parameters of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'report_parameters', '', 'BOUML_0x20602_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23502_1', 'int4', -1, 0, 'report_parameters', id from dbtable where tableremarks = 'BOUML_0x20602_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x23582_1', 'bpchar', -1, 0, 'report_parameters', id from dbtable where tableremarks = 'BOUML_0x20602_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'value', 'BOUML_0x23602_1', 'int4', -1, 0, 'report_parameters', id from dbtable where tableremarks = 'BOUML_0x20602_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'reportid', 'BOUML_0x21382_0', 'int4', -1, 0, 'report_parameters', id from dbtable where tableremarks = 'BOUML_0x20602_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'reports', 'reportid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20602_4';
+
+		-- Class report_texts of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'report_texts', '', 'BOUML_0x20682_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23682_1', 'int4', -1, 0, 'report_texts', id from dbtable where tableremarks = 'BOUML_0x20682_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'line', 'BOUML_0x23702_1', 'int4', -1, 0, 'report_texts', id from dbtable where tableremarks = 'BOUML_0x20682_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'text', 'BOUML_0x23782_1', 'bpchar', -1, 0, 'report_texts', id from dbtable where tableremarks = 'BOUML_0x20682_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'elementid', 'BOUML_0x21102_0', 'int4', -1, 0, 'report_texts', id from dbtable where tableremarks = 'BOUML_0x20682_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'report_elements', 'elementid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20682_4';
+
+		-- Class reports of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'reports', '', 'BOUML_0x20702_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23802_1', 'int4', -1, 0, 'reports', id from dbtable where tableremarks = 'BOUML_0x20702_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x23882_1', 'bpchar', -1, 0, 'reports', id from dbtable where tableremarks = 'BOUML_0x20702_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x23902_1', 'bpchar', -1, 0, 'reports', id from dbtable where tableremarks = 'BOUML_0x20702_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_21', 'BOUML_0x21202_0', 'int4', -1, 0, 'reports', id from dbtable where tableremarks = 'BOUML_0x20702_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_22', 'BOUML_0x21302_0', 'int4', -1, 0, 'reports', id from dbtable where tableremarks = 'BOUML_0x20702_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'reports', 'anonymous_role_21',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20702_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'reports', 'anonymous_role_22',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20702_4';
+
+		-- Class translations of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'translations', '', 'BOUML_0x20782_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23982_1', 'int4', -1, 0, 'translations', id from dbtable where tableremarks = 'BOUML_0x20782_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'text', 'BOUML_0x23a02_1', 'bpchar', -1, 0, 'translations', id from dbtable where tableremarks = 'BOUML_0x20782_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'translated', 'BOUML_0x23a82_1', 'bpchar', -1, 0, 'translations', id from dbtable where tableremarks = 'BOUML_0x20782_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'language', 'BOUML_0x23b02_1', 'bpchar', -1, 0, 'translations', id from dbtable where tableremarks = 'BOUML_0x20782_4';
+	
+		-- Class user_anwendungen of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'user_anwendungen', '', 'BOUML_0x20802_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23b82_1', 'int4', -1, 0, 'user_anwendungen', id from dbtable where tableremarks = 'BOUML_0x20802_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungenid', 'BOUML_0x20902_0', 'int4', -1, 0, 'user_anwendungen', id from dbtable where tableremarks = 'BOUML_0x20802_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'userid', 'BOUML_0x21582_0', 'int4', -1, 0, 'user_anwendungen', id from dbtable where tableremarks = 'BOUML_0x20802_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'anwendungen', 'anwendungenid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20802_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'users', 'userid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20802_4';
+
+		-- Class users of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'users', '', 'BOUML_0x20882_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23c02_1', 'int4', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x23c82_1', 'bpchar', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'vorname', 'BOUML_0x23d02_1', 'bpchar', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'userid', 'BOUML_0x23d82_1', 'bpchar', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'passwort', 'BOUML_0x23e02_1', 'bpchar', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'lastapp', 'BOUML_0x20a02_0', 'int4', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_23', 'BOUML_0x21402_0', 'int4', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anonymous_role_24', 'BOUML_0x21502_0', 'int4', -1, 0, 'users', id from dbtable where tableremarks = 'BOUML_0x20882_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'users', 'anonymous_role_23',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20882_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'users', 'anonymous_role_24',  '', 0, id from dbtable where tableremarks = 'BOUML_0x20882_4';
+
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'anwendungen', 'lastapp',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x20882_4';
+
+		-- Class dbtype of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'dbtype', '', 'BOUML_0x24a82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x27b02_1', 'int4', -1, 0, 'dbtype', id from dbtable where tableremarks = 'BOUML_0x24a82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'name', 'BOUML_0x27602_1', 'bpchar', -1, 0, 'dbtype', id from dbtable where tableremarks = 'BOUML_0x24a82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'description', 'BOUML_0x27682_1', 'bpchar', -1, 0, 'dbtype', id from dbtable where tableremarks = 'BOUML_0x24a82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '', 'BOUML_0x25c82_0', 'int4', -1, 0, 'dbtype', id from dbtable where tableremarks = 'BOUML_0x24a82_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtype', '',  '', 0, id from dbtable where tableremarks = 'BOUML_0x24a82_4';
+
+		-- Class dbtable of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'dbtable', '', 'BOUML_0x27e82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x2ba82_1', 'int4', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'catalogname', 'BOUML_0x2b482_1', 'bpchar', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'schemaname', 'BOUML_0x2b502_1', 'bpchar', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x2b582_1', 'bpchar', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tabletype', 'BOUML_0x2b602_1', 'bpchar', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tableremarks', 'BOUML_0x2b682_1', 'bpchar', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '', 'BOUML_0x2af02_0', 'int4', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '', 'BOUML_0x2b002_0', 'int4', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '', 'BOUML_0x2b102_0', 'int4', -1, 0, 'dbtable', id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtable', '',  '', 0, id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtable', '',  '', 0, id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtable', '',  '', 0, id from dbtable where tableremarks = 'BOUML_0x27e82_4';
+
+		-- Class dbcolumn of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'dbcolumn', '', 'BOUML_0x27f02_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x2ba02_1', 'int4', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'columnname', 'BOUML_0x2b702_1', 'bpchar', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'columnremarks', 'BOUML_0x2b782_1', 'bpchar', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'typename', 'BOUML_0x2b802_1', 'bpchar', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'columnsize', 'BOUML_0x2b882_1', 'int4', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'nullable', 'BOUML_0x2b902_1', 'BOOLEAN', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x2b982_1', 'bpchar', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtableid', 'BOUML_0x2b082_0', 'int4', -1, 0, 'dbcolumn', id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'dbtable', 'dbtableid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x27f02_4';
+
+		-- Class dbforeignkey of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'dbforeignkey', '', 'BOUML_0x27f82_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x2be82_1', 'int4', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablecatalog', 'BOUML_0x2bf02_1', 'bpchar', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tableschema', 'BOUML_0x2bf82_1', 'bpchar', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x2c002_1', 'bpchar', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablecolumnname', 'BOUML_0x2c082_1', 'bpchar', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'keysequence', 'BOUML_0x2c102_1', 'int4', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'updaterule', 'BOUML_0x2c182_1', 'int4', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'deleterule', 'BOUML_0x2c202_1', 'int4', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtableid', 'BOUML_0x2b182_0', 'int4', -1, 0, 'dbforeignkey', id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'dbtable', 'dbtableid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x27f82_4';
+
+		-- Class dbprimarykey of type FORM found.
+					
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', 'dbprimarykey', '', 'BOUML_0x28002_4');
+
+	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x2be02_1', 'int4', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablecatalog', 'BOUML_0x2bb02_1', 'bpchar', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tableschema', 'BOUML_0x2bb82_1', 'bpchar', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tablename', 'BOUML_0x2bc02_1', 'bpchar', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'columnname', 'BOUML_0x2bc82_1', 'bpchar', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'columnname2', 'BOUML_0x2bd02_1', 'bpchar', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'keysequence', 'BOUML_0x2bd82_1', 'int4', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+		
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtableid', 'BOUML_0x2af82_0', 'int4', -1, 0, 'dbprimarykey', id from dbtable where tableremarks = 'BOUML_0x28002_4';
+	
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', 'dbtable', 'dbtableid',  0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x28002_4';
 
 -- Activity operation for class Anwendungen in package lbDMF Manager is GenerateTurboVision.
 -- Operation is a validator using activity 

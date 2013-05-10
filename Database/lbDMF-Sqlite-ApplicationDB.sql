@@ -41,6 +41,14 @@
 				
 -- Class FormularTypen of type FORM found.
 				
+-- Class Tables of type FORM found.
+				
+-- Class Columns of type FORM found.
+				
+-- Class PrimaryKeys of type FORM found.
+				
+-- Class ForeignKeys of type FORM found.
+				
 -- Class action_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
@@ -474,6 +482,77 @@ CREATE TABLE "dbtype" (
 	"description" BPCHAR
 );
 
+-- Class dbtable of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbtable for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbtable
+CREATE TABLE "dbtable" (
+	"id" INTEGER PRIMARY KEY,
+	"catalogname" BPCHAR,
+	"schemaname" BPCHAR,
+	"tablename" BPCHAR,
+	"tabletype" BPCHAR,
+	"tableremarks" BPCHAR
+);
+
+-- Class dbcolumn of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbcolumn for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbcolumn
+CREATE TABLE "dbcolumn" (
+	"id" INTEGER PRIMARY KEY,
+	"columnname" BPCHAR,
+	"columnremarks" BPCHAR,
+	"typename" BPCHAR,
+	"columnsize" INTEGER,
+	"nullable" BOOLEAN,
+	"tablename" BPCHAR,
+	"dbtableid" INTEGER
+);
+
+-- Class dbforeignkey of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbforeignkey for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbforeignkey
+CREATE TABLE "dbforeignkey" (
+	"id" INTEGER PRIMARY KEY,
+	"tablecatalog" BPCHAR,
+	"tableschema" BPCHAR,
+	"tablename" BPCHAR,
+	"tablecolumnname" BPCHAR,
+	"keysequence" INTEGER,
+	"updaterule" INTEGER,
+	"deleterule" INTEGER,
+	"dbtableid" INTEGER
+);
+
+-- Class dbprimarykey of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbprimarykey for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbprimarykey
+CREATE TABLE "dbprimarykey" (
+	"id" INTEGER PRIMARY KEY,
+	"tablecatalog" BPCHAR,
+	"tableschema" BPCHAR,
+	"tablename" BPCHAR,
+	"columnname" BPCHAR,
+	"columnname2" BPCHAR,
+	"keysequence" INTEGER,
+	"dbtableid" INTEGER
+);
+
 -- Class Benutzer of type FORM found.
 				
 -- Class DBType of type FORM found.
@@ -505,6 +584,14 @@ CREATE TABLE "dbtype" (
 -- Class Reportparameter of type FORM found.
 				
 -- Class FormularTypen of type FORM found.
+				
+-- Class Tables of type FORM found.
+				
+-- Class Columns of type FORM found.
+				
+-- Class PrimaryKeys of type FORM found.
+				
+-- Class ForeignKeys of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 
@@ -705,6 +792,34 @@ CREATE TABLE "dbtype" (
 -- Class dbtype of type ENTITY found.
 
 -- Generate application tables dbtype for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbtable of type ENTITY found.
+
+-- Generate application tables dbtable for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbcolumn of type ENTITY found.
+
+-- Generate application tables dbcolumn for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbforeignkey of type ENTITY found.
+
+-- Generate application tables dbforeignkey for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbprimarykey of type ENTITY found.
+
+-- Generate application tables dbprimarykey for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
@@ -1469,3 +1584,91 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 
 -- Generate Sqlite application relations for table dbtype for lbDMFManager_Entities
 -- Create table relations for dbtype
+-- Generate Sqlite application relations for table dbtable for lbDMFManager_Entities
+-- Create table relations for dbtable
+-- Generate Sqlite application relations for table dbcolumn for lbDMFManager_Entities
+-- Create table relations for dbcolumn
+--ALTER TABLE "dbcolumn" ADD CONSTRAINT "cst_dbcolumn_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbcolumn" ADD CONSTRAINT "cst_dbcolumn_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_dbcolumn_dbtableid_ins" BEFORE INSERT ON dbcolumn FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbcolumn_dbtableid_upd" BEFORE UPDATE ON dbcolumn FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbcolumn_dbtableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbtableid FROM dbcolumn WHERE dbtableid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key dbcolumn(dbtableid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbcolumn', 'dbtableid');
+ 
+
+-- Generate Sqlite application relations for table dbforeignkey for lbDMFManager_Entities
+-- Create table relations for dbforeignkey
+--ALTER TABLE "dbforeignkey" ADD CONSTRAINT "cst_dbforeignkey_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbforeignkey" ADD CONSTRAINT "cst_dbforeignkey_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_dbforeignkey_dbtableid_ins" BEFORE INSERT ON dbforeignkey FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbforeignkey_dbtableid_upd" BEFORE UPDATE ON dbforeignkey FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbforeignkey_dbtableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbtableid FROM dbforeignkey WHERE dbtableid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key dbforeignkey(dbtableid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbforeignkey', 'dbtableid');
+ 
+
+-- Generate Sqlite application relations for table dbprimarykey for lbDMFManager_Entities
+-- Create table relations for dbprimarykey
+--ALTER TABLE "dbprimarykey" ADD CONSTRAINT "cst_dbprimarykey_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbprimarykey" ADD CONSTRAINT "cst_dbprimarykey_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_dbprimarykey_dbtableid_ins" BEFORE INSERT ON dbprimarykey FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbprimarykey_dbtableid_upd" BEFORE UPDATE ON dbprimarykey FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'dbtableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbprimarykey_dbtableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbtableid FROM dbprimarykey WHERE dbtableid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key dbprimarykey(dbtableid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbprimarykey', 'dbtableid');
+ 
