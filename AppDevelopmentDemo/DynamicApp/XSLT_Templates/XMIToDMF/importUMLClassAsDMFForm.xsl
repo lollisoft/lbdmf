@@ -78,6 +78,108 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 
 </xsl:template>
 
+<xsl:template name="importDMFEntity">
+    <xsl:param name="ApplicationID"/>
+    <xsl:param name="ApplicationName"/>
+	<xsl:param name="TargetDatabaseType"/>
+	<xsl:param name="TargetDatabaseVersion"/>
+
+			<xsl:choose>
+				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', '<xsl:value-of select="@name"/>', '', '<xsl:value-of select="@xmi:id"/>');
+
+<xsl:call-template name="fillTableColumns">
+<xsl:with-param name="ClassId" select="@xmi:id"/>
+<xsl:with-param name="ClassName" select="@name"/>
+</xsl:call-template>
+
+<xsl:call-template name="fillTablePrimaryKeys">
+<xsl:with-param name="ClassId" select="@xmi:id"/>
+<xsl:with-param name="ClassName" select="@name"/>
+</xsl:call-template>
+
+<xsl:call-template name="fillTableForeignKeys">
+<xsl:with-param name="ClassId" select="@xmi:id"/>
+<xsl:with-param name="ClassName" select="@name"/>
+</xsl:call-template>
+
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
+				</xsl:when>
+			</xsl:choose>
+
+</xsl:template>
+
+<xsl:template name="fillTableColumns">
+	<xsl:param name="ClassId"/> <!-- XMI ID of the class -->
+	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
+
+	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+	
+<xsl:variable name="dbtype">
+<xsl:choose>
+<xsl:when test="./type/@xmi:type='uml:PrimitiveType'">
+<xsl:choose>
+	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">BOOLEAN</xsl:when>
+	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">bpchar</xsl:when>
+	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int4</xsl:when>
+</xsl:choose>
+</xsl:when>
+<xsl:when test="./type/@xmi:type='uml:Class'">int4</xsl:when>
+</xsl:choose>
+</xsl:variable>	
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+	</xsl:for-each>
+	
+</xsl:template>
+
+<xsl:template name="fillTableForeignKeys">
+	<xsl:param name="ClassId"/> <!-- XMI ID of the class -->
+	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
+
+	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property'][@aggregation='none']">
+
+<xsl:if test="./lowerValue/@value='1'">	
+<xsl:if test="./upperValue/@value='1'">	
+	
+<xsl:choose>
+<xsl:when test="./type/@xmi:type='uml:Class'">
+
+<xsl:variable name="otherClassId" select="./type/@xmi:idref"/>
+<xsl:variable name="otherClassName" select="//packagedElement[@xmi:id=$otherClassId]/@name"/>
+INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="@name"/>',  0, 0, 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:when>
+</xsl:choose>
+
+</xsl:if>	
+</xsl:if>	
+
+	</xsl:for-each>
+
+</xsl:template>
+
+<xsl:template name="fillTablePrimaryKeys">
+	<xsl:param name="ClassId"/> <!-- XMI ID of the class -->
+	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
+
+	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property'][@aggregation='none']">
+
+<xsl:if test="./lowerValue/@value!='1'">	
+<xsl:if test="./upperValue/@value!='1'">	
+	
+<xsl:choose>
+<xsl:when test="./type/@xmi:type='uml:Class'">
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>',  '', 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:when>
+</xsl:choose>
+
+</xsl:if>	
+</xsl:if>	
+
+	</xsl:for-each>
+
+</xsl:template>
+
 <!-- Lookup the table name in case if the formularname - eg the classname is of type form -->
 <xsl:template name="lookupEntityName">
     <xsl:param name="ApplicationID"/>
@@ -301,24 +403,22 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Bit', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:when>
 <xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">
+
+<xsl:choose>
+<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:dropdown'">
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 1, '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:column']/@value"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:table']/@value"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:when>
+<xsl:otherwise>
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:otherwise>
+</xsl:choose>
+
 </xsl:when>
 <xsl:otherwise>
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Undefined', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:otherwise>
 </xsl:choose>
-</xsl:if>
-<xsl:if test="./type/@xmi:type='uml:Class'">
-<xsl:variable name="otherClassID" select="//ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref=$ThisFormularId]/../../@xmi:id"/>
-<xsl:variable name="VisibleField" select="//ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref=$ThisFormularId]/../xmi:Extension/taggedValue[@tag='lbDMF:masterdetail_action:sourcecolumn']/@value"/>
-<xsl:variable name="othertablename"><xsl:call-template name="lookupEntityName">
-		<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
-		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
-		<xsl:with-param name="FormularID" select="$otherClassID"/>
-	</xsl:call-template></xsl:variable>
-
--- otherClassID <xsl:value-of select="$otherClassID"/>	
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 1, '<xsl:value-of select="$VisibleField"/>', '<xsl:value-of select="$othertablename"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:if>
 </xsl:otherwise>
 		</xsl:choose>
