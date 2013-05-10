@@ -406,6 +406,16 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 				<xsl:with-param name="AttrTyp1" select="'String'"/>
 			</xsl:call-template>
 			
+			<xsl:call-template name="createStereotype2">
+				<xsl:with-param name="StereotypeName" select="'dropdown'"/>
+				<xsl:with-param name="ApplyableTo" select="'Attribute'"/>
+				<xsl:with-param name="Comment" select="'Defines a formular field to be a dropdown field whose display values are taken from the given table. The display value is given in column.'"/>
+				<xsl:with-param name="Attr1" select="'column'"/>
+				<xsl:with-param name="AttrTyp1" select="'String'"/>
+				<xsl:with-param name="Attr2" select="'table'"/>
+				<xsl:with-param name="AttrTyp2" select="'String'"/>
+			</xsl:call-template>
+			
 			<xsl:call-template name="createStereotype3">
 				<xsl:with-param name="StereotypeName" select="'relationship'"/>
 				<xsl:with-param name="ApplyableTo" select="'Relation'"/>
@@ -421,7 +431,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 			<xsl:call-template name="createStereotype">
 				<xsl:with-param name="StereotypeName" select="'codegeneration'"/>
 				<xsl:with-param name="ApplyableTo" select="'Operation'"/>
-				<xsl:with-param name="Comment" select="'This stereotype is to specify an association to be a relation.'"/>
+				<xsl:with-param name="Comment" select="'This stereotype is to specify a codegeneration action where a user can choose the XSLT template.'"/>
 			</xsl:call-template>
 			
 			<xsl:call-template name="createStereotype">
