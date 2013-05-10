@@ -127,6 +127,15 @@
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 					</xsl:call-template>
 				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFEntity">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+					</xsl:call-template>
+				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
 					<xsl:call-template name="importDMFReport">
