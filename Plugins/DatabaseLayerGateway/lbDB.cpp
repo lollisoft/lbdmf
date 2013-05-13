@@ -2238,6 +2238,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
+			
+				wxString errormsg = currentdbLayer->GetErrorMessage();
+				_LOG << "lbDatabaseLayerQuery::query() Sqlite error code: " << currentdbLayer->GetErrorCode() LOG_
+				_LOG << "lbDatabaseLayerQuery::query() Error: " << errormsg.c_str() LOG_
+			
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
