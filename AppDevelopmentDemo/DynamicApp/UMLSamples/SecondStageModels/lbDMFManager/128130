@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 43
+  revision 45
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -576,6 +576,18 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 184834 // Tables (Tables)
+	relation 180738 ---> name "Tables"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Tables" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 184834 // Tables (Tables)
+	  b parent class_ref 163970 // Tables
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
       end
     end
 
@@ -1698,6 +1710,20 @@ ${inlines}
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
       end
+
+      attribute 191106 "anwendungenid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
+      end
     end
 
     class 164098 "Columns"
@@ -1934,36 +1960,6 @@ ${inlines}
 
       attribute 182786 "tablecolumnname"
 	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 182914 "keysequence"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 183042 "updaterule"
-	protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 183170 "deleterule"
-	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
