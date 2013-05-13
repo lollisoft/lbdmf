@@ -329,6 +329,16 @@ delete from actions where id in (select taction from tempactions);
 delete from tempactions;
 delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 delete from anwendungen_formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'); 
+
+-- Delete database schema information
+delete from dbforeignkey where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')); 
+delete from dbprimarykey where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')); 
+delete from dbcolumn where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')); 
+delete from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'); 
+
+-- delete formularfields
+delete from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+
 delete from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');

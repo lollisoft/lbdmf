@@ -86,7 +86,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
-INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks) values ('', '', '<xsl:value-of select="@name"/>', '', '<xsl:value-of select="@xmi:id"/>');
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="@name"/>', '', '<xsl:value-of select="@xmi:id"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
 <xsl:call-template name="fillTableColumns">
 <xsl:with-param name="ClassId" select="@xmi:id"/>
@@ -128,7 +128,19 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 <xsl:when test="./type/@xmi:type='uml:Class'">int4</xsl:when>
 </xsl:choose>
 </xsl:variable>	
+
+<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:if>
+<xsl:if test="./type/@xmi:type='uml:Class'">
+<xsl:if test="@aggregation='none'">
+<xsl:if test="./lowerValue/@value='1'">
+<xsl:if test="./upperValue/@value='1'">
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:if>
+</xsl:if>
+</xsl:if>
+</xsl:if>
 	</xsl:for-each>
 	
 </xsl:template>
@@ -162,18 +174,16 @@ INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname,
 	<xsl:param name="ClassId"/> <!-- XMI ID of the class -->
 	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
 
-	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property'][@aggregation='none']">
+	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
 
-<xsl:if test="./lowerValue/@value!='1'">	
-<xsl:if test="./upperValue/@value!='1'">	
+<xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
+
+<xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:pk'">	
 	
-<xsl:choose>
-<xsl:when test="./type/@xmi:type='uml:Class'">
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>',  '', 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
-</xsl:when>
-</xsl:choose>
 
 </xsl:if>	
+
 </xsl:if>	
 
 	</xsl:for-each>
