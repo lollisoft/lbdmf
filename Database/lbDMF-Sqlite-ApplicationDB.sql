@@ -1,4 +1,6 @@
 
+-- Speedup many times
+BEGIN TRANSACTION;
 
 -- Params XSLDatabaseBackendSystem: 
 -- Params XSLDatabaseBackendApplication: 
@@ -495,7 +497,8 @@ CREATE TABLE "dbtable" (
 	"schemaname" BPCHAR,
 	"tablename" BPCHAR,
 	"tabletype" BPCHAR,
-	"tableremarks" BPCHAR
+	"tableremarks" BPCHAR,
+	"anwendungenid" INTEGER
 );
 
 -- Class dbcolumn of type ENTITY found.
@@ -1586,6 +1589,33 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 -- Create table relations for dbtype
 -- Generate Sqlite application relations for table dbtable for lbDMFManager_Entities
 -- Create table relations for dbtable
+--ALTER TABLE "dbtable" ADD CONSTRAINT "cst_dbtable_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbtable" ADD CONSTRAINT "cst_dbtable_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_dbtable_anwendungenid_ins" BEFORE INSERT ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.anwendungenid IS NOT NULL) AND ((SELECT id FROM anwendungen WHERE id = new.anwendungenid) IS NULL))
+                 THEN RAISE(ABORT, 'anwendungenid violates foreign key anwendungen(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbtable_anwendungenid_upd" BEFORE UPDATE ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.anwendungenid IS NOT NULL) AND ((SELECT id FROM anwendungen WHERE id = new.anwendungenid) IS NULL))
+                 THEN RAISE(ABORT, 'anwendungenid violates foreign key anwendungen(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbtable_anwendungenid_del" BEFORE DELETE ON anwendungen FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT anwendungenid FROM dbtable WHERE anwendungenid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'id violates foreign key dbtable(anwendungenid)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'dbtable', 'anwendungenid');
+ 
+
 -- Generate Sqlite application relations for table dbcolumn for lbDMFManager_Entities
 -- Create table relations for dbcolumn
 --ALTER TABLE "dbcolumn" ADD CONSTRAINT "cst_dbcolumn_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
@@ -1672,3 +1702,7 @@ BEGIN
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbprimarykey', 'dbtableid');
  
+
+-- Script ready.
+COMMIT;
+	
