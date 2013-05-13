@@ -37,6 +37,11 @@ Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; 
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
 
+; Solved Windows 7 File locking issues by using a transaction. Also this is more than many times faster!
+;Source: "Q:\Develop\Projects\CPP\Database\lbDMF.db3"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+;Source: "Q:\Develop\Projects\CPP\Database\MetaApp.mad"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+;Source: "Q:\Develop\Projects\CPP\Database\lbDMF Manager.daf"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+
 Source: "Q:\Develop\Projects\plugins\lbCryptoStream.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbDMFBasicActionSteps.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbFileOperationsPlugin.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
@@ -73,7 +78,7 @@ Source: "Q:\Develop\Projects\plugins\lbLoginWizard.dll"; DestDir: "{app}\Develop
 Source: "Q:\Develop\Projects\plugins\lbVisitorOperations.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\UserFeedback.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 
-Source: "Q:\Develop\Projects\plugins\lbwxSFDesigner.dll"; DestDir: "{app}\Develop\Projects\future_plugins"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\plugins\lbwxSFDesigner.dll"; DestDir: "{app}\Develop\Projects\future_plugins"; CopyMode: alwaysoverwrite;
 
 ; Also now add the code generation plugin.
 Source: "Q:\Develop\Projects\plugins\lbDMFXslt.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
