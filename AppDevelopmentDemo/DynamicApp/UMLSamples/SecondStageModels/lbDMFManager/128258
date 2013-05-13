@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 18
+  revision 20
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -725,6 +725,14 @@ ${inlines}
 	key "lbDMF:relationship:table" value "anwendungen"
 	key "lbDMF:relationship:order" value "-1"
       end
+
+      classrelation 184706 // <association>
+	relation_ref 180610 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
     end
 
     class 130818 "anwendungen_formulare"
@@ -1428,7 +1436,6 @@ ${inlines}
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
       end
-
     end
 
     class 150018 "formularfields"
@@ -2453,6 +2460,22 @@ ${inlines}
 	key "lbDMF:relationship:order" value "-1"
       end
 
+      classrelation 184578 // anwendungenid (<association>)
+	relation 180610 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anwendungenid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 184578 // anwendungenid (<association>)
+	  b role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 184706 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "id"
+	key "lbDMF:relationship:table" value "anwendungen"
+	key "lbDMF:relationship:order" value "-1"
+      end
     end
 
     class 163586 "dbcolumn"
