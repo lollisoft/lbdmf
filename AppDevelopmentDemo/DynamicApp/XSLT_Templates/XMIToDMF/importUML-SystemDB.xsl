@@ -84,6 +84,9 @@
 
 
 	<xsl:template match="/">
+-- Speedup many times
+BEGIN TRANSACTION;
+
 -- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
 -- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
 -- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
@@ -131,7 +134,7 @@
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
 					<xsl:call-template name="importDMFEntity">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
-						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="ApplicationName" select="$AppName"/>
 						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 					</xsl:call-template>
@@ -274,6 +277,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 
 </xsl:for-each>
 -- Script ready.
+COMMIT;
 </xsl:template>
 
 <xsl:template name="convertActivityTolbDMFActivity">
