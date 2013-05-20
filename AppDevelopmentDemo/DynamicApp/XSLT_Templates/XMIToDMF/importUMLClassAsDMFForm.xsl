@@ -159,7 +159,8 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 
 <xsl:variable name="otherClassId" select="./type/@xmi:idref"/>
 <xsl:variable name="otherClassName" select="//packagedElement[@xmi:id=$otherClassId]/@name"/>
-INSERT INTO dbforeignkey (tablecatalog, tableschema, tablename, tablecolumnname, keysequence, updaterule, deleterule, dbtableid) select '', '', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="@name"/>',  0, 0, 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
+select '', '', '<xsl:value-of select="$otherClassName"/>', 'id', '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>', 0, 0, 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
 </xsl:when>
 </xsl:choose>
 

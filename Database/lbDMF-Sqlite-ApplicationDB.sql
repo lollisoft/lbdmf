@@ -528,10 +528,14 @@ CREATE TABLE "dbcolumn" (
 -- CREATE Sqlite TABLE dbforeignkey
 CREATE TABLE "dbforeignkey" (
 	"id" INTEGER PRIMARY KEY,
-	"tablecatalog" BPCHAR,
-	"tableschema" BPCHAR,
-	"tablename" BPCHAR,
-	"tablecolumnname" BPCHAR,
+	"pkcatalog" BPCHAR,
+	"pkschema" BPCHAR,
+	"pktable" BPCHAR,
+	"pkcolumn" BPCHAR,
+	"fkcatalog" BPCHAR,
+	"fkschema" BPCHAR,
+	"fktable" BPCHAR,
+	"fkcolumn" BPCHAR,
 	"keysequence" INTEGER,
 	"updaterule" INTEGER,
 	"deleterule" INTEGER,
