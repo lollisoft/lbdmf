@@ -694,178 +694,257 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+// Switch later - code is not ready
+#define USE_DBREVERSE
+
 #ifndef USE_DBREVERSE
 
 /// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP(lb_I_Query, q)
+
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
 
-	UAP(lb_I_Container, Tables)
+	q = db->getQuery("lbDMF", 0);
 
-	Tables = db->getForeignKeys(ConnectionName->charrep());
+	q->skipFKCollecting();
 
-	long i = 0;
+	if (q->query("select id, pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid from dbforeignkey") != ERR_NONE) {
+		_LOG << "Error: Access to foreignkey table failed. Read foreign keys would be skipped." LOG_
+		return;
+	}
 
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
+	err = q->first();
 
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No foreign keys found. All foreign keys may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
 
-	while (Tables->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
 
-		uk = Tables->nextElement();
-		QI(uk, lb_I_Parameter, param)
-
-		*paramname = "PKTableCatalog";
-		param->getUAPString(*&paramname, *&currentPKTableCatalog);
-		*paramname = "PKTableSchema";
-		param->getUAPString(*&paramname, *&currentPKTableSchema);
-		*paramname = "PKTableName";
-		param->getUAPString(*&paramname, *&currentPKTableName);
-		*paramname = "PKTableColumnName";
-		param->getUAPString(*&paramname, *&currentPKTableColumnName);
-
-		*paramname = "FKTableCatalog";
-		param->getUAPString(*&paramname, *&currentFKTableCatalog);
-		*paramname = "FKTableSchema";
-		param->getUAPString(*&paramname, *&currentFKTableSchema);
-		*paramname = "FKTableName";
-		param->getUAPString(*&paramname, *&currentFKTableName);
-		*paramname = "FKTableColumnName";
-		param->getUAPString(*&paramname, *&currentFKTableColumnName);
-
-		*paramname = "KeySequence";
-		param->getUAPLong(*&paramname, *&currentKeySequence);
-		*paramname = "UpdateRule";
-		param->getUAPLong(*&paramname, *&currentUpdateRule);
-		*paramname = "DeleteRule";
-		param->getUAPLong(*&paramname, *&currentDeleteRule);
-
-		*paramname = "ID";
-		param->getUAPLong(*&paramname, *&currentID);
+		currentID = q->getAsLong(1);
+		currentPKTableCatalog = q->getAsString(2);
+		currentPKTableSchema = q->getAsString(3);
+		currentPKTableName = q->getAsString(4);
+		currentPKTableColumnName = q->getAsString(5);
+		currentFKTableCatalog = q->getAsString(6);
+		currentFKTableSchema = q->getAsString(7);
+		currentFKTableName = q->getAsString(8);
+		currentFKTableColumnName = q->getAsString(9);
+		currentKeySequence = q->getAsLong(10);
+		currentUpdateRule = q->getAsLong(11);
+		currentDeleteRule = q->getAsLong(12);
 
 		fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
 								currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
 								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), ++i);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			currentPKTableCatalog = q->getAsString(2);
+			currentPKTableSchema = q->getAsString(3);
+			currentPKTableName = q->getAsString(4);
+			currentPKTableColumnName = q->getAsString(5);
+			currentFKTableCatalog = q->getAsString(6);
+			currentFKTableSchema = q->getAsString(7);
+			currentFKTableName = q->getAsString(8);
+			currentFKTableColumnName = q->getAsString(9);
+			currentKeySequence = q->getAsLong(10);
+			currentUpdateRule = q->getAsLong(11);
+			currentDeleteRule = q->getAsLong(12);
+
+			fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
+									currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
+									currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), ++i);
+		}
 	}
 }
 
 /// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP(lb_I_Query, q)
+
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
 
-	UAP(lb_I_Container, Tables)
+	q = db->getQuery("lbDMF", 0);
 
-	Tables = db->getPrimaryKeys(ConnectionName->charrep());
+	q->skipFKCollecting();
 
-	long i = 0;
+	if (q->query("select id, tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid from dbprimarykey") != ERR_NONE) {
+		_LOG << "Error: Access to primarykey table failed. Read primary keys would be skipped." LOG_
+		return;
+	}
 
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
+	err = q->first();
 
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
-	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No primary keys found. All primary keys may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
 
-	while (Tables->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 
-		uk = Tables->nextElement();
-		QI(uk, lb_I_Parameter, param)
-
-		*paramname = "TableCatalog";
-		param->getUAPString(*&paramname, *&currentTableCatalog);
-		*paramname = "TableSchema";
-		param->getUAPString(*&paramname, *&currentTableSchema);
-		*paramname = "TableName";
-		param->getUAPString(*&paramname, *&currentTableName);
-		*paramname = "ColumnName";
-		param->getUAPString(*&paramname, *&currentColumnName);
-		*paramname = "ColumnName_V2";
-		param->getUAPString(*&paramname, *&currentColumnName_V2);
-
-		*paramname = "KeySequence";
-		param->getUAPLong(*&paramname, *&currentKeySequence);
-
-		*paramname = "ID";
-		param->getUAPLong(*&paramname, *&currentID);
+		currentID = q->getAsLong(1);
+		currentTableCatalog = q->getAsString(2);
+		currentTableSchema = q->getAsString(3);
+		currentTableName = q->getAsString(4);
+		currentColumnName = q->getAsString(5);
+		currentColumnName_V2 = q->getAsString(6);
+		currentKeySequence = q->getAsLong(7);
+		currentTableID = q->getAsLong(8);
 
 		pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
 								currentKeySequence->getData(), currentColumnName_V2->charrep(), ++i);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			currentTableCatalog = q->getAsString(2);
+			currentTableSchema = q->getAsString(3);
+			currentTableName = q->getAsString(4);
+			currentColumnName = q->getAsString(5);
+			currentColumnName_V2 = q->getAsString(6);
+			currentKeySequence = q->getAsLong(7);
+			currentTableID = q->getAsLong(8);
+
+			pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
+									currentKeySequence->getData(), currentColumnName_V2->charrep(), ++i);
+		}
 	}
 }
 
 /// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Query, q)
+
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
 
-	UAP(lb_I_Container, Tables)
+	q = db->getQuery("lbDMF", 0);
 
-	// When using the optional parameter to let db fill the data directly into the model
-	Tables = db->getTables(ConnectionName->charrep());
+	q->skipFKCollecting();
 
-	long i = 0;
+	if (q->query("select id, catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid from dbtable") != ERR_NONE) {
+		_LOG << "Error: Access to dbtable table failed. Read tables would be skipped." LOG_
+		return;
+	}
 
-	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+	err = q->first();
 
-	while (Tables->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_Parameter, param)
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No tables found. All tables may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
 
-		uk = Tables->nextElement();
-		QI(uk, lb_I_Parameter, param)
-
-		*name = "TableCatalog";
-		param->getUAPString(*&name, *&szTableCatalog);
-		*name = "TableSchema";
-		param->getUAPString(*&name, *&szTableSchema);
-		*name = "TableName";
-		param->getUAPString(*&name, *&szTableName);
-		*name = "TableTyp";
-		param->getUAPString(*&name, *&szTableType);
-		*name = "TableRemarks";
-		param->getUAPString(*&name, *&szTableRemarks);
+		currentID = q->getAsLong(1);
+		szTableCatalog = q->getAsString(2);
+		szTableSchema = q->getAsString(3);
+		szTableName = q->getAsString(4);
+		szTableType = q->getAsString(5);
+		szTableRemarks = q->getAsString(6);
 
 		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			szTableCatalog = q->getAsString(2);
+			szTableSchema = q->getAsString(3);
+			szTableName = q->getAsString(4);
+			szTableType = q->getAsString(5);
+			szTableRemarks = q->getAsString(6);
+
+			tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+		}
 	}
 }
 
 /// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid from dbcolumn") != ERR_NONE) {
+		_LOG << "Error: Access to dbcolumn table failed. Read columns would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No columns found. All columns may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+
+		currentID = q->getAsLong(1);
+		szTableCatalog = q->getAsString(2);
+		szTableSchema = q->getAsString(3);
+		szTableName = q->getAsString(4);
+		szTableType = q->getAsString(5);
+		szTableRemarks = q->getAsString(6);
+
+		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			szTableCatalog = q->getAsString(2);
+			szTableSchema = q->getAsString(3);
+			szTableName = q->getAsString(4);
+			szTableType = q->getAsString(5);
+			szTableRemarks = q->getAsString(6);
+
+			tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+		}
+	}
+
+
+
+
+
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
