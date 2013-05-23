@@ -48,7 +48,6 @@
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
 /*...e*/
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbDBTableModel, lbDBTableModel)
@@ -57,13 +56,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBTableModel)
 	ADD_INTERFACE(lb_I_DBTables)
 END_IMPLEMENT_LB_UNKNOWN()
 
-void		LB_STDCALL lbDBTableModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBTableModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbDBTableModel::lbDBTableModel() {
 	
@@ -400,14 +392,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBColumnsModel)
 	ADD_INTERFACE(lb_I_DBColumns)
 END_IMPLEMENT_LB_UNKNOWN()
 
-void		LB_STDCALL lbDBColumnsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBColumnsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
 
 lbDBColumnsModel::lbDBColumnsModel() {
 	
@@ -427,6 +411,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
 	REQUEST(getModuleInstance(), lb_I_Long, currentNullable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
+	REQUEST(getModuleInstance(), lb_I_Long, IsNullable)
 
 	REQUEST(getModuleInstance(), lb_I_String, Name)
 	REQUEST(getModuleInstance(), lb_I_String, Comment)
@@ -934,13 +919,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBForeignKeysModel)
 	ADD_INTERFACE(lb_I_DBForeignKeys)
 END_IMPLEMENT_LB_UNKNOWN()
 
-void		LB_STDCALL lbDBForeignKeysModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBForeignKeysModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbDBForeignKeysModel::lbDBForeignKeysModel() {
 	
