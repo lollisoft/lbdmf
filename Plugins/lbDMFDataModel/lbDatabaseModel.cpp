@@ -48,7 +48,6 @@
 #define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
 /*...e*/
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbDBTableModel, lbDBTableModel)
@@ -57,15 +56,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBTableModel)
 	ADD_INTERFACE(lb_I_DBTables)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbDBTableModel)
-
-void		LB_STDCALL lbDBTableModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBTableModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbDBTableModel::lbDBTableModel() {
 	
@@ -300,8 +290,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -404,16 +392,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBColumnsModel)
 	ADD_INTERFACE(lb_I_DBColumns)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbDBColumnsModel)
-
-void		LB_STDCALL lbDBColumnsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBColumnsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
 
 lbDBColumnsModel::lbDBColumnsModel() {
 	
@@ -433,6 +411,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
 	REQUEST(getModuleInstance(), lb_I_Long, currentNullable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
+	REQUEST(getModuleInstance(), lb_I_Long, IsNullable)
 
 	REQUEST(getModuleInstance(), lb_I_String, Name)
 	REQUEST(getModuleInstance(), lb_I_String, Comment)
@@ -735,13 +714,12 @@ void LB_STDCALL lbDBColumnsModel::setNextPage() {
 void LB_STDCALL lbDBColumnsModel::finishPageIteration() {
 	ColumnsPages->finishIteration();
 	if (hasMorePages()) setNextPage();
-	if (Columns != NULL) Columns->finishIteration();
+	Columns->finishIteration();
 }
 
 
 bool  LB_STDCALL lbDBColumnsModel::hasMoreColumns() {
 	if (Columns == NULL) finishPageIteration();
-	if (Columns == NULL) return false;
 	if (Columns->hasMoreElements() == 0) { // get next page if no more entries are in the current page
 		if (hasMorePages()) { // and there are more pages.
 			setNextPage();
@@ -839,8 +817,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -943,15 +919,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBForeignKeysModel)
 	ADD_INTERFACE(lb_I_DBForeignKeys)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_EXTENSIBLEOBJECT(lbDBForeignKeysModel)
-
-void		LB_STDCALL lbDBForeignKeysModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbDBForeignKeysModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbDBForeignKeysModel::lbDBForeignKeysModel() {
 	
@@ -1287,8 +1254,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -1669,8 +1634,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
