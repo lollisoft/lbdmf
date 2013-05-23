@@ -695,7 +695,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 }
 
 // Switch later - code is not ready
-#define USE_DBREVERSE
+//#define USE_DBREVERSE
 
 #ifndef USE_DBREVERSE
 
