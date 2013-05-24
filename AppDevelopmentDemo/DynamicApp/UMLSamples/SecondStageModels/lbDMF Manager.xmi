@@ -914,16 +914,28 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="ForeignKeys" xmi:id="BOUML_0x28182_4" visibility="package">
 						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
-						<ownedAttribute xmi:type="uml:Property" name="tablecatalog" xmi:id="BOUML_0x2c882_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkcatalog" xmi:id="BOUML_0x2c882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tableschema" xmi:id="BOUML_0x2c902_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkschema" xmi:id="BOUML_0x2c902_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x2c982_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pktable" xmi:id="BOUML_0x2c982_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablecolumnname" xmi:id="BOUML_0x2ca02_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkcolumn" xmi:id="BOUML_0x2ca02_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkcatalog" xmi:id="BOUML_0x30602_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkschema" xmi:id="BOUML_0x30682_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x30702_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkcolumn" xmi:id="BOUML_0x30782_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="dbtableid" xmi:id="BOUML_0x2d102_1" visibility="protected">
@@ -2225,16 +2237,28 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablecatalog" xmi:id="BOUML_0x2bf02_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkcatalog" xmi:id="BOUML_0x2bf02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tableschema" xmi:id="BOUML_0x2bf82_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkschema" xmi:id="BOUML_0x2bf82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablename" xmi:id="BOUML_0x2c002_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pktable" xmi:id="BOUML_0x2c002_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tablecolumnname" xmi:id="BOUML_0x2c082_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="pkcolumn" xmi:id="BOUML_0x2c082_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkcatalog" xmi:id="BOUML_0x30402_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkschema" xmi:id="BOUML_0x30482_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fktable" xmi:id="BOUML_0x30502_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="fkcolumn" xmi:id="BOUML_0x30582_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="keysequence" xmi:id="BOUML_0x2c102_1" visibility="protected">
