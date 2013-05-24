@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 45
+  revision 46
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1928,7 +1928,7 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      attribute 182402 "tablecatalog"
+      attribute 182402 "pkcatalog"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1938,7 +1938,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 182530 "tableschema"
+      attribute 182530 "pkschema"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1948,7 +1948,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 182658 "tablename"
+      attribute 182658 "pktable"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1958,7 +1958,47 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 182786 "tablecolumnname"
+      attribute 182786 "pkcolumn"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198146 "fkcatalog"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198274 "fkschema"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198402 "fktable"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198530 "fkcolumn"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
