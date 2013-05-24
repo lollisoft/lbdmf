@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 20
+  revision 21
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -2593,7 +2593,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 179970 "tablecatalog"
+      attribute 179970 "pkcatalog"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2603,7 +2603,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 180098 "tableschema"
+      attribute 180098 "pkschema"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2613,7 +2613,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 180226 "tablename"
+      attribute 180226 "pktable"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2623,7 +2623,47 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 180354 "tablecolumnname"
+      attribute 180354 "pkcolumn"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 197634 "fkcatalog"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 197762 "fkschema"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 197890 "fktable"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 198018 "fkcolumn"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
