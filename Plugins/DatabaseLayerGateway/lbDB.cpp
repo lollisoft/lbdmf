@@ -1908,7 +1908,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 */
 				wxString theQuery = wxString(szSql);
 
-				if (theQuery.Upper().Contains("INSERT")) {
+///\todo Rethink about this checks.
+				if (theQuery.Upper().Contains("INSERT ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1916,7 +1917,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("UPDATE")) {
+				if (theQuery.Upper().Contains("UPDATE ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() UPDATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1924,7 +1925,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("DROP")) {
+				if (theQuery.Upper().Contains("DROP ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() DROP statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1932,7 +1933,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("CREATE")) {
+				if (theQuery.Upper().Contains("CREATE ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() CREATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
