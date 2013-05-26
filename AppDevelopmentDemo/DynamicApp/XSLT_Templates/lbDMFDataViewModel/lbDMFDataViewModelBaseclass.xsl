@@ -97,7 +97,7 @@ private:
 };
 
 // Predefined classes
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -123,7 +123,7 @@ private:
 class <xsl:value-of select="$FormularName"/>;
 </xsl:for-each>
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -165,7 +165,7 @@ class <xsl:value-of select="$FormularName"/>;
 // Author:      Lothar Behrens
 // Modified by:
 // Created:     2008/09/14 (Template)
-// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2 2011/02/27 10:34:00 lollisoft Exp $
+// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.1 2013/05/26 06:20:18 lollisoft Exp $
 // Copyright:   (c) Lothar Behrens
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -270,7 +270,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModule<xsl:value-of select="$ApplicationName"/>)
 
 BEGIN_PLUGINS(lbPluginModule<xsl:value-of select="$ApplicationName"/>)
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -383,7 +383,7 @@ lbErrCodes LB_STDCALL InstallMenuEntry<xsl:value-of select="$ApplicationName"/>:
 	}
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
