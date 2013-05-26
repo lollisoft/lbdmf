@@ -24,8 +24,10 @@
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f482_22" name ="lbDMF Manager">
 					<packagedElement xmi:type="uml:Class" name="Benutzer" xmi:id="BOUML_0x1f402_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="User Management"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kuser.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Authentification"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="passwort" xmi:id="BOUML_0x1f402_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -49,8 +51,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="DBType" xmi:id="BOUML_0x24b82_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Database"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="field_types.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="System Configuration"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x27c02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -61,8 +65,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="FormularFields" xmi:id="BOUML_0x24b02_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Forms"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="formular_field.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x27882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -108,8 +114,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Formulare" xmi:id="BOUML_0x1f482_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value=""/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kpersonalizer.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value=""/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x1f782_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -167,8 +175,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Anwendungen" xmi:id="BOUML_0x1f682_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value=""/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kthememgr.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value=""/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="titel" xmi:id="BOUML_0x1fb02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -236,8 +246,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Formular_Parameter" xmi:id="BOUML_0x1f502_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Forms"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="formular_params.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="parametervalue" xmi:id="BOUML_0x1f882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -256,8 +268,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="AnwendungenBenutzer" xmi:id="BOUML_0x1f582_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="User Management"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="User_application.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Authentification"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="userid" xmi:id="BOUML_0x24502_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -278,8 +292,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="FormulareAnwendung" xmi:id="BOUML_0x1f602_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="User Management"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="app_formulare.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Authentification"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="anwendungid" xmi:id="BOUML_0x24602_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -317,8 +333,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Aktionen" xmi:id="BOUML_0x1f702_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Actions"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="cache.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="target" xmi:id="BOUML_0x1fc02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -347,8 +365,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Uebersetzungen" xmi:id="BOUML_0x1f782_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Configurations"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="babelfish.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="translated" xmi:id="BOUML_0x1fe02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -359,8 +379,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Formularaktionenzuordnen" xmi:id="BOUML_0x1f802_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Forms"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="actions_formulare.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="event" xmi:id="BOUML_0x1ff02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -384,8 +406,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Anwendungsparameter" xmi:id="BOUML_0x1f882_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Application Definition"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="app_params.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="parametervalue" xmi:id="BOUML_0x1ff82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -404,8 +428,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Aktionsschrittezuordnen" xmi:id="BOUML_0x1f902_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Actions"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="action_steps.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Applications"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="bezeichnung" xmi:id="BOUML_0x20182_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -435,8 +461,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Reportdefinitionen" xmi:id="BOUML_0x1f982_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Definitions"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="print_class.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Reports"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="description" xmi:id="BOUML_0x20282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -454,8 +482,10 @@
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Reportparameter" xmi:id="BOUML_0x1fa02_4" visibility="package">
 						<xmi:Extension extender="Bouml">
-							<stereotype name="form"/>
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Definitions"/>
 							<taggedValue tag="lbDMF:toolbarimagefile" value="kword.png"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="Reports"/>
 						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="value" xmi:id="BOUML_0x20382_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
@@ -783,7 +813,11 @@
 						</ownedBehavior>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="FormularTypen" xmi:id="BOUML_0x26502_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Application"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="System Configuration"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="handlername" xmi:id="BOUML_0x29902_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -808,7 +842,11 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Tables" xmi:id="BOUML_0x28082_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value=""/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value=""/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="catalogname" xmi:id="BOUML_0x2c282_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -855,7 +893,11 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Columns" xmi:id="BOUML_0x28102_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Database"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="System Configuration"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="columnname" xmi:id="BOUML_0x2c582_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -884,7 +926,11 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="PrimaryKeys" xmi:id="BOUML_0x28202_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Database"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="System Configuration"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="tablecatalog" xmi:id="BOUML_0x2cc82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -913,7 +959,11 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="ForeignKeys" xmi:id="BOUML_0x28182_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="form"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="lbDMF:form"/>
+							<taggedValue tag="lbDMF:form:ribbongroup" value="Database"/>
+							<taggedValue tag="lbDMF:form:ribbonpage" value="System Configuration"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="pkcatalog" xmi:id="BOUML_0x2c882_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
@@ -2675,6 +2725,30 @@
 					<packagedElement xmi:type="uml:Extension" name="A_Element_dropdown" xmi:id="BOUML_EXT_0x2b782_0" memberEnd="BOUML_BASE_0x2b782_0">
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_dropdown" xmi:id="BOUML_EXTEND_0x2b782_0" type="BOUML_0x2b782_0" aggregation="composite"/>
 					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="form" xmi:id="BOUML_0x29c02_4" visibility="package">
+						<ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_10" body="A new form that can optionally be used to model ribbon page and group conteinments."/>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="ribbongroup" xmi:id="BOUML_0x32102_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="ribbonpage" xmi:id="BOUML_0x32182_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x2eb82_0" association="BOUML_EXT_0x2eb82_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_form" xmi:id="BOUML_EXT_0x2eb82_0" memberEnd="BOUML_BASE_0x2eb82_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_form" xmi:id="BOUML_EXTEND_0x2eb82_0" type="BOUML_0x2eb82_0" aggregation="composite"/>
+					</packagedElement>
 				</packagedElement>
 			</packagedElement>
 		</packagedElement>
@@ -2701,6 +2775,26 @@
 	<lbDMF:dropdown xmi:id="BOUML_STELT_0x2d002_1" column="tablename" table="dbtable" base_Element="BOUML_0x2d002_1"/>
 	<lbDMF:dropdown xmi:id="BOUML_STELT_0x2d082_1" column="tablename" table="dbtable" base_Element="BOUML_0x2d082_1"/>
 	<lbDMF:dropdown xmi:id="BOUML_STELT_0x2d102_1" column="tablename" table="dbtable" base_Element="BOUML_0x2d102_1"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f402_4" ribbongroup="User Management" ribbonpage="Authentification" base_Element="BOUML_0x1f402_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x24b82_4" ribbongroup="Database" ribbonpage="System Configuration" base_Element="BOUML_0x24b82_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x24b02_4" ribbongroup="Forms" ribbonpage="Applications" base_Element="BOUML_0x24b02_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f482_4" ribbongroup="" ribbonpage="" base_Element="BOUML_0x1f482_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f682_4" ribbongroup="" ribbonpage="" base_Element="BOUML_0x1f682_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f502_4" ribbongroup="Forms" ribbonpage="Applications" base_Element="BOUML_0x1f502_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f582_4" ribbongroup="User Management" ribbonpage="Authentification" base_Element="BOUML_0x1f582_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f602_4" ribbongroup="User Management" ribbonpage="Authentification" base_Element="BOUML_0x1f602_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f702_4" ribbongroup="Actions" ribbonpage="Applications" base_Element="BOUML_0x1f702_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f782_4" ribbongroup="Configurations" ribbonpage="Applications" base_Element="BOUML_0x1f782_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f802_4" ribbongroup="Forms" ribbonpage="Applications" base_Element="BOUML_0x1f802_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f882_4" ribbongroup="Application Definition" ribbonpage="Applications" base_Element="BOUML_0x1f882_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f902_4" ribbongroup="Actions" ribbonpage="Applications" base_Element="BOUML_0x1f902_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1f982_4" ribbongroup="Definitions" ribbonpage="Reports" base_Element="BOUML_0x1f982_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x1fa02_4" ribbongroup="Definitions" ribbonpage="Reports" base_Element="BOUML_0x1fa02_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x26502_4" ribbongroup="Application" ribbonpage="System Configuration" base_Element="BOUML_0x26502_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x28082_4" ribbongroup="" ribbonpage="" base_Element="BOUML_0x28082_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x28102_4" ribbongroup="Database" ribbonpage="System Configuration" base_Element="BOUML_0x28102_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x28202_4" ribbongroup="Database" ribbonpage="System Configuration" base_Element="BOUML_0x28202_4"/>
+	<lbDMF:form xmi:id="BOUML_STELT_0x28182_4" ribbongroup="Database" ribbonpage="System Configuration" base_Element="BOUML_0x28182_4"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21782_0" sourcecolumn="userid" base_Element="BOUML_0x21782_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x25f02_0" sourcecolumn="name" base_Element="BOUML_0x25f02_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21802_0" sourcecolumn="name" base_Element="BOUML_0x21802_0"/>
