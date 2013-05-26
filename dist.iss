@@ -56,6 +56,6 @@ Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: 
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
-Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall
-Filename: "{app}\activateACE.bat"; Description: "Get and build ACE framework (will be flagged)"; Flags: shellexec postinstall
+Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
+Filename: "{app}\activateACE.bat"; Description: "Get and build ACE framework (will be flagged)"; Flags: shellexec postinstall unchecked
 Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall

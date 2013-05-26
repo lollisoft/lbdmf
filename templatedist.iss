@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF XSLT Patch Distribution
-AppVerName=lbDMF XSLT Patch Distribution 1.0.4-stable-rc4
-OutputBaseFilename=lbDMF-XSLTPatchDistribution-1.0.4-stable-rc4
+AppVerName=lbDMF XSLT Patch Distribution 1.0.4-final-patch_1
+OutputBaseFilename=lbDMF-XSLTPatchDistribution-1.0.4-final-patch_1
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
