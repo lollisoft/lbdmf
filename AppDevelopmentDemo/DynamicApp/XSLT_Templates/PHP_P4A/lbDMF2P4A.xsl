@@ -63,7 +63,7 @@ if (is_string($check)) {
 class <xsl:value-of select="$ApplicationName"/> extends P4A
 {
 	public $menu = null;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -102,7 +102,7 @@ class <xsl:value-of select="$ApplicationName"/> extends P4A
       <xsl:variable name="packageName" select="$ApplicationName"/>
 	    
 		
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -129,7 +129,7 @@ class <xsl:value-of select="$ApplicationName"/> extends P4A
 </xsl:for-each>
 	    
 	    // Data Sources
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -197,7 +197,7 @@ class <xsl:value-of select="$ApplicationName"/> extends P4A
 
 <!-- Build formular classes for each formular -->
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">

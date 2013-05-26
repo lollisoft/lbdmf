@@ -263,7 +263,7 @@
         &lt;/document&gt;
 <!-- Formular level informations -->
 <!-- === Formular specific template ====================================================================== -->
-<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -459,7 +459,7 @@
  Application: <xsl:value-of select="$ApplicationName"/>
  Formular: <xsl:value-of select="$FormName"/>
 -->
-<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
