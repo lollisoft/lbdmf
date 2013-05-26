@@ -209,6 +209,17 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 		</xsl:for-each>
 
 		</xsl:when>
+		<xsl:when test="$classtype='lbDMF:form'">
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Dependency'][@client=$FormularID]">
+			<xsl:variable name="SupplyerClassID" select="@supplier"/>
+			<xsl:variable name="SupplierClassStereoType" select="//packagedElement[@xmi:id=$SupplyerClassID]/xmi:Extension/stereotype/@name"/>
+			<xsl:if test="$SupplierClassStereoType='entity'">
+				<xsl:variable name="DependencyToEntity" select="//packagedElement[@xmi:id=$SupplyerClassID]/@name"/>
+				<xsl:value-of select="$DependencyToEntity"/>
+			</xsl:if>
+		</xsl:for-each>
+
+		</xsl:when>
 		<xsl:otherwise><xsl:value-of select="//packagedElement[@xmi:type='uml:Class'][@xmi:id=$FormularID]/@name"/></xsl:otherwise>
 </xsl:choose>
 
@@ -337,6 +348,26 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 <xsl:if test="$XMLEntityName=''">
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:if>
+
+<!-- Support for ribbons if defined -->
+
+<xsl:variable name="RibbonGroupName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='ribbongroup']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='ribbongroup']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:form:ribbongroup']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:form:ribbongroup']/@value"/></xsl:if>
+</xsl:variable>
+
+<xsl:variable name="RibbonPageName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='ribbonpage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='ribbonpage']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:form:ribbonpage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:form:ribbonpage']/@value"/></xsl:if>
+</xsl:variable>
+
+<xsl:if test="$RibbonPageName!=''">
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', '<xsl:value-of select="$RibbonPageName"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
+<xsl:if test="$RibbonGroupName!=''">
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', '<xsl:value-of select="$RibbonGroupName"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
+
 
 <!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">

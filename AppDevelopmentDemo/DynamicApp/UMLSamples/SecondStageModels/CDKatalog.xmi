@@ -34,6 +34,11 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="Musiker" xmi:id="BOUML_0x1f502_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
+							<xmi:Extension extender="Bouml">
+								<stereotype name="lbDMF:dropdown"/>
+								<taggedValue tag="lbDMF:dropdown:column" value="Name"/>
+								<taggedValue tag="lbDMF:dropdown:table" value="Musiker"/>
+							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Musiker" xmi:id="BOUML_0x1f482_4" visibility="package">
@@ -51,7 +56,7 @@
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f402_4"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:masterdetail_action"/>
-								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="ID"/>
+								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="Name"/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -84,9 +89,9 @@
 							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x1f902_0" value="1"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:relationship"/>
-								<taggedValue tag="lbDMF:relationship:order" value=""/>
-								<taggedValue tag="lbDMF:relationship:table" value=""/>
-								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
+								<taggedValue tag="lbDMF:relationship:order" value="-1"/>
+								<taggedValue tag="lbDMF:relationship:table" value="Musiker"/>
+								<taggedValue tag="lbDMF:relationship:sourcecolumn" value="ID"/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -109,9 +114,9 @@
 							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x1f982_0" value="*"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:relationship"/>
-								<taggedValue tag="lbDMF:relationship:order" value="1"/>
-								<taggedValue tag="lbDMF:relationship:table" value="Musiker"/>
-								<taggedValue tag="lbDMF:relationship:sourcecolumn" value="ID"/>
+								<taggedValue tag="lbDMF:relationship:order" value=""/>
+								<taggedValue tag="lbDMF:relationship:table" value=""/>
+								<taggedValue tag="lbDMF:relationship:sourcecolumn" value=""/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -296,13 +301,60 @@
 					<packagedElement xmi:type="uml:Extension" name="A_Element_test_application_via_lua" xmi:id="BOUML_EXT_0x1f882_0" memberEnd="BOUML_BASE_0x1f882_0">
 						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_test_application_via_lua" xmi:id="BOUML_EXTEND_0x1f882_0" type="BOUML_0x1f882_0" aggregation="composite"/>
 					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="dropdown" xmi:id="BOUML_0x21382_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Attribute"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x21382_0" association="BOUML_EXT_0x21382_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="column" xmi:id="BOUML_0x21502_1" visibility="private">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="table" xmi:id="BOUML_0x21582_1" visibility="private">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_dropdown" xmi:id="BOUML_EXT_0x21382_0" memberEnd="BOUML_BASE_0x21382_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_dropdown" xmi:id="BOUML_EXTEND_0x21382_0" type="BOUML_0x21382_0" aggregation="composite"/>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Stereotype" name="form" xmi:id="BOUML_0x22d02_4" visibility="package">
+						<xmi:Extension extender="Bouml">
+							<stereotype name="stereotype"/>
+							<taggedValue tag="stereotypeSetParameters" value=""/>
+							<taggedValue tag="stereotypeIconPath" value=""/>
+							<taggedValue tag="stereotypeCheckParameters" value=""/>
+							<taggedValue tag="stereotypeApplyOn" value="Class"/>
+							<taggedValue tag="stereotypeSet" value=""/>
+							<taggedValue tag="stereotypeCheck" value=""/>
+						</xmi:Extension>
+						<ownedAttribute xmi:type="uml:Property" name="base_Element" xmi:id="BOUML_0x22d02_0" association="BOUML_EXT_0x22d02_0">
+							<type xmi:type="uml:Class" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Element"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="ribbongroup" xmi:id="BOUML_0x22f02_1" visibility="private">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="ribbonpage" xmi:id="BOUML_0x22f82_1" visibility="private">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+						</ownedAttribute>
+					</packagedElement>
+					<packagedElement xmi:type="uml:Extension" name="A_Element_form" xmi:id="BOUML_EXT_0x22d02_0" memberEnd="BOUML_BASE_0x22d02_0">
+						<ownedEnd xmi:type="uml:ExtensionEnd" name="extension_form" xmi:id="BOUML_EXTEND_0x22d02_0" type="BOUML_0x22d02_0" aggregation="composite"/>
+					</packagedElement>
 				</packagedElement>
 			</packagedElement>
 		</packagedElement>
 	</uml:Model>
-	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x1fa02_0" sourcecolumn="ID" base_Element="BOUML_0x1fa02_0"/>
+	<lbDMF:dropdown xmi:id="BOUML_STELT_0x1f502_1" column="Name" table="Musiker" base_Element="BOUML_0x1f502_1"/>
+	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x1fa02_0" sourcecolumn="Name" base_Element="BOUML_0x1fa02_0"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x1f682_1" base_Element="BOUML_0x1f682_1"/>
 	<lbDMF:pk xmi:id="BOUML_STELT_0x1f802_1" base_Element="BOUML_0x1f802_1"/>
-	<lbDMF:relationship xmi:id="BOUML_STELT_0x1f902_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x1f902_0"/>
-	<lbDMF:relationship xmi:id="BOUML_STELT_0x1f982_0" order="1" table="Musiker" sourcecolumn="ID" base_Element="BOUML_0x1f982_0"/>
+	<lbDMF:relationship xmi:id="BOUML_STELT_0x1f902_0" order="-1" table="Musiker" sourcecolumn="ID" base_Element="BOUML_0x1f902_0"/>
+	<lbDMF:relationship xmi:id="BOUML_STELT_0x1f982_0" order="" table="" sourcecolumn="" base_Element="BOUML_0x1f982_0"/>
 </xmi:XMI>
