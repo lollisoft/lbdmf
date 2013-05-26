@@ -362,7 +362,7 @@ private:
 
     //void OnDispatch(lb_I_Unknown* uk);
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -409,7 +409,7 @@ public:
 
 enum {
     cmBase = 200,
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -455,7 +455,7 @@ enum {
     hcPrevious,
     hcNext,
     hcLast,
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -925,7 +925,7 @@ void T<xsl:value-of select="$ApplicationName"/>::handleEvent(TEvent &amp;event)
                 testInputBox();
                 break;
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -1413,7 +1413,7 @@ TMenuBar *T<xsl:value-of select="$ApplicationName"/>::initMenuBar(TRect r)
 
     TSubMenu&amp; subForms =
       *new TSubMenu( "~A~pplication <xsl:value-of select="$ApplicationName"/>", 0, hcWindows ) +
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -1476,7 +1476,7 @@ void T<xsl:value-of select="$ApplicationName"/>::cpCallBack(unsigned short  *map
 
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -1910,7 +1910,7 @@ lbErrCodes LB_STDCALL T<xsl:value-of select="$FormularName"/>Dialog::DBLast(lb_I
 
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">

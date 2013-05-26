@@ -482,7 +482,7 @@ public:
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -543,7 +543,7 @@ protected:
 	UAP(lb_I_MetaApplication, metaapp)
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -591,7 +591,7 @@ lbDynamicApplication::lbDynamicApplication() {
 lbDynamicApplication::~lbDynamicApplication() {
 	_CL_LOG &lt;&lt; "lbDynamicApplication::~lbDynamicApplication() called." LOG_
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -840,7 +840,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 	int unused;
 	bool toolbaradded = false;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -900,7 +900,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 </xsl:for-each>
 }
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">

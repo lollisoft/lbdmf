@@ -66,7 +66,7 @@
 	&lt;Reference Include="System.Drawing" /&gt;
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -110,7 +110,7 @@
 </xsl:for-each>
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -154,7 +154,7 @@
 </xsl:for-each>
   &lt;/ItemGroup&gt;
   &lt;ItemGroup&gt;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">

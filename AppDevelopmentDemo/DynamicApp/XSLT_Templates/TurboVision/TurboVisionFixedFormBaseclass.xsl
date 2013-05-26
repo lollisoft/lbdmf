@@ -210,7 +210,7 @@ public:
 	allNaviDisabled = true;
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -236,7 +236,7 @@ public:
 class <xsl:value-of select="$FormularName"/>;
 </xsl:for-each>
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -761,7 +761,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModule<xsl:value-of select="$ApplicationName"/>)
 
 BEGIN_PLUGINS(lbPluginModule<xsl:value-of select="$ApplicationName"/>)
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -814,7 +814,7 @@ void LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::initial
 	}
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">

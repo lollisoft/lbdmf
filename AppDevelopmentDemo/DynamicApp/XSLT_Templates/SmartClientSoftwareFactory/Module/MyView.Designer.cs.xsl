@@ -37,7 +37,7 @@
 			int tabStop = 0;
 			this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -82,7 +82,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -113,7 +113,7 @@
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(250, 227);
             this.flowLayoutPanel1.TabIndex = 1;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
@@ -171,7 +171,7 @@
 
 		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
