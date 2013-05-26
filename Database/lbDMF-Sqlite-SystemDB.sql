@@ -121,6 +121,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Benutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Authentification', id FROM "formulare" WHERE name = 'Benutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'User Management', id FROM "formulare" WHERE name = 'Benutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 
 -- Create query for users (BOUML_0x1f402_4)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
@@ -180,6 +184,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'DBType' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'System Configuration', id FROM "formulare" WHERE name = 'DBType' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Database', id FROM "formulare" WHERE name = 'DBType' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 
 -- Create query for dbtype (BOUML_0x24b82_4)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
@@ -216,6 +224,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Forms', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formularfields', 'formularid', 'formulare', 'name');
 
@@ -503,6 +515,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Formular_Parameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Formular_Parameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Forms', id FROM "formulare" WHERE name = 'Formular_Parameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_parameters', 'formularid', 'formulare', 'name');
 
 
@@ -544,6 +560,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Authentification', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'User Management', id FROM "formulare" WHERE name = 'AnwendungenBenutzer' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('user_anwendungen', 'userid', 'users', 'name');
 
@@ -587,6 +607,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Authentification', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'User Management', id FROM "formulare" WHERE name = 'FormulareAnwendung' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungen_formulare', 'anwendungid', 'anwendungen', 'name');
 
@@ -669,6 +693,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Actions', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'typ', 'action_types', 'bezeichnung');
 
 
@@ -731,6 +759,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Uebersetzungen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Uebersetzungen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Configurations', id FROM "formulare" WHERE name = 'Uebersetzungen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 
 -- Create query for translations (BOUML_0x1f782_4)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
@@ -767,6 +799,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Forms', id FROM "formulare" WHERE name = 'Formularaktionenzuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formular_actions', 'action', 'actions', 'name');
 
@@ -813,6 +849,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Anwendungsparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Anwendungsparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Application Definition', id FROM "formulare" WHERE name = 'Anwendungsparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('anwendungs_parameter', 'anwendungid', 'anwendungen', 'name');
 
 
@@ -854,6 +894,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Applications', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Actions', id FROM "formulare" WHERE name = 'Aktionsschrittezuordnen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('action_steps', 'type', 'action_types', 'bezeichnung');
 
@@ -903,6 +947,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Reportdefinitionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Reports', id FROM "formulare" WHERE name = 'Reportdefinitionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Definitions', id FROM "formulare" WHERE name = 'Reportdefinitionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 -- Create query for reports (BOUML_0x1f982_4)
@@ -959,6 +1007,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Reportparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Reports', id FROM "formulare" WHERE name = 'Reportparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Definitions', id FROM "formulare" WHERE name = 'Reportparameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('report_parameters', 'reportid', 'reports', 'name');
 
 
@@ -1000,6 +1052,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'FormularTypen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'System Configuration', id FROM "formulare" WHERE name = 'FormularTypen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Application', id FROM "formulare" WHERE name = 'FormularTypen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 -- Create query for formulartypen (BOUML_0x26502_4)
@@ -1164,6 +1220,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'System Configuration', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Database', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbcolumn', 'dbtableid', 'dbtable', '');
 
 
@@ -1214,6 +1274,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'System Configuration', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Database', id FROM "formulare" WHERE name = 'PrimaryKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbprimarykey', 'dbtableid', 'dbtable', '');
 
 
@@ -1263,6 +1327,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'System Configuration', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Database', id FROM "formulare" WHERE name = 'ForeignKeys' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbforeignkey', 'dbtableid', 'dbtable', '');
 

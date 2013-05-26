@@ -1,6 +1,6 @@
 format 73
 "lbDMF" // DMFToUML::lbDMF
-  revision 6
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -454,6 +454,56 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+    end
+
+    class 171010 "form"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Class"
+      key "stereotypeIconPath" value ""
+      comment "A new form that can optionally be used to model ribbon page and group conteinments."
+      attribute 205058 "ribbongroup"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 205186 "ribbonpage"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 191362 // <unidirectional association>
+	relation 187266 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 191362 // <unidirectional association>
+	  b parent class_ref 133506 // Element
       end
     end
   end
