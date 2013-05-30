@@ -4132,7 +4132,7 @@ public:
 /*...sclass lb_I_Actions:0:*/
 class lb_I_Actions : public lb_I_Unknown {
 public:
-	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _id = -1) = 0;
+	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _applicationid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectAction(long _id) = 0;
 	virtual int			LB_STDCALL getActionCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActions() = 0;
@@ -4141,6 +4141,7 @@ public:
 
 	virtual long		LB_STDCALL getActionID() = 0;
 	virtual long		LB_STDCALL getActionTyp() = 0;
+	virtual long		LB_STDCALL getActionApplicationID() = 0;
 	virtual char*		LB_STDCALL getActionTarget() = 0;
 
 	virtual char*		LB_STDCALL getActionSource() = 0;

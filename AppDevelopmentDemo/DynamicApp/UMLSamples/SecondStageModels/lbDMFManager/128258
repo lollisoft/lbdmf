@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 22
+  revision 23
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -42,6 +42,11 @@ format 73
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 166146 "Actions"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
     classdiagram 159618 "TableForms"
       draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
       size A4
@@ -610,6 +615,23 @@ ${inlines}
 	key "lbDMF:relationship:table" value "actions"
 	key "lbDMF:relationship:order" value "-1"
       end
+
+      classrelation 197890 // anwendungenid (<association>)
+	relation 193794 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "anwendungenid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 197890 // anwendungenid (<association>)
+	  b role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 198018 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "id"
+	key "lbDMF:relationship:table" value "anwendungen"
+	key "lbDMF:relationship:order" value "-1"
+      end
     end
 
     class 130690 "anwendungen"
@@ -728,6 +750,14 @@ ${inlines}
 
       classrelation 184706 // <association>
 	relation_ref 180610 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+
+      classrelation 198018 // <association>
+	relation_ref 193794 // <association>
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""

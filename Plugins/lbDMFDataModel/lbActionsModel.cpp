@@ -63,6 +63,7 @@ lbActionsModel::lbActionsModel() {
 
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionApplicationID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionTyp)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionTarget)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
@@ -119,11 +120,12 @@ void		LB_STDCALL lbActionsModel::deleteMarked() {
 }
 
 
-long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, const char* target, long _id) {
+long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, const char* target, long _applicationid, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Source)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ApplicationID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Target)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
@@ -137,6 +139,7 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 	Typ->setData(typ);
 	*Target = target;
 	ID->setData(_id);
+	ApplicationID->setData(_applicationid);
 	
 	*paramname = "Name";
 	param->setUAPString(*&paramname, *&Name);
@@ -146,6 +149,8 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 	param->setUAPLong(*&paramname, *&Typ);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
+	*paramname = "ApplicationID";
+	param->setUAPLong(*&paramname, *&ApplicationID);
 	*paramname = "Target";
 	param->setUAPString(*&paramname, *&Target);
 	*paramname = "marked";
@@ -182,6 +187,8 @@ bool  LB_STDCALL lbActionsModel::selectAction(long _id) {
 		param->getUAPString(*&name, *&currentActionSource);
 		*name = "ID";
 		param->getUAPLong(*&name, *&currentActionID);
+		*name = "ApplicationID";
+		param->getUAPLong(*&name, *&currentActionApplicationID);
 		*name = "Typ";
 		param->getUAPLong(*&name, *&currentActionTyp);
 		*name = "Target";
@@ -231,6 +238,8 @@ void  LB_STDCALL lbActionsModel::setNextAction() {
 	param->getUAPString(*&name, *&currentActionSource);
 	*name = "ID";
 	param->getUAPLong(*&name, *&currentActionID);
+	*name = "ApplicationID";
+	param->getUAPLong(*&name, *&currentActionApplicationID);
 	*name = "Typ";
 	param->getUAPLong(*&name, *&currentActionTyp);
 	*name = "Target";
@@ -245,6 +254,10 @@ void  LB_STDCALL lbActionsModel::finishActionIteration() {
 
 long LB_STDCALL lbActionsModel::getActionID() {
 	return currentActionID->getData();
+}
+
+long LB_STDCALL lbActionsModel::getActionApplicationID() {
+	return currentActionApplicationID->getData();
 }
 
 char*  LB_STDCALL lbActionsModel::getActionName() {
