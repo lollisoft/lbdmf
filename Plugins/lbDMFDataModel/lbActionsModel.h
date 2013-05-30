@@ -35,7 +35,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _id = -1);
+	long		LB_STDCALL addAction(const char* name, long typ, const char* source, const char* target, long _applicationid, long _id = -1);
 	bool		LB_STDCALL selectAction(long _id);
 	int			LB_STDCALL getActionCount();
 	bool		LB_STDCALL hasMoreActions();
@@ -44,6 +44,7 @@ public:
 	
 	long		LB_STDCALL getActionID();
 	long		LB_STDCALL getActionTyp();
+	long		LB_STDCALL getActionApplicationID();
 	char*		LB_STDCALL getActionTarget();
 
 	char*		LB_STDCALL getActionSource();
@@ -58,6 +59,7 @@ public:
 
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionID)
+	UAP(lb_I_Long, currentActionApplicationID)
 	UAP(lb_I_Long, currentActionTyp)
 	UAP(lb_I_String, currentActionTarget)
 	UAP(lb_I_String, currentActionName)

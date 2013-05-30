@@ -159,10 +159,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Benutz
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21782_0', 1, 'userid');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for AnwendungenBenutzer', 1, 'AnwendungenBenutzer', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21782_0' and source = 'userid'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Benutzer' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21782_0' and source = 'userid'), 'action_master_detail_BOUML_0x21782_0');
-UPDATE actions set name = 'AnwendungenBenutzer' where name = 'BOUML_0x21782_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21782_0', 'AnwendungenBenutzer', 1, 'userid', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for AnwendungenBenutzer', 
+1, 
+'AnwendungenBenutzer', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21782_0' and source = 'userid'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Benutzer' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21782_0' and source = 'userid'), 
+'action_master_detail_BOUML_0x21782_0'
+);
+--UPDATE actions set name = 'AnwendungenBenutzer' where name = 'BOUML_0x21782_0';
 	
 
 -- Create operation definitions
@@ -277,10 +286,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Formul
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x25f02_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for DBType', 1, 'DBType', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x25f02_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'FormularFields' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x25f02_0' and source = 'name'), 'action_master_detail_BOUML_0x25f02_0');
-UPDATE actions set name = 'DBType' where name = 'BOUML_0x25f02_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x25f02_0', 'DBType', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for DBType', 
+1, 
+'DBType', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x25f02_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'FormularFields' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x25f02_0' and source = 'name'), 
+'action_master_detail_BOUML_0x25f02_0'
+);
+--UPDATE actions set name = 'DBType' where name = 'BOUML_0x25f02_0';
 	
 
 -- Create operation definitions
@@ -350,10 +368,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltyp
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21802_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formular_Parameter', 1, 'Formular_Parameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21802_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21802_0' and source = 'name'), 'action_master_detail_BOUML_0x21802_0');
-UPDATE actions set name = 'Formular_Parameter' where name = 'BOUML_0x21802_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21802_0', 'Formular_Parameter', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Formular_Parameter', 
+1, 
+'Formular_Parameter', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21802_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21802_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21802_0'
+);
+--UPDATE actions set name = 'Formular_Parameter' where name = 'BOUML_0x21802_0';
 	
 -- Association from Formulare to Formularaktionenzuordnen
 -- From formular 'BOUML_0x1f482_4'
@@ -368,10 +395,19 @@ UPDATE actions set name = 'Formular_Parameter' where name = 'BOUML_0x21802_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21882_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formularaktionenzuordnen', 1, 'Formularaktionenzuordnen', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21882_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21882_0' and source = 'name'), 'action_master_detail_BOUML_0x21882_0');
-UPDATE actions set name = 'Formularaktionenzuordnen' where name = 'BOUML_0x21882_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21882_0', 'Formularaktionenzuordnen', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Formularaktionenzuordnen', 
+1, 
+'Formularaktionenzuordnen', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21882_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21882_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21882_0'
+);
+--UPDATE actions set name = 'Formularaktionenzuordnen' where name = 'BOUML_0x21882_0';
 	
 -- Association from Formulare to FormularFields
 -- From formular 'BOUML_0x1f482_4'
@@ -386,10 +422,19 @@ UPDATE actions set name = 'Formularaktionenzuordnen' where name = 'BOUML_0x21882
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x25e02_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for FormularFields', 1, 'FormularFields', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x25e02_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x25e02_0' and source = 'name'), 'action_master_detail_BOUML_0x25e02_0');
-UPDATE actions set name = 'FormularFields' where name = 'BOUML_0x25e02_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x25e02_0', 'FormularFields', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for FormularFields', 
+1, 
+'FormularFields', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x25e02_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Formulare' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x25e02_0' and source = 'name'), 
+'action_master_detail_BOUML_0x25e02_0'
+);
+--UPDATE actions set name = 'FormularFields' where name = 'BOUML_0x25e02_0';
 	
 
 -- Create operation definitions
@@ -447,10 +492,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Anwend
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21682_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Anwendungsparameter', 1, 'Anwendungsparameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21682_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21682_0' and source = 'name'), 'action_master_detail_BOUML_0x21682_0');
-UPDATE actions set name = 'Anwendungsparameter' where name = 'BOUML_0x21682_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21682_0', 'Anwendungsparameter', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Anwendungsparameter', 
+1, 
+'Anwendungsparameter', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21682_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21682_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21682_0'
+);
+--UPDATE actions set name = 'Anwendungsparameter' where name = 'BOUML_0x21682_0';
 	
 -- Association from Anwendungen to Formulare
 -- From formular 'BOUML_0x1f682_4'
@@ -465,10 +519,19 @@ UPDATE actions set name = 'Anwendungsparameter' where name = 'BOUML_0x21682_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21702_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formulare', 1, 'Formulare', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21702_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21702_0' and source = 'name'), 'action_master_detail_BOUML_0x21702_0');
-UPDATE actions set name = 'Formulare' where name = 'BOUML_0x21702_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21702_0', 'Formulare', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Formulare', 
+1, 
+'Formulare', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21702_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21702_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21702_0'
+);
+--UPDATE actions set name = 'Formulare' where name = 'BOUML_0x21702_0';
 	
 -- Association from Anwendungen to Tables
 -- From formular 'BOUML_0x1f682_4'
@@ -483,17 +546,30 @@ UPDATE actions set name = 'Formulare' where name = 'BOUML_0x21702_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2d202_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Tables', 1, 'Tables', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2d202_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2d202_0' and source = 'name'), 'action_master_detail_BOUML_0x2d202_0');
-UPDATE actions set name = 'Tables' where name = 'BOUML_0x2d202_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x2d202_0', 'Tables', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Tables', 
+1, 
+'Tables', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x2d202_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Anwendungen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x2d202_0' and source = 'name'), 
+'action_master_detail_BOUML_0x2d202_0'
+);
+--UPDATE actions set name = 'Tables' where name = 'BOUML_0x2d202_0';
 	
 
 -- Create operation definitions
 
 -- Generate codegeneration operation 'Codegenerieren' for 'Anwendungen'
 
-INSERT OR IGNORE INTO "actions" (name, typ, source) VALUES ('Codegenerieren', (select id from action_types where bezeichnung = 'Buttonpress'), 'name');
+INSERT OR IGNORE INTO "actions" (name, typ, source, anwendungenid) VALUES (
+'Codegenerieren', 
+(select id from action_types where bezeichnung = 'Buttonpress'), 
+'name',
+(select id from "anwendungen" where name = 'lbDMF Manager'));
 INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) VALUES ('Generate code', 1, '', (select id from action_types where action_handler = 'instanceOflbDMFXslt'), (select id from actions where name = 'Codegenerieren'));
 INSERT OR IGNORE INTO "formular_actions" (formular, action, event) VALUES ((select id from formulare where name = 'Anwendungen'), (select id from actions where name = 'Codegenerieren'), 'evt_Anwendungen_Codegenerieren');
 
@@ -650,10 +726,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Formul
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x29402_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formulare', 1, 'Formulare', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x29402_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'FormulareAnwendung' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x29402_0' and source = 'name'), 'action_master_detail_BOUML_0x29402_0');
-UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29402_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x29402_0', 'Formulare', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Formulare', 
+1, 
+'Formulare', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x29402_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'FormulareAnwendung' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x29402_0' and source = 'name'), 
+'action_master_detail_BOUML_0x29402_0'
+);
+--UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29402_0';
 	
 -- Association from FormulareAnwendung to Anwendungen
 -- From formular 'BOUML_0x1f602_4'
@@ -668,10 +753,19 @@ UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29402_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x29482_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Anwendungen', 1, 'Anwendungen', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x29482_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'FormulareAnwendung' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x29482_0' and source = 'name'), 'action_master_detail_BOUML_0x29482_0');
-UPDATE actions set name = 'Anwendungen' where name = 'BOUML_0x29482_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x29482_0', 'Anwendungen', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Anwendungen', 
+1, 
+'Anwendungen', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x29482_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'FormulareAnwendung' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x29482_0' and source = 'name'), 
+'action_master_detail_BOUML_0x29482_0'
+);
+--UPDATE actions set name = 'Anwendungen' where name = 'BOUML_0x29482_0';
 	
 
 -- Create operation definitions
@@ -699,10 +793,12 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 
 INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'typ', 'action_types', 'bezeichnung');
 
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('actions', 'anwendungenid', 'anwendungen', 'name');
+
 
 -- Create query for actions (BOUML_0x1f702_4)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
-SELECT 'query', 'select "target", "source", "name", "typ" from "actions"', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+SELECT 'query', 'select "target", "source", "name", "typ", "anwendungenid" from "actions"', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'target', 'actions', 0, 'String', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
@@ -713,6 +809,9 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 
 -- dropdown field
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'typ', 'actions', 1, 'bezeichnung', 'action_types', 'Integer', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+-- dropdown field
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'anwendungenid', 'actions', 1, 'name', 'anwendungen', 'Integer', id FROM "formulare" WHERE name = 'Aktionen' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
@@ -734,10 +833,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Aktion
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21602_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Aktionsschrittezuordnen', 1, 'Aktionsschrittezuordnen', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21602_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Aktionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21602_0' and source = 'name'), 'action_master_detail_BOUML_0x21602_0');
-UPDATE actions set name = 'Aktionsschrittezuordnen' where name = 'BOUML_0x21602_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21602_0', 'Aktionsschrittezuordnen', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Aktionsschrittezuordnen', 
+1, 
+'Aktionsschrittezuordnen', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21602_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Aktionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21602_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21602_0'
+);
+--UPDATE actions set name = 'Aktionsschrittezuordnen' where name = 'BOUML_0x21602_0';
 	
 
 -- Create operation definitions
@@ -982,10 +1090,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Report
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x21902_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Reportparameter', 1, 'Reportparameter', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x21902_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Reportdefinitionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x21902_0' and source = 'name'), 'action_master_detail_BOUML_0x21902_0');
-UPDATE actions set name = 'Reportparameter' where name = 'BOUML_0x21902_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x21902_0', 'Reportparameter', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Reportparameter', 
+1, 
+'Reportparameter', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x21902_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Reportdefinitionen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x21902_0' and source = 'name'), 
+'action_master_detail_BOUML_0x21902_0'
+);
+--UPDATE actions set name = 'Reportparameter' where name = 'BOUML_0x21902_0';
 	
 
 -- Create operation definitions
@@ -1093,10 +1210,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Formul
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x29582_0', 1, 'name');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Formulare', 1, 'Formulare', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x29582_0' and source = 'name'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'FormularTypen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x29582_0' and source = 'name'), 'action_master_detail_BOUML_0x29582_0');
-UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29582_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x29582_0', 'Formulare', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Formulare', 
+1, 
+'Formulare', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x29582_0' and source = 'name'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'FormularTypen' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x29582_0' and source = 'name'), 
+'action_master_detail_BOUML_0x29582_0'
+);
+--UPDATE actions set name = 'Formulare' where name = 'BOUML_0x29582_0';
 	
 
 -- Create operation definitions
@@ -1159,10 +1285,19 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Tables
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b402_0', 1, 'tablename');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for Columns', 1, 'Columns', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b402_0' and source = 'tablename'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b402_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b402_0');
-UPDATE actions set name = 'Columns' where name = 'BOUML_0x2b402_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x2b402_0', 'Columns', 1, 'tablename', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Columns', 
+1, 
+'Columns', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x2b402_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x2b402_0' and source = 'tablename'), 
+'action_master_detail_BOUML_0x2b402_0'
+);
+--UPDATE actions set name = 'Columns' where name = 'BOUML_0x2b402_0';
 	
 -- Association from Tables to PrimaryKeys
 -- From formular 'BOUML_0x28082_4'
@@ -1177,10 +1312,19 @@ UPDATE actions set name = 'Columns' where name = 'BOUML_0x2b402_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b582_0', 1, 'tablename');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for PrimaryKeys', 1, 'PrimaryKeys', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b582_0' and source = 'tablename'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b582_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b582_0');
-UPDATE actions set name = 'PrimaryKeys' where name = 'BOUML_0x2b582_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x2b582_0', 'PrimaryKeys', 1, 'tablename', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for PrimaryKeys', 
+1, 
+'PrimaryKeys', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x2b582_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x2b582_0' and source = 'tablename'), 
+'action_master_detail_BOUML_0x2b582_0'
+);
+--UPDATE actions set name = 'PrimaryKeys' where name = 'BOUML_0x2b582_0';
 	
 -- Association from Tables to ForeignKeys
 -- From formular 'BOUML_0x28082_4'
@@ -1195,10 +1339,19 @@ UPDATE actions set name = 'PrimaryKeys' where name = 'BOUML_0x2b582_0';
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (name, typ, source) values ('BOUML_0x2b602_0', 1, 'tablename');	
-INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Master detail action for ForeignKeys', 1, 'ForeignKeys', (select id from action_types where bezeichnung = 'Open detail form'), (select id from actions where name = 'BOUML_0x2b602_0' and source = 'tablename'));
-INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES ((SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')), (select id from actions where name = 'BOUML_0x2b602_0' and source = 'tablename'), 'action_master_detail_BOUML_0x2b602_0');
-UPDATE actions set name = 'ForeignKeys' where name = 'BOUML_0x2b602_0';
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x2b602_0', 'ForeignKeys', 1, 'tablename', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for ForeignKeys', 
+1, 
+'ForeignKeys', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x2b602_0' and source = 'tablename'));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Tables' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x2b602_0' and source = 'tablename'), 
+'action_master_detail_BOUML_0x2b602_0'
+);
+--UPDATE actions set name = 'ForeignKeys' where name = 'BOUML_0x2b602_0';
 	
 
 -- Create operation definitions
@@ -1503,6 +1656,8 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'target', 'BOUML_0x21582_1', 'bpchar', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'typ', 'BOUML_0x20202_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'anwendungenid', 'BOUML_0x30502_0', 'int4', -1, 0, 'actions', id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
 	
 	
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'actions', 'id',  '', 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
@@ -1510,6 +1665,9 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'action_types', 'id', '', '', 'actions', 'typ', 0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
+
+INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
+select '', '', 'anwendungen', 'id', '', '', 'actions', 'anwendungenid', 0, 0, 0, id from dbtable where tableremarks = 'BOUML_0x1fe02_4';
 
 		-- Class anwendungen of type FORM found.
 					
@@ -2118,28 +2276,36 @@ select '', '', 'dbtable', 'id', '', '', 'dbprimarykey', 'dbtableid', 0, 0, 0, id
 -- select "CreateActivityOnMissing"('BOUML_0x20e02_39', 'GenerateTurboVision');
 
 -- Delete old statemachine
-delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'));
+delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "target" = 'BOUML_0x20e02_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager')));
 delete from "action_step_transitions" where "description" = '_BOUML_0x20e02_39';
-delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39');
-delete from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39';
-
+delete from "action_steps" where "actionid" in (select "id" from "actions" where "target" = 'BOUML_0x20e02_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager'));
+delete from "formular_actions" where action in (select id from actions where "target" = 'BOUML_0x20e02_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager'));
+delete from "actions" where "target" = 'BOUML_0x20e02_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager');
 
 
 -- A form validator should be used before saving the changes to the database
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('GenerateTurboVision_BOUML_0x20e02_39', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('GenerateTurboVision_BOUML_0x20e02_39', (select "id" from "action_types" where "bezeichnung" = 'Buttonpress'), 'name', '');
+INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target", "anwendungenid") VALUES (
+'GenerateTurboVision', 
+(select "id" from "action_types" where "bezeichnung" = 'Buttonpress'),
+'name',
+'BOUML_0x20e02_39', 
+(select id from "anwendungen" where name = 'lbDMF Manager'));
 
-INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = 'Anwendungen'), (select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'eventGenerateTurboVision_BOUML_0x20e02_39_Buttonpress');
+INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES (
+(select "id" from "formulare" where "name" = 'Anwendungen'), 
+(select "id" from "actions" where "target" = 'BOUML_0x20e02_39'),
+'eventGenerateTurboVision_BOUML_0x20e02_39_Buttonpress');
 	
 -- Create activity nodes for Sqlite
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x22982_70', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x22982_70', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x22a02_72', '2', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x22a02_72', '2', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x24202_56', '3', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x24202_56', '3', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'transformXSLT', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x24202_56'));
 
@@ -2147,13 +2313,13 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('stylesheet', './wxWrapper.app/Contents/Resources/XSLT/TurboVision/gen_TurboVisionFixedFormularClasses.xsl', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x24202_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x24302_56', '4', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x24302_56', '4', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('SaveApplicationID', '{SaveApplicationID}', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x24302_56'));
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'exportApplicationToXMLBuffer', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x24302_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x25c82_56', '5', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x25c82_56', '5', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'writeStringToFile', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x25c82_56'));
 
@@ -2161,7 +2327,7 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('filename', '{file}', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x25c82_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x28f82_56', '6', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x28f82_56', '6', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Info', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x28f82_56'));
 
@@ -2169,7 +2335,7 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'Only Mac, Windows and Unix flavoured machines are supported.', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x28f82_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x29002_56', '7', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x29002_56', '7', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'transformXSLT', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x29002_56'));
 
@@ -2177,7 +2343,7 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('stylesheet', '\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\TurboVision\gen_TurboVisionFixedFormularClasses.xsl', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x29002_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x29082_56', '8', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x29082_56', '8', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'transformXSLT', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x29082_56'));
 
@@ -2185,9 +2351,9 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('stylesheet', '/usr/share/lbdmf/TurboVision/gen_TurboVisionFixedFormularClasses.xsl', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x29082_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x29102_46', '9', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x29102_46', '9', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x2aa82_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x2aa82_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Operating system and selected application...', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x2aa82_56'));
 
@@ -2195,21 +2361,21 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'Os Type is {OSType}. ApplicationId is {SaveApplicationID}', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x2aa82_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x24382_73', '11', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x24382_73', '11', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x24402_73', '12', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x24402_73', '12', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x24482_73', '13', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x24482_73', '13', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x2c402_56', '14', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x2c402_56', '14', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'fileExists', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x2c402_56'));
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('filename', '\\develop\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\TurboVision\\gen_TurboVisionFixedFormularClasses.xsl', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x2c402_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x25e02_73', '15', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x25e02_73', '15', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'GenerateTurboVision_BOUML_0x20e02_39'), 'BOUML_0x2c482_56', '16', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x20e02_39'), 'BOUML_0x2c482_56', '16', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('signal', 'transformXSLT', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x2c482_56'));
 
@@ -2309,36 +2475,44 @@ DELETE FROM "action_types" where "id" NOT IN (SELECT "typ" from "actions") AND "
 -- select "CreateActivityOnMissing"('BOUML_0x1f482_39', 'actValidateAnwendungen');
 
 -- Delete old statemachine
-delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "target" = 'BOUML_0x1f482_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager')));
 delete from "action_step_transitions" where "description" = '_BOUML_0x1f482_39';
-delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39');
-delete from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39';
-
+delete from "action_steps" where "actionid" in (select "id" from "actions" where "target" = 'BOUML_0x1f482_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager'));
+delete from "formular_actions" where action in (select id from actions where "target" = 'BOUML_0x1f482_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager'));
+delete from "actions" where "target" = 'BOUML_0x1f482_39' AND "anwendungenid" = (select id from "anwendungen" where name = 'lbDMF Manager');
 
 
 -- A form validator should be used before saving the changes to the database
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('actValidateAnwendungen_BOUML_0x1f482_39', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('actValidateAnwendungen_BOUML_0x1f482_39', (select "id" from "action_types" where "bezeichnung" = 'FormValidator'), 'name', '');
+INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target", "anwendungenid") VALUES (
+'actValidateAnwendungen', 
+(select "id" from "action_types" where "bezeichnung" = 'FormValidator'),
+'name',
+'BOUML_0x1f482_39', 
+(select id from "anwendungen" where name = 'lbDMF Manager'));
 
-INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = 'Anwendungen'), (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'eventactValidateAnwendungen_BOUML_0x1f482_39_FormValidator');
+INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES (
+(select "id" from "formulare" where "name" = 'Anwendungen'), 
+(select "id" from "actions" where "target" = 'BOUML_0x1f482_39'),
+'eventactValidateAnwendungen_BOUML_0x1f482_39_FormValidator');
 	
 -- Create activity nodes for Sqlite
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20d82_70', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20d82_70', '1', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e02_73', '2', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20e02_73', '2', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e82_72', '3', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20e82_72', '3', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20f02_73', '4', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20f02_73', '4', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20f82_73', '5', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20f82_73', '5', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x21002_73', '6', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x21002_73', '6', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20d82_56', '7', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20d82_56', '7', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
 
@@ -2346,9 +2520,9 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The name of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20d82_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e02_46', '8', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20e02_46', '8', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '');
 		
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x20e82_56', '9', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x20e82_56', '9', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
 
@@ -2356,7 +2530,7 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The interface of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x20e82_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22802_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x22802_56', '10', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
 
@@ -2364,7 +2538,7 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The functor must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22802_56'));
 
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'), 'BOUML_0x22882_56', '11', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = 'BOUML_0x1f482_39'), 'BOUML_0x22882_56', '11', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '');
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('title', 'Error', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
 
@@ -2372,13 +2546,13 @@ INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "de
 
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('msg', 'The modulename of the application must not be empty', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = 'BOUML_0x22882_56'));
 
-INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('name', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('name', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "target" = 'BOUML_0x1f482_39'));
 		
-INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('interface', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('interface', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "target" = 'BOUML_0x1f482_39'));
 		
-INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('functor', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('functor', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "target" = 'BOUML_0x1f482_39'));
 		
-INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('modulename', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = 'actValidateAnwendungen_BOUML_0x1f482_39'));
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('modulename', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "target" = 'BOUML_0x1f482_39'));
 		
 -- Create activity transitions
 
