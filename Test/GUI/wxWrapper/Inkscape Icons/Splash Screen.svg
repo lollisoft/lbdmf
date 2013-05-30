@@ -1216,6 +1216,26 @@
        y1="23.787580"
        x2="706.01508"
        y2="965.77545" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2281"
+       id="linearGradient3446"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.549799,-2.953574)"
+       x1="-167.46451"
+       y1="23.787580"
+       x2="706.01508"
+       y2="965.77545" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2281"
+       id="linearGradient3444"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.549799,-2.953574)"
+       x1="-167.46451"
+       y1="23.787580"
+       x2="706.01508"
+       y2="965.77545" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1226,7 +1246,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.61580177"
      inkscape:cx="354.26325"
-     inkscape:cy="533.02233"
+     inkscape:cy="530.39998"
      inkscape:document-units="px"
      inkscape:current-layer="g3200"
      inkscape:window-width="1920"
@@ -1257,7 +1277,7 @@
        inkscape:export-xdpi="34.624123"
        inkscape:export-ydpi="34.624123">
       <g
-         id="g3448">
+         id="g3447">
         <rect
            style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:2.04053569px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            id="rect2685"
@@ -1266,7 +1286,7 @@
            x="11.085183"
            y="7.58178" />
         <rect
-           style="fill:url(#linearGradient3441);fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="fill:url(#linearGradient3444);fill-opacity:1;fill-rule:nonzero;stroke:none"
            id="rect1550"
            width="726.94818"
            height="1037.1382"
@@ -1820,7 +1840,7 @@
             <polygon
                style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke:#000000;stroke-opacity:1;font-family:Helvetica;-inkscape-font-specification:Helvetica"
                id="polygon12"
-               points="786,480 795,478 795,478 797,486 789,488 " />
+               points="789,488 786,480 795,478 795,478 797,486 " />
           </g>
           <g
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica;-inkscape-font-specification:Helvetica"
@@ -1850,7 +1870,7 @@
             <polygon
                style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke:#000000;stroke-opacity:1;font-family:Helvetica;-inkscape-font-specification:Helvetica"
                id="polygon22"
-               points="507,406 510,398 510,398 518,400 515,408 " />
+               points="515,408 507,406 510,398 510,398 518,400 " />
           </g>
           <rect
              x="563.90057"
@@ -2141,7 +2161,7 @@
              sodipodi:role="line"
              x="10.262201"
              y="173.72321"
-             id="tspan2295">stable      rc4</tspan><tspan
+             id="tspan2295">      </tspan><tspan
              sodipodi:role="line"
              x="10.262201"
              y="280.93616"
