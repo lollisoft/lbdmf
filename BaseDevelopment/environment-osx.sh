@@ -5,11 +5,11 @@ MODULELIB=lbModule.so
 LBXMLFUNCTOR=getlbDOMConfigInstance
 LBMODULEFUNCTOR=getlb_ModuleInstance
 DEVROOT=~/develop
-LD_LIBRARY_PATH=~/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:
+LD_LIBRARY_PATH=~/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/TAO/tao:
 OSTYPE=osx
 OSVERSION=`uname -r`
 OSPLATFORM=`uname -p`
-PATH="/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin"
+PATH="/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/TAO/tao:"
 
 export CVS_RSH
 export MODULELIB
