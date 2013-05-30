@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 48
+  revision 49
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -886,6 +886,20 @@ ${inlines}
 	  b parent class_ref 129282 // Aktionsschrittezuordnen
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+
+      attribute 211714 "anwendungenid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "anwendungen"
       end
     end
 

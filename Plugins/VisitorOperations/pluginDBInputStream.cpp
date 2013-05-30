@@ -1394,7 +1394,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 
 	q->skipFKCollecting();
 
-	const char *_actionquery = "select id, name, typ, source, target from actions";
+	const char *_actionquery = "select id, name, typ, source, target, anwendungenid from actions";
 
 
 	if (q->query(_actionquery) != ERR_NONE) {
@@ -1409,6 +1409,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 	} else {
 		UAP(lb_I_Long, qID)
 		UAP(lb_I_Long, qTyp)
+		UAP(lb_I_Long, qApplicationID)
 		UAP(lb_I_String, qTarget)
 		UAP(lb_I_String, qName)
 		UAP(lb_I_String, qSource)
@@ -1418,8 +1419,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 		qTyp = q->getAsLong(3);
 		qSource = q->getAsString(4);
 		qTarget = q->getAsString(5);
+		qApplicationID = q->getAsLong(6);
 
-		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qID->getData());
+		
+		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qApplicationID->getData(), qID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			qID = q->getAsLong(1);
@@ -1427,8 +1430,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 			qTyp = q->getAsLong(3);
 			qSource = q->getAsString(4);
 			qTarget = q->getAsString(5);
+			qApplicationID = q->getAsLong(6);
 
-			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qID->getData());
+			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qApplicationID->getData(), qID->getData());
 		}
 	}
 }
