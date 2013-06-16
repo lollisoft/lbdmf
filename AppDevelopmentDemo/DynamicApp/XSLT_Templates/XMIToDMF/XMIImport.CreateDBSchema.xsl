@@ -60,16 +60,14 @@
 
 <xsl:template name="Translate.Association">
     <xsl:param name="ClassID"/>
-    <xsl:param name="ReferencingClassID"/><!--  -->
-    <xsl:param name="ReferencedClassID"/><!--  -->
 	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
     <xsl:param name="TargetDBType"/><!-- What database the SQL script should be created for -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 <xsl:choose>
 <xsl:when test="$TargetDBType='Sqlite'">
 <xsl:call-template name="Translate.Association.Sqlite">
-<xsl:with-param name="ReferencingClassID" select="$ReferencingClassID"/>
-<xsl:with-param name="ReferencedClassID" select="$ReferencedClassID"/></xsl:call-template>
+<xsl:with-param name="ClassID" select="$ClassID"/>
+</xsl:call-template>
 </xsl:when>	
 </xsl:choose>
 </xsl:template>
@@ -83,12 +81,6 @@
 <xsl:variable name="AssociationId" select="//UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../../../@xmi.id"/>
 <xsl:variable name="OtherClassId" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
 <xsl:value-of select="$OtherClassId"/>
-<!--
-<xsl:call-template name="Helper.Lookup.Association">
-<xsl:with-param name="ClassID" select="$ClassID"/>
-<xsl:with-param name="Aggregate" select="'none'"/>
-</xsl:call-template>
--->
 </xsl:variable>
 	
 <xsl:choose>
