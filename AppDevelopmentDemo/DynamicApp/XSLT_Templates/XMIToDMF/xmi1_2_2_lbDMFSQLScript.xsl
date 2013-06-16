@@ -464,16 +464,31 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
     <!-- UML1.4: -->
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
-      <xsl:variable name="aggregation" select="../../@aggregation"/>
-      <xsl:variable name="thisEnd" select="../.."/>
-      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
-      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
-      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
-      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
-      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
-      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
-      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
-      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="$aggregation='none'">
+
+<xsl:variable name="ClassID" select="$id"/>
+
+<xsl:variable name="thisClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+<xsl:variable name="otherClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+
+
+<xsl:variable name="otherEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="aggregation">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
+<xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+	  
+<xsl:if test="$aggregation='none'">
 <xsl:variable name="assocname" select="../../@name"/>
 <!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
 </xsl:if>
@@ -483,15 +498,32 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
     <!-- UML1.4: -->
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
-      <xsl:variable name="thisEnd" select="../.."/>
-      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
-      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
-      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
-      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
-      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
-      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
-      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
-      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
+
+<xsl:variable name="ClassID" select="$id"/>
+
+<xsl:variable name="thisClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+<xsl:variable name="otherClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+
+
+<xsl:variable name="otherEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="aggregation">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
+<xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+	  
+
+<xsl:if test="$aggregation='aggregate'">
 <xsl:variable name="assocname" select="../../@name"/>
 <!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
 </xsl:if>
@@ -501,15 +533,32 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
     <!-- UML1.4: -->
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
-      <xsl:variable name="thisEnd" select="../.."/>
-      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
-      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
-      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
-      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
-      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
-      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
-      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
-      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
+
+<xsl:variable name="ClassID" select="$id"/>
+
+<xsl:variable name="thisClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+<xsl:variable name="otherClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+
+
+<xsl:variable name="otherEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="aggregation">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
+<xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+	  
+	  
+<xsl:if test="$aggregation='aggregate'">
 <xsl:variable name="assocname" select="../../@name"/>
 <!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
 </xsl:if>
@@ -524,21 +573,36 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 -- associationsForClass_12 called.
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
-      <xsl:variable name="thisEnd" select="../.."/>
-      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
-      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
-      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
-      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
-      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
-      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
-      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
-      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+
+<xsl:variable name="ClassID" select="$id"/>
+
+<xsl:variable name="thisClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+<xsl:variable name="otherClassId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
+</xsl:variable>
+
+
+<xsl:variable name="otherEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="aggregation">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
+<xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+	  
 
 -- Have an association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 
 <xsl:variable name="assocname" select="../../@name"/>
 	  
-<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
+<xsl:if test="$aggregation='aggregate'">
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(../../../../@name, ')'), '(')"/>
 -- Visible name is <xsl:value-of select="$assocVisibleName"/>
 <xsl:if test="$assocVisibleName!=''">
@@ -554,8 +618,21 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 </xsl:if>
 </xsl:if>
 
-<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
-<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">
+<xsl:if test="$aggregation='none'">
+-- delete from
+
+
+
+<xsl:variable name="stereotypeIdRef">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML -->
+</xsl:variable>
+
+<xsl:variable name="stereotype">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name"/><!-- BoUML -->
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotypeIdRef]/@name"/><!-- BoUML -->
+</xsl:variable>
+
+<xsl:if test="$stereotype='masterdetail_action'">
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
