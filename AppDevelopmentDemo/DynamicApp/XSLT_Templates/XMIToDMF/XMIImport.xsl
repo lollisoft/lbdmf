@@ -35,7 +35,7 @@
 <xsl:import href="XMIImport.CreateDBSchema.xsl"/>
 
 <xsl:output method="text" indent="no"/>
-
+<xsl:strip-space elements="*"/>
 
 <xsl:template match="XMI[@xmi.version='1.2']">
 
@@ -51,8 +51,6 @@
     <xsl:apply-templates select="XMI.content/UML:Model"/>
 
 	<xsl:for-each select="//UML:Namespace.ownedElement/UML:Class">
-
-<xsl:value-of select="@xmi.id"/>.
 
 <xsl:call-template name="Translate.Association">
 <xsl:with-param name="ClassID" select="@xmi.id"/>
