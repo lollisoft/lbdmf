@@ -31,62 +31,39 @@
 <!-- This file must be generated before this template could be applied. -->
 <xsl:import href="XMISettings.xsl"/>
 
+<xsl:import href="XMIImport.Variables.xsl"/>
 <xsl:import href="XMIImport.CreateDBSchema.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
-<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
-<xsl:param name="XSLDatabaseBackendSystem"/>
-<xsl:param name="XSLDatabaseBackendApplication"/>
-<xsl:param name="overwriteDatabase"/>
-<xsl:variable name="targetdatabase">
-<xsl:if test="$XSLDatabaseBackendApplication=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if>
-<xsl:if test="$XSLDatabaseBackendApplication!=''"><xsl:value-of select="$XSLDatabaseBackendApplication"/></xsl:if>
-</xsl:variable>
-<xsl:variable name="execute_droprules">
-<xsl:if test="$overwriteDatabase=''"><xsl:value-of select="$settingsfile_execute_droprules"/></xsl:if>
-<xsl:if test="$overwriteDatabase!=''"><xsl:value-of select="$overwriteDatabase"/></xsl:if>
-</xsl:variable>
-
-<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
-
-<xsl:variable name="TargetDBType">
-	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
-	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
-	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-</xsl:variable>
-<xsl:variable name="TargetDBVersion">
-	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
-	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
-	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
-</xsl:variable>
-
 
 <xsl:template match="XMI[@xmi.version='1.2']">
-   <xsl:apply-templates select="XMI.content/UML:Model"/>
+	<xsl:call-template name="Translate.DropRules">
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+	</xsl:call-template>
+	<xsl:call-template name="Translate.StoredProcRules">
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+	</xsl:call-template>
+    <xsl:apply-templates select="XMI.content/UML:Model"/>
+	<xsl:for-each select="//UML:Class">
+<xsl:call-template name="Translate.Association">
+<xsl:with-param name="ReferencingClassID" select="@xmi.id"/>
+<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+</xsl:call-template>
+	</xsl:for-each>
 </xsl:template>
 
 <xsl:template match="UML:Namespace.ownedElement/UML:Class">
--- Class '<xsl:value-of select="@name"/>' in model (xmi.id <xsl:value-of select="@xmi.id"/>).
-   <xsl:apply-templates select="UML:Classifier.feature/UML:Attribute"/>
 <xsl:variable name="ClassId" select="@xmi.id"/>
-	<!-- Takes all, but I want one -->
-	<!--<xsl:apply-templates select="//UML:Association.connection/UML:AssociationEnd"/>-->
-	<!-- Does not work -->
-	<!--<xsl:apply-templates select="//UML:Association.connection/UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassId]"/>-->
-
-	<!-- The only known solution to me yet is using for-each and filter -->
-	<xsl:call-template name="Translate.BuildForeignColumns">
-	<xsl:with-param name="ClassID" select="$ClassId"/>
+	<xsl:call-template name="Translate.CreateTable">
+	<xsl:with-param name="ClassID" select="@xmi.id"/>
+	<xsl:with-param name="ClassName" select="@name"/>
 	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
 	</xsl:call-template>
 </xsl:template>
 
+<!--
 <xsl:template match="UML:Namespace.ownedElement/UML:Association">
--- Association '<xsl:value-of select="@name"/>' in model (xmi.id <xsl:value-of select="@xmi.id"/>).
 <xsl:variable name="referenced_class"><xsl:apply-templates select="UML:Association.connection/UML:AssociationEnd[@aggregation='none']"/></xsl:variable>
 <xsl:variable name="referencing_class"><xsl:apply-templates select="UML:Association.connection/UML:AssociationEnd[@aggregation!='none']"/></xsl:variable>
 
@@ -99,24 +76,18 @@
 </xsl:template>
 
 <xsl:template match="UML:Association.connection/UML:AssociationEnd">
-
-<!-- Lookup the foreign class as to be the link without a diamond -->
-
-<xsl:if test="@xmi.id!= ''"><!--'<xsl:value-of select="@xmi.id"/>' ('<xsl:value-of select="@aggregation"/>') in model.-->
+<xsl:if test="@xmi.id!= ''">
    <xsl:apply-templates select="UML:AssociationEnd.participant"/>
 </xsl:if>
-<xsl:if test="@type!= ''"><!--'<xsl:value-of select="@type"/>' ('<xsl:value-of select="@aggregation"/>') in model.-->
+<xsl:if test="@type!= ''">
    <xsl:apply-templates select="UML:AssociationEnd.participant"/>
 </xsl:if>
 
-</xsl:template>
-
-<xsl:template match="UML:Classifier.feature/UML:Attribute">
--- Attribute '<xsl:value-of select="@name"/>' in model.
 </xsl:template>
 
 <xsl:template match="UML:AssociationEnd/UML:AssociationEnd.participant">
 <xsl:value-of select="UML:Class/@xmi.idref"/>
 </xsl:template>
+-->
 
 </xsl:stylesheet>
