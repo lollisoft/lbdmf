@@ -39,6 +39,7 @@
 
 <xsl:template match="XMI[@xmi.version='1.2']">
 	<xsl:call-template name="Translate.DropRules">
+	<xsl:with-param name="overwriteDatabase" select="$overwriteDatabase"/>
 	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
 	</xsl:call-template>
 	<xsl:call-template name="Translate.StoredProcRules">
