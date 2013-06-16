@@ -49,7 +49,17 @@ CREATE TABLE "<xsl:value-of select="$ClassName"/>" (
     <xsl:param name="ReferencedClassID"/><!--  -->
 	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
+<xsl:if test="$execute_droprules = 'yes'">
 -- Create a Translate.DropRules.Sqlite
+	<xsl:for-each select="//UML:Namespace.ownedElement/UML:Class">
+<xsl:call-template name="Translate.DropAssociations.Sqlite">
+	<xsl:with-param name="ClassID" select="@xmi.id"/>
+	</xsl:call-template>
+	</xsl:for-each>
+	<xsl:for-each select="//UML:Namespace.ownedElement/UML:Class">
+DROP TABLE "<xsl:value-of select="@name"/>";
+	</xsl:for-each>
+</xsl:if>
 </xsl:template>
 
 <xsl:template name="Translate.StoredProcRules.Sqlite">
@@ -126,6 +136,42 @@ CREATE TABLE "<xsl:value-of select="$ClassName"/>" (
 </xsl:if>
     </xsl:for-each>
   </xsl:template>
+
+<xsl:template name="Translate.DropAssociations.Sqlite">
+    <xsl:param name="ClassID"/>
+    <!-- UML1.4: -->
+    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
+      <!-- Choose only association ends where navigable is true. -->
+      <xsl:variable name="thisEnd" select="../.."/>
+      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
+      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
+      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
+      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
+      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
+      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
+      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
+      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
+<xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type != $thisEndType]/@name"/>
+<xsl:if test="$assocname=''">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ins";
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_upd";
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_del";
+DELETE FROM "lbDMF_ForeignKeys" WHERE "PKTable"='<xsl:value-of select="$thisClassName"/>' AND "PKColumn"='ID' AND "FKTable"='<xsl:value-of select="$otherClassName"/>' AND "FKColumn"='<xsl:value-of select="$thisClassName"/>';
+</xsl:if>
+</xsl:if>
+<xsl:if test="$assocname!=''">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname"/>_ins";
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_upd";
+DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/><xsl:value-of select="$assocname"/>_del";
+DELETE FROM "lbDMF_ForeignKeys" WHERE "PKTable"='<xsl:value-of select="$thisClassName"/>' AND "PKColumn"='ID' AND "FKTable"='<xsl:value-of select="$otherClassName"/>' AND "FKColumn"='<xsl:value-of select="$assocname"/>';
+</xsl:if>
+</xsl:if>
+</xsl:if>
+    </xsl:for-each>
+</xsl:template>
 
 <xsl:template name="Translate.CreateAssociations.Sqlite">
     <xsl:param name="ClassID"/>
