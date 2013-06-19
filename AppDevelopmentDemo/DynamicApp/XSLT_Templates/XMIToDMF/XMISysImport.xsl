@@ -37,6 +37,8 @@ Currently it is a copy for the new name in release.
 <xsl:import href="XMISettings.xsl"/>
 <xsl:import href="createDefaultStoredProcs.xsl"/>
 
+<xsl:import href="XMISysImport.FillSchemaTables.xsl"/>
+
 <xsl:output method="text" indent="no"/>
 
 <!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
@@ -165,6 +167,15 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
         </xsl:call-template>
       </xsl:for-each>
 
+<xsl:for-each select="//UML:Association">
+		<xsl:call-template name="XMISysImport.FillSchemaAssociations">
+			<xsl:with-param name="AssociationId" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="$applicationname"/>
+			<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+		</xsl:call-template>
+</xsl:for-each>
+
+
     </xsl:element>
   </xsl:template>
 
@@ -267,6 +278,16 @@ INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actio
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) values(
 (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'), 
 (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>') and name = '<xsl:value-of select="@name"/>'));
+
+<!-- New part to create database schema table entries -->
+
+<xsl:call-template name="XMISysImport.FillSchemaTables">
+	<xsl:with-param name="ClassId" select="@xmi.id"/>
+	<xsl:with-param name="ApplicationName" select="$applicationname"/>
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+</xsl:call-template>
+
+
 </xsl:if>
 
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
