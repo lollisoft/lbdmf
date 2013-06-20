@@ -65,6 +65,7 @@
 
 <xsl:call-template name="XMISysImport.FillSchemaTables.Sqlite.dbcolumns">
 	<xsl:with-param name="ClassId" select="$ClassId"/>
+	<xsl:with-param name="ClassName" select="$ClassName"/>
 </xsl:call-template>
 
 <xsl:call-template name="XMISysImport.FillSchemaTables.Sqlite.primarykeys">
