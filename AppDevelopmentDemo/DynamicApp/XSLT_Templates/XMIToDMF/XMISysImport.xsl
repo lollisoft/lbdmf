@@ -38,6 +38,7 @@ Currently it is a copy for the new name in release.
 <xsl:import href="createDefaultStoredProcs.xsl"/>
 
 <xsl:import href="XMISysImport.FillSchemaTables.xsl"/>
+<xsl:import href="XMISysImport.CreateFormularDefinition.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
@@ -245,6 +246,19 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 <xsl:if test="$datatype='image'">
 INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, 'image');
 </xsl:if>
+
+<!-- New part to create formularfield entries -->
+
+<xsl:call-template name="XMISysImport.CreateFormularDefinition">
+	<xsl:with-param name="FieldName" select="@name"/>
+	<xsl:with-param name="DataType" select="$datatype"/>
+	<xsl:with-param name="ClassId" select="$classID"/>
+	<xsl:with-param name="ClassName" select="$classname"/>
+	<xsl:with-param name="TableName" select="$classname"/>
+	<xsl:with-param name="ApplicationName" select="$applicationname"/>
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+</xsl:call-template>
+
 </xsl:for-each>
 
 <xsl:for-each select="UML:Classifier.feature/UML:Operation">
