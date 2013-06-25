@@ -191,7 +191,7 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 </xsl:for-each>
 
     </xsl:element>
--- Script ready
+-- Script ready.
 COMMIT;
   </xsl:template>
 
