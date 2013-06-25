@@ -57,5 +57,20 @@
 </xsl:choose>
 </xsl:template>
 
+<xsl:template name="XMISysImport.CreateFormularDefinitionAssociation">
+	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
+    <xsl:param name="AssociationId"/>
+    <xsl:param name="ApplicationName"/>
+    <xsl:param name="TargetDBType"/><!-- What database the SQL script should be created for -->
+    <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
+<xsl:choose>
+<xsl:when test="$TargetDBType='Sqlite'">
+<xsl:call-template name="XMISysImport.CreateFormularDefinitionAssociation.Sqlite">
+	<xsl:with-param name="AssociationId" select="$AssociationId"/>
+	<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</xsl:when>	
+</xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
