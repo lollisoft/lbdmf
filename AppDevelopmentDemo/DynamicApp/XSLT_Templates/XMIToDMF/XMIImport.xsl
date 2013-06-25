@@ -38,6 +38,8 @@
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="XMI[@xmi.version='1.2']">
+-- Speedup many times
+BEGIN TRANSACTION;
 
 	<xsl:call-template name="Translate.DropRules">
 	<xsl:with-param name="overwriteDatabase" select="$overwriteDatabase"/>
@@ -58,6 +60,10 @@
 </xsl:call-template>
 
 	</xsl:for-each>
+	
+-- Script ready.
+COMMIT;
+	
 </xsl:template>
 
 <xsl:template match="UML:Namespace.ownedElement/UML:Class">
