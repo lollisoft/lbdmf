@@ -116,6 +116,8 @@ Currently it is a copy for the new name in release.
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
+-- Speedup many times
+BEGIN TRANSACTION;
 -- Creating a database script for targetdatabase='<xsl:value-of select="$targetdatabase"/>' TargetDBType='<xsl:value-of select="$TargetDBType"/>'
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 		<!-- Generate System database definition -->
@@ -168,6 +170,8 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
         </xsl:call-template>
       </xsl:for-each>
 
+<!-- New part to create schema for associations -->
+
 <xsl:for-each select="//UML:Association">
 		<xsl:call-template name="XMISysImport.FillSchemaAssociations">
 			<xsl:with-param name="AssociationId" select="@xmi.id"/>
@@ -176,8 +180,19 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 		</xsl:call-template>
 </xsl:for-each>
 
+<!-- New part to create schema for associations -->
+
+<xsl:for-each select="//UML:Association">
+		<xsl:call-template name="XMISysImport.CreateFormularDefinitionAssociation">
+			<xsl:with-param name="AssociationId" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="$applicationname"/>
+			<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+		</xsl:call-template>
+</xsl:for-each>
 
     </xsl:element>
+-- Script ready
+COMMIT;
   </xsl:template>
 
   <xsl:template match="UML:Class">
