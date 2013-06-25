@@ -57,4 +57,25 @@ SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"
 </xsl:template>
 
 
+<xsl:template name="XMISysImport.CreateFormularDefinitionAssociation.Sqlite">
+	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
+    <xsl:param name="AssociationId"/>
+    <xsl:param name="ApplicationName"/>
+    <xsl:param name="TargetDBType"/><!-- What database the SQL script should be created for -->
+    <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
+
+<xsl:variable name="PrimaryKeyClassId" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
+<xsl:variable name="ForeignKeyClassId" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
+<xsl:variable name="PrimaryKeyClassName" select="//UML:Class[@xmi.id=$PrimaryKeyClassId]/@name"/>
+<xsl:variable name="ForeignKeyClassName" select="//UML:Class[@xmi.id=$ForeignKeyClassId]/@name"/>
+
+<xsl:variable name="assocVisibleName" select="substring-after(substring-before(@name, ')'), '(')"/>
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) 
+SELECT '<xsl:value-of select="$PrimaryKeyClassName"/>', '<xsl:value-of select="$ForeignKeyClassName"/>', 1, '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$ForeignKeyClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+
+
+</xsl:template>
+
+
 </xsl:stylesheet>
