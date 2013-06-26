@@ -573,6 +573,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBForeignKeys* fkeys) {
 	*iStream >> count;
 
 	int   ID;
+	int   TableID;
 	int KeySequence;
 	int UpdateRule;
 	int DeleteRule;
@@ -605,10 +606,11 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBForeignKeys* fkeys) {
 		*iStream >> KeySequence;
 		*iStream >> UpdateRule;
 		*iStream >> DeleteRule;
+		*iStream >> TableID;
 		
 		fkeys->addForeignKey(	PKTableCatalog, PKTableSchema, PKTableName, PKColumnName,
 								FKTableCatalog, FKTableSchema, FKTableName, FKColumnName,
-								KeySequence, UpdateRule, DeleteRule, ID);
+								KeySequence, UpdateRule, DeleteRule, TableID, ID);
 	}
 }
 
@@ -618,6 +620,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBPrimaryKeys* pkeys) {
 	*iStream >> count;
 
 	long ID;
+	long TableID;
 	long KeySequence;
 
 	char* TableCatalog = NULL;
@@ -637,8 +640,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBPrimaryKeys* pkeys) {
 		*iStream >> ColumnName;
 		*iStream >> KeySequence;
 		*iStream >> ColumnName_V2;
+		*iStream >> TableID;
 		
-		pkeys->addPrimaryKey(TableCatalog, TableSchema, TableName, ColumnName, KeySequence, ColumnName_V2, ID);
+		pkeys->addPrimaryKey(TableCatalog, TableSchema, TableName, ColumnName, KeySequence, ColumnName_V2, TableID, ID);
 	}
 }
 
@@ -648,6 +652,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
 	*iStream >> count;
 
 	long   ID;
+	long   TableID;
 	char* name = NULL;
 	char* comment = NULL;
 	char* typ = NULL;
@@ -669,8 +674,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
 		*iStream >> PKField;
 		*iStream >> tablename;
 		*iStream >> isNullable;
+		*iStream >> TableID;
 		
-		columns->addColumn(name, comment, typ, len, (isNullable == 1) ? true : false, PKTable, PKField, tablename, ID);
+		columns->addColumn(name, comment, typ, len, (isNullable == 1) ? true : false, PKTable, PKField, tablename, TableID, ID);
 	}
 }
 
@@ -680,6 +686,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
 	*iStream >> count;
 
 	int   ID;
+	int   ApplicationID;
 	char* catalog = NULL;
 	char* schema = NULL;
 	char* name = NULL;
@@ -695,8 +702,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
 		*iStream >> name;
 		*iStream >> type;
 		*iStream >> remarks;
+		*iStream >> ApplicationID;
 		
-		tables->addTable(catalog, schema, name, type, remarks, ID);
+		tables->addTable(catalog, schema, name, type, remarks, ApplicationID, ID);
 	}
 }
 
