@@ -34,7 +34,7 @@ public:
 	lbDBTableModel();
 	virtual ~lbDBTableModel();
 
-	long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id = -1);
+	long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long applicationid, long _id = -1);
 	bool		LB_STDCALL selectTable(long _id);
 	int			LB_STDCALL getTableCount();
 	bool		LB_STDCALL hasMoreTables();
@@ -42,6 +42,7 @@ public:
 	void		LB_STDCALL finishTableIteration();
 	
 	long		LB_STDCALL getTableID();
+	long		LB_STDCALL getApplicationID();	
 	char*		LB_STDCALL getTableCatalog();
 	char*		LB_STDCALL getTableSchema();
 	char*		LB_STDCALL getTableName();
@@ -55,11 +56,7 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
-	DECLARE_EXTENSIBLEOBJECT()
 
 	UAP(lb_I_Container, Tables)
 	UAP(lb_I_String, currentCatalog)
@@ -67,6 +64,7 @@ public:
 	UAP(lb_I_String, currentName)
 	UAP(lb_I_String, currentType)
 	UAP(lb_I_String, currentRemarks)
+	UAP(lb_I_Long, applicationID)
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, marked)
 };
@@ -77,7 +75,7 @@ public:
 	virtual ~lbDBColumnsModel();
 	
 	bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer);
-	long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id = -1);
+	long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long tableid, long _id = -1);
 	bool		LB_STDCALL selectColumn(long _id);
 	int			LB_STDCALL getColumnCount();
 	bool		LB_STDCALL hasMoreColumns();
@@ -91,6 +89,7 @@ public:
 
 
 	long		LB_STDCALL getColumnID();
+	long		LB_STDCALL getTableID();
 	char*		LB_STDCALL getColumnName();
 	char*		LB_STDCALL getColumnComment();
 	char*		LB_STDCALL getColumnTableName();
@@ -107,13 +106,9 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	void		LB_STDCALL lookupPage(int index);
 
 	DECLARE_LB_UNKNOWN()
-	DECLARE_EXTENSIBLEOBJECT()
 
 	// Contains pages of containers with each about 1000 elements maximum
 	UAP(lb_I_Container, ColumnsPages)
@@ -126,6 +121,7 @@ public:
 	UAP(lb_I_String, currentPKTable)
 	UAP(lb_I_String, currentPKField)
 	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentTableID)
 	UAP(lb_I_Long, currentLen)
 	UAP(lb_I_Long, currentNullable)
 	UAP(lb_I_Long, currentmarked)
@@ -139,6 +135,7 @@ public:
 	UAP(lb_I_String, pkField)
 	UAP(lb_I_String, pkTable)
 	UAP(lb_I_Long, IsNullable)
+	UAP(lb_I_Long, TableID)
 	UAP(lb_I_Long, ID)
 	UAP(lb_I_Long, Len)
 	UAP(lb_I_Long, marked)
@@ -152,6 +149,7 @@ public:
 	UAP(lb_I_String, paramnamePKField)
 	UAP(lb_I_String, paramnamePKTable)
 	UAP(lb_I_String, paramnameID)
+	UAP(lb_I_String, paramnameTableID)
 	UAP(lb_I_String, paramnamemarked)
 
 };
@@ -162,14 +160,13 @@ public:
 	virtual ~lbDBForeignKeysModel();
 
 	DECLARE_LB_UNKNOWN()
-	DECLARE_EXTENSIBLEOBJECT()
 
 	/** \brief Add a foreign key information.
 	 * This function is based on ODBC 1.0 and therefore didn't support the last three columns returned by the SQLForeignKeys function.
 	 */
 	long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
 													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name, 
-													long key_seq, long update_rule, long delete_rule, long _id = -1);
+													long key_seq, long update_rule, long delete_rule, long tableid, long _id = -1);
 	bool		LB_STDCALL selectForeignKey(long _id);
 	int			LB_STDCALL getForeignKeyCount();
 	bool		LB_STDCALL hasMoreForeignKeys();
@@ -177,6 +174,7 @@ public:
 	void		LB_STDCALL finishForeignKeyIteration();
 	
 	long		LB_STDCALL getForeignKeyID();
+	long		LB_STDCALL getTableID();
 	char*		LB_STDCALL getForeignKeyPKTableCatalog();
 	char*		LB_STDCALL getForeignKeyPKTableSchema();
 	char*		LB_STDCALL getForeignKeyPKTableName();
@@ -199,9 +197,6 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 	
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	UAP(lb_I_Container, ForeignKeys)
 	UAP(lb_I_String, currentPKTableCatalog)
 	UAP(lb_I_String, currentPKTableSchema)
@@ -214,6 +209,7 @@ public:
 	UAP(lb_I_String, currentFKTableColumnName)
 
 	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentTableID)
 	UAP(lb_I_Long, currentKeySequence)
 	UAP(lb_I_Long, currentUpdateRule)
 	UAP(lb_I_Long, currentDeleteRule)
@@ -227,10 +223,9 @@ public:
 	virtual ~lbDBPrimaryKeysModel();
 
 	DECLARE_LB_UNKNOWN()
-	DECLARE_EXTENSIBLEOBJECT()
 
 	long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
-													long key_seq, const char* column_name, long _id = -1);
+													long key_seq, const char* column_name, long tableid, long _id = -1);
 	bool		LB_STDCALL selectPrimaryKey(long _id);
 	int			LB_STDCALL getPrimaryKeyCount();
 	bool		LB_STDCALL hasMorePrimaryKeys();
@@ -238,6 +233,7 @@ public:
 	void		LB_STDCALL finishPrimaryKeyIteration();
 	
 	long		LB_STDCALL getPrimaryKeyID();
+	long		LB_STDCALL getTableID();
 	char*		LB_STDCALL getPrimaryKeyTableCatalog();
 	char*		LB_STDCALL getPrimaryKeyTableSchema();
 	char*		LB_STDCALL getPrimaryKeyTableName();
@@ -254,9 +250,6 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	UAP(lb_I_Container, PrimaryKeys)
 	UAP(lb_I_String, currentTableCatalog)
 	UAP(lb_I_String, currentTableSchema)
@@ -265,6 +258,7 @@ public:
 	UAP(lb_I_String, currentColumnName_V2)
 	
 	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentTableID)
 	UAP(lb_I_Long, currentKeySequence)
 	UAP(lb_I_Long, marked)
 };

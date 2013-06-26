@@ -65,6 +65,7 @@ lbDBTableModel::lbDBTableModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
 	REQUEST(getModuleInstance(), lb_I_String, currentType)
 	REQUEST(getModuleInstance(), lb_I_String, currentRemarks)
+	REQUEST(getModuleInstance(), lb_I_Long, applicationID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_VERBOSE << "lbDBTableModel::lbDBTableModel() called." LOG_
@@ -79,13 +80,14 @@ lbErrCodes LB_STDCALL lbDBTableModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id) {
+long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long applicationid, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Catalog)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Schema)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Type)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Remarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, applicationID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -96,6 +98,7 @@ long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schem
 	*Name = name;
 	*Type = type;
 	*Remarks = remarks;
+	applicationID->setData(applicationid);
 	ID->setData(_id);
 
 	*paramname = "Catalog";
@@ -110,6 +113,8 @@ long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schem
 	param->setUAPString(*&paramname, *&Remarks);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
+	*paramname = "applicationID";
+	param->setUAPLong(*&paramname, *&applicationID);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
 
@@ -186,6 +191,8 @@ bool LB_STDCALL lbDBTableModel::selectTable(long id) {
 		param->getUAPString(*&paramname, *&currentType);
 		*paramname = "Remarks";
 		param->getUAPString(*&paramname, *&currentRemarks);
+		*paramname = "applicationID";
+		param->getUAPLong(*&paramname, *&applicationID);
 		*paramname = "ID";
 		param->getUAPLong(*&paramname, *&currentID);
 		*paramname = "marked";
@@ -237,6 +244,8 @@ void  LB_STDCALL lbDBTableModel::setNextTable() {
 	param->getUAPString(*&paramname, *&currentType);
 	*paramname = "Remarks";
 	param->getUAPString(*&paramname, *&currentRemarks);
+	*paramname = "applicationID";
+	param->getUAPLong(*&paramname, *&applicationID);
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
 	*paramname = "marked";
@@ -266,6 +275,10 @@ char* LB_STDCALL lbDBTableModel::getTableType() {
 
 char* LB_STDCALL lbDBTableModel::getTableRemarks() {
 	return currentRemarks->charrep();
+}
+
+long  LB_STDCALL lbDBTableModel::getApplicationID() {
+	return applicationID->getData();
 }
 
 long  LB_STDCALL lbDBTableModel::getTableID() {
@@ -408,6 +421,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentPKField)
 	REQUEST(getModuleInstance(), lb_I_String, currentPKTable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentLen)
 	REQUEST(getModuleInstance(), lb_I_Long, currentNullable)
 	REQUEST(getModuleInstance(), lb_I_Long, currentmarked)
@@ -416,10 +430,12 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, Name)
 	REQUEST(getModuleInstance(), lb_I_String, Comment)
 	REQUEST(getModuleInstance(), lb_I_String, TableName)
+	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_String, Typ)
 	REQUEST(getModuleInstance(), lb_I_String, pkField)
 	REQUEST(getModuleInstance(), lb_I_String, pkTable)
 	REQUEST(getModuleInstance(), lb_I_Long, ID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 	REQUEST(getModuleInstance(), lb_I_Long, Len)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
@@ -431,6 +447,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, paramnameNullable)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKField)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamePKTable)
+	REQUEST(getModuleInstance(), lb_I_String, paramnameTableID)
 	REQUEST(getModuleInstance(), lb_I_String, paramnameID)
 	REQUEST(getModuleInstance(), lb_I_String, paramnamemarked)
 
@@ -441,6 +458,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	*paramnameNullable = "11";
 	*paramnameComment = "12";
 	*paramnameID = "ID";
+	*paramnameTableID = "TableID";
 	*paramnamemarked = "marked";
 
 	_CL_VERBOSE << "lbDBColumnsModel::lbDBColumnsModel() called." LOG_
@@ -451,76 +469,6 @@ lbDBColumnsModel::~lbDBColumnsModel() {
 }
 
 lbErrCodes LB_STDCALL lbDBColumnsModel::setData(lb_I_Unknown*) {
-#ifdef bla
-	UAP(lb_I_Container, cont)
-
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDatetimeSubtypeCode)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableCatalog)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableSchema)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDataType)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameBufferLength)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDecimalDigits)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNumPrecRadix)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNullable)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameRemarks)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnDefault)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameSQLDataType)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameCharOctetLength)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameOrdinalPosition)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameIsNullable)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTypeName)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnSize)
-
-	*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
-	*nameTableCatalog = "TableCatalog";
-	*nameTableSchema = "TableSchema";
-	*nameTableName = "TableName";
-	*nameColumnName = "ColumnName";
-	*nameDataType = "DataType";
-	*nameTypeName = "TypeName";
-	*nameBufferLength = "BufferLength";
-	*nameDecimalDigits = "DecimalDigits";
-	*nameNumPrecRadix = "NumPrecRadix";
-	*nameNullable = "Nullable";
-	*nameRemarks = "Remarks";
-	*nameColumnDefault = "ColumnDefault";
-	*nameSQLDataType = "SQLDataType";
-	*nameCharOctetLength = "CharOctetLength";
-	*nameOrdinalPosition = "OrdinalPosition";
-	*nameIsNullable = "IsNullable";
-	*nameColumnSize = "ColumnSize";
-
-
-	QI(uk, lb_I_Container, cont)
-
-	if (cont != NULL) {
-		// Given is a container, propably generated from lbDB::getClumns()
-		// Check the first entry about the correct columns, that are needed here
-
-	*paramname = "Name";
-	param->setUAPString(*&paramname, *&Name);
-	*paramname = "TableName";
-	param->setUAPString(*&paramname, *&TableName);
-	*paramname = "Typ";
-	param->setUAPString(*&paramname, *&Typ);
-	*paramname = "Len";
-	param->setUAPLong(*&paramname, *&Len);
-	*paramname = "PKField";
-	param->setUAPString(*&paramname, *&pkField);
-	*paramname = "PKTable";
-	param->setUAPString(*&paramname, *&pkTable);
-	*paramname = "ID";
-	param->setUAPLong(*&paramname, *&ID);
-	*paramname = "marked";
-	param->setUAPLong(*&paramname, *&marked);
-
-
-	}
-
-#endif
-
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -554,7 +502,7 @@ void LB_STDCALL lbDBColumnsModel::lookupPage(int index) {
 	}
 }
 
-long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id) {
+long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long tableid, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
@@ -573,6 +521,7 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 	*pkField = PKField;
 	*pkTable = PKTable;
 
+	TableID->setData(tableid);
 	ID->setData(_id);
 
 	param->setUAPString(*&paramnameName, *&Name);
@@ -582,6 +531,7 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 	param->setUAPLong(*&paramnameLen, *&Len);
 	param->setUAPLong(*&paramnameNullable, *&IsNullable);
 	param->setUAPLong(*&paramnameID, *&ID);
+	param->setUAPLong(*&paramnameTableID, *&TableID);	
 	param->setUAPLong(*&paramnamemarked, *&marked);
 
 	UAP(lb_I_KeyBase, key)
@@ -595,44 +545,11 @@ long  LB_STDCALL lbDBColumnsModel::addColumn(const char* name, const char* comme
 }
 
 void		LB_STDCALL lbDBColumnsModel::deleteUnmarked() {
-	lbErrCodes err = ERR_NONE;
 
-/*
-	Columns->finishIteration();
-	while (hasMoreColumns()) {
-		setNextColumn();
-		if (!ismarked()) {
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getColumnID());
-
-			UAP(lb_I_KeyBase, key)
-			QI(ID, lb_I_KeyBase, key)
-
-			Columns->remove(&key);
-			Columns->finishIteration();
-		}
-	}
-*/
 }
 
 void		LB_STDCALL lbDBColumnsModel::deleteMarked() {
-	/*
-	lbErrCodes err = ERR_NONE;
-	Columns->finishIteration();
-	while (hasMoreColumns()) {
-		setNextColumn();
-		if (ismarked()) {
-			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getColumnID());
-
-			UAP(lb_I_KeyBase, key)
-			QI(ID, lb_I_KeyBase, key)
-
-			Columns->remove(&key);
-			Columns->finishIteration();
-		}
-	}
-	*/
+	
 }
 
 bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
@@ -660,6 +577,7 @@ bool LB_STDCALL lbDBColumnsModel::selectColumn(long user_id) {
 		param->getUAPString(*&paramnameTyp, *&currentTyp);
 		param->getUAPLong(*&paramnameLen, *&currentLen);
 		param->getUAPLong(*&paramnameNullable, *&currentNullable);
+		param->getUAPLong(*&paramnameTableID, *&currentTableID);
 		param->getUAPLong(*&paramnameID, *&currentID);
 		param->getUAPLong(*&paramnamemarked, *&currentmarked);
 
@@ -752,6 +670,7 @@ void  LB_STDCALL lbDBColumnsModel::setNextColumn() {
 	param->getUAPString(*&paramnameTyp, *&currentTyp);
 	param->getUAPLong(*&paramnameLen, *&currentLen);
 	param->getUAPLong(*&paramnameNullable, *&currentNullable);
+	param->getUAPLong(*&paramnameTableID, *&currentTableID);
 	param->getUAPLong(*&paramnameID, *&currentID);
 	param->getUAPLong(*&paramnamemarked, *&currentmarked);
 }
@@ -786,6 +705,10 @@ char* LB_STDCALL lbDBColumnsModel::getColumnPKTable() {
 
 long  LB_STDCALL lbDBColumnsModel::getColumnID() {
 	return currentID->getData();
+}
+
+long  LB_STDCALL lbDBColumnsModel::getTableID() {
+	return currentTableID->getData();
 }
 
 long  LB_STDCALL lbDBColumnsModel::getColumnLen() {
@@ -934,6 +857,7 @@ lbDBForeignKeysModel::lbDBForeignKeysModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
 
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 	REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
 	REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
@@ -952,7 +876,7 @@ lbErrCodes LB_STDCALL lbDBForeignKeysModel::setData(lb_I_Unknown*) {
 
 long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
 													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name,
-													long key_seq, long update_rule, long delete_rule, long _id) {
+													long key_seq, long update_rule, long delete_rule, long tableid, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, PKTableCatalog)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, PKTableSchema)
@@ -965,6 +889,7 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	UAP_REQUEST(getModuleInstance(), lb_I_String, FKTableColumnName)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, TableID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, KeySequence)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, UpdateRule)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, DeleteRule)
@@ -987,6 +912,7 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	UpdateRule->setData(update_rule);
 	DeleteRule->setData(delete_rule);
 
+	TableID->setData(tableid);
 	ID->setData(_id);
 
 
@@ -1015,6 +941,8 @@ long  LB_STDCALL lbDBForeignKeysModel::addForeignKey(	const char* pktable_cat, c
 	*paramname = "DeleteRule";
 	param->setUAPLong(*&paramname, *&DeleteRule);
 
+	*paramname = "TableID";
+	param->setUAPLong(*&paramname, *&TableID);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
 
@@ -1109,6 +1037,8 @@ bool LB_STDCALL lbDBForeignKeysModel::selectForeignKey(long user_id) {
 	*paramname = "DeleteRule";
 	param->getUAPLong(*&paramname, *&currentDeleteRule);
 
+	*paramname = "TableID";
+	param->getUAPLong(*&paramname, *&currentTableID);
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
 
@@ -1176,6 +1106,8 @@ void  LB_STDCALL lbDBForeignKeysModel::setNextForeignKey() {
 	*paramname = "DeleteRule";
 	param->getUAPLong(*&paramname, *&currentDeleteRule);
 
+	*paramname = "TableID";
+	param->getUAPLong(*&paramname, *&currentTableID);
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
 
@@ -1222,6 +1154,10 @@ char* LB_STDCALL lbDBForeignKeysModel::getForeignKeyFKTableColumnName() {
 
 long  LB_STDCALL lbDBForeignKeysModel::getForeignKeyID() {
 	return currentID->getData();
+}
+
+long  LB_STDCALL lbDBForeignKeysModel::getTableID() {
+	return currentTableID->getData();
 }
 
 long  LB_STDCALL lbDBForeignKeysModel::getForeignKeyKeySequence() {
@@ -1383,6 +1319,7 @@ lbDBPrimaryKeysModel::lbDBPrimaryKeysModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
 
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
@@ -1399,7 +1336,7 @@ lbErrCodes LB_STDCALL lbDBPrimaryKeysModel::setData(lb_I_Unknown*) {
 }
 
 long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
-													long key_seq, const char* column_name, long _id) {
+													long key_seq, const char* column_name, long tableid, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, TableCatalog)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, TableSchema)
@@ -1408,6 +1345,7 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ColumnName_V2)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, TableID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, KeySequence)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -1422,6 +1360,7 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	KeySequence->setData(key_seq);
 
 	ID->setData(_id);
+	TableID->setData(tableid);
 
 	*paramname = "TableCatalog";
 	param->setUAPString(*&paramname, *&TableCatalog);
@@ -1437,6 +1376,8 @@ long  LB_STDCALL lbDBPrimaryKeysModel::addPrimaryKey(const char* pktable_cat, co
 	*paramname = "KeySequence";
 	param->setUAPLong(*&paramname, *&KeySequence);
 
+	*paramname = "TableID";
+	param->setUAPLong(*&paramname, *&TableID);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
 
@@ -1520,6 +1461,8 @@ bool LB_STDCALL lbDBPrimaryKeysModel::selectPrimaryKey(long user_id) {
 	*paramname = "KeySequence";
 	param->getUAPLong(*&paramname, *&currentKeySequence);
 
+	*paramname = "TableID";
+	param->getUAPLong(*&paramname, *&currentTableID);
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
 
@@ -1576,6 +1519,8 @@ void  LB_STDCALL lbDBPrimaryKeysModel::setNextPrimaryKey() {
 	*paramname = "KeySequence";
 	param->getUAPLong(*&paramname, *&currentKeySequence);
 
+	*paramname = "TableID";
+	param->getUAPLong(*&paramname, *&currentTableID);
 	*paramname = "ID";
 	param->getUAPLong(*&paramname, *&currentID);
 
@@ -1610,6 +1555,10 @@ char* LB_STDCALL lbDBPrimaryKeysModel::getPrimaryKeyColumnName_ODBC_V_2() {
 
 long  LB_STDCALL lbDBPrimaryKeysModel::getPrimaryKeyID() {
 	return currentID->getData();
+}
+
+long  LB_STDCALL lbDBPrimaryKeysModel::getTableID() {
+	return currentTableID->getData();
 }
 
 long  LB_STDCALL lbDBPrimaryKeysModel::getPrimaryKeySequence() {

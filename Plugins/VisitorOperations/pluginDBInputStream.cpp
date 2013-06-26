@@ -734,6 +734,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
 
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
@@ -750,10 +751,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 		currentKeySequence = q->getAsLong(10);
 		currentUpdateRule = q->getAsLong(11);
 		currentDeleteRule = q->getAsLong(12);
+		currentTableID = q->getAsLong(13);
 
 		fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
 								currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
-								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentID->getData());
+								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentTableID->getData(), currentID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			currentID = q->getAsLong(1);
@@ -768,10 +770,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 			currentKeySequence = q->getAsLong(10);
 			currentUpdateRule = q->getAsLong(11);
 			currentDeleteRule = q->getAsLong(12);
+			currentTableID = q->getAsLong(13);
 
 			fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
 									currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
-									currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentID->getData());
+									currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentTableID->getData(), currentID->getData());
 		}
 	}
 }
@@ -820,7 +823,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 		currentTableID = q->getAsLong(8);
 
 		pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
-								currentKeySequence->getData(), currentColumnName_V2->charrep(), currentID->getData());
+								currentKeySequence->getData(), currentColumnName_V2->charrep(), currentTableID->getData(), currentID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			currentID = q->getAsLong(1);
@@ -833,7 +836,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 			currentTableID = q->getAsLong(8);
 
 			pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
-									currentKeySequence->getData(), currentColumnName_V2->charrep(), currentID->getData());
+									currentKeySequence->getData(), currentColumnName_V2->charrep(), currentTableID->getData(), currentID->getData());
 		}
 	}
 }
@@ -863,11 +866,13 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 		_LOG << "Error: No tables found. All tables may be deleted accidantly." LOG_
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, applicationID)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+		
 
 		currentID = q->getAsLong(1);
 		szTableCatalog = q->getAsString(2);
@@ -875,8 +880,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 		szTableName = q->getAsString(4);
 		szTableType = q->getAsString(5);
 		szTableRemarks = q->getAsString(6);
+		applicationID = q->getAsLong(7);
+		
 
-		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), currentID->getData());
+		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), applicationID->getData(), currentID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			currentID = q->getAsLong(1);
@@ -885,8 +892,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 			szTableName = q->getAsString(4);
 			szTableType = q->getAsString(5);
 			szTableRemarks = q->getAsString(6);
+			applicationID = q->getAsLong(7);
 
-			tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), currentID->getData());
+			tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), applicationID->getData(), currentID->getData());
 		}
 	}
 }
@@ -933,7 +941,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 		szTableName = q->getAsString(7);
 		TableID = q->getAsLong(8);
 
-		columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), currentID->getData());
+		columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), TableID->getData(), currentID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			currentID = q->getAsLong(1);
@@ -945,7 +953,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 			szTableName = q->getAsString(7);
 			TableID = q->getAsLong(8);
 
-			columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), currentID->getData());
+			columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), TableID->getData(), currentID->getData());
 		}
 	}
 
