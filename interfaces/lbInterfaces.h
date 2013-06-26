@@ -4344,7 +4344,7 @@ public:
  */
 class lb_I_DBTables : public lb_I_Unknown {
 public:
-	virtual long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id = -1) = 0;
+	virtual long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long applicationid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectTable(long _id) = 0;
 	virtual int			LB_STDCALL getTableCount() = 0;
 	virtual bool		LB_STDCALL hasMoreTables() = 0;
@@ -4352,6 +4352,7 @@ public:
 	virtual void		LB_STDCALL finishTableIteration() = 0;
 
 	virtual long		LB_STDCALL getTableID() = 0;
+	virtual long		LB_STDCALL getApplicationID() = 0;
 	virtual char*		LB_STDCALL getTableCatalog() = 0;
 	virtual char*		LB_STDCALL getTableSchema() = 0;
 	virtual char*		LB_STDCALL getTableName() = 0;
@@ -4374,7 +4375,7 @@ public:
 class lb_I_DBColumns : public lb_I_Unknown {
 public:
 	virtual bool		LB_STDCALL addPagedConainer(lb_I_Container* pagedContainer) = 0;
-	virtual long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long _id = -1) = 0;
+	virtual long		LB_STDCALL addColumn(const char* name, const char* comment, const char* typ, long len, bool isNullable, const char* PKTable, const char* PKField, const char* tablename, long tableid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectColumn(long _id) = 0;
 	virtual int			LB_STDCALL getColumnCount() = 0;
 	virtual bool		LB_STDCALL hasMoreColumns() = 0;
@@ -4382,6 +4383,7 @@ public:
 	virtual void		LB_STDCALL finishColumnIteration() = 0;
 
 	virtual long		LB_STDCALL getColumnID() = 0;
+	virtual long		LB_STDCALL getTableID() = 0;
 	virtual char*		LB_STDCALL getColumnTableName() = 0;
 	virtual char*		LB_STDCALL getColumnName() = 0;
 	virtual char*		LB_STDCALL getColumnComment() = 0;
@@ -4411,7 +4413,7 @@ public:
 	 */
 	virtual long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
 													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name,
-													long key_seq, long update_rule, long delete_rule, long _id = -1) = 0;
+													long key_seq, long update_rule, long delete_rule, long tableid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectForeignKey(long _id) = 0;
 	virtual int			LB_STDCALL getForeignKeyCount() = 0;
 	virtual bool		LB_STDCALL hasMoreForeignKeys() = 0;
@@ -4419,6 +4421,7 @@ public:
 	virtual void		LB_STDCALL finishForeignKeyIteration() = 0;
 
 	virtual long		LB_STDCALL getForeignKeyID() = 0;
+	virtual long		LB_STDCALL getTableID() = 0;
 	virtual char*		LB_STDCALL getForeignKeyPKTableCatalog() = 0;
 	virtual char*		LB_STDCALL getForeignKeyPKTableSchema() = 0;
 	virtual char*		LB_STDCALL getForeignKeyPKTableName() = 0;
@@ -4450,7 +4453,7 @@ public:
 class lb_I_DBPrimaryKeys : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name,
-													long key_seq, const char* column_name, long _id = -1) = 0;
+													long key_seq, const char* column_name, long tableid, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectPrimaryKey(long _id) = 0;
 	virtual int			LB_STDCALL getPrimaryKeyCount() = 0;
 	virtual bool		LB_STDCALL hasMorePrimaryKeys() = 0;
@@ -4458,6 +4461,7 @@ public:
 	virtual void		LB_STDCALL finishPrimaryKeyIteration() = 0;
 
 	virtual long		LB_STDCALL getPrimaryKeyID() = 0;
+	virtual long		LB_STDCALL getTableID() = 0;
 	virtual char*		LB_STDCALL getPrimaryKeyTableCatalog() = 0;
 	virtual char*		LB_STDCALL getPrimaryKeyTableSchema() = 0;
 	virtual char*		LB_STDCALL getPrimaryKeyTableName() = 0;
