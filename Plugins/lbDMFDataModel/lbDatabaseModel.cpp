@@ -434,6 +434,7 @@ lbDBColumnsModel::lbDBColumnsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, Typ)
 	REQUEST(getModuleInstance(), lb_I_String, pkField)
 	REQUEST(getModuleInstance(), lb_I_String, pkTable)
+	REQUEST(getModuleInstance(), lb_I_Long, TableID)
 	REQUEST(getModuleInstance(), lb_I_Long, ID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
 	REQUEST(getModuleInstance(), lb_I_Long, Len)
