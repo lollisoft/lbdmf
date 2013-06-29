@@ -134,6 +134,14 @@ BEGIN TRANSACTION;
 
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
+
+		<xsl:call-template name="createDefaultStoredProcs">
+			<xsl:with-param name="ApplicationID" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+		</xsl:call-template>	
+
 </xsl:if>
 	
 -- Package: <xsl:value-of select="@name"/>
@@ -141,6 +149,7 @@ BEGIN TRANSACTION;
 <xsl:variable name="applicationname" select="@name"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
+
 INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface") values('<xsl:value-of select="$applicationname"/>', 'Application <xsl:value-of select="$applicationname"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 
 INSERT OR IGNORE INTO "users" (userid, passwort, lastapp) SELECT 'user', 'TestUser', id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
