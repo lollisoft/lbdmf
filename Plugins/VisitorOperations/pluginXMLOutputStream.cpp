@@ -460,7 +460,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
 		fkeys->setNextForeignKey();
 		
 		*oStream << 
-		"<foreignkey ID=\"" << fkeys->getForeignKeyID() << " tableid=\"" << fkeys->getTableID() <<
+		"<foreignkey ID=\"" << fkeys->getForeignKeyID() << "\" tableid=\"" << fkeys->getTableID() <<
 //		"\" pkcatalog=\"" << fkeys->getForeignKeyPKTableCatalog() << 
 		"\" pkschema=\"" << fkeys->getForeignKeyPKTableSchema() << 
 		"\" pktable=\"" << fkeys->getForeignKeyPKTableName() << 
@@ -488,7 +488,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 //		"\" pkcolumn_v2=\"" << pkeys->getPrimaryKeyColumnName_ODBC_V_2() << 
 
 		*oStream << 
-		"<primarykey ID=\"" << pkeys->getPrimaryKeyID() << " tableid=\"" << pkeys->getTableID() <<
+		"<primarykey ID=\"" << pkeys->getPrimaryKeyID() << "\" tableid=\"" << pkeys->getTableID() <<
 //		"\" pkcatalog=\"" << pkeys->getPrimaryKeyTableCatalog() << 
 		"\" pkschema=\"" << pkeys->getPrimaryKeyTableSchema() << 
 		"\" pktable=\"" << pkeys->getPrimaryKeyTableName() << 
@@ -518,7 +518,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 		
 		if (dbcolumns->isNullable()) {
 			*oStream << 
-			"<column tablename=\"" << dbcolumns->getColumnTableName() << " tableid=\"" << dbcolumns->getTableID() << 
+			"<column tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() << 
 			"\" name=\"" << dbcolumns->getColumnName() <<
 			"\" remarks=\"" << dbcolumns->getColumnComment() <<
 			"\" typ=\"" << dbcolumns->getColumnTyp() <<
@@ -527,7 +527,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 			"\"/>" << "\n";
 		} else {
 			*oStream << 
-			"<column tablename=\"" << dbcolumns->getColumnTableName() << " tableid=\"" << dbcolumns->getTableID() <<
+			"<column tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() <<
 			"\" name=\"" << dbcolumns->getColumnName() <<
 			"\" remarks=\"" << dbcolumns->getColumnComment() <<
 			"\" typ=\"" << dbcolumns->getColumnTyp() <<
