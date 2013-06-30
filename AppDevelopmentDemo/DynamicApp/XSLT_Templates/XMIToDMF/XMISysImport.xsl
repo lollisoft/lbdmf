@@ -149,7 +149,6 @@ BEGIN TRANSACTION;
 <xsl:variable name="applicationname" select="@name"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
-
 INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface") values('<xsl:value-of select="$applicationname"/>', 'Application <xsl:value-of select="$applicationname"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 
 INSERT OR IGNORE INTO "users" (userid, passwort, lastapp) SELECT 'user', 'TestUser', id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
@@ -691,15 +690,17 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 
 
 <xsl:variable name="stereotypeIdRef">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML -->
+<xsl:value-of select="../../../../UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML when modelled at the level of the association (do not use both)-->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML when modelled at the AssociationEnd -->
 </xsl:variable>
 
 <xsl:variable name="stereotype">
 <xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name"/><!-- BoUML -->
-<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotypeIdRef]/@name"/><!-- BoUML -->
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotypeIdRef]/@name"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:if test="$stereotype='masterdetail_action'">
+
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
@@ -707,14 +708,9 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 -- ActionID from assocname2 = <xsl:value-of select="$assocname2"/> converted is <xsl:value-of select="$assocname1"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
-delete from formular_actions where formular IN 
-	(select id from "formulare" where anwendungid IN
-		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
-		name = '<xsl:value-of select="$thisClassName"/>');
-delete from action_steps where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from action_parameters where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from formular_actions where action in (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>') AND formular IN (select id from "formulare" where anwendungid IN	(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from action_parameters where actionid IN (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
 delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
 </xsl:if>
 
