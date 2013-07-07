@@ -513,7 +513,7 @@ public:
 		
 		puts("Import No:2");
 
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", dbname);
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
@@ -523,7 +523,7 @@ public:
 
 		// Uncomment to gather logs (with generated SQL sqripts and other logs)
 		//setLogActivated(true);
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", dbname);
 		//setLogActivated(false);
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
@@ -620,7 +620,7 @@ public:
 
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
 		
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", dbname);
 
 		meta->unloadApplication();
 		meta->uninitialize();
