@@ -185,6 +185,10 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XmiFile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, CRUISECONTROL)
+		
+		
+		*CRUISECONTROL = getenv("CRUISECONTROL");
 		
 		*XslSystemFile = getenv("DEVROOT");
 		*XslApplicationFile = getenv("DEVROOT");
@@ -194,6 +198,25 @@ public:
 		ASSERT_EQUALS(true, XslSystemFile != NULL)
 		ASSERT_EQUALS(true, XslSystemFile->charrep() != NULL)
 		
+		if (*CRUISECONTROL == "yes")
+		{
+// Checked out stuff is directly in workspace directory (without /Projects/CPP)
+#ifdef WINDOWS		
+		*XslSystemFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
+		*XslApplicationFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
+		*XslSettingsFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xsl";
+		*XmiFile += "\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\";
+#endif
+
+#ifndef WINDOWS		
+		*XslSystemFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl";
+		*XslApplicationFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl";
+		*XslSettingsFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl";
+		*XmiFile += "/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/";
+#endif
+		}
+		else
+		{
 #ifdef WINDOWS		
 		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
 		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
@@ -207,6 +230,7 @@ public:
 		*XslSettingsFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl";
 		*XmiFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/";
 #endif
+		}
 
 		*XmiFile += modelFile;
 
@@ -464,7 +488,7 @@ public:
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
 
-		import_Initial_TestModel(*&myUIWrapper, "AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogStartTest.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", "CDCatalog");
 
 		// These tests will fail at least on Linux. To be investigated later.
 		//ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
@@ -486,7 +510,7 @@ public:
 		
 		puts("Import No:2");
 
-		import_Initial_TestModel(*&myUIWrapper, "AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogAddedDescription.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", "CDCatalog");
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
@@ -496,7 +520,7 @@ public:
 
 		// Uncomment to gather logs (with generated SQL sqripts and other logs)
 		//setLogActivated(true);
-		import_Initial_TestModel(*&myUIWrapper, "AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogThenRemovedReleaseDate.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", "CDCatalog");
 		//setLogActivated(false);
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
