@@ -1515,7 +1515,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 							// No file found to import from. 
 							UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 							*msg = "Importing from UML (XMI) file failed. File missing: ";
-							*msg += importfile->charrep();
+							*msg += XMIFileUMLProject->charrep();
 							metaapp->setStatusText("Info", msg);
                         }
                 }
