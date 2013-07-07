@@ -412,7 +412,7 @@ public:
 		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("importUMLXMIDocIntoApplication"))
 
 		puts("Load CDKatalog");
-		meta->loadApplication("user", dbname);
+		meta->loadApplication("user", "CDKatalog");
 
 		meta->unloadApplication();
 }
