@@ -504,7 +504,7 @@ public:
 		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
 		
 		// Missing column ReleaseDatum
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum from 'CD'"))
 		
