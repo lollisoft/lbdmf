@@ -412,7 +412,7 @@ public:
 		ASSERT_EQUALS(ERR_DISPATCH_FAILS, FireEvent("importUMLXMIDocIntoApplication"))
 
 		puts("Load CDKatalog");
-		meta->loadApplication("user", "CDKatalog");
+		meta->loadApplication("user", dbname);
 
 		meta->unloadApplication();
 }
@@ -424,6 +424,8 @@ public:
 	{
 		puts("test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel");
 
+		const char* dbname = "CDKatalog";
+		
 		remove("CDKatalog.db3");
 		remove("CRM.db3");
 		remove("lbDMF.db3");
@@ -463,7 +465,7 @@ public:
 		//setLogActivated(false);
 
 	
-		ChangeProperty("Application Database settingsDB Name", "CDKatalog");
+		ChangeProperty("Application Database settingsDB Name", dbname);
 		ChangeProperty("UML import settingsSystem database backend type", "Sqlite");
 		ChangeProperty("UML import settingsApplication database backend type", "Sqlite");
 
@@ -486,26 +488,26 @@ public:
 		UAP(lb_I_Database, db)
         AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
-		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
+		ASSERT_EQUALS( ERR_NONE, db->connect(dbname, dbname, "dba", "trainres"));
 
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", "CDCatalog");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", dbname);
 
 		// These tests will fail at least on Linux. To be investigated later.
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col2, col3) values(date('now'), 'Test')"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "INSERT INTO SQLITETEST (col2, col3) values(date('now'), 'Test')"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "SELECT * FROM SQLITETEST"))
 
 		// Table must exist
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from CD"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from CD"))
 		
 		// Test fails because metainformation could not be gathered. This is because aggregated columns have no associated columns :-)
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
 		
 		// Missing column ReleaseDatum
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum from 'CD'"))
 		
 		meta->fireEvent("overwriteDatabase");
 		
@@ -513,9 +515,9 @@ public:
 
 		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", "CDCatalog");
 
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
 		
 		puts("Import No:3");
 
@@ -524,12 +526,12 @@ public:
 		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", "CDCatalog");
 		//setLogActivated(false);
 
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
 
 		// Check that ReleaseDatum is failing, thus no more present
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select Titel, Laenge, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, Description from 'CD'"))
 
 		UAP(lb_I_Database, db1)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db1, "'database plugin'")
@@ -548,6 +550,8 @@ public:
 	void test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2( void )
 	{
 		puts("test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2");
+
+		const char* dbname = "CDKatalog";
 
 		remove("CDKatalog.db3");
 		remove("CRM.db3");
@@ -589,7 +593,7 @@ public:
 		//setLogActivated(false);
 
 	
-		ChangeProperty("Application Database settingsDB Name", "CDKatalog");
+		ChangeProperty("Application Database settingsDB Name", dbname);
 		ChangeProperty("UML import settingsSystem database backend type", "Sqlite");
 		ChangeProperty("UML import settingsApplication database backend type", "Sqlite");
 
@@ -604,7 +608,7 @@ public:
 		UAP(lb_I_Database, db)
         AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
-		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
+		ASSERT_EQUALS( ERR_NONE, db->connect(dbname, dbname, "dba", "trainres"));
 
 		// Why was here a true if it were deleted?
 		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
@@ -625,13 +629,13 @@ public:
 
 		ASSERT_EQUALS(ERR_EVENT_NOTREGISTERED, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
 		
-		meta->initialize("user", "CDKatalog");
+		meta->initialize("user", dbname);
 
 		//setLogActivated(true);
 		
 		ASSERT_EQUALS(true, meta->login("user", "TestUser"))
 	
-		meta->loadApplication("user", "CDKatalog");
+		meta->loadApplication("user", dbname);
 		
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused1))
 
