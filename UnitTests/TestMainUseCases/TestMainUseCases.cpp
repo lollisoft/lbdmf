@@ -496,6 +496,7 @@ public:
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
 
 		// Table must exist
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from CD"))
 		
 		// Test fails because metainformation could not be gathered. This is because aggregated columns have no associated columns :-)
