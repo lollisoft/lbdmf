@@ -27,6 +27,6 @@ rm -rf $(HOME)/.lbDMF
 mkdir $(HOME)/.lbDMF
 cp Database/* $(HOME)/.lbDMF
 
-echo export DEVROOT=`pwd`
+export DEVROOT=`pwd`
 
 $(pwd)/bin/lbDMFUnitTests
