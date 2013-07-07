@@ -675,7 +675,9 @@ public:
 			UAP(lb_I_String, col)
 			
 			col = query->getAsString(column);
-			
+		
+			printf("Query is \%s\n", col->charrep());
+	
 			return *col == equals_to;
 		}
 		
