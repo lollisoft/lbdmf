@@ -461,9 +461,9 @@ public:
 		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi");
 
 		// These tests will fail at least on Linux. To be investigated later.
-		//ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
-		//ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col3) values('Test')"))
-		//ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col2, col3) values(date('now'), 'Test')"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
 		
 		// Test fails because metainformation could not be gathered. This is because aggregated columns have no associated columns :-)
 		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, "CDKatalog", "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
