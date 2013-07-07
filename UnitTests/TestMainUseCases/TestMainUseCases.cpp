@@ -492,7 +492,7 @@ public:
 
 		// These tests will fail at least on Linux. To be investigated later.
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col2, col3) values(date('now'), 'Test')"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "INSERT INTO SQLITETEST (col2, col3) values(date('now'), 'Test')"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "SELECT * FROM SQLITETEST"))
 
 		// Table must exist
