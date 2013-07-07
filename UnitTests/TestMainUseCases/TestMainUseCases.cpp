@@ -180,7 +180,7 @@ public:
         dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 	}
 	
-	void import_Initial_TestModel(lb_I_SimulatedApplication* UI, const char* modelFile) {
+	void import_Initial_TestModel(lb_I_SimulatedApplication* UI, const char* modelFile, const char* dbname) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSettingsFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslSystemFile)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, XslApplicationFile)
@@ -240,6 +240,9 @@ public:
 		#endif
 		
 		int unused;
+		
+		ChangeProperty("Application Database settingsDB Name", dbname);
+
 		
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("importUMLXMIDocIntoApplication", unused))
 
@@ -458,7 +461,7 @@ public:
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
 		ASSERT_EQUALS( ERR_NONE, db->connect("CDKatalog", "CDKatalog", "dba", "trainres"));
 
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", "CDCatalog");
 
 		// These tests will fail at least on Linux. To be investigated later.
 		//ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "CREATE TABLE SQLITETEST (col1 int PRIMARY KEY, col2 DATETIME, col3 text)"))
@@ -480,7 +483,7 @@ public:
 		
 		puts("Import No:2");
 
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", "CDCatalog");
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, "CDKatalog", "select * from 'CD'"))
@@ -490,7 +493,7 @@ public:
 
 		// Uncomment to gather logs (with generated SQL sqripts and other logs)
 		//setLogActivated(true);
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", "CDCatalog");
 		//setLogActivated(false);
 
 		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, "CDKatalog", "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
@@ -585,7 +588,7 @@ public:
 
 		ASSERT_EQUALS(ERR_NONE, eman->resolveEvent("exportApplicationConfigurationToUMLXMIDoc", unused))
 		
-		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi");
+		import_Initial_TestModel(*&myUIWrapper, "CDKatalogStartTest.xmi", "CDCatalog");
 
 		meta->unloadApplication();
 		meta->uninitialize();
