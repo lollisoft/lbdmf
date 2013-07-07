@@ -39,7 +39,7 @@ public:
 		
 		TEST_CASE(test_Reload_Different_Application)
 		
-		//TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
+		TEST_CASE(test_Delegated_Action_lbDMFXslt_reimport_ModifiedInitialUMLModel)
 		TEST_CASE(test_Delegated_Action_lbDMFXslt_export_InitialModelAsXMI2)
 		
 /*
