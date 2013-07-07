@@ -407,7 +407,10 @@ public:
 		remove("MetaApp.mad");
 
 		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
-
+		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogStartTest.xmi"))
+		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogAddedDescription.xmi"))
+		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogThenRemovedReleaseDate.xmi"))
+		
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
