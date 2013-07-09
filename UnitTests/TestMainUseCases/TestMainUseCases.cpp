@@ -234,6 +234,8 @@ public:
 
 		*XmiFile += modelFile;
 
+		ASSERT_EQUALS(true, FileExists(XmiFile->charrep()))
+
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 		UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
@@ -433,10 +435,7 @@ public:
 		remove("MetaApp.mad");
 
 		ASSERT_EQUALS(false, FileExists("CDKatalog.db3"))
-		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogStartTest.xmi"))
-		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogAddedDescription.xmi"))
-		ASSERT_EQUALS(true, FileExists("AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogThenRemovedReleaseDate.xmi"))
-		
+
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -508,6 +507,9 @@ public:
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum from 'CD'"))
 		
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"ReleaseDatum\", \"Track\"  from \"CD\" order by \"ID\""))
+
 		meta->fireEvent("overwriteDatabase");
 		
 		puts("Import No:2");
@@ -518,6 +520,9 @@ public:
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
 		
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"ReleaseDatum\", \"Track\" , \"Description\" from \"CD\" order by \"ID\""))
+
 		puts("Import No:3");
 
 		// Uncomment to gather logs (with generated SQL sqripts and other logs)
@@ -538,7 +543,7 @@ public:
 		// Ensure that the SQL query has really changed to the last imported definition
 		
 		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
-		"select \"Titel\", \"Laenge\", \"Musiker\" , \"Media\" , \"Description\" from \"CD\" order by \"ID\""))
+		"select \"Titel\", \"Laenge\", \"Track\" , \"Description\" from \"CD\" order by \"ID\""))
 		
 		// Export the last application model into a XML file
 		meta->fireEvent("evtExportApplicationToXML");
