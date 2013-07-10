@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.46.2.1 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46 2011/07/24 13:42:56 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.46.2.1 2013/07/10 06:19:13 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.46.2.1  2013/07/10 06:19:13  lollisoft
+ * Corrected error codes comments with the value represented.
+ *
  * Revision 1.46  2011/07/24 13:42:56  lollisoft
  * Added an error code for not connected proxies.
  *
@@ -258,7 +261,7 @@ enum lbErrCodes {
 
 /* Module error codes */
 
-	ERR_MODULE_INVALID_PARAMETER, // 23
+	ERR_MODULE_INVALID_PARAMETER, // 24
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
 	ERR_MODULE_NO_INTERFACE,
@@ -269,7 +272,7 @@ enum lbErrCodes {
 
 /* Errcodes for dealing with XML */
 
-	ERR_XML_NOFILE,	// 28
+	ERR_XML_NOFILE,	// 29
 	ERR_XML_INIT,
 	ERR_XML_GENERAL_PARSE_FAILED,
 
@@ -282,7 +285,7 @@ enum lbErrCodes {
 	ERR_CONFIG_INTERNAL,
 
 /* Errcodes for container */
-	ERR_CONTAINER_INSERT, // 36
+	ERR_CONTAINER_INSERT, // 37
 	ERR_CONTAINER_REMOVE,
 
 /* Errcodes for threads */
@@ -301,8 +304,8 @@ enum lbErrCodes {
 
 	ERR_APPBUS_SERVER_ANOUNCECLIENT,
 
-	ERR_TRANSFER_DATA_INCORRECT_TYPE,
-	ERR_TRANSFER_FAILED, // 50
+	ERR_TRANSFER_DATA_INCORRECT_TYPE, // 50
+	ERR_TRANSFER_FAILED,
 	ERR_TRANSFER_NULLPTR,
 	ERR_TRANSFER_ENDED,
 	ERR_TRANSFER_SEND_DATATYPE,
@@ -323,15 +326,15 @@ enum lbErrCodes {
 
 /* Errcodes for the database module */
 
-	ERR_DB_EXECDIRECT,	// 66
+	ERR_DB_EXECDIRECT,	// 68
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
-	ERR_DB_QUERYFAILED,
+	ERR_DB_QUERYFAILED, // 71
 	ERR_DB_UPDATEFAILED,
 	ERR_DB_CONNECT,
 	ERR_DB_FETCHFIRST,
 	ERR_DB_FETCHLAST,
-	ERR_DB_NODATA, // 74
+	ERR_DB_NODATA, // 76
 	ERR_DB_READONLY,
 	ERR_DB_STILL_ADDING,
 	ERR_DB_ROWDELETED,
