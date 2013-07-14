@@ -1,562 +1,841 @@
+2013-07-14 11:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Modified the document a
+	  bit. Changed version number.
+
+2013-07-14 07:04  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed version in package
+	  name.
+
+2013-07-13 07:33  lollisoft
+
+	* lbdmf.spec, BaseDevelopment/splash.png,
+	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
+	  Icons/Splash Screen.svg: Changed version informations.
+
+2013-07-10 08:19  lollisoft
+
+	* include/lbErrcodes.h: Corrected error codes comments with the
+	  value represented.
+
+2013-07-09 08:10  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Corrected some
+	  asserts and also corrected the queries that are expected.  The
+	  current version passes the tests for this module.
+
+2013-07-07 21:14  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Print out
+	  compared string.
+
+2013-07-07 21:03  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Another
+	  ERR_DB_NODATA issue when inserting data.
+
+2013-07-07 18:12  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Select on empty
+	  table returns ERR_DB_NODATA.
+
+2013-07-07 14:59  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Removed first CD
+	  insert
+
+2013-07-07 14:52  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Renamed too much
+
+2013-07-07 14:29  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Still a typo -
+	  replaced others but not the typo :-(
+
+2013-07-07 14:20  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: The bug was a
+	  typo in the database name :-)
+
+2013-07-07 14:06  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Adding a row at
+	  first like SQLITETEST test.
+
+2013-07-07 13:56  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Change to
+	  ERR_DB_NODATA
+
+2013-07-07 13:36  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Activated
+	  SQLITETEST test table again
+
+2013-07-07 13:24  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Try without '
+
+2013-07-07 12:28  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl:
+	  This file will always trigger jenkins for now. Remove it.
+
+2013-07-07 12:17  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Handling
+	  CRUISECONTROL environments.
+
+2013-07-07 12:03  lollisoft
+
+	* hudsonbuild_unit_test.sh: Copy & paste bug
+
+2013-07-07 11:57  lollisoft
+
+	* hudsonbuild_unit_test.sh: DEVROOT was missing.
+
+2013-07-07 11:47  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Missing charrep()
+
+2013-07-07 11:36  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Used the wrong
+	  variable.
+
+2013-07-07 11:22  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp:
+	  getModuleInstance() missing.
+
+2013-07-07 11:17  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Added file name
+	  in status message.
+
+2013-07-07 11:02  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added asserts
+	  for existence of input model files.
+
+2013-07-07 10:48  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: XMI files are
+	  not located at execution path.
+
+2013-07-07 10:34  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Making DBName
+	  empty when template changed. Adopted test.
+
+2013-07-07 10:19  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added a first
+	  test to check that the table exists.
+
+2013-07-07 10:09  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added ' again.
+
+2013-07-07 10:01  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Deactivated
+	  SQLITETEST tests.
+
+2013-07-07 09:51  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Error: Test was
+	  not activated.
+
+2013-07-07 09:41  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Reactivated test
+	  with test table.
+
+2013-07-07 09:33  lollisoft
+
+	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Fixed error in
+	  query. Probably the ' is the cause.
+
+2013-06-30 14:21  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Added chapter for
+	  ArgoUML
+
+2013-06-30 13:31  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/Import AddressBook initial
+	  model.png: Added images for ArgoUML documentation.
+
+2013-06-30 12:08  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: Create data types.png, Create
+	  stereotype masterdetail_action.png, Modify stereotype base
+	  class.png, Create Classes.png, Creating package addressbook.png,
+	  Modify default model name after Opening.png: Added images for
+	  ArgoUML documentation.
+
+2013-06-30 12:07  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  AddressBook.xmi, AddressBook.xmi.zargo: Added sample model
+	  created with ArgoUML.
+
+2013-06-30 11:43  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Fixed the detection of masterdetail_action associations based onb
+	  UML:Association and UML:AssociationEnd.  Modeling with ArgoUML may
+	  seem cleaner when only once the stereotype is applied at the
+	  UML:Association.  When importing a BoUML model, the stereotypes are
+	  defined ar the UML:AssociationEnd parts, thus supporting both with
+	  this fix.
+
+2013-06-29 09:03  lollisoft
+
+	* Plugins/VisitorOperations/pluginXMLOutputStream.cpp: Fixed
+	  missing " in XML.
+
+2013-06-29 08:52  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Added a call to createDefaultStoredProcs when using Sqlite. This
+	  leans up prior model data.
+
+2013-06-28 06:32  lollisoft
+
+	* Plugins/lbDMFDataModel/lbDatabaseModel.cpp: Bugfix: Uninitialized
+	  variable.
+
+2013-06-26 08:36  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  interfaces/lbInterfaces.h,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.cpp,
+	  Plugins/lbDMFDataModel/lbDatabaseModel.h: Added code to handle
+	  the table id references.
+
+2013-06-25 07:25  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.xsl, XMISysImport.xsl: Some changes were missing.
+
+2013-06-25 07:08  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  Doc/ApplicationprototypingDokumentation.odt,
+	  XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.xsl,
+	  XSLT_Templates/XMIToDMF/XMISysImport.xsl: Added writing foreign
+	  key column.
+
+2013-06-21 08:13  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
+	  Was not wrong. I was wrong :-)
+
+2013-06-21 08:07  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  XMISysImport.CreateFormularDefinition.xsl, XMISysImport.xsl,
+	  importUMLClassAsDMFForm.xsl: Implemented creating formular field
+	  entries.
+
+2013-06-20 07:05  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
+	  Fixed missing table name in dbcolumns.
+
+2013-06-19 06:55  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMISysImport.xsl, XMISysImport.FillSchemaTables.Sqlite.xsl,
+	  XMISysImport.FillSchemaTables.xsl: Corrected table schema filling
+	  code.
+
+2013-06-16 13:39  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Copy of xmi1_2_2_lbDMFSQLScript.xsl with some comments for that.
+
+2013-06-16 13:16  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
+	  Fixed UML 1.2 import to cope with ArgoUML XMI contents.
+
+2013-06-16 12:33  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.xsl:
+	  Removed one debug output and added strip space on all elements.
+
+2013-06-16 12:16  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl,
+	  XMIImport.CreateDBSchema.xsl, XMIImport.xsl: Fixed handling
+	  different attribute names for BoUML and ArgoUML.
+
+2013-06-16 10:12  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl, XMIImport.xsl,
+	  XMISettings.xsl: Added drop rules implementation.
+
+2013-06-16 09:51  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl,
+	  XMIImport.CreateDBSchema.xsl, XMIImport.Variables.xsl,
+	  XMIImport.xsl, xmi1.2_2SQLScript.xsl: Implemented first version
+	  of new XSLT import template and refactored some variables into a new
+	  file.
+
+2013-05-31 09:14  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/Codegenerator selection.png:
+	  Initial.
+
+2013-05-31 09:05  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/kthememgr.png: Initial.
+
+2013-05-31 09:01  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: Generate Code button.png,
+	  wxWrapper applications.png: Initial.
+
+2013-05-31 08:46  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/wxWrapper icon.png: Initial.
+
+2013-05-31 08:28  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/lbDMF Manager ribbon page.png:
+	  Initial.
+
+2013-05-31 08:24  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/lbDMF Maneger running.png:
+	  Initial.
+
+2013-05-31 08:17  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/lbDMF Manager generated
+	  project.png: Initial.
+
+2013-05-31 07:57  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/lbDMF Manager designer.png:
+	  Initial.
+
+2013-05-30 18:54  lollisoft
+
+	* BaseDevelopment/environment-osx.sh: Added path to ACE wrappers
+
+2013-05-30 18:52  lollisoft
+
+	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
+	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: New splash
+	  screen.
+
+2013-05-30 11:44  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj:
+	  Added a foreign key and a dropdown box for the actions to link to
+	  applications.  Modified sqlite based XMI import scripts and modified
+	  db reader visitor class.
+
+2013-05-30 11:41  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLApplicationTables.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl,
+	  Database/lbDMF-Sqlite-ApplicationDB.sql,
+	  Database/lbDMF-Sqlite-SystemDB.sql, interfaces/lbInterfaces.h,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.cpp,
+	  Plugins/lbDMFDataModel/lbActionsModel.h: Added a foreign key and
+	  a dropdown box for the actions to link to applications.  Modified
+	  sqlite based XMI import scripts and modified db reader visitor
+	  class.
+
+2013-05-26 16:27  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/CDKatalog.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128386,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/133378.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl,
+	  Database/lbDMF-Sqlite-SystemDB.sql: Added support for ribbon bar
+	  definitions.
+
+2013-05-26 08:41  lollisoft
+
+	* bindist.iss, dist.iss, templatedist.iss: Changed run flags where
+	  not required by default.
+
+2013-05-26 08:20  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/:
+	  DMFToXMI/gen_DMFToXMI.xsl,
+	  DMFToXMI/gen_DMFToXMI_FormBootstrap.xsl, PHP_P4A/lbDMF2P4A.xsl,
+	  SmartClientSoftwareFactory/Module.xsl,
+	  SmartClientSoftwareFactory/Module/MyModule.csproj.xsl,
+	  SmartClientSoftwareFactory/Module/MyView.Designer.cs.xsl,
+	  SmartClientSoftwareFactory/Module/MyView.cs.xsl,
+	  SmartClientSoftwareFactory/Module/MyWorkItem.cs.xsl,
+	  TurboVision/TurboVisionApplicationModul.xsl,
+	  TurboVision/TurboVisionFixedFormBaseclass.xsl,
+	  TurboVision/TurboVisionFixedFormXRC.xsl,
+	  TurboVision/gen_TurboVisionFixedFormularClasses.xsl,
+	  lbDMFDataViewModel/gen_lbDMFDataViewModel.xsl,
+	  lbDMFDataViewModel/lbDMFApplicationModul.xsl,
+	  lbDMFDataViewModel/lbDMFDataViewModelBaseclass.xsl,
+	  lbDMFFixedFormular/gen_lbDMFFixedFormularClasses.xsl,
+	  lbDMFFixedFormular/lbDMFApplicationModul.xsl,
+	  lbDMFFixedFormular/lbDMFFixedFormBaseclass.xsl,
+	  wxActiveRecords/gen_wxActiveRecordClasses.xsl,
+	  wxActiveRecords/wxARGApplicationModul.xsl,
+	  wxActiveRecords/wxARGFixedFormBaseclass.xsl,
+	  wxLua/gen_wxLuaFixedFormularClasses.xsl,
+	  wxLua/wxLuaApplicationModul.xsl: Added a filter to only generate
+	  code for type 1 forms.
+
+2013-05-25 15:06  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Fixed the DDL detection
+	  code - a bit.
+
+2013-05-24 06:03  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/:
+	  lbDMF Manager.xmi, lbDMFManager/128130, lbDMFManager/128258,
+	  lbDMFManager/lbDMFManager.prj: Changes in the UML model to get
+	  database tables, relations, foreign keys and primary keys from
+	  model.  This separates reverse engineering into a separate step.
+
+2013-05-23 08:17  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Switch to non
+	  reverse version works.
+
+2013-05-23 08:11  lollisoft
+
+	* Plugins/lbDMFDataModel/lbDatabaseModel.cpp: Member not
+	  initialized.
+
+2013-05-22 08:17  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Implemented
+	  the database version, but crashes.
+
+2013-05-20 12:07  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Started with
+	  non reverse database schema information.
+
+2013-05-20 11:10  lollisoft
+
+	* Database/lbDMF-Sqlite-ApplicationDB.sql,
+	  Database/lbDMF-Sqlite-SystemDB.sql,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
+	  Changed foreign key table schema.
+
+2013-05-20 10:01  lollisoft
+
+	* InstallDoUMLBin.bat, InstallDoUMLSrc.bat: Added stuff to include
+	  DoUML, but this is not ready.
+
+2013-05-20 09:39  lollisoft
+
+	* buildwxWidgets_MinGW.bat, activateDoUMLBin.bat,
+	  activateDoUMLSrc.bat: Added stuff to include DoUML, but this is
+	  not ready.
+
+2013-05-13 07:47  lollisoft
+
+	* bindist.iss: Removed not required or not yet active files.
+
+2013-05-13 07:44  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  createDefaultStoredProcs.xsl, importUML-ApplicationDB.xsl,
+	  importUML-SystemDB.xsl, importUMLClassAsDMFForm.xsl: Filling new
+	  database schema tables and improved speed by using transactions.
+
+2013-05-13 07:42  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Logging the error message
+	  and also the error code.
+
+2013-05-13 07:41  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Prepared for
+	  reading database schema from tables. The reverse engineering step
+	  should be moved to a plugin.
+
+2013-05-13 07:34  lollisoft
+
+	* Database/lbDMF-Sqlite-ApplicationDB.sql,
+	  Database/lbDMF-Sqlite-SystemDB.sql,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj:
+	  New database schema and application definition.
+
+2013-05-10 16:50  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128386,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/133378.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  Database/lbDMF-Sqlite-ApplicationDB.sql,
+	  Database/lbDMF-Sqlite-SystemDB.sql: First version that imports
+	  the database schema into the system database.
+
+2013-05-10 15:26  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  importUML-SystemDB.xsl, importUMLClassAsDMFForm.xsl: First
+	  version that imports the database schema into the system database.
+
+2013-05-10 15:18  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/gen_DMFToXMI.xsl:
+	  Added new stereotype for dropdown boxes. Changed other descriptions.
+
+2013-05-09 09:33  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  UMLSamples/InitialModels/CDKatalog/128002,
+	  UMLSamples/InitialModels/CDKatalog/128002.diagram,
+	  UMLSamples/SecondStageModels/lbDMF Manager.xmi,
+	  UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  UMLSamples/SecondStageModels/lbDMFManager/128130.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  UMLSamples/SecondStageModels/lbDMFManager/128258.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/128386.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  XSLT_Templates/XMIToDMF/XMISettings.xsl: Changed the UML model
+	  that represents the current database schema and application model.
+	  Note: There are still transformation errors with this model. You
+	  only need it to change the main application. The corresponding SQL
+	  script that was fault, has been modified by hand!
+
+2013-05-09 09:28  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Added logging SQL statement in case of an error.
+
+2013-05-09 09:27  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Added reporting an error to the user.
+
+2013-05-09 09:26  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Changed
+	  formular fields reader logic. Missing yet are the manual mapping
+	  informations, that are not filled into the table as before.  You
+	  will get errors when generating code (in code) and may always get
+	  the mapping dialog to provide mappings for your dropdown fields.
+
+2013-05-09 09:22  lollisoft
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Added some logging, but
+	  there is still a bug.
+
+2013-05-09 09:18  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Catching an error while
+	  testing for missing mandatory fields.
+
+2013-05-09 09:12  lollisoft
+
+	* Database/: lbDMF-Sqlite-ApplicationDB.sql,
+	  lbDMF-Sqlite-SystemDB.sql: New database schema and application
+	  model (corrected some formularfields by hand)
+
+2013-05-05 14:24  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl,
+	  UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  UMLSamples/SecondStageModels/lbDMFManager/128130.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  UMLSamples/SecondStageModels/lbDMFManager/128258.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/128386.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/129538,
+	  UMLSamples/SecondStageModels/lbDMFManager/132098.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  UMLSamples/SecondStageModels/lbDMF Manager.xmi: Added new
+	  formularfields table support.
+
+2013-05-05 08:31  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  CDKatalog.xmi.zargo, CDKatalogArgoUML.xmi: Moving to another Open
+	  Source UML tool.
+
+2013-05-04 09:33  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
+	  Bugfix: Variable declaration was applied twice.
+
+2013-05-03 08:04  lollisoft
+
+	* license-templatedist.txt, make_src_dist.bat, templatedist.iss:
+	  Added a XSLT template patch installer to enable deploying XSLT
+	  templates separately and more often.
+
+2013-04-29 08:30  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl,
+	  XMIImport.CreateDBSchema.xsl, XMIImport.Helper.xsl,
+	  XMIImport.xsl, XMISettings.xsl: Solved the creation of foreign
+	  columns.
+
+2013-04-28 14:19  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.xsl, XMIImport.xsl,
+	  XMIImport.CreateDBSchema.PostgreSQL.xsl,
+	  XMIImport.CreateDBSchema.SqlServer.xsl,
+	  XMIImport.CreateDBSchema.Sqlite.xsl: Initial and new attempt to
+	  cope with different XMI exporters.
+
+2013-04-07 23:32  lollisoft
+
+	* InstallACE.bat, dist.iss, TAO.GNUmakefile,
+	  TAO.orbsvcs.orbsvcs.GNUmakefile: Added a fix for the TAO AV build
+	  failure
+
+2013-04-07 19:53  lollisoft
+
+	* InstallACE.bat, bin-buildtools-dist.iss, dist.iss,
+	  buildwxWidgets_MinGW.bat: These changes let ACE and TAO compile
+
+2013-04-05 08:36  lollisoft
+
+	* InstallACE.bat, activateACE.bat, buildwxWidgets_MinGW.bat,
+	  dist.iss, installMinGW.bat, watcomenv.bat: First integration of
+	  ACE into source deployment.
+
+2013-03-29 09:23  lollisoft
+
+	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
+	  doxygen.conf, interfaces/lbInterfaces.h: Changed versions
+	  targeting final release.
+
+2013-03-11 08:27  lollisoft
+
+	* Plugins/wxWidgets/wxSFDesigner/:
+	  wxSFDesignerAnwendungenImplementation.cpp,
+	  wxSFDesignerAnwendungenImplementation.h: Added a simple
+	  OnTextChanged handler.
+
+2013-03-10 23:17  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
+	  Anyhow I renamed the file using one capital letter. This was
+	  breaking Mac (and only Mac PPC?)
+
+2013-03-10 21:26  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  xmi1.2_2SQLScript.xsl, xmi1_2_2_lbDMFSQLScript.xsl: Made fixes in
+	  HEAD, but also need it in branch.
+
+2013-03-10 21:22  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/importUMLClassAsDMFForm.xsl:
+	  Made fixes in HEAD, but also need it in branch.
+
+2013-03-10 21:18  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  createDefaultStoredProcs.xsl, importUML-SystemDB.xsl: Made fixes
+	  in HEAD, but also need it in branch.
+
+2013-03-10 20:08  lollisoft
+
+	* Test/GUI/wxWrapper/Inkscape Icons/formulare_app.svg: Some changes
+
+2013-03-09 11:17  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added validation when
+	  application is started
+
+2013-03-09 10:15  lollisoft
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Implemented basic
+	  validation for the DB Name property and automatically cleaning it
+	  when XMI file has been changed.
+
+2013-03-03 07:43  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: CDKatalog-Grid.png,
+	  CDKatalog-Report.png: Added the screenshots for the DevExpress
+	  codegenerator article.
+
+2013-03-02 12:07  lollisoft
+
+	* Plugins/wxWidgets/wxSFDesigner/lbDMFFormularFieldShape.cpp: Other
+	  text for fields
+
+2013-03-02 12:06  lollisoft
+
+	* Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp: Added
+	  hangler for formular field.
+
+2013-03-02 11:56  lollisoft
+
+	* Plugins/wxWidgets/wxSFDesigner/: lbDMFFormularFieldShape.cpp,
+	  lbDMFFormularFieldShape.h, lbDMFTableFieldShape.cpp,
+	  lbDMFTableFieldShape.h, lbDMFTableShape.cpp, lbDMFTableShape.h,
+	  plugin.cpp, wxSFDesignerAnwendungenImplementation.cpp,
+	  wxSFDesignerFormulareImplementation.cpp,
+	  wxSFDesignerFormulareImplementation.h: Added a decond designer
+	  for forms and their fields
+
+2013-03-02 10:56  lollisoft
+
+	* Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png:
+	  Formular field connect icon
+
+2013-03-02 10:31  lollisoft
+
+	* Test/GUI/wxWrapper/toolbarimages/: table.png, table_column.png:
+	  Added new icon for the table model symbol
+
+2013-03-02 10:21  lollisoft
+
+	* Test/GUI/wxWrapper/toolbarimages/edittrash.png: Added new icon
+	  for the table model symbol
+
+2013-03-02 10:03  lollisoft
+
+	* Test/GUI/wxWrapper/toolbarimages/formular_field.png: First
+	  formularfield icon
+
+2013-03-02 09:29  lollisoft
+
+	* Plugins/wxWidgets/wxSFDesigner/: lbDMFApplicationShape.cpp,
+	  lbDMFApplicationShape.h, lbDMFFormularShape.cpp,
+	  lbDMFFormularShape.h, wxSFDesignerAnwendungenImplementation.cpp:
+	  Added first feature to automatically show and layout the
+	  applications with their forms.
+
+2013-03-01 08:04  lollisoft
+
+	* Test/GUI/wxWrapperDLL/: wxWrapperDLL.cpp, wxWrapperDLL.h: Fixed
+	  the close dialogs issue.
+
+2013-03-01 08:01  lollisoft
+
+	* Plugins/DatabaseForm/lbMasterDetailAction.cpp: Some changes, but
+	  the clóde is unused.
+
+2013-03-01 07:59  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Changed setting name to
+	  set label.
+
+2013-03-01 07:57  lollisoft
+
+	* BaseDevelopment/lbWorkflowEngine/lbMasterDetailAction.cpp:
+	  Correctly handle bail out.
+
+2013-03-01 07:49  lollisoft
+
+	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp: Do not
+	  log this as error.
+
+2013-02-23 08:27  lollisoft
+
+	* Plugins/VisitorOperations/pluginDBInputStream.cpp: Fixed bug when
+	  more entries per form were added to formular_parameters table. Query
+	  din't filtering for parametername = 'query'.
+
+2013-02-22 06:28  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/:
+	  DMFToXMI/UMLXMISnippets.xsl, DMFToXMI/gen_DMFToXMI.xsl,
+	  DMFToXMI/gen_DMFToXMI_FormBootstrap.xsl,
+	  XMIToDMF/importUMLClassAsDMFForm.xsl: Added support for defining
+	  xmlentityname to enable backward compatible code generation.
+
+2013-02-03 07:40  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj:
+	  Regenerated lbDMF Manager XMI file.
+
+2013-02-03 07:30  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/CDKatalog.xmi:
+	  Fixed bug where the last export was not done with generate
+	  extensions.
+
+2013-02-03 05:50  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl:
+	  Removed the < and > brackets as they probably result into the XML
+	  load error when generating code.
+
+2013-02-01 06:47  lollisoft
+
+	* ChangeLog-basic.txt: Changes between release 1.0.4 stable rc3 and
+	  rc4
+
 2013-02-01 05:38  lollisoft
 
 	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
 	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Updated
 	  splash screens.
-
-2013-02-01 05:15  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Changed Mac OS X disk image
-	  version.
-
-2013-01-31 08:16  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp:
-	  Changed the database user and password properties to not contain <
-	  and >.
-
-2013-01-31 07:46  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  Test/GUI/wxWrapper/dynamic.cpp: Fixed application reload bug.
-	  After a reload on Mac OS X images could no more get loaded from
-	  application bundle.
-
-2013-01-30 08:55  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/:
-	  lbDMF Manager.xmi, lbDMFManager/128130,
-	  lbDMFManager/152962.diagram, lbDMFManager/lbDMFManager.prj:
-	  Removed quotes.
-
-2013-01-30 08:05  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/:
-	  lbDMF Manager.xmi, lbDMFManager/128130,
-	  lbDMFManager/152962.diagram, lbDMFManager/lbDMFManager.prj: Have
-	  provocated an SQL injection. The action has to make sure, that this
-	  has to be avoided.
-
-2013-01-30 06:34  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/:
-	  lbDMF Manager.xmi, lbDMFManager/128130,
-	  lbDMFManager/152962.diagram, lbDMFManager/lbDMFManager.prj:
-	  Changed message box text and title to reflect os and selected
-	  application id.
-
-2013-01-30 05:51  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/:
-	  lbDMF Manager.xmi, lbDMFManager/128130,
-	  lbDMFManager/152962.diagram, lbDMFManager/lbDMFManager.prj,
-	  lbDMFManager/stereotypes: Corrected UML model codegenerator
-	  workflow to match installation path setup.
-
-2013-01-30 05:50  lollisoft
-
-	* lbdmf.spec, make_src_dist.sh, BaseDevelopment/Makefile: Corrected
-	  rpm istallation.
-
-2013-01-29 08:41  lollisoft
-
-	* bindist.iss: Moved the wxShapeFramework plugin into a future
-	  plugins folder, as it will hinder code generation.  (The name of the
-	  form contains brackets that are not removed in the templates yet -
-	  at least DevX)
-
-2013-01-27 19:06  lollisoft
-
-	* bindist.iss: Added missing aui library build from wxWidgets.
-
-2013-01-27 16:54  lollisoft
-
-	* make_src_dist.bat: Adding wxShapeFramework vendor library.
-
-2013-01-27 16:53  lollisoft
-
-	* BaseDevelopment/Makefile: Moved target to be build earlyer.
-
-2013-01-27 16:52  lollisoft
-
-	* make/STD_MAKE: Release build. Added MinGW target switch to start
-	  support -m32 only (Sqlite).
-
-2013-01-27 16:49  lollisoft
-
-	* bindist.iss, buildwxWidgets_MinGW.bat: Template fixes
-
-2013-01-26 23:43  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Fixed bundle creation.
-	  Missing templates and sample UML files in build applicatin (not
-	  packaged).
-
-2013-01-26 23:41  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/:
-	  XSLT_Templates/XMIToDMF/importUML-ApplicationDB.xsl,
-	  XSLT_Templates/XMIToDMF/importUML-SystemDB.xsl,
-	  XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.h: Fixed template
-	  parameter usage. Fixed parameter passing in XSLT.
-
-2013-01-22 08:11  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/:
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.h,
-	  XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl: Fixed parameter
-	  passing code, but it seems not to have any effect.  No parameters
-	  are really passed.
-
-2013-01-20 10:31  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.h,
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl,
-	  BaseDevelopment/lbHook/lbHook.cpp, include/lbConfigHook.h,
-	  Plugins/lbFileOperationsPlugin/lbCopyFile.cpp,
-	  Plugins/lbFileOperationsPlugin/lbCopyFile.h: Changes in
-	  lbCopyFile (namespace removed, implementation class name changed)
-	  and added XSLT parameter passing.
-
-2013-01-18 05:59  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
-	  Fixed import issue where actions get inserted and then deleted, thus
-	  getting invalid data.
-
-2013-01-06 12:26  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
-	  Removed path pointing into my develop directory.
-
-2013-01-06 09:07  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/: App/lbDynApp.cpp,
-	  Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp: Fixed some
-	  wrong settings for the Linux deployment.
-
-2012-12-30 12:40  lollisoft
-
-	* hudsonbuild_unit_test.sh: Added brackets.
-
-2012-12-30 12:23  lollisoft
-
-	* hudsonbuild_unit_test.sh: Added creation of local application
-	  data directory.
-
-2012-12-30 10:58  lollisoft
-
-	* make/STD_MAKE: Need a debug build for hudson user.
-
-2012-12-30 10:24  lollisoft
-
-	* hudsonbuild_unit_test.sh: Using CRUISECONTROL build.
-
-2012-12-30 10:08  lollisoft
-
-	* hudsonbuild_unit_test.sh: Calling makefile using install target.
-
-2012-12-30 10:01  lollisoft
-
-	* hudsonbuild_unit_test.sh: Calling make install within
-	  BaseDevelopment.
-
-2012-12-30 09:54  lollisoft
-
-	* hudsonbuild_unit_test.sh: Corrected prefix.
-
-2012-12-30 09:20  lollisoft
-
-	* make/STD_MAKE: Deactivated debugging.
-
-2012-12-30 09:05  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
-	  make/STD_MAKE, Plugins/DatabaseLayerGateway/lbDB.cpp,
-	  UnitTests/TestMainUseCases/TestMainUseCases.cpp,
-	  UnitTests/UIWrapper/UIWrapper.cpp: Now the unit tests are running
-	  successfully under Linux.
-
-2012-12-22 08:52  lollisoft
-
-	* BaseDevelopment/lbHook/lbHook.cpp: Removed unneeded error
-	  reporting. It always reported.
-
-2012-12-22 07:31  lollisoft
-
-	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Removed test of
-	  equalness for the event handler. They may be relly not equel after
-	  an application reload.
-
-2012-12-22 07:15  lollisoft
-
-	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Removed test of
-	  equalness for the event handler. They may be relly not equel after
-	  an application reload.
-
-2012-12-21 08:02  lollisoft
-
-	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added some
-	  output.
-
-2012-12-21 07:28  lollisoft
-
-	* hudsonbuild_unit_test.sh: Removing wxWidgets related pligins in
-	  unit test as it makes no sense and if a console application will be
-	  deployed, these wouldn't include wxWidgets related stuff.
-
-2012-12-09 10:25  lollisoft
-
-	* hudsonbuild_unit_test.sh: The problem was overwriting the
-	  makefile again without the install rule.
-
-2012-12-09 10:09  lollisoft
-
-	* hudsonbuild.sh: Not a second checkin required. Not getting the
-	  install target into the makefile is another problem.
-
-2012-12-08 11:10  lollisoft
-
-	* hudsonbuild.sh: Does changing this file need a second change?
-
-2012-12-08 10:06  lollisoft
-
-	* hudsonbuild.sh: Added creating install target
-
-2012-12-08 09:59  lollisoft
-
-	* hudsonbuild_unit_test.sh: Wrong executable name
-
-2012-12-08 07:20  lollisoft
-
-	* UnitTests/makefile: UIWrapper lib prefix for linux and debian ppc
-
-2012-12-07 08:48  lollisoft
-
-	* UnitTests/makefile: Moved targets per platform and added install
-	  where needed for automatic unit tests.
-
-2012-12-07 08:29  lollisoft
-
-	* UnitTests/makefile: Added install rule.
-
-2012-12-07 08:24  lollisoft
-
-	* UnitTests/: Actions/makefile.module,
-	  BaseDevelopment/makefile.module,
-	  TestMainUseCases/makefile.module: Added include path
-
-2012-12-07 08:21  lollisoft
-
-	* UnitTests/UIWrapper/UIWrapper.cpp: TRUE => true
-
-2012-12-07 08:15  lollisoft
-
-	* UnitTests/UIWrapper/makefile.module: Added missing include path
-	  on Linux, Solaris and PPC Linux
-
-2012-12-07 06:09  lollisoft
-
-	* BaseDevelopment/Makefile: Activated building UnitTests on
-	  solaris, linux and ppc linux.
-
-2012-12-06 08:13  lollisoft
-
-	* hudsonbuild_unit_test.sh: Added unit test script with execution
-	  flags.
-
-2012-12-06 06:57  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/makefile.module: Also removed CPP
-	  part in include path.
-
-2012-12-06 06:45  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/makefile.module: Added missing
-	  usage of RELPATH.
-
-2012-11-25 10:03  lollisoft
-
-	* BaseDevelopment/Makefile: Missed the wsShapeFramework targets on
-	  Linux.
-
-2012-11-25 09:37  lollisoft
-
-	* BaseDevelopment/Makefile: Moved wxShapeFramework build before
-	  plugins.
-
-2012-11-19 14:31  lollisoft
-
-	* BaseDevelopment/Makefile, Test/GUI/wxWrapper/makefile.module,
-	  Test/GUI/wxWrapperDLL/makefile.module,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Fixed Windows based
-	  issues and replaced wxAUI library with built in wxWidgets AUI
-	  version.
-
-2012-11-19 08:38  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  Test/GUI/wxWrapper/dynamic.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Fixed remaining reload
-	  issues.
-
-2012-11-18 10:26  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Fixed application unload
-	  and reload issue.
-
-2012-11-18 09:38  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
-	  interfaces/lbInterfaces.h, make/STD_MAKE,
-	  Test/GUI/wxWrapper/dynamic.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h,
-	  UnitTests/TestMainUseCases/TestMainUseCases.cpp,
-	  UnitTests/UIWrapper/UIWrapper.cpp, UnitTests/include/UIWrapper.h:
-	  Many changes that help improving unit tests. They mainly include
-	  application reload capabilities, but that didn't yet work in GUI.
-	  Some menu entries are doubled, data isn't valid (NULL pointer).
-
-2012-11-11 09:25  lollisoft
-
-	* BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
-	  interfaces/lbInterfaces.h: Added new function to unregister an
-	  event.
-
-2012-11-11 08:07  lollisoft
-
-	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added a test for
-	  exporting to XMI2. But it cannot test for other models than lbDMF
-	  Manager.  This is because unloadApplication and reloading another
-	  didn't work yet.
-
-2012-11-10 05:13  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/:
-	  128002, 128002.diagram, CDKatalog.prj: Removed ReleaseDate and
-	  added description field for the Unit tests.
-
-2012-10-27 09:35  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl:
-	  Fixed a reimport bug relating to the SQL query that wasn't changed.
-
-2012-10-27 09:04  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
-	  CDKatalogAddedDescription.xmi, CDKatalogStartTest.xmi,
-	  CDKatalogThenRemovedReleaseDate.xmi: The models used in
-	  TestMainUseCases unit test.
-
-2012-10-27 09:03  lollisoft
-
-	* UnitTests/TestMainUseCases/TestMainUseCases.cpp: Added final test
-	  rules to validate repeated imports are as expected.
-
-2012-10-27 07:27  lollisoft
-
-	* UnitTests/: makefile, TestMainUseCases/TestMainUseCases.cpp,
-	  TestMainUseCases/makefile.module, TestRunner/makefile.module:
-	  Changes to get the code compiled with new versions of make and
-	  MinGW.  Added code to test the import functionality of initial UML
-	  models.
-
-2012-10-20 11:48  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl:
-	  Some bugfixes.
-
-2012-10-20 11:00  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  XMISettings.xsl, xmi1.2_2SQLScript.xsl: Fixed but not
-	  successfully tested foreign key creation in sqlite with triggers.
-
-2012-10-20 09:32  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/CDKatalog.xmi:
-	  Initial model as XMI 2.1 export
-
-2012-10-15 08:29  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/: lbDMFApplicationShape.cpp,
-	  lbDMFApplicationShape.h, lbDMFBaseDesignShape.cpp,
-	  lbDMFBaseDesignShape.h, lbDMFFormularShape.cpp,
-	  lbDMFFormularShape.h, wxSFDesignerBase.cpp, wxSFDesignerBase.h:
-	  Rewrote the designer code to use custom shapes as they do behave
-	  much more as expected.
-
-2012-10-14 15:56  lollisoft
-
-	* dist.iss, docdist.iss, bindist.iss: Added wxShapeFramework to the
-	  binary distribution. Only the icon is missing yet.
-
-2012-10-14 13:23  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/:
-	  wxSFDesignerAnwendungenImplementation.cpp, wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Added a zoom functionality with mouse wheel.
-
-2012-10-14 12:53  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp,
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.h,
-	  Test/GUI/wxWrapper/toolbarimages/document-open.png,
-	  Test/GUI/wxWrapper/toolbarimages/document-save.png: Added empty
-	  function prototypes for saving and loading a design. To be
-	  intercepted.
-
-2012-10-14 12:26  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/: wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Implemented autolayout feature.
-
-2012-10-14 11:19  lollisoft
-
-	* Plugins/: makefile, wxWidgets/wxSFDesigner/makefile.module:
-	  Building designer on all platforms.
-
-2012-10-14 10:52  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp: Added code
-	  to avoid connections to elements inside of the model element.
-
-2012-10-14 10:31  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerAnwendungenImplementation.cpp,
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerAnwendungenImplementation.h,
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp,
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.h: Refactored
-	  some code and added connection feature.
-
-2012-10-14 09:10  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Corrected
-	  creation of custom forms to be in a separate menu and toolbar.
-
-2012-10-14 06:48  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/:
-	  wxSFDesignerAnwendungenImplementation.cpp, wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Changes in the designer.
-
-2012-10-14 05:11  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Changing fixed formular
-	  title reactivated.
-
-2012-10-14 05:10  lollisoft
-
-	*
-	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerAnwendungenImplementation.cpp:
-	  Changed title back. Changing it from my configuration on activation
-	  time.
-
-2012-10-14 04:22  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/plugin.cpp: Changed title
-
-2012-10-13 16:21  lollisoft
-
-	* Test/GUI/wxWrapper/toolbarimages/mouse_cursor.png: Missing icon
-
-2012-10-13 15:00  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/: plugin.cpp,
-	  wxSFDesignerAnwendungenImplementation.cpp,
-	  wxSFDesignerAnwendungenImplementation.h, wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Added autoregister functionality for the
-	  designer. Added some basic shapes that may be good candidates for a
-	  DSL.
-
-2012-10-12 08:52  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/: makefile.module,
-	  wxSFDesignerAnwendungenImplementation.cpp, wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Added apply grid style.
-
-2012-10-12 06:49  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Changed query to
-	  filter by type id, not the namespace.
-
-2012-10-12 06:34  lollisoft
-
-	* Plugins/wxWidgets/wxSFDesigner/:
-	  wxSFDesignerAnwendungenImplementation.cpp, wxSFDesignerBase.cpp,
-	  wxSFDesignerBase.h: Fixed window closing issue.
-
-2012-10-12 04:57  lollisoft
-
-	* Plugins/: makefile, wxWidgets/wxSFDesigner/makefile.module,
-	  wxWidgets/wxSFDesigner/plugin.cpp,
-	  wxWidgets/wxSFDesigner/plugin.h,
-	  wxWidgets/wxSFDesigner/wxSFDesignerAnwendungenImplementation.cpp,
-	  wxWidgets/wxSFDesigner/wxSFDesignerAnwendungenImplementation.h,
-	  wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp,
-	  wxWidgets/wxSFDesigner/wxSFDesignerBase.h: Added a new plugin to
-	  wrap the wxSFFramework.
-
-2012-10-10 08:55  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabaseDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseForm.h,
-	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewDialog.cpp,
-	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
-	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
-	  interfaces/lbInterfaces-sub-db.h,
-	  interfaces/lbInterfaces-sub-ui.h, interfaces/lbInterfaces.h,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Refactored init() into
-	  lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables
-	  more variations of forms to be shown.
-
-2012-10-09 07:39  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp: Removed old code from the very
-	  beginning.
-
-2012-10-09 07:33  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Fixed initial add
-	  feature missing issue.
-
-2012-10-09 07:02  lollisoft
-
-	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Fixed form setup issue
-	  with empty tables.
-
-2012-10-06 22:26  lollisoft
-
-	* ChangeLog-basic.txt: Updated change log.
-
-2012-10-06 21:15  lollisoft
-
-	* buildwxWidgets_MinGW.bat: Changed download link for binary build
-	  tools.
 
