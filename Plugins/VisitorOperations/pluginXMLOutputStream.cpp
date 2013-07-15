@@ -596,7 +596,9 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {
 		"\" name=\"" << Name->charrep() << 
 		"\" source=\"" << actions->getActionSource() << 
 		"\" typ=\"" << actions->getActionTyp() << 
-		"\" target=\"" << actions->getActionTarget() << "\"/>" << "\n";
+		"\" target=\"" << actions->getActionTarget() << 
+		"\" applicationid=\"" << actions->getActionApplicationID() << 
+		"\"/>" << "\n";
 	}
 
 	*oStream << "</actions>" << "\n";

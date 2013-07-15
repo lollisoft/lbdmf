@@ -777,6 +777,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
 
 	for (int i = 0; i < count; i++) {
 		long   ID;
+		long   ApplicationID;
 		char* Name = NULL;
 		char* Source = NULL;
 		long  Typ;
@@ -787,8 +788,10 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
 		*iStream >> Source;
 		*iStream >> Typ;
 		*iStream >> Target;
-		
-		actions->addAction(Name, Typ, Source, Target, ID);
+		*iStream >> ApplicationID;
+
+		_LOG << "Have an action with this Id: " << ID LOG_	
+		actions->addAction(Name, Typ, Source, Target, ApplicationID, ID);
 	}
 }
 
