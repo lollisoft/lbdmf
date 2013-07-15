@@ -700,12 +700,15 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Actions* actions) {
 	
 	while (actions->hasMoreActions()) {
 		actions->setNextAction();
-		
+	
+		_LOG << "Have an action with this Id: " << actions->getActionID() LOG_
+	
 		*oStream << actions->getActionID();
 		*oStream << actions->getActionName();
 		*oStream << actions->getActionSource();
 		*oStream << actions->getActionTyp();
 		*oStream << actions->getActionTarget();
+		*oStream << actions->getActionApplicationID();
 	}
 }
 
