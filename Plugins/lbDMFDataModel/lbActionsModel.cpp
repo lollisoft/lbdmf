@@ -140,6 +140,8 @@ long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const cha
 	*Target = target;
 	ID->setData(_id);
 	ApplicationID->setData(_applicationid);
+
+	_LOG << "lbActionsModel::addAction() Inserts an action with id " << _id LOG_
 	
 	*paramname = "Name";
 	param->setUAPString(*&paramname, *&Name);
