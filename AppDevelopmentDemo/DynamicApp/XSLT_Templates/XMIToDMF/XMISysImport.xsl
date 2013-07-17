@@ -47,6 +47,14 @@ Currently it is a copy for the new name in release.
 <xsl:param name="XSLDatabaseBackendApplication"/>
 <xsl:param name="overwriteDatabase"/>
 
+<xsl:param name="UMLImportDBName"/>
+<xsl:param name="UMLImportDBUser"/>
+<xsl:param name="UMLImportDBPass"/>
+
+<xsl:variable name="database_name"><xsl:if test="$UMLImportDBName=''"><xsl:value-of select="$settingsfile_database_name"/></xsl:if><xsl:if test="$UMLImportDBName!=''"><xsl:value-of select="$UMLImportDBName"/></xsl:if></xsl:variable>
+<xsl:variable name="database_user"><xsl:if test="$UMLImportDBUser=''"><xsl:value-of select="$settingsfile_database_user"/></xsl:if><xsl:if test="$UMLImportDBUser!=''"><xsl:value-of select="$UMLImportDBUser"/></xsl:if></xsl:variable>
+<xsl:variable name="database_pass"><xsl:if test="$UMLImportDBPass=''"><xsl:value-of select="$settingsfile_database_pass"/></xsl:if><xsl:if test="$UMLImportDBPass!=''"><xsl:value-of select="$UMLImportDBPass"/></xsl:if></xsl:variable>
+
 <xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
 
 <!-- ********** Select your database target ********** -->
@@ -130,6 +138,9 @@ BEGIN TRANSACTION;
 			<xsl:with-param name="ApplicationName" select="@name"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
 		</xsl:call-template>	
 
 </xsl:if>
@@ -140,6 +151,9 @@ BEGIN TRANSACTION;
 			<xsl:with-param name="ApplicationName" select="@name"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
 		</xsl:call-template>	
 
 </xsl:if>
@@ -149,6 +163,7 @@ BEGIN TRANSACTION;
 <xsl:variable name="applicationname" select="@name"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
+<!--
 INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface") values('<xsl:value-of select="$applicationname"/>', 'Application <xsl:value-of select="$applicationname"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 
 INSERT OR IGNORE INTO "users" (userid, passwort, lastapp) SELECT 'user', 'TestUser', id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
@@ -157,6 +172,7 @@ INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT id, last
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', 'dba', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'dbpass', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBName', '<xsl:value-of select="$applicationname"/>', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
+-->
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 select GetOrCreateApplication('<xsl:value-of select="@name"/>');
