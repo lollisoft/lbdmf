@@ -128,7 +128,7 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="Media" xmi.id="BOUML_0x19b1bf0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="MediaType" xmi.id="BOUML_0x19b1bf0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
 							<UML:Attribute name="Type" xmi.id="BOUML_0x19b0410" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
