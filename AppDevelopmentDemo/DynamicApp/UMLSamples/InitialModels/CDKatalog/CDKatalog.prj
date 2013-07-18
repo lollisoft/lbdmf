@@ -1,6 +1,6 @@
 format 73
 "CDKatalog"
-  revision 10
+  revision 11
   modified_by 2 "lothar"
 
 
@@ -37,7 +37,7 @@ format 73
   mark_for_import
   
   ncouples 12
-  key "gxmi path" value "Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogThenRemovedReleaseDate.xmi"
+  key "gxmi path" value "Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi taggedvalue" value "1"
