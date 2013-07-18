@@ -12,7 +12,7 @@
 		<UML:Namespace.ownedElement>
 			<UML:Package xmi.id="BOUML_0x19b1eb0" name ="CDKatalog">
 				<UML:Namespace.ownedElement>
-					<UML:Class name="CD" xmi.id="BOUML_0x19b1d10" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Media" xmi.id="BOUML_0x19b1d10" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
 							<UML:Attribute name="Titel" xmi.id="BOUML_0x19b1a40" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>

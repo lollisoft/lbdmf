@@ -202,15 +202,15 @@ public:
 		{
 // Checked out stuff is directly in workspace directory (without /Projects/CPP)
 #ifdef WINDOWS		
-		*XslSystemFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
-		*XslApplicationFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
+		*XslSystemFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISysImport.xsl";
+		*XslApplicationFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMIImport.xsl";
 		*XslSettingsFile += "\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xsl";
 		*XmiFile += "\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\";
 #endif
 
 #ifndef WINDOWS		
-		*XslSystemFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl";
-		*XslApplicationFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl";
+		*XslSystemFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl";
+		*XslApplicationFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.xsl";
 		*XslSettingsFile += "/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl";
 		*XmiFile += "/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/";
 #endif
@@ -218,15 +218,15 @@ public:
 		else
 		{
 #ifdef WINDOWS		
-		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1_2_2_lbDMFSQLScript.xsl";
-		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\xmi1.2_2SQLScript.xsl";
+		*XslSystemFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISysImport.xsl";
+		*XslApplicationFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMIImport.xsl";
 		*XslSettingsFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\XSLT_Templates\\XMIToDMF\\XMISettings.xsl";
 		*XmiFile += "\\Projects\\CPP\\AppDevelopmentDemo\\DynamicApp\\UMLSamples\\InitialModels\\";
 #endif
 
 #ifndef WINDOWS		
-		*XslSystemFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1_2_2_lbDMFSQLScript.xsl";
-		*XslApplicationFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/xmi1.2_2SQLScript.xsl";
+		*XslSystemFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl";
+		*XslApplicationFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.xsl";
 		*XslSettingsFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISettings.xsl";
 		*XmiFile += "/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/";
 #endif
@@ -497,18 +497,18 @@ public:
 		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "SELECT * FROM SQLITETEST"))
 
 		// Table must exist
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "select * from 'Media'"))
 		
 		// Test fails because metainformation could not be gathered. This is because aggregated columns have no associated columns :-)
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select 'Titel', 'Laenge', 'ReleaseDatum' from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select 'Titel', 'Laenge', 'ReleaseDatum' from 'Media'"))
 		
 		// Missing column ReleaseDatum
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'Media' ('Titel', 'Laenge', 'ReleaseDatum') values ('Titel', 0, date('now'))"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'Media'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum from 'Media'"))
 		
-		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
-		"select \"Titel\", \"Laenge\", \"ReleaseDatum\", \"Track\"  from \"CD\" order by \"ID\""))
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'Media')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"Musiker\" , \"MediaType\" , \"Description\" from \"Media\" order by \"ID\""))
 
 		meta->fireEvent("overwriteDatabase");
 		
@@ -516,12 +516,12 @@ public:
 
 		import_Initial_TestModel(*&myUIWrapper, "CDKatalogAddedDescription.xmi", dbname);
 
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'Media' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'Media'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'Media'"))
 		
-		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
-		"select \"Titel\", \"Laenge\", \"ReleaseDatum\", \"Track\" , \"Description\" from \"CD\" order by \"ID\""))
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'Media')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"ReleaseDatum\", \"Musiker\" , \"MediaType\" , \"Description\" from \"Media\" order by \"ID\""))
 
 		puts("Import No:3");
 
@@ -530,20 +530,20 @@ public:
 		import_Initial_TestModel(*&myUIWrapper, "CDKatalogThenRemovedReleaseDate.xmi", dbname);
 		//setLogActivated(false);
 
-		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'CD' ('Titel', 'Laenge') values ('Titel', 0)"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_NODATA, CheckBySQLQuery(*&db, dbname, "insert into 'Media' ('Titel', 'Laenge') values ('Titel', 0)"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select * from 'Media'"))
 
 		// Check that ReleaseDatum is failing, thus no more present
-		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'CD'"))
-		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, Description from 'CD'"))
+		ASSERT_EQUALS(ERR_DB_QUERYFAILED, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, ReleaseDatum, Description from 'Media'"))
+		ASSERT_EQUALS(ERR_NONE, CheckBySQLQuery(*&db, dbname, "select Titel, Laenge, Description from 'Media'"))
 
 		UAP(lb_I_Database, db1)
 		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db1, "'database plugin'")
 
 		// Ensure that the SQL query has really changed to the last imported definition
 		
-		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'CD')", 1, 1, 
-		"select \"Titel\", \"Laenge\", \"Track\" , \"Description\" from \"CD\" order by \"ID\""))
+		ASSERT_EQUALS(true, CheckBySQLQuery(*&db, "lbDMF", "SELECT parametervalue from formular_parameters where formularid = (select id from formulare where name = 'Media')", 1, 1, 
+		"select \"Titel\", \"Laenge\", \"Musiker\" , \"MediaType\" , \"Description\" from \"Media\" order by \"ID\""))
 		
 		// Export the last application model into a XML file
 		meta->fireEvent("evtExportApplicationToXML");
