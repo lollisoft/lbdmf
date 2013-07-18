@@ -562,18 +562,21 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 <xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
 <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
 	  
 <xsl:if test="$aggregation='none'">
-<xsl:variable name="assocname" select="../../@name"/>
-<!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
-</xsl:if>
+<xsl:variable name="assocname" select="../../@name"/>, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" </xsl:if>
 </xsl:for-each>
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
@@ -591,14 +594,14 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:variable>
 
 
-<xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
@@ -626,14 +629,14 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:variable>
 
 
-<xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
@@ -683,6 +686,8 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 -- Have an association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 
 <xsl:variable name="assocname" select="../../@name"/>
+
+<!-- Attention: Here I use the other side and thus aggregate -->
 	  
 <xsl:if test="$aggregation='aggregate'">
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(../../../../@name, ')'), '(')"/>
