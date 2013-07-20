@@ -2,37 +2,37 @@ format 73
 
 classcanvas 128002 class_ref 128002 // Media
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 101.56 138.64 2000
+  xyz 101.48 136.3 2000
 end
 classcanvas 128130 class_ref 128130 // Musiker
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 329.42 34.2 2000
+  xyz 329.78 32.92 2000
 end
 classcanvas 128386 class_ref 134658 // MediaType
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 38.18 13.6 2000
+  xyz 38.22 13.8 2000
 end
 classcanvas 128642 class_ref 141186 // Track
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 334.86 239.36 2000
+  xyz 334.22 238.26 2000
 end
 relationcanvas 128258 relation_ref 128002 // Name
-  from ref 128130 z 1999 label "Name" italic xyz 234 112 1999 stereotype "<<masterdetail_action>>" xyz 191 125 3000 to ref 128002
+  from ref 128130 z 1999 label "Name" italic xyz 233.5 122.5 1999 stereotype "<<masterdetail_action>>" xyz 190.5 134.5 3000 to ref 128002
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128770 relation_ref 141058 // Name
-  from ref 128130 z 2001 label "Name" italic xyz 344 163 2001 stereotype "<<masterdetail_action>>" xyz 300 175 3000 to ref 128642
+  from ref 128130 z 2001 label "Name" italic xyz 344 169.5 2001 stereotype "<<masterdetail_action>>" xyz 300 181.5 3000 to ref 128642
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128898 relation_ref 141186 // Titel
-  from ref 128002 z 2001 label "Titel" italic xyz 238 213 2001 stereotype "<<masterdetail_action>>" xyz 191 225 3000 to ref 128642
+  from ref 128002 z 2001 label "Titel" italic xyz 238 223.5 2001 stereotype "<<masterdetail_action>>" xyz 191 235.5 3000 to ref 128642
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129026 relation_ref 147714 // Type
-  from ref 128386 z 2001 label "Type" italic xyz 91 95 2001 stereotype "<<masterdetail_action>>" xyz 44 107 3000 to ref 128002
+  from ref 128386 z 2001 label "Type" italic xyz 88.5 95 2001 stereotype "<<masterdetail_action>>" xyz 41.5 107 3000 to ref 128002
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
