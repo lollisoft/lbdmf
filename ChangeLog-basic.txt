@@ -1,3 +1,71 @@
+2013-07-20 10:26  lollisoft
+
+	* dist.iss: Added starting web page for gathering stats.
+
+2013-07-20 10:25  lollisoft
+
+	* buildwxWidgets_MinGW.bat: Changed fetching version for binary
+	  build tools.
+
+2013-07-20 09:40  lollisoft
+
+	* bindist.iss: Added starting web page for gathering stats.
+
+2013-07-20 05:11  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  UMLSamples/InitialModels/CDKatalog.xmi,
+	  UMLSamples/InitialModels/CDKatalog/128002,
+	  UMLSamples/InitialModels/CDKatalog/128002.diagram,
+	  UMLSamples/InitialModels/CDKatalog/CDKatalog.prj,
+	  XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
+	  Added some missing but most usual data types.
+
+2013-07-18 08:05  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  CDKatalogAddedDescription.xmi, CDKatalogStartTest.xmi,
+	  CDKatalogThenRemovedReleaseDate.xmi, CDKatalog/128002,
+	  CDKatalog/128002.diagram: Missed the old Media table. Renamed it
+	  to MediaType.
+
+2013-07-18 07:51  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogAddedDescription.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogStartTest.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalogThenRemovedReleaseDate.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/CDKatalog/CDKatalog.prj,
+	  UnitTests/TestMainUseCases/TestMainUseCases.cpp: Corrected unit
+	  tests and modified XMI files manually (CD -> Media).
+
+2013-07-18 07:22  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Bugfix for foreign keys, that are placed in the wrong table.
+
+2013-07-17 08:10  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Missing parameter for database connection.
+
+2013-07-15 08:31  lollisoft
+
+	* Plugins/: VisitorOperations/pluginInputStream.cpp,
+	  VisitorOperations/pluginOutputStream.cpp,
+	  VisitorOperations/pluginXMLOutputStream.cpp,
+	  lbDMFDataModel/lbActionsModel.cpp: Bugfix for reload application
+	  issue. Now the actions get created in the form when loaded from
+	  cached data.
+
+2013-07-14 13:03  lollisoft
+
+	* ChangeLog-basic.txt: New changelog for final release.
+
 2013-07-14 11:15  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/Doc/:
@@ -401,7 +469,7 @@
 
 2013-05-26 08:41  lollisoft
 
-	* bindist.iss, dist.iss, templatedist.iss: Changed run flags where
+	* templatedist.iss, bindist.iss, dist.iss: Changed run flags where
 	  not required by default.
 
 2013-05-26 08:20  lollisoft
@@ -657,15 +725,15 @@
 
 2013-04-05 08:36  lollisoft
 
-	* InstallACE.bat, activateACE.bat, buildwxWidgets_MinGW.bat,
-	  dist.iss, installMinGW.bat, watcomenv.bat: First integration of
-	  ACE into source deployment.
+	* InstallACE.bat, activateACE.bat, installMinGW.bat, watcomenv.bat,
+	  buildwxWidgets_MinGW.bat, dist.iss: First integration of ACE into
+	  source deployment.
 
 2013-03-29 09:23  lollisoft
 
-	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
-	  doxygen.conf, interfaces/lbInterfaces.h: Changed versions
-	  targeting final release.
+	* bin-buildtools-dist.iss, docdist.iss, doxygen.conf, bindist.iss,
+	  dist.iss, interfaces/lbInterfaces.h: Changed versions targeting
+	  final release.
 
 2013-03-11 08:27  lollisoft
 
