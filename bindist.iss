@@ -119,5 +119,6 @@ Name: "{userdesktop}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\b
 ;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
+Filename: "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=23"; Flags: shellexec
 Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
 
