@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 11
+  revision 12
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -109,6 +109,26 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 161410 "Publication"
+	private explicit_type "date"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161794 "Prize"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 128130 "Musiker"
@@ -171,6 +191,16 @@ ${inlines}
 
       attribute 141826 "Gruppe"
 	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161538 "Birthday"
+	private explicit_type "date"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -264,6 +294,16 @@ ${inlines}
 
       classrelation 141698 // (Titel)
 	relation_ref 141186 // Titel
+      end
+
+      attribute 161666 "Lyrics"
+	private explicit_type "bigstring"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
   end

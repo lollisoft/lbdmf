@@ -106,6 +106,8 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='date'">DATETIME</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='int'">int4</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='string'">bpchar</xsl:when>
+	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='bigstring'">TEXT</xsl:when>
+	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='float'">FLOAT</xsl:when>
 </xsl:choose>
 </xsl:variable>	
 
