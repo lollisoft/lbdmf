@@ -29,6 +29,16 @@
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
+							<UML:Attribute name="Publication" xmi.id="BOUML_0x19b15f0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Prize" xmi.id="BOUML_0x19b1540" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_4"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
 					<UML:Association name="(Titel)" xmi.id="BOUML_0x19b1810">
@@ -59,24 +69,29 @@
 					</UML:Association>
 					<UML:Class name="Musiker" xmi.id="BOUML_0x19b1c70" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x19b1320" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x19b1160" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Vorname" xmi.id="BOUML_0x19b1270" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Vorname" xmi.id="BOUML_0x19b10b0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Gruppe" xmi.id="BOUML_0x19b1100" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Gruppe" xmi.id="BOUML_0x19b0330" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_5"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Birthday" xmi.id="BOUML_0x19b0280" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_3"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(Name)" xmi.id="BOUML_0x19b1550">
+					<UML:Association name="(Name)" xmi.id="BOUML_0x19b1390">
 						<UML:Association.connection>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x19b1d10">
 								<UML:AssociationEnd.participant>
@@ -102,7 +117,7 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Association name="(Name)" xmi.id="BOUML_0x19b11b0">
+					<UML:Association name="(Name)" xmi.id="BOUML_0x19b03e0">
 						<UML:Association.connection>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x19b1b30">
 								<UML:AssociationEnd.participant>
@@ -130,19 +145,19 @@
 					</UML:Association>
 					<UML:Class name="MediaType" xmi.id="BOUML_0x19b1bd0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Type" xmi.id="BOUML_0x19b03f0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Type" xmi.id="BOUML_0x19b0110" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Description" xmi.id="BOUML_0x19b0340" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Description" xmi.id="BOUML_0x19b0060" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(Type)" xmi.id="BOUML_0x19b13d0">
+					<UML:Association name="(Type)" xmi.id="BOUML_0x19b1210">
 						<UML:Association.connection>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x19b1d10">
 								<UML:AssociationEnd.participant>
@@ -170,14 +185,19 @@
 					</UML:Association>
 					<UML:Class name="Track" xmi.id="BOUML_0x19b1b30" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Titel" xmi.id="BOUML_0x19b0290" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Titel" xmi.id="BOUML_0x19b2f50" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Laenge" xmi.id="BOUML_0x19b01e0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Laenge" xmi.id="BOUML_0x19b2ea0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Lyrics" xmi.id="BOUML_0x19b2df0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
@@ -186,7 +206,9 @@
 				</UML:Namespace.ownedElement>
 			</UML:Package>
 			<UML:DataType xmi.id="BOUML_datatype_2" name = "bigstring" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
-			<UML:DataType xmi.id="BOUML_datatype_3" name = "bool" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_5" name = "bool" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_3" name = "date" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_4" name = "float" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 			<UML:DataType xmi.id="BOUML_datatype_1" name = "int" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 			<UML:DataType xmi.id="BOUML_datatype_0" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 		</UML:Namespace.ownedElement>
