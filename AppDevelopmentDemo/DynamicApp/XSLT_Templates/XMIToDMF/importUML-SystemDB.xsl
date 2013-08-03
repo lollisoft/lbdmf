@@ -308,7 +308,6 @@ delete from "action_steps" where "actionid" in (select "id" from "actions" where
 delete from "formular_actions" where action in (select id from actions where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
 delete from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>');
 
-
 -- A form validator should be used before saving the changes to the database
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');

@@ -568,6 +568,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 </xsl:if>
 
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
+
 <xsl:if test="./lowerValue/@value='1'">
 <xsl:if test="./upperValue/@value='1'">
 
@@ -602,6 +603,7 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$PrimaryTable"/>', '<xsl:value-of select="$PrimaryTableSourceColumn"/>', '<xsl:value-of select="../@name"/>', '<xsl:value-of select="@name"/>');
  
 </xsl:if>
+
 </xsl:if>
 </xsl:if>
 
