@@ -44,6 +44,7 @@
 <xsl:choose>
 <xsl:when test="$DataType='float'">Float</xsl:when>
 <xsl:when test="$DataType='string'">String</xsl:when>
+<xsl:when test="$DataType='phonenumber'">PhoneNumber</xsl:when>
 <xsl:when test="$DataType='bigstring'">String</xsl:when>
 <xsl:when test="$DataType='date'">String</xsl:when>
 <xsl:when test="$DataType='int'">Integer</xsl:when>

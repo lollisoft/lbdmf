@@ -32,6 +32,41 @@
 
 <xsl:output method="text" indent="no"/>
 
+<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
+<xsl:param name="XSLDatabaseBackendSystem"/>
+<xsl:param name="XSLDatabaseBackendApplication"/>
+<xsl:param name="overwriteDatabase"/>
+
+<xsl:variable name="targetdatabase">
+<xsl:if test="$XSLDatabaseBackendApplication=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if>
+<xsl:if test="$XSLDatabaseBackendApplication!=''"><xsl:value-of select="$XSLDatabaseBackendApplication"/></xsl:if>
+</xsl:variable>
+<xsl:variable name="execute_droprules">
+<xsl:if test="$overwriteDatabase=''"><xsl:value-of select="$settingsfile_execute_droprules"/></xsl:if>
+<xsl:if test="$overwriteDatabase!=''"><xsl:value-of select="$overwriteDatabase"/></xsl:if>
+</xsl:variable>
+
+<!-- ********** Select your database target ********** -->
+
+<!--
+<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
+-->
+<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
+
+
+<xsl:variable name="TargetDBType">
+	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
+	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
+	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
+	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
+</xsl:variable>
+<xsl:variable name="TargetDBVersion">
+	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
+	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
+	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
+</xsl:variable>
 <!-- ************************************************* -->
 
   <xsl:template match="text()|@*">
