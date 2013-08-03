@@ -26,8 +26,19 @@
             
             65760 Eschborn (germany)
 -->
+
+<!--
+This is a copy of xmi1_2_2_lbDMFSQLScript.xsl and should be refactored like XMIImport.xsl.
+Then the contents would be easier understandable and probably extended much easier.
+
+Currently it is a copy for the new name in release.
+-->
+
 <xsl:import href="XMISettings.xsl"/>
 <xsl:import href="createDefaultStoredProcs.xsl"/>
+
+<xsl:import href="XMISysImport.FillSchemaTables.xsl"/>
+<xsl:import href="XMISysImport.CreateFormularDefinition.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
@@ -35,6 +46,14 @@
 <xsl:param name="XSLDatabaseBackendSystem"/>
 <xsl:param name="XSLDatabaseBackendApplication"/>
 <xsl:param name="overwriteDatabase"/>
+
+<xsl:param name="UMLImportDBName"/>
+<xsl:param name="UMLImportDBUser"/>
+<xsl:param name="UMLImportDBPass"/>
+
+<xsl:variable name="database_name"><xsl:if test="$UMLImportDBName=''"><xsl:value-of select="$settingsfile_database_name"/></xsl:if><xsl:if test="$UMLImportDBName!=''"><xsl:value-of select="$UMLImportDBName"/></xsl:if></xsl:variable>
+<xsl:variable name="database_user"><xsl:if test="$UMLImportDBUser=''"><xsl:value-of select="$settingsfile_database_user"/></xsl:if><xsl:if test="$UMLImportDBUser!=''"><xsl:value-of select="$UMLImportDBUser"/></xsl:if></xsl:variable>
+<xsl:variable name="database_pass"><xsl:if test="$UMLImportDBPass=''"><xsl:value-of select="$settingsfile_database_pass"/></xsl:if><xsl:if test="$UMLImportDBPass!=''"><xsl:value-of select="$UMLImportDBPass"/></xsl:if></xsl:variable>
 
 <xsl:variable name="targetdatabase"><xsl:if test="$XSLDatabaseBackendSystem=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if><xsl:if test="$XSLDatabaseBackendSystem!=''"><xsl:value-of select="$XSLDatabaseBackendSystem"/></xsl:if></xsl:variable>
 
@@ -53,15 +72,13 @@
 	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 </xsl:variable>
 <xsl:variable name="TargetDBVersion">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
+
 <!-- ************************************************* -->
 
 
@@ -107,6 +124,8 @@
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
+-- Speedup many times
+BEGIN TRANSACTION;
 -- Creating a database script for targetdatabase='<xsl:value-of select="$targetdatabase"/>' TargetDBType='<xsl:value-of select="$TargetDBType"/>'
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 		<!-- Generate System database definition -->
@@ -119,10 +138,24 @@
 			<xsl:with-param name="ApplicationName" select="@name"/>
 			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
 		</xsl:call-template>	
 
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
+
+		<xsl:call-template name="createDefaultStoredProcs">
+			<xsl:with-param name="ApplicationID" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
+		</xsl:call-template>	
+
 </xsl:if>
 	
 -- Package: <xsl:value-of select="@name"/>
@@ -130,6 +163,7 @@
 <xsl:variable name="applicationname" select="@name"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
+<!--
 INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface") values('<xsl:value-of select="$applicationname"/>', 'Application <xsl:value-of select="$applicationname"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 
 INSERT OR IGNORE INTO "users" (userid, passwort, lastapp) SELECT 'user', 'TestUser', id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
@@ -138,6 +172,7 @@ INSERT OR IGNORE INTO "user_anwendungen" (userid, anwendungenid) SELECT id, last
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBUser', 'dba', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBPass', 'dbpass', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
 INSERT OR IGNORE INTO "anwendungs_parameter" (parametername, parametervalue, anwendungid) SELECT 'DBName', '<xsl:value-of select="$applicationname"/>', id FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$applicationname"/>';
+-->
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 select GetOrCreateApplication('<xsl:value-of select="@name"/>');
@@ -159,7 +194,29 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
         </xsl:call-template>
       </xsl:for-each>
 
+<!-- New part to create schema for associations -->
+
+<xsl:for-each select="//UML:Association">
+		<xsl:call-template name="XMISysImport.FillSchemaAssociations">
+			<xsl:with-param name="AssociationId" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="$applicationname"/>
+			<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+		</xsl:call-template>
+</xsl:for-each>
+
+<!-- New part to create schema for associations -->
+
+<xsl:for-each select="//UML:Association">
+		<xsl:call-template name="XMISysImport.CreateFormularDefinitionAssociation">
+			<xsl:with-param name="AssociationId" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="$applicationname"/>
+			<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+		</xsl:call-template>
+</xsl:for-each>
+
     </xsl:element>
+-- Script ready.
+COMMIT;
   </xsl:template>
 
   <xsl:template match="UML:Class">
@@ -228,6 +285,19 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 <xsl:if test="$datatype='image'">
 INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, 'image');
 </xsl:if>
+
+<!-- New part to create formularfield entries -->
+
+<xsl:call-template name="XMISysImport.CreateFormularDefinition">
+	<xsl:with-param name="FieldName" select="@name"/>
+	<xsl:with-param name="DataType" select="$datatype"/>
+	<xsl:with-param name="ClassId" select="$classID"/>
+	<xsl:with-param name="ClassName" select="$classname"/>
+	<xsl:with-param name="TableName" select="$classname"/>
+	<xsl:with-param name="ApplicationName" select="$applicationname"/>
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+</xsl:call-template>
+
 </xsl:for-each>
 
 <xsl:for-each select="UML:Classifier.feature/UML:Operation">
@@ -261,6 +331,16 @@ INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actio
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) values(
 (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'), 
 (select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>') and name = '<xsl:value-of select="@name"/>'));
+
+<!-- New part to create database schema table entries -->
+
+<xsl:call-template name="XMISysImport.FillSchemaTables">
+	<xsl:with-param name="ClassId" select="@xmi.id"/>
+	<xsl:with-param name="ApplicationName" select="$applicationname"/>
+	<xsl:with-param name="TargetDBType" select="$TargetDBType"/>
+</xsl:call-template>
+
+
 </xsl:if>
 
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
@@ -482,18 +562,21 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 <xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+</xsl:variable>
+
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
 <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
 	  
 <xsl:if test="$aggregation='none'">
-<xsl:variable name="assocname" select="../../@name"/>
-<!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" <!--</xsl:if>-->
-</xsl:if>
+<xsl:variable name="assocname" select="../../@name"/>, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" </xsl:if>
 </xsl:for-each>
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
@@ -511,14 +594,14 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:variable>
 
 
-<xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
@@ -546,14 +629,14 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:variable>
 
 
-<xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:variable name="thisEndId">
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@aggregation"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisEndId]/@aggregation"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
@@ -603,6 +686,8 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 -- Have an association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 
 <xsl:variable name="assocname" select="../../@name"/>
+
+<!-- Attention: Here I use the other side and thus aggregate -->
 	  
 <xsl:if test="$aggregation='aggregate'">
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(../../../../@name, ')'), '(')"/>
@@ -626,15 +711,17 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 
 
 <xsl:variable name="stereotypeIdRef">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML -->
+<xsl:value-of select="../../../../UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML when modelled at the level of the association (do not use both)-->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><!-- ArgoUML when modelled at the AssociationEnd -->
 </xsl:variable>
 
 <xsl:variable name="stereotype">
 <xsl:value-of select="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name"/><!-- BoUML -->
-<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotypeIdRef]/@name"/><!-- BoUML -->
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotypeIdRef]/@name"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:if test="$stereotype='masterdetail_action'">
+
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname2" select="../../../../@name"/>
 <xsl:variable name="assocname1" select="substring-after(substring-before($assocname2, ')'), '(')"/>
@@ -642,14 +729,9 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 -- ActionID from assocname2 = <xsl:value-of select="$assocname2"/> converted is <xsl:value-of select="$assocname1"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
-delete from formular_actions where formular IN 
-	(select id from "formulare" where anwendungid IN
-		(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and 
-		name = '<xsl:value-of select="$thisClassName"/>');
-delete from action_steps where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from action_parameters where actionid IN 
-	(select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from formular_actions where action in (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>') AND formular IN (select id from "formulare" where anwendungid IN	(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
+delete from action_parameters where actionid IN (select ID from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
 delete from actions where name = '<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
 </xsl:if>
 

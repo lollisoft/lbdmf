@@ -86,6 +86,8 @@
 <xsl:value-of select="$activity"/></xsl:template>
 
 	<xsl:template match="/">
+-- Speedup many times
+BEGIN TRANSACTION;
 
 -- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
 -- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
@@ -538,5 +540,7 @@ exec lbDMF_DropProc 'lbDMF_DropProc'
 GO
 
 </xsl:if>
+-- Script ready.
+COMMIT;
 	</xsl:template>
 </xsl:stylesheet>

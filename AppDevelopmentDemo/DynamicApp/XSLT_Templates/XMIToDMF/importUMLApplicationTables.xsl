@@ -568,6 +568,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 </xsl:if>
 
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
+
 <xsl:if test="./lowerValue/@value='1'">
 <xsl:if test="./upperValue/@value='1'">
 
@@ -584,24 +585,25 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_ins" BEFORE INSERT ON <xsl:value-of select="../@name"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="$PrimaryTableSourceColumn"/> FROM <xsl:value-of select="$PrimaryTable"/> WHERE <xsl:value-of select="$PrimaryTableSourceColumn"/> = new.<xsl:value-of select="@name"/>) IS NULL))
-                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
+                 THEN RAISE(ABORT, 'INSERT: <xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/> = SELECT new.<xsl:value-of select="@name"/>)')
     END;
 END;
 CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_upd" BEFORE UPDATE ON <xsl:value-of select="../@name"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="@name"/> IS NOT NULL) AND ((SELECT <xsl:value-of select="$PrimaryTableSourceColumn"/> FROM <xsl:value-of select="$PrimaryTable"/> WHERE <xsl:value-of select="$PrimaryTableSourceColumn"/> = new.<xsl:value-of select="@name"/>) IS NULL))
-                 THEN RAISE(ABORT, '<xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
+                 THEN RAISE(ABORT, 'UPDATE: <xsl:value-of select="@name"/> violates foreign key <xsl:value-of select="$PrimaryTable"/>(<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
     END;
 END;
 CREATE TRIGGER "fk_<xsl:value-of select="../@name"/>_<xsl:value-of select="@name"/>_del" BEFORE DELETE ON <xsl:value-of select="$PrimaryTable"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((SELECT <xsl:value-of select="@name"/> FROM <xsl:value-of select="../@name"/> WHERE <xsl:value-of select="@name"/> = old.<xsl:value-of select="$PrimaryTableSourceColumn"/>) IS NOT NULL)
-                 THEN RAISE(ABORT, 'id violates foreign key <xsl:value-of select="../@name"/>(<xsl:value-of select="@name"/>)')
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key <xsl:value-of select="../@name"/>(<xsl:value-of select="@name"/> = old.<xsl:value-of select="$PrimaryTableSourceColumn"/>)')
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$PrimaryTable"/>', '<xsl:value-of select="$PrimaryTableSourceColumn"/>', '<xsl:value-of select="../@name"/>', '<xsl:value-of select="@name"/>');
  
 </xsl:if>
+
 </xsl:if>
 </xsl:if>
 

@@ -84,7 +84,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 
 <!-- === Formular specific template ====================================================================== -->
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -116,13 +116,13 @@ Export application code to <xsl:value-of select="$basedir"/>
 </xsl:for-each>
 
 <!--
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]"><xsl:call-template name="createForm">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']"><xsl:call-template name="createForm">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 <xsl:with-param name="FormularID" select="@ID"/>
 </xsl:call-template>
 </xsl:for-each>
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]"><xsl:call-template name="createFormPlugin">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']"><xsl:call-template name="createFormPlugin">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 <xsl:with-param name="FormularID" select="@ID"/>
 </xsl:call-template>

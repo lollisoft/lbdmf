@@ -84,6 +84,9 @@
 
 
 	<xsl:template match="/">
+-- Speedup many times
+BEGIN TRANSACTION;
+
 -- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
 -- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
 -- Params overwriteDatabase: <xsl:value-of select="$overwriteDatabase"/>
@@ -123,6 +126,15 @@
 					<xsl:call-template name="importDMFForm">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
+						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
+		-- Class <xsl:value-of select="@name"/> of type FORM found.
+					<xsl:call-template name="importDMFEntity">
+						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
+						<xsl:with-param name="ApplicationName" select="$AppName"/>
 						<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 					</xsl:call-template>
@@ -220,6 +232,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 			<xsl:with-param name="ID" select="$activityID"/>
 			<xsl:with-param name="Name" select="$activity"/>
 			<xsl:with-param name="FormName" select="../@name"/>
+			<xsl:with-param name="ApplicationName" select="$AppName"/>
 			<xsl:with-param name="TypeName" select="'FormValidator'"/>
 			</xsl:call-template>
 		</xsl:if>
@@ -240,6 +253,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 			<xsl:with-param name="ID" select="$activityID"/>
 			<xsl:with-param name="Name" select="$activity"/>
 			<xsl:with-param name="FormName" select="../@name"/>
+			<xsl:with-param name="ApplicationName" select="$AppName"/>
 			<xsl:with-param name="TypeName" select="'Buttonpress'"/>
 			</xsl:call-template>
 		</xsl:if>
@@ -257,6 +271,7 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 			<xsl:call-template name="convertActivityTolbDMFActivity">
 			<xsl:with-param name="ID" select="$activityID"/>
 			<xsl:with-param name="Name" select="$activity"/>
+			<xsl:with-param name="ApplicationName" select="$AppName"/>
 			<xsl:with-param name="FormName" select="../@name"/>
 			<xsl:with-param name="TypeName" select="'Buttonpress'"/>
 			</xsl:call-template>
@@ -265,12 +280,14 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 
 </xsl:for-each>
 -- Script ready.
+COMMIT;
 </xsl:template>
 
 <xsl:template name="convertActivityTolbDMFActivity">
     <xsl:param name="ID"/>
     <xsl:param name="Name"/>
     <xsl:param name="FormName"/>
+    <xsl:param name="ApplicationName"/>
     <xsl:param name="TypeName"/> <!-- The action type name as registered. -->
 <xsl:choose>
 	<xsl:when test="$TargetDBType='PostgreSQL'">
@@ -285,20 +302,27 @@ INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "
 -- select "CreateActivityOnMissing"('<xsl:value-of select="$ID"/>', '<xsl:value-of select="$Name"/>');
 
 -- Delete old statemachine
-delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'));
+delete from "action_step_parameter" where "action_step_id" in (select id from "action_steps" where "actionid" in (select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>')));
 delete from "action_step_transitions" where "description" = '_<xsl:value-of select="$ID"/>';
-delete from "action_steps" where "actionid" in (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>');
-delete from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>';
-
-
+delete from "action_steps" where "actionid" in (select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
+delete from "formular_actions" where action in (select id from actions where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
+delete from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>');
 
 -- A form validator should be used before saving the changes to the database
 
 INSERT OR IGNORE INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'), '<xsl:value-of select="./ownedParameter/@name"/>', '');
+INSERT OR IGNORE INTO "actions" ("name", "typ", "source", "target", "anwendungenid") VALUES (
+'<xsl:value-of select="$Name"/>', 
+(select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'),
+'<xsl:value-of select="./ownedParameter/@name"/>',
+'<xsl:value-of select="$ID"/>', 
+(select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
 
-INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_<xsl:value-of select="$TypeName"/>');
+INSERT OR IGNORE INTO "formular_actions" ("formular", "action", "event") VALUES (
+(select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), 
+(select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'),
+'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_<xsl:value-of select="$TypeName"/>');
 	</xsl:when>
 	<xsl:when test="$TargetDBType='MSSQL'">
 	</xsl:when>
@@ -398,28 +422,28 @@ UPDATE "action_steps" set "bezeichnung" = 'FinalNode' where "bezeichnung" = '<xs
 		<xsl:variable name="stereotype" select="./xmi:Extension/stereotype/@name"/>
 	<xsl:choose>
 		<xsl:when test="$nodetype='uml:InitialNode'">
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'InitialNode'), '');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:SendSignalAction'">
 		<xsl:variable name="comment" select="./ownedComment/@body"/>
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '<xsl:value-of select="$comment"/>');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'SendSignalAction'), '<xsl:value-of select="$comment"/>');
 <xsl:for-each select="./xmi:Extension/taggedValue">
 INSERT OR IGNORE INTO "action_step_parameter" ("name", "value", "interface", "description", "action_step_id") VALUES ('<xsl:value-of select="./@tag"/>', '<xsl:value-of select="./@value"/>', 'lb_I_String', 'A description ...', (select "id" from "action_steps" where "bezeichnung" = '<xsl:value-of select="../../@xmi:id"/>'));
 </xsl:for-each>
 
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:DecisionNode'">
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'DecisionNode'), '');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:OpaqueAction'">
 		<xsl:variable name="comment" select="./ownedComment/@body"/>
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '<xsl:value-of select="$comment"/>');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'OpaqueAction'), '<xsl:value-of select="$comment"/>');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:FinalNode'">
-INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
+INSERT OR IGNORE INTO "action_steps" ("actionid", "bezeichnung", "a_order_nr", "type", "what") VALUES ((select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'), '<xsl:value-of select="./@xmi:id"/>', '<xsl:value-of select="$step"/>', (select "id" from "action_types" where "bezeichnung" = 'FinalNode'), '');
 		</xsl:when>
 		<xsl:when test="$nodetype='uml:ActivityParameterNode'">
-INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('<xsl:value-of select="./@name"/>', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "name" = '<xsl:value-of select="../@name"/>_<xsl:value-of select="../@xmi:id"/>'));
+INSERT OR IGNORE INTO "action_parameters" ("name", "value", "interface", "description", "actionid") VALUES ('<xsl:value-of select="./@name"/>', '', 'lb_I_String', 'A description ...', (select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>'));
 		</xsl:when>
 		<xsl:otherwise>
 -- Nodetype <xsl:value-of select="$nodetype"/> not known.

@@ -28,6 +28,7 @@
 -->
 <!-- This file must be generated before this template could be applied. -->
 <xsl:import href="XMISettings.xsl"/>
+<xsl:import href="XMIImport.Variables.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 

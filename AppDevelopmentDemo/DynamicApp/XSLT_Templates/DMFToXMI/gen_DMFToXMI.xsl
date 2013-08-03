@@ -59,7 +59,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 &lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
-		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
+		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -197,6 +197,14 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 				<xsl:with-param name="Comment" select="'This stereotype is to specify an attribute to be a special image selector control'"/>
 			</xsl:call-template>
 			
+			<xsl:call-template name="createStereotype1">
+				<xsl:with-param name="StereotypeName" select="'xmlentityname'"/>
+				<xsl:with-param name="ApplyableTo" select="'Class'"/>
+				<xsl:with-param name="Comment" select="'This stereotype is to specify an attribute to define the mapping from form name to xml node representation. This is used to make lbDMF Manager v2_0 backward compatiple for sample'"/>
+				<xsl:with-param name="Attr1" select="'xmlentityname'"/>
+				<xsl:with-param name="AttrTyp1" select="'String'"/>
+			</xsl:call-template>
+			
 			<xsl:call-template name="createStereotype">
 				<xsl:with-param name="StereotypeName" select="'test_application_via_lua'"/>
 				<xsl:with-param name="ApplyableTo" select="'Operation'"/>
@@ -217,7 +225,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 
 <!-- Based on the new profile capabilities of BoUML here I should add the stereotype hints for the masterdetail and detailmaster actions. -->
 
-<xsl:for-each select="//formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="//formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -284,7 +292,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 &lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
-		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID]">
+		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -398,6 +406,16 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 				<xsl:with-param name="AttrTyp1" select="'String'"/>
 			</xsl:call-template>
 			
+			<xsl:call-template name="createStereotype2">
+				<xsl:with-param name="StereotypeName" select="'dropdown'"/>
+				<xsl:with-param name="ApplyableTo" select="'Attribute'"/>
+				<xsl:with-param name="Comment" select="'Defines a formular field to be a dropdown field whose display values are taken from the given table. The display value is given in column.'"/>
+				<xsl:with-param name="Attr1" select="'column'"/>
+				<xsl:with-param name="AttrTyp1" select="'String'"/>
+				<xsl:with-param name="Attr2" select="'table'"/>
+				<xsl:with-param name="AttrTyp2" select="'String'"/>
+			</xsl:call-template>
+			
 			<xsl:call-template name="createStereotype3">
 				<xsl:with-param name="StereotypeName" select="'relationship'"/>
 				<xsl:with-param name="ApplyableTo" select="'Relation'"/>
@@ -413,7 +431,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 			<xsl:call-template name="createStereotype">
 				<xsl:with-param name="StereotypeName" select="'codegeneration'"/>
 				<xsl:with-param name="ApplyableTo" select="'Operation'"/>
-				<xsl:with-param name="Comment" select="'This stereotype is to specify an association to be a relation.'"/>
+				<xsl:with-param name="Comment" select="'This stereotype is to specify a codegeneration action where a user can choose the XSLT template.'"/>
 			</xsl:call-template>
 			
 			<xsl:call-template name="createStereotype">
@@ -442,7 +460,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 
 <!-- Based on the new profile capabilities of BoUML here I should add the stereotype hints for the masterdetail and detailmaster actions. -->
 
-<xsl:for-each select="//formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="//formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
