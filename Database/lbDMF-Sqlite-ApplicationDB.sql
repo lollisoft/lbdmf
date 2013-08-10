@@ -469,6 +469,7 @@ CREATE TABLE "users" (
 	"vorname" BPCHAR,
 	"userid" BPCHAR,
 	"passwort" BPCHAR,
+	"secret" BPCHAR,
 	"lastapp" INTEGER
 );
 
