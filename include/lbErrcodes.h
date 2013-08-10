@@ -30,11 +30,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46.2.1 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46.2.1 2013/07/10 06:19:13 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.48 2013/08/10 09:09:14 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.48  2013/08/10 09:09:14  lollisoft
+ * Merge complete. It compiles and runs the first time, but data is unusable when started the second time.
+ *
+ * Revision 1.47  2012/01/01 09:01:36  lollisoft
+ * The current version does not compile but contains code to try find out
+ * why the order of the columns in generated code is reversed.
+ *
  * Revision 1.46.2.1  2013/07/10 06:19:13  lollisoft
  * Corrected error codes comments with the value represented.
  *
@@ -376,6 +383,9 @@ enum lbErrCodes {
 	ERR_DOCUMENTELEMENT_MISSING,
 
 	ERR_NOT_CONNECTED,
+	
+/* Entity error codes */	
+	ERR_ENTITY_NOT_FOUND,
 	
 /* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
 	ERR_LAST_ENUM = 0x7fffffff
