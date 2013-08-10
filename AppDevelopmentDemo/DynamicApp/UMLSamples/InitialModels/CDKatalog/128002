@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 9
+  revision 12
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -47,7 +47,7 @@ format 73
       size A4
     end
 
-    class 128002 "CD"
+    class 128002 "Media"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -102,6 +102,26 @@ ${inlines}
 
       attribute 148354 "Description"
 	private explicit_type "bigstring"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161410 "Publication"
+	private explicit_type "date"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161794 "Prize"
+	private explicit_type "float"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -178,9 +198,19 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 161538 "Birthday"
+	private explicit_type "date"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
-    class 134658 "Media"
+    class 134658 "MediaType"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -213,6 +243,16 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 148354 // Type
+      end
+
+      attribute 154882 "Description"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 
@@ -254,6 +294,16 @@ ${inlines}
 
       classrelation 141698 // (Titel)
 	relation_ref 141186 // Titel
+      end
+
+      attribute 161666 "Lyrics"
+	private explicit_type "bigstring"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
   end

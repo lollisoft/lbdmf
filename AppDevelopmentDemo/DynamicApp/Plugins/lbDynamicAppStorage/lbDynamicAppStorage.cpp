@@ -1395,8 +1395,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		XSLFileUMLExport->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/gen_DMFToXMI.xsl");
         XSLFileImportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl");
         XSLFileExportSettings->setData("./wxWrapper.app/Contents/Resources/XSLT/DMFToXMI/XMISettings.xsl");
-        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-SystemDB.xsl");
-        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/ImportUML-ApplicationDB.xsl");
+        XSLFileSystemDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-SystemDB.xsl");
+        XSLFileApplicationDatabase->setData("./wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/importUML-ApplicationDB.xsl");
 #endif
 	 } else {
 		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
@@ -1976,11 +1976,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			const char ** xsltParameters;
 			// Maps xsltParameters element within document (as lb_I_Parameters instance) if present in document into parameter char array.
 			xsltParameters = convertParameters(*&document);
-
 			res = xsltApplyStylesheet(cur, doc, xsltParameters);
-
 			cleanupParameters(xsltParameters);
-			
+
 			_LOG << "Save resulting document as a string." LOG_
 
 			if (res == NULL) {
@@ -2184,6 +2182,14 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
 			if (stylesheetdoc == NULL) {
 				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
+
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				
+				*msg = _trans("Failed to load in-memory XMI stylesheet document as an XML document.");
+				*msg += "\n\nStylesheet: ";
+				*msg += (const char*) input->getFileName();
+				metaapp->msgBox(_trans("Error"), msg->charrep());
+
 				return err; 
 			}
 

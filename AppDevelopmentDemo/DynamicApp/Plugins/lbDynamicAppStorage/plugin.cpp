@@ -458,6 +458,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "== SQL Start ==" LOG_
+				_LOG << "SQL query was: " << SQL->charrep() LOG_
+				_LOG << "== SQL End ==" LOG_
 				return false;
 			}
 			
@@ -498,6 +501,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
 				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOG << "== SQL Start ==" LOG_
+				_LOG << "SQL query was: " << SQL->charrep() LOG_
+				_LOG << "== SQL End ==" LOG_
 				return false;
 			}
 		} else {
@@ -660,6 +666,11 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::checkTemplatesCopied() {
 	return DirectoryExists(installdir->charrep());
 }
 
+void LB_STDCALL lbPluginModuleDynamicAppStorage::copyTemplates()
+{
+	
+}
+
 lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
 	_LOG << "lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() called." LOG_
 	// Nothing checked yet.
@@ -671,12 +682,6 @@ lbPluginModuleDynamicAppStorage::lbPluginModuleDynamicAppStorage() {
 lbPluginModuleDynamicAppStorage::~lbPluginModuleDynamicAppStorage() {
 	_CL_VERBOSE << "lbPluginModuleDynamicAppStorage::~lbPluginModuleDynamicAppStorage() called." LOG_
 }
-
-void LB_STDCALL lbPluginModuleDynamicAppStorage::copyTemplates()
-{
-	
-}
-
 
 void LB_STDCALL lbPluginModuleDynamicAppStorage::initialize() {
 	_CL_VERBOSE << "lbPluginModuleDynamicAppStorage::initialize() called." LOG_

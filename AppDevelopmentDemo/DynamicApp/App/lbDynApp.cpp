@@ -850,6 +850,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 
                 if (strcmp(key->charrep(), "UML import settingsXMI UML input file") == 0) {
                         XMIFileUMLProject->setData(value->charrep());
+						
+						// When the model changes, the database name may be invalid. So clear the field.
+						*UMLImportTargetDBName = "";
+						editProperties(NULL);
                 }
                 
                 if (strcmp(key->charrep(), "UML export settingsXMI UML export file") == 0) {
@@ -1597,8 +1601,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                                 fOp->end();
                                 dirty = true; /// \todo Detect if really made dirty.
                         } else {
-                                // No file found to import from. 
-        			metaapp->setStatusText("Info", "Importing from UML (XMI) file failed. File missing.");
+							// No file found to import from. 
+							UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+							*msg = "Importing from UML (XMI) file failed. File missing: ";
+							*msg += XMIFileUMLProject->charrep();
+							metaapp->setStatusText("Info", msg->charrep());
                         }
                 }
         }
@@ -1906,7 +1913,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomForm(lb_I_Unknown* uk) {
 
                 *sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where ID = ";
 				*sql += typ->charrep();
-
 
                 _LOG << "Query for custom database formular (" << FormularsEntity->get_name() << "): " << sql->charrep() LOG_
 
@@ -3484,7 +3490,6 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
 										metaapp->addToolBarButton(MenuNameTool->charrep(), MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
 									}
-
                                 } else {
                                         _CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
                                 }

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.196 $
+ * $Revision: 1.197 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.196 2013/02/19 06:06:47 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.197 2013/08/10 09:07:40 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.197  2013/08/10 09:07:40  lollisoft
+ * Merge complete. It compiles and runs the first time, but data is unusable when started the second time.
+ *
  * Revision 1.196  2013/02/19 06:06:47  lollisoft
  * Renamed some generic container methods to not contain class specific names.
  *
@@ -831,11 +834,6 @@ lb_MetaApplication::lb_MetaApplication() {
 	_system_database_backend = strdup("");
 	_dirloc = strdup(".");
 	_loading_object_data = false;
-
-///\todo Why do I have removed this?
-	//REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
-
-	//activeDocuments->setCloning(false);
 
 	REQUEST(getModuleInstance(), lb_I_String, ProcessName)
 
@@ -2863,6 +2861,7 @@ void LB_STDCALL lb_MetaApplication::msgBox(const char* title, const char* msg) {
 	eman->resolveEvent("showMsgBox", event);
 	
 	_CL_LOG << "showMsgBox will be dispatched (" << event << ")..." LOG_
+
 	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
 }
 /*...e*/
