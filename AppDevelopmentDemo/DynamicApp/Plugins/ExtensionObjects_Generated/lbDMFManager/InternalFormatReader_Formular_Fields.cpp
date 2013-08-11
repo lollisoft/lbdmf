@@ -122,6 +122,7 @@ void LB_STDCALL Formular_FieldsInternalFormatReaderExtension::execute() {
 		char* _name = NULL;
 		char* _tablename = NULL;
 		long _formularid = 0;
+		long _dbtypeid = 0;
 	
 		*iStream >> _ID;
 
@@ -132,7 +133,8 @@ void LB_STDCALL Formular_FieldsInternalFormatReaderExtension::execute() {
 		*iStream >> _name;
 		*iStream >> _tablename;
 		*iStream >> _formularid;
-		owningObject->add(_fkname, _fktable, _dbtype, _isforeignkey, _name, _tablename, _formularid,  _ID);
+		*iStream >> _dbtypeid;
+		owningObject->add(_fkname, _fktable, _dbtype, _isforeignkey, _name, _tablename, _formularid, _dbtypeid,  _ID);
 
 		// Leaky !
 	}
