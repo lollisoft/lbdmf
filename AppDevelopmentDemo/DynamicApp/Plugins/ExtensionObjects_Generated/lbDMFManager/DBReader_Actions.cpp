@@ -118,7 +118,7 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 
 	q->skipFKCollecting();
 
-	if (q->query("select target, source, name, typ,  id from actions") != ERR_NONE) {
+	if (q->query("select target, source, name, typ, anwendungenid,  id from actions") != ERR_NONE) {
 		_LOG << "Error: Access to application table failed. Read Actions would be skipped." LOG_
 		return;
 	}
@@ -134,6 +134,7 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 		UAP(lb_I_String, qsource)
 		UAP(lb_I_String, qname)
 		UAP(lb_I_Long, qtyp)
+		UAP(lb_I_Long, qanwendungenid)
 
 		// Copy values
 
@@ -141,9 +142,10 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 		qsource = q->getAsString(2);
 		qname = q->getAsString(3);
 		qtyp = q->getAsLong(4);
-		qID = q->getAsLong(5);
+		qanwendungenid = q->getAsLong(5);
+		qID = q->getAsLong(6);
 
-		owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
+		owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(), qanwendungenid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -153,9 +155,10 @@ void LB_STDCALL ActionsDBReaderExtension::execute() {
 			qsource = q->getAsString(2);
 			qname = q->getAsString(3);
 			qtyp = q->getAsLong(4);
-			qID = q->getAsLong(5);
+			qanwendungenid = q->getAsLong(5);
+			qID = q->getAsLong(6);
 
-			owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(),  qID->getData());
+			owningObject->add(qtarget->charrep(), qsource->charrep(), qname->charrep(), qtyp->getData(), qanwendungenid->getData(),  qID->getData());
 		}
 	}
 }

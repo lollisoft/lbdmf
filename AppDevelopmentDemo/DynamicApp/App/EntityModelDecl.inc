@@ -1,6 +1,14 @@
 
         // Preloaded data from database, if plugins are available.
 
+        UAP(lb_I_DBPrimaryKeys, DBPrimaryKeysEntity)
+
+        UAP(lb_I_DBForeignKeys, DBForeignKeysEntity)
+
+        UAP(lb_I_DBColumns, DBColumnsEntity)
+
+        UAP(lb_I_DBTables, DBTablesEntity)
+
         UAP(lb_I_Actions, ActionsEntity)
 
         UAP(lb_I_Action_Types, Action_TypesEntity)

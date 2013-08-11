@@ -120,7 +120,8 @@ void LB_STDCALL ActionsXMLWriterExtension::execute() {
 		"\" target=\"" << owningObject->get_target() <<
 		"\" source=\"" << owningObject->get_source() <<
 		"\" name=\"" << owningObject->get_name() <<
-		"\" typ=\"" << owningObject->get_typ() << "\"/>" << "\n";
+		"\" typ=\"" << owningObject->get_typ() <<
+		"\" anwendungenid=\"" << owningObject->get_anwendungenid() << "\"/>" << "\n";
 	}
 	*oStream << "</actions>" << "\n";
 }
