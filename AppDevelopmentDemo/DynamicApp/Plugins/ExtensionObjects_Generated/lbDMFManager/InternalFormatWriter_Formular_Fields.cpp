@@ -128,6 +128,7 @@ void LB_STDCALL Formular_FieldsInternalFormatWriterExtension::execute() {
 		*oStream << owningObject->get_name();
 		*oStream << owningObject->get_tablename();
 		*oStream << owningObject->get_formularid();
+		*oStream << owningObject->get_dbtypeid();
 	}
 }
 

@@ -118,7 +118,7 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 
 	q->skipFKCollecting();
 
-	if (q->query("select fkname, fktable, dbtype, isforeignkey, name, tablename, formularid,  id from formular_fields") != ERR_NONE) {
+	if (q->query("select fkname, fktable, dbtype, isforeignkey, name, tablename, formularid, dbtypeid,  id from formularfields") != ERR_NONE) {
 		_LOG << "Error: Access to application table failed. Read Formular_Fields would be skipped." LOG_
 		return;
 	}
@@ -137,6 +137,7 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 		UAP(lb_I_String, qname)
 		UAP(lb_I_String, qtablename)
 		UAP(lb_I_Long, qformularid)
+		UAP(lb_I_Long, qdbtypeid)
 
 		// Copy values
 
@@ -152,9 +153,10 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 		qname = q->getAsString(5);
 		qtablename = q->getAsString(6);
 		qformularid = q->getAsLong(7);
-		qID = q->getAsLong(8);
+		qdbtypeid = q->getAsLong(8);
+		qID = q->getAsLong(9);
 
-		owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->getData(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
+		owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->getData(), qname->charrep(), qtablename->charrep(), qformularid->getData(), qdbtypeid->getData(),  qID->getData());
 
 		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
 
@@ -172,9 +174,10 @@ void LB_STDCALL Formular_FieldsDBReaderExtension::execute() {
 			qname = q->getAsString(5);
 			qtablename = q->getAsString(6);
 			qformularid = q->getAsLong(7);
-			qID = q->getAsLong(8);
+			qdbtypeid = q->getAsLong(8);
+			qID = q->getAsLong(9);
 
-			owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->charrep(), qname->charrep(), qtablename->charrep(), qformularid->getData(),  qID->getData());
+			owningObject->add(qfkname->charrep(), qfktable->charrep(), qdbtype->charrep(), qisforeignkey->charrep(), qname->charrep(), qtablename->charrep(), qformularid->getData(), qdbtypeid->getData(),  qID->getData());
 		}
 	}
 }

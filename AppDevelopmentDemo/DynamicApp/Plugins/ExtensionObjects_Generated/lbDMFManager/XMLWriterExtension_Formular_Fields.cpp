@@ -108,7 +108,7 @@ void LB_STDCALL Formular_FieldsXMLWriterExtension::setOperator(lb_I_Aspect* oper
 }
 
 void LB_STDCALL Formular_FieldsXMLWriterExtension::execute() {
-	*oStream << "<formular_fields>" << "\n";
+	*oStream << "<formularfields>" << "\n";
 	
 	owningObject->finishIteration();
 	
@@ -123,9 +123,10 @@ void LB_STDCALL Formular_FieldsXMLWriterExtension::execute() {
 		"\" isforeignkey=\"" << owningObject->get_isforeignkey() <<
 		"\" name=\"" << owningObject->get_name() <<
 		"\" tablename=\"" << owningObject->get_tablename() <<
-		"\" formularid=\"" << owningObject->get_formularid() << "\"/>" << "\n";
+		"\" formularid=\"" << owningObject->get_formularid() <<
+		"\" dbtypeid=\"" << owningObject->get_dbtypeid() << "\"/>" << "\n";
 	}
-	*oStream << "</formular_fields>" << "\n";
+	*oStream << "</formularfields>" << "\n";
 }
 
 
