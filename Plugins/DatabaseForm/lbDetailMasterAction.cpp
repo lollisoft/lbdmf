@@ -95,9 +95,12 @@ extern "C" {
 
 #include <lbInterfaces-sub-security.h>
 #include <lbInterfaces-lbDMFManager.h>
+#define USE_EXRERNAL_FORMULARACTIONS
+
 #include <lbDatabaseForm.h>
 
 #ifndef USE_EXRERNAL_FORMULARACTIONS
+
 /*...slbMasterFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbMasterFormAction)
 ADD_INTERFACE(lb_I_DelegatedAction)

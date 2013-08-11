@@ -193,11 +193,17 @@ void LB_STDCALL Formulare::init() {
 	
 	// Start generating diagram from model data
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP(lb_I_Unknown, apps)
 	UAP(lb_I_Applications, applications)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
+
+	UAP(lb_I_SecurityProvider, securityManager)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	
-	applications = meta->getApplicationModel();
+	apps = securityManager->getApplicationModel();
+	QI(apps, lb_I_Applications, applications)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, model)
@@ -232,31 +238,31 @@ void LB_STDCALL Formulare::init() {
 	int x_offset = 0;
 	int y_offset = 0;
 	
-	forms->finishFormularIteration();
-	while (forms->hasMoreFormulars()) {
-		forms->setNextFormular();
+	forms->finishIteration();
+	while (forms->hasMoreElements()) {
+		forms->setNextElement();
 		
 		wxSFShapeBase *pShape = NULL;
 		pShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
 
-		((lbDMFFormularShape*)pShape)->SetFormularName(wxString(forms->getName()));
+		((lbDMFFormularShape*)pShape)->SetFormularName(wxString(forms->get_name()));
 		
 		pShape->Update();
 		
-		long FormID = forms->getFormularID();
+		long FormID = forms->get_id();
 		
-		formularfields->finishFieldsIteration();
-		while (formularfields->hasMoreFields()) {
+		formularfields->finishIteration();
+		while (formularfields->hasMoreElements()) {
 			y_offset++;
 			x_offset++;
 		
-			formularfields->setNextField();
+			formularfields->setNextElement();
 		
-			if (FormID == formularfields->getFormularID()) {
+			if (FormID == formularfields->get_formularid()) {
 				wxSFShapeBase *pFormFieldShape = NULL;
 				pFormFieldShape = GetDiagramManager()->AddShape(CLASSINFO(lbDMFFormularFieldShape), wxPoint(x_distance+x_distance*x_offset, y_distance+y_distance*y_offset), sfDONT_SAVE_STATE);
 
-				((lbDMFFormularFieldShape*)pFormFieldShape)->SetFormularFieldName(wxString(formularfields->getName()));
+				((lbDMFFormularFieldShape*)pFormFieldShape)->SetFormularFieldName(wxString(formularfields->get_name()));
 			
 				pFormFieldShape->Update();
 			
@@ -289,9 +295,12 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
+	void LB_STDCALL setNamespace(const char* _namespace);
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukActions)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginFormulare)
@@ -310,10 +319,16 @@ lbErrCodes LB_STDCALL lbPluginFormulare::setData(lb_I_Unknown* uk) {
 
 lbPluginFormulare::lbPluginFormulare() {
 	_CL_VERBOSE << "lbPluginFormulare::lbPluginFormulare() called.\n" LOG_
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginFormulare::~lbPluginFormulare() {
 	_CL_VERBOSE << "lbPluginFormulare::~lbPluginFormulare() called.\n" LOG_
+}
+
+void LB_STDCALL lbPluginFormulare::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
 }
 
 bool LB_STDCALL lbPluginFormulare::canAutorun() {
@@ -338,6 +353,8 @@ lb_I_Unknown* LB_STDCALL lbPluginFormulare::peekImplementation() {
 	if (ukActions == NULL) {
 		Formulare* _Formulare = new Formulare();
 	
+		//_Formulare->setContextNamespace(pluginNamespace->charrep());
+
 		QI(_Formulare, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginFormulare::peekImplementation() Implementation already peeked.\n" LOG_
@@ -355,6 +372,8 @@ lb_I_Unknown* LB_STDCALL lbPluginFormulare::getImplementation() {
 	
 		Formulare* _Formulare = new Formulare();
 	
+		//_Formulare->setContextNamespace(pluginNamespace->charrep());
+
 		QI(_Formulare, lb_I_Unknown, ukActions)
 	}
 	

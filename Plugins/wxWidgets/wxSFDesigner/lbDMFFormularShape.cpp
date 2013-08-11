@@ -26,4 +26,3 @@ lbDMFFormularShape::~lbDMFFormularShape()
 void lbDMFFormularShape::SetFormularName(const wxString& name) {
 	m_pModelName->SetText(name);
 }
-

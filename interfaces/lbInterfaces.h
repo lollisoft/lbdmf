@@ -3833,6 +3833,8 @@ public:
 };
 /*...e*/
 
+#ifdef UNFLEXIBLE_TOBE_REMOVED
+
 /** \brief A class to store database table information.
  *
  * This is the internal storage for database table information. It will be used in the visitor plugin to transfer
@@ -3975,6 +3977,8 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
+
+#endif
 
 /*...slbDMF Plugin interfaces:0:*/
 class lb_I_Plugin;

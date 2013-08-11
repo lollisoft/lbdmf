@@ -37,7 +37,7 @@ public:
 	ActionsModel();
 	virtual ~ActionsModel();
 
-	long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID = -1);
+	long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ, long _anwendungenid,  long _ActionsID = -1);
 
 	bool		LB_STDCALL selectById(long _id);
 	int			LB_STDCALL Count();
@@ -50,6 +50,8 @@ public:
 	char*		LB_STDCALL get_source();
 	char*		LB_STDCALL get_name();
 	long		LB_STDCALL get_typ();
+	
+	long		LB_STDCALL get_anwendungenid();
 	
 
 	long		LB_STDCALL get_id();
@@ -77,6 +79,8 @@ public:
 	UAP(lb_I_String, currentname)
 			
 	UAP(lb_I_Long, currenttyp)
+	
+	UAP(lb_I_Long, currentanwendungenid)
 	
 
 	

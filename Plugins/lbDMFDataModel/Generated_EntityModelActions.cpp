@@ -69,6 +69,7 @@ ActionsModel::ActionsModel() {
     REQUEST(getModuleInstance(), lb_I_String, currentsource)
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_Long, currenttyp)
+    REQUEST(getModuleInstance(), lb_I_Long, currentanwendungenid)
 
 	
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionsID)
@@ -148,13 +149,14 @@ lbErrCodes LB_STDCALL ActionsModel::addExtension(const char* contextnamespace, l
 }
 #endif
 
-long  LB_STDCALL ActionsModel::add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID) {
+long  LB_STDCALL ActionsModel::add(const char* _target, const char* _source, const char* _name, long _typ, long _anwendungenid,  long _ActionsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __target)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __source)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __typ)
+    UAP_REQUEST(getModuleInstance(), lb_I_Long, __anwendungenid)
 
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, __ActionsID)
@@ -168,6 +170,7 @@ long  LB_STDCALL ActionsModel::add(const char* _target, const char* _source, con
     *__source = _source;
     *__name = _name;
     __typ->setData(_typ);
+    __anwendungenid->setData(_anwendungenid);
 
 	
 	__ActionsID->setData(_ActionsID);
@@ -180,6 +183,8 @@ long  LB_STDCALL ActionsModel::add(const char* _target, const char* _source, con
     param->setUAPString(*&paramname, *&__name);
     *paramname = "typ";
     param->setUAPLong(*&paramname, *&__typ);
+    *paramname = "anwendungenid";
+    param->setUAPLong(*&paramname, *&__anwendungenid);
 
 
 	*paramname = "ActionsID";
@@ -259,6 +264,8 @@ bool LB_STDCALL ActionsModel::selectById(long user_id) {
     param->getUAPString(*&paramname, *&currentname);
     *paramname = "typ";
     param->getUAPLong(*&paramname, *&currenttyp);
+    *paramname = "anwendungenid";
+    param->getUAPLong(*&paramname, *&currentanwendungenid);
 
 
 		*paramname = "ActionsID";
@@ -311,6 +318,8 @@ void  LB_STDCALL ActionsModel::setNextElement() {
     param->getUAPString(*&paramname, *&currentname);
     *paramname = "typ";
     param->getUAPLong(*&paramname, *&currenttyp);
+    *paramname = "anwendungenid";
+    param->getUAPLong(*&paramname, *&currentanwendungenid);
 
 	*paramname = "ActionsID";
 	param->getUAPLong(*&paramname, *&currentActionsID);
@@ -343,6 +352,10 @@ char* LB_STDCALL ActionsModel::get_name() {
 
 long LB_STDCALL ActionsModel::get_typ() {
 	return currenttyp->getData();
+}
+
+long LB_STDCALL ActionsModel::get_anwendungenid() {
+	return currentanwendungenid->getData();
 }
 
 
