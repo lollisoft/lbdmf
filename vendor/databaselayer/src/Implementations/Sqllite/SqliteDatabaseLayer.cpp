@@ -219,9 +219,9 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 
 		if (szErrorMessage != NULL)
 		{
-			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
-			strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-			printf(strErrorMessage.c_str());
+	        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+	        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+			SetErrorMessage(strErrorMessage);
 			sqlite3_free(szErrorMessage);
 			return false;
 		}
@@ -249,8 +249,10 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 
     if (szErrorMessage != NULL)
     {
-      strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-      sqlite3_free(szErrorMessage);
+        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+		SetErrorMessage(strErrorMessage);
+		sqlite3_free(szErrorMessage);
     }
 
     if (nReturn != SQLITE_OK)
@@ -303,9 +305,8 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-	printf("\n");
-	printf(strErrorMessage);
-	printf("\nSQL: \n%s", rewrittenQuery.c_str());
+		SetErrorMessage(strErrorMessage);
+
         sqlite3_free(szErrorMessage);
           ThrowDatabaseException();
         return NULL;
@@ -320,7 +321,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			{
 				SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 				strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-				printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
+				SetErrorMessage(strErrorMessage);
 				sqlite3_free(szErrorMessage);
 				ThrowDatabaseException();
 				return NULL;
@@ -343,7 +344,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-        SetErrorMessage(strErrorMessage);
+		SetErrorMessage(strErrorMessage);
         sqlite3_free(szErrorMessage);
         ThrowDatabaseException();
         return NULL;

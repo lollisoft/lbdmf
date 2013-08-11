@@ -48,7 +48,6 @@ Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Proje
 Source: "Q:\Develop\Projects\CPP\TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
-
 [Icons]
 Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"

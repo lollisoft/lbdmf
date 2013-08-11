@@ -72,6 +72,7 @@ Formular_FieldsModel::Formular_FieldsModel() {
     REQUEST(getModuleInstance(), lb_I_String, currentname)
     REQUEST(getModuleInstance(), lb_I_String, currenttablename)
     REQUEST(getModuleInstance(), lb_I_Long, currentformularid)
+    REQUEST(getModuleInstance(), lb_I_Long, currentdbtypeid)
 
 	
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormular_FieldsID)
@@ -151,7 +152,7 @@ lbErrCodes LB_STDCALL Formular_FieldsModel::addExtension(const char* contextname
 }
 #endif
 
-long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID) {
+long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid, long _dbtypeid,  long _Formular_FieldsID) {
 	lbErrCodes err = ERR_NONE;
 
     UAP_REQUEST(getModuleInstance(), lb_I_String, __fkname)
@@ -161,6 +162,7 @@ long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fkt
     UAP_REQUEST(getModuleInstance(), lb_I_String, __name)
     UAP_REQUEST(getModuleInstance(), lb_I_String, __tablename)
     UAP_REQUEST(getModuleInstance(), lb_I_Long, __formularid)
+    UAP_REQUEST(getModuleInstance(), lb_I_Long, __dbtypeid)
 
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, __Formular_FieldsID)
@@ -177,6 +179,7 @@ long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fkt
     *__name = _name;
     *__tablename = _tablename;
     __formularid->setData(_formularid);
+    __dbtypeid->setData(_dbtypeid);
 
 	
 	__Formular_FieldsID->setData(_Formular_FieldsID);
@@ -195,6 +198,8 @@ long  LB_STDCALL Formular_FieldsModel::add(const char* _fkname, const char* _fkt
     param->setUAPString(*&paramname, *&__tablename);
     *paramname = "formularid";
     param->setUAPLong(*&paramname, *&__formularid);
+    *paramname = "dbtypeid";
+    param->setUAPLong(*&paramname, *&__dbtypeid);
 
 
 	*paramname = "Formular_FieldsID";
@@ -280,6 +285,8 @@ bool LB_STDCALL Formular_FieldsModel::selectById(long user_id) {
     param->getUAPString(*&paramname, *&currenttablename);
     *paramname = "formularid";
     param->getUAPLong(*&paramname, *&currentformularid);
+    *paramname = "dbtypeid";
+    param->getUAPLong(*&paramname, *&currentdbtypeid);
 
 
 		*paramname = "Formular_FieldsID";
@@ -338,6 +345,8 @@ void  LB_STDCALL Formular_FieldsModel::setNextElement() {
     param->getUAPString(*&paramname, *&currenttablename);
     *paramname = "formularid";
     param->getUAPLong(*&paramname, *&currentformularid);
+    *paramname = "dbtypeid";
+    param->getUAPLong(*&paramname, *&currentdbtypeid);
 
 	*paramname = "Formular_FieldsID";
 	param->getUAPLong(*&paramname, *&currentFormular_FieldsID);
@@ -382,6 +391,10 @@ char* LB_STDCALL Formular_FieldsModel::get_tablename() {
 
 long LB_STDCALL Formular_FieldsModel::get_formularid() {
 	return currentformularid->getData();
+}
+
+long LB_STDCALL Formular_FieldsModel::get_dbtypeid() {
+	return currentdbtypeid->getData();
 }
 
 

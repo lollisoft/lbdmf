@@ -2,6 +2,18 @@
 // The sub visitor is replaced by a delegation plugin mechanism
 
 
+//virtual void LB_STDCALL visit(lb_I_DBPrimaryKeys*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_DBForeignKeys*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_DBColumns*) = 0;
+
+
+//virtual void LB_STDCALL visit(lb_I_DBTables*) = 0;
+
+
 //virtual void LB_STDCALL visit(lb_I_Actions*) = 0;
 
 

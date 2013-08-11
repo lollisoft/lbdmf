@@ -522,6 +522,9 @@ long LB_STDCALL lbAction::getNextStepId(lb_I_Action_Step_Transitions* trans, lb_
 			expression = trans->get_expression();
 			dst_actionid = trans->get_dst_actionid();
 			src_actionid = trans->get_src_actionid();
+			//expression = trans->getActionStepTransitionDecision();
+			//dst_actionid = trans->getActionStepTransitionDstActionID();
+			//src_actionid = trans->getActionStepTransitionSrcActionID();
 
 			_LOG << "Evaluate expression '" << expression.c_str() << "' for transition = " << trans->get_id() <<
 			", src_action = " << src_actionid << ", dst_action = " << dst_actionid LOG_

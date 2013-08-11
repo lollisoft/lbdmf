@@ -11,45 +11,86 @@ BEGIN TRANSACTION;
 --
 	
 
--- Class Benutzer of type FORM found.
+-- Class DBPrimaryKeys of type FORM found.
 				
--- Class DBType of type FORM found.
+-- Class DBForeignKeys of type FORM found.
 				
--- Class FormularFields of type FORM found.
+-- Class DBColumns of type FORM found.
 				
--- Class Formulare of type FORM found.
+-- Class DBTables of type FORM found.
 				
--- Class Anwendungen of type FORM found.
+-- Class Actions of type FORM found.
 				
--- Class Formular_Parameter of type FORM found.
+-- Class Action_Types of type FORM found.
 				
--- Class AnwendungenBenutzer of type FORM found.
+-- Class Action_Parameters of type FORM found.
 				
--- Class FormulareAnwendung of type FORM found.
+-- Class Action_Steps of type FORM found.
 				
--- Class Aktionen of type FORM found.
+-- Class ActionStep_Parameters of type FORM found.
 				
--- Class Uebersetzungen of type FORM found.
+-- Class Action_Step_Transitions of type FORM found.
 				
--- Class Formularaktionenzuordnen of type FORM found.
+-- Class UserAccounts of type FORM found.
 				
--- Class Anwendungsparameter of type FORM found.
+-- Class Applications of type FORM found.
 				
--- Class Aktionsschrittezuordnen of type FORM found.
+-- Class ApplicationParameter of type FORM found.
 				
--- Class Reportdefinitionen of type FORM found.
+-- Class Applications_Formulars of type FORM found.
 				
--- Class Reportparameter of type FORM found.
+-- Class Formulars of type FORM found.
 				
--- Class FormularTypen of type FORM found.
+-- Class Formular_Actions of type FORM found.
 				
--- Class Tables of type FORM found.
+-- Class FormularParameter of type FORM found.
 				
--- Class Columns of type FORM found.
+-- Class User_Applications of type FORM found.
 				
--- Class PrimaryKeys of type FORM found.
+-- Class Translations of type FORM found.
 				
--- Class ForeignKeys of type FORM found.
+-- Class Reports of type FORM found.
+				
+-- Class ReportParameters of type FORM found.
+				
+-- Class ReportElements of type FORM found.
+				
+-- Class ReportElementTypes of type FORM found.
+				
+-- Class ReportTexts of type FORM found.
+				
+-- Unknown stereotype 'lbDMF:application' for class lbDMFManager.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:ribbongroup' for class User.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:ribbonmenu' for class Submenu.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:menuaction' for class NewUser.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:ribbonpage' for class Administration.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:menuaction' for class createInvoices.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'lbDMF:menuaction' for class SelectUser.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'role' for class Admin.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'role' for class Finance.
+-- Create table via importApplicationTableAutoID
+
+-- Class Formular_Fields of type FORM found.
+				
+-- Class Column_Types of type FORM found.
+				
+-- Class FKPK_Mapping of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -170,8 +211,7 @@ CREATE TABLE "anwendungen" (
 CREATE TABLE "anwendungen_formulare" (
 	"id" INTEGER PRIMARY KEY,
 	"anwendungid" INTEGER,
-	"formularid" INTEGER,
-	"purpose" BPCHAR
+	"formularid" INTEGER
 );
 
 -- Class anwendungs_parameter of type ENTITY found.
@@ -305,25 +345,6 @@ CREATE TABLE "formulare" (
 	"toolbarimage" BPCHAR,
 	"anwendungid" INTEGER,
 	"typ" INTEGER
-);
-
--- Class formularfields of type ENTITY found.
--- Create table model with template 'importApplicationTable'.
-
--- Generate application table formularfields for lbDMFManager_Entities. Tagtet database: 'Sqlite'
-
-
--- CREATE Sqlite TABLE formularfields
-CREATE TABLE "formularfields" (
-	"id" INTEGER PRIMARY KEY,
-	"name" BPCHAR,
-	"tablename" BPCHAR,
-	"formularid" INTEGER,
-	"dbtypeid" INTEGER,
-	"isfk" BOOLEAN,
-	"fkname" BPCHAR,
-	"fktable" BPCHAR,
-	"dbtype" BPCHAR
 );
 
 -- Class formulartypen of type ENTITY found.
@@ -469,21 +490,51 @@ CREATE TABLE "users" (
 	"vorname" BPCHAR,
 	"userid" BPCHAR,
 	"passwort" BPCHAR,
-	"secret" BPCHAR,
-	"lastapp" INTEGER
+	"lastapp" INTEGER,
+	"secret" BPCHAR
 );
 
--- Class dbtype of type ENTITY found.
+-- Class formularfields of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
--- Generate application table dbtype for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+-- Generate application table formularfields for lbDMFManager_Entities. Tagtet database: 'Sqlite'
 
 
--- CREATE Sqlite TABLE dbtype
-CREATE TABLE "dbtype" (
+-- CREATE Sqlite TABLE formularfields
+CREATE TABLE "formularfields" (
 	"id" INTEGER PRIMARY KEY,
 	"name" BPCHAR,
-	"description" BPCHAR
+	"tablename" BPCHAR,
+	"formularid" INTEGER,
+	"fkname" BPCHAR,
+	"fktable" BPCHAR,
+	"dbtype" BPCHAR,
+	"isfk" BOOLEAN,
+	"dbtypeid" INTEGER
+);
+
+-- Class tipmessage of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table tipmessage for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE tipmessage
+CREATE TABLE "tipmessage" (
+	"id" INTEGER PRIMARY KEY,
+	"caption" BPCHAR,
+	"message" BPCHAR
+);
+
+-- Class formulare_tipmessage of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formulare_tipmessage for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE formulare_tipmessage
+CREATE TABLE "formulare_tipmessage" ("formularid" INTEGER,
+	"tipmessageid" INTEGER
 );
 
 -- Class dbtable of type ENTITY found.
@@ -562,45 +613,88 @@ CREATE TABLE "dbprimarykey" (
 	"dbtableid" INTEGER
 );
 
--- Class Benutzer of type FORM found.
+-- Class dbtype of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbtype for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbtype
+CREATE TABLE "dbtype" (
+	"id" INTEGER PRIMARY KEY,
+	"name" BPCHAR,
+	"description" BPCHAR
+);
+
+-- Class report of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table report for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE report
+CREATE TABLE "report" (
+	"id" INTEGER PRIMARY KEY,
+	"report_name" BPCHAR,
+	"report_grade" INTEGER,
+	"report_source" TEXT
+);
+
+		-- Class Formulare of type FORM found.
+		
+-- Class DBPrimaryKeys of type FORM found.
 				
--- Class DBType of type FORM found.
+-- Class DBForeignKeys of type FORM found.
 				
--- Class FormularFields of type FORM found.
+-- Class DBColumns of type FORM found.
 				
--- Class Formulare of type FORM found.
+-- Class DBTables of type FORM found.
 				
--- Class Anwendungen of type FORM found.
+-- Class Actions of type FORM found.
 				
--- Class Formular_Parameter of type FORM found.
+-- Class Action_Types of type FORM found.
 				
--- Class AnwendungenBenutzer of type FORM found.
+-- Class Action_Parameters of type FORM found.
 				
--- Class FormulareAnwendung of type FORM found.
+-- Class Action_Steps of type FORM found.
 				
--- Class Aktionen of type FORM found.
+-- Class ActionStep_Parameters of type FORM found.
 				
--- Class Uebersetzungen of type FORM found.
+-- Class Action_Step_Transitions of type FORM found.
 				
--- Class Formularaktionenzuordnen of type FORM found.
+-- Class UserAccounts of type FORM found.
 				
--- Class Anwendungsparameter of type FORM found.
+-- Class Applications of type FORM found.
 				
--- Class Aktionsschrittezuordnen of type FORM found.
+-- Class ApplicationParameter of type FORM found.
 				
--- Class Reportdefinitionen of type FORM found.
+-- Class Applications_Formulars of type FORM found.
 				
--- Class Reportparameter of type FORM found.
+-- Class Formulars of type FORM found.
 				
--- Class FormularTypen of type FORM found.
+-- Class Formular_Actions of type FORM found.
 				
--- Class Tables of type FORM found.
+-- Class FormularParameter of type FORM found.
 				
--- Class Columns of type FORM found.
+-- Class User_Applications of type FORM found.
 				
--- Class PrimaryKeys of type FORM found.
+-- Class Translations of type FORM found.
 				
--- Class ForeignKeys of type FORM found.
+-- Class Reports of type FORM found.
+				
+-- Class ReportParameters of type FORM found.
+				
+-- Class ReportElements of type FORM found.
+				
+-- Class ReportElementTypes of type FORM found.
+				
+-- Class ReportTexts of type FORM found.
+				
+-- Class Formular_Fields of type FORM found.
+				
+-- Class Column_Types of type FORM found.
+				
+-- Class FKPK_Mapping of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 
@@ -721,13 +815,6 @@ CREATE TABLE "dbprimarykey" (
 
 -- Skipped, due to creation in template 'importApplicationTable'
 
--- Class formularfields of type ENTITY found.
-
--- Generate application tables formularfields for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
-
-
--- Skipped, due to creation in template 'importApplicationTable'
-
 -- Class formulartypen of type ENTITY found.
 
 -- Generate application tables formulartypen for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
@@ -798,9 +885,23 @@ CREATE TABLE "dbprimarykey" (
 
 -- Skipped, due to creation in template 'importApplicationTable'
 
--- Class dbtype of type ENTITY found.
+-- Class formularfields of type ENTITY found.
 
--- Generate application tables dbtype for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+-- Generate application tables formularfields for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class tipmessage of type ENTITY found.
+
+-- Generate application tables tipmessage for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class formulare_tipmessage of type ENTITY found.
+
+-- Generate application tables formulare_tipmessage for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
@@ -832,6 +933,74 @@ CREATE TABLE "dbprimarykey" (
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbtype of type ENTITY found.
+
+-- Generate application tables dbtype for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class report of type ENTITY found.
+
+-- Generate application tables report for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Unknown stereotype 'lbDMF:application' for class lbDMFManager.
+
+-- Generate application table lbDMFManager for lbDMF Manager
+-- Create table relations for lbDMFManager with auto id
+	
+
+-- Unknown stereotype 'lbDMF:ribbongroup' for class User.
+
+-- Generate application table User for lbDMF Manager
+-- Create table relations for User with auto id
+	
+
+-- Unknown stereotype 'lbDMF:ribbonmenu' for class Submenu.
+
+-- Generate application table Submenu for lbDMF Manager
+-- Create table relations for Submenu with auto id
+	
+
+-- Unknown stereotype 'lbDMF:menuaction' for class NewUser.
+
+-- Generate application table NewUser for lbDMF Manager
+-- Create table relations for NewUser with auto id
+	
+
+-- Unknown stereotype 'lbDMF:ribbonpage' for class Administration.
+
+-- Generate application table Administration for lbDMF Manager
+-- Create table relations for Administration with auto id
+	
+
+-- Unknown stereotype 'lbDMF:menuaction' for class createInvoices.
+
+-- Generate application table createInvoices for lbDMF Manager
+-- Create table relations for createInvoices with auto id
+	
+
+-- Unknown stereotype 'lbDMF:menuaction' for class SelectUser.
+
+-- Generate application table SelectUser for lbDMF Manager
+-- Create table relations for SelectUser with auto id
+	
+
+-- Unknown stereotype 'role' for class Admin.
+
+-- Generate application table Admin for lbDMF Manager
+-- Create table relations for Admin with auto id
+	
+
+-- Unknown stereotype 'role' for class Finance.
+
+-- Generate application table Finance for lbDMF Manager
+-- Create table relations for Finance with auto id
+	
 
 -- Generate Sqlite application relations for table action_parameters for lbDMFManager_Entities
 -- Create table relations for action_parameters
@@ -1353,62 +1522,6 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulartypen', 'id', 'formulare', 'typ');
  
 
--- Generate Sqlite application relations for table formularfields for lbDMFManager_Entities
--- Create table relations for formularfields
---ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
--- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
---ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
-
--- Build trigger manually. (Todo: add support for nullable and not nullable)
-
-CREATE TRIGGER "fk_formularfields_formularid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
-                 THEN RAISE(ABORT, 'INSERT: formularid violates foreign key formulare(id = SELECT new.formularid)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfields_formularid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
-                 THEN RAISE(ABORT, 'UPDATE: formularid violates foreign key formulare(id)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfields_formularid_del" BEFORE DELETE ON formulare FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((SELECT formularid FROM formularfields WHERE formularid = old.id) IS NOT NULL)
-                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfields(formularid = old.id)')
-    END;
-END;
-INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'formularfields', 'formularid');
- 
-
---ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
--- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
---ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
-
--- Build trigger manually. (Todo: add support for nullable and not nullable)
-
-CREATE TRIGGER "fk_formularfields_dbtypeid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
-                 THEN RAISE(ABORT, 'INSERT: dbtypeid violates foreign key dbtype(id = SELECT new.dbtypeid)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfields_dbtypeid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
-                 THEN RAISE(ABORT, 'UPDATE: dbtypeid violates foreign key dbtype(id)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfields_dbtypeid_del" BEFORE DELETE ON dbtype FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((SELECT dbtypeid FROM formularfields WHERE dbtypeid = old.id) IS NOT NULL)
-                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfields(dbtypeid = old.id)')
-    END;
-END;
-INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtype', 'id', 'formularfields', 'dbtypeid');
- 
-
 -- Generate Sqlite application relations for table formulartypen for lbDMFManager_Entities
 -- Create table relations for formulartypen
 -- Generate Sqlite application relations for table regressiontest for lbDMFManager_Entities
@@ -1618,8 +1731,66 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('anwendungen', 'id', 'users', 'lastapp');
  
 
--- Generate Sqlite application relations for table dbtype for lbDMFManager_Entities
--- Create table relations for dbtype
+-- Generate Sqlite application relations for table formularfields for lbDMFManager_Entities
+-- Create table relations for formularfields
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_formulare_id" FOREIGN KEY ( "formularid" ) REFERENCES "formulare" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_formularfields_formularid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: formularid violates foreign key formulare(id = SELECT new.formularid)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_formularid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularid IS NOT NULL) AND ((SELECT id FROM formulare WHERE id = new.formularid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: formularid violates foreign key formulare(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_formularid_del" BEFORE DELETE ON formulare FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT formularid FROM formularfields WHERE formularid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfields(formularid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formulare', 'id', 'formularfields', 'formularid');
+ 
+
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formularfields" ADD CONSTRAINT "cst_formularfields_dbtype_id" FOREIGN KEY ( "dbtypeid" ) REFERENCES "dbtype" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_formularfields_dbtypeid_ins" BEFORE INSERT ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: dbtypeid violates foreign key dbtype(id = SELECT new.dbtypeid)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_dbtypeid_upd" BEFORE UPDATE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbtypeid IS NOT NULL) AND ((SELECT id FROM dbtype WHERE id = new.dbtypeid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: dbtypeid violates foreign key dbtype(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfields_dbtypeid_del" BEFORE DELETE ON dbtype FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbtypeid FROM formularfields WHERE dbtypeid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfields(dbtypeid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtype', 'id', 'formularfields', 'dbtypeid');
+ 
+
+-- Generate Sqlite application relations for table tipmessage for lbDMFManager_Entities
+-- Create table relations for tipmessage
+-- Generate Sqlite application relations for table formulare_tipmessage for lbDMFManager_Entities
+-- Create table relations for formulare_tipmessage
 -- Generate Sqlite application relations for table dbtable for lbDMFManager_Entities
 -- Create table relations for dbtable
 --ALTER TABLE "dbtable" ADD CONSTRAINT "cst_dbtable_anwendungen_id" FOREIGN KEY ( "anwendungenid" ) REFERENCES "anwendungen" ( "id" );
@@ -1735,6 +1906,16 @@ BEGIN
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbprimarykey', 'dbtableid');
  
+
+-- Generate Sqlite application relations for table dbtype for lbDMFManager_Entities
+-- Create table relations for dbtype
+-- Generate Sqlite application relations for table report for lbDMFManager_Entities
+-- Create table relations for report
+-- Unknown stereotype 'report' for class Formulare.
+
+-- Generate application table Formulare for Reports
+-- Create table relations for Formulare with auto id
+	
 
 -- Script ready.
 COMMIT;
