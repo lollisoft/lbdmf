@@ -16,7 +16,7 @@ classcanvas 128386 class_ref 133250 // users
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 16 258 3005
 end
-classcanvas 128770 class_ref 158338 // formular_fields
+classcanvas 128770 class_ref 158338 // formularfields
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 69 895 2000
 end
@@ -46,8 +46,8 @@ classcanvas 132482 class_ref 130818 // anwendungen_formulare
 end
 relationcanvas 128514 relation_ref 132098 // <association>
   from ref 128386 z 3006 stereotype "<<relationship>>" xyz 144 333 3006 to ref 128002
-  role_a_pos 263 307 3000 role_b_pos 98 311 3000
-  multiplicity_a_pos 305 341 3000 multiplicity_b_pos 98 345 3000
+  role_a_pos 263 309 3000 role_b_pos 98 320 3000
+  multiplicity_a_pos 305 343 3000 multiplicity_b_pos 98 354 3000
 end
 relationcanvas 128642 relation_ref 133378 // <association>
   from ref 128386 z 3006 stereotype "<<relationship>>" xyz 44 463 3006 to ref 128130
@@ -65,7 +65,7 @@ relationcanvas 129794 relation_ref 131842 // <association>
   multiplicity_a_pos 357 430 3000 multiplicity_b_pos 343 598 3000
 end
 relationcanvas 129922 relation_ref 132354 // <association>
-  from ref 129666 z 3006 stereotype "<<relationship>>" xyz 181.5 627.5 3006 to ref 128130
+  from ref 129666 z 3006 stereotype "<<relationship>>" xyz 181 627 3006 to ref 128130
   role_a_pos 195 562 3000 role_b_pos 218 662 3000
   multiplicity_a_pos 195 596 3000 multiplicity_b_pos 282 696 3000
 end
@@ -80,10 +80,10 @@ relationcanvas 130178 relation_ref 132738 // <association>
   multiplicity_a_pos 412 766 3000 multiplicity_b_pos 611 897 3000
 end
 relationcanvas 130306 relation_ref 160514 // <association>
-  from ref 128770 z 3006 stereotype "<<relationship>>" xyz 93 866 3006 to point 159 838
+  from ref 128770 z 3006 stereotype "<<relationship>>" xyz 92 866 3006 to point 159 838
   line 132866 z 3006 to ref 129666
   role_a_pos 218 722 3000 no_role_b
-  multiplicity_a_pos 282 756 3000 multiplicity_b_pos 134 869 3000
+  multiplicity_a_pos 282 756 3000 multiplicity_b_pos 132 869 3000
 end
 relationcanvas 131330 relation_ref 131970 // <association>
   from ref 131202 z 3012 stereotype "<<relationship>>" xyz 177 196 3012 to ref 128002
