@@ -94,7 +94,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 #ifndef __LB_INTERFACES_SUB_<xsl:value-of select="$ApplicationName"/>__
 #define __LB_INTERFACES_SUB_<xsl:value-of select="$ApplicationName"/>__
 <!-- === Formular specific template ====================================================================== -->
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -135,7 +135,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 <exsl:document href="{$basedir}/Interfaces/lbInterfaces-{$ApplicationName}-sub-visitor.h" method="text">
 <!-- === Formular specific template ====================================================================== -->
 // The sub visitor is replaced by a delegation plugin mechanism
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName1">
 	<xsl:call-template name="SubstringReplace">
@@ -166,7 +166,7 @@ Export application code to <xsl:value-of select="$basedir"/>
 
 <!-- === Formular specific template ====================================================================== -->
 // The sub visitor is replaced by a delegation plugin mechanism
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <!-- TODO: Get it from formularparameters or from any mapping here -->
 <xsl:variable name="FormularID" select="@ID"/>
 <xsl:variable name="XMLEntityName" select="//lbDMF/formularparameter/parameter[@formularid=$FormularID][@name='XMLEntityName']/@value"/>
