@@ -248,7 +248,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	UAP(lb_I_Unknown, uk)
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM" select="@name"/>
 <xsl:variable name="FormularNameACM">
 	<xsl:call-template name="SubstringReplace">
@@ -273,11 +273,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 </xsl:variable>
 	UAP(lb_I_<xsl:value-of select="$FormularNameACM"/>, <xsl:value-of select="$FormularNameACM"/>)
 </xsl:for-each>
-
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -393,7 +388,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM1" select="@name"/>
 <xsl:variable name="FormularNameACM1">
 	<xsl:call-template name="SubstringReplace">
@@ -421,38 +416,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(uk, lb_I_<xsl:value-of select="$FormularNameACM1"/>, <xsl:value-of select="$FormularNameACM1"/>)
 </xsl:for-each>
 
-	*name = "DBPrimaryKeys";
-	uk = document-&gt;getElement(&amp;key);
-	if (uk == NULL) {
-		_LOG &lt;&lt; "Error: Document element " &lt;&lt; name-&gt;charrep() &lt;&lt; " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBPrimaryKeys, dbPrimaryKeys)
-			
-	*name = "DBForeignKeys";
-	uk = document-&gt;getElement(&amp;key);
-	if (uk == NULL) {
-		_LOG &lt;&lt; "Error: Document element " &lt;&lt; name-&gt;charrep() &lt;&lt; " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBForeignKeys, dbForeignKeys)
-			
-	*name = "DBTables";
-	uk = document-&gt;getElement(&amp;key);
-	if (uk == NULL) {
-		_LOG &lt;&lt; "Error: Document element " &lt;&lt; name-&gt;charrep() &lt;&lt; " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBTables, dbTables)
-			
-	*name = "DBColumns";
-	uk = document-&gt;getElement(&amp;key);
-	if (uk == NULL) {
-		_LOG &lt;&lt; "Error: Document element " &lt;&lt; name-&gt;charrep() &lt;&lt; " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBColumns, dbColumns)
-
 	// Mark that data sets, that are related to this application
 	UAP(lb_I_SecurityProvider, securityManager)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -467,7 +430,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	Applications-&gt;mark();
 
 	if (
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM2" select="@name"/>
 <xsl:variable name="FormularNameACM2">
 	<xsl:call-template name="SubstringReplace">
@@ -492,11 +455,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 </xsl:variable>
 		(<xsl:value-of select="$FormularNameACM2"/> != NULL) &amp;&amp;
 </xsl:for-each>
-	    (dbColumns != NULL) &amp;&amp;
-	    (dbPrimaryKeys != NULL) &amp;&amp;
-	    (dbForeignKeys != NULL) &amp;&amp;
-	    (dbTables != NULL)
-		) {
+	    true) {
 
 	
 		*oStream &lt;&lt; "&lt;lbDMF applicationid=\"";
@@ -523,7 +482,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 #endif		
 #endif
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM3" select="@name"/>
 <xsl:variable name="FormularNameACM3">
 	<xsl:call-template name="SubstringReplace">
@@ -549,15 +508,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		meta-&gt;setStatusText("Info", "Write XML document (<xsl:value-of select="$FormularNameACM3"/>) ...");
 		<xsl:value-of select="$FormularNameACM3"/>-&gt;accept(*&amp;aspect);
 </xsl:for-each>
-
-		meta-&gt;setStatusText("Info", "Write XML document (dbPrimaryKeys) ...");
-		dbPrimaryKeys-&gt;accept(*&amp;aspect);
-		meta-&gt;setStatusText("Info", "Write XML document (dbForeignKeys) ...");
-		dbForeignKeys-&gt;accept(*&amp;aspect);
-		meta-&gt;setStatusText("Info", "Write XML document (dbTables) ...");
-		dbTables-&gt;accept(*&amp;aspect);
-		meta-&gt;setStatusText("Info", "Write XML document (dbColumns) ...");
-		dbColumns-&gt;accept(*&amp;aspect);
 
 		*oStream &lt;&lt; "&lt;/lbDMF&gt;\n";
 	}
@@ -613,7 +563,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	    _LOG &lt;&lt; "Error: aspect instance not available." LOG_
 	}
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM4" select="@name"/>
 <xsl:variable name="FormularNameACM4">
 	<xsl:call-template name="SubstringReplace">
@@ -638,13 +588,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 </xsl:variable>
 	UAP(lb_I_<xsl:value-of select="$FormularNameACM4"/>, <xsl:value-of select="$FormularNameACM4"/>)
 </xsl:for-each>
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
-
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM5" select="@name"/>
 <xsl:variable name="FormularNameACM5">
 	<xsl:call-template name="SubstringReplace">
@@ -670,7 +615,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularNameACM5"/>, Model, <xsl:value-of select="$FormularNameACM5"/>, "'<xsl:value-of select="$FormularNameACM5"/>'")
 </xsl:for-each>
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM6" select="@name"/>
 <xsl:variable name="FormularNameACM6">
 	<xsl:call-template name="SubstringReplace">
@@ -744,7 +689,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	document-&gt;setCloning(false);
 
 	if (
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM7" select="@name"/>
 <xsl:variable name="FormularNameACM7">
 	<xsl:call-template name="SubstringReplace">
@@ -784,7 +729,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		ukParams = metaapp-&gt;getActiveDocument();
 		QI(ukParams, lb_I_Parameter, params)
 		
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM8" select="@name"/>
 <xsl:variable name="FormularNameACM8">
 	<xsl:call-template name="SubstringReplace">
@@ -847,11 +792,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "XMIFileUMLProjectExport";
 		QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
 		document-&gt;insert(&amp;uk, &amp;key);
-		/*
-		*name = "UseOtherXSLFile";
-		QI(UseOtherXSLFile, lb_I_Unknown, uk)
-		document-&gt;insert(&amp;uk, &amp;key);
-*/		
+
 		*name = "GeneralDBSchemaname";
 		QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 		document-&gt;insert(&amp;uk, &amp;key);
@@ -888,7 +829,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_Unknown, uk)
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM9" select="@name"/>
 <xsl:variable name="FormularNameACM9">
 	<xsl:call-template name="SubstringReplace">
@@ -961,7 +902,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	QI(name, lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM10" select="@name"/>
 <xsl:variable name="FormularNameACM10">
 	<xsl:call-template name="SubstringReplace">
@@ -1021,11 +962,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "UsePlugin";
 	uk = document-&gt;getElement(&amp;key);
 	QI(uk, lb_I_Boolean, UsePlugin)
-/*	
-	*name = "UseOtherXSLFile";
-	uk = document-&gt;getElement(&amp;key);
-	QI(uk, lb_I_Boolean, UseOtherXSLFile)
-*/			
+
 	*name = "XMIFileUMLProject";
 	uk = document-&gt;getElement(&amp;key);
 	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
@@ -1053,7 +990,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 				
 
 	if (
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM11" select="@name"/>
 <xsl:variable name="FormularNameACM11">
 	<xsl:call-template name="SubstringReplace">
@@ -1078,12 +1015,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 </xsl:variable>
 		(<xsl:value-of select="$FormularNameACM11"/> != NULL) &amp;&amp;
 </xsl:for-each>
-
 		true) {
 
 		_LOG &lt;&lt; "Start storing the data" LOG_
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM12" select="@name"/>
 <xsl:variable name="FormularNameACM12">
 	<xsl:call-template name="SubstringReplace">
@@ -1146,7 +1082,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM13" select="@name"/>
 <xsl:variable name="FormularNameACM13">
 	<xsl:call-template name="SubstringReplace">
@@ -1172,17 +1108,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_<xsl:value-of select="$FormularNameACM13"/>, <xsl:value-of select="$FormularNameACM13"/>)
 </xsl:for-each>
 
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
-
-	AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'database report'")
-
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM14" select="@name"/>
 <xsl:variable name="FormularNameACM14">
 	<xsl:call-template name="SubstringReplace">
@@ -1208,7 +1134,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_<xsl:value-of select="$FormularNameACM14"/>, Model, <xsl:value-of select="$FormularNameACM14"/>, "'<xsl:value-of select="$FormularNameACM14"/>'")
 </xsl:for-each>
 	
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM15" select="@name"/>
 <xsl:variable name="FormularNameACM15">
 	<xsl:call-template name="SubstringReplace">
@@ -1236,30 +1162,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	}
 </xsl:for-each>
 
-	if (dbTables == NULL)  {
-		_LOG &lt;&lt; "lb_I_DBTables instance is NULL." LOG_
-	}
-	if (dbColumns == NULL)  {
-		_LOG &lt;&lt; "lb_I_DBColumns instance is NULL." LOG_
-	}
-	if (dbPrimaryKeys == NULL)  {
-		_LOG &lt;&lt; "lb_I_DBPrimaryKeys instance is NULL." LOG_
-	}
-	if (dbForeignKeys == NULL)  {
-		_LOG &lt;&lt; "lb_I_DBForeignKeys instance is NULL." LOG_
-	}
-
-	
-	meta-&gt;setStatusText("Info", "Load database configuration (dbTables) ...");
-	dbTables-&gt;accept(*&amp;aspect);
-	meta-&gt;setStatusText("Info", "Load database configuration (dbColumns) ...");
-	dbColumns-&gt;accept(*&amp;aspect);
-	meta-&gt;setStatusText("Info", "Load database configuration (dbPrimaryKeys) ...");
-	dbPrimaryKeys-&gt;accept(*&amp;aspect);
-	meta-&gt;setStatusText("Info", "Load database configuration (dbForeignKeys) ...");
-	dbForeignKeys-&gt;accept(*&amp;aspect);
-
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM16" select="@name"/>
 <xsl:variable name="FormularNameACM16">
 	<xsl:call-template name="SubstringReplace">
@@ -1412,22 +1315,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		 SomeBaseSettings-&gt;getUAPFileLocation(*&amp;name, *&amp;XSLFileExportSettings);
 	} 
 
-	*name = "DBTables";
-	QI(dbTables, lb_I_Unknown, uk)
-	document-&gt;insert(&amp;uk, &amp;key);
-	
-	*name = "DBColumns";
-	QI(dbColumns, lb_I_Unknown, uk)
-	document-&gt;insert(&amp;uk, &amp;key);
-	
-	*name = "DBPrimaryKeys";
-	QI(dbPrimaryKeys, lb_I_Unknown, uk)
-	document-&gt;insert(&amp;uk, &amp;key);
-	
-	*name = "DBForeignKeys";
-	QI(dbForeignKeys, lb_I_Unknown, uk)
-	document-&gt;insert(&amp;uk, &amp;key);
-	
+	// DB Model insert removed. Where are the others? 
 
 	*name = "UMLImportTargetDBName";
 	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
@@ -1488,7 +1376,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	document-&gt;insert(&amp;uk, &amp;key);
 
 	if (
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM17" select="@name"/>
 <xsl:variable name="FormularNameACM17">
 	<xsl:call-template name="SubstringReplace">
@@ -1514,8 +1402,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		(<xsl:value-of select="$FormularNameACM17"/> != NULL) &amp;&amp; 
 </xsl:for-each>
 		true) {
-
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+		// Here:
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularNameACM18" select="@name"/>
 <xsl:variable name="FormularNameACM18">
 	<xsl:call-template name="SubstringReplace">

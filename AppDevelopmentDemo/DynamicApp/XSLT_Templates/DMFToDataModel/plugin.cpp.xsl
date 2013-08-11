@@ -169,7 +169,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModulelbDMFDataModel)
 
 BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
-// Generated plugin definitions<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+// Generated plugin definitions<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -193,11 +193,6 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	</xsl:call-template>
 </xsl:variable>
 	ADD_PLUGIN(lbPlugin<xsl:value-of select="$FormularName"/>Model, Model)</xsl:for-each>
-// Nongenerated plugin definitions	
-	ADD_PLUGIN(lbPluginDBColumnsModel, Model)
-	ADD_PLUGIN(lbPluginDBTableModel, Model)
-	ADD_PLUGIN(lbPluginDBForeignKeysModel, Model)
-	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {
