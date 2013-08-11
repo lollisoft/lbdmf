@@ -1,6 +1,6 @@
 format 73
 "lbDMF" // DMFToUML::lbDMF
-  revision 8
+  revision 9
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -549,6 +549,104 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 155650 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 205954 "dropdown"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Attribute"
+      key "stereotypeIconPath" value ""
+      classrelation 213122 // <unidirectional association>
+	relation 208898 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 213122 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+
+      attribute 254466 "column"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 254594 "table"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 206082 "form"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value ""
+      key "stereotypeIconPath" value ""
+      attribute 254722 "ribbongroup"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 254850 "ribbonpage"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 213250 // <unidirectional association>
+	relation 209026 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 213250 // <unidirectional association>
 	  b parent class_ref 133506 // Element
       end
     end

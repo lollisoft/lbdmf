@@ -16,19 +16,19 @@ classcanvas 128770 class_ref 192258 // dbprimarykey
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 24 160 2000
 end
-classcanvas 129026 class_ref 192386 // PrimaryKeys
+classcanvas 129026 class_ref 192386 // DBPrimaryKeys
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 20 381 2000
 end
-classcanvas 129154 class_ref 192770 // ForeignKeys
+classcanvas 129154 class_ref 192770 // DBForeignKeys
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 30 608 2000
 end
-classcanvas 129282 class_ref 192642 // Columns
+classcanvas 129282 class_ref 192642 // DBColumns
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 663 414 2000
 end
-classcanvas 129410 class_ref 192514 // Tables
+classcanvas 129410 class_ref 192514 // DBTables
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 359 740 2005
 end
@@ -41,7 +41,7 @@ classcanvas 130818 class_ref 128642 // Applications
   xyz 40 953 2006
 end
 relationcanvas 128258 relation_ref 194306 // <association>
-  from ref 128002 z 2001 stereotype "<<relationship>>" xyz 500.5 432 3000 to ref 128130
+  from ref 128002 z 2001 stereotype "<<relationship>>" xyz 500 432 3000 to ref 128130
   no_role_a role_b_pos 482 518 3000
   multiplicity_a_pos 635 332 3000 multiplicity_b_pos 453 518 3000
 end
@@ -51,7 +51,7 @@ relationcanvas 128642 relation_ref 194434 // <association>
   multiplicity_a_pos 378 491 3000 multiplicity_b_pos 373 450 3000
 end
 relationcanvas 128898 relation_ref 194562 // <association>
-  from ref 128770 z 2001 stereotype "<<relationship>>" xyz 187.5 434.5 3000 to ref 128002
+  from ref 128770 z 2001 stereotype "<<relationship>>" xyz 187 434 3000 to ref 128002
   role_a_pos 360 526 3000 no_role_b
   multiplicity_a_pos 331 526 3000 multiplicity_b_pos 130 329 3000
 end
@@ -76,22 +76,22 @@ relationcanvas 129922 relation_ref 201474 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130050 relation_ref 201602 // Columns
-  from ref 129410 z 2006 label "Columns" italic xyz 533.5 646 3000 stereotype "<<masterdetail_action>>" xyz 474.5 665 3000 to ref 129282
-  role_a_pos 663 576 3000 no_role_b
+  from ref 129410 z 2006 label "Columns" italic xyz 542 651.5 2006 stereotype "<<masterdetail_action>>" xyz 483 670.5 3000 to ref 129282
+  role_a_pos 663 587 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130178 relation_ref 201730 // ForeignKeys
-  from ref 129410 z 2006 label "ForeignKeys" italic xyz 202.5 767.5 3000 stereotype "<<masterdetail_action>>" xyz 158.5 786.5 3000 to ref 129154
-  role_a_pos 150 741 3000 no_role_b
+  from ref 129410 z 2006 label "ForeignKeys" italic xyz 214 778 2006 stereotype "<<masterdetail_action>>" xyz 170 797 3000 to ref 129154
+  role_a_pos 174 754 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130434 relation_ref 201858 // PrimaryKeys
-  from ref 129410 z 2006 label "PrimaryKeys" italic xyz 197.5 630 3000 stereotype "<<masterdetail_action>>" xyz 154.5 649 3000 to ref 129026
-  role_a_pos 151 541 3000 no_role_b
+  from ref 129410 z 2006 label "PrimaryKeys" italic xyz 209 641.5 2006 stereotype "<<masterdetail_action>>" xyz 166 660.5 3000 to ref 129026
+  role_a_pos 175 564 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130690 relation_ref 201986 // <association>
-  from ref 130562 z 2001 stereotype "<<relationship>>" xyz 500 735.5 3000 to ref 128002
+  from ref 130562 z 2001 stereotype "<<relationship>>" xyz 500 735 3000 to ref 128002
   no_role_a role_b_pos 534 803 3000
   multiplicity_a_pos 474 668 3000 multiplicity_b_pos 639 837 3000
 end
@@ -101,8 +101,8 @@ relationcanvas 130946 relation_ref 128386 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 131074 relation_ref 202114 // Tables
-  from ref 130818 z 2007 label "Tables" italic xyz 278.5 900 3000 stereotype "<<masterdetail_action>>" xyz 211.5 919 3000 to ref 129410
-  role_a_pos 301 834 3000 no_role_b
+  from ref 130818 z 2007 label "Tables" italic xyz 278 911 2007 stereotype "<<masterdetail_action>>" xyz 211 930 3000 to ref 129410
+  role_a_pos 301 850 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 end

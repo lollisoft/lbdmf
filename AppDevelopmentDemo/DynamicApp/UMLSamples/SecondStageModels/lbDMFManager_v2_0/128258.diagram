@@ -56,12 +56,12 @@ relationcanvas 128642 relation_ref 133890 // Formulare
 end
 relationcanvas 128898 relation_ref 134018 // AnwendungenBenutzer
   from ref 128002 z 1999 label "AnwendungenBenutzer" italic xyz 47 217 1999 stereotype "<<masterdetail_action>>" xyz 45 233 3000 to ref 128770
-  role_a_pos 117 278 3000 no_role_b
+  role_a_pos 119 278 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129410 relation_ref 133634 // Aktionsschrittezuordnen
-  from ref 129154 z 1999 label "Aktionsschrittezuordnen" italic xyz 311 218 1999 stereotype "<<masterdetail_action>>" xyz 307 233 3000 to ref 129282
-  role_a_pos 371 292 3000 no_role_b
+  from ref 129154 z 1999 label "Aktionsschrittezuordnen" italic xyz 319.5 228 1999 stereotype "<<masterdetail_action>>" xyz 315.5 243 3000 to ref 129282
+  role_a_pos 377 292 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129794 relation_ref 133762 // Anwendungsparameter
