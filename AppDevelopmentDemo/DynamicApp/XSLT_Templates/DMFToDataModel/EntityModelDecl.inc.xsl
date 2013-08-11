@@ -134,7 +134,7 @@
 	<xsl:param name="FormularID"/>
 	<xsl:param name="FormName"/>
         // Preloaded data from database, if plugins are available.
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID]">
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName2">
 	<xsl:call-template name="SubstringReplace">
