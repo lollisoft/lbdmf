@@ -37,7 +37,7 @@ public:
 	Formular_FieldsModel();
 	virtual ~Formular_FieldsModel();
 
-	long		LB_STDCALL add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID = -1);
+	long		LB_STDCALL add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid, long _dbtypeid,  long _Formular_FieldsID = -1);
 
 	bool		LB_STDCALL selectById(long _id);
 	int			LB_STDCALL Count();
@@ -53,6 +53,8 @@ public:
 	char*		LB_STDCALL get_name();
 	char*		LB_STDCALL get_tablename();
 	long		LB_STDCALL get_formularid();
+	
+	long		LB_STDCALL get_dbtypeid();
 	
 
 	long		LB_STDCALL get_id();
@@ -86,6 +88,8 @@ public:
 	UAP(lb_I_String, currenttablename)
 			
 	UAP(lb_I_Long, currentformularid)
+	
+	UAP(lb_I_Long, currentdbtypeid)
 	
 
 	

@@ -1908,7 +1908,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 */
 				wxString theQuery = wxString(szSql);
 
-				if (theQuery.Upper().Contains("INSERT")) {
+///\todo Rethink about this checks.
+				if (theQuery.Upper().Contains("INSERT ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() INSERT statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1916,7 +1917,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("UPDATE")) {
+				if (theQuery.Upper().Contains("UPDATE ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() UPDATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1924,7 +1925,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("DROP")) {
+				if (theQuery.Upper().Contains("DROP ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() DROP statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -1932,7 +1933,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 					}
 					return ERR_NONE;
 				}
-				if (theQuery.Upper().Contains("CREATE")) {
+				if (theQuery.Upper().Contains("CREATE ")) {
 					if (theResult) {
 						_CL_VERBOSE << "lbDatabaseLayerQuery::query() CREATE statement issued that has resulted in a resultset and data." LOG_
 						currentdbLayer->CloseResultSet(theResult);
@@ -2238,7 +2239,11 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 		} else {
 			wxString theQuery = szSql;
 			if (currentdbLayer->GetErrorCode() != DATABASE_LAYER_OK) {
-				_LOG << "lbDatabaseLayerQuery::query() Error: Database operation was unsuccessful: " << currentdbLayer->GetErrorMessage().c_str() << ". Query was: " << q LOG_
+			
+				wxString errormsg = currentdbLayer->GetErrorMessage();
+				_LOG << "lbDatabaseLayerQuery::query() Sqlite error code: " << currentdbLayer->GetErrorCode() LOG_
+				_LOG << "lbDatabaseLayerQuery::query() Error: " << errormsg.c_str() LOG_
+
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
@@ -3040,6 +3045,9 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	*name = columnName;
+	
+	_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") called." LOG_
+	
 	if (theResult == NULL) {
 		_CL_VERBOSE << "Error: No resultset available. Try reopen." LOG_
 		if (reopen() != ERR_NONE) {
@@ -3072,6 +3080,8 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(const char* columnNam
 			QI(key, lb_I_Integer, index)
 			cachedColumnNames->finishIteration();
 
+			_LOG << "lbDatabaseLayerQuery::getTableName(" << columnName << ") checks column mapping with key: " << key->charrep() LOG_
+			
 			if (cachedColumnTableNames->exists(&key) == 1) {
 				UAP(lb_I_Unknown, uk)
 				UAP(lb_I_String, table)

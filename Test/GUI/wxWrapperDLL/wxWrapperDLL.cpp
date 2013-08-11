@@ -891,53 +891,51 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 						closeCurrentPage();
                 }
         }
-#ifdef bla
-        forms->finishIteration();
-        while (forms->hasMoreElements()) {
-                lbErrCodes err = ERR_NONE;
 
-                lb_I_Unknown* form = forms->nextElement();
+		if (openedDialogs != NULL) {
+			while (openedDialogs->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_String, s)
+				
+				uk = openedDialogs->nextElement();
+				QI(uk, lb_I_String, s);
+				
+				
+				forms->finishIteration();
+				while (forms->hasMoreElements()) {
+					lbErrCodes err = ERR_NONE;
 
-                if (!form) continue;
+					lb_I_Unknown* form = forms->nextElement();
 
-                _LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
+					if (!form) continue;
 
-                UAP(lb_I_DatabaseForm, d)
-                QI(form, lb_I_DatabaseForm, d)
-                UAP(lb_I_FixedDatabaseForm, fd)
-                QI(form, lb_I_FixedDatabaseForm, fd)
+					_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
 
-                /* Really needed here !
-                * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-                *
-                * So here I must ensure, that the object it self doesn't get deleted in the container.
-                * wxWidgets should call the destructor of the form.
-                */
-
-                if (d != NULL) {
+					UAP(lb_I_DatabaseForm, d)
+					QI(form, lb_I_DatabaseForm, d)
+					UAP(lb_I_FixedDatabaseForm, fd)
+					QI(form, lb_I_FixedDatabaseForm, fd)
+					
+					if (d != NULL && *s == d->getName()) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
 
                         //d->reopen(); // Avoid invalid database object while closing.
                         d->destroy();
                         d.resetPtr();
                         _LOG << "Destroyed the dynamic form." LOG_
-                }
+					}
 
-                if (fd != NULL) {
-                        _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-                        fd->destroy();
-                        fd.resetPtr();
-                        _LOG << "Destroyed the custom form." LOG_
-                }
-        }
-
-        _LOG << "Detach all database forms from forms list." LOG_
-
-        forms->detachAll();
-		forms->deleteAll();
-
-        _LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
-#endif
+					if (fd != NULL && *s == d->getName()) {
+							_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+							fd->destroy();
+							fd.resetPtr();
+							_LOG << "Destroyed the custom form." LOG_
+					}
+				}
+			}
+			forms->detachAll();
+			forms->deleteAll();
+		}
         return ERR_NONE;
 }
 /*...e*/
@@ -968,7 +966,12 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wizard->SetPageSize(size);
 
-        wizard->RunWizard(page1);
+        if ( ! wizard->RunWizard(page1) )
+        {
+            wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
+            wxICON_INFORMATION | wxOK);
+        }
+
         wizard->Destroy();
 
         return NULL;
@@ -1328,6 +1331,17 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
+                } else {
+						if (openedDialogs == NULL) {
+							REQUEST(getModuleInstance(), lb_I_Container, openedDialogs);
+						}
+						UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+						UAP(lb_I_Unknown, nuk)
+						*name = key->charrep();
+						QI(name, lb_I_Unknown, nuk)
+						if (openedDialogs->exists(&key) == 0) {
+							openedDialogs->insert(&nuk, &key);
+						}
                 }
 
                 _LOG << "Set formname to " << formName LOG_
@@ -1378,6 +1392,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
         UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
         app->enableEvent("ShowPropertyPanel");
 
+		if (!findDBForm(formName)) {
+			_LOGERROR << "Error: Form not found after creating it!" LOG_
+		}
+		
         return _dialog.getPtr();
 }
 /*...e*/
@@ -1511,6 +1529,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         wxWindow* W = ::wxFindWindowByName(wxString(name));
         if (W == NULL) {
+                _LOG << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1525,7 +1544,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
         uk = forms->getElement(&key);
 
         if (uk == NULL) {
-                _CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+                _LOGERROR << "Error: No form with name '" << name << "' found." LOG_
                 return NULL;
         }
 
@@ -1535,8 +1554,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
 
         if (w != NULL) {
                 w++;
+                _LOG << "Form with name '" << name << "' found." LOG_
                 return w.getPtr();
         }
+		_LOGERROR << "Error: Form with name '" << name << "' is not lb_I_DatabaseForm." LOG_
         return NULL;
 }
 /*...e*/
@@ -2049,6 +2070,18 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
         }
 
         dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, pname)
+		*pname = PropertyName.c_str();
+		
+		if (pname != NULL && *pname == "Application Database settingsDB Name")
+		{
+			if (PropValue.Trim() == "") {
+				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), *wxRED, wxPG_DONT_RECURSE);
+			} else {
+				pProperty->GetGrid()->SetPropertyBackgroundColour(wxPGPropArgCls(pname->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+			}
+		}
 }
 /*...e*/
 /*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
@@ -2318,12 +2351,40 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 
         if (wxPGIdIsOk(pgid)) {
                 pg->SetPropertyValueString(pgid, s->charrep());
+				
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					if (*s == "") {
+						//wxPGPropArgCls id(pgid);
+						pg->SetPropertyBackgroundColour(pgid, *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(pgid, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
         } else {
 #ifdef USE_PROPGRID_1_2_2
                 pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #else
                 pg->Append(new wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #endif
+
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					s->trim();
+				
+					if (*s == "") {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
+
         }
 }
 /*...e*/

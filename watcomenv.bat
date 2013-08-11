@@ -208,6 +208,11 @@ REM -------------------
 set PATH=%PATH%;"C:\Programme\Beaver Debugger\"
 
 REM -------------------
+REM MSYS Path
+REM -------------------
+
+set PATH=%PATH%;"%DEVROOT%\Tools\MinGW\msys\1.0\bin"
+REM -------------------
 REM Prepend my cvs path
 REM -------------------
 

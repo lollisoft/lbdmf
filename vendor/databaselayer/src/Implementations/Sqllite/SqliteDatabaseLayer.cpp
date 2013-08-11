@@ -208,15 +208,24 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 		wxString strErrorMessage = _("");
 		char* szErrorMessage = NULL;
 		int nReturn = sqlite3_exec(m_pDatabase, (const char*) rewrittenQuery.c_str(), 0, 0, &szErrorMessage);
+		
+		if (nReturn != SQLITE_OK)
+		{
+			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+			SetErrorMessage(strErrorMessage);
+			ThrowDatabaseException();
+			return false;
+		}
+
 		if (szErrorMessage != NULL)
 		{
 	        SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 	        strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
 			SetErrorMessage(strErrorMessage);
 			sqlite3_free(szErrorMessage);
-			return NULL;
+			return false;
 		}
-		return NULL;
+		return true;
 	}
 
   if (bParseQuery)

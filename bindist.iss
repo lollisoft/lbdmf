@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Samples
-AppVerName=lbDMF Binary Samples 1.0.4-stable-rc4
-OutputBaseFilename=lbDMF-BinSamples-1.0.4-stable-rc4
+AppVerName=lbDMF Binary Samples 1.0.4-final
+OutputBaseFilename=lbDMF-BinSamples-1.0.4-final
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -36,6 +36,11 @@ Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; DestDir: "{app}\UMLSamples\"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
+
+; Solved Windows 7 File locking issues by using a transaction. Also this is more than many times faster!
+;Source: "Q:\Develop\Projects\CPP\Database\lbDMF.db3"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+;Source: "Q:\Develop\Projects\CPP\Database\MetaApp.mad"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+;Source: "Q:\Develop\Projects\CPP\Database\lbDMF Manager.daf"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 Source: "Q:\Develop\Projects\plugins\lbCryptoStream.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbDMFBasicActionSteps.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
@@ -72,8 +77,7 @@ Source: "Q:\Develop\Projects\plugins\lbDynamicAppStorage.dll"; DestDir: "{app}\D
 Source: "Q:\Develop\Projects\plugins\lbLoginWizard.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\lbVisitorOperations.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\UserFeedback.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
-
-Source: "Q:\Develop\Projects\plugins\lbwxSFDesigner.dll"; DestDir: "{app}\Develop\Projects\future_plugins"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\plugins\lbwxSFDesigner.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 
 ; Also now add the code generation plugin.
 Source: "Q:\Develop\Projects\plugins\lbDMFXslt.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
@@ -115,5 +119,6 @@ Name: "{userdesktop}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\b
 ;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
-Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall
+Filename: "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=23"; Flags: shellexec
+Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
 

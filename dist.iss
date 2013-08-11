@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Development Environment
-AppVerName=lbDMF Development Environment 1.0.4-stable-rc4
-OutputBaseFilename=lbDMF-Source-1.0.4-stable-rc4
+AppVerName=lbDMF Development Environment 1.0.4-final
+OutputBaseFilename=lbDMF-Source-1.0.4-final
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -41,7 +41,12 @@ Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir:
 
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
+Source: "Q:\Develop\Projects\CPP\activateACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
+Source: "Q:\Develop\Projects\CPP\TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
 Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
@@ -50,5 +55,7 @@ Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: 
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
-Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall
-Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Start building wxWidgets library (will be downloaded)"; Flags: shellexec postinstall
+Filename: "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=24"; Flags: shellexec
+Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
+Filename: "{app}\activateACE.bat"; Description: "Get and build ACE framework (will be flagged)"; Flags: shellexec postinstall unchecked
+Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall

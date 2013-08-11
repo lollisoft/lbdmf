@@ -95,9 +95,12 @@ extern "C" {
 
 #include <lbInterfaces-sub-security.h>
 #include <lbInterfaces-lbDMFManager.h>
+#define USE_EXRERNAL_FORMULARACTIONS
+
 #include <lbDatabaseForm.h>
 
 #ifndef USE_EXRERNAL_FORMULARACTIONS
+
 /*...slbDetailFormAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDetailFormAction)
 ADD_INTERFACE(lb_I_DelegatedAction)
@@ -134,7 +137,7 @@ void LB_STDCALL lbDetailFormAction::setActionID(long id) {
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
-	_LOG "lbDetailFormAction::openDetailForm() called." LOG_
+	_LOG << "lbDetailFormAction::openDetailForm() called." LOG_
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, actionID)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
@@ -156,6 +159,8 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
 
+	_LOG << "lbDetailFormAction::openDetailForm(Detailform: '" << formularname->charrep() << "', Masterform: '" << masterForm->charrep() << "') called" LOG_
+	
 	UAP(lb_I_GUI, gui)
 	meta->getGUI(&gui);
 
@@ -173,7 +178,7 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	}
 
 	if (detailForm != NULL) {
-		_CL_VERBOSE << "Show previously created form." LOG_
+		_LOG << "Show previously created detail form." LOG_
 
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();

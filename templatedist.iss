@@ -2,16 +2,16 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=lbDMF Documentation
-AppVerName=lbDMF Documentation 1.0.4-final
-OutputBaseFilename=lbDMF-Docs-1.0.4-final
+AppName=lbDMF XSLT Patch Distribution
+AppVerName=lbDMF XSLT Patch Distribution 1.0.4-final-patch_1
+OutputBaseFilename=lbDMF-XSLTPatchDistribution-1.0.4-final-patch_1
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
 AppUpdatesURL=http://www.sourceforge.net/projects/lbdmf
 DefaultDirName={sd}\lbDMF
 DefaultGroupName=lbDMF
-LicenseFile=license-doc.txt
+LicenseFile=license-templatedist.txt
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -19,11 +19,11 @@ LicenseFile=license-doc.txt
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "Q:\Develop\Projects\CPP\Doc\*.*"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+; --- My current binary only file
 
 [Icons]
-Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
-;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
+;Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall
 

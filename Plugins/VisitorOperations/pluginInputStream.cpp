@@ -373,7 +373,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 	}
 }
 
-
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_ExtensibleObject* tableModule) {
 	UAP(lb_I_ExtensionObject, extension) 
 	_LOG << "lbInputStreamOpr::visit(lb_I_ExtensibleObject* tableModule) using context namespace = " << contextNamespace->charrep() LOG_
@@ -524,6 +523,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application* app) {
 			*StorageNamespace += "_";
 			*StorageNamespace += v->charrep();
 			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is setting custom version to " << StorageNamespace->charrep() LOG_
+			
+			app->loadedApplicationVersion(false, *&DocumentVersion);
+			
 		} else {
 			_LOG << "lbInputStreamOpr::visit(lb_I_Application*) is an old version of " << StorageNamespace->charrep() LOG_
 			app->loadedApplicationVersion(true);

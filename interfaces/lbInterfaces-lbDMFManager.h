@@ -2,9 +2,101 @@
 #ifndef __LB_INTERFACES_SUB_lbDMFManager__
 #define __LB_INTERFACES_SUB_lbDMFManager__
 
+class lb_I_DBPrimaryKeys : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _tablecatalog, const char* _tableschema, const char* _tablename, const char* _columnname, const char* _columnname2, long _keysequence, long _dbtableid,  long _DBPrimaryKeysID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_tablecatalog() = 0;
+			    virtual char* LB_STDCALL get_tableschema() = 0;
+			    virtual char* LB_STDCALL get_tablename() = 0;
+			    virtual char* LB_STDCALL get_columnname() = 0;
+			    virtual char* LB_STDCALL get_columnname2() = 0;
+			    virtual long LB_STDCALL get_keysequence() = 0;
+			    virtual long LB_STDCALL get_dbtableid() = 0;
+	};
+
+class lb_I_DBForeignKeys : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _pkcatalog, const char* _pkschema, const char* _pktable, const char* _pkcolumn, const char* _fkcatalog, const char* _fkschema, const char* _fktable, const char* _fkcolumn, long _keysequence, long _updaterule, long _deleterule, long _dbtableid,  long _DBForeignKeysID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_pkcatalog() = 0;
+			    virtual char* LB_STDCALL get_pkschema() = 0;
+			    virtual char* LB_STDCALL get_pktable() = 0;
+			    virtual char* LB_STDCALL get_pkcolumn() = 0;
+			    virtual char* LB_STDCALL get_fkcatalog() = 0;
+			    virtual char* LB_STDCALL get_fkschema() = 0;
+			    virtual char* LB_STDCALL get_fktable() = 0;
+			    virtual char* LB_STDCALL get_fkcolumn() = 0;
+			    virtual long LB_STDCALL get_keysequence() = 0;
+			    virtual long LB_STDCALL get_updaterule() = 0;
+			    virtual long LB_STDCALL get_deleterule() = 0;
+			    virtual long LB_STDCALL get_dbtableid() = 0;
+	};
+
+class lb_I_DBColumns : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _columnname, const char* _columnremarks, const char* _typename, long _columnsize, bool _nullable, const char* _tablename, long _dbtableid,  long _DBColumnsID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_columnname() = 0;
+			    virtual char* LB_STDCALL get_columnremarks() = 0;
+			    virtual char* LB_STDCALL get_typename() = 0;
+			    virtual long LB_STDCALL get_columnsize() = 0;
+			    virtual bool LB_STDCALL get_nullable() = 0;
+			    virtual char* LB_STDCALL get_tablename() = 0;
+			    virtual long LB_STDCALL get_dbtableid() = 0;
+	};
+
+class lb_I_DBTables : public lb_I_TableModule {
+public:
+	virtual long		LB_STDCALL add(const char* _catalogname, const char* _schemaname, const char* _tablename, const char* _tabletype, const char* _tableremarks, long _anwendungenid,  long _DBTablesID = -1) = 0;
+
+	virtual bool		LB_STDCALL selectById(long _id) = 0;
+	virtual int			LB_STDCALL Count() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishIteration() = 0;
+
+	// Derived from lb_I_TableModule
+	//virtual long LB_STDCALL get_id() = 0;
+
+    virtual char* LB_STDCALL get_catalogname() = 0;
+			    virtual char* LB_STDCALL get_schemaname() = 0;
+			    virtual char* LB_STDCALL get_tablename() = 0;
+			    virtual char* LB_STDCALL get_tabletype() = 0;
+			    virtual char* LB_STDCALL get_tableremarks() = 0;
+			    virtual long LB_STDCALL get_anwendungenid() = 0;
+	};
+
 class lb_I_Actions : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ,  long _ActionsID = -1) = 0;
+	virtual long		LB_STDCALL add(const char* _target, const char* _source, const char* _name, long _typ, long _anwendungenid,  long _ActionsID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectById(long _id) = 0;
 	virtual int			LB_STDCALL Count() = 0;
@@ -19,6 +111,7 @@ public:
 			    virtual char* LB_STDCALL get_source() = 0;
 			    virtual char* LB_STDCALL get_name() = 0;
 			    virtual long LB_STDCALL get_typ() = 0;
+	    virtual long LB_STDCALL get_anwendungenid() = 0;
 	};
 
 class lb_I_Action_Types : public lb_I_TableModule {
@@ -381,7 +474,7 @@ public:
 
 class lb_I_Formular_Fields : public lb_I_TableModule {
 public:
-	virtual long		LB_STDCALL add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid,  long _Formular_FieldsID = -1) = 0;
+	virtual long		LB_STDCALL add(const char* _fkname, const char* _fktable, const char* _dbtype, bool _isforeignkey, const char* _name, const char* _tablename, long _formularid, long _dbtypeid,  long _Formular_FieldsID = -1) = 0;
 
 	virtual bool		LB_STDCALL selectById(long _id) = 0;
 	virtual int			LB_STDCALL Count() = 0;
@@ -399,6 +492,7 @@ public:
 			    virtual char* LB_STDCALL get_name() = 0;
 			    virtual char* LB_STDCALL get_tablename() = 0;
 			    virtual long LB_STDCALL get_formularid() = 0;
+	    virtual long LB_STDCALL get_dbtypeid() = 0;
 	};
 
 class lb_I_Column_Types : public lb_I_TableModule {

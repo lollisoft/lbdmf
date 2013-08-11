@@ -216,12 +216,13 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
+	void LB_STDCALL setNamespace(const char* _namespace);
 
 	
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukActions)
+	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginAnwendungen)
@@ -240,10 +241,16 @@ lbErrCodes LB_STDCALL lbPluginAnwendungen::setData(lb_I_Unknown* uk) {
 
 lbPluginAnwendungen::lbPluginAnwendungen() {
 	_CL_VERBOSE << "lbPluginAnwendungen::lbPluginAnwendungen() called.\n" LOG_
+	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
+	*pluginNamespace = "Plugin namespace was not set.";
 }
 
 lbPluginAnwendungen::~lbPluginAnwendungen() {
 	_CL_VERBOSE << "lbPluginAnwendungen::~lbPluginAnwendungen() called.\n" LOG_
+}
+
+void LB_STDCALL lbPluginAnwendungen::setNamespace(const char* _namespace) {
+	*pluginNamespace = _namespace;
 }
 
 bool LB_STDCALL lbPluginAnwendungen::canAutorun() {
@@ -268,6 +275,8 @@ lb_I_Unknown* LB_STDCALL lbPluginAnwendungen::peekImplementation() {
 	if (ukActions == NULL) {
 		Anwendungen* _Anwendungen = new Anwendungen();
 	
+		//_Anwendungen->setContextNamespace(pluginNamespace->charrep());
+	
 		QI(_Anwendungen, lb_I_Unknown, ukActions)
 	} else {
 		_CL_VERBOSE << "lbPluginAnwendungen::peekImplementation() Implementation already peeked.\n" LOG_
@@ -284,6 +293,8 @@ lb_I_Unknown* LB_STDCALL lbPluginAnwendungen::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		Anwendungen* _Anwendungen = new Anwendungen();
+	
+		//_Anwendungen->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(_Anwendungen, lb_I_Unknown, ukActions)
 	}

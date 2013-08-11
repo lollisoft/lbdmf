@@ -95,6 +95,10 @@ IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModulelbDMFDataModel)
 
 BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 // Generated plugin definitions
+	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
+	ADD_PLUGIN(lbPluginDBForeignKeysModel, Model)
+	ADD_PLUGIN(lbPluginDBColumnsModel, Model)
+	ADD_PLUGIN(lbPluginDBTablesModel, Model)
 	ADD_PLUGIN(lbPluginActionsModel, Model)
 	ADD_PLUGIN(lbPluginAction_TypesModel, Model)
 	ADD_PLUGIN(lbPluginAction_ParametersModel, Model)
@@ -118,11 +122,6 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginFormular_FieldsModel, Model)
 	ADD_PLUGIN(lbPluginColumn_TypesModel, Model)
 	ADD_PLUGIN(lbPluginFKPK_MappingModel, Model)
-// Nongenerated plugin definitions	
-	ADD_PLUGIN(lbPluginDBColumnsModel, Model)
-	ADD_PLUGIN(lbPluginDBTableModel, Model)
-	ADD_PLUGIN(lbPluginDBForeignKeysModel, Model)
-	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {

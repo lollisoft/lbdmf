@@ -1,29 +1,29 @@
-#ifndef lbDMFFormularShape_H
-#define lbDMFFormularShape_H
+#ifndef lbDMFFormularFieldShape_H
+#define lbDMFFormularFieldShape_H
 
 // include main wxSF header file
 #include <wx/wxsf/wxShapeFramework.h>
 #include <lbDMFBaseDesignShape.h>
 
-class lbDMFFormularShape : public lbDMFBaseDesignShape
+class lbDMFFormularFieldShape : public lbDMFBaseDesignShape
 {
 public:
     // enable RTTI information and define xsSerializable::Clone() function used by
 	// wxXmlSerilizer::CopyItems() function, the data (shape) manager's
 	// copy constructor and in some cases also by the canvas history manager.
-    XS_DECLARE_CLONABLE_CLASS(lbDMFFormularShape);
+    XS_DECLARE_CLONABLE_CLASS(lbDMFFormularFieldShape);
 
     // default constructor used by RTTI
-    lbDMFFormularShape();
+    lbDMFFormularFieldShape();
     // copy constructor needed by the xsSerializable::Clone() function
-    lbDMFFormularShape(const lbDMFFormularShape& obj);
+    lbDMFFormularFieldShape(const lbDMFFormularFieldShape& obj);
     // destructor
-    virtual ~lbDMFFormularShape();
-
-	void SetFormularName(const wxString& name);
+    virtual ~lbDMFFormularFieldShape();
+	
+	void SetFormularFieldName(const wxString& name);
 protected:
 };
 
 
 
-#endif // lbDMFFormularShape_H
+#endif // lbDMFFormularFieldShape_H
