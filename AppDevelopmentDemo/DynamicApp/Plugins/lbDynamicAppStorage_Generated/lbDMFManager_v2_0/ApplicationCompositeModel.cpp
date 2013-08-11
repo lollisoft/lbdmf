@@ -125,6 +125,14 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Unknown, uk)
 
 
+	UAP(lb_I_DBPrimaryKeys, DBPrimaryKeys)
+
+	UAP(lb_I_DBForeignKeys, DBForeignKeys)
+
+	UAP(lb_I_DBColumns, DBColumns)
+
+	UAP(lb_I_DBTables, DBTables)
+
 	UAP(lb_I_Actions, Actions)
 
 	UAP(lb_I_Action_Types, Action_Types)
@@ -171,11 +179,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	UAP(lb_I_FKPK_Mapping, FKPK_Mapping)
 
-
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -292,6 +295,22 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(name, lb_I_KeyBase, key)
 
 
+	*name = "DBPrimaryKeys";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBPrimaryKeys, DBPrimaryKeys)
+
+	*name = "DBForeignKeys";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBForeignKeys, DBForeignKeys)
+
+	*name = "DBColumns";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBColumns, DBColumns)
+
+	*name = "DBTables";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBTables, DBTables)
+
 	*name = "Actions";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Actions, Actions)
@@ -385,38 +404,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(uk, lb_I_FKPK_Mapping, FKPK_Mapping)
 
 
-	*name = "DBPrimaryKeys";
-	uk = document->getElement(&key);
-	if (uk == NULL) {
-		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBPrimaryKeys, dbPrimaryKeys)
-			
-	*name = "DBForeignKeys";
-	uk = document->getElement(&key);
-	if (uk == NULL) {
-		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBForeignKeys, dbForeignKeys)
-			
-	*name = "DBTables";
-	uk = document->getElement(&key);
-	if (uk == NULL) {
-		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBTables, dbTables)
-			
-	*name = "DBColumns";
-	uk = document->getElement(&key);
-	if (uk == NULL) {
-		_LOG << "Error: Document element " << name->charrep() << " is missing." LOG_
-		//return ERR_DOCUMENTELEMENT_MISSING;
-	}
-	QI(uk, lb_I_DBColumns, dbColumns)
-
 	// Mark that data sets, that are related to this application
 	UAP(lb_I_SecurityProvider, securityManager)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -431,6 +418,14 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	Applications->mark();
 
 	if (
+
+		(DBPrimaryKeys != NULL) &&
+
+		(DBForeignKeys != NULL) &&
+
+		(DBColumns != NULL) &&
+
+		(DBTables != NULL) &&
 
 		(Actions != NULL) &&
 
@@ -478,11 +473,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 		(FKPK_Mapping != NULL) &&
 
-	    (dbColumns != NULL) &&
-	    (dbPrimaryKeys != NULL) &&
-	    (dbForeignKeys != NULL) &&
-	    (dbTables != NULL)
-		) {
+	    true) {
 
 	
 		*oStream << "<lbDMF applicationid=\"";
@@ -509,6 +500,18 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 #endif		
 #endif
 
+
+		meta->setStatusText("Info", "Write XML document (DBPrimaryKeys) ...");
+		DBPrimaryKeys->accept(*&aspect);
+
+		meta->setStatusText("Info", "Write XML document (DBForeignKeys) ...");
+		DBForeignKeys->accept(*&aspect);
+
+		meta->setStatusText("Info", "Write XML document (DBColumns) ...");
+		DBColumns->accept(*&aspect);
+
+		meta->setStatusText("Info", "Write XML document (DBTables) ...");
+		DBTables->accept(*&aspect);
 
 		meta->setStatusText("Info", "Write XML document (Actions) ...");
 		Actions->accept(*&aspect);
@@ -580,15 +583,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		FKPK_Mapping->accept(*&aspect);
 
 
-		meta->setStatusText("Info", "Write XML document (dbPrimaryKeys) ...");
-		dbPrimaryKeys->accept(*&aspect);
-		meta->setStatusText("Info", "Write XML document (dbForeignKeys) ...");
-		dbForeignKeys->accept(*&aspect);
-		meta->setStatusText("Info", "Write XML document (dbTables) ...");
-		dbTables->accept(*&aspect);
-		meta->setStatusText("Info", "Write XML document (dbColumns) ...");
-		dbColumns->accept(*&aspect);
-
 		*oStream << "</lbDMF>\n";
 	}
 	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) returns" LOG_
@@ -644,6 +638,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	}
 
 
+	UAP(lb_I_DBPrimaryKeys, DBPrimaryKeys)
+
+	UAP(lb_I_DBForeignKeys, DBForeignKeys)
+
+	UAP(lb_I_DBColumns, DBColumns)
+
+	UAP(lb_I_DBTables, DBTables)
+
 	UAP(lb_I_Actions, Actions)
 
 	UAP(lb_I_Action_Types, Action_Types)
@@ -690,12 +692,13 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 
 	UAP(lb_I_FKPK_Mapping, FKPK_Mapping)
 
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
+	AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, DBPrimaryKeys, "'DBPrimaryKeys'")
 
+	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, DBForeignKeys, "'DBForeignKeys'")
 
+	AQUIRE_PLUGIN(lb_I_DBColumns, Model, DBColumns, "'DBColumns'")
+
+	AQUIRE_PLUGIN(lb_I_DBTables, Model, DBTables, "'DBTables'")
 
 	AQUIRE_PLUGIN(lb_I_Actions, Model, Actions, "'Actions'")
 
@@ -742,6 +745,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	AQUIRE_PLUGIN(lb_I_Column_Types, Model, Column_Types, "'Column_Types'")
 
 	AQUIRE_PLUGIN(lb_I_FKPK_Mapping, Model, FKPK_Mapping, "'FKPK_Mapping'")
+DBPrimaryKeys->accept(*&aspect);
+DBForeignKeys->accept(*&aspect);
+DBColumns->accept(*&aspect);
+DBTables->accept(*&aspect);
 Actions->accept(*&aspect);
 Action_Types->accept(*&aspect);
 Action_Parameters->accept(*&aspect);
@@ -816,6 +823,14 @@ FKPK_Mapping->accept(*&aspect);
 
 	if (
 
+		(DBPrimaryKeys != NULL) && 
+
+		(DBForeignKeys != NULL) && 
+
+		(DBColumns != NULL) && 
+
+		(DBTables != NULL) && 
+
 		(Actions != NULL) && 
 
 		(Action_Types != NULL) && 
@@ -877,6 +892,22 @@ FKPK_Mapping->accept(*&aspect);
 		ukParams = metaapp->getActiveDocument();
 		QI(ukParams, lb_I_Parameter, params)
 		
+
+		*name = "DBPrimaryKeys";
+		QI(DBPrimaryKeys, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBForeignKeys";
+		QI(DBForeignKeys, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBColumns";
+		QI(DBColumns, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBTables";
+		QI(DBTables, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 
 		*name = "Actions";
 		QI(Actions, lb_I_Unknown, uk)
@@ -1006,11 +1037,7 @@ FKPK_Mapping->accept(*&aspect);
 		*name = "XMIFileUMLProjectExport";
 		QI(XMIFileUMLProjectExport, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-		/*
-		*name = "UseOtherXSLFile";
-		QI(UseOtherXSLFile, lb_I_Unknown, uk)
-		document->insert(&uk, &key);
-*/		
+
 		*name = "GeneralDBSchemaname";
 		QI(GeneralDBSchemaname, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
@@ -1047,6 +1074,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_Unknown, uk)
 
+
+	UAP(lb_I_DBPrimaryKeys, DBPrimaryKeys)
+
+	UAP(lb_I_DBForeignKeys, DBForeignKeys)
+
+	UAP(lb_I_DBColumns, DBColumns)
+
+	UAP(lb_I_DBTables, DBTables)
 
 	UAP(lb_I_Actions, Actions)
 
@@ -1142,6 +1177,38 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	QI(name, lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			
+
+	*name = "DBPrimaryKeys";
+	uk = document->getElement(&key);
+	if (uk != NULL) {
+		QI(uk, lb_I_DBPrimaryKeys, DBPrimaryKeys)
+	} else {
+		AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, DBPrimaryKeys, "'DBPrimaryKeys'")
+	}
+
+	*name = "DBForeignKeys";
+	uk = document->getElement(&key);
+	if (uk != NULL) {
+		QI(uk, lb_I_DBForeignKeys, DBForeignKeys)
+	} else {
+		AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, DBForeignKeys, "'DBForeignKeys'")
+	}
+
+	*name = "DBColumns";
+	uk = document->getElement(&key);
+	if (uk != NULL) {
+		QI(uk, lb_I_DBColumns, DBColumns)
+	} else {
+		AQUIRE_PLUGIN(lb_I_DBColumns, Model, DBColumns, "'DBColumns'")
+	}
+
+	*name = "DBTables";
+	uk = document->getElement(&key);
+	if (uk != NULL) {
+		QI(uk, lb_I_DBTables, DBTables)
+	} else {
+		AQUIRE_PLUGIN(lb_I_DBTables, Model, DBTables, "'DBTables'")
+	}
 
 	*name = "Actions";
 	uk = document->getElement(&key);
@@ -1356,11 +1423,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "UsePlugin";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UsePlugin)
-/*	
-	*name = "UseOtherXSLFile";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_Boolean, UseOtherXSLFile)
-*/			
+
 	*name = "XMIFileUMLProject";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
@@ -1388,6 +1451,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 				
 
 	if (
+
+		(DBPrimaryKeys != NULL) &&
+
+		(DBForeignKeys != NULL) &&
+
+		(DBColumns != NULL) &&
+
+		(DBTables != NULL) &&
 
 		(Actions != NULL) &&
 
@@ -1435,11 +1506,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 		(FKPK_Mapping != NULL) &&
 
-
 		true) {
 
 		_LOG << "Start storing the data" LOG_
 
+DBPrimaryKeys->accept(*&aspect);
+DBForeignKeys->accept(*&aspect);
+DBColumns->accept(*&aspect);
+DBTables->accept(*&aspect);
 Actions->accept(*&aspect);
 Action_Types->accept(*&aspect);
 Action_Parameters->accept(*&aspect);
@@ -1503,6 +1577,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 
 
+	UAP(lb_I_DBPrimaryKeys, DBPrimaryKeys)
+
+	UAP(lb_I_DBForeignKeys, DBForeignKeys)
+
+	UAP(lb_I_DBColumns, DBColumns)
+
+	UAP(lb_I_DBTables, DBTables)
+
 	UAP(lb_I_Actions, Actions)
 
 	UAP(lb_I_Action_Types, Action_Types)
@@ -1549,17 +1631,13 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	UAP(lb_I_FKPK_Mapping, FKPK_Mapping)
 
+	AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, DBPrimaryKeys, "'DBPrimaryKeys'")
 
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
+	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, DBForeignKeys, "'DBForeignKeys'")
 
-	AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'database report'")
-	AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'database report'")
+	AQUIRE_PLUGIN(lb_I_DBColumns, Model, DBColumns, "'DBColumns'")
 
+	AQUIRE_PLUGIN(lb_I_DBTables, Model, DBTables, "'DBTables'")
 
 	AQUIRE_PLUGIN(lb_I_Actions, Model, Actions, "'Actions'")
 
@@ -1606,6 +1684,22 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_Column_Types, Model, Column_Types, "'Column_Types'")
 
 	AQUIRE_PLUGIN(lb_I_FKPK_Mapping, Model, FKPK_Mapping, "'FKPK_Mapping'")
+
+	if (DBPrimaryKeys == NULL)  {
+		_LOG << "lb_I_DBPrimaryKeys instance is NULL." LOG_
+	}
+
+	if (DBForeignKeys == NULL)  {
+		_LOG << "lb_I_DBForeignKeys instance is NULL." LOG_
+	}
+
+	if (DBColumns == NULL)  {
+		_LOG << "lb_I_DBColumns instance is NULL." LOG_
+	}
+
+	if (DBTables == NULL)  {
+		_LOG << "lb_I_DBTables instance is NULL." LOG_
+	}
 
 	if (Actions == NULL)  {
 		_LOG << "lb_I_Actions instance is NULL." LOG_
@@ -1699,30 +1793,17 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		_LOG << "lb_I_FKPK_Mapping instance is NULL." LOG_
 	}
 
+	meta->setStatusText("Info", "Load database configuration (DBPrimaryKeys) ...");
+	DBPrimaryKeys->accept(*&aspect);
 
-	if (dbTables == NULL)  {
-		_LOG << "lb_I_DBTables instance is NULL." LOG_
-	}
-	if (dbColumns == NULL)  {
-		_LOG << "lb_I_DBColumns instance is NULL." LOG_
-	}
-	if (dbPrimaryKeys == NULL)  {
-		_LOG << "lb_I_DBPrimaryKeys instance is NULL." LOG_
-	}
-	if (dbForeignKeys == NULL)  {
-		_LOG << "lb_I_DBForeignKeys instance is NULL." LOG_
-	}
+	meta->setStatusText("Info", "Load database configuration (DBForeignKeys) ...");
+	DBForeignKeys->accept(*&aspect);
 
-	
-	meta->setStatusText("Info", "Load database configuration (dbTables) ...");
-	dbTables->accept(*&aspect);
-	meta->setStatusText("Info", "Load database configuration (dbColumns) ...");
-	dbColumns->accept(*&aspect);
-	meta->setStatusText("Info", "Load database configuration (dbPrimaryKeys) ...");
-	dbPrimaryKeys->accept(*&aspect);
-	meta->setStatusText("Info", "Load database configuration (dbForeignKeys) ...");
-	dbForeignKeys->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (DBColumns) ...");
+	DBColumns->accept(*&aspect);
 
+	meta->setStatusText("Info", "Load database configuration (DBTables) ...");
+	DBTables->accept(*&aspect);
 
 	meta->setStatusText("Info", "Load database configuration (Actions) ...");
 	Actions->accept(*&aspect);
@@ -1920,22 +2001,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		 SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileExportSettings);
 	} 
 
-	*name = "DBTables";
-	QI(dbTables, lb_I_Unknown, uk)
-	document->insert(&uk, &key);
-	
-	*name = "DBColumns";
-	QI(dbColumns, lb_I_Unknown, uk)
-	document->insert(&uk, &key);
-	
-	*name = "DBPrimaryKeys";
-	QI(dbPrimaryKeys, lb_I_Unknown, uk)
-	document->insert(&uk, &key);
-	
-	*name = "DBForeignKeys";
-	QI(dbForeignKeys, lb_I_Unknown, uk)
-	document->insert(&uk, &key);
-	
+	// DB Model insert removed. Where are the others? 
 
 	*name = "UMLImportTargetDBName";
 	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
@@ -1997,6 +2063,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 
 	if (
 
+		(DBPrimaryKeys != NULL) && 
+
+		(DBForeignKeys != NULL) && 
+
+		(DBColumns != NULL) && 
+
+		(DBTables != NULL) && 
+
 		(Actions != NULL) && 
 
 		(Action_Types != NULL) && 
@@ -2044,7 +2118,23 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		(FKPK_Mapping != NULL) && 
 
 		true) {
+		// Here:
 
+		*name = "DBPrimaryKeys";
+		QI(DBPrimaryKeys, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBForeignKeys";
+		QI(DBForeignKeys, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBColumns";
+		QI(DBColumns, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
+		*name = "DBTables";
+		QI(DBTables, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 
 		*name = "Actions";
 		QI(Actions, lb_I_Unknown, uk)
