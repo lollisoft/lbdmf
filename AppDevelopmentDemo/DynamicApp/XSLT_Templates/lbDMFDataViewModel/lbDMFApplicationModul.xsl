@@ -294,6 +294,21 @@ wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib, $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 
+MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxWrapperDLL -llbHook -lwxmsw$(WX_VERSION)$(WX_DEBUG)_aui_gcc_custom
+
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+#MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL_MINGW_CPP += -I../wxWrapperDLL 
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/propgrid/include 
+
+CPP_MINGW_EXEOPS += -DUSE_WXWRAPPER_DLL -D__WIN32__ -DWINVER=0x0400 -D__WINDOWS95__ -D__WINDOWS__ -D__WXMSW__ -DLB_I_EXTENTIONS
+
+ifeq ($(MODE), _DEBUG)
+CPP_MINGW_EXEOPS += -D__WXDEBUG__
+endif
+
 
 # use global setup
 #COMPILER=MICROSOFT
@@ -480,9 +495,14 @@ extern "C" {
 #include &lt;wx/notebook.h&gt;
 
 #ifndef OSX
-#define wxAuiPaneInfo wxPaneInfo
-#define wxAuiManager wxFrameManager
-#include &lt;manager.h&gt;
+ #ifdef LINUX
+  #define wxAuiPaneInfo wxPaneInfo
+  #define wxAuiManager wxFrameManager
+  #include &lt;manager.h&gt;
+ #endif
+ #ifdef WINDOWS
+   #include &lt;wx/aui/aui.h&gt;
+ #endif
 #endif
 
 #ifdef OSX
