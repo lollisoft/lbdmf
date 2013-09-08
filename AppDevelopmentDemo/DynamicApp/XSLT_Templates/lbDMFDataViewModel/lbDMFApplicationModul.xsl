@@ -759,6 +759,8 @@ MyFrame::MyFrame(wxFrame *frame, wxChar *title, int x, int y, int w, int h):
     Connect( ID_<xsl:value-of select="$FormularName"/>,  wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnShow<xsl:value-of select="$FormularName"/>) );
 </xsl:for-each>
 
+    UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+    UAP_REQUEST(getModuleInstance(), lb_I_Database, tempDB) // Preload this module
 
     UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
     PM->initialize();
@@ -980,8 +982,42 @@ bool MyApp::OnInit(void)
 int MyApp::OnExit(void) {
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	PM->unload();
-	unHookAll();
 }
+
+/*...sCleanup helper:0:*/
+#ifdef WINDOWS
+class cleanUp {
+public:
+	cleanUp() {
+	}
+
+	virtual ~cleanUp() {
+		_CL_LOG &lt;&lt; "cleanUp::~cleanUp() unloads all modules." LOG_
+		unHookAll();
+		_CL_LOG &lt;&lt; "cleanUp::~cleanUp() unloaded all modules." LOG_
+	}
+
+};
+
+cleanUp clean_up;
+#endif
+#ifdef OSX
+class cleanUp {
+public:
+	cleanUp() {
+	}
+
+	virtual ~cleanUp() {
+		_CL_LOG &lt;&lt; "cleanUp::~cleanUp() unloads all modules." LOG_
+		unHookAll();
+		_CL_LOG &lt;&lt; "cleanUp::~cleanUp() unloaded all modules." LOG_
+	}
+
+};
+
+cleanUp clean_up;
+#endif
+/*...e*/
 
 </exsl:document>
 </xsl:template>
