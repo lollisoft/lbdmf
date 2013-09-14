@@ -912,7 +912,8 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
     <xsl:value-of select="$FormularName"/> *model = new <xsl:value-of select="$FormularName"/>;
     model->SetBackend(_backend_plugin);
     model->InitModel();
-    dataview_<xsl:value-of select="$FormularName"/>-&gt;AssociateModel( model );
+	wxDataViewSortedListModel* sorted_model = new wxDataViewSortedListModel( model );
+    dataview_<xsl:value-of select="$FormularName"/>-&gt;AssociateModel( sorted_model );
 
     int column = 0;
 	<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
@@ -921,7 +922,7 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
 	<xsl:choose>
 	<xsl:when test="@isfk='1'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
-    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
+    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column, -1, wxDATAVIEW_COL_HIDDEN );
     dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 	</xsl:when>
 	<xsl:when test="//lbDMF/columntypes/columntype[@name=$FieldName][@tablename=$TableName][@specialcolumn='1']">
@@ -936,17 +937,17 @@ void MyFrame::OnShow<xsl:value-of select="$FormularName"/>(wxCommandEvent&amp; e
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
-    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
+    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column, -1, wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE );
     dataview_left-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 			</xsl:when>
 			<xsl:when test="@dbtype='Integer'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("long"), wxDATAVIEW_CELL_EDITABLE );
-    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
+    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column, -1, wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE  );
     dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
     wxDataViewTextRenderer *text_renderer<xsl:value-of select="@name"/> = new wxDataViewTextRenderer( wxT("string"), wxDATAVIEW_CELL_EDITABLE );
-    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column );
+    wxDataViewColumn *thecolumn<xsl:value-of select="@name"/> = new wxDataViewColumn( wxT("<xsl:value-of select="@name"/>"), text_renderer<xsl:value-of select="@name"/>, column, -1, wxDATAVIEW_COL_RESIZABLE | wxDATAVIEW_COL_SORTABLE  );
     dataview_<xsl:value-of select="$FormularName"/>-&gt;AppendColumn( thecolumn<xsl:value-of select="@name"/> );
 			</xsl:when>
 		</xsl:choose>
