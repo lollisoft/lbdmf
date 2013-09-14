@@ -70,8 +70,14 @@
 </xsl:variable>
 <xsl:variable name="appexecutedir">
 <xsl:choose>
-<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/App</xsl:when>
-<xsl:otherwise>Code/Targets/lbDMF/Applications</xsl:otherwise>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/WxGUI_Applications</xsl:when>
+<xsl:otherwise>Code/Targets/lbDMF/WxGUI_Applications</xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+<xsl:variable name="consoleappexecutedir">
+<xsl:choose>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/Console_Applications</xsl:when>
+<xsl:otherwise>Code/Targets/lbDMF/Console_Applications</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
 
