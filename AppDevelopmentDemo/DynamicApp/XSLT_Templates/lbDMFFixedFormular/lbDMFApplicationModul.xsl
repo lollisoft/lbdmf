@@ -126,6 +126,14 @@ extern "C" {
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MINGW)/wxwin/wx/include
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MINGW)/wxwin/wx/include
+
+MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
+MINGWLIBS += $(MINGWLIBS_WXGUI)
+MINGWLIBS += -lwxWrapperDLL 
+MINGWLIBS += -llbHook
+
 MOD_INCL=$(STD_INCL)
 MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
@@ -278,6 +286,9 @@ endif
 
 
 ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW=$(STD_INCL_MINGW)
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
+
 MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
 MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
@@ -464,12 +475,19 @@ public:
 
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
 	
+	lbErrCodes LB_STDCALL save() { return ERR_NONE; }
+	lbErrCodes LB_STDCALL load() { return ERR_NONE; }
+	lb_I_Unknown* LB_STDCALL getUnknown() { return (lb_I_Unknown*) this; }
+	lbErrCodes LB_STDCALL setUserName(const char* name) { return ERR_NONE; }
+	lbErrCodes LB_STDCALL setApplicationName(const char* name) { return ERR_NONE; }
+
+	
 	/**
 	 * Let the implementation register it's symbolic events.
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL initialize(const char* user, const char* app);
 	lbErrCodes LB_STDCALL uninitialize();
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
@@ -529,7 +547,7 @@ protected:
 
 	/** \brief Load the database forms.
 	 */
-	void LB_STDCALL activateDBForms(char* user, char* app);
+	void LB_STDCALL activateDBForms(const char* user, const char* app);
 
 	bool haveLoadedDBModel;
 
@@ -566,7 +584,7 @@ protected:
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-	UAP(lb_I_FixedDatabaseForm, FixedDBForm<xsl:value-of select="$FormularName"/>)
+	UAP(lb_I_Form, FixedDBForm<xsl:value-of select="$FormularName"/>)
 </xsl:for-each>
 
 	UAP(lb_I_String, UMLImportTargetDBName)
@@ -578,7 +596,6 @@ protected:
 };
 
 lbDynamicApplication::lbDynamicApplication() {
-	ref = STARTREF;
 	gui = NULL;
 	haveLoadedDBModel = false;
 	_CL_LOG &lt;&lt; "lbDynamicApplication::lbDynamicApplication() called." LOG_
@@ -640,23 +657,23 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 	// Guard, if this function is called accidently, but unintented.
 	if (*appname == "lbDMF Manager") {
 		// Build up a preferences object and pass it to the property view
-		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 		
 		// General parameters for this application
-		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramGeneral)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameterGeneral)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, valueGeneral)
 		
 		// Project manager parameters
-		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterProject)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, valueProject)
-		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolProject)
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, paramProject)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameterProject)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, valueProject)
+		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, boolProject)
 		
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 		
 		parameter->setData("lbDMF Manager Import Definitions");
 		//--------------------------------------------------------
@@ -698,9 +715,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	QI(uk, lb_I_Parameter, param)
 	
 	if (param != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameterName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		
 		UAP(lb_I_KeyBase, key)
 		
@@ -777,26 +794,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const char* app) {
 	_CL_LOG &lt;&lt; "lbDynamicApplication::initialize(...) called." LOG_	
 	// To be implemented in a separate application module
 	lbErrCodes err = ERR_NONE;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	// Get the event manager
 	
-	lb_I_Module* m = *&amp;manager;
-	
-	REQUEST(m, lb_I_EventManager, eman)
+	REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 		
-	REQUEST(m, lb_I_Dispatcher, dispatcher)
+	REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 	
 	if (metaapp == NULL) {
-		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+		REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 	}
 	
 	// Save user and app internally
@@ -805,7 +820,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         _CL_LOG &lt;&lt; "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
 		if (LogonUser == NULL) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+			REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 		}
 	LogonUser->setData(user);
 	
@@ -813,7 +828,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
         _CL_LOG &lt;&lt; "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
 		if (LogonApplication == NULL) {
-			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 		}
 
 	_LOG &lt;&lt; "lbDynamicApplication::initialize('" &lt;&lt; user &lt;&lt; "', '" &lt;&lt; app &lt;&lt; "') called." LOG_
@@ -837,7 +852,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	return ERR_NONE;
 }
 
-void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
+void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const char* app) {
 	int unused;
 	bool toolbaradded = false;
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
@@ -960,10 +975,10 @@ lbErrCodes lbDynamicApplication::getFixedDBForm_<xsl:value-of select="$FormularN
 	
 		if (pl != NULL) {
 			ukPl = pl->getImplementation();
-			UAP(lb_I_FixedDatabaseForm, dbForm)
-			QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
+			UAP(lb_I_Form, dbForm)
+			QI(ukPl, lb_I_Form, dbForm)
 				
-			dbForm = gui->addCustomDBForm(dbForm.getPtr(), "<xsl:value-of select="$tempFormularName"/>");
+			dbForm = gui->addCustomForm(dbForm.getPtr(), "<xsl:value-of select="$tempFormularName"/>");
 			
 			if (dbForm != NULL) {
 				FixedDBForm<xsl:value-of select="$FormularName"/> = dbForm.getPtr();
@@ -994,7 +1009,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app
 }
 lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
 	if (LogonUser == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
        	LogonUser->setData(user);
@@ -1003,7 +1018,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
 
 lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(char* app) {
 	if (LogonApplication == NULL) {
-        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
        	LogonApplication->setData(app);

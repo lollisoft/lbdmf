@@ -124,7 +124,6 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::setData(lb_I_Unkno
 {
 	_CL_LOG &lt;&lt; "<xsl:value-of select="$FormularName"/>::<xsl:value-of select="$FormularName"/>() called." LOG_
 	formName = strdup("<xsl:value-of select="$tempFormularName"/>");
-	ref = STARTREF;
 }
 
 <xsl:value-of select="$FormularName"/>::~<xsl:value-of select="$FormularName"/>() {
@@ -477,7 +476,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 		fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 		QI(fdf, lb_I_FixedDatabaseForm, form)
-		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomDBForm(form.getPtr(), "<xsl:value-of select="@what"/>");
+		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomForm(form.getPtr(), "<xsl:value-of select="@what"/>");
 
 		if (!fdf->updateFromMaster_<xsl:value-of select="$FormularName"/>(wxString("<xsl:value-of select="//lbDMF/actions/action[@ID=$actionid]/@source"/>"), value)) {
 			bool result = true;
@@ -565,7 +564,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 		fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 		QI(fdf, lb_I_FixedDatabaseForm, form)
-		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomDBForm(form.getPtr(), "<xsl:value-of select="@what"/>");
+		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomForm(form.getPtr(), "<xsl:value-of select="@what"/>");
 		fdf->updateFromDetail_<xsl:value-of select="$FormularName"/>(wxString("<xsl:value-of select="$pkey"/>"), value);
 		gui-&gt;showForm("<xsl:value-of select="@what"/>");
 		form++;
