@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.12 $
+# * $Revision: 1.229.2.13 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.12 2013/01/30 04:50:50 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.13 2013/09/15 07:24:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.13  2013/09/15 07:24:50  lollisoft
+# * Target distclean using touch makefile.
+# *
 # * Revision 1.229.2.12  2013/01/30 04:50:50  lollisoft
 # * Corrected rpm istallation.
 # *
@@ -1667,12 +1670,13 @@ clean:
 	done
 
 distclean:
-	@for d in $(ALLDIRS); do \
-	    echo $$d ; \
-	    cp $$d/makefile $$d/makefile.clean; \
-	    $(MAKE) -C $$d distclean -f makefile.clean || exit $? ; \
-	    rm $$d/makefile.clean; \
-	done
+	touch Makefile
+#	@for d in $(ALLDIRS); do \
+#	    echo $$d ; \
+#	    cp $$d/makefile $$d/makefile.clean; \
+#	    $(MAKE) -C $$d distclean -f makefile.clean || exit $? ; \
+#	    rm $$d/makefile.clean; \
+#	done
 
 mkrelease:
 	@for d in $(ALLDIRS); do \
