@@ -74,7 +74,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
@@ -104,7 +104,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
@@ -136,7 +136,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
@@ -152,7 +152,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
@@ -168,7 +168,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) exe $(_MODULE) .,include,include/tv,include/cl,include/win32 \
@@ -184,7 +184,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) exe $(_MODULE) .,include,include/tv,include/cl,include/win32 \
@@ -200,7 +200,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE) >> makefile
 	$(MKMK) elf $(_MODULE) .,include,include/tv,include/cl,include/win32 \
 	*.cc \
@@ -216,7 +216,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
@@ -233,7 +233,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
@@ -249,7 +249,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
@@ -265,7 +265,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile.yacc
 	@cat makefile.module >> makefile.yacc
-	@echo Path=$(PATH) >> makefile.yacc
+	@echo Path='$(PATH)' >> makefile.yacc
 	@echo all: $(_MODULE).output >> makefile.yacc
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.yacc
@@ -281,7 +281,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile.lex
 	@cat makefile.module >> makefile.lex
-	@echo Path=$(PATH) >> makefile.lex
+	@echo Path='$(PATH)' >> makefile.lex
 	@echo all: $(_MODULE).yy.c >> makefile.lex
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.lex
@@ -297,7 +297,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
@@ -313,7 +313,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
@@ -329,7 +329,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -344,7 +344,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -359,7 +359,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
@@ -375,7 +375,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).dll >> makefile
@@ -392,7 +392,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
@@ -408,7 +408,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
 	@$(MKMK) dll $(_MODULE) $(STDDEP) ../libexslt/*.c *.c *.cpp >> makefile
@@ -424,7 +424,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
 	@$(MKMK) dll_target_mingw $(_MODULE) $(STDDEP) ../libexslt/*.c *.c *.cpp >> makefile
@@ -443,7 +443,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE) >> makefile
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 endif
@@ -459,7 +459,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE) >> makefile
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -474,7 +474,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp *.c $(CUSTOM_FILES) >> makefile
 
@@ -489,7 +489,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 
@@ -504,7 +504,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).framework >> makefile
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp >> makefile
 
@@ -519,7 +519,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).framework >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -534,7 +534,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -549,7 +549,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
@@ -564,7 +564,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
 	@$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp *.c $(CUSTOM_FILES)  >> makefile
@@ -597,7 +597,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
-	@echo Path=$(PATH) >> makefile
+	@echo Path='$(PATH)' >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
 	@$(MKMK) exe $(_MODULE) .,../h,$(STDDEP) c/*.cpp c/*.c >> makefile
