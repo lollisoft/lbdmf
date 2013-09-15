@@ -785,7 +785,6 @@ BEGIN_PLUGINS(lbPluginModule<xsl:value-of select="$ApplicationName"/>)
 END_PLUGINS()
 
 lbPluginModule<xsl:value-of select="$ApplicationName"/>::lbPluginModule<xsl:value-of select="$ApplicationName"/>() {
-	ref = STARTREF;
 	_CL_VERBOSE &lt;&lt; "lbPluginModule<xsl:value-of select="$ApplicationName"/>::lbPluginModule<xsl:value-of select="$ApplicationName"/>() called." LOG_
 }
 
