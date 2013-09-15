@@ -93,7 +93,6 @@ lbErrCodes LB_STDCALL lbPlugin<xsl:value-of select="$FormularName"/>::setData(lb
 
 lbPlugin<xsl:value-of select="$FormularName"/>::lbPlugin<xsl:value-of select="$FormularName"/>() {
 	_CL_VERBOSE &lt;&lt; "lbPlugin<xsl:value-of select="$FormularName"/>::lbPlugin<xsl:value-of select="$FormularName"/>() called.\n" LOG_
-	ref = STARTREF;
 }
 
 lbPlugin<xsl:value-of select="$FormularName"/>::~lbPlugin<xsl:value-of select="$FormularName"/>() {
