@@ -233,7 +233,7 @@ OBJDEP=
 C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs` 
+L_OPS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` 
 endif    
 
 endif
@@ -332,7 +332,7 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
 MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
 VENDORLIBS=
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
