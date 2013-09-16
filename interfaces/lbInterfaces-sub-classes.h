@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.2 $
+ * $Revision: 1.106.2.3 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.2 2012/08/31 11:25:54 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.3 2013/09/16 09:23:08 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.3  2013/09/16 09:23:08  lollisoft
+ * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
+ *
  * Revision 1.106.2.2  2012/08/31 11:25:54  lollisoft
  * Changes to replace UAP with template based smart pointer.
  *
@@ -1007,7 +1010,6 @@ public:
 };
 /*...e*/
 
-
 /*...sclass lb_I_Element:0:*/
 class lb_I_Element : public lb_I_Unknown {
 protected:
@@ -1648,6 +1650,35 @@ void LB_STDCALL classname::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const 
 /*...e*/
 
 /*...e*/
+
+
+/** \brief Enumbering directories and their files.
+ * This class returns a list of files or directories found in a given path.
+ * The result is not recursively. This has to be done by the user.
+ */
+class lb_I_DirectoryBrowser : public lb_I_VisitableHelper {
+public:
+	/** \brief Get a list of directories.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getDirectories(lb_I_String* path) = 0;
+	
+	/** \brief Get a list of directories.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getDirectories(const char* path) = 0;
+	
+	/** \brief Get a list of files.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getFiles(lb_I_String* path) = 0;
+	
+	/** \brief Get a list of files.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getFiles(const char* path) = 0;
+};
+
 /*...sclass lb_I_Instance:0:*/
 class lb_I_Instance : public lb_I_KeyBase {
 

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.2 $
+ * $Revision: 1.149.2.3 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.2 2012/06/07 17:29:55 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149.2.3 2013/09/16 09:23:07 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.3  2013/09/16 09:23:07  lollisoft
+ * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
+ *
  * Revision 1.149.2.2  2012/06/07 17:29:55  lollisoft
  * Fixed application exit issues. The dispatcher and event manager was
  * instantiated earlyer than a string or any other class from lbclasses.
@@ -2416,7 +2419,13 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		module = "lbWorkflowEngine";
 		found = true;
 	}
-
+	else
+	if (strcmp(searchArgument, "lb_I_DirectoryBrowser") == 0) {
+		functor = PREFIX "instanceOfDirectoryBrowser";
+		module = "lbClasses";
+		found = true;
+	}
+	
 
 	lbFunctorEntity* fe = new lbFunctorEntity;
 

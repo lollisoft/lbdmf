@@ -1187,12 +1187,12 @@ public:
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const lb_I_String* LB_STDCALL getControlValue(const char* name) = 0;
+	virtual const char* LB_STDCALL getControlValue(const char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const lb_I_String* LB_STDCALL getControlValue(int pos) = 0;
+	virtual const char* LB_STDCALL getControlValue(int pos) = 0;
 
 	/** \brief Get the number of controls.
 	 *

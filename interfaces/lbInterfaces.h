@@ -1024,6 +1024,7 @@ PRIMARY KEY (id),
 	class lb_I_DBReportTextblock;
 	class lb_I_DBReportProperties;
 	class lb_I_DirLocation;
+	class lb_I_DirectoryBrowser;
 	class lb_I_Action_Parameters;
 	class lb_I_ActionStep_Parameters;
 	class lb_I_TestFixture;
@@ -2449,10 +2450,10 @@ public: \
 	void destroy() { \
 		if (singleton != NULL) { \
 			if (_TRMemValidate(singleton)) { \
-				printf("Information: singletonHolder_" #name " will be destroyed now.\n"); \
+				_CL_VERBOSE << "Information: singletonHolder_" << #name << " will be destroyed now." LOG_ \
 				delete singleton; \
 				singleton = NULL; \
-				printf("Information: singletonHolder_" #name " is destroyed now.\n"); \
+				_CL_VERBOSE << "Information: singletonHolder_" << #name << " is destroyed now." LOG_ \
 			} \
 			else \
 				/*if (isLogActivated())*/ printf("ERROR: Sinleton object has been deleted prior!\n"); \
@@ -2522,11 +2523,11 @@ IMPLEMENT_SINGLETON_FUNCTOR_BASE(name, clsname) \
 extern "C" { \
 __attribute__((constructor)) \
 static void constructor_##name() { \
-	printf("Constructor for singleton object 'singleton_%s' called.\n", #name); \
+	_CL_VERBOSE << "Constructor for singleton object 'singleton_" << #name << "' called." LOG_ \
 } \
 __attribute__((destructor)) \
 static void destructor_##name() { \
-	printf("Destructor for singleton object 'singleton_%s' called.\n", #name); \
+	_CL_VERBOSE << "Destructor for singleton object 'singleton_" << #name << "' called." LOG_ \
 	if (singleton_##name.get() != NULL) { \
 		printf("Destruct instance 'singleton_%s'.\n", #name); \
 		singleton_##name.destroy(); \
@@ -5407,5 +5408,6 @@ UAPDECL(lb_I_Reference)
 UAPDECL(lb_I_StandaloneStreamable)
 UAPDECL(lb_I_FormularAction_Manager)
 UAPDECL(lb_I_Action)
+UAPDECL(lb_I_DirectoryBrowser)
 
 #endif // __LB_INTERFACES__

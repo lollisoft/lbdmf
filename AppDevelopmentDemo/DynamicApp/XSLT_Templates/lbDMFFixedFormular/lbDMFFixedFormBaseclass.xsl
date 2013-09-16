@@ -72,63 +72,83 @@ class FixedFormularBase :
 	public lb_I_FixedDatabaseForm,
 	public wxPanel {
 public:
-	FixedFormularBase();
-	virtual ~FixedFormularBase();
+							FixedFormularBase();
+	virtual					~FixedFormularBase();
 
-	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
-	char*	   LB_STDCALL getFormName() { return formName; }
+	lbErrCodes				LB_STDCALL setName(char const * name, char const * appention);
+	char*					LB_STDCALL getFormName() { return formName; }
+	lbErrCodes				LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL addTextField(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL addOwnerDrawn(const char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+	void					LB_STDCALL addLabel(const char* text, wxSizer* sizer, bool hideThisColumn) { };
 
-	void LB_STDCALL create(int parentId);
-	int  LB_STDCALL getId() { return GetId(); }
+	lbErrCodes				LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
-	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() {
-	    //Destroy();
+	lbErrCodes				LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void					LB_STDCALL windowIsClosing(lb_I_Window* w);
+
+	void					LB_STDCALL create(int parentId);
+	int						LB_STDCALL getId() { return GetId(); }
+	
+	void					LB_STDCALL setFilter(const char* filter) { };
+	lb_I_String*			LB_STDCALL getTableName(const char* columnName) { return NULL; };
+
+	char*					LB_STDCALL getName() { return (char*) "FixedFormularBase"; };
+	bool					LB_STDCALL isCharacterColumn(const char* name) { return false; };
+
+	lbErrCodes				LB_STDCALL close() { return ERR_NONE; };
+	lbErrCodes				LB_STDCALL open() { return ERR_NONE; };
+
+	void					LB_STDCALL show() { Show (TRUE); };
+	void					LB_STDCALL destroy() {
+		//Destroy();
 	};
 	
-	char* LB_STDCALL getQuery();
+	lb_I_Unknown*			LB_STDCALL getUnknown();
+	
+	char*					LB_STDCALL getQuery();
 
-	void LB_STDCALL setFilter(char* filter);
+	void					LB_STDCALL setFilter(char* filter);
 	
-	const char* LB_STDCALL getControlValue(char* name);
+	const char*				LB_STDCALL getControlValue(const char* name);
 
-	int LB_STDCALL getPrimaryColumns();
+	int						LB_STDCALL getPrimaryColumns();
 	
-	const char* LB_STDCALL getControlValue(int pos);
-	int LB_STDCALL getControls();
+	const char*				LB_STDCALL getControlValue(int pos);
+	int						LB_STDCALL getControls();
 	
-	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
+	lb_I_String*			LB_STDCALL getPrimaryColumn(int pos);
 	   
-	int LB_STDCALL getForeignColumns(char* primaryTable);
+	int						LB_STDCALL getForeignColumns(const char* primaryTable);
 	
-	lb_I_String* LB_STDCALL getForeignColumn(int pos);
+	lb_I_String*			LB_STDCALL getForeignColumn(int pos);
 	   
-	bool LB_STDCALL isCharacterColumn(char* name);
+	bool					LB_STDCALL isCharacterColumn(char* name);
 
-	char* LB_STDCALL getTableName(char* columnName);
+	char*					LB_STDCALL getTableName(char* columnName);
 	
-	char* LB_STDCALL getColumnName(int pos);
+	lb_I_String*			LB_STDCALL getColumnName(int pos);
 
-	virtual lbErrCodes LB_STDCALL lbDBUpdate() = 0;
-	virtual lbErrCodes LB_STDCALL lbDBClear() = 0;
-	virtual lbErrCodes LB_STDCALL lbDBRead() = 0;
+	virtual lbErrCodes		LB_STDCALL lbDBUpdate() = 0;
+	virtual lbErrCodes		LB_STDCALL lbDBClear() = 0;
+	virtual lbErrCodes		LB_STDCALL lbDBRead() = 0;
 
-	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
 
-	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL lbDBLast(lb_I_Unknown* uk);
 
-	void OnDispatch(wxCommandEvent&amp; event);
-	void OnImageButtonClick(wxCommandEvent&amp; event);
-	void OnMouseMove(wxMouseEvent&amp; evt);
+	void					OnDispatch(wxCommandEvent&amp; event);
+	void					OnImageButtonClick(wxCommandEvent&amp; event);
+	void					OnMouseMove(wxMouseEvent&amp; evt);
 
 	UAP(lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
@@ -352,6 +372,19 @@ FixedFormularBase::~FixedFormularBase() {
 	free (untranslated_formName);
 }
 
+lb_I_Unknown* LB_STDCALL FixedFormularBase::getUnknown() {
+	char eventName[100] = "";
+	lb_I_Unknown* ukp;
+	lb_I_EventHandler* evHandler = (lb_I_EventHandler*) this;
+
+	sprintf(eventName, "%p , and this is %p.", evHandler, this);
+	_LOG &lt;&lt; "FixedFormularBase::getUnknown() called. Instance of lb_I_EventHandler* is " &lt;&lt; eventName LOG_
+
+	queryInterface("lb_I_Unknown", (void**) &amp;ukp, __FILE__, __LINE__);
+	return ukp;
+}
+
+
 void FixedFormularBase::OnDispatch(wxCommandEvent&amp; event ) {
         switch (event.GetId()) {
         default:
@@ -385,6 +418,22 @@ void FixedFormularBase::OnDispatch(wxCommandEvent&amp; event ) {
                 }
                 break;
         }
+}
+
+void LB_STDCALL FixedFormularBase::windowIsClosing(lb_I_Window* w) {
+/*
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_DatabaseForm, form)
+	QI(w, lb_I_DatabaseForm, form)
+
+	if (form.getPtr() == _master) {
+		_master = NULL;
+	}
+
+	if (form.getPtr() == _detail) {
+		_detail = NULL;
+	}
+*/
 }
 
 void LB_STDCALL FixedFormularBase::create(int parentId) {
@@ -436,7 +485,7 @@ char* LB_STDCALL FixedFormularBase::getQuery() {
 	return SQLString-&gt;charrep();
 }
 
-char* LB_STDCALL FixedFormularBase::getColumnName(int pos) {
+lb_I_String* LB_STDCALL FixedFormularBase::getColumnName(int pos) {
 	return sampleQuery-&gt;getColumnName(pos);
 }
 
@@ -445,10 +494,14 @@ int LB_STDCALL FixedFormularBase::getControls() {
 }
 
 const char* LB_STDCALL FixedFormularBase::getControlValue(int pos) {
-	return getControlValue(getColumnName(pos));
+	UAP(lb_I_String, name)
+	
+	name = getColumnName(pos);
+	
+	return getControlValue(name->charrep()); 
 }
 
-const char* LB_STDCALL FixedFormularBase::getControlValue(char* name) {
+const char* LB_STDCALL FixedFormularBase::getControlValue(const char* name) {
 	wxString value;
 	wxWindow* w = FindWindowByName(wxString(name), this);
 	lb_I_Query::lbDBColumnTypes coltype = sampleQuery-&gt;getColumnType(name);
@@ -497,7 +550,11 @@ void LB_STDCALL FixedFormularBase::setFilter(char* filter) {
 }
 
 char* FixedFormularBase::getTableName(char* columnName) {
-	return sampleQuery-&gt;getTableName(columnName);
+	UAP(lb_I_String, name)
+	
+	name = sampleQuery-&gt;getTableName(columnName);
+	
+	return name->charrep();
 }
 
 int LB_STDCALL FixedFormularBase::getPrimaryColumns()
@@ -507,7 +564,7 @@ int LB_STDCALL FixedFormularBase::getPrimaryColumns()
 	return PKColumns;
 }
 
-int LB_STDCALL FixedFormularBase::getForeignColumns(char* primaryTable)
+int LB_STDCALL FixedFormularBase::getForeignColumns(const char* primaryTable)
 {
 	int PKColumns = sampleQuery-&gt;getFKColumns();
 	
@@ -745,7 +802,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	virtual void LB_STDCALL initialize();
+	void LB_STDCALL initialize();
+	void LB_STDCALL install();
 	
 	DECLARE_PLUGINS()
 };
@@ -887,6 +945,10 @@ void LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::initial
 </xsl:for-each>
 
 	
+}
+
+void LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::install() {
+
 }
 
 lbErrCodes LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::setData(lb_I_Unknown* uk) {

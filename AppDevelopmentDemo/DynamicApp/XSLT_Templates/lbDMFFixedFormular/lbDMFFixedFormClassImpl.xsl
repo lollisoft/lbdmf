@@ -164,10 +164,10 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::getForeignKeyMappingData
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, ComboboxMapper_<xsl:value-of select="@name"/>)
 	<xsl:variable name="pktable" select="@fktable"/>
 	<xsl:variable name="pkey" select="//lbDMF/primarykeys/primarykey[@pktable=$pktable]/@pkcolumn"/>
-	char* buffer = "select <xsl:value-of select="@fkname"/>, <xsl:value-of select="$pkey"/> from <xsl:value-of select="@fktable"/> order by <xsl:value-of select="$pkey"/>";
+	const char* buffer = "select <xsl:value-of select="@fkname"/>, <xsl:value-of select="$pkey"/> from <xsl:value-of select="@fktable"/> order by <xsl:value-of select="$pkey"/>";
 
 	if (database == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Database, database)
+		REQUEST(getModuleInstance(), lb_I_Database, database)
 
 		database->init();
 		if (database->connect("<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBName'][@applicationid=$ApplicationID]/@value"/>", 
@@ -319,8 +319,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 	if (pos != -1) {
 		lbErrCodes err = ERR_NONE;
 
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 					
 		cbName->setData("<xsl:value-of select="$fieldname"/>");
 				
@@ -403,7 +403,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 	<xsl:choose>
 		<xsl:when test="@steptyp='4'">
 	// Open detailform <xsl:value-of select="@what"/>
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP(lb_I_GUI, gui)
 
 	meta-&gt;getGUI(&amp;gui);
@@ -473,7 +473,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 		_LOG &lt;&lt; "Create new detail form '<xsl:value-of select="$DetailFormularName"/>'" LOG_
 
 		fdf = new <xsl:value-of select="$DetailFormularName"/>();
-		fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		//fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 		QI(fdf, lb_I_FixedDatabaseForm, form)
 		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomForm(form.getPtr(), "<xsl:value-of select="@what"/>");
@@ -538,7 +538,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 		</xsl:when>
 		<xsl:when test="@steptyp='5'">
 	// Open masterform <xsl:value-of select="@what"/>
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP(lb_I_GUI, gui)
 
 	meta-&gt;getGUI(&amp;gui);
@@ -561,7 +561,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::OnActionButton_<xs
 		_LOG &lt;&lt; "Create new detail form '<xsl:value-of select="$DetailFormularName"/>'" LOG_
 
 		fdf = new <xsl:value-of select="$DetailFormularName"/>();
-		fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		//fdf-&gt;setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 
 		QI(fdf, lb_I_FixedDatabaseForm, form)
 		fdf = (<xsl:value-of select="$DetailFormularName"/>*) gui-&gt;addCustomForm(form.getPtr(), "<xsl:value-of select="@what"/>");
@@ -660,8 +660,8 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::updateFromDetail_<xsl:va
 
 	Layout();		
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newWhereClause)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newQuery)
 
 	*newWhereClause += " where ";
 	*newWhereClause += column.c_str();
@@ -832,8 +832,8 @@ bool LB_STDCALL <xsl:value-of select="$FormularName"/>::updateFromMaster_<xsl:va
 
 	err = PKQuery->query(SQL->charrep());
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newWhereClause)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, newQuery)
 
 	if (err != ERR_NONE) {
 		_LOG &lt;&lt; "Error: Failed to get primary key value over column '" &lt;&lt; column.c_str() &lt;&lt; "'. (" &lt;&lt; primaryQuery.c_str() &lt;&lt; ")" LOG_
@@ -1017,8 +1017,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBUpdate() {
 	if (pos_<xsl:value-of select="@name"/> != -1) {
 		lbErrCodes err = ERR_NONE;
 
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 					
 		cbName-&gt;setData("<xsl:value-of select="@name"/>");
 					
@@ -1052,7 +1052,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBUpdate() {
 					
 			char pp[20] = "";
 						
-			sprintf(pp, "%dl", p);
+			sprintf(pp, "%ld", p);
 					
 			col-&gt;setData("<xsl:value-of select="@name"/>");
 			val-&gt;setData(pp);
@@ -1131,7 +1131,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBUpdate() {
 </xsl:for-each>
 
 	if (sampleQuery->update() != ERR_NONE) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
 		newTitle->setData(formName);
 		
@@ -1163,8 +1163,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBRead() {
 	<xsl:when test="@isfk='1'">
 	wxChoice* cbox_<xsl:value-of select="@name"/> = (wxChoice*) w;
 
-	UAP_REQUEST(manager.getPtr(), lb_I_Integer, key_<xsl:value-of select="@name"/>)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, cbName_<xsl:value-of select="@name"/>)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, key_<xsl:value-of select="@name"/>)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, cbName_<xsl:value-of select="@name"/>)
 
 	cbName_<xsl:value-of select="@name"/>->setData("<xsl:value-of select="@name"/>");
 
@@ -1238,6 +1238,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBRead() {
 		}
 #ifndef OSX
 	}
+#endif
 			</xsl:when>
 			<xsl:when test="@dbtype='Float'">
 	UAP(lb_I_String, s_<xsl:value-of select="@name"/>)
@@ -1267,7 +1268,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBRead() {
 lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unknown* uk) {
 	lbErrCodes errUpdate = ERR_NONE;
 	_CL_LOG &lt;&lt; "lbDatabasePanel::lbDBAdd() called. Have query: " &lt;&lt; getQuery() LOG_
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	if (addingButton->GetLabel() == wxString(_trans("Save"))) {
 		// Save mode for first data entry.
@@ -1282,7 +1283,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 		if (sampleQuery-&gt;dataFetched()) errUpdate = lbDBUpdate();
 
 		if (sampleQuery-&gt;add() != ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
 			newTitle-&gt;setData(formName);
 		
@@ -1330,8 +1331,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 
 					_LOG &lt;&lt; "Found the required control." LOG_
 
-					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
-					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key1)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
 					cbName->setData(key->charrep());
 
@@ -1390,7 +1391,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 	_CL_LOG &lt;&lt; "Determine update failed..." LOG_
 	
 	if (errUpdate == ERR_UPDATE_FAILED) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 		_CL_LOG &lt;&lt; "Updating after add failed." LOG_
 		
 		newTitle-&gt;setData(formName);
@@ -1412,8 +1413,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 				if (foreignkey != NULL) {
 					if (sampleQuery-&gt;isNull(foreignkey)) {
 						_LOG &lt;&lt; "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
-						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, val)
 						
 						*col = foreignkey;
 						*val = foreignkey_value;
@@ -1434,7 +1435,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 					if (meta-&gt;askYesNo("Error: Adding new record failed!\n\nDo you want to retry ?")) {
 						lbDBClear();
 						if (sampleQuery-&gt;update() != ERR_NONE) {
-							UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 							newTitle-&gt;setData(formName);
 							*newTitle += ": Add failed !";
 							_LOG &lt;&lt; newTitle-&gt;charrep() LOG_
@@ -1454,8 +1455,8 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 				if (foreignkey != NULL) {
 					if (sampleQuery-&gt;isNull(foreignkey)) {
 						_LOG &lt;&lt; "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
-						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, val)
 						
 						*col = foreignkey;
 						*val = foreignkey_value;
@@ -1477,7 +1478,7 @@ lbErrCodes LB_STDCALL <xsl:value-of select="$FormularName"/>::lbDBAdd(lb_I_Unkno
 					if (meta-&gt;askYesNo("Error: Adding new record failed!\n\nDo you want to retry ?")) {
 						lbDBClear();
 						if (sampleQuery-&gt;update() != ERR_NONE) {
-							UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+							UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 							newTitle-&gt;setData(formName);
 							*newTitle += ": Add failed !";
 							_LOG &lt;&lt; newTitle-&gt;charrep() LOG_

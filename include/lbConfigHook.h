@@ -318,7 +318,9 @@
 
 #ifndef SOLARIS
 #define _CL_LOG \
-	if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOGALWAYS \
+if (true) { COUT << __FILE__ << ", " << __LINE__ << ": "
 #define _CL_LOG1 COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
@@ -326,6 +328,8 @@
 #define _CL_LOG \
     if (isLogActivated() && isVerbose()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOGALWAYS \
+if (true) { COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
 
