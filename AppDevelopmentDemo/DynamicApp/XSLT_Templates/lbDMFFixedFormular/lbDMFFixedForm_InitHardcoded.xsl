@@ -66,13 +66,13 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 
 	_LOG &lt;&lt; "<xsl:value-of select="$FormularName"/>::init() called." LOG_
 
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, params)
 	
 	if (ImageButtonMapperList == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ImageButtonMapperList)
+		REQUEST(getModuleInstance(), lb_I_Container, ImageButtonMapperList)
 	}
 	
 	SetName(formName);
@@ -93,7 +93,7 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 		_CL_LOG &lt;&lt; "WARNING: Database instance available!" LOG_
 	}
 	
-	REQUEST(manager.getPtr(), lb_I_Database, database)
+	REQUEST(getModuleInstance(), lb_I_Database, database)
 
 	database->init();
 	if (database->connect("<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBName'][@applicationid=$ApplicationID]/@value"/>", 
@@ -105,15 +105,15 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 	}
 
 	if (_DBName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBName)
+		REQUEST(getModuleInstance(), lb_I_String, _DBName)
 		_DBName->setData("<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBName'][@applicationid=$ApplicationID]/@value"/>");
 	}
 	if (_DBUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBUser)
+		REQUEST(getModuleInstance(), lb_I_String, _DBUser)
 		_DBUser->setData("<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBUser'][@applicationid=$ApplicationID]/@value"/>");
 	}
 	if (_DBPass == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, _DBPass)
+		REQUEST(getModuleInstance(), lb_I_String, _DBPass)
 		_DBPass->setData("<xsl:value-of select="//lbDMF/applicationparameter/parameter[@name='DBPass'][@applicationid=$ApplicationID]/@value"/>");
 	}
 
@@ -126,8 +126,8 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 	int DatabaseAdd;
 	int DatabaseDelete;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 
 	char eventName[100] = "";
 		
@@ -162,7 +162,7 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 	sampleQuery-&gt;setAutoRefresh(meta->getAutorefreshData());
 
 	if (SQLString == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, SQLString)
+		REQUEST(getModuleInstance(), lb_I_String, SQLString)
 		
 <xsl:variable name="tempQuery" select="//lbDMF/formularparameter/parameter[@formularid=$FormularID][@name='query']/@value"/>
 <xsl:variable name="Query">
@@ -205,7 +205,7 @@ void LB_STDCALL <xsl:value-of select="$FormularName"/>::init() {
 	UAP(lb_I_Unknown, ukComboboxMapper_<xsl:value-of select="@name"/>)
 	UAP(lb_I_Container, ComboboxMapper_<xsl:value-of select="@name"/>)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, cbName_<xsl:value-of select="@name"/>)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, cbName_<xsl:value-of select="@name"/>)
 	UAP(lb_I_KeyBase, key_cbName_<xsl:value-of select="@name"/>)
 	QI(cbName_<xsl:value-of select="@name"/>, lb_I_KeyBase, key_cbName_<xsl:value-of select="@name"/>)
 

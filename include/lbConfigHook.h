@@ -288,19 +288,6 @@
 			nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
 			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
-#define _LOGVERBOSE \
-		if (!isVerbose() || isInitializing() != 0) { \
-		} else { \
-			time_t Zeitstempel; \
-			tm *nun; \
-			Zeitstempel = time(0); \
-			nun = localtime(&Zeitstempel); \
-			createLogInstance(); \
-			char tmstring[100] = ""; \
-			sprintf(tmstring, "%4d.%2d.%2d - %2d:%2d:%2d", \
-			nun->tm_year+1900, nun->tm_mon+1, nun->tm_mday, nun->tm_hour, nun->tm_min, nun->tm_sec); \
-			*(getLoggerInstance()) << tmstring << " Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
-
 #endif
 
 #define _LOGALWAYS _LOGERROR
@@ -331,7 +318,9 @@
 
 #ifndef SOLARIS
 #define _CL_LOG \
-	if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+if (isLogActivated()) { COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOGALWAYS \
+if (true) { COUT << __FILE__ << ", " << __LINE__ << ": "
 #define _CL_LOG1 COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
@@ -339,6 +328,8 @@
 #define _CL_LOG \
     if (isLogActivated() && isVerbose()) { \
         COUT << __FILE__ << ", " << __LINE__ << ": "
+#define _CL_LOGALWAYS \
+if (true) { COUT << __FILE__ << ", " << __LINE__ << ": "
 #endif
 
 

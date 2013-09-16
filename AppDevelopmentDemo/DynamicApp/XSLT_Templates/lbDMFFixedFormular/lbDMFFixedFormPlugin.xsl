@@ -65,7 +65,6 @@ public:
 	bool LB_STDCALL canAutorun();
 	lbErrCodes LB_STDCALL autorun();
 	void LB_STDCALL initialize();
-	
 	bool LB_STDCALL run();
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
@@ -120,7 +119,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$FormularName"/>::peekImp
 
 	if (ukActions == NULL) {
 		<xsl:value-of select="$FormularName"/>* _<xsl:value-of select="$FormularName"/> = new <xsl:value-of select="$FormularName"/>();
-		_<xsl:value-of select="$FormularName"/>->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		//_<xsl:value-of select="$FormularName"/>->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(_<xsl:value-of select="$FormularName"/>, lb_I_Unknown, ukActions)
 	} else {
@@ -138,7 +137,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin<xsl:value-of select="$FormularName"/>::getImpl
 		_CL_VERBOSE &lt;&lt; "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		<xsl:value-of select="$FormularName"/>* _<xsl:value-of select="$FormularName"/> = new <xsl:value-of select="$FormularName"/>();
-		_<xsl:value-of select="$FormularName"/>->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		//_<xsl:value-of select="$FormularName"/>->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(_<xsl:value-of select="$FormularName"/>, lb_I_Unknown, ukActions)
 	}

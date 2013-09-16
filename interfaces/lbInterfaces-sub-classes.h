@@ -30,20 +30,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.109 $
+ * $Revision: 1.106.2.3 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.109 2013/02/16 18:23:29 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.3 2013/09/16 09:23:08 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
- * Revision 1.109  2013/02/16 18:23:29  lollisoft
- * Some fixes yet.
- *
- * Revision 1.108  2013/02/16 10:36:27  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
- *
- * Revision 1.107  2012/01/21 18:39:21  lollisoft
- * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ * Revision 1.106.2.3  2013/09/16 09:23:08  lollisoft
+ * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
  *
  * Revision 1.106.2.2  2012/08/31 11:25:54  lollisoft
  * Changes to replace UAP with template based smart pointer.
@@ -1017,7 +1010,6 @@ public:
 };
 /*...e*/
 
-
 /*...sclass lb_I_Element:0:*/
 class lb_I_Element : public lb_I_Unknown {
 protected:
@@ -1175,38 +1167,6 @@ int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
 	return (*key < _key); \
 }
 /*...e*/
-
-class lb_I_Iterator : public lb_I_VisitableHelper {
-public:
-	/** \brief Number of objects in the container.
-	 *
-	 */
-    virtual int LB_STDCALL Count() = 0;
-
-	/** \brief Returns 1 if elements are iterable.
-	 *
-	 */
-    virtual int LB_STDCALL hasMoreElements() = 0;
-
-	/** \brief Get next element.
-	 *
-	 */
-    virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
-
-	/** \brief Stops the iteration modus, begun with hasMoreElements.
-	 *
-	 * Use this function to stop the iteration. You must use this function to
-	 * be able to restart iteration. If hasMoreElements returns 0, the
-	 * iteration is finished automatically.
-	 */
-    virtual void LB_STDCALL finishIteration() = 0;
-	
-	/** \brief Get current key based on iterator position.
-	 *
-	 */
-	virtual lb_I_KeyBase* LB_STDCALL currentKey() = 0;
-};
-
 /*...sclass lb_I_Container:0:*/
 /** \brief Storage for other objects.
  *
@@ -1217,10 +1177,6 @@ public:
  */
 class lb_I_Container : public lb_I_Unknown {
 public:
-	/** \brief Get a separate iterator to enable multible independent itarations.
-	 */
-	virtual lb_I_Iterator* LB_STDCALL getIterator() = 0;
-
 	/** \brief Number of objects in the container.
 	 *
 	 */
@@ -1694,6 +1650,35 @@ void LB_STDCALL classname::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const 
 /*...e*/
 
 /*...e*/
+
+
+/** \brief Enumbering directories and their files.
+ * This class returns a list of files or directories found in a given path.
+ * The result is not recursively. This has to be done by the user.
+ */
+class lb_I_DirectoryBrowser : public lb_I_VisitableHelper {
+public:
+	/** \brief Get a list of directories.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getDirectories(lb_I_String* path) = 0;
+	
+	/** \brief Get a list of directories.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getDirectories(const char* path) = 0;
+	
+	/** \brief Get a list of files.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getFiles(lb_I_String* path) = 0;
+	
+	/** \brief Get a list of files.
+	 * The container is keyed by integers that are simply incremented for each found item.
+	 */
+	virtual lb_I_Container* LB_STDCALL getFiles(const char* path) = 0;
+};
+
 /*...sclass lb_I_Instance:0:*/
 class lb_I_Instance : public lb_I_KeyBase {
 
