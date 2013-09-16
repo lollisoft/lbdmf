@@ -1,0 +1,91 @@
+# Define your module based settings
+
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#			 Ginsterweg 4
+#
+#			 65760 Eschborn (germany)
+
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
+
+MOD_INCL=$(STD_INCL)
+MOD_INCL_CPP=$(STD_INCL_CPP)
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
+
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+endif
+
+#OBJDEP=../lbHook/lbHook.o
+# ../lbHook/conio.o
+endif
+
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+VENDORLIBS=
+LIBS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=$(HOME)/lib/lbHook.so
+endif    
+
+endif
