@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.14 $
+# * $Revision: 1.229.2.15 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.14 2013/09/16 09:23:07 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.15 2013/09/22 10:29:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.15  2013/09/22 10:29:14  lollisoft
+# * Differences for MkBs.
+# *
 # * Revision 1.229.2.14  2013/09/16 09:23:07  lollisoft
 # * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
 # *
@@ -1406,6 +1409,7 @@ ALLTARGETS = \
 	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Doc/html \
+	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
 #	lbcs \
@@ -1810,10 +1814,18 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+ifeq ($(OSTYPE), Windows_NT)
+../AppDevelopmentDemo/MkBs: dummy
+	$(MAKE) -s -C $@ -e MODULE=MkBs -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
+
+ifneq ($(OSTYPE), Windows_NT)
 ../AppDevelopmentDemo/MkBs: dummy
 	$(MAKE) -s -C $@ -e MODULE=MkBs -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
+endif
 
 ifeq ($(OSTYPE), solaris)
 ../vendor/dosdir: dummy
