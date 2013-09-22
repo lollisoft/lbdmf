@@ -315,6 +315,20 @@ char msg[100] = "";
 	return ERR_NONE;
 }
 /*...e*/
+lbErrCodes lbTransferData::requestBoolean(char* ident, bool& data) {
+	char* buffer = NULL;
+	lbErrCodes err = ERR_NONE;
+	
+	if ((err = requestString(ident, buffer)) == ERR_NONE) {
+		if (strcmp("TRUE", buffer) == 0) {
+			data = true;
+		} else {
+			data = false;
+		}
+	}
+	
+	return err;
+}
 /*...slbTransferData\58\\58\requestInteger\40\ident\44\ data\41\:0:*/
 lbErrCodes lbTransferData::requestInteger(char* ident, int& data) {
 char* buffer = NULL;
@@ -362,7 +376,7 @@ char* buffer = NULL;
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL lbTransferData::makeProtoErrAnswer(char* msg, char* where) {
+lbErrCodes LB_STDCALL lbTransferData::makeProtoErrAnswer(const char* msg, const char* where) {
 	add("Error");
 	add(msg);
 	

@@ -1032,7 +1032,7 @@ lbDispatchProto::lbDispatchProto() {
 	REQUEST(getModuleInstance(), lb_I_String, service)
 }
 
-char* LB_STDCALL lbDispatchProto::getServiceName() {
+const char* LB_STDCALL lbDispatchProto::getServiceName() {
 	if (service == NULL) return "";
 	return service->charrep();
 }

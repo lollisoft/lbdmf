@@ -2836,7 +2836,7 @@ public:
 	 *
 	 * The service name could be overwritten to use another service.
 	 */
-	virtual char* LB_STDCALL getServiceName() = 0;
+	virtual const char* LB_STDCALL getServiceName() = 0;
 	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) = 0;
 };
 /*...e*/
