@@ -106,6 +106,8 @@ public:
 	virtual DWORD LB_STDCALL getClientTid() const = 0;
 	virtual void LB_STDCALL setClientTid(DWORD _tid) = 0;
 
+	virtual lbErrCodes LB_STDCALL requestBoolean(char* ident, bool& data) = 0;
+
         virtual lbErrCodes LB_STDCALL requestString(char* ident, char*& data) = 0;
 
         virtual lbErrCodes LB_STDCALL requestString(char* ident) = 0;
@@ -114,7 +116,7 @@ public:
 
         virtual lbErrCodes LB_STDCALL requestULong(char* ident, unsigned long& data) = 0;	
 
-	virtual lbErrCodes LB_STDCALL makeProtoErrAnswer(char* msg, char* where) = 0;
+	virtual lbErrCodes LB_STDCALL makeProtoErrAnswer(const char* msg, const char* where) = 0;
 
 /*...ssimple setters:8:*/
         /**

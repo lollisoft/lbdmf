@@ -115,6 +115,7 @@ public:
 	void LB_STDCALL setClientTid(DWORD _tid) { clientTid = _tid; }
 
 	lbErrCodes LB_STDCALL requestString(char* ident, char*& data);
+	lbErrCodes LB_STDCALL requestBoolean(char* ident, bool& data);
 	
 	lbErrCodes LB_STDCALL requestString(char* ident);
 	
@@ -122,7 +123,7 @@ public:
 	
 	lbErrCodes LB_STDCALL requestULong(char* ident, unsigned long& data);
 
-	lbErrCodes LB_STDCALL makeProtoErrAnswer(char* msg, char* where);
+	lbErrCodes LB_STDCALL makeProtoErrAnswer(const char* msg, const char* where);
 /*...ssetters:8:*/
 	/**
 	 * Data member operations

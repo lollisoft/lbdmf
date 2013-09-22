@@ -140,7 +140,7 @@ public:
 	
 	lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result);
 
-	char* LB_STDCALL getServiceName();
+	const char* LB_STDCALL getServiceName();
 	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);	                  
 
 	/**
