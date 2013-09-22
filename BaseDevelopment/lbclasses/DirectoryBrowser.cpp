@@ -45,6 +45,7 @@
 #endif
 #ifdef WINDOWS
 #include <string.h>
+#include <io.h>
 #endif
 
 #ifndef LBDMF_PREC
@@ -100,6 +101,7 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(const char* path) {
 lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(lb_I_String* path) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, entry)
 	UAP(lb_I_KeyBase, keyEntry)
+	int ent = 0;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, directories)
 	directories++;
@@ -110,7 +112,7 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(lb_I_String* path) {
 	
 #ifdef WINDOWS
 	_finddata_t find;
-	char* mask = "*.dll";
+	const char* mask = "*.*";
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
 	
@@ -121,17 +123,47 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(lb_I_String* path) {
 	long handle = _findfirst(toFind, &find);
 
 	if (handle != -1) {
-		
-		if (find.attrib & _A_SUBDIR == _A_SUBDIR) {
-			
+		if (find.attrib & _A_SUBDIR) {
+			UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dLoc)
+			UAP(lb_I_Unknown, ukLoc)
+				
+			UAP_REQUEST(getModuleInstance(), lb_I_String, fullPath)
+				
+			*fullPath = path;
+			*fullPath += "\\";
+			*fullPath += find.name;
+				
+			dLoc->setData(fullPath->charrep());
+			QI(dLoc, lb_I_Unknown, ukLoc)
+				
+			ent++;
+			entry->setData(ent);
+				
+			directories->insert(&ukLoc, &keyEntry);
 		}
 		
 		while (_findnext(handle, &find) == 0) {
-
+			if (find.attrib & _A_SUBDIR) {
+				UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dLoc)
+				UAP(lb_I_Unknown, ukLoc)
+					
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fullPath)
+					
+				*fullPath = path;
+				*fullPath += "\\";
+				*fullPath += find.name;
+					
+				dLoc->setData(fullPath->charrep());
+				QI(dLoc, lb_I_Unknown, ukLoc)
+					
+				ent++;
+				entry->setData(ent);
+					
+				directories->insert(&ukLoc, &keyEntry);
+			}
 		}
+		
 		_findclose(handle);
-	} else {
-		printf("No plugins found.\n");
 	}
 
 	free(toFind);
@@ -147,7 +179,6 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(lb_I_String* path) {
 #ifdef OSX
 	DIR *dir;
 	struct dirent *dir_info;
-	int ent = 0;
 	if ((dir = opendir(pluginDir)) != NULL) {
 	
 		dir_info = readdir(dir);
@@ -190,7 +221,8 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(const char* path) {
 lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(lb_I_String* path) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, entry)
 	UAP(lb_I_KeyBase, keyEntry)
-	
+	int ent = 0;
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, directories)
 	directories++;
 	
@@ -199,7 +231,62 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(lb_I_String* path) {
 	char* pluginDir = path->charrep();
 	
 #ifdef WINDOWS
+	_finddata_t find;
+	const char* mask = "*.*";
+	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
+	toFind[0] = 0;
 	
+	strcat(toFind, pluginDir);
+	strcat(toFind, "\\");
+	strcat(toFind, mask);
+
+	long handle = _findfirst(toFind, &find);
+
+	if (handle != -1) {
+		if (!(find.attrib & _A_SUBDIR) && strcmp(find.name, ".") != 0 && strcmp(find.name, "..") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, dLoc)
+			UAP(lb_I_Unknown, ukLoc)
+				
+			UAP_REQUEST(getModuleInstance(), lb_I_String, fullPath)
+
+			*fullPath = path;
+			*fullPath += "\\";
+			*fullPath += find.name;
+				
+			dLoc->setData(find.name);
+			QI(dLoc, lb_I_Unknown, ukLoc)
+				
+			ent++;
+			entry->setData(ent);
+				
+			directories->insert(&ukLoc, &keyEntry);
+		}
+		
+		while (_findnext(handle, &find) == 0) {
+			if (!(find.attrib & _A_SUBDIR)  && strcmp(find.name, ".") != 0 && strcmp(find.name, "..") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, dLoc)
+				UAP(lb_I_Unknown, ukLoc)
+					
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fullPath)
+					
+				*fullPath = path;
+				*fullPath += "\\";
+				*fullPath += find.name;
+					
+				dLoc->setData(find.name);
+				QI(dLoc, lb_I_Unknown, ukLoc)
+					
+				ent++;
+				entry->setData(ent);
+					
+				directories->insert(&ukLoc, &keyEntry);
+			}
+		}
+		
+		_findclose(handle);
+	}
+
+	free(toFind);
 #endif
 	
 #ifdef LINUX
@@ -211,7 +298,6 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(lb_I_String* path) {
 #ifdef OSX
 	DIR *dir;
 	struct dirent *dir_info;
-	int ent = 0;
 	if ((dir = opendir(pluginDir)) != NULL) {
 		
 		dir_info = readdir(dir);
@@ -235,4 +321,5 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(lb_I_String* path) {
 	}
 #endif
 	
-	return *&directories;}
+	return *&directories;
+}
