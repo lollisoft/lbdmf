@@ -64,9 +64,9 @@ lb_I_Container* ScanDirectory(const char* path, const char* containsFile) {
 	UAP(lb_I_Container, directories)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, directories_containsFile)
 	UAP(lb_I_Container, files)
-	
+
 	directories = browser->getDirectories(path);
-	
+
 	directories->finishIteration();
 	while (directories->hasMoreElements() != 0) {
 		UAP(lb_I_Unknown, ukDir)
@@ -132,7 +132,12 @@ int main(int argc, char *argv[]) {
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, R)
 	*R = argv[1];
+#ifndef WINDOWS
 	*R += "/";
+#endif
+#ifdef WINDOWS
+	*R += "\\";
+#endif
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
 	string->setData("# Makefile generated automatically. Do not change.");
