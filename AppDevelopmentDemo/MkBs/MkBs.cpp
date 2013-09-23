@@ -117,6 +117,19 @@ void writeTargetSpec() {
 	COUT << "TARGETWXSHARED=wxshared" << ENDL;
 	COUT << "" << ENDL;
 #endif	
+#ifdef WINDOWS
+	COUT << "" << ENDL;
+	COUT << "TARGETEXE=exe$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETWXEXE=exe$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETDLL=dll$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETFRAMEWORK=dll$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETSHARED=dll$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETWXSHARED=dll$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETXSLTDLL=xsltdll$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETPLUGIN=plugin$(TARGET_SELECTOR)" << ENDL;
+	COUT << "TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)" << ENDL;
+	COUT << "" << ENDL;
+#endif	
 }
 
 int main(int argc, char *argv[]) {
