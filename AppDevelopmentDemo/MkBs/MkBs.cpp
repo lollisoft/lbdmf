@@ -119,6 +119,9 @@ void writeTargetSpec() {
 #endif	
 #ifdef WINDOWS
 	COUT << "" << ENDL;
+	COUT << "TARGET_SELECTOR=_target_mingw" << ENDL;
+	COUT << "#TARGET_SELECTOR=" << ENDL;
+	COUT << "" << ENDL;
 	COUT << "TARGETEXE=exe$(TARGET_SELECTOR)" << ENDL;
 	COUT << "TARGETWXEXE=exe$(TARGET_SELECTOR)" << ENDL;
 	COUT << "TARGETDLL=dll$(TARGET_SELECTOR)" << ENDL;
