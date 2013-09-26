@@ -1453,303 +1453,6 @@ public:
 #define UAP_CHECKPOINTER(ptr, msg)
 #endif
 
-#ifndef USE_OLD_UAP
-
-template <typename iface>
-class UAPTempl {
-
-		public:
-	        UAPTempl() {
-	        	_autoPtr = NULL;
-	        	_line = __LINE__;
-	        	_file = strdup(__FILE__);
-	        	attachedClassName = NULL;
-	        	allowDelete = 1;
-				locked = false;
-	        	initialized = false;
-		}
-
-		UAPTempl(const UAPTempl& _ref) {
-			char const* empty = "";
-			attachedClassName = NULL;
-			initialized = false;
-        	allowDelete = 1;
-			locked = false;
-			if ((_ref != NULL) && (_ref->getClassName() != NULL))
-				attachedClassName = strdup(_ref->getClassName());
-			else
-				attachedClassName = strdup(empty);
-			if (_file != NULL) free(_file);
-			_file = NULL;
-			if (_ref._file != NULL) {
-				_file = (char*) strdup(_ref._file);
-			}
-			_line = _ref._line;
-			_autoPtr = NULL;
-		}
-		UAPTempl& operator=(const UAPTempl& _ref) {
-			if (this == &_ref) return *this;
-        	allowDelete = 1;
-			locked = false;
-			char const* empty = "";
-			if (_file != NULL) free(_file);
-			_file = NULL;
-			if (_ref._file != NULL) {
-				_file = (char*) strdup(_ref._file);
-			}
-			if (attachedClassName) {
-				free(attachedClassName);
-			}
-			initialized = false;
-			if ((_ref != NULL) && (_ref->getClassName() != NULL))
-			        attachedClassName = strdup(_ref->getClassName());
-		        else
-	                attachedClassName = strdup(empty);
-			_line = _ref._line;
-			_autoPtr = _ref._autoPtr;
-			return *this;
-		}
-
-		virtual ~UAPTempl() {
-			if (_autoPtr != NULL) {
-				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer")
-				if (allowDelete != 1) {
-					if (_autoPtr->deleteState() == 1) {
-//\todo Report otherwise.
-						//if (isLogActivated()) printf("Error: Instance would be deleted, but it's not allowed !!\n");
-					}
-				}
-				if (_line == -1) {
-				}
-				_autoPtr->release(_file, _line);
-				_autoPtr = NULL;
-			}
-			if (attachedClassName != NULL) free(attachedClassName);
-			if (_file) free(_file);
-		}
-		void LB_STDCALL setFile(char const* __file) {
-			if (_file != NULL) {
-				free(_file);
-			}
-			if (__file != NULL) {
-				_file = (char*) strdup(__file);
-			} else {
-//\todo Report otherwise.
-//				_CL_LOG << "Error: Setting file parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_
-				_file = strdup(__FILE__);
-			}
-		}
-		void LB_STDCALL setLine(int __line) {
-			if (__line == -1) {
-//\todo Report otherwise.
-//				_CL_LOG << "Error: Setting line parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_
-				_line = __LINE__;
-			} else {
-				_line = __line;
-			}
-		}
-
-		iface* LB_STDCALL getPtr() const {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: getPtr() on invalid object pointer")
-			return _autoPtr;
-		}
-		void LB_STDCALL lock() {
-			locked = true;
-		}
-		void LB_STDCALL resetPtr() {
-			_autoPtr = NULL;
-		}
-		void LB_STDCALL setPtr(iface*& source) {
-			if (locked) return;
-			if (_autoPtr != NULL) {
-//\todo Report otherwise.
-//				_CL_LOG << "Error: UAP object still initialized!" LOG_
-			}
-			_autoPtr = source;
-		}
-
-		iface& LB_STDCALL operator * () {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator * () on invalid object pointer")
-			return *_autoPtr;
-		}
-		iface* LB_STDCALL operator -> () const {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer")
-			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) {
-					char const* className = _autoPtr->getClassName();
-					int len = strlen(className)+1;
-					initialized = true;
-					if (attachedClassName != NULL) free(attachedClassName);
-					attachedClassName = (char*) malloc(len);
-					attachedClassName[0] = 0;
-				        strcpy(attachedClassName, className);
-			}
-			return _autoPtr;
-		}
-		iface* LB_STDCALL operator -> () {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer")
-			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) {
-					char const* className = _autoPtr->getClassName();
-					int len = strlen(className)+1;
-					initialized = true;
-					if (attachedClassName != NULL) free(attachedClassName);
-					attachedClassName = (char*) malloc(len);
-					attachedClassName[0] = 0;
-				        strcpy(attachedClassName, className);
-			}
-			return _autoPtr;
-		}
-		UAPTempl& LB_STDCALL operator++(int) {
-			lb_I_Unknown* temp = NULL;
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator++ on invalid object pointer")
-			_autoPtr->queryInterface((char*) "lb_I_Unknown", (void**) &temp, (char*) __FILE__, __LINE__);
-			return *this;
-		}
-		UAPTempl& LB_STDCALL operator--(int) {
-			iface* temp = NULL;
-			if (_autoPtr == NULL) return *this;
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator-- on invalid object pointer")
-			if (_autoPtr->release((char*) __FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL;
-			return *this;
-		}
-
-		iface ** LB_STDCALL operator & () {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator& on invalid object pointer")
-			return &_autoPtr;
-		}
-
-		iface* LB_STDCALL operator = (iface* autoPtr) {
-			if (*this == autoPtr) return this->_autoPtr;
-			if (locked) return this->_autoPtr;
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid old object pointer")
-			if (_autoPtr != NULL) {
-				_autoPtr->release(__FILE__, __LINE__);
-			}
-			_autoPtr = autoPtr;
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid new object pointer")
-			if (attachedClassName) {
-				free(attachedClassName);
-			}
-			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL))
-				attachedClassName = strdup(autoPtr->getClassName());
-			else
-				attachedClassName = strdup("");
-			return this->_autoPtr;
-		}
-		int LB_STDCALL operator == (const iface* b) const {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer")
-			return _autoPtr == b;
-		}
-		int LB_STDCALL operator == (const UAPTempl& b) const {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer")
-			return *this == b;
-		}
-		int LB_STDCALL operator != (const iface* b) const {
-			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator != on invalid object pointer")
-			return _autoPtr != b;
-		}
-		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; }
-		
-		protected:
-	        iface* _autoPtr;
-	        mutable int _line;
-	        mutable char* _file;
-	        mutable int allowDelete;
-	        mutable bool initialized;
-		mutable bool locked;
-	        mutable char* attachedClassName;
-		};
-
-#define UAPDECL(classname) \
-typedef UAPTempl<classname> UAP##classname;
-
-UAPDECL(lb_I_Unknown)
-UAPDECL(lb_I_CallbackTarget)
-UAPDECL(lb_I_ProtocolTarget)
-
-UAPDECL(lb_I_String)
-
-UAPDECL(lb_I_gcManager)
-UAPDECL(lb_I_Unknown)
-UAPDECL(lb_I_Module)
-
-UAPDECL(lb_I_Event)
-UAPDECL(lb_I_EventSink)
-
-UAPDECL(lb_I_Dispatcher)
-UAPDECL(lb_I_EventManager)
-UAPDECL(lb_I_EventHandler)
-
-UAPDECL(lb_I_ConfigObject)
-
-UAPDECL(lb_I_Frame)
-UAPDECL(lb_I_Transfer_Data)
-
-	// Base interface for visitors
-UAPDECL(lb_I_Aspect)
-
-UAPDECL(lb_I_VisitableHelper)
-UAPDECL(lb_I_Streamable)
-UAPDECL(lb_I_Integer)
-UAPDECL(lb_I_Long)
-UAPDECL(lb_I_Container)
-UAPDECL(lb_I_Database)
-UAPDECL(lb_I_Connection)
-UAPDECL(lb_I_ColumnBinding)
-UAPDECL(lb_I_BoundColumn)
-UAPDECL(lb_I_KeyBase)
-UAPDECL(lb_I_Query)
-UAPDECL(lb_I_MVC_View)
-UAPDECL(lb_I_InterfaceRepository)
-UAPDECL(lb_I_Element)
-UAPDECL(lb_I_FunctorEntity)
-UAPDECL(lb_I_InstanceReference)
-UAPDECL(lb_I_FileOperation)
-UAPDECL(lb_I_OutputStream)
-UAPDECL(lb_I_Locale)
-UAPDECL(lb_I_Parameter)
-UAPDECL(lb_I_Log)
-UAPDECL(lb_I_Window)
-UAPDECL(lb_I_wxFrame)
-UAPDECL(lb_I_MasterDetailFormDefinition)
-UAPDECL(lb_I_DatabaseReport)
-UAPDECL(lb_I_Project)
-UAPDECL(lb_I_Stream)
-UAPDECL(lb_I_CodeGenerator)
-UAPDECL(lb_I_ProjectManager)
-UAPDECL(lb_I_GUIApp)
-UAPDECL(lb_I_LogonPage)
-UAPDECL(lb_I_AppSelectPage)
-UAPDECL(lb_I_LogonHandler)
-UAPDECL(lb_I_DatabaseOperation)
-UAPDECL(lb_I_Document)
-UAPDECL(lb_I_Socket)
-UAPDECL(lb_I_Transfer_DataObject)
-UAPDECL(lb_I_Transfer)
-UAPDECL(lb_I_ThreadImplementation)
-UAPDECL(lb_I_Column_Types)
-UAPDECL(lb_I_Formular_Fields)
-UAPDECL(lb_I_FixedDatabaseForm)
-UAPDECL(lb_I_DBReportTextblock)
-UAPDECL(lb_I_DBReportProperties)
-UAPDECL(lb_I_DirLocation)
-UAPDECL(lb_I_Action_Parameters)
-UAPDECL(lb_I_ActionStep_Parameters)
-UAPDECL(lb_I_TestFixture)
-UAPDECL(lb_I_TestMethod)
-UAPDECL(lb_I_CryptoStream)
-UAPDECL(lb_I_DispatchInterceptor)
-UAPDECL(lb_I_ChainingDispatchInterceptor)
-UAPDECL(lb_I_InputStream)
-UAPDECL(lb_I_Applications)
-UAPDECL(lb_I_PluginManager)
-UAPDECL(lb_I_Plugin)
-
-		
-#define UAP(classname, variable) \
-	UAP##classname variable;
-
-#endif
-
 #ifdef USE_OLD_UAP
 
 #define UAP(interface, Unknown_Reference) \
@@ -2770,7 +2473,7 @@ public:
 	/// Store the protocol handler.
 	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn) = 0;
 
-	virtual char* LB_STDCALL getServiceName() = 0;
+	virtual const char* LB_STDCALL getServiceName() = 0;
 	
 	/// Get the protocol callback function.
 	virtual lbProtocolCallback LB_STDCALL getProto() = 0;
@@ -5363,6 +5066,222 @@ public:
 #include <lbInterfaces-sub-wxWrapper.h>
 #include <lbInterfaces-sub-visitor.h>
 
+#ifndef USE_OLD_UAP
+
+template <typename iface>
+class UAPTempl {
+
+		public:
+	        UAPTempl() {
+	        	_autoPtr = NULL;
+	        	_line = __LINE__;
+	        	_file = strdup(__FILE__);
+	        	attachedClassName = NULL;
+	        	allowDelete = 1;
+				locked = false;
+	        	initialized = false;
+		}
+
+		UAPTempl(const UAPTempl& _ref) {
+			char const* empty = "";
+			attachedClassName = NULL;
+			initialized = false;
+        	allowDelete = 1;
+			locked = false;
+			if ((_ref != NULL) && (_ref->getClassName() != NULL))
+				attachedClassName = strdup(_ref->getClassName());
+			else
+				attachedClassName = strdup(empty);
+			if (_file != NULL) free(_file);
+			_file = NULL;
+			if (_ref._file != NULL) {
+				_file = (char*) strdup(_ref._file);
+			}
+			_line = _ref._line;
+			_autoPtr = NULL;
+		}
+		UAPTempl& operator=(const UAPTempl& _ref) {
+			if (this == &_ref) return *this;
+        	allowDelete = 1;
+			locked = false;
+			char const* empty = "";
+			if (_file != NULL) free(_file);
+			_file = NULL;
+			if (_ref._file != NULL) {
+				_file = (char*) strdup(_ref._file);
+			}
+			if (attachedClassName) {
+				free(attachedClassName);
+			}
+			initialized = false;
+			if ((_ref != NULL) && (_ref->getClassName() != NULL))
+			        attachedClassName = strdup(_ref->getClassName());
+		        else
+	                attachedClassName = strdup(empty);
+			_line = _ref._line;
+			_autoPtr = _ref._autoPtr;
+			return *this;
+		}
+
+		virtual ~UAPTempl() {
+			if (_autoPtr != NULL) {
+				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer")
+				if (allowDelete != 1) {
+					if (_autoPtr->deleteState() == 1) {
+//\todo Report otherwise.
+						//if (isLogActivated()) printf("Error: Instance would be deleted, but it's not allowed !!\n");
+					}
+				}
+				if (_line == -1) {
+				}
+				_autoPtr->release(_file, _line);
+				_autoPtr = NULL;
+			}
+			if (attachedClassName != NULL) free(attachedClassName);
+			if (_file) free(_file);
+		}
+		void LB_STDCALL setFile(char const* __file) {
+			if (_file != NULL) {
+				free(_file);
+			}
+			if (__file != NULL) {
+				_file = (char*) strdup(__file);
+			} else {
+//\todo Report otherwise.
+//				_CL_LOG << "Error: Setting file parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_
+				_file = strdup(__FILE__);
+			}
+		}
+		void LB_STDCALL setLine(int __line) {
+			if (__line == -1) {
+//\todo Report otherwise.
+//				_CL_LOG << "Error: Setting line parameter is empty! (macro is " << __FILE__ << ", " << __LINE__ LOG_
+				_line = __LINE__;
+			} else {
+				_line = __line;
+			}
+		}
+
+		iface* LB_STDCALL getPtr() const {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: getPtr() on invalid object pointer")
+			return _autoPtr;
+		}
+		void LB_STDCALL lock() {
+			locked = true;
+		}
+		void LB_STDCALL resetPtr() {
+			_autoPtr = NULL;
+		}
+		void LB_STDCALL setPtr(iface*& source) {
+			if (locked) return;
+			if (_autoPtr != NULL) {
+//\todo Report otherwise.
+//				_CL_LOG << "Error: UAP object still initialized!" LOG_
+			}
+			_autoPtr = source;
+		}
+
+		iface& LB_STDCALL operator * () {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator * () on invalid object pointer")
+			return *_autoPtr;
+		}
+		iface* LB_STDCALL operator -> () const {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer")
+			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) {
+					char const* className = _autoPtr->getClassName();
+					int len = strlen(className)+1;
+					initialized = true;
+					if (attachedClassName != NULL) free(attachedClassName);
+					attachedClassName = (char*) malloc(len);
+					attachedClassName[0] = 0;
+				        strcpy(attachedClassName, className);
+			}
+			return _autoPtr;
+		}
+		iface* LB_STDCALL operator -> () {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer")
+			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) {
+					char const* className = _autoPtr->getClassName();
+					int len = strlen(className)+1;
+					initialized = true;
+					if (attachedClassName != NULL) free(attachedClassName);
+					attachedClassName = (char*) malloc(len);
+					attachedClassName[0] = 0;
+				        strcpy(attachedClassName, className);
+			}
+			return _autoPtr;
+		}
+		UAPTempl& LB_STDCALL operator++(int) {
+			lb_I_Unknown* temp = NULL;
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator++ on invalid object pointer")
+			_autoPtr->queryInterface((char*) "lb_I_Unknown", (void**) &temp, (char*) __FILE__, __LINE__);
+			return *this;
+		}
+		UAPTempl& LB_STDCALL operator--(int) {
+			iface* temp = NULL;
+			if (_autoPtr == NULL) return *this;
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator-- on invalid object pointer")
+			if (_autoPtr->release((char*) __FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL;
+			return *this;
+		}
+
+		iface ** LB_STDCALL operator & () {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator& on invalid object pointer")
+			return &_autoPtr;
+		}
+
+		iface* LB_STDCALL operator = (iface* autoPtr) {
+			if (*this == autoPtr) return this->_autoPtr;
+			if (locked) return this->_autoPtr;
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid old object pointer")
+			if (_autoPtr != NULL) {
+				_autoPtr->release(__FILE__, __LINE__);
+			}
+			_autoPtr = autoPtr;
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid new object pointer")
+			if (attachedClassName) {
+				free(attachedClassName);
+			}
+			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL))
+				attachedClassName = strdup(autoPtr->getClassName());
+			else
+				attachedClassName = strdup("");
+			return this->_autoPtr;
+		}
+		int LB_STDCALL operator == (const iface* b) const {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer")
+			return _autoPtr == b;
+		}
+		int LB_STDCALL operator == (const UAPTempl& b) const {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer")
+			return *this == b;
+		}
+		int LB_STDCALL operator != (const iface* b) const {
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator != on invalid object pointer")
+			return _autoPtr != b;
+		}
+		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; }
+		
+		protected:
+	        iface* _autoPtr;
+	        mutable int _line;
+	        mutable char* _file;
+	        mutable int allowDelete;
+	        mutable bool initialized;
+		mutable bool locked;
+	        mutable char* attachedClassName;
+		};
+
+#define UAPDECL(classname) \
+typedef UAPTempl<classname> UAP##classname;
+		
+#define UAP(classname, variable) \
+	UAP##classname variable;
+
+#endif
+
+
+
 UAPDECL(lb_I_BinaryData)
 UAPDECL(lb_I_MetaApplication)
 UAPDECL(lb_I_XMLConfig)
@@ -5409,5 +5328,86 @@ UAPDECL(lb_I_StandaloneStreamable)
 UAPDECL(lb_I_FormularAction_Manager)
 UAPDECL(lb_I_Action)
 UAPDECL(lb_I_DirectoryBrowser)
+UAPDECL(lb_I_CallbackTarget)
+UAPDECL(lb_I_Unknown)
+UAPDECL(lb_I_ProtocolTarget)
+
+UAPDECL(lb_I_String)
+
+//UAPDECL(lb_I_gcManager)
+UAPDECL(lb_I_Unknown)
+UAPDECL(lb_I_Module)
+
+//UAPDECL(lb_I_Event)
+//UAPDECL(lb_I_EventSink)
+
+UAPDECL(lb_I_Dispatcher)
+UAPDECL(lb_I_EventManager)
+//UAPDECL(lb_I_EventHandler)
+
+UAPDECL(lb_I_ConfigObject)
+
+UAPDECL(lb_I_Frame)
+UAPDECL(lb_I_Transfer_Data)
+
+	// Base interface for visitors
+UAPDECL(lb_I_Aspect)
+
+UAPDECL(lb_I_VisitableHelper)
+//UAPDECL(lb_I_Streamable)
+UAPDECL(lb_I_Integer)
+UAPDECL(lb_I_Long)
+UAPDECL(lb_I_Container)
+UAPDECL(lb_I_Database)
+UAPDECL(lb_I_Connection)
+UAPDECL(lb_I_ColumnBinding)
+UAPDECL(lb_I_BoundColumn)
+UAPDECL(lb_I_KeyBase)
+UAPDECL(lb_I_Query)
+UAPDECL(lb_I_MVC_View)
+UAPDECL(lb_I_InterfaceRepository)
+UAPDECL(lb_I_Element)
+UAPDECL(lb_I_FunctorEntity)
+UAPDECL(lb_I_InstanceReference)
+UAPDECL(lb_I_FileOperation)
+UAPDECL(lb_I_OutputStream)
+UAPDECL(lb_I_Locale)
+UAPDECL(lb_I_Parameter)
+UAPDECL(lb_I_Log)
+UAPDECL(lb_I_Window)
+UAPDECL(lb_I_wxFrame)
+UAPDECL(lb_I_MasterDetailFormDefinition)
+UAPDECL(lb_I_DatabaseReport)
+//UAPDECL(lb_I_Project)
+UAPDECL(lb_I_Stream)
+//UAPDECL(lb_I_CodeGenerator)
+//UAPDECL(lb_I_ProjectManager)
+//UAPDECL(lb_I_GUIApp)
+//UAPDECL(lb_I_LogonPage)
+//UAPDECL(lb_I_AppSelectPage)
+//UAPDECL(lb_I_LogonHandler)
+UAPDECL(lb_I_DatabaseOperation)
+//UAPDECL(lb_I_Document)
+UAPDECL(lb_I_Socket)
+UAPDECL(lb_I_Transfer_DataObject)
+UAPDECL(lb_I_Transfer)
+UAPDECL(lb_I_ThreadImplementation)
+UAPDECL(lb_I_Column_Types)
+UAPDECL(lb_I_Formular_Fields)
+UAPDECL(lb_I_FixedDatabaseForm)
+UAPDECL(lb_I_DBReportTextblock)
+UAPDECL(lb_I_DBReportProperties)
+UAPDECL(lb_I_DirLocation)
+UAPDECL(lb_I_Action_Parameters)
+UAPDECL(lb_I_ActionStep_Parameters)
+UAPDECL(lb_I_TestFixture)
+UAPDECL(lb_I_TestMethod)
+UAPDECL(lb_I_CryptoStream)
+UAPDECL(lb_I_DispatchInterceptor)
+UAPDECL(lb_I_ChainingDispatchInterceptor)
+UAPDECL(lb_I_InputStream)
+UAPDECL(lb_I_Applications)
+UAPDECL(lb_I_PluginManager)
+UAPDECL(lb_I_Plugin)
 
 #endif // __LB_INTERFACES__
