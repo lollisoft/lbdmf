@@ -73,7 +73,7 @@ public:
 
 	lbErrCodes LB_STDCALL setProto(const char* _service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);	
 	
-	char* LB_STDCALL getServiceName();
+	const char* LB_STDCALL getServiceName();
 	
 	lbProtocolCallback LB_STDCALL getProto();
 	
@@ -315,5 +315,10 @@ protected:
 	UAP(lb_I_Container, dispatchTable)
 };
 /*...e*/
+
+UAPDECL(lb_I_Thread)
+UAPDECL(lb_I_DispatchProtocol)
+UAPDECL(lb_I_DispatchFunction)
+UAPDECL(lb_I_ApplicationServerThread)
 
 #endif //LB_APPCS

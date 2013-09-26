@@ -1194,7 +1194,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 }
 /*...e*/
 
-char* LB_STDCALL lbAppServer::getServiceName() {
+const char* LB_STDCALL lbAppServer::getServiceName() {
 	return "localhost/busmaster";
 }
 
