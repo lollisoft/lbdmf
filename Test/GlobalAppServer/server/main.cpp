@@ -68,6 +68,23 @@ int main(int argc, char** argv) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
+
+		char* LOGGING = getenv("LOGGING");
+
+		// Default
+		setLogActivated(false);
+		if (LOGGING != NULL) {
+			if ((strcmp(LOGGING, "no") != 0) && (strcmp(LOGGING, "NO") != 0) && (strcmp(LOGGING, "No") != 0) && (strcmp(LOGGING, "nO") != 0)) 
+			// Activate
+				setLogActivated(true);
+			else
+				setLogActivated(false);
+		}
+
+		if (argc > 1 && strcmp(argv[1], "-log") == 0) {
+			setLogActivated(true);
+		}
+
 		PM->initialize();
 		
 		_CL_LOG << "Global application server is starting..." LOG_
