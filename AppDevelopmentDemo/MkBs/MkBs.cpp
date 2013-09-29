@@ -208,6 +208,10 @@ int main(int argc, char *argv[]) {
 		COUT << "\t$(MAKE) -s -C $@ -e MODULE=" << D->charrep() << " -e TARGET=$(" << argv[2] << ") -f $(MAKE_CONFIG_FILE)" << ENDL;
 		COUT << "\t$(MAKE) -s -C $@" << ENDL;
 		COUT << "" << ENDL;
+		
+		COUT << "install:" << ENDL;
+		COUT << "\t$(MAKE) -s -C " << (char*) D->charrep() << " install" << ENDL;
+		COUT << "" << ENDL;
 	}
 	
 	COUT << "" << ENDL;
