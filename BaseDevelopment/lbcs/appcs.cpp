@@ -1261,7 +1261,7 @@ void LB_STDCALL lbAppServer::run() {
 	}
 	_LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
 	
-	_CL_LOG << "Global application server is started." LOG_
+	printf("Global application server is started.\n");
 	
 
 	while (1) {
