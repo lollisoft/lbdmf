@@ -6,6 +6,7 @@ LBXMLFUNCTOR=getlbDOMConfigInstance
 LBMODULEFUNCTOR=getlb_ModuleInstance
 DEVROOT=~/develop
 LD_LIBRARY_PATH=~/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/TAO/tao:
+PLUGIN_DIR=~/plugins
 OSTYPE=osx
 OSVERSION=`uname -r`
 OSPLATFORM=`uname -p`
@@ -17,6 +18,7 @@ export LBXMLFUNCTOR
 export LBMODULEFUNCTOR
 export DEVROOT
 export LD_LIBRARY_PATH
+export PLUGIN_DIR 
 export OSTYPE
 export OSVERSION
 export OSPLATFORM
