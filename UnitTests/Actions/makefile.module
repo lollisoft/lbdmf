@@ -83,8 +83,8 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MODULE=lbClasses
-MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+MOD_INCL=$(STD_INCL) -I ../include -I ../linuxCode -I /sw/include
+MOD_INCL_CPP=$(STD_INCL_CPP) -I ../include -I ../linuxCode -I /sw/include
 VENDORLIBS=
 LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework MiniCppUnit -framework UIWrapper -framework lbHook
 endif    
