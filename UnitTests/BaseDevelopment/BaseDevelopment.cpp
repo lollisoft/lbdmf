@@ -13,6 +13,8 @@
 #define LOGFILE "/myLog.log"
 #endif
 
+#include <limits.h>
+
 class UIWrapper : public lb_I_Application,
 public lb_I_EventHandler
 {
@@ -287,6 +289,54 @@ public:
 
 };
 
+// I do compile my code eplicitely in 32bit mode.
+class BaseDevelopmentTypes : public TestFixture<BaseDevelopmentTypes>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentTypes )
+	{
+		TEST_CASE(test_MaxInt_IsMoreThanMaxShort)
+		TEST_CASE(test_MaxInt_IsEqualToMaxLong)
+		TEST_CASE(test_Int_SizeIs4)
+		TEST_CASE(test_ShortInt_SizeIs2)
+		TEST_CASE(test_Long_SizeIs4)
+	}
+	
+	void test_MaxInt_IsEqualToMaxLong( void )
+	{
+		puts("test_MaxInt_IsEqualToMaxLong");
+		
+		ASSERT_EQUALS(true, SHRT_MAX < INT_MAX)
+	}
+	
+	void test_MaxInt_IsMoreThanMaxShort( void )
+	{
+		puts("test_MaxInt_IsMoreThanMaxShort");
+	
+		ASSERT_EQUALS(true, INT_MAX == LONG_MAX)
+	}
+	
+	void test_ShortInt_SizeIs2( void )
+	{
+		puts("test_ShortInt_SizeIs2");
+		
+		ASSERT_EQUALS(true, 2 == sizeof (short int))
+	}
+	
+	void test_Int_SizeIs4( void )
+	{
+		puts("test_Int_SizeIs4");
+		
+		ASSERT_EQUALS(true, 4 == sizeof (int))
+	}
+	
+	void test_Long_SizeIs4( void )
+	{
+		puts("test_Long_SizeIs4");
+		
+		ASSERT_EQUALS(true, 4 == sizeof (long))
+	}
+};
 
 class BaseDevelopmentLogger : public TestFixture<BaseDevelopmentLogger>
 {
@@ -1824,6 +1874,7 @@ public:
 
 DECLARE_FIXTURE( BaseDevelopmentHook )
 DECLARE_FIXTURE( BaseDevelopmentString )
+DECLARE_FIXTURE( BaseDevelopmentTypes )
 DECLARE_FIXTURE( BaseDevelopmentLogger )
 DECLARE_FIXTURE( BaseDevelopmentInputStream )
 DECLARE_FIXTURE( BaseDevelopmentContainer )
@@ -1835,6 +1886,7 @@ DECLARE_FIXTURE( BaseDevelopmentDatabase )
 __attribute__ ((constructor)) void ct() {
 	USE_FIXTURE( BaseDevelopmentHook )
 	USE_FIXTURE( BaseDevelopmentString )
+	USE_FIXTURE( BaseDevelopmentTypes )
 	//USE_FIXTURE( BaseDevelopmentLogger )
 	USE_FIXTURE( BaseDevelopmentInputStream )
 	//USE_FIXTURE( BaseDevelopmentContainer )
