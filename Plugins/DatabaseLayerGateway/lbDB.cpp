@@ -2243,7 +2243,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(const char* q, bool bind) {
 				wxString errormsg = currentdbLayer->GetErrorMessage();
 				_LOG << "lbDatabaseLayerQuery::query() Sqlite error code: " << currentdbLayer->GetErrorCode() LOG_
 				_LOG << "lbDatabaseLayerQuery::query() Error: " << errormsg.c_str() LOG_
-
+			
 				return ERR_DB_QUERYFAILED;
 			}
 			if (theQuery.Upper().Contains("DELETE")) {
@@ -3248,7 +3248,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
+	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
 
 	if (cursor < 0) {
 		// Handle underflow
@@ -3331,7 +3331,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
 
-			_CL_VERBOSE << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+			_LOG << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 
@@ -3401,7 +3401,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				}
 			}
 
-			_CL_VERBOSE << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
+			_LOG << "Cursor is between 0 and max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
 
@@ -3450,6 +3450,9 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 
 	wxString newQuery = plainQuery + joinClause + cursorWhere;
 
+	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Shifted cursor is at " << cursor << "." LOG_
+	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Query: " << newQuery.c_str() << "." LOG_
+	
 	theResult = currentdbLayer->RunQueryWithResults(newQuery);
 
 	if (theResult && theResult->Next()) {
@@ -3573,19 +3576,22 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	cursor = pos;
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
 		cursor = 0;
-		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		if (!selectCurrentRow())
+			return ERR_DB_NODATA;
 		_dataFetched = true;
 		return ERR_NONE;
 	}
 	if (max_in_cursor-1 < 0) {
 		//currentCursorview[0] = "0";
 		cursor = 0;
-		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		if (!selectCurrentRow())
+			return ERR_DB_NODATA;
 		_dataFetched = true;
 		return ERR_NONE;
 	}
 	//currentCursorview[max_in_cursor-1] = "0";
-	if (!selectCurrentRow()) return ERR_DB_NODATA;
+	if (!selectCurrentRow())
+		return ERR_DB_NODATA;
 	_dataFetched = true;
 	return ERR_NONE;
 }
@@ -5278,8 +5284,6 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getColumns(const char* conne
 			*name = "5";
 			param->setUAPString(*&name, *&colName);
 
-			_LOG << "lbDatabaseLayerDatabase::getColumns() got " << TableName->charrep() << ":" << colName->charrep() LOG_
-			
 			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 //			typeLong->setData((long)colTypeLong);
 //			*name = "DataType";
