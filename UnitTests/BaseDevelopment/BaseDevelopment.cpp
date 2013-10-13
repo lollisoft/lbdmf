@@ -1380,9 +1380,9 @@ public:
 		TEST_CASE(test_PostgreSQL_createTable_PostgreSQL_UnitTest)
 		TEST_CASE(test_PostgreSQL_listTables)
 
-// The first Sqlite base test will cause an application crash at exit, but the second will suceed.
-		TEST_CASE(test_Sqlite_FailingQuery)
-		TEST_CASE(test_Sqlite_ForeignKey)
+		TEST_CASE(test_Sqlite_Cursor_Overflow)
+		TEST_CASE(test_Sqlite_Cursor_ManyPagesOverflow)
+		TEST_CASE(test_Sqlite_Cursor_BehindManyPages)
 	}
 
 
@@ -1439,44 +1439,243 @@ public:
             return sql.getPtr();
     }
 
-    void test_Sqlite_FailingQuery( void )
-    {
-        lbErrCodes err = ERR_NONE;
-		puts("test_Sqlite_ForeignKey");
-
+	void test_Sqlite_Cursor_Overflow( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_Overflow");
+		
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_Database, db)
-        AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
-
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
 		ASSERT_EQUALS( true, db.getPtr() != NULL );
-
+		
 		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
-
+		
 		UAP(lb_I_Query, query)
-
+		
 		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
 
-		ASSERT_EQUALS( true, query != NULL);
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 120; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(101);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
 
-        lbErrCodes err1;
-        lbErrCodes err2;
-        lbErrCodes err3;
+		err5 = query->absolute(105);
 
-        err1 = query->query(
-			"CREATE TABLE test ("
-			"	id INTEGER PRIMARY KEY,"
-			"	Name BPCHAR"
-			")"
-			, false);
+		ID1 = query->getAsLong(1);
 
-		err2 = query->query("--SKIP REWRITE;\ninsert into test columns (Name) values ('Lala')", false);
-        err3 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
 
+		
 		ASSERT_EQUALS( ERR_NONE, err1);
-		ASSERT_EQUALS( ERR_DB_QUERYFAILED, err2);
+		ASSERT_EQUALS( ERR_NONE, err2);
 		ASSERT_EQUALS( ERR_NONE, err3);
-    }
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)101, (long)ID->getData() );
+		ASSERT_EQUALS( (long)105, (long)ID1->getData() );
+	}
 
+	void test_Sqlite_Cursor_ManyPagesOverflow( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_ManyPagesOverflow");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(101);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err5 = query->absolute(570);
+		
+		ID1 = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)101, (long)ID->getData() );
+		ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+
+	void test_Sqlite_Cursor_BehindManyPages( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_BehindManyPages");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(101);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err5 = query->absolute(1570);
+		
+		ID1 = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_DB_NODATA, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)101, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
     void test_Sqlite_ForeignKey( void )
     {
 	lbErrCodes err = ERR_NONE;
@@ -1890,6 +2089,7 @@ __attribute__ ((constructor)) void ct() {
 	//USE_FIXTURE( BaseDevelopmentLogger )
 	USE_FIXTURE( BaseDevelopmentInputStream )
 	//USE_FIXTURE( BaseDevelopmentContainer )
+	USE_FIXTURE( BaseDevelopmentDatabase )
 /*
 	USE_FIXTURE( BaseDevelopmentEventManager )
 	USE_FIXTURE( BaseDevelopmentMetaApplication )
