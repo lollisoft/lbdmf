@@ -397,6 +397,32 @@ public:
 	 */
 	bool						LB_STDCALL selectCurrentRow();
 
+	// Private helper functions for refactoring selectCurrentRow.
+	
+	/** \brief Calculates the page.
+	 * The page is position % pagesize.
+	 */
+	int							LB_STDCALL getPage(int position);
+	
+	/** \brief Build a query to load a page.
+	 * The query is retrieving keys representing the previous page.
+	 */
+	wxString					LB_STDCALL getPageUnderflowQuery();
+	
+	/** \brief Get the key values for the last page.
+	 * The query gets the key values in reverse order.
+	 */
+	wxString					LB_STDCALL getLastPageQuery();
+	
+	wxString					LB_STDCALL getNextPageQuery();
+	
+	/** \brief Loads key values into a cache for cursor navigation.
+	 * The loaded key values represents a cache to be used for later
+	 * lazy loading of the full row by the key at current cursor
+	 * position.
+	 */
+	wxArrayString				LB_STDCALL loadCursor(wxString& cursorQuery, bool revertOrder = false);
+	
 	/** \brief Select the cached row at current cachedRowIndex.
 	 * A cached row is one of several rows for a statement where no cursor feature is present. The cursor behaviour therefore
 	 * is implemented on cached data.
@@ -3245,127 +3271,179 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 	return ERR_NONE;
 }
 
+wxString LB_STDCALL lbDatabaseLayerQuery::getPageUnderflowQuery() {
+	wxString tempSQL = "SELECT ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " FROM ";
+	tempSQL += tables[0];
+	
+	if (whereClause != "") {
+		tempSQL += " ";
+		tempSQL += whereClause;
+		tempSQL += " AND ";
+	} else {
+		tempSQL += " WHERE ";
+	}
+	
+	// Must not called in case of empty. Code belongs to caller function!
+	/*
+	if (currentCursorview.Count() == 0) {
+		_LOG << "Error: The currentCursorview array is empty!" LOG_
+		return false;
+	}
+	*/
+	
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " < ";
+	tempSQL += currentCursorview[0];
+	tempSQL += " ORDER BY ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
+	
+	return tempSQL;
+}
+
+wxString LB_STDCALL lbDatabaseLayerQuery::getLastPageQuery() {
+	wxString tempSQL = "SELECT ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " FROM ";
+	tempSQL += tables[0];
+	
+	if (whereClause != "") {
+		tempSQL += " ";
+		tempSQL += whereClause;
+	}
+	
+	tempSQL += " ORDER BY ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
+
+	return tempSQL;
+}
+
+wxString LB_STDCALL lbDatabaseLayerQuery::getNextPageQuery() {
+	int pageSize = currentCursorview.Count();
+	wxString lastIdInPage = currentCursorview[pageSize-1];
+	
+	wxString tempSQL = "SELECT ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += " FROM ";
+	tempSQL += tables[0];
+	
+	if (whereClause != "") {
+		tempSQL += " ";
+		tempSQL += whereClause;
+		tempSQL += " AND ";
+		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+		tempSQL += " > ";
+		tempSQL += lastIdInPage;
+	} else {
+		tempSQL += " WHERE ";
+		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+		tempSQL += " > ";
+		tempSQL += lastIdInPage;
+	}
+
+	
+	tempSQL += " ORDER BY ";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	
+	return tempSQL;
+}
+
+wxArrayString LB_STDCALL lbDatabaseLayerQuery::loadCursor(wxString& cursorQuery, bool revertOrder) {
+	wxArrayString resultView;
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(cursorQuery);
+	
+	max_in_cursor = max_in_cursor_default;
+	
+	wxArrayString tempCursorview;
+	
+	int count = 0;
+	if ((tempResult != NULL) && tempResult->Next()) {
+		count++;
+		tempCursorview.Add(tempResult->GetResultString(1));
+		while (tempResult->Next()) {
+			count++;
+			tempCursorview.Add(tempResult->GetResultString(1));
+			if (count == max_in_cursor) break;
+		}
+	}
+	
+	if (revertOrder) {
+		for (int reverseid = count-1; reverseid >= 0; reverseid--) {
+			resultView.Add(tempCursorview[reverseid]);
+		}
+	} else {
+		resultView = tempCursorview;
+	}
+
+	
+	// Overwrite in case of lesser elements in last cursor reading
+	max_in_cursor = count;
+	
+	currentdbLayer->CloseResultSet(tempResult);
+	
+	return resultView;
+}
+
 bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	lbErrCodes err = ERR_NONE;
 
-	_LOG << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::selectCurrentRow() called. Cursor is at " << cursor << "." LOG_
+
+	if (currentCursorview.Count() == 0) {
+		_LOG << "Error: The currentCursorview array is empty!" LOG_
+		return false;
+	}
 
 	if (cursor < 0) {
 		// Handle underflow
 		// Try to read 100 more key values less than the first key in currentCursorview: currentCursorview[0]-1
 
-		wxString tempSQL = "SELECT ";
-		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-		tempSQL += " FROM ";
-		tempSQL += tables[0];
-
-		if (whereClause != "") {
-			tempSQL += " ";
-			tempSQL += whereClause;
-			tempSQL += " AND ";
-		} else {
-			tempSQL += " WHERE ";
-		}
-
-		if (currentCursorview.Count() == 0) {
-			_LOG << "Error: The currentCursorview array is empty!" LOG_
-			return false;
-		}
-		
-		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-		tempSQL += " < ";
-		tempSQL += currentCursorview[0];
-		tempSQL += " ORDER BY ";
-		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
+		wxString tempSQL = getPageUnderflowQuery();
 
 		_CL_VERBOSE << "Cursor is < 0. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
-		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
-
-		max_in_cursor = max_in_cursor_default;
-
-		wxArrayString tempCursorview;
-
-		currentCursorview.Clear();
-
-		int count = 0;
-		if ((tempResult != NULL) && tempResult->Next()) {
-			count++;
-			tempCursorview.Add(tempResult->GetResultString(1));
-			while (tempResult->Next()) {
-				count++;
-				tempCursorview.Add(tempResult->GetResultString(1));
-				if (count == max_in_cursor) break;
-			}
-		}
-
-		for (int reverseid = count-1; reverseid >= 0; reverseid--) {
-			currentCursorview.Add(tempCursorview[reverseid]);
-		}
-
-		// Overwrite in case of lesser elements in last cursor reading
-		max_in_cursor = count;
+		currentCursorview = loadCursor(tempSQL, true);
+		
 		// Position the cursor at the end
 		cursor = count-1;
-
-		currentdbLayer->CloseResultSet(tempResult);
 	} else if (cursor >= max_in_cursor) {
 		// Handle overflow
 
 		// Try to read 100 more key values from the last key in currentCursorview: currentCursorview[99]+1
 
 		if (cursor > max_in_cursor) {
-			// Jump to last
-			wxString tempSQL = "SELECT ";
-			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-			tempSQL += " FROM ";
-			tempSQL += tables[0];
+			// Jump to next
 
-			if (whereClause != "") {
-				tempSQL += " ";
-				tempSQL += whereClause;
-			}
-
-			tempSQL += " ORDER BY ";
-			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
-			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values.
-
+			wxString tempSQL = getNextPageQuery(); // Not always correct.
+			
 			_LOG << "Cursor is >= max_in_cursor. Rebuild currentCursorview with '" << tempSQL.c_str() << "'" LOG_
 
-			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
+			int prviousCount = currentCursorview.Count();
+			
+			currentCursorview = loadCursor(tempSQL);
 
-			max_in_cursor = max_in_cursor_default;
-
-			wxArrayString tempCursorview;
-
-			currentCursorview.Clear();
-
-			int count = 0;
-			if ((tempResult != NULL) && tempResult->Next()) {
-				count++;
-				wxString value = tempResult->GetResultString(1);
-				//_LOG << "Fill ID list with item " << value.c_str() LOG_
-				tempCursorview.Add(value);
-				while (tempResult->Next()) {
-					count++;
-					value = tempResult->GetResultString(1);
-					//_LOG << "Fill ID list with item " << value.c_str() LOG_
-					tempCursorview.Add(value);
-					if (count == max_in_cursor) break;
-				}
-			}
-
-			for (int reverseid = count-1; reverseid >= 0; reverseid--) {
-				currentCursorview.Add(tempCursorview[reverseid]);
-			}
-
-			// Overwrite in case of lesser elements in last cursor reading
-			max_in_cursor = count;
 			// Position the cursor at the end
-			cursor = count-1;
-
-			currentdbLayer->CloseResultSet(tempResult);
+			//cursor = currentCursorview.Count()-1;
+			
+			int tempcursor = cursor - prviousCount;
+			
+			// As long as tempcursor is over page size
+			// Why does not casting size_t result into true when -1 and 40 is given?
+			while ((int)currentCursorview.Count() > 0 && tempcursor > (int)currentCursorview.Count()) {
+				tempSQL = getNextPageQuery();
+				currentCursorview = loadCursor(tempSQL);
+				tempcursor = tempcursor - prviousCount;
+				prviousCount = currentCursorview.Count();
+			}
+			
+			if (tempcursor > max_in_cursor) {
+				return false;
+			}
+			
+			cursor = tempcursor; // Shifted cursor by (n-1) * page_size + remaining cursor position
 		} else {
 			wxString tempSQL = "SELECT ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
@@ -3433,6 +3511,12 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		}
 	}
 
+	if (cursor < 0) {
+		_LOG << "Error: cursor out of bounds!" LOG_
+		return false;			
+	}
+	
+	
 	wxString cursorWhere = " WHERE ";
 	if (currentdbLayer == NULL) {
 		_LOG << "Error: table has no open connection!" LOG_
@@ -3570,10 +3654,18 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 
 /// \todo Deeper check required.
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
+	lbErrCodes err = ERR_NONE;
+	
 	///\todo Implement
 	if (cursorFeature == false) return ERR_NONE;
+	
+	// Throw away the page, because absolute does not guarantee correct values in currentCursorview to start paging
+	if ((err = first()) != ERR_NONE)
+		return err;
+
 	pos--; // Externally starting at 1.
 	cursor = pos;
+
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
 		cursor = 0;
 		if (!selectCurrentRow())
