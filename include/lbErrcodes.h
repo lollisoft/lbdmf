@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46.2.1 $
+ * $Revision: 1.46.2.2 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46.2.1 2013/07/10 06:19:13 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.46.2.2 2013/10/13 08:57:06 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.46.2.2  2013/10/13 08:57:06  lollisoft
+ * Absolute method bug in DatabaseLayer wrapper: Moving behind first page did not work. Wrote an unit test and fixed it. Other minor changes.
+ *
  * Revision 1.46.2.1  2013/07/10 06:19:13  lollisoft
  * Corrected error codes comments with the value represented.
  *
@@ -232,7 +235,7 @@ enum lbErrCodes {
 
 /* Errcodes for reference counting */
 
-	ERR_REFERENCE_COUNTING,
+	ERR_REFERENCE_COUNTING, // 10
 	ERR_INSTANCE_STILL_USED,
 	// To see if the instance was deleted, not released
 	ERR_RELEASED,
@@ -252,7 +255,7 @@ enum lbErrCodes {
 
 /* Errcodes for appbus dispatcher in connected state */
 
-	ERR_APPBUS_DISPATCH, 		// 19 Haeder found, but unknown identifer
+	ERR_APPBUS_DISPATCH, 		// 20 Haeder found, but unknown identifer
 	ERR_APPBUS_DISPATCH_HAEDER,	// No dispatch haeder found
 	ERR_APPBUS_ECHO,		// Test server for echo
 
@@ -261,7 +264,7 @@ enum lbErrCodes {
 
 /* Module error codes */
 
-	ERR_MODULE_INVALID_PARAMETER, // 24
+	ERR_MODULE_INVALID_PARAMETER,
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
 	ERR_MODULE_NO_INTERFACE,
@@ -272,8 +275,8 @@ enum lbErrCodes {
 
 /* Errcodes for dealing with XML */
 
-	ERR_XML_NOFILE,	// 29
-	ERR_XML_INIT,
+	ERR_XML_NOFILE,
+	ERR_XML_INIT, // 30
 	ERR_XML_GENERAL_PARSE_FAILED,
 
 /* Errcodes for lb_I_ConfigObject */
@@ -285,13 +288,13 @@ enum lbErrCodes {
 	ERR_CONFIG_INTERNAL,
 
 /* Errcodes for container */
-	ERR_CONTAINER_INSERT, // 37
+	ERR_CONTAINER_INSERT,
 	ERR_CONTAINER_REMOVE,
 
 /* Errcodes for threads */
 	LB_THREAD_ERROR,
 
-	ERR_APP_SERVER_DISPATCH,	// Unknown protocol header
+	ERR_APP_SERVER_DISPATCH,	// 40 Unknown protocol header
 	ERR_APP_SERVER_HANDLECONNECT,
 	ERR_APP_SERVER_HANDLEDISCONNECT,
 	ERR_APP_SERVER_REQUEST_CHAR,
@@ -315,7 +318,7 @@ enum lbErrCodes {
 	ERR_SOCKET_STATE,
 	ERR_SOCKET_CLOSE_CLIENT,
 	ERR_SOCKET_CLOSE_SERVER,
-	ERR_SOCKET_NEAGLEOFF,
+	ERR_SOCKET_NEAGLEOFF,			// 60
 	ERR_SOCKET_NOT_IMPLEMENTED,
 	ERR_SOCKET_CLIENT_S_INVALID,
 	ERR_SOCKET_SERVER_S_INVALID,
@@ -326,15 +329,15 @@ enum lbErrCodes {
 
 /* Errcodes for the database module */
 
-	ERR_DB_EXECDIRECT,	// 68
+	ERR_DB_EXECDIRECT,
 	ERR_DB_INIT,
-	ERR_DB_ALLOCSTATEMENT,
-	ERR_DB_QUERYFAILED, // 71
+	ERR_DB_ALLOCSTATEMENT,			// 70
+	ERR_DB_QUERYFAILED,
 	ERR_DB_UPDATEFAILED,
 	ERR_DB_CONNECT,
 	ERR_DB_FETCHFIRST,
 	ERR_DB_FETCHLAST,
-	ERR_DB_NODATA, // 76
+	ERR_DB_NODATA,					// 76
 	ERR_DB_READONLY,
 	ERR_DB_STILL_ADDING,
 	ERR_DB_ROWDELETED,

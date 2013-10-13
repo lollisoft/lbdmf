@@ -325,7 +325,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 				ThrowDatabaseException();
 				return NULL;
 			}
-			printf("SqliteDatabaseLayer::RunQueryWithResults(...) Succeeded direct statement.\n");
+			//printf("SqliteDatabaseLayer::RunQueryWithResults(...) Succeeded direct statement.\n");
 			return NULL;
 		}
 		QueryArray = ParseQueries(strQuery);
