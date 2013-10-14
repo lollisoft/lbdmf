@@ -169,6 +169,7 @@ private:
 
 	lbCritSect* socketSection;
 	
+	bool isAcceptedSocket;
 	
 	static int sockUse;
 

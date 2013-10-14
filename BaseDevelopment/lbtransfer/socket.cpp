@@ -198,6 +198,9 @@ lbSocket::lbSocket() {
 	startupflag = 0;
 #endif
 	sockUse++;
+	clientSocket = 0;
+	serverSocket = 0;
+	isAcceptedSocket = false;
 }
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
@@ -402,8 +405,10 @@ int lbSocket::close()
         }
 #endif
 #ifdef WINDOWS
-	if(_isServer == 1)
+	if(_isServer == 1 && !isAcceptedSocket) // An AcceptedSocket is stored in the clientSocket
+	{
 		status=::closesocket(serverSocket);
+	}
 	else
 		status=::closesocket(clientSocket);	
 #endif
@@ -463,6 +468,7 @@ lb_I_Socket* lbSocket::accept()
 		_LOG << "Error while accepting on socket" LOG_
 		return NULL;
 	}
+	
 #endif
 /*...e*/
 /*...sLINUX:0:*/
@@ -593,8 +599,10 @@ int lbSocket::socket()
 int lbSocket::setSockConnection(SOCKET s) {
 	lbSockState = LB_SOCK_CONNECTED;
 	clientSocket = s;
-        clBackup = clientSocket;
+    clBackup = clientSocket;
 	_isServer = 1;
+	// A bug in detecting correct socket - hotfix
+	isAcceptedSocket = true;
 	return 1;
 }
 /*...e*/
