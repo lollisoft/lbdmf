@@ -3443,7 +3443,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				return false;
 			}
 			
-			cursor = tempcursor; // Shifted cursor by (n-1) * page_size + remaining cursor position
+			cursor = tempcursor-1; // Shifted cursor by (n-1) * page_size + remaining cursor position
 		} else {
 			wxString tempSQL = "SELECT ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
