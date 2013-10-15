@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.15 $
+# * $Revision: 1.229.2.16 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.15 2013/09/22 10:29:14 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.16 2013/10/15 04:51:26 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.16  2013/10/15 04:51:26  lollisoft
+# * Added lbtracsfer and lbcs to the target lists.
+# *
 # * Revision 1.229.2.15  2013/09/22 10:29:14  lollisoft
 # * Differences for MkBs.
 # *
@@ -1063,6 +1066,8 @@ ALLTARGETS = \
 	lbWorkflowEngine \
 	lbDB \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
@@ -1097,6 +1102,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
@@ -1141,6 +1148,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
@@ -1168,6 +1177,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1221,6 +1232,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
@@ -1248,6 +1261,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1300,6 +1315,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1329,6 +1346,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1393,6 +1412,8 @@ ALLTARGETS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
@@ -1429,6 +1450,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
@@ -1481,6 +1504,8 @@ ALLTARGETS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
@@ -1513,6 +1538,8 @@ ALLDIRS = \
 	lbWorkflowEngine \
 	lbMetaApplication \
 	lbPluginManager \
+	lbcs \
+	lbtransfer \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
