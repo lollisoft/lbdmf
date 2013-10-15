@@ -198,9 +198,7 @@ lbSocket::lbSocket() {
 	startupflag = 0;
 #endif
 	sockUse++;
-	clientSocket = 0;
-	serverSocket = 0;
-	isAcceptedSocket = false;
+	socket = 0;
 }
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
@@ -218,8 +216,7 @@ lbSocket::lbSocket(const lbSocket& s) {
 #endif
 	/*SOCKADDR_IN*/ serverSockAddr = s.serverSockAddr;
 	/*SOCKADDR_IN*/ clientSockAddr = s.clientSockAddr;
-	/*SOCKET*/ 	serverSocket = s.serverSocket;
-	/*SOCKET*/	clientSocket = s.clientSocket;
+	/*SOCKET*/ 	socket = s.socket;
 	/*int*/		status = s.status;
 	/*int*/		addrLen = s.addrLen; //=sizeof(SOCKADDR_IN);
 
@@ -261,20 +258,20 @@ return 1;
 		// Let the server blocking
 		//pendingBytes++;
 #ifdef WINDOWS		
-		numread = ::ioctlsocket(clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+		numread = ::ioctlsocket(socket, FIONREAD, (u_long FAR*)&pendingBytes);
 #endif
 		
 #ifdef LINUX
 #ifndef OSX
-		numread = ::ioctl (clientSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+		numread = ::ioctl (socket, FIONREAD, (u_long FAR*)&pendingBytes);
 #endif
 #endif
 		
 #ifdef OSX
-		numread = ::ioctl (clientSocket, FIONREAD, &pendingBytes);
+		numread = ::ioctl (socket, FIONREAD, &pendingBytes);
 #endif
 		
-//		numread = ::recv(clientSocket, buf, MAXBUFLEN, MSG_PEEK);
+//		numread = ::recv(socket, buf, MAXBUFLEN, MSG_PEEK);
 		
 		if (numread == -1) {
 			_LOG << "lbSocket::isValid() Failed by server" LOG_
@@ -292,19 +289,19 @@ return 1;
 		#endif
 /*...e*/
 #ifdef WINDOWS		
-		numread = ::ioctlsocket(serverSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+		numread = ::ioctlsocket(socket, FIONREAD, (u_long FAR*)&pendingBytes);
 #endif
 		
 #ifdef LINUX
 #ifndef OSX
-		numread = ::ioctl (serverSocket, FIONREAD, (u_long FAR*)&pendingBytes);
+		numread = ::ioctl (socket, FIONREAD, (u_long FAR*)&pendingBytes);
 #endif
 #endif
 		
 #ifdef OSX
-		numread = ::ioctl (serverSocket, FIONREAD, &pendingBytes);
+		numread = ::ioctl (socket, FIONREAD, &pendingBytes);
 #endif
-		//		numread = ::recv(serverSocket, buf, MAXBUFLEN, MSG_PEEK);
+		//		numread = ::recv(socket, buf, MAXBUFLEN, MSG_PEEK);
 		if (numread == -1) {
 			_LOG << "lbSocket::isValid() Failed by client" LOG_
 			return 0;
@@ -365,11 +362,11 @@ int lbSocket::connect()
 		close();
       }
 #ifdef WINDOWS
-      status=::connect(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
+      status=::connect(socket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
       if (status == SOCKET_ERROR)
       {
         _LOG << "lbSocket::connect(): ERROR: connect to unsuccessful" LOG_
-        status=closesocket(serverSocket);
+        status=closesocket(socket);
         if (status == SOCKET_ERROR)
           _LOG << "lbSocket::connect(): ERROR: closesocket unsuccessful" LOG_
         status=WSACleanup();
@@ -379,7 +376,7 @@ int lbSocket::connect()
       }
 #endif
 #ifdef LINUX
-      status=::connect(serverSocket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
+      status=::connect(socket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
       if (status < 0)
       {
 		  _LOG << "Error: Could not connect to server." LOG_
@@ -397,20 +394,17 @@ int lbSocket::connect()
 int lbSocket::close()
 {
 #ifdef LINUX
-        status=::shutdown(serverSocket, 2);
+        status=::close(socket);
         if (status < 0)
         {
-          _CL_LOG << "ERROR: closesocket unsuccessful" LOG_;
+          _CL_LOG << "ERROR: closesocket unsuccessful, try close." LOG_;
+			status = ::close(socket);
+			
           return 0;
         }
 #endif
 #ifdef WINDOWS
-	if(_isServer == 1 && !isAcceptedSocket) // An AcceptedSocket is stored in the clientSocket
-	{
-		status=::closesocket(serverSocket);
-	}
-	else
-		status=::closesocket(clientSocket);	
+	status=::closesocket(socket);
 #endif
 	lbSockState = LB_SOCK_CLOSED;
         return 1;
@@ -434,12 +428,12 @@ LOGENABLE("lbSocket::listen()");
       }
     /* allow the socket to take connections */
 #ifdef WINDOWS
-    status=::listen(serverSocket, 1);
+    status=::listen(socket, 1);
     if (status == SOCKET_ERROR)
       _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
 #endif
 #ifdef LINUX
-    status=::listen(serverSocket, 1);
+    status=::listen(socket, 1);
     if (status < 0)
       _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
 #endif
@@ -463,8 +457,8 @@ lb_I_Socket* lbSocket::accept()
     /* accept the connection request when one
        is received */
 	   
-    clientSocket=::accept(serverSocket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-    if (clientSocket == INVALID_SOCKET) {
+    SOCKET socket=::accept(socket, (LPSOCKADDR) &clientSockAddr, &addrLen);
+    if (socket == INVALID_SOCKET) {
 		_LOG << "Error while accepting on socket" LOG_
 		return NULL;
 	}
@@ -473,8 +467,8 @@ lb_I_Socket* lbSocket::accept()
 /*...e*/
 /*...sLINUX:0:*/
 #ifdef LINUX
-    clientSocket=::accept(serverSocket, (sockaddr*) &clientSockAddr, (socklen_t*)&addrLen); 
-    if (clientSocket == -1) {
+    socket=::accept(socket, (sockaddr*) &clientSockAddr, (socklen_t*)&addrLen); 
+    if (socket == -1) {
 		_LOG << "Error while accepting on socket" LOG_
 // Where are the definitions?
 /*		
@@ -522,27 +516,27 @@ lb_I_Socket* lbSocket::accept()
 #endif
 /*...e*/
 
-    if (neagleOff(clientSocket) != ERR_NONE) {
+    if (neagleOff(socket) != ERR_NONE) {
 		_LOG << "Error: Can not activate TCP_NODELAY" LOG_
 	}
 	
-    if (clientSocket == -1) {
-    	_LOG << "lbSocket::accept(lbSocket** s): Created clientSocket is invalid" LOG_
+    if (socket == -1) {
+    	_LOG << "lbSocket::accept(lbSocket** s): Created socket is invalid" LOG_
     	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;
     }
 
-    lbSocket* socket = new lbSocket();
+    lbSocket* client_socket = new lbSocket();
 	
-    socket->setSockConnection(clientSocket);
+    client_socket->setSockConnection(socket); // Where are the other passed values (clientSockAddr, addrLen)
     
-    // Be secure clientSocket of this instance is INVALID_SOCKET
+    // Be secure socket of this instance is INVALID_SOCKET
     
-    clientSocket = -1;
+    socket = -1;
     
     // This socket can never be in connected state
     //lbSockState = LB_SOCK_CONNECTED;
 
-    socket->queryInterface("lb_I_Socket", (void**) &s, __FILE__, __LINE__);
+    client_socket->queryInterface("lb_I_Socket", (void**) &s, __FILE__, __LINE__);
 
     return s;
 }
@@ -552,12 +546,12 @@ int lbSocket::bind()
 {
 #ifdef WINDOWS
     /* associate the socket with the address */
-    status=::bind(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
+    status=::bind(socket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
     if (status == SOCKET_ERROR)
       _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
 #endif
 #ifdef LINUX
-    status=::bind(serverSocket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
+    status=::bind(socket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
     if (status < 0)
       _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
 #endif
@@ -565,30 +559,30 @@ int lbSocket::bind()
 }
 /*...e*/
 /*...slbSocket\58\\58\socket\40\\41\:0:*/
-int lbSocket::socket()
+int lbSocket::create_socket()
 {
 #ifdef WINDOWS
 	/* create a socket */
-	serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
+	socket=::socket(AF_INET, SOCK_STREAM, 0);
 
-	if (serverSocket == INVALID_SOCKET) {
+	if (socket == INVALID_SOCKET) {
 		LogWSAError("lbSocket::socket(): ERROR: socket unsuccessful");
 		return 0;
 	}  
 	
 	
-	if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
+	if (neagleOff(socket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 		
 		
 #endif
 #ifdef LINUX
-	serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
+	socket=::socket(AF_INET, SOCK_STREAM, 0);
 	
-	if (serverSocket < 0) {
+	if (socket < 0) {
 		_LOG << "lbSocket::socket(): ERROR: socket unsuccessful" LOG_
 	}
 	
-	if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
+	if (neagleOff(socket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 #endif
 		
 		return 1;  
@@ -598,11 +592,10 @@ int lbSocket::socket()
 /*...slbSocket\58\\58\setSockConnection\40\SOCKET s\41\:0:*/
 int lbSocket::setSockConnection(SOCKET s) {
 	lbSockState = LB_SOCK_CONNECTED;
-	clientSocket = s;
-    clBackup = clientSocket;
-	_isServer = 1;
+	socket = s;
+    clBackup = socket;
+	//_isServer = 1;
 	// A bug in detecting correct socket - hotfix
-	isAcceptedSocket = true;
 	return 1;
 }
 /*...e*/
@@ -812,7 +805,7 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
   }
 
-  socket();
+  create_socket();
 
   if (_isServer == 1)
   {
@@ -881,24 +874,24 @@ lbErrCodes lbSocket::recv(void* buf, short & len) {
 
     if (_isServer == 1)
     {
-		if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
+		if (clBackup != socket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
 
 		// Get the buffer size
-		numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 		len = ntohs(nlen);
 		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
 
-		numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(socket, bufpos, len, NO_FLAGS_SET);
     }  
     if (_isServer == 0)
     {
 		// Get the buffer size
-		numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 		len = ntohs(nlen);
 
 		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
      
-		numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(socket, bufpos, len, NO_FLAGS_SET);
     }
          
 /*...shandle any error:0:*/
@@ -928,7 +921,7 @@ lbErrCodes lbSocket::recv(void* buf, short & len) {
       else
       	_LOG << "lbSocket::recv(void* buf, int & len): Connection terminated by client." LOG_
 
-      status= closesocket( (_isServer==0) ? clientSocket : serverSocket);
+      status= closesocket(socket);
 
       if (status == SOCKET_ERROR)
         _LOG << "ERROR: closesocket unsuccessful" LOG_
@@ -947,24 +940,24 @@ lbErrCodes lbSocket::recv(void* buf, short & len) {
 #ifdef LINUX
     if (_isServer == 1)
     {
-		if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
+		if (clBackup != socket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
 
 		// Get the buffer size
-		numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 		len = ntohs(nlen);
 		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
 
-		numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(socket, bufpos, len, NO_FLAGS_SET);
     }  
     if (_isServer == 0)
     {
 		// Get the buffer size
-		numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+		numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 		len = ntohs(nlen);
 
 		if (numrcv != sizeof(nlen)) _LOG << "Error: Packet size not sent correctly" LOG_
      
-		numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
+		numrcv=::recv(socket, bufpos, len, NO_FLAGS_SET);
     }
 
     if ((numrcv == 0) || (numrcv < 0))
@@ -1004,19 +997,19 @@ lbErrCodes lbSocket::send(void *buf, short len)
 	if (_isServer == 0) {
 		
 		// Sende Packetgr”áe
-		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
-		numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
+		numsnt=::send(socket, bufpos, len, NO_FLAGS_SET);
 	}
 	if (_isServer == 1) {
 		// Sende Packetgr”áe
-		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
-		numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
+		numsnt=::send(socket, bufpos, len, NO_FLAGS_SET);
 	}
 	
     if ((numsnt != len) && (numsnt == SOCKET_ERROR))
@@ -1032,7 +1025,7 @@ lbErrCodes lbSocket::send(void *buf, short len)
 		sprintf(msg, "lbSocket::send(void *buf, int len) Error: numsnt(%d) != len(%d)", numsnt, len);
 		_LOG << msg LOG_
 		_LOG << "lbSocket::send(void *buf, int len): Connection terminated" LOG_
-		status=closesocket((_isServer == 1) ? serverSocket : clientSocket);
+		status=closesocket(socket);
 		if (status == SOCKET_ERROR)
 			_LOG << "ERROR: closesocket unsuccessful" LOG_
 			status=WSACleanup();
@@ -1050,19 +1043,19 @@ lbErrCodes lbSocket::send(void *buf, short len)
 	if (_isServer == 0) {
 		
 		// Sende Packetgr”áe
-		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
-		numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
+		numsnt=::send(socket, bufpos, len, NO_FLAGS_SET);
 	}
 	if (_isServer == 1) {
 		// Sende Packetgr”áe
-		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
-		numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
+		numsnt=::send(socket, bufpos, len, NO_FLAGS_SET);
 	}
 	
     if (numsnt != len)
@@ -1101,24 +1094,24 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 /*...sserver:0:*/
   if (_isServer == 1) {
 // Get the packet size of the next recv
-    numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
 	if (numrcv != sizeof(nlen)) 
 		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
-    numrcv=::recv(clientSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
 /*...e*/
   
 /*...sclient:0:*/
   if (_isServer == 0) {
     // Get the packet size of the next recv
-    numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
     if (numrcv != sizeof(nlen)) 
 		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
-    numrcv=::recv(serverSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }    
 /*...e*/
 
@@ -1132,11 +1125,11 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
       if (_isServer == 1) {
         if (lbSockState == LB_SOCK_CONNECTED) {
           // lbSocket is serverside and was connected yet
-          status = closesocket(clientSocket);
+          status = closesocket(socket);
         }
       }
       else
-        status = closesocket(serverSocket);
+        status = closesocket(socket);
 
 
       if (status == SOCKET_ERROR)
@@ -1155,24 +1148,24 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 /*...sserver:0:*/
   if (_isServer == 1) {
 // Get the packet size of the next recv
-    numrcv=::recv(clientSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
 	if (numrcv != sizeof(nlen)) 
 		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
-    numrcv=::recv(clientSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
 /*...e*/
   
 /*...sclient:0:*/
   if (_isServer == 0) {
     // Get the packet size of the next recv
-    numrcv=::recv(serverSocket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
     if (numrcv != sizeof(nlen)) 
 		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
-    numrcv=::recv(serverSocket, buf, ntohs(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }    
 /*...e*/
 
@@ -1210,21 +1203,21 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	if (_isServer == 0) {
 
 		// Send packet size
-		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
     		
 		// Send packet		
-		numsnt=::send(serverSocket, buf, len, NO_FLAGS_SET);
+		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
 	if (_isServer == 1) {
 		// Send packet size
-		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 			
 		// Send packet		
-		numsnt=::send(clientSocket, buf, len, NO_FLAGS_SET);
+		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
 	
 	
@@ -1240,7 +1233,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 			err = mapWSAErrcode(lastError, _isServer);
 			
 			_LOG << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
-			status=closesocket(serverSocket);
+			status=closesocket(socket);
 			if (status == SOCKET_ERROR)
 				_LOG << "ERROR: closesocket unsuccessful" LOG_
 				status=WSACleanup();
@@ -1259,21 +1252,21 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 	int numsnt = 0;
 	
 	if (_isServer == 0) {
-		numsnt=::send(serverSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) 
 			_LOG << "Error: Packet size not sent correctly" LOG_
 
-		numsnt=::send(serverSocket, buf, len, NO_FLAGS_SET);
+		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
 	
 	if (_isServer == 1) {
-		numsnt=::send(clientSocket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
+		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 	
 		if (numsnt != sizeof(len)) 
 			_LOG << "Error: Packet size not sent correctly" LOG_
 
-		numsnt=::send(clientSocket, buf, len, NO_FLAGS_SET);
+		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}	
 #endif
 	return err;
