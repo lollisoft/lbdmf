@@ -1463,6 +1463,7 @@ public:
         lbErrCodes err4 = ERR_NONE;
         lbErrCodes err5 = ERR_NONE;
         lbErrCodes err6 = ERR_NONE;
+        lbErrCodes err7 = ERR_NONE;
 		
 		// Prepare
 		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
@@ -1491,19 +1492,24 @@ public:
 		
 		if (err3 == ERR_NONE)
 		{
-			err4 = query->absolute(101);
+			err4 = query->absolute(50);
 		}
 		
 		UAP(lb_I_Long, ID)
 		UAP(lb_I_Long, ID1)
+		UAP(lb_I_Long, ID2)
 		
 		ID = query->getAsLong(1);
 
-		err5 = query->absolute(105);
+		err5 = query->absolute(101);
 
 		ID1 = query->getAsLong(1);
 
-		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		err6 = query->absolute(150);
+
+		ID2 = query->getAsLong(1);
+
+		err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
 
 		
 		ASSERT_EQUALS( ERR_NONE, err1);
@@ -1512,10 +1518,12 @@ public:
 		ASSERT_EQUALS( ERR_NONE, err4);
 		ASSERT_EQUALS( ERR_NONE, err5);
 		ASSERT_EQUALS( ERR_NONE, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
 		
 		
-		ASSERT_EQUALS( (long)101, (long)ID->getData() );
-		ASSERT_EQUALS( (long)105, (long)ID1->getData() );
+		ASSERT_EQUALS( (long)50, (long)ID->getData() );
+		ASSERT_EQUALS( (long)101, (long)ID1->getData() );
+		ASSERT_EQUALS( (long)150, (long)ID2->getData() );
 	}
 
 	void test_Sqlite_Cursor_ManyPagesOverflow( void )
