@@ -158,7 +158,7 @@ private:
         void init(unsigned long mysockaddr, u_short port = PORT);
         int bind();
         int listen();
-        int socket();
+        int create_socket();
         int connect();
         int setSockConnection(SOCKET s);
 	lbErrCodes LB_STDCALL neagleOff(SOCKET s);
@@ -169,8 +169,6 @@ private:
 
 	lbCritSect* socketSection;
 	
-	bool isAcceptedSocket;
-	
 	static int sockUse;
 
 #ifdef WINDOWS
@@ -178,8 +176,7 @@ private:
   WSADATA Data;
   SOCKADDR_IN serverSockAddr;
   SOCKADDR_IN clientSockAddr;
-  SOCKET serverSocket;
-  SOCKET clientSocket;
+  SOCKET socket;
   SOCKET clBackup;
   int status;
   int addrLen; //=sizeof(SOCKADDR_IN);
@@ -191,8 +188,7 @@ private:
 #endif //WINDOWS        
 #ifdef LINUX
 #ifndef OSX
-	int serverSocket;
-	int clientSocket;
+	int socket;
   	int clBackup;
 	struct sockaddr_in serverSockAddr;
 	struct sockaddr_in clientSockAddr;
@@ -204,8 +200,7 @@ private:
 #endif
 #endif
 #ifdef OSX
-	int serverSocket;
-	int clientSocket;
+	int socket;
 	int clBackup;
 	struct sockaddr_in serverSockAddr;
 	struct sockaddr_in clientSockAddr;
