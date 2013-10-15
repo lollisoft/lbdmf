@@ -457,8 +457,8 @@ lb_I_Socket* lbSocket::accept()
     /* accept the connection request when one
        is received */
 	   
-    SOCKET socket=::accept(socket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-    if (socket == INVALID_SOCKET) {
+    SOCKET accept_socket=::accept(socket, (LPSOCKADDR) &clientSockAddr, &addrLen);
+    if (accept_socket == INVALID_SOCKET) {
 		_LOG << "Error while accepting on socket" LOG_
 		return NULL;
 	}
@@ -467,8 +467,8 @@ lb_I_Socket* lbSocket::accept()
 /*...e*/
 /*...sLINUX:0:*/
 #ifdef LINUX
-    socket=::accept(socket, (sockaddr*) &clientSockAddr, (socklen_t*)&addrLen); 
-    if (socket == -1) {
+    int accept_socket=::accept(socket, (sockaddr*) &clientSockAddr, (socklen_t*)&addrLen); 
+    if (accept_socket == -1) {
 		_LOG << "Error while accepting on socket" LOG_
 // Where are the definitions?
 /*		
@@ -516,22 +516,18 @@ lb_I_Socket* lbSocket::accept()
 #endif
 /*...e*/
 
-    if (neagleOff(socket) != ERR_NONE) {
+    if (neagleOff(accept_socket) != ERR_NONE) {
 		_LOG << "Error: Can not activate TCP_NODELAY" LOG_
 	}
 	
-    if (socket == -1) {
+    if (accept_socket == -1) {
     	_LOG << "lbSocket::accept(lbSocket** s): Created socket is invalid" LOG_
     	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;
     }
 
     lbSocket* client_socket = new lbSocket();
 	
-    client_socket->setSockConnection(socket); // Where are the other passed values (clientSockAddr, addrLen)
-    
-    // Be secure socket of this instance is INVALID_SOCKET
-    
-    socket = -1;
+    client_socket->setSockConnection(accept_socket); // Where are the other passed values (clientSockAddr, addrLen)
     
     // This socket can never be in connected state
     //lbSockState = LB_SOCK_CONNECTED;
@@ -769,7 +765,7 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
   }
 
-  socket();
+  create_socket();
 
   if (_isServer == 1)
   {
