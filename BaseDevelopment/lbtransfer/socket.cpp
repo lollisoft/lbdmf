@@ -199,6 +199,7 @@ lbSocket::lbSocket() {
 #endif
 	sockUse++;
 	socket = 0;
+	_isServer = 0;
 }
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
@@ -624,8 +625,15 @@ unsigned long lbSocket::inet_addrFromString(char* w) {
     {
 		struct in_addr a;
         _LOG << "Hostname: " << hep->h_name LOG_
-        while (*hep->h_aliases)
-            _LOG << "Host alias: " << *hep->h_aliases++ LOG_
+
+		// As of: http://msdn.microsoft.com/en-us/library/windows/desktop/ms738552%28v=vs.85%29.aspx
+		char **pAlias;
+		for (pAlias = hep->h_aliases; *pAlias != 0; pAlias++) {
+            _LOG << "Host alias: " << *pAlias LOG_
+		}
+		// Endless loop if _LOG is disabled!!
+        //while (*hep->h_aliases)
+        //    _LOG << "Host alias: " << *hep->h_aliases++ LOG_
         if (*hep->h_addr_list)
         {
             memcpy((char *) &a, *hep->h_addr_list, sizeof(a));
