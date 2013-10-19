@@ -106,6 +106,20 @@ lb_I_Container* ScanDirectory(const char* path, const char* containsFile) {
 }
 
 void writeTargetSpec() {
+#ifdef LINUX
+#ifndef OSX
+	COUT << "" << ENDL;
+	COUT << "TARGETPLUGIN=soplugin" << ENDL;
+	COUT << "TARGETDLL=so" << ENDL;
+	COUT << "TARGETEXE=elf" << ENDL;
+	COUT << "TARGETWXEXE=elf" << ENDL;
+	COUT << "TARGETSHARED=so" << ENDL;
+	COUT << "TARGETWXSHARED=so" << ENDL;
+	COUT << "TARGETWXSO=wxso" << ENDL;
+	COUT << "TARGETWXPLUGIN=wxsoplugin" << ENDL;
+	COUT << "" << ENDL;
+#endif
+#endif
 #ifdef OSX	
 	COUT << "" << ENDL;
 	COUT << "TARGETPLUGIN=soplugin" << ENDL;
