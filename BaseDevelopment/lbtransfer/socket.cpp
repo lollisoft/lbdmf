@@ -401,10 +401,8 @@ int lbSocket::close()
         status=::close(socket);
         if (status < 0)
         {
-          _CL_LOG << "ERROR: closesocket unsuccessful, try close." LOG_;
-			status = ::close(socket);
-			
-          return 0;
+			_LOGERROR << "ERROR: closesocket unsuccessful: " << strerror(errno) LOG_;
+			return 0;
         }
 #endif
 #ifdef WINDOWS
