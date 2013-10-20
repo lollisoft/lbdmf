@@ -33,6 +33,9 @@
 
 #include <lbtransfer-module.h>
 #include <signal.h>
+
+#include <errno.h>
+
 /*...sinclude:0:*/
 /*...sifdef WINDOWS:0:*/
 #ifdef WINDOWS
@@ -1259,7 +1262,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) 
-			_LOGERROR << "Error: Packet size not sent correctly" LOG_
+			_LOGERROR << "Error: Packet size not sent correctly: " << strerror(errno) LOG_
 
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
