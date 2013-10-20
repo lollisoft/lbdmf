@@ -1089,7 +1089,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     short nlen = 0; // Packet len haeder
 
     if (lbSockState != LB_SOCK_CONNECTED) {
-      _LOG << "Error: Can not recieve on unconnected socket" LOG_
+      _LOGERROR << "Error: Can not recieve on unconnected socket" LOG_
       return ERR_SOCKET_UNCONNECTED;
     }
 
@@ -1101,7 +1101,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
 	if (numrcv != sizeof(nlen)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
+		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
     numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
@@ -1113,7 +1113,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
     if (numrcv != sizeof(nlen)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
+		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
     numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }    
@@ -1137,11 +1137,11 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 
 
       if (status == SOCKET_ERROR)
-        _LOG << "ERROR: closesocket unsuccessful" LOG_
+        _LOGERROR << "ERROR: closesocket unsuccessful" LOG_
 #ifdef AUTOCLEANUP        
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
+        _LOGERROR << "ERROR: WSACleanup unsuccessful" LOG_
 #endif        
       return ERR_SOCKET_RECV;//err;
     }
@@ -1155,7 +1155,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
 	if (numrcv != sizeof(nlen)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
+		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
       
     numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
@@ -1167,7 +1167,7 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     numrcv=::recv(socket, (char*)&nlen, sizeof(nlen), NO_FLAGS_SET);
 
     if (numrcv != sizeof(nlen)) 
-		_LOG << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
+		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
     numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }    
@@ -1209,7 +1209,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		// Send packet size
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
-		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) _LOGERROR << "Error: Packet size not sent correctly" LOG_
     		
 		// Send packet		
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
@@ -1218,14 +1218,14 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		// Send packet size
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
-		if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) _LOGERROR << "Error: Packet size not sent correctly" LOG_
 			
 		// Send packet		
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
 	
 	
-    if (numsnt == SOCKET_ERROR) _LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR" LOG_
+    if (numsnt == SOCKET_ERROR) _LOGERROR << "lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR" LOG_
 		if ((numsnt != len) && (numsnt == SOCKET_ERROR))
 		{
 			if (_isServer == 0) {
@@ -1236,20 +1236,20 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 			
 			err = mapWSAErrcode(lastError, _isServer);
 			
-			_LOG << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
+			_LOGERROR << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
 			status=closesocket(socket);
 			if (status == SOCKET_ERROR)
-				_LOG << "ERROR: closesocket unsuccessful" LOG_
+				_LOGERROR << "ERROR: closesocket unsuccessful" LOG_
 				status=WSACleanup();
 			if (status == SOCKET_ERROR)
-				_LOG << "ERROR: WSACleanup unsuccessful" LOG_
+				_LOGERROR << "ERROR: WSACleanup unsuccessful" LOG_
 				return err;  
 		} else if (numsnt != len) {
 	    	char msg[100] = "";
 	    	sprintf(msg, "Sent only %d bytes from %d bytes", numsnt, len);
-	    	_LOG << msg LOG_
+	    	_LOGERROR << msg LOG_
 			
-	    	_LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
+	    	_LOGERROR << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
 	    }
 #endif
 #ifdef LINUX
@@ -1259,7 +1259,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
 		if (numsnt != sizeof(len)) 
-			_LOG << "Error: Packet size not sent correctly" LOG_
+			_LOGERROR << "Error: Packet size not sent correctly" LOG_
 
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
@@ -1268,7 +1268,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 	
 		if (numsnt != sizeof(len)) 
-			_LOG << "Error: Packet size not sent correctly" LOG_
+			_LOGERROR << "Error: Packet size not sent correctly" LOG_
 
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}	
