@@ -628,46 +628,47 @@ int lbTransfer::send(lb_I_Transfer_Data* data) {
 		_LOG << "Client sends the additional data (" << h << ", Pid=" << (int) cP << ", Tid=" << (int) cT LOG_
 
 		if (sendBuffer((byte*) &cP, sizeof(DWORD)) == 0) {
-			_LOG << "lbTransfer::send(...) Error: Could not send internal pid" LOG_
+			_LOGERROR << "lbTransfer::send(...) Error: Could not send internal pid" LOG_
 			return 0;
 		}
 		if (waitforAnswer("Got buffer") == 0) {
-			_LOG << "Could not get answer 'Got buffer'" LOG_
+			_LOGERROR << "Could not get answer 'Got buffer'" LOG_
 			return 0;
 		}
 		if (sendBuffer((byte*) &cT, sizeof(DWORD)) == 0) {
-			_LOG << "lbTransfer::send(...) Error: Could not send internal tid" LOG_
+			_LOGERROR << "lbTransfer::send(...) Error: Could not send internal tid" LOG_
 			return 0;
 		}
 		if (waitforAnswer("Got buffer") == 0) {
-			_LOG << "Could not get answer 'Got buffer'" LOG_
+			_LOGERROR << "Could not get answer 'Got buffer'" LOG_
 			return 0;
 		}
 		if (sendString(h) == 0) {
-			_LOG << "lbTransfer::send(...) Error: Could not send internal client hostname" LOG_
+			_LOGERROR << "lbTransfer::send(...) Error: Could not send internal client hostname" LOG_
 			return 0;
 		}       
         if (waitforAnswer("ok") == 0) {
-			_LOG << "lbTransfer::send(...) Error: Did not get an ok." LOG_
+			_LOGERROR << "lbTransfer::send(...) Error: Did not get an ok." LOG_
 			return 0;
 		}
 /*...e*/
 	}
 
 	if (sendDatatype("lbTransferData") != ERR_NONE) {
-		_LOG << "Failed to send data type information" LOG_
+		_LOGERROR << "Failed to send data type information" LOG_
 		lastError = ERR_TRANSFER_FAILED;
 		return 0;
 	}
 
 	if (waitforAnswer("Datatype ok") == 0) {
+		_LOGERROR << "Failed to wait for Datatype ok" LOG_
 		lastError = ERR_TRANSFER_FAILED;
 		return 0;
 	}
 
 
 	if (sendDataCount(data->getPacketCount()) == 0) {
-		_LOG << "Failed to send number of protocol packets" LOG_
+		_LOGERROR << "Failed to send number of protocol packets" LOG_
 		lastError = ERR_TRANSFER_FAILED;
 		return 0;
 	}
@@ -679,25 +680,27 @@ int lbTransfer::send(lb_I_Transfer_Data* data) {
 		
 		if (pData == NULL) {
 			lastError = ERR_TRANSFER_NULLPTR;
-			_LOG << "lbTransfer::send(const lbTransferData & data): Error, can't send buffer. Null pointer exception." LOG_
+			_LOGERROR << "lbTransfer::send(const lbTransferData & data): Error, can't send buffer. Null pointer exception." LOG_
 			return 0;
 		} else {
 			if (sendString(getStringFromEnumeration(pData->packet_type)) == 0) {
+				_LOGERROR << "getStringFromEnumeration() failed." LOG_
 				lastError = ERR_TRANSFER_FAILED;
 				return 0;
 			}
 			if (waitforAnswer("ok") == 0) {
+				_LOGERROR << "waitforAnswer('ok') failed." LOG_
 				lastError = ERR_TRANSFER_FAILED;
 				return 0;
 			}
 			if (sendBuffer((byte*) &(pData->data), pData->packet_size) == 0) {
-				_LOG << "lbTransfer: Could not send data buffer" LOG_
+				_LOGERROR << "lbTransfer: Could not send data buffer" LOG_
 				lastError = ERR_TRANSFER_FAILED;
 				//resetServerStateMachine();
 				return 0;
 			}
 			if (waitforAnswer("Got buffer") == 0) {
-				_LOG << "Could not get answer 'Got buffer'" LOG_
+				_LOGERROR << "Could not get answer 'Got buffer'" LOG_
 				lastError = ERR_TRANSFER_FAILED;
 				return 0;
 			}
@@ -719,7 +722,7 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
 /*...sServerside recieves internal data :16:*/
 
         if (waitForBuffer((byte*&) buf, len) == 0) {
-                _LOG << "lbTransfer::recv(...) Error: Could not recv internal pid" LOG_
+                _LOGERROR << "lbTransfer::recv(...) Error: Could not recv internal pid" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
@@ -730,13 +733,13 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
         delete buf;
 
         if (sendString("Got buffer") == 0) {
-                _LOG << "Could not get answer 'Got buffer'" LOG_
+                _LOGERROR << "Could not get answer 'Got buffer'" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
         
         if (waitForBuffer((byte*&) buf, len) == 0) {
-                _LOG << "lbTransfer::send(...) Error: Could not send internal tid" LOG_
+                _LOGERROR << "lbTransfer::send(...) Error: Could not send internal tid" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
@@ -745,21 +748,22 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
         delete buf;
 
         if (sendString("Got buffer") == 0) {
-                _LOG << "Could not get answer 'Got buffer'" LOG_
+                _LOGERROR << "Could not get answer 'Got buffer'" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
 
         if (waitForString(h) == 0) {
-                _LOG << "lbTransfer::send(...) Error: Could not send internal client hostname" LOG_
+                _LOGERROR << "lbTransfer::send(...) Error: Could not send internal client hostname" LOG_
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }       
         data->setClientHost(h);
 
         if (sendString("ok") == 0) {
-                lastError = ERR_TRANSFER_FAILED;
-                return 0;
+			_LOGERROR << "lbTransfer::send(...) Error: Could not send 'ok'." LOG_
+			lastError = ERR_TRANSFER_FAILED;
+			return 0;
         }
 
 /*...e*/
@@ -780,7 +784,7 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
            
 /*...swaitForDataCount:28:*/
 			if (waitForDataCount(count) == 0) {
-				_LOG << "waitForDataCount(count) Error: No packet count" LOG_
+				_LOGERROR << "waitForDataCount(count) Error: No packet count" LOG_
 				fprintf(stderr, "Waiting for packet count: Results in an error\n");
 				lastError = ERR_TRANSFER_FAILED;
 				return 0;
@@ -793,7 +797,7 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
                 LB_PACKET_TYPE type;
                 char* typeAsString = NULL;
                 if (waitForString(typeAsString) == 0) {
-                        _LOG << "lbTransfer::recv(...) Error: Could not get packet type information!" LOG_
+                        _LOGERROR << "lbTransfer::send(...) Error: Could not get packet type information!" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;
                 }
@@ -801,24 +805,26 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
                 
                 if (type != PACKET_LB_INVALIDTYPE) {
                         if (sendString("ok") == 0) {
+								_LOGERROR << "lbTransfer::send(...) Error: Could not send 'ok'!" LOG_
                                 lastError = ERR_TRANSFER_FAILED;
                                 return 0;
                         }
                 } else { 
                         if (sendString("Protokol error") == 0) {
+							_LOGERROR << "Failed to send 'Protocol error'!" LOG_
                                 lastError = ERR_TRANSFER_FAILED;
                                 return 0;
                         }
                 }
                 if (waitForBuffer((byte* &) buf, len) == 0) {
-                        _LOG << "waitForBuffer((byte* &) buf, len) Error: Waiting for buffer failed!" LOG_
+                        _LOGERROR << "waitForBuffer((byte* &) buf, len) Error: Waiting for buffer failed!" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;       
                 }
 
                 data->add(buf, len, type);
                 if (sendString("Got buffer") == 0) {
-                        _LOG << "Could not get answer 'Got buffer'" LOG_
+                        _LOGERROR << "Could not get answer 'Got buffer'" LOG_
                         lastError = ERR_TRANSFER_FAILED;
                         return 0;
                 }
@@ -828,12 +834,12 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
 /*...e*/
           } else {
                 lastError = ERR_TRANSFER_FAILED;
-                _LOG << "lbTransfer::recv(...) Error: Currently only 'lbTransferData' is supported" LOG_
+                _LOGERROR << "lbTransfer::recv(...) Error: Currently only 'lbTransferData' is supported" LOG_
                 return 0;
           }
         } else {
                 lastError = ERR_TRANSFER_FAILED;
-                _LOG << "lbTransfer::recv(lbTransferData & data): Could not get any data type" LOG_
+                _LOGERROR << "lbTransfer::recv(lbTransferData & data): Could not get any data type" LOG_
                 return 0;
         }
 
