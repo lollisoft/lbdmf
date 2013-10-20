@@ -299,17 +299,17 @@ int lbTransfer::waitforAnswer(char* answer) {
 		memset(buf, 0, sizeof(buf));
 
         if (sock->recv_charbuf(buf) != ERR_NONE)  {
-			_LOG << "lbSocket: Failed to get any answer" LOG_
+			_LOGERROR << "lbSocket: Failed to get any answer" LOG_
 			return 0;
         }
 
         if (strcmp(buf, "Protokol error") == 0) {
-			_LOG << "Got an error in protokol flow" LOG_
+			_LOGERROR << "Got an error in protokol flow" LOG_
 		}
 		
         if (strcmp(buf, answer) != 0) {
                 sprintf(msg, "lbSocket: Incorrect answer '%s'.", buf);
-                _LOG << msg LOG_
+                _LOGERROR << msg LOG_
                 //resetServerStateMachine();
                 return 0;
         }
