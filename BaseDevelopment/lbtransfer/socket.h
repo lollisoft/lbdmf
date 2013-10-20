@@ -211,7 +211,7 @@ private:
 	unsigned long destAddr; // for client init
 #endif
 	int _isServer;
-  LB_SOCK_STATE lbSockState;
+	LB_SOCK_STATE lbSockState;
 };
 
 

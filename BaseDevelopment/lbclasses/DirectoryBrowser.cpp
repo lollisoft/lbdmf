@@ -57,7 +57,7 @@
 
 #include <DirectoryBrowser.h>
 
-#ifdef OSX
+#ifdef LINUX 
 #include <dirent.h>
 #endif
 
@@ -172,7 +172,35 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getDirectories(lb_I_String* path) {
 	
 #ifdef LINUX
 #ifndef OSX
-
+	DIR *dir;
+	struct dirent *dir_info;
+	if ((dir = opendir(pluginDir)) != NULL) {
+	
+		dir_info = readdir(dir);
+		
+		while (dir_info != NULL) {
+			if (dir_info->d_type == DT_DIR && strcmp(dir_info->d_name, ".") != 0 && strcmp(dir_info->d_name, "..") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dLoc)
+				UAP(lb_I_Unknown, ukLoc)
+				
+				UAP_REQUEST(getModuleInstance(), lb_I_String, fullPath)
+				
+				*fullPath = path;
+				*fullPath += "/";
+				*fullPath += dir_info->d_name;
+				
+				dLoc->setData(fullPath->charrep());
+				QI(dLoc, lb_I_Unknown, ukLoc)
+				
+				ent++;
+				entry->setData(ent);
+				
+				directories->insert(&ukLoc, &keyEntry);
+			}
+			
+			dir_info = readdir(dir);
+		}
+	}
 #endif
 #endif
 	
@@ -291,7 +319,29 @@ lb_I_Container* LB_STDCALL DirectoryBrowser::getFiles(lb_I_String* path) {
 	
 #ifdef LINUX
 #ifndef OSX
-	
+	DIR *dir;
+	struct dirent *dir_info;
+	if ((dir = opendir(pluginDir)) != NULL) {
+		
+		dir_info = readdir(dir);
+		
+		while (dir_info != NULL) {
+			if (dir_info->d_type != DT_DIR && strcmp(dir_info->d_name, ".") != 0 && strcmp(dir_info->d_name, "..") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fLoc)
+				UAP(lb_I_Unknown, ukLoc)
+				
+				fLoc->setData(dir_info->d_name);
+				QI(fLoc, lb_I_Unknown, ukLoc)
+				
+				ent++;
+				entry->setData(ent);
+				
+				directories->insert(&ukLoc, &keyEntry);
+			}
+			
+			dir_info = readdir(dir);
+		}
+	}
 #endif
 #endif
 	
