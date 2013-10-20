@@ -713,7 +713,6 @@ _LOG << "lbSocket::reinit(char *mysockaddr): This function should not be used" L
 /*...e*/
 /*...slbSocket\58\\58\initSymbolic\40\char\42\ host\44\ char\42\ service\41\:0:*/
 bool lbSocket::initSymbolic(char* host, char* service) {
-	char msg[100];
 	int serverMode = 0;
 	startup();
 	_LOG << "Initialize for host '" << host << "' and port '" << service << "'" LOG_
@@ -746,7 +745,6 @@ bool lbSocket::initSymbolic(char* host, char* service) {
 /*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
 void lbSocket::init( unsigned long mysockaddr, u_short port)
 {
-  char buf[100];
   (mysockaddr == 0) ? _isServer = 1 : _isServer = 0;
 
 /*...sWINDOWS:0:*/
@@ -901,17 +899,14 @@ lbErrCodes lbSocket::recv(void* buf, short & len) {
          
 /*...shandle any error:0:*/
     if (numrcv == SOCKET_ERROR) {
-        char msg[100] = "";
         if (_isServer == 1) {
 	   err = ERR_SOCKET_CLOSE_SERVER;
-	   strcpy(msg, "lbSocket::recv(void* buf, int & len) server");
+           lastError = LogWSAError("lbSocket::recv(void* buf, int & len) server");
 	}
         else {      
            err = ERR_SOCKET_CLOSE_CLIENT;
-	   strcpy(msg, "lbSocket::recv(void* buf, int & len) client");
+       	   lastError = LogWSAError("lbSocket::recv(void* buf, int & len) client");
 	}
-
-        lastError = LogWSAError(msg);
         
         return err;
     }
@@ -991,7 +986,6 @@ lbErrCodes lbSocket::send(void *buf, short len)
 {
 	lbErrCodes err = ERR_NONE;
 	int lastError = 0;
-	char msg[100];
 	char *bufpos = (char*) buf;
 	int numsnt = 0;
 	short nlen = htons(len);
@@ -1025,10 +1019,7 @@ lbErrCodes lbSocket::send(void *buf, short len)
 			lastError = LogWSAError("lbSocket::send(...) server");
 		}
 		
-		
-		char msg[100] = "";
-		sprintf(msg, "lbSocket::send(void *buf, int len) Error: numsnt(%d) != len(%d)", numsnt, len);
-		_LOG << msg LOG_
+		_LOG << "lbSocket::send(void *buf, int len) Error: numsnt(" << numsnt << ") != len(" << len << ")" LOG_
 		_LOG << "lbSocket::send(void *buf, int len): Connection terminated" LOG_
 		status=closesocket(socket);
 		if (status == SOCKET_ERROR)
@@ -1194,7 +1185,6 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 {
 	lbErrCodes err = ERR_NONE;
 	int lastError = 0;
-	char msg[100];
 	short nlen = 0;
 	
 	len++;
@@ -1246,10 +1236,6 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 				_LOGERROR << "ERROR: WSACleanup unsuccessful" LOG_
 				return err;  
 		} else if (numsnt != len) {
-	    	char msg[100] = "";
-	    	sprintf(msg, "Sent only %d bytes from %d bytes", numsnt, len);
-	    	_LOGERROR << msg LOG_
-			
 	    	_LOGERROR << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
 	    }
 #endif
