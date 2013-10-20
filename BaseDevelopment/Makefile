@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.16 $
+# * $Revision: 1.229.2.17 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.16 2013/10/15 04:51:26 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.17 2013/10/20 10:33:55 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.17  2013/10/20 10:33:55  lollisoft
+# * Removed some char[] arrays due to buffer overflow danger.
+# *
 # * Revision 1.229.2.16  2013/10/15 04:51:26  lollisoft
 # * Added lbtracsfer and lbcs to the target lists.
 # *
@@ -1325,6 +1328,7 @@ ALLDIRS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
+	../AppDevelopmentDemo/MkBs \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/wxShapeFramework/src \
@@ -1358,6 +1362,7 @@ ALLDIRS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
+	../AppDevelopmentDemo/MkBs \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/wxShapeFramework/src \
