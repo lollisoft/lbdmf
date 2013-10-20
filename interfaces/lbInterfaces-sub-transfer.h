@@ -419,9 +419,9 @@ public:
 	 * Buffer must be allocated.
 	 */	
 	virtual lbErrCodes LB_STDCALL recv(void* buf, short & len) = 0;
-		
-        virtual lbErrCodes LB_STDCALL recv_charbuf(char *buf) = 0;
-        virtual lbErrCodes LB_STDCALL send_charbuf(char *buf, short len) = 0;
+	
+	virtual lbErrCodes LB_STDCALL recv_charbuf(char *&buf) = 0;
+	virtual lbErrCodes LB_STDCALL send_charbuf(char *buf, short len) = 0;
 
 	/**
 	 * Send and recieve a data buffer and automatically split off to
