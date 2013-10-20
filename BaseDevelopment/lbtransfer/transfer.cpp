@@ -263,7 +263,7 @@ LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
 /*...sProtocol helper:0:*/
 /*...slbTransfer\58\\58\resetServerStateMachine\40\\41\:0:*/
 int lbTransfer::resetServerStateMachine() {
-        char buf[100];
+        char* buf = NULL;
         
         if (sock->send_charbuf("reset", strlen("reset")) == 0) {
                 _LOG << "lbSocket: Panic, can't send reset comando to server" LOG_
@@ -272,13 +272,19 @@ int lbTransfer::resetServerStateMachine() {
 
         if (sock->recv_charbuf(buf) == 0) { 
                 _LOG << "lbSocket: Panic, can't reset server's statemachine" LOG_
+				if (buf != NULL)
+					free(buf);
                 return 0;
         }
 
         if (strcmp(buf, "ok") != 0) {
                 _LOG << "lbSocket: Server state error, reset comando don't be answered with 'ok'" LOG_
+				if (buf != NULL)
+					free(buf);
                 return 0;
         }
+		if (buf != NULL)
+			free(buf);
         return 1;
 }
 /*...e*/
@@ -294,12 +300,13 @@ lbErrCodes lbTransfer::sendDatatype(char* type) {
 /*...e*/
 /*...slbTransfer\58\\58\waitforAnswer\40\char\42\ answer\41\:0:*/
 int lbTransfer::waitforAnswer(char* answer) {
-        char buf[MAXBUFLEN];
+        char* buf = NULL;
         char msg[100] = "";
-		memset(buf, 0, sizeof(buf));
 
         if (sock->recv_charbuf(buf) != ERR_NONE)  {
 			_LOGERROR << "lbSocket: Failed to get any answer" LOG_
+			if (buf != NULL)
+				free(buf);
 			return 0;
         }
 
@@ -308,11 +315,14 @@ int lbTransfer::waitforAnswer(char* answer) {
 		}
 		
         if (strcmp(buf, answer) != 0) {
-                sprintf(msg, "lbSocket: Incorrect answer '%s'.", buf);
-                _LOGERROR << msg LOG_
+                _LOGERROR << "lbSocket: Incorrect answer '" << buf << "'." LOG_
                 //resetServerStateMachine();
+				if (buf != NULL)
+					free(buf);
                 return 0;
         }
+		if (buf != NULL)
+			free(buf);
         return 1;
 }
 /*...e*/
@@ -412,22 +422,24 @@ int lbTransfer::sendBuffer(byte* buf, int len) {
 
 /*...slbTransfer\58\\58\waitForString\40\char\42\ \38\ string\41\:0:*/
 int lbTransfer::waitForString(char* & string) {
-        char buf[MAXBUFLEN];
+	char* buf = NULL;
 
-        if (sock->recv_charbuf(buf) != ERR_NONE)
-        {
-          _LOGERROR << "lbSocket: Failed to get any data while waiting for a string" LOG_
-          return 0;
-        }  
-        string = strdup(buf);
+	if (sock->recv_charbuf(buf) != ERR_NONE)
+	{
+		_LOGERROR << "lbSocket: Failed to get any data while waiting for a string" LOG_
+		if (buf != NULL)
+			free(buf);
+		return 0;
+	}  
+	string = strdup(buf);
         
-        return 1;  
+	if (buf != NULL)
+		free(buf);
+	return 1;  
 }
 /*...e*/
 /*...slbTransfer\58\\58\waitForBuffer\40\byte \42\ \38\ buffer\44\ int \38\ len\41\:0:*/
 int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
-        char buf[MAXBUFLEN];
-        char msg[100];
         int buflen;     
 
         if (waitforAnswer("Datablock") == 0) {
@@ -440,18 +452,14 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
                 return 0;
         }
 
-
-		
-		/*...sGet buffersize:8:*/
+/*...sGet buffersize:8:*/
         // Get the size of the packet for memory allocation (if possible)
         if (sock->recvInteger(buflen) != ERR_NONE) {
                 _LOGERROR << "lbTransfer::waitForBuffer(...) Error: Could not get buffer size" LOG_
                 return 0;       
         }
-		
 
-		
-        if (sendString("ok") == 0) {
+	if (sendString("ok") == 0) {
                 _LOGERROR << "lbTransfer::waitForBuffer(...) Error: Could not send 'ok' after recieving buffer size" LOG_
                 return 0;
         }
@@ -465,9 +473,7 @@ int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
 
         // target knows multiple packets from buffersize > MAXBUFLEN !
 
-
-		
-		/*...sRecieving all packets except the last:0:*/
+	/*...sRecieving all packets except the last:0:*/
         for (int i = 0; i < peaces; i++) {
                 short gotBuflen = MAXBUFLEN;
                 if (sock->recv((void* )currbufferpos, gotBuflen) != ERR_NONE) {
@@ -536,29 +542,35 @@ int lbTransfer::waitForDataCount(int & c) {
 
 /*...slbTransfer\58\\58\waitForDatatype\40\char\42\ \38\ result\41\:0:*/
 lbErrCodes lbTransfer::waitForDatatype(char* &result) {
-        static char buf[MAXBUFLEN];
-        lbErrCodes err = ERR_NONE;
+	char* buf = NULL;
+	lbErrCodes err = ERR_NONE;
         
-        if ((err = sock->recv_charbuf(buf)) != ERR_NONE)
-        {
-                switch (err) {
-                        case ERR_SOCKET_CLOSED:
-                                err = ERR_TRANSFER_ENDED;
-                                break;
-                        default:
-                                _LOG << "lbSocket: Failed to get any datatype" LOG_
-                                err = ERR_TRANSFER_FAILED;
-                }
-                result = '\0';
-        } else result = strdup(buf);
-        
+	if ((err = sock->recv_charbuf(buf)) != ERR_NONE)
+	{
+		switch (err) {
+			case ERR_SOCKET_CLOSED:
+				err = ERR_TRANSFER_ENDED;
+				break;
+			default:
+				_LOG << "lbSocket: Failed to get any datatype" LOG_
+				err = ERR_TRANSFER_FAILED;
+		}
+		result = '\0';
+	}
+	else
+		result = strdup(buf);
+
+	if (buf != NULL)
+		free(buf);
+	
         return err;
 }
 /*...e*/
 /*...e*/
 
 int lbTransfer::gethostname(lb_I_String* name) {
-	if (name != NULL) *name = sock->gethostname();
+	if (name != NULL)
+		*name = sock->gethostname();
 	return 0;
 }
 
@@ -636,8 +648,6 @@ void lbTransfer::operator>> (lb_I_Transfer_Data* res) {
 
 /*...slbTransfer\58\\58\send\40\lb_I_Transfer_Data\42\ data\41\:0:*/
 int lbTransfer::send(lb_I_Transfer_Data* data) {
-	char buf[MAXBUFLEN];
-	char msg[100];
 	lastError = ERR_NONE;
 
 	if (!data->isServerSide()) {
@@ -735,7 +745,6 @@ int lbTransfer::recv(lb_I_Transfer_Data* data) {
 	char* result = NULL;
 	int len;
 	void* buf = NULL;
-	char msg[100];
 	lbErrCodes err = ERR_NONE;
 
 	if (data->isServerSide()) {
