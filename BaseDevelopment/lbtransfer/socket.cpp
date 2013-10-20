@@ -362,7 +362,7 @@ lbErrCodes lbSocket::neagleOff(SOCKET s) {
 int lbSocket::connect()
 {
       if (lbSockState == LB_SOCK_CONNECTED) {
-      	_LOG << "lbSocket::connect(): ERROR: Illegal state for this function" LOG_
+      	_LOGERROR << "lbSocket::connect(): ERROR: Illegal state for this function" LOG_
 		close();
       }
 #ifdef WINDOWS
@@ -383,7 +383,7 @@ int lbSocket::connect()
       status=::connect(socket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
       if (status < 0)
       {
-		  _LOG << "Error: Could not connect to server." LOG_
+		  _LOGERROR << "Error: Could not connect to server." LOG_
 #ifdef bla
         close();
 #endif
