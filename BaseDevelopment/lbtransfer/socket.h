@@ -135,7 +135,7 @@ public:
 	 */	
 	lbErrCodes LB_STDCALL recv(void* buf, short & len);
 		
-        lbErrCodes LB_STDCALL recv_charbuf(char *buf);
+        lbErrCodes LB_STDCALL recv_charbuf(char *&buf);
         lbErrCodes LB_STDCALL send_charbuf(char *buf, short len);
 
 	/**

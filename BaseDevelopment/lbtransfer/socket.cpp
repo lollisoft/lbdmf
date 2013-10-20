@@ -848,12 +848,14 @@ lbErrCodes lbSocket::sendInteger(int i) {
 /*...slbSocket\58\\58\recvInteger\40\int\38\ i\41\:0:*/
 lbErrCodes lbSocket::recvInteger(int& i) {
 	lbErrCodes err = ERR_NONE;
-	char buf[MAXBUFLEN];
-        // Wait for a datapacket
+	char* buf = NULL;
+    // Wait for a datapacket
 
 	if ((err = recv_charbuf(buf)) == ERR_NONE) {
 		int number = atoi(buf);
 		i = number;
+		if (buf != NULL)
+			free(buf);
 	} else {
 		_LOG << "lbSocket: Error while recieving an integer" LOG_
 	}
@@ -1072,7 +1074,7 @@ lbErrCodes lbSocket::send(void *buf, short len)
 /*...e*/
 
 /*...slbSocket\58\\58\recv_charbuf\40\char \42\buf\41\:0:*/
-lbErrCodes lbSocket::recv_charbuf(char *buf)
+lbErrCodes lbSocket::recv_charbuf(char *&buf)
 {
     lbErrCodes err = ERR_NONE;
     int lastError = 0;
@@ -1094,7 +1096,10 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
 
 	if (numrcv != sizeof(nlen)) 
 		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
-      
+    
+	buf = malloc(nlen);
+	memset(&buf, 0, nlen);
+	
     numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
   }
 /*...e*/
