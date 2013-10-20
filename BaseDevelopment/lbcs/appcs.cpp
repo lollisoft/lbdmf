@@ -1132,6 +1132,8 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 	
 	*servicename = servermodule->getServiceName();
 	
+	printf("Found server plugin %s\n", servicename->charrep());
+	
 	_LOG << "initServerModul() called with " << servicename->charrep() LOG_
 
 #ifndef USE_MULTITHREAD_CODE
@@ -1296,6 +1298,7 @@ void LB_STDCALL lbAppServer::run() {
 		dispatch(*&request, *&result);
 
 		*clt << *&result;
+		
 		clt->close();
 #endif		
 
@@ -1474,7 +1477,7 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 			_CL_LOG << "lbAppServer::dispatch(...): handle '" << key->charrep() << "'." LOG_
 			
 			uk = dispatchTable->getElement(&key);
-			if (uk == NULL) {
+			if (uk == NULL) {			
 				_LOG << "lbAppServer::dispatch(...) Error: Failed to lookup protocol handler for '" << key->charrep() << "'." LOG_
 				return ERR_APP_SERVER_DISPATCH;
 			}
