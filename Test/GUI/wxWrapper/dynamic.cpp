@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.176 2013/02/16 10:36:27 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,17 +51,13 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.176 $
+ * $Revision: 1.174.2.8 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.176 2013/02/16 10:36:27 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
- * Revision 1.176  2013/02/16 10:36:27  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
- *
- * Revision 1.175  2012/01/21 18:39:21  lollisoft
- * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ * Revision 1.174.2.8  2013/10/26 04:39:11  lollisoft
+ * Fixes on Linux related to socket and transfer classes.
  *
  * Revision 1.174.2.7  2013/01/31 06:46:47  lollisoft
  * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
@@ -1122,7 +1118,11 @@ bool MyApp::OnInit(void)
     frame->Centre();
 
 	// Preload to enable flag modifications in plugins. Such as loading from database instead file
-	metaApp->load();
+    if (metaApp->load() != ERR_NONE) {
+	// If there are no files yet, then this is a wrong interpretation
+	//PM->unload();
+	//return false;
+    }
 
     SetTopWindow(frame);
 
@@ -1197,15 +1197,14 @@ bool MyApp::OnInit(void)
 
     _LOG << "Start enumerating plugins to call their autorun function." LOG_
 
-	UAP(lb_I_PluginIterator, it)
-	it = PM->getPluginIterator();
-    if (it->beginEnumPlugins()) {
-		while (TRUE) {
-			UAP(lb_I_Plugin, pl)
-			pl = it->nextPlugin();
-			if (pl == NULL) break;
-				pl->autorun();
-			}
+    if (PM->beginEnumPlugins()) {
+
+    while (TRUE) {
+        UAP(lb_I_Plugin, pl)
+        pl = PM->nextPlugin();
+        if (pl == NULL) break;
+            pl->autorun();
+        }
     }
 
 	FlushMenubarQueue();

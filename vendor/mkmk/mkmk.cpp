@@ -12,14 +12,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.115 $
+ * $Revision: 1.114.2.3 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.115 2013/02/16 10:36:27 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.3 2013/10/26 04:39:12 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
- * Revision 1.115  2013/02/16 10:36:27  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
+ * Revision 1.114.2.3  2013/10/26 04:39:12  lollisoft
+ * Fixes on Linux related to socket and transfer classes.
  *
  * Revision 1.114.2.2  2012/10/03 21:03:30  lollisoft
  * Recursive include bugfix.
@@ -1005,8 +1004,8 @@ void writeBundleTarget(char* modulename) {
         printf("\n%s: $(OBJS)\n", modulename);
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+        printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
         
         // Write Mac OS X Bundle
         printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
@@ -1049,7 +1048,8 @@ void writeBundleTarget(char* modulename) {
         fprintf(stderr, "Writing linux executable target\n");
         printf("PROGRAM=%s\n", modulename);
         printf("\n%s: $(OBJS)\n", modulename);
-        printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).       
+        printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
 #endif
         
 #ifdef OSX
@@ -1098,14 +1098,16 @@ void writeExeTarget(char* modulename) {
   fprintf(stderr, "Writing osx executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
 #endif
 
 #ifdef UNIX
   fprintf(stderr, "Writing linux executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(prefix)/bin\n");
 #endif
 
@@ -1155,14 +1157,16 @@ void writeMinGWExeTarget(char* modulename) {
   fprintf(stderr, "Writing osx executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
 #endif
 
 #ifdef UNIX
   fprintf(stderr, "Writing linux executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(prefix)/bin\n");
 #endif
 
@@ -1241,7 +1245,8 @@ void writeYaccTarget(char* modulename) {
 void writeMinGWDllTarget(char* modulename) {
 #ifdef UNIX
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(MINGWCC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(MINGWCC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -1321,7 +1326,8 @@ void writeMinGWDllTarget(char* modulename) {
 void writeMinGWPluginTarget(char* modulename) {
 #ifdef UNIX
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -1385,7 +1391,8 @@ void writeMinGWPluginTarget(char* modulename) {
 void writeDllTarget(char* modulename) {
 #ifdef UNIX
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -1467,7 +1474,8 @@ void writeDllTarget(char* modulename) {
 void writePluginTarget(char* modulename) {
 #ifdef UNIX
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -1523,10 +1531,6 @@ void writePluginTarget(char* modulename) {
 /*...e*/
 /*...swriteLibTarget\40\char\42\ modulename\44\ TDepList\42\ l\41\:0:*/
 void writeLibTarget(char* modulename, TDepList* l) {
-#ifdef UNIX
-//  printf("\n%s: $(OBJS)\n", modulename);
-//  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
-#endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
   char** array;
@@ -1675,11 +1679,13 @@ void write_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1718,16 +1724,17 @@ void write_so_bundleTarget(char* modulename) {
         // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
         
-        change_install_names(true);
+  change_install_names(true);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
+  printf("\t\t$(CC) $(LDFLAGS) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
         
-        printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
-        
-        change_install_names(false);
+  change_install_names(false);
         
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1767,15 +1774,16 @@ void write_wx_so_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
+        printf("\t\t$(CC) $(LDFLAGS) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
         
         change_install_names(false);
         
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1814,15 +1822,16 @@ void write_wx_shared_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
+        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -install_name \"@executable_path/../lib/$(PROGRAM)\" -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
         
         change_install_names(false);
         
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1906,8 +1915,8 @@ void write_wx_framework_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
+        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
         
         change_install_names(false);
         
@@ -1926,7 +1935,8 @@ void write_wx_framework_Target(char* modulename) {
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1999,8 +2009,8 @@ void write_framework_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
+        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
         
         change_install_names(false);
         
@@ -2019,7 +2029,8 @@ void write_framework_Target(char* modulename) {
 #undef UNIX
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -2046,15 +2057,16 @@ void write_soPlugin_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+        printf("\t\t$(CC) $(LDFLAGS) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
         
         change_install_names(false);
         
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -2089,15 +2101,16 @@ void write_wx_soPlugin_Target(char* modulename) {
 #ifdef OSX
         
         change_install_names(true);
-        
-        printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+        printf("\t\t$(CC) $(LDFLAGS) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
         
         change_install_names(false);
         
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
+//\todo Rewrite to be more convient to make system (begun with LDFLAGS).
+  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -2130,7 +2143,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.115 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.3 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

@@ -25,22 +25,13 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.151 $
+# * $Revision: 1.148.2.15 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.151 2013/02/16 10:36:27 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.15 2013/10/26 04:39:12 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
-# * Revision 1.151  2013/02/16 10:36:27  lollisoft
-# * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
-# * Several files were conflicting and resolved in this checkin.
-# *
-# * Revision 1.150  2011/12/18 13:46:20  lollisoft
-# * Implemented extensible object pattern to break up visitor pattern into one
-# * fixed object tree part and an extensible part that support plugins and
-# * code generation. Code compiles, but is not yet tested.
-# *
-# * Revision 1.149  2011/10/30 15:46:10  lollisoft
-# * Some changes in unit tests.
+# * Revision 1.148.2.15  2013/10/26 04:39:12  lollisoft
+# * Fixes on Linux related to socket and transfer classes.
 # *
 # * Revision 1.148.2.14  2013/01/27 15:52:25  lollisoft
 # * Release build. Added MinGW target switch to start support -m32 only (Sqlite).
@@ -646,8 +637,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
@@ -1302,7 +1293,15 @@ endif
 
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
-L_OPS   = -o
+ifeq ($(DEBUG), yes)
+LDFLAGS   = -g
+endif
+ifeq ($(DEBUG), no)
+LDFLAGS   =
+endif
+
+# Option replaced by LDFLAGS. The mkmk tool writes the -o rule.
+#L_OPS   = -o
 
 ifeq ($(DEBUG_MEMORY), yes)
 LIBS    = -ldl -lstdc++ -lc ~/lib/libmpatrol.a -lbfd 

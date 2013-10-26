@@ -125,75 +125,72 @@ lbTransfer::~lbTransfer() {
  */
 lbErrCodes lbTransfer::init(char *target, bool asServer) {
         u_short port;
-        char *mysockaddr;
-        char token[100];
         char *machine = NULL;
         char *service = NULL;
         char *subservice = NULL;
-        char prefix[100];
 
-		char* pch = NULL;
+	char* pch = NULL;
 		
-		if (target == NULL) {
-			_LOG << "Reinit with last known parameters." LOG_
-			machine = hostName->charrep();
-			service = portName->charrep();
-		} else {
-			_LOG << "lbTransfer::init(" << target << ") called." LOG_
+	if (target == NULL) {
+		_LOG << "Reinit with last known parameters." LOG_
+		machine = hostName->charrep();
+		service = portName->charrep();
+	} else {
+		_LOG << "lbTransfer::init(" << target << ") called." LOG_
 
-			char* copytarget = NULL;
+		char* copytarget = NULL;
 			
-			copytarget = strdup(target);
+		copytarget = strdup(target);
 			
-			pch = strtok(copytarget, "/");
+		pch = strtok(copytarget, "/");
 
-			if (pch != NULL) {
-				machine = strdup(pch);
-				pch = strtok(NULL, "/");
-			}
-
-			if (pch != NULL) {
-				service = strdup(pch);
-				pch = strtok(NULL, "/");
-			} else {
-				service = strdup(target);
-			}
-
-			//if (pch != NULL) {
-			//	subservice = strdup(pch);
-			//	pch = strtok(NULL, "/");
-			//}
-			
-			if (service == NULL) {
-					_LOG << "lbTransfer::init(char *target): Service name couldn't retrieved from target string!" LOG_
-					// Handle error
-			}
-	
-			if (machine == NULL) {
-					_LOG << "lbTransfer::init(char *target): Machine name couldn't retrieved from target string!" LOG_
-			}
-			
-			*hostName = machine;
-			*portName = service;
+		if (pch != NULL) {
+			machine = strdup(pch);
+			pch = strtok(NULL, "/");
 		}
+
+		if (pch != NULL) {
+			service = strdup(pch);
+			pch = strtok(NULL, "/");
+		} else {
+			service = strdup(target);
+		}
+
+		//if (pch != NULL) {
+		//	subservice = strdup(pch);
+		//	pch = strtok(NULL, "/");
+		//}
+			
+		if (service == NULL) {
+			_LOG << "lbTransfer::init(char *target): Service name couldn't retrieved from target string!" LOG_
+			// Handle error
+		}
+	
+		if (machine == NULL) {
+			_LOG << "lbTransfer::init(char *target): Machine name couldn't retrieved from target string!" LOG_
+		}
+			
+		*hostName = machine;
+		*portName = service;
+	}
 		
 
         if (subservice == NULL) {
-			/**
-			 * machine is the computername. Service is the name of a service
-			 * mapped to a port.
-			 */
+		/**
+		 * machine is the computername. Service is the name of a service
+		 * mapped to a port.
+		 */
 		
-			if (sock != NULL) {
-				_LOG << "Error: The socket instance must be NULL before calling init(...)." LOG_
-			}
+		if (sock != NULL) {
+			_LOG << "Error: The socket instance must be NULL before calling init(...)." LOG_
+		}
 		
-			REQUEST(getModuleInstance(), lb_I_Socket, sock)
+		REQUEST(getModuleInstance(), lb_I_Socket, sock)
 				 
-			if (!sock->initSymbolic(machine, service)) {
-				_LOG << "Initialization of socket failed." LOG_
-				return ERR_SOCKET_INIT;
-			}
+		if (!sock->initSymbolic(machine, service)) {
+			_LOG << "Initialization of socket failed." LOG_
+			return ERR_SOCKET_INIT;
+		}
         } else {
                 _LOG << "Subservices currently not supported" LOG_
                 // Handle special cases with subservices
@@ -246,9 +243,10 @@ char* getStringFromEnumeration(LB_PACKET_TYPE type) {
 
 /*...sLB_PACKET_TYPE getEnumerationFromString\40\char\42\ typeAsString\41\:0:*/
 LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
-        if (strcmp(typeAsString, "PACKET_LB_CHAR") == 0) {
-                return PACKET_LB_CHAR;
-        }
+	if (typeAsString == NULL) {
+        	return PACKET_LB_INVALIDTYPE;
+	}
+	if (strcmp(typeAsString, "PACKET_LB_CHAR") == 0) return PACKET_LB_CHAR;
         if (strcmp(typeAsString, "PACKET_LB_INT") == 0) return PACKET_LB_INT;
         if (strcmp(typeAsString, "PACKET_LB_SHORT") == 0) return PACKET_LB_SHORT;
         if (strcmp(typeAsString, "PACKET_LB_LONG") == 0) return PACKET_LB_LONG;
@@ -265,26 +263,26 @@ LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
 int lbTransfer::resetServerStateMachine() {
         char* buf = NULL;
         
-        if (sock->send_charbuf("reset", strlen("reset")) == 0) {
+        if (sock->send_charbuf("reset", strlen("reset")+1) == 0) {
                 _LOG << "lbSocket: Panic, can't send reset comando to server" LOG_
                 return 0;
         }
 
         if (sock->recv_charbuf(buf) == 0) { 
                 _LOG << "lbSocket: Panic, can't reset server's statemachine" LOG_
-				if (buf != NULL)
-					free(buf);
+		if (buf != NULL)
+			free(buf);
                 return 0;
         }
 
         if (strcmp(buf, "ok") != 0) {
                 _LOG << "lbSocket: Server state error, reset comando don't be answered with 'ok'" LOG_
-				if (buf != NULL)
-					free(buf);
-                return 0;
-        }
 		if (buf != NULL)
 			free(buf);
+                return 0;
+        }
+	if (buf != NULL)
+		free(buf);
         return 1;
 }
 /*...e*/
@@ -301,28 +299,27 @@ lbErrCodes lbTransfer::sendDatatype(char* type) {
 /*...slbTransfer\58\\58\waitforAnswer\40\char\42\ answer\41\:0:*/
 int lbTransfer::waitforAnswer(char* answer) {
         char* buf = NULL;
-        char msg[100] = "";
 
         if (sock->recv_charbuf(buf) != ERR_NONE)  {
-			_LOGERROR << "lbSocket: Failed to get any answer" LOG_
-			if (buf != NULL)
-				free(buf);
-			return 0;
+		_LOGERROR << "lbSocket: Failed to get any answer" LOG_
+		if (buf != NULL)
+			free(buf);
+		return 0;
         }
 
         if (strcmp(buf, "Protokol error") == 0) {
-			_LOGERROR << "Got an error in protokol flow" LOG_
-		}
+		_LOGERROR << "Got an error in protokol flow" LOG_
+	}
 		
         if (strcmp(buf, answer) != 0) {
                 _LOGERROR << "lbSocket: Incorrect answer '" << buf << "'." LOG_
                 //resetServerStateMachine();
-				if (buf != NULL)
-					free(buf);
-                return 0;
-        }
 		if (buf != NULL)
 			free(buf);
+                return 0;
+        }
+	if (buf != NULL)
+		free(buf);
         return 1;
 }
 /*...e*/
@@ -381,7 +378,6 @@ int lbTransfer::sendBuffer(byte* buf, int len) {
 /*...e*/
         int peaces = len / MAXBUFLEN;
         byte * currbufferpos = buf;
-        char msg[100];
         
 
         // target knows multiple packets from buffersize > MAXBUFLEN !
