@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.15 $
+# * $Revision: 1.148.2.16 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.15 2013/10/26 04:39:12 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.16 2013/10/26 07:38:37 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.16  2013/10/26 07:38:37  lollisoft
+# * Fixed conflict
+# *
 # * Revision 1.148.2.15  2013/10/26 04:39:12  lollisoft
 # * Fixes on Linux related to socket and transfer classes.
 # *
@@ -637,8 +640,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
