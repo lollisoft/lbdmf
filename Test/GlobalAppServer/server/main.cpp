@@ -96,9 +96,6 @@ int main(int argc, char** argv) {
 		*/
 #ifndef WINDOWS
 		signal(SIGINT, handler);
-#ifndef OSX
-		signal(SIGBREAK, handler);
-#endif
 		signal(SIGTERM, handler);
 #endif
 
