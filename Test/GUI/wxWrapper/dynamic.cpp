@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.7 2013/01/31 06:46:47 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.7 $
+ * $Revision: 1.174.2.8 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.7 2013/01/31 06:46:47 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.8  2013/10/26 04:39:11  lollisoft
+ * Fixes on Linux related to socket and transfer classes.
+ *
  * Revision 1.174.2.7  2013/01/31 06:46:47  lollisoft
  * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
  *
@@ -1115,7 +1118,11 @@ bool MyApp::OnInit(void)
     frame->Centre();
 
 	// Preload to enable flag modifications in plugins. Such as loading from database instead file
-	metaApp->load();
+    if (metaApp->load() != ERR_NONE) {
+	// If there are no files yet, then this is a wrong interpretation
+	//PM->unload();
+	//return false;
+    }
 
     SetTopWindow(frame);
 

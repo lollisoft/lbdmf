@@ -203,6 +203,7 @@ lbSocket::lbSocket() {
 	sockUse++;
 	socket = 0;
 	_isServer = 0;
+	lbSockState = LB_SOCK_CLOSED; 
 }
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
@@ -226,7 +227,7 @@ lbSocket::lbSocket(const lbSocket& s) {
 
 	/*unsigned long*/ 
 			destAddr = s.destAddr; // for client init
-
+			lbSockState = s.lbSockState;
 }
 /*...e*/
 
@@ -1096,11 +1097,13 @@ lbErrCodes lbSocket::recv_charbuf(char *&buf)
 
 	if (numrcv != sizeof(nlen)) 
 		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
-    
-	buf = malloc(nlen);
-	memset(&buf, 0, nlen);
+
+    short len = ntohs(nlen);   
+ 
+	buf = (char*)malloc(len);
+	memset(buf, 0, len);
 	
-    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
+    numrcv=::recv(socket, buf, len, NO_FLAGS_SET);
   }
 /*...e*/
   
@@ -1112,7 +1115,11 @@ lbErrCodes lbSocket::recv_charbuf(char *&buf)
     if (numrcv != sizeof(nlen)) 
 		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
-    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
+    short len = ntohs(nlen);   
+	buf = (char*)malloc(len);
+	memset(buf, 0, len);
+    
+	numrcv=::recv(socket, buf, len, NO_FLAGS_SET);
   }    
 /*...e*/
 
@@ -1153,8 +1160,13 @@ lbErrCodes lbSocket::recv_charbuf(char *&buf)
 
 	if (numrcv != sizeof(nlen)) 
 		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
-      
-    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
+    
+    short len = ntohs(nlen);
+  
+	buf = (char*)malloc(len);
+	memset(buf, 0, len);
+  
+	numrcv=::recv(socket, buf, len, NO_FLAGS_SET);
   }
 /*...e*/
   
@@ -1166,7 +1178,11 @@ lbErrCodes lbSocket::recv_charbuf(char *&buf)
     if (numrcv != sizeof(nlen)) 
 		_LOGERROR << "Error: Packet size not recv correctly. Have got " << numrcv << " but expected " << (int) sizeof(nlen) LOG_
   
-    numrcv=::recv(socket, buf, ntohs(nlen), NO_FLAGS_SET);
+    short len = ntohs(nlen);
+	buf = (char*)malloc(len);
+	memset(buf, 0, len);
+    	
+	numrcv=::recv(socket, buf, len, NO_FLAGS_SET);
   }    
 /*...e*/
 

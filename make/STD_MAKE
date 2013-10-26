@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.14 $
+# * $Revision: 1.148.2.15 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.14 2013/01/27 15:52:25 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.15 2013/10/26 04:39:12 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.15  2013/10/26 04:39:12  lollisoft
+# * Fixes on Linux related to socket and transfer classes.
+# *
 # * Revision 1.148.2.14  2013/01/27 15:52:25  lollisoft
 # * Release build. Added MinGW target switch to start support -m32 only (Sqlite).
 # *
@@ -1290,7 +1293,15 @@ endif
 
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
-L_OPS   = -o
+ifeq ($(DEBUG), yes)
+LDFLAGS   = -g
+endif
+ifeq ($(DEBUG), no)
+LDFLAGS   =
+endif
+
+# Option replaced by LDFLAGS. The mkmk tool writes the -o rule.
+#L_OPS   = -o
 
 ifeq ($(DEBUG_MEMORY), yes)
 LIBS    = -ldl -lstdc++ -lc ~/lib/libmpatrol.a -lbfd 

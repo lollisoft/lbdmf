@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91 $
+* $Revision: 1.91.2.1 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91 2011/10/16 10:01:46 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.1 2013/10/26 04:39:11 lollisoft Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.1  2013/10/26 04:39:11  lollisoft
+* Fixes on Linux related to socket and transfer classes.
+*
 * Revision 1.91  2011/10/16 10:01:46  lollisoft
 * Fixed a buffer overflow.
 *
@@ -1652,8 +1655,10 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(const char* matc
 				return NULL;
 			}
 
-			_CL_VERBOSE "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_
+			_LOG "lbPluginManager::getFirstMatchingPlugin('" << match << "', '" << pl->getNamespace() << "', '" << pl->getVersion() << "'): Searching.!" LOG_
+			
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && (strcmp(pl->getVersion(), _version) == 0) && pl->hasInterface(match)) {
+				_LOG << "lbPluginManager::getFirstMatchingPlugin(...) found one." LOG_
 				PluginContainer->finishIteration();
 				PluginModules->finishIteration();
 
