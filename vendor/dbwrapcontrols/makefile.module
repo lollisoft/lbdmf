@@ -122,7 +122,7 @@ MOD_INCL=$(STD_INCL) -I ../databaselayer/include -I ../sqlite
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = `wx-config --inplace --libs` -o
+LDFLAGS += `wx-config --inplace --libs`
 
 VENDORLIBS=-L$(prefix)/lib -llbdatabaselayer_sqllite -llbsqlite3
 endif    
