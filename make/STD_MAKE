@@ -25,11 +25,16 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.16 $
+# * $Revision: 1.148.2.17 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.16 2013/10/26 07:38:37 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.17 2013/11/03 20:25:26 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.17  2013/11/03 20:25:26  lollisoft
+# * Fixed source code deployment version issues with actual MinGW.
+# * Stick on older compiler and w32api. Also removed a warning pragma.
+# * The patches should be temporarly only.
+# *
 # * Revision 1.148.2.16  2013/10/26 07:38:37  lollisoft
 # * Fixed conflict
 # *
@@ -640,8 +645,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
