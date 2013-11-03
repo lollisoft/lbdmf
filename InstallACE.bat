@@ -36,6 +36,9 @@ copy %DEVLW%\lbDMF\TAO.GNUmakefile %DEVLW%\lbDMF\Develop\Projects\CPP\vendor\ACE
 set PATH=%DEVLW%\lbDMF\Develop\Tools\MinGW\msys\1.0\bin;%DEVLW%\lbDMF\Develop\Tools\MinGW\bin;%DEVLW%\lbDMF\Develop\Projects\bin;%ACE_ROOT%\bin;%ACE_ROOT%\lib
 
 cd %DEVLW%\lbDMF\Develop\Projects\CPP\vendor\ACE_wrappers\
-mingw32-make
-mingw32-make -C TAO
-pause
+
+@rem Do only build main libraries and minimally required executables to reduce disk usage.
+
+mingw32-make -C ace
+mingw32-make -C TAO\TAO_IDL
+mingw32-make -C TAO\tao

@@ -45,8 +45,11 @@ Source: "Q:\Develop\Projects\CPP\activateACE.bat"; DestDir: "{app}"; CopyMode: a
 Source: "Q:\Develop\Projects\CPP\InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
+; Patches
 Source: "Q:\Develop\Projects\CPP\TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
 Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"

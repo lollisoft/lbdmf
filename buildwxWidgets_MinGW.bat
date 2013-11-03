@@ -6,6 +6,10 @@ call watcomenv.bat exit
 
 set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin
 
+@rem Get an explicite version that always ensures to build the code
+set MINGW_STICKON_VERSION=4.7.*
+set MINGW_STICKON_WIN32_VERSION=4.0.3-*
+
 set Path=%SystemRoot%\system32
 
 set Path=%Path%;%MINGWBIN%
@@ -18,7 +22,9 @@ echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
-echo call installMinGW.bat >> doBuildWx.bat
+echo call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
+echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
+echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
 echo wget http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-final/lbDMF-BinbuildTools-1.0.4-final.exe/download >> doBuildWx.bat
