@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.10 $
+ * $Revision: 1.188.2.11 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.10 2013/03/01 06:49:29 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.11 2013/11/15 04:40:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.11  2013/11/15 04:40:10  lollisoft
+ * Added error handling when modules or classes are not found while first application load.
+ *
  * Revision 1.188.2.10  2013/03/01 06:49:29  lollisoft
  * Do not log this as error.
  *
@@ -1305,9 +1308,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			return ERR_NONE;
 		} else {
 			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
+			return ERR_MODULE_NO_INTERFACE;
 		}
 	} else {
 		_LOGERROR << "Error: Could not load stream operator classes!" LOG_
+		return ERR_MODULE_NOT_FOUND;
 	}
 	return ERR_FILE_READ;
 }
