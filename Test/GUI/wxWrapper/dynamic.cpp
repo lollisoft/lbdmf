@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.9 2013/11/15 04:40:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.8 $
+ * $Revision: 1.174.2.9 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.8 2013/10/26 04:39:11 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.9 2013/11/15 04:40:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.9  2013/11/15 04:40:10  lollisoft
+ * Added error handling when modules or classes are not found while first application load.
+ *
  * Revision 1.174.2.8  2013/10/26 04:39:11  lollisoft
  * Fixes on Linux related to socket and transfer classes.
  *
@@ -1118,10 +1121,14 @@ bool MyApp::OnInit(void)
     frame->Centre();
 
 	// Preload to enable flag modifications in plugins. Such as loading from database instead file
-    if (metaApp->load() != ERR_NONE) {
+    if ((err = metaApp->load()) != ERR_NONE) {
 	// If there are no files yet, then this is a wrong interpretation
 	//PM->unload();
 	//return false;
+	if (err == ERR_MODULE_NO_INTERFACE || err == ERR_MODULE_NOT_FOUND) {
+		metaApp->msgBox("Error", "Could not load application data due to environmental setup errors.\nPlease correct probably missing PLUGIN_DIR environment value.");
+		return false;
+	}
     }
 
     SetTopWindow(frame);
