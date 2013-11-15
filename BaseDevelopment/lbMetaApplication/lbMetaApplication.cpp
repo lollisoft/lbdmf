@@ -31,46 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.197 $
+ * $Revision: 1.188.2.11 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.197 2013/08/10 09:07:40 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.11 2013/11/15 04:40:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
- * Revision 1.197  2013/08/10 09:07:40  lollisoft
- * Merge complete. It compiles and runs the first time, but data is unusable when started the second time.
+ * Revision 1.188.2.11  2013/11/15 04:40:10  lollisoft
+ * Added error handling when modules or classes are not found while first application load.
  *
- * Revision 1.196  2013/02/19 06:06:47  lollisoft
- * Renamed some generic container methods to not contain class specific names.
- *
- * Revision 1.195  2013/02/16 10:36:25  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
- *
- * Revision 1.194  2012/05/08 04:47:16  lollisoft
- * Using new autologin API.
- *
- * Revision 1.193  2012/01/21 18:39:21  lollisoft
- * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
- *
- * Revision 1.192  2012/01/14 22:56:26  lollisoft
- * Fixed a code generator bug that let the application fail to load from local file.
- *
- * Revision 1.191  2012/01/14 19:54:13  lollisoft
- * Generated code works with written code and application fully initializes.
- * Also it can exit without errors. Maybe the XSLT templates will not work yet.
- * This is due to small changes in the naming (plural vs singular).
- *
- * Revision 1.190  2012/01/09 07:37:51  lollisoft
- * Fixed some functor naming problems in code generator
- * and changed some log messages to be verbose only.
- *
- * Revision 1.189  2011/10/29 06:03:58  lollisoft
- * Refactored application model (and it's model classes) into separate files to enable code generation.
- * The code generation is planned for the model classes and the composite container for the model.
- * Refactored out the login and user management from meta application due to the fact that it is a
- * distinct feature the meta application should not provide. The code has been moved to a security
- * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
- * available.
+ * Revision 1.188.2.10  2013/03/01 06:49:29  lollisoft
+ * Do not log this as error.
  *
  * Revision 1.188.2.9  2013/01/31 06:46:46  lollisoft
  * Fixed application reload bug. After a reload on Mac OS X images could no more get loaded from application bundle.
@@ -790,8 +760,8 @@ extern "C" {
 #include <lbConfigHook.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
 #include <lbmetaapp-module.h>
+
 #include <lbMetaApplication.h>
 /*...e*/
 
@@ -890,15 +860,9 @@ lb_I_String*	LB_STDCALL lb_MetaApplication::getProcessName() {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
+	
 	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-
-	UAP(lb_I_Container, apps)
-	apps = securityManager->getApplications();
-		
-	if (apps != NULL) {
+	if (Applications != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
 
 		deinitApplicationSwitcher();
@@ -910,11 +874,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::uninitialize() {
 		*menuEntry = _trans("Login");
 		removeMenuEntry(_trans("&File"), menuEntry->charrep());
 	}
-#ifdef OLD_TIGHT_DEPENDENCY	
+
 	if (User_Applications != NULL) User_Applications--;
 	if (Users != NULL) Users--;
 	if (Applications != NULL) Applications--;
-#endif
 	if (LogonApplication != NULL) LogonApplication--;
 	if (LogonUser != NULL) LogonUser--;
 	if (ProcessName != NULL) ProcessName--;
@@ -1115,7 +1078,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	// Save a Users list
 
-#ifdef OLD_TIGHT_DEPENDENCY	
 	if (Users == NULL) {
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
@@ -1160,8 +1122,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
 		User_Applications->accept(*&fOp1);
 	}
-#endif
 
+/*
+	UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
+
+	_LOG << "Save application database backend: '" << _application_database_backend << "'" LOG_
+	*backend = _application_database_backend;
+	backend->accept(*&fOp1);
+
+	_LOG << "Save system database backend: '" << _system_database_backend << "'" LOG_
+	*backend = _system_database_backend;
+	backend->accept(*&fOp1);
+
+	usebackend->setData(_use_application_database_backend);
+	_LOG << "Save application database backend flag: '" << usebackend->charrep() << "'" LOG_
+	usebackend->accept(*&fOp1);
+	usebackend->setData(_use_system_database_backend);
+	_LOG << "Save system database backend flag: '" << usebackend->charrep() << "'" LOG_
+	usebackend->accept(*&fOp1);
+*/
 	fOp1->end();
 
 	return ERR_NONE;
@@ -1180,7 +1160,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
-	
+
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 
 	if (pl != NULL) {
@@ -1248,7 +1228,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			_LOG << "Done reading property sets. Having " << propertySets->Count() << " sets." LOG_
 
 
-#ifdef OLD_TIGHT_DEPENDENCY	
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
 			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
@@ -1321,7 +1300,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			_LOG << "Load application database backend flag: '" << usebackend->charrep() << "'" LOG_
 			_use_system_database_backend = usebackend->getData();
 */
-#endif //OLD_TIGHT_DEPENDENCY	
 
 			fOp->end();
 
@@ -1330,9 +1308,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			return ERR_NONE;
 		} else {
 			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
+			return ERR_MODULE_NO_INTERFACE;
 		}
 	} else {
 		_LOGERROR << "Error: Could not load stream operator classes!" LOG_
+		return ERR_MODULE_NOT_FOUND;
 	}
 	return ERR_FILE_READ;
 }
@@ -1450,7 +1430,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	int getMainModuleInfo;
 	int testPressed;
 	int enterDebugger;
-	int _getLoginData;
+	int getLoginData;
 	int doAutoload;
 	int doLog;
 /*...e*/
@@ -1472,7 +1452,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
-		eman->registerEvent("getLoginData", _getLoginData);
+		eman->registerEvent("getLoginData", getLoginData);
 	}
 /*...e*/
 
@@ -1604,12 +1584,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 
 			_LOG << "Using database backend name '" << getSystemDatabaseBackend() << "'." LOG_
 
-			//loadApplication(u, a);
-			//getLoginData(NULL);
-			UAP(lb_I_SecurityProvider, securityManager)
-			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-			AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-			securityManager->autologin(u, "theSecret");
 			loadApplication(u, a);
 
 			_LOG << "Used database backend name '" << getSystemDatabaseBackend() << "'." LOG_
@@ -1684,13 +1658,9 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 }
 
 void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher() {
-	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-
 	UAP(lb_I_Container, apps)
-	apps = securityManager->getApplications();
+	
+	apps = getApplications();
 	
 	while (apps->hasMoreElements() == 1)
 	{
@@ -1712,13 +1682,9 @@ void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher
 }
 
 void                    LB_STDCALL lb_MetaApplication::initApplicationSwitcher() {
-	// Handle case when the function is called twice - as in wxWrapperDLL.cpp and dynamic.cpp
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-
 	UAP(lb_I_Container, apps)
-	apps = securityManager->getApplications();
+	
+	apps = getApplications();
 	
 	while (apps->hasMoreElements() == 1)
 	{
@@ -2055,11 +2021,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
-#ifdef OLD_TIGHT_DEPENDENCY	
 	if (User_Applications != NULL) {
 			_LOG << "lb_MetaApplication::unloadApplication() with " << User_Applications->getRefCount() << " instances." LOG_
 	}
-#endif
 
 	if (app != NULL) {
 		app->uninitialize(); // Internally saves the active document. Thus do not move this behind the following if block.
@@ -2082,24 +2046,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, const char* application) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	
-	_LOG << "lb_MetaApplication::loadApplication('" << ((user == NULL) ? "NULL" : user) << "', '" << ((application == NULL) ? "NULL" : application) << "') called" LOG_
-	
-#ifndef LINUX
-#ifdef __WATCOMC__
-#define PREFIX "_"
-#endif
-#ifdef __MINGW32__
-#define PREFIX ""
-#endif
-#ifdef _MSC_VER
-#define PREFIX ""
-#endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
 
 	if (user == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
@@ -2126,93 +2072,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	if (applicationName == NULL) {
 		/*
 		 * No predefined application without authentication.
 		 * Read the configuration from a database.
 		 */
-		_LOG << "lb_MetaApplication::loadApplication() loads an application over parameters: " << ((application == NULL) ? "NULL" : application) LOG_
 
-			// Also the application requires an authenticated user
-		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		
-		UAP(lb_I_String, ModuleName)
-		UAP(lb_I_String, Functor)
-		
-		UAP(lb_I_Container, apps)
-		apps = securityManager->getApplications();
-		
-		apps->finishIteration();
-		while (apps->hasMoreElements() == 1)
-		{
-			UAP(lb_I_Unknown, uk)
-			UAP(lb_I_String, appName)
-			uk = apps->nextElement();
-			QI(uk, lb_I_String, appName)
-			if (*appName == application)
-			{
-				UAP(lb_I_Long, id)
-				UAP(lb_I_KeyBase, key)
-				key = apps->currentKey();
-				QI(key, lb_I_Long, id)
-				securityManager->setCurrentApplicationId(id->getData());
-				break;
-			}
-		}
-		
-		ModuleName = securityManager->getApplicationModule();
-		Functor = securityManager->getApplicationFunctor();
-
-		applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
-		applicationName[0] = 0;
-		strcpy(applicationName, ModuleName->charrep());
-
-		char f[100] = "";
-		char appl[100] = "";
-		UAP(lb_I_Unknown, a)
-
-		strcpy(f, PREFIX);
-		strcat(f, Functor->charrep());
-		strcpy(appl, applicationName);
-
-
-#ifdef WINDOWS
-		getModuleInstance()->preload(appl);
-		getModuleInstance()->makeInstance(f, appl, &a);
-#endif
-#ifdef LINUX
-		strcat(appl, ".so");
-		getModuleInstance()->preload(appl);
-		getModuleInstance()->makeInstance(f, appl, &a);
-#endif
-
-		if (a == NULL) {
-			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-			return ERR_NONE;
-		}
-
-		if (moduleName == NULL) {
-			moduleName = (char*) malloc(strlen(appl)+1);
-			moduleName[0] = 0;
-			strcpy(moduleName, appl);
-		} else {
-			_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
-		}
-
-		QI(a, lb_I_Application, app)
-
-			//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-
-		app->setGUI(gui);
-		app->initialize(user, application);
-
-		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
-		LogonApplication->setData(application);
-		free(applicationName);
-		
-#ifdef OLD_TIGHT_DEPENDENCY	
 		if (Applications->getApplicationCount() != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, ModuleName)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, Functor)
@@ -2241,6 +2107,21 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 					applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 					applicationName[0] = 0;
 					strcpy(applicationName, ModuleName->charrep());
+
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef __MINGW32__
+#define PREFIX ""
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
 
 					char f[100] = "";
 					char appl[100] = "";
@@ -2412,9 +2293,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 			}
 		}
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
-#endif		
 	} else {
-		_LOG << "lb_MetaApplication::loadApplication() loads an application over the environmemt: " << applicationName LOG_
 
 		UAP(lb_I_Unknown, a)
 
@@ -2443,7 +2322,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		getModuleInstance()->makeInstance(PREFIX "instanceOfApplication", name, &a);
 #endif
 		if (a == NULL) {
-			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			return ERR_NONE;
 		}
 
@@ -2860,8 +2739,7 @@ void LB_STDCALL lb_MetaApplication::msgBox(const char* title, const char* msg) {
 	
 	eman->resolveEvent("showMsgBox", event);
 	
-	_CL_LOG << "showMsgBox will be dispatched (" << event << ")..." LOG_
-
+	printf("showMsgBox will be dispatched (%d)...\n", event);
 	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -3367,12 +3245,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_m
 /*...e*/
 /*...e*/
 
-#ifdef OLD_TIGHT_DEPENDENCY	
 long LB_STDCALL lb_MetaApplication::getApplicationID() {
-//\todo Implement using new security provider interface.
 	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
 		Applications->selectApplication(LogonApplication->charrep());
-		_LOGERROR << "lb_MetaApplication::getApplicationID() returns ID for " << LogonApplication->charrep() LOG_
+		_LOG << "lb_MetaApplication::getApplicationID() returns ID for " << LogonApplication->charrep() LOG_
 		return Applications->getApplicationID();
 	} else {
 		if (!_logged_in) {
@@ -3383,10 +3259,7 @@ long LB_STDCALL lb_MetaApplication::getApplicationID() {
 		}
 		return 0;
 	}
-	_LOGERROR << "Error: lb_MetaApplication::getApplicationID() returns 0, because no security provider was available." LOG_
-	return 0;
 }
-#endif
 
 void			LB_STDCALL lb_MetaApplication::setActiveApplication(const char* name) {
 
@@ -3436,11 +3309,11 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 }
 
 /*...slb_I_Container\42\ LB_STDCALL lb_MetaApplication\58\\58\getApplications\40\\41\:0:*/
-#ifdef OLD_TIGHT_DEPENDENCY
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
+
 	if (Applications->getApplicationCount() == 0) {
 		// Maybe no data collected in the file yet
 		// Fallback to manually read out the applications
@@ -3651,13 +3524,12 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 			_LOG << "Error: Logged in user account is not in data model!" LOG_
 		}
 	}
+
 	apps++;
 	return apps.getPtr();
 }
-#endif
 /*...e*/
 
-#ifdef OLD_TIGHT_DEPENDENCY
 lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
 	if (Applications == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Applications, Applications)
@@ -3667,7 +3539,6 @@ lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
 
 	return Applications.getPtr();
 }
-#endif
 
 void LB_STDCALL lb_MetaApplication::delPropertySet(const char* setname) {
 	if (propertySets != NULL) {
@@ -3737,7 +3608,6 @@ bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 	return true;
 }
 
-#ifdef OLD_TIGHT_DEPENDENCY
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
@@ -3863,7 +3733,6 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	}
 }
 /*...e*/
-#endif
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
@@ -4230,7 +4099,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Reversed)
 	*Reversed = reversed;
 	Reversed->replace(ptr, "");
-	_LOGVERBOSE << "Adding an interceptor '" << Reversed->charrep() << "' for event '" << reversed << "'. Replace pattern '" << ptr << "'" LOG_
+	_LOG << "Adding an interceptor '" << Reversed->charrep() << "' for event '" << reversed << "'. Replace pattern '" << ptr << "'" LOG_
 	activateInterceptor(*&Reversed, *&ev);
 
 	return ERR_NONE;
@@ -4378,6 +4247,8 @@ lbErrCodes LB_STDCALL lb_Dispatcher::activateInterceptor(lb_I_String* EvName, lb
 	if (evInterceptor != NULL) {
 		_LOG << "lb_Dispatcher::activateInterceptor() activates interceptor '" << EvName->charrep() << "'" LOG_
 		ev->setInterceptor(evInterceptor->getInterceptor(), evInterceptor->getBeforeInterceptor(), evInterceptor->getAfterInterceptor());
+	} else {
+		_LOG << "lb_Dispatcher::activateInterceptor() failed activating interceptor '" << EvName->charrep() << "'" LOG_
 	}
 	return ERR_NONE;
 }
