@@ -781,7 +781,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
 		char* Name = NULL;
 		char* Source = NULL;
 		long  Typ;
-		char*  Target;
+		char*  Target = NULL;
 		
 		*iStream >> ID;
 		*iStream >> Name;
