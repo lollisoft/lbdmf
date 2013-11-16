@@ -17,7 +17,7 @@ Provides: lbdmf
 BuildRequires: bison flex wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils
 %else
-BuildRequires: bison flex wxGTK-devel >= 2.8.8 desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
+BuildRequires: rpmlint bison flex wxGTK-devel >= 2.8.8 desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils
 %endif
 
