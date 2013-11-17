@@ -111,7 +111,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 
 C_ELFOPS += $(C_OPS) `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = `wx-config --inplace --libs` -o
+LDFLAGS = `wx-config --inplace --libs`
 
 VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
@@ -121,7 +121,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = `wx-config --inplace --libs` -o
+LDFLAGS = `wx-config --inplace --libs`
 
 VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
@@ -131,7 +131,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = `wx-config --inplace --libs` -o
+LDFLAGS = `wx-config --inplace --libs`
 
 VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
@@ -151,11 +151,11 @@ endif
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
-L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load -o
+LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load
 endif
 
 ifeq ($(DEBUG), no)
-L_OPS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon  `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook -framework wxRibbon  `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 VENDORLIBS=
 endif
@@ -173,7 +173,7 @@ ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
 endif
 
-L_OPS = -lstdc++ -L. `wx-config --inplace --libs` -o
+LDFLAGS = -lstdc++ -L. `wx-config --inplace --libs`
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so $(HOME)/lib/wxAUI.so 
 endif
 

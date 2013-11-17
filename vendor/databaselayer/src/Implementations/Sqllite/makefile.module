@@ -99,7 +99,7 @@ C_SOOPS_WX = $(C_OPS) `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_ME
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 LDFLAGS=-lc /usr/lib/libgcc_s.1.dylib -L$(HOME)/lib -llbsqlite3
-#L_OPS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
+#LDFLAGS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
 LIBS=$(L_SOOPS) $(MPATROL) -F$(HOME)/lib -framework lbHook
 endif    
 

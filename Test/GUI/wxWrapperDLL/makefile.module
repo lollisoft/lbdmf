@@ -115,7 +115,7 @@ OBJDEP=
 C_SOOPS_WX = -DLB_I_EXTENTIONS `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 
@@ -125,7 +125,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 
@@ -135,7 +135,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 

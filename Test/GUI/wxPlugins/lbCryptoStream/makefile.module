@@ -109,7 +109,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 
@@ -119,7 +119,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
@@ -128,7 +128,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
