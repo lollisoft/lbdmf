@@ -114,7 +114,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook -llbdatabaselayer_sqllite -llbsqlite3
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
 ifeq ($(OSTYPE), linux)
@@ -123,7 +123,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook -llbdatabaselayer_sqllite -llbsqlite3
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
 ifeq ($(OSTYPE), linux-debian-ppc)
@@ -132,7 +132,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook -llbdatabaselayer_sqllite -llbsqlite3
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
@@ -143,7 +143,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-lc -L$(prefix)/lib -llbdatabaselayer_sqllite #-lc $(prefix)/lib/sqlite3.so
-L_OPS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 
 endif
@@ -156,7 +156,7 @@ OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so -lc $(prefix)/lib/databaselayer_sqllite.so  -lc $(prefix)/lib/sqlite3.so
-L_OPS=$(L_SOOPS) $(MPATROL) -L. `wx-config --inplace --libs`
+LDFLAGS=$(L_SOOPS) $(MPATROL) -L. `wx-config --inplace --libs`
 endif
 
 endif

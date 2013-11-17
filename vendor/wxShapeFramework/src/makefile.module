@@ -114,7 +114,7 @@ OBJDEP=
 C_SOOPS_WX = -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 
@@ -124,7 +124,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 
@@ -134,7 +134,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ../include `wx-config --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/vendor/wxaui-0.9.1/include
 C_SOOPS= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 LIBS=-lwxPropgrid
 endif    
 
@@ -153,10 +153,10 @@ C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -I ../include `wx-c
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 ifeq ($(DEBUG), yes)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
+LDFLAGS=$(L_SOOPS) -F$(HOME)/lib -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
 ifeq ($(DEBUG), no)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+LDFLAGS=$(L_SOOPS) -F$(HOME)/lib -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 endif
 
@@ -170,7 +170,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxAUI.so 
-L_OPS=$(L_SOOPS) -L. -lwxPropgrid -lstdc++
+LDFLAGS=$(L_SOOPS) -L. -lwxPropgrid -lstdc++
 endif
 
 endif

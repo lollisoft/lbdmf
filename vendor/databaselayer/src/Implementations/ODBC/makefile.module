@@ -86,7 +86,7 @@ MOD_INCL=$(STD_INCL) -I ../..
 C_SOOPS_WX =  -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
-L_OPS= -lc /usr/local/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib
+LDFLAGS= -lc /usr/local/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib
 LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
 endif    
 
