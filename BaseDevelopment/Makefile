@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.17 $
+# * $Revision: 1.229.2.18 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.17 2013/10/20 10:33:55 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.18 2013/11/17 09:26:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.18  2013/11/17 09:26:38  lollisoft
+# * Changed L_OPS flags to be LDFLAGS.
+# *
 # * Revision 1.229.2.17  2013/10/20 10:33:55  lollisoft
 # * Removed some char[] arrays due to buffer overflow danger.
 # *

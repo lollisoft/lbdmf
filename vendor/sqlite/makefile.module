@@ -142,7 +142,7 @@ OBJDEP=
 C_SOOPS_WX =-DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
 C_SOOPS= $(OSX_ARCH) $(C_SOOPS_WX)
 VENDORLIBS= 
-L_OPS=$(OSX_ARCH) $(L_SOOPS)  -lc /usr/lib/libgcc_s.1.dylib
+LDFLAGS=$(OSX_ARCH) $(L_SOOPS)  -lc /usr/lib/libgcc_s.1.dylib
 endif
 
 endif
@@ -155,7 +155,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
 C_SOOPS= $(OSX_ARCH) $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(OSX_ARCH) $(L_SOOPS) 
+LDFLAGS=$(OSX_ARCH) $(L_SOOPS) 
 endif
 
 endif
