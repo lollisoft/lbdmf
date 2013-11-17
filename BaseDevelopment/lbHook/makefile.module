@@ -125,5 +125,5 @@ OBJDEP=
 MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
 MOD_INCL_CPP=$(STD_INCL_CPP) -I ../linuxCode -I /sw/include
 
-L_OPS=$(MPATROL) -L. -F$(prefix)/lib -framework Security -framework Carbon -o
+LDFLAGS=$(MPATROL) -L. -F$(prefix)/lib -framework Security -framework Carbon
 endif    
