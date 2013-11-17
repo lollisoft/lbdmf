@@ -166,7 +166,7 @@ OBJDEP=
 C_SOOPS_WX = -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 
@@ -176,7 +176,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
@@ -187,7 +187,7 @@ OBJDEP=
 C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs` 
 endif    
 
 endif
@@ -200,7 +200,7 @@ OBJDEP=
 C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 endif
