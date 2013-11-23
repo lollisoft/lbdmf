@@ -1824,7 +1824,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	
 	
 	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
-	if (*writeXMISettings == "yes") {
+	// Create this file if it is missing. My templates need this. Only check this here at the first place.
+	if (*writeXMISettings == "yes" || !FileExists(XSLFileImportSettings->charrep())) {
 		if (XSLFileImportSettings->charrep() != NULL) {
 			if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
