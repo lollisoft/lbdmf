@@ -49,8 +49,6 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDynamicAppStorage.h>
 
 // Includes for the libxml / libxslt libraries
@@ -374,16 +372,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 
 	// Mark that data sets, that are related to this application
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-	UAP(lb_I_Unknown, apps)
-	apps = securityManager->getApplicationModel();
-	QI(apps, lb_I_Applications, applications)
+	applications = meta->getApplicationModel();
 	
 	meta->setStatusText("Info", "Write XML document ...");
 	
-	applications->selectById(AppID->getData());
+	applications->selectApplication(AppID->getData());
 	applications->mark();
 
 	if ((forms != NULL) &&
@@ -446,7 +439,6 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 		meta->setStatusText("Info", "Write XML document (applications) ...");
 		applications->accept(*&aspect);
-		
 		meta->setStatusText("Info", "Write XML document (ApplicationFormulars) ...");
 		ApplicationFormulars->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (forms) ...");
@@ -1277,9 +1269,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	meta->setStatusText("Info", "Load database configuration (forms) ...");
 	forms->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formularfields) ...");
-	aspect->setContextNamespace("DatabaseInputStreamVisitor_BuildFromFormularParameter");
 	formularfields->accept(*&aspect);
-	aspect->setContextNamespace("DatabaseInputStreamVisitor");
 	meta->setStatusText("Info", "Load database configuration (columntypes) ...");
 	columntypes->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formActions) ...");
@@ -1834,7 +1824,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 	
 	
 	// If I import to a MS SQL server, then I need other settings. Always writing the 'wrong' default settings is not correct.
-	if (*writeXMISettings == "yes") {
+	// Create this file if it is missing. My templates need this. Only check this here at the first place.
+	if (*writeXMISettings == "yes" || !FileExists(XSLFileImportSettings->charrep())) {
 		if (XSLFileImportSettings->charrep() != NULL) {
 			if (strcmp(XSLFileImportSettings->charrep(), "<settings>") != 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_OutputStream, oStream)
@@ -1976,9 +1967,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			const char ** xsltParameters;
 			// Maps xsltParameters element within document (as lb_I_Parameters instance) if present in document into parameter char array.
 			xsltParameters = convertParameters(*&document);
-			res = xsltApplyStylesheet(cur, doc, xsltParameters);
-			cleanupParameters(xsltParameters);
 
+			res = xsltApplyStylesheet(cur, doc, xsltParameters);
+
+			cleanupParameters(xsltParameters);
+			
 			_LOG << "Save resulting document as a string." LOG_
 
 			if (res == NULL) {
@@ -2598,8 +2591,6 @@ bool LB_STDCALL run();
 lb_I_Unknown* LB_STDCALL peekImplementation();
 lb_I_Unknown* LB_STDCALL getImplementation();
 void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 DECLARE_LB_UNKNOWN()
@@ -2713,8 +2704,6 @@ bool LB_STDCALL run();
 lb_I_Unknown* LB_STDCALL peekImplementation();
 lb_I_Unknown* LB_STDCALL getImplementation();
 void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 DECLARE_LB_UNKNOWN()
@@ -2827,8 +2816,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
