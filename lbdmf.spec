@@ -89,5 +89,5 @@ rm -rf $RPM_BUILD_DIR/file.list.%{name}.files.tmp
 rm -rf $RPM_BUILD_DIR/file.list.%{name}.dirs
 
 %files -f ../file.list.%{name}
-
+%attr(4755, root, users) $(prefix)/share/lbdmf
 %defattr(-,root,root,0755)
