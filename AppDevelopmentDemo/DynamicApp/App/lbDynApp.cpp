@@ -449,10 +449,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
 		} else {
 			bool b;
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
+
+			if (!_writeXMISettings && !meta->askYesNo("WARNING: On some systems this file cannot be written due to permission issues!\nIf you need to override this file, copy the complete template folder to your home directory.")) {
+				return ERR_NONE;
+			}
+
 			_writeXMISettings = !ov->getData();
 			ov->setData(!ov->getData());
 		}
- 
+		
 		SomeBaseSettings->setUAPBoolean(*&name, *&ov);
 
 		meta->delPropertySet("CodeGenMenuSettings");
