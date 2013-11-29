@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.18 $
+# * $Revision: 1.229.2.19 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.18 2013/11/17 09:26:38 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.19 2013/11/29 06:25:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.19  2013/11/29 06:25:47  lollisoft
+# * Added copy commands for rpm deployment to prepare XMISettings.xsl based on XMISettingsTemplate.xsl.
+# *
 # * Revision 1.229.2.18  2013/11/17 09:26:38  lollisoft
 # * Changed L_OPS flags to be LDFLAGS.
 # *
@@ -1623,6 +1626,7 @@ install:
 	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xml $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/XMISettingsTemplate.xsl $(prefix)/share/lbdmf/XMIToDMF/XMISettings.xsl
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/*.xsl $(prefix)/share/lbdmf/lbDMFDataViewModel
@@ -1664,6 +1668,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/*.xsl $(prefix)/share/lbdmf/include
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/XMISettingsTemplate.xsl $(prefix)/share/lbdmf/XMIToDMF/XMISettings.xsl
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/*.xsl $(prefix)/share/lbdmf/DMFToXMI
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFDataViewModel/*.xsl $(prefix)/share/lbdmf/lbDMFDataViewModel
 	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XSLT_Templates/lbDMFFixedFormular/*.xsl $(prefix)/share/lbdmf/lbDMFFixedFormular
