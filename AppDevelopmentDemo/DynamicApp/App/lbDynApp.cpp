@@ -450,8 +450,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
 			bool b;
 			SomeBaseSettings->getUAPBoolean(*&name, *&ov);
 
-			if (!_writeXMISettings && !meta->askYesNo("WARNING: On some systems this file cannot be written due to permission issues!\nIf you need to override this file, copy the complete template folder to your home directory.")) {
-				return ERR_NONE;
+			if (!_writeXMISettings) {
+				meta->msgBox("On some systems this file cannot be written due to permission issues!\nIf you need to override this file, copy the complete template folder to your home directory.", "Warning");
 			}
 
 			_writeXMISettings = !ov->getData();
