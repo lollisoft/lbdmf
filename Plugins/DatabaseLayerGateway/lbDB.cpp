@@ -343,7 +343,7 @@ public:
 
 	/* Navigation */
 
-	int							LB_STDCALL getPosition() { return cursor; }
+	int							LB_STDCALL getPosition();
 	lbErrCodes					LB_STDCALL absolute(int pos);
 
 	lbErrCodes					LB_STDCALL first();
@@ -413,7 +413,9 @@ public:
 	 * The query gets the key values in reverse order.
 	 */
 	wxString					LB_STDCALL getLastPageQuery();
-	
+
+	wxString					LB_STDCALL getCountQuery();
+
 	wxString					LB_STDCALL getNextPageQuery();
 	
 	/** \brief Loads key values into a cache for cursor navigation.
@@ -457,7 +459,7 @@ public:
 
 private:
 	int		cursor;
-
+	
 	/// If any function such as first or next has been successfully called.
 	bool	_dataFetched;
 
@@ -502,6 +504,9 @@ private:
 	 */
 	UAP(lb_I_Container, cachedDataRows)
 	UAP(lb_I_Container, cachedDataColumns)
+	
+	// Backup, if absolute function fails
+	UAP(lb_I_Container, cachedDataColumns_Backup)
 
 
 
@@ -3321,6 +3326,20 @@ wxString LB_STDCALL lbDatabaseLayerQuery::getLastPageQuery() {
 	return tempSQL;
 }
 
+wxString LB_STDCALL lbDatabaseLayerQuery::getCountQuery() {
+	wxString tempSQL = "SELECT Count(";
+	tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+	tempSQL += ") as Count FROM ";
+	tempSQL += tables[0];
+	
+	if (whereClause != "") {
+		tempSQL += " ";
+		tempSQL += whereClause;
+	}
+
+	return tempSQL;
+}
+
 wxString LB_STDCALL lbDatabaseLayerQuery::getNextPageQuery() {
 	int pageSize = currentCursorview.Count();
 	wxString lastIdInPage = currentCursorview[pageSize-1];
@@ -3443,7 +3462,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 				return false;
 			}
 			
-			cursor = tempcursor-1; // Shifted cursor by (n-1) * page_size + remaining cursor position
+			cursor = tempcursor; // Shifted cursor by (n-1) * page_size + remaining cursor position
 		} else {
 			wxString tempSQL = "SELECT ";
 			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
@@ -3652,9 +3671,24 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	return false;
 }
 
+int LB_STDCALL lbDatabaseLayerQuery::getPosition() {
+	return cursor;
+}
+
 /// \todo Deeper check required.
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	lbErrCodes err = ERR_NONE;
+	
+	int cursor_backup = cursor;
+	
+	// Move to backup
+	if (cachedDataColumns_Backup != NULL) {
+		cachedDataColumns_Backup--;
+	}
+	cachedDataColumns_Backup = cachedDataColumns.getPtr();
+	cachedDataColumns.resetPtr();
+	REQUEST(getModuleInstance(), lb_I_Container, cachedDataColumns)
+
 	
 	///\todo Implement
 	if (cursorFeature == false) return ERR_NONE;
@@ -3662,28 +3696,46 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::absolute(int pos) {
 	// Throw away the page, because absolute does not guarantee correct values in currentCursorview to start paging
 	if ((err = first()) != ERR_NONE)
 		return err;
-
+	
 	pos--; // Externally starting at 1.
 	cursor = pos;
 
 	if ((currentCursorview.Count() < max_in_cursor) || currentCursorview.Count() == 0) {
 		cursor = 0;
-		if (!selectCurrentRow())
+		if (!selectCurrentRow()) {
+			cachedDataColumns--;
+			cachedDataColumns = cachedDataColumns_Backup.getPtr();
+			cachedDataColumns_Backup.resetPtr();
+			cursor = cursor_backup;
+			
 			return ERR_DB_NODATA;
+		}
 		_dataFetched = true;
 		return ERR_NONE;
 	}
 	if (max_in_cursor-1 < 0) {
 		//currentCursorview[0] = "0";
 		cursor = 0;
-		if (!selectCurrentRow())
+		if (!selectCurrentRow()){
+			cachedDataColumns--;
+			cachedDataColumns = cachedDataColumns_Backup.getPtr();
+			cachedDataColumns_Backup.resetPtr();
+			cursor = cursor_backup;
+
 			return ERR_DB_NODATA;
+		}
 		_dataFetched = true;
 		return ERR_NONE;
 	}
 	//currentCursorview[max_in_cursor-1] = "0";
-	if (!selectCurrentRow())
+	if (!selectCurrentRow()) {
+		cachedDataColumns--;
+		cachedDataColumns = cachedDataColumns_Backup.getPtr();
+		cachedDataColumns_Backup.resetPtr();
+		cursor = cursor_backup;
+
 		return ERR_DB_NODATA;
+	}
 	_dataFetched = true;
 	return ERR_NONE;
 }
@@ -3768,6 +3820,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 	}
 
 	if (cursorFeature == true) {
+		if (cursor == 0) return ERR_DB_NODATA;
 		cursor--;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
 	}
@@ -3776,18 +3829,26 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::previous() {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
-	///\todo Implement
-	if (_dataFetched == false) return ERR_DB_NODATA;
+	wxString countQuery = getCountQuery();
+	
+	try {
+		theResult = currentdbLayer->RunQueryWithResults(countQuery);
+		
+		if (theResult != NULL) {
+			if (theResult->Next()) {
+				long Count = theResult->GetResultLong(1);
+				currentdbLayer->CloseResultSet(theResult);
+				return absolute(Count);
+			}
+		}
 
-	if (cursorFeature == false) {
-		cachedRowIndex = cachedDataRows->Count();
-		return selectCachedRow();
+		_dataFetched = false;
+		return ERR_DB_NODATA;
+	} catch (DatabaseLayerException ex) {
+		_CL_LOGALWAYS << "lbDatabaseLayerQuery::query() Error: Catched an exeption! Exception was: " << ex.GetErrorMessage().c_str() << ". Query was: " << countQuery.c_str() LOG_
+		return ERR_DB_QUERYFAILED;
 	}
-	if (cursorFeature == true) {
-		cursor = max_in_cursor+1;
-		if (!selectCurrentRow()) return ERR_DB_NODATA;
-	}
-	_dataFetched = true;
+	
 	return ERR_NONE;
 }
 
