@@ -115,7 +115,7 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 -- <xsl:value-of select="$dbtyperef"/>
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) 
-select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 	</xsl:for-each>
 	
 
@@ -132,7 +132,7 @@ select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<x
 -- Fill schema tables foreignkeys
 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
-select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<xsl:value-of select="$ForeignKeyClassName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 0, 0, 0, id from dbtable where tableremarks = '<xsl:value-of select="$ForeignKeyClassId"/>';
+select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<xsl:value-of select="$ForeignKeyClassName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 0, 0, 0, id from dbtable where tablename = '<xsl:value-of select="$ForeignKeyClassName"/>' AND tableremarks = '<xsl:value-of select="$ForeignKeyClassId"/>';
 
 </xsl:template>
 
@@ -144,7 +144,7 @@ select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<
 -- Fill schema tables primarykeys
 
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) 
-select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 
 </xsl:template>
 
