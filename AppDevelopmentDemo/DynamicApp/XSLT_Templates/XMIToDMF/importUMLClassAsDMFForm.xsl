@@ -130,13 +130,13 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 </xsl:variable>	
 
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
-INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:Class'">
 <xsl:if test="@aggregation='none'">
 <xsl:if test="./lowerValue/@value='1'">
 <xsl:if test="./upperValue/@value='1'">
-INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 </xsl:if>
 </xsl:if>
 </xsl:if>
@@ -160,7 +160,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 <xsl:variable name="otherClassId" select="./type/@xmi:idref"/>
 <xsl:variable name="otherClassName" select="//packagedElement[@xmi:id=$otherClassId]/@name"/>
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
-select '', '', '<xsl:value-of select="$otherClassName"/>', 'id', '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>', 0, 0, 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+select '', '', '<xsl:value-of select="$otherClassName"/>', 'id', '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>', 0, 0, 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 </xsl:when>
 </xsl:choose>
 
@@ -181,7 +181,7 @@ select '', '', '<xsl:value-of select="$otherClassName"/>', 'id', '', '', '<xsl:v
 
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:pk'">	
 	
-INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>',  '', 0, id from dbtable where tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', '<xsl:value-of select="@name"/>',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 
 </xsl:if>	
 
