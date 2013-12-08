@@ -35,6 +35,9 @@ Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.png"; DestDi
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples\*.*"; DestDir: "{app}\UMLSamples\"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\ApplicationprototypingDokumentation.pdf"; DestDir: "{app}\"; CopyMode: alwaysoverwrite;
+
+; Initially write a required file for this folder as it is no longer versioned due to permanent changes
+Source: "Q:\Develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates\include\XMISettingsTemplate.xsl"; DestDir: "{app}\XSLT\XMIToDMF\XMISettings.xsl"; CopyMode: alwaysoverwrite
 ; --- My current binary only file
 
 ; Solved Windows 7 File locking issues by using a transaction. Also this is more than many times faster!
