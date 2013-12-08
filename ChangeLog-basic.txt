@@ -1,3 +1,11 @@
+2013-12-08 07:50  lollisoft
+
+	* bindist.iss: Added writing XMISettingsTemplate.xsl
+
+2013-12-08 07:27  lollisoft
+
+	* ChangeLog-basic.txt: Corrected changelog
+
 2013-12-08 07:16  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
@@ -72,7 +80,7 @@
 
 2013-11-17 13:11  lollisoft
 
-	* bin-buildtools-dist.iss, docdist.iss, bindist.iss, dist.iss:
+	* bin-buildtools-dist.iss, docdist.iss, dist.iss, bindist.iss:
 	  Changed version
 
 2013-11-17 12:34  lollisoft
