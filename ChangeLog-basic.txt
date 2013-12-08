@@ -1,3 +1,17 @@
+2013-12-08 07:16  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl,
+	  XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  XMISysImport.FillSchemaTables.Sqlite.xsl,
+	  importUMLClassAsDMFForm.xsl: Fixed bug of doubled dbcolumn
+	  entries when UML models contain identical ID's.  Taken phonenumber
+	  sample changes into this branch.
+
+2013-12-07 15:20  lollisoft
+
+	* ChangeLog-basic.txt: New release 1.0.4.1 final
+
 2013-12-07 09:41  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp: Swapped text for
