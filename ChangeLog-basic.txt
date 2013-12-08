@@ -1,3 +1,12 @@
+2013-12-08 10:42  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Added copying XMISettings
+	  template
+
+2013-12-08 07:52  lollisoft
+
+	* ChangeLog-basic.txt: Corrected changelog for iss installer change
+
 2013-12-08 07:50  lollisoft
 
 	* bindist.iss: Added writing XMISettingsTemplate.xsl
