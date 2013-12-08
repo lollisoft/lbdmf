@@ -368,6 +368,7 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', '<xsl:value-of select="$RibbonGroupName"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:if>
 
+
 <!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildSqliteVisibleFieldMapping">
