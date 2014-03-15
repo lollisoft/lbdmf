@@ -938,7 +938,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:when test="$primaryKey!=''">INTEGER IDENTITY (1, 1) NOT NULL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose></xsl:when>
 			<xsl:when test="$backendType='string'">char(255)</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
-			<xsl:when test="$backendType='image'">BLOG</xsl:when>
+			<xsl:when test="$backendType='image'">BLOB</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
 				<xsl:variable name="upperValue" select="./upperValue/@value"/>
