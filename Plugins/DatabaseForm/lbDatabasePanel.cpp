@@ -102,8 +102,6 @@ extern "C" {
 //#include "childwnd.h"
 
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...sdoc:0:*/
@@ -183,8 +181,6 @@ lbDatabasePanel::lbDatabasePanel()
 //	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_LOG << "lbDatabasePanel::lbDatabasePanel() called." LOG_
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 	
 	formName = strdup("Database table view");
 	untranslated_formName = NULL;
@@ -378,169 +374,241 @@ int LB_STDCALL lbDatabasePanel::lookupColumnIndex(const char* name) {
 }
 
 void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
-/*...sCreate controls based on configuration in a database:40:*/
-				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
-                lbErrCodes err = ERR_NONE;
-				char* type = FFI->getControlType(name);
+	/*...sCreate controls based on configuration in a database:40:*/
+	//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
+	lbErrCodes err = ERR_NONE;
+	char* type = FFI->getControlType(name);
 
-				if (strcmp(type, "toolbarimagefile") == 0) {
-					UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
-					UAP_REQUEST(getModuleInstance(), lb_I_String, file)
-					UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+	// Add a simple label to be used for special fields that may not editable or no control is available
+	if (strcmp(type, "label") == 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+		
 
-					*file = app->getDirLocation();
+		addLabel(name, sizerControl, hideThisColumn);
+		
+		addLabel(name, sizerLabel, hideThisColumn);
 
+		sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
+	}
+	else
+	if (strcmp(type, "toolbarimagefile") == 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+		
+		*file = app->getDirLocation();
+		
 #ifdef OSX
-					*images = "/toolbarimages/";
+		*images = "/toolbarimages/";
 #endif
 #ifdef LINUX
-					*images = "/toolbarimages/";
+		*images = "/toolbarimages/";
 #endif
 #ifdef WINDOWS
-					*images = "\\toolbarimages\\";
+		*images = "\\toolbarimages\\";
 #endif
-
-					*file += images->charrep();
+		
+		*file += images->charrep();
 #ifdef OSX
-					if (opendir(file->charrep()) == NULL) {
-						UAP(lb_I_String, pName)
-						pName = app->getProcessName();
-						*file = "./";
-						*file += pName->charrep();
-						*file += ".app/Contents/Resources/toolbarimages/";
-					}
+		if (opendir(file->charrep()) == NULL) {
+			UAP(lb_I_String, pName)
+			pName = app->getProcessName();
+			*file = "./";
+			*file += pName->charrep();
+			*file += ".app/Contents/Resources/toolbarimages/";
+		}
 #endif
-					*file += "new.xpm";
-
-					if (!wxFile::Exists(file->charrep())) {
-						// Fallback
-			#ifdef OSX
-			#endif
-			#ifdef LINUX
-						*file = "/usr/share/lbdmf";
-						*file += images->charrep();
-						*file += "new.xpm";
-			#endif
-			#ifdef WINDOWS
-			#endif
-					}
-
-
-
-					int ImageButonClick;
-					char eventName[100] = "";
-					sprintf(eventName, "%pImageButtonClick%s", this, name);
-					eman->registerEvent(eventName,  ImageButonClick);
-
-					_LOG << "Assign a file to an image button: " << file->charrep() LOG_
-
-					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
-					im.Rescale(32, 32);
-					wxBitmap bm = wxBitmap(im);
-					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
-					imagebutton->SetName(name);
-
-					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(imagebutton, 1, wxALL, GAP);
-					sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
-
-					UAP_REQUEST(getModuleInstance(), lb_I_String, element)
-					UAP_REQUEST(getModuleInstance(), lb_I_String, elementname)
-					UAP(lb_I_KeyBase, key)
-					UAP(lb_I_Unknown, uk)
-
-					*elementname = name;
-					*element = "";
-
-					QI(element, lb_I_Unknown, uk)
-					QI(elementname, lb_I_KeyBase, key)
-
-					ImageButtonMapperList->insert(&uk, &key);
-
-					this->Connect( ImageButonClick,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnImageButtonClick);
-				}
-
-				if (strcmp(type, "ownerdraw") == 0) {
-					lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
-					
-					ownerdraw->init(this);
-
-					ownerdraw->SetName(name);
-
-					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(ownerdraw, 1, 0, GAP);
-					sizerMain->Add(sizerControl, 1, wxALL, GAP);
-
-					if (FFI->isReadonly(name)) {
-				        ownerdraw->Disable();
-					}
-				}
-
-				if (strcmp(type, "image") == 0) {
-					UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
-					UAP_REQUEST(getModuleInstance(), lb_I_String, file)
-					UAP_REQUEST(getModuleInstance(), lb_I_String, images)
-
-					*file = app->getDirLocation();
-
+		*file += "new.xpm";
+		
+		if (!wxFile::Exists(file->charrep())) {
+			// Fallback
 #ifdef OSX
-							*images = "/toolbarimages/";
 #endif
 #ifdef LINUX
-							*images = "/toolbarimages/";
+			*file = "/usr/share/lbdmf";
+			*file += images->charrep();
+			*file += "new.xpm";
 #endif
 #ifdef WINDOWS
-							*images = "\\toolbarimages\\";
 #endif
-
-					*file += images->charrep();
+		}
+		
+		
+		
+		int ImageButonClick;
+		char eventName[100] = "";
+		sprintf(eventName, "%pImageButtonClick%s", this, name);
+		eman->registerEvent(eventName,  ImageButonClick);
+		
+		_LOG << "Assign a file to an image button: " << file->charrep() LOG_
+		
+		wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
+		im.Rescale(32, 32);
+		wxBitmap bm = wxBitmap(im);
+		wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
+		imagebutton->SetName(name);
+		
+		addLabel(name, sizerLabel, hideThisColumn);
+		sizerControl->Add(imagebutton, 1, wxALL, GAP);
+		sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, element)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, elementname)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		*elementname = name;
+		*element = "";
+		
+		QI(element, lb_I_Unknown, uk)
+		QI(elementname, lb_I_KeyBase, key)
+		
+		ImageButtonMapperList->insert(&uk, &key);
+		
+		this->Connect( ImageButonClick,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+					  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnImageButtonClick);
+	}
+	else
+	if (strcmp(type, "ownerdraw") == 0) {
+		lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
+		
+		ownerdraw->init(this);
+		
+		ownerdraw->SetName(name);
+		
+		addLabel(name, sizerLabel, hideThisColumn);
+		sizerControl->Add(ownerdraw, 1, 0, GAP);
+		sizerMain->Add(sizerControl, 1, wxALL, GAP);
+		
+		if (FFI->isReadonly(name)) {
+			ownerdraw->Disable();
+		}
+	}
+	else
+	if (strcmp(type, "image") == 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, file)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+		
+		*file = app->getDirLocation();
+		
 #ifdef OSX
-					if (opendir(file->charrep()) == NULL) {
-						UAP(lb_I_String, pName)
-						pName = app->getProcessName();
-						*file = "./";
-						*file += pName->charrep();
-						*file += ".app/Contents/Resources/toolbarimages/";
-					}
+		*images = "/toolbarimages/";
 #endif
-
-					*file += "new.xpm";
-
-					if (!wxFile::Exists(file->charrep())) {
-						// Fallback
-			#ifdef OSX
-			#endif
-			#ifdef LINUX
-						*file = "/usr/share/lbdmf";
-						*file += images->charrep();
-						*file += "new.xpm";
-			#endif
-			#ifdef WINDOWS
-			#endif
-					}
-
-
-					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
-					im.Rescale(32, 32);
-					wxBitmap bm = wxBitmap(im);
-					wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, bm);
-					bitmap->SetName(name);
-
-					addLabel(name, sizerLabel, hideThisColumn);
-					sizerControl->Add(bitmap, 1, wxALL, GAP);
-					sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, GAP);
-
-					if (FFI->isReadonly(name)) {
-				        bitmap->Disable();
-					}
-				}
-
-				free(type);
-/*...e*/
+#ifdef LINUX
+		*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+		*images = "\\toolbarimages\\";
+#endif
+		
+		*file += images->charrep();
+#ifdef OSX
+		if (opendir(file->charrep()) == NULL) {
+			UAP(lb_I_String, pName)
+			pName = app->getProcessName();
+			*file = "./";
+			*file += pName->charrep();
+			*file += ".app/Contents/Resources/toolbarimages/";
+		}
+#endif
+		
+		*file += "new.xpm";
+		
+		if (!wxFile::Exists(file->charrep())) {
+			// Fallback
+#ifdef OSX
+#endif
+#ifdef LINUX
+			*file = "/usr/share/lbdmf";
+			*file += images->charrep();
+			*file += "new.xpm";
+#endif
+#ifdef WINDOWS
+#endif
+		}
+		
+		
+		wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
+		im.Rescale(32, 32);
+		wxBitmap bm = wxBitmap(im);
+		wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, bm);
+		bitmap->SetName(name);
+		
+		addLabel(name, sizerLabel, hideThisColumn);
+		sizerControl->Add(bitmap, 1, wxALL, GAP);
+		sizerMain->Add(sizerControl, 1, wxEXPAND | wxALL, GAP);
+		
+		if (FFI->isReadonly(name)) {
+			bitmap->Disable();
+		}
+	}
+	else
+	// New plugin based type.
+	
+	// The value in type determines the special handler a control plugin registers.
+	// The value must not have any prefix or postfix as here one is used to see if
+	// there exists a control plugin of that type.
+	
+	// A way to load the control out of the type may be an action that gets all the
+	// required information (context) to enable transparent integration.
+	
+	// 1.) Load the control setup action plugin and pass it the data required.
+	// 2.) The action tries to load the control into the form at the given sizers.
+	
+	// Using an action opens it for more functionality beyont simple control setup.
+	// Possible things would be conditional setup based on permissions or the like.
+	
+	// First of all, the code therefore should be itself in a plugin, that could be
+	// changed to not use action behind the scenes.
+	
+	// Or an event could be used to let that handle by a plugin
+	
+	// When I have got the control from anywhere, it should be a lb_I_Control. That
+	// type can be passwd around in my event handling mechanism.
+	
+	// The event handler mechanism is tolerant to not existing handlers, so this is
+	// therefore the most modular and optional behaviour
+	
+	/*
+	UAP_REQUEST(getModuleInstance(), lb_I_String, control_type)
+	
+	*control_type = type;
+	
+	UAP(lb_I_Unknown, uk)
+	QI(control_type, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Control, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("LoadCustomControl", uk.getPtr(), &uk_result);
+	*/
+	
+	// Default behaviour for unknown special fields is a label to explain that
+	{
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, explain)
+		
+		*explain = "Special type not supported here [";
+		*explain += name;
+		*explain += "]";
+		
+		addLabel("", sizerControl, hideThisColumn);
+		
+		addLabel(name, sizerLabel, hideThisColumn);
+		
+		sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
+	}
+	
+	
+	free(type);
+	/*...e*/
 }
 
-bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formName, const char* tableName, const char* fieldName) {
+bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formName, const char* fieldName) {
 	bool definitionFound = false;
 	bool formFound = false;
 	lbErrCodes err = ERR_NONE;
@@ -548,16 +616,16 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-	ID->setData(securityManager->getApplicationID());
+	ID->setData(meta->getApplicationID());
 	
-	forms->finishIteration();
-	while (forms->hasMoreElements()) {
-		forms->setNextElement();
-		FID->setData(forms->get_anwendungid());
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		FID->setData(forms->getApplicationID());
 		
 		if (FID->equals(*&ID)) {
-			if (strcmp(formName, forms->get_name()) == 0) {
-				forms->finishIteration();
+			if (strcmp(formName, forms->getName()) == 0) {
+				forms->finishFormularIteration();
 				formFound = true;
 				_LOG << "Found formular name in datamodel." LOG_
 				break;
@@ -569,24 +637,24 @@ bool LB_STDCALL lbDatabasePanel::haveNotMappedForeignKeyFields(const char* formN
 		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 	}
 	
-	long FormID = forms->get_id();
+	long FormID = forms->getFormularID();
 	
-	formularfields->finishIteration();
-	while (formularfields->hasMoreElements()) {
-		formularfields->setNextElement();
+	formularfields->finishFieldsIteration();
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
 		
-		if (formularfields->get_formularid() == FormID) {
-			if (strcmp(formularfields->get_name(), fieldName) == 0) {
+		if (formularfields->getFormularID() == FormID) {
+			if (strcmp(formularfields->getName(), fieldName) == 0) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkt)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, fkn)
 				
-				*fkt = formularfields->get_fktable();
-				*fkn = formularfields->get_fkname();
+				*fkt = formularfields->getFKTable();
+				*fkn = formularfields->getFKName();
 				
 				if ((*fkt == "") || (*fkn == "")) break; // Not really a definition, because the *required* fields are empty.
 				
 				definitionFound = true;
-				formularfields->finishIteration();
+				formularfields->finishFieldsIteration();
 				break;
 			}
 		}
@@ -635,10 +703,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 			buffer[0] = 0;
 
 
-			UAP(lb_I_String, tName)
-			tName = sampleQuery->getTableName(name);
-			_LOG << "addComboField() Checks for a fieldmapping for form " << tName->charrep() << " with field " << name LOG_
-			if (!haveNotMappedForeignKeyFields(formName, tName->charrep(), name)) {
+			if (!haveNotMappedForeignKeyFields(formName, name)) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 				
@@ -650,7 +715,7 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 
 				// Why do I this twice?
 				// Refactored
-				bool definitionFound = haveNotMappedForeignKeyFields(formName, tName->charrep(), name);
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, name);
 				
 				UAP(lb_I_Unknown, uk)
                 UAP(lb_I_Parameter, params)
@@ -781,8 +846,8 @@ void LB_STDCALL lbDatabasePanel::addComboField(const char* name, wxSizer* sizerM
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
-				*PKName = formularfields->get_fkname(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->get_fktable();
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable();
 #endif
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
@@ -1727,34 +1792,34 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 
 	//   formulars      <-      NM               ->   actions
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishIteration();
-		formActions->finishIteration();
-		appActions->finishIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 		
-		while (forms->hasMoreElements()) {
-			forms->setNextElement();
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreElements()) {
-						formActions->setNextElement();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
 
-							appActions->selectById(ActionID);
-							char* actionName = appActions->get_name();
+							appActions->selectAction(ActionID);
+							char* actionName = appActions->getActionName();
 
-							appActionTypes->selectById(appActions->get_typ());
+							appActionTypes->selectActionType(appActions->getActionTyp());
 
 							///\todo This should copied to DoValidation.
 							// Helps to faster lookup the action ID from event name
@@ -1765,7 +1830,7 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 							eman->registerEvent(evName, actionID);
 
 							// Only real 'Buttonpress' actions should be get a button.
-							if (strcmp(appActionTypes->get_bezeichnung(), "Buttonpress") == 0) {
+							if (strcmp(appActionTypes->getActionTypeBezeichnung(), "Buttonpress") == 0) {
 								wxButton *actionButton = new wxButton(this, actionID, _trans(actionName));
 								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, evName);
 								this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
@@ -1874,7 +1939,11 @@ _CL_LOG << "Connect event handlers" LOG_
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 /*...e*/
 	
-
+	// Connect the activation event wxEVT_ACTIVATE
+	//CONNECTOR->Connect( DatabaseRefresh, -1, wxEVT_ACTIVATE,
+	//				   (wxObjectEventFunction) (wxEventFunction) (wxActivateEvent) &lbDatabasePanel::OnActivate);
+	
+	
 	/*
 	 * Connect the 'ownerdrawn' controls to the OnPaint handler.
 	 *
@@ -1936,31 +2005,31 @@ _CL_LOG << "Connect event handlers" LOG_
 void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishIteration();
-		formActions->finishIteration();
-		appActions->finishIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 
-		while (forms->hasMoreElements()) {
-			forms->setNextElement();
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreElements()) {
-						formActions->setNextElement();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
-							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectById(ActionID);
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
 
 							_LOG << "Activate action '" << actionName << "'" LOG_
 
@@ -1978,31 +2047,31 @@ void LB_STDCALL lbDatabasePanel::activateActionButtons() {
 void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
-		forms->finishIteration();
-		formActions->finishIteration();
-		appActions->finishIteration();
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
 
 		if (fa == NULL) {
 			REQUEST(getModuleInstance(), lb_I_FormularAction_Manager, fa)
 			//fa = new FormularActions;
 		}
 
-		while (forms->hasMoreElements()) {
-			forms->setNextElement();
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
 
-			if (forms->get_anwendungid() == securityManager->getApplicationID()) {
-				if (strcmp(forms->get_name(), base_formName) == 0) {
-					long FormID = forms->get_id();
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), base_formName) == 0) {
+					long FormID = forms->getFormularID();
 
-					while (formActions->hasMoreElements()) {
-						formActions->setNextElement();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
 
-						if (formActions->get_formular() == FormID) {
+						if (formActions->getFormularActionFormularID() == FormID) {
 							// Actions for this formular
-							long ActionID = formActions->get_action();
-							char* eventName = formActions->get_event();
-							char* actionName = strdup (_trans(appActions->get_name()));
-							appActions->selectById(ActionID);
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
 
 							_LOG << "Deactivate action '" << actionName << "'" LOG_
 
@@ -2226,9 +2295,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-			UAP(lb_I_String, tName)
-			tName = sampleQuery->getTableName(name->charrep());
-			if (!haveNotMappedForeignKeyFields(formName, tName->charrep(), name->charrep())) {
+			if (!haveNotMappedForeignKeyFields(formName, name->charrep())) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(*&forms, *&formularfields);
 
@@ -2287,9 +2354,7 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				}
 				
 				// Why was this coded here before refactoring?
-				UAP(lb_I_String, tName)
-				tName = sampleQuery->getTableName(name->charrep());
-				bool definitionFound = haveNotMappedForeignKeyFields(formName, tName->charrep(), name->charrep());
+				bool definitionFound = haveNotMappedForeignKeyFields(formName, name->charrep());
 			}
 
 #ifdef USE_FKPK_QUERY
@@ -2370,8 +2435,8 @@ lbErrCodes  LB_STDCALL lbDatabasePanel::open() {
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 #else
-				*PKName = formularfields->get_fkname(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
-				*PKTable = formularfields->get_fktable();
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable();
 #endif
 
 				wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
@@ -3827,6 +3892,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...e*/
 			} else {
 				if (FFI->isSpecialColumn(name->charrep())) {
+					
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -4008,6 +4074,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 
 						sampleQuery->setString(*&controlname, *&filename);
 					}
+					
+					if (strcmp(type, "label") == 0) {
+					}
+					
+					///\todo: Implement plugin control data transfer methods
+					
+					
+					// Use lb_I_BinaryData interface to transfer memory blocks
+					
+					// Use lb_I_Stream interface?
+					
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -4299,6 +4376,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							}
 						}
 					}
+					
+					if (strcmp(type, "label") == 0) {
+					}
+
 				} else {
 /*...sfill controls with data:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -5011,33 +5092,33 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 
 	long formularID = -1;
 
-	forms->finishIteration();
-	while (forms->hasMoreElements()) {
-		forms->setNextElement();
-		if ((forms->get_anwendungid() == securityManager->getApplicationID()) && (strcmp(forms->get_name(), untranslated_formName) == 0)) {
-			formularID = forms->get_id();
+	forms->finishFormularIteration();
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		if ((forms->getApplicationID() == meta->getApplicationID()) && (strcmp(forms->getName(), untranslated_formName) == 0)) {
+			formularID = forms->getFormularID();
 		}
 	}
 
-	formActions->finishIteration();
-	while (formActions->hasMoreElements()) {
-		formActions->setNextElement();
+	formActions->finishFormularActionIteration();
+	while (formActions->hasMoreFormularActions()) {
+		formActions->setNextFormularAction();
 
-		if (formActions->get_formular() == formularID) {
-			appActions->selectById(formActions->get_action());
-			appActionTypes->selectById(appActions->get_typ());
+		if (formActions->getFormularActionFormularID() == formularID) {
+			appActions->selectAction(formActions->getFormularActionActionID());
+			appActionTypes->selectActionType(appActions->getActionTyp());
 
-			if (strcmp(appActionTypes->get_bezeichnung(), "FormValidator") == 0) {
-				long actionID = formActions->get_action();
+			if (strcmp(appActionTypes->getActionTypeBezeichnung(), "FormValidator") == 0) {
+				long actionID = formActions->getFormularActionActionID();
 				bool doAddValue = false;
 				wxString value;
 				wxString errmsg;
 
-				appActions->selectById(actionID);
-				appActionTypes->selectById(appActions->get_typ());
+				appActions->selectAction(actionID);
+				appActionTypes->selectActionType(appActions->getActionTyp());
 
 				UAP(lb_I_Action, action)
-				action = fa->getAction(fa->getActionID(formActions->get_event()));
+				action = fa->getAction(fa->getActionID(formActions->getFormularActionEvent()));
 
 				/*...sBuild up parameter list:16:*/
 				UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
@@ -5064,13 +5145,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::DoValidation(lb_I_Unknown* uk) {
 				parameter->setData("application");
 
 				_LOG << "Put parameters for configured action parameter list into container." LOG_
-				appActionParameters->finishIteration();
-				while (appActionParameters->hasMoreElements()) {
-					appActionParameters->setNextElement();
-					if (appActionParameters->get_actionid() == actionID) {
+				appActionParameters->finishActionParameterIteration();
+				while (appActionParameters->hasMoreActionParameters()) {
+					appActionParameters->setNextActionParameter();
+					if (appActionParameters->getActionParameterActionID() == actionID) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
 						UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)
-						*pCompare = appActionParameters->get_name();
+						*pCompare = appActionParameters->getActionParameterName();
 						*pCompareValue = getControlValue(pCompare->charrep());
 
 						_LOG << "Parameter '" << pCompare->charrep() << "' = '" << pCompareValue->charrep() << "'" LOG_
@@ -5148,11 +5229,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		wxString value;
 		wxString errmsg;
 
-		appActions->selectById(actionID);
-		appActionTypes->selectById(appActions->get_typ());
+		appActions->selectAction(actionID);
+		appActionTypes->selectActionType(appActions->getActionTyp());
 
 		// Lookup only when action type is a buttonpress
-		if ((strcmp(appActionTypes->get_bezeichnung(), "Buttonpress") == 0)) {
+		if ((strcmp(appActionTypes->getActionTypeBezeichnung(), "Buttonpress") == 0)) {
 			wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
 			doAddValue = true;
 			if (w == NULL) 	{
@@ -5306,13 +5387,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 
 		_LOG << "Put parameters for configured action parameter list into container." LOG_
-		appActionParameters->finishIteration();
-		while (appActionParameters->hasMoreElements()) {
-			appActionParameters->setNextElement();
-			if (appActionParameters->get_actionid() == actionID) {
+		appActionParameters->finishActionParameterIteration();
+		while (appActionParameters->hasMoreActionParameters()) {
+			appActionParameters->setNextActionParameter();
+			if (appActionParameters->getActionParameterActionID() == actionID) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompare)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, pCompareValue)
-				*pCompare = appActionParameters->get_name();
+				*pCompare = appActionParameters->getActionParameterName();
 				*pCompareValue = getControlValue(pCompare->charrep());
 
 				_LOG << "Parameter '" << pCompare->charrep() << "' = '" << pCompareValue->charrep() << "'" LOG_
@@ -5559,8 +5640,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -5597,9 +5676,6 @@ lbErrCodes LB_STDCALL lbPluginDatabasePanel::setData(lb_I_Unknown* uk) {
 lbPluginDatabasePanel::lbPluginDatabasePanel() {
 	_CL_VERBOSE << "lbPluginDatabasePanel::lbPluginDatabasePanel() called.\n" LOG_
 	dbForm = NULL;
-	
-	
-	;
 }
 
 lbPluginDatabasePanel::~lbPluginDatabasePanel() {

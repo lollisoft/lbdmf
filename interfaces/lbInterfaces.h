@@ -2358,7 +2358,7 @@ void LB_STDCALL TF::registerTests() { \
  *
  * Currently I use the UAP macros as smart pointer implementations.
  * The UAP solution has no base class. This would be one, but it would
- * bite it self indirectly into the whife.
+ * bite it self indirectly into the tail.
  *
  * This is because UAP is a 'normal' class. It can't and shouldn't be created by the lbDMF system.
  *

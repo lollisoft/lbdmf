@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.19 $
+# * $Revision: 1.229.2.20 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.19 2013/11/29 06:25:47 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.20 2014/03/15 06:30:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.20  2014/03/15 06:30:31  lollisoft
+# * Some new features.
+# *
 # * Revision 1.229.2.19  2013/11/29 06:25:47  lollisoft
 # * Added copy commands for rpm deployment to prepare XMISettings.xsl based on XMISettingsTemplate.xsl.
 # *
