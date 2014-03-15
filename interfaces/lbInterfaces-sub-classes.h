@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.3 $
+ * $Revision: 1.106.2.4 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.3 2013/09/16 09:23:08 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.4 2014/03/15 06:30:32 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.4  2014/03/15 06:30:32  lollisoft
+ * Some new features.
+ *
  * Revision 1.106.2.3  2013/09/16 09:23:08  lollisoft
  * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
  *
@@ -431,9 +434,10 @@
 
 /*...sclass lb_I_KeyBase:0:*/
 /**
- * \brief Interface for any class, that could be stored in lb_I_Container.
+ * \brief Interface for any class, that should be comparable.
  *
- * Implement this interface to let your classes containable.
+ * A key could be a string, an integer, or anything else that
+ * is used for lookup stuff.
  */
 class lb_I_KeyBase : public lb_I_Unknown {
 public:
