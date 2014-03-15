@@ -596,9 +596,9 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 		*explain += type;
 		*explain += "]";
 		
-		addLabel(explain->charrep(), sizerControl, hideThisColumn);
-		
 		addLabel(name, sizerLabel, hideThisColumn);
+
+		addLabel(explain->charrep(), sizerControl, hideThisColumn);
 		
 		sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
 	}
@@ -1743,8 +1743,19 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 					}
 					break;
                     case lb_I_Query::lbDBColumnUnknown:
+					{
+						UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+						
+						*msg = "Column in SQL query is undefined. Do you missing this column in the table? ";
+						*msg += "\n Column: ";
+						*msg += name->charrep();
+						*msg += ", query: ";
+						*msg += SQLString->charrep();
+						
+						meta->msgBox(_trans("Error"), msg->charrep());
                         _CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
-                        break;
+                    }
+					break;
                 }
 			}
 		}

@@ -71,9 +71,10 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 </xsl:template>
 
 <xsl:template match="UML:Classifier.feature/UML:Attribute">
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>,
 	"<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
-<xsl:call-template name="Translate.ConvertType.Sqlite"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template></xsl:template>
+<xsl:call-template name="Translate.ConvertType.Sqlite"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template></xsl:template>
 
 <xsl:template name="Translate.CreateColumn.Sqlite">
 <xsl:apply-templates select="UML:Classifier.feature/UML:Attribute"/>	
@@ -144,6 +145,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 
 <xsl:template name="Translate.ConvertType.Sqlite">
     <xsl:param name="typename"/>
+	<xsl:param name="stereotype"/>
     <xsl:choose>
       <xsl:when test="$typename='bool'">BOOL</xsl:when>
       <xsl:when test="$typename='boolean'">BOOL</xsl:when>
@@ -155,7 +157,12 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <xsl:when test="$typename='phonenumber'">CHAR(30)</xsl:when>
       <xsl:when test="$typename='text'">TEXT</xsl:when>
       <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
-      <xsl:when test="$typename='image'">BYTEA</xsl:when>
+      <xsl:when test="$typename='image'">BLOB</xsl:when>
+	  <xsl:otherwise>
+	  <xsl:if test="$stereotype='custombinaryfield'">BLOB</xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'">TEXT</xsl:if>
+	  </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   

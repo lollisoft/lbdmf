@@ -423,6 +423,9 @@ SELECT 'query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Pr
 <xsl:variable name="otherClassID" select="./type/@xmi:idref"/>, "<xsl:value-of select="//packagedElement[@xmi:id=$otherClassID]/@name"/>"</xsl:if></xsl:if></xsl:for-each> from "<xsl:value-of select="$tablename"/>"', id FROM "formulare" WHERE name = '<xsl:value-of select="@name"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+
+-- Field name <xsl:value-of select="@name"/>
+
 <xsl:variable name="Aggregation" select="@aggregation"/>
 <xsl:choose>
 	<xsl:when test="@name=''">
@@ -431,9 +434,26 @@ SELECT 'query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Pr
 	</xsl:when>
 	<xsl:otherwise>
 		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
-		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
+		<xsl:variable name="datatype" select="//packagedElement[@xmi:id=$datatypeid]/@name"/>
+-- Field datatypeid <xsl:value-of select="$datatypeid"/>
+-- Field datatype <xsl:value-of select="$datatype"/>
+
 		<xsl:choose>
 			<xsl:when test="$datatype='bigstring'"></xsl:when>
+			<xsl:when test="$datatype='richtext'">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Richtext', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+		<xsl:choose>
+<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:custombinaryfield'">
+INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$datatype"/>');
+</xsl:when>
+<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:customstringfield'">
+INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$datatype"/>');
+</xsl:when>
+<xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:custombigstringfield'">
+INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$datatype"/>');
+</xsl:when>
+</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$datatype='image'"></xsl:when>
 <xsl:otherwise>
 <xsl:if test="./type/@xmi:type='uml:PrimitiveType'">
