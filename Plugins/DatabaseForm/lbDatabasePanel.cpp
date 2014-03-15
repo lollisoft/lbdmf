@@ -596,7 +596,7 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 		*explain += name;
 		*explain += "]";
 		
-		addLabel("", sizerControl, hideThisColumn);
+		addLabel(explain->charrep(), sizerControl, hideThisColumn);
 		
 		addLabel(name, sizerLabel, hideThisColumn);
 		
