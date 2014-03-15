@@ -593,7 +593,7 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 		UAP_REQUEST(getModuleInstance(), lb_I_String, explain)
 		
 		*explain = "Special type not supported here [";
-		*explain += name;
+		*explain += type;
 		*explain += "]";
 		
 		addLabel(explain->charrep(), sizerControl, hideThisColumn);
