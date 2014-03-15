@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.5 $
+ * $Revision: 1.71.2.6 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.5 2012/10/10 06:55:25 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.6 2014/03/15 06:30:32 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.6  2014/03/15 06:30:32  lollisoft
+ * Some new features.
+ *
  * Revision 1.71.2.5  2012/10/10 06:55:25  lollisoft
  * Refactored init() into lb_I_Form. Changed fixedDBForm to extend to fixedForm. This enables more variations of forms to be shown.
  *
@@ -323,6 +326,16 @@
 
 #include <iostream>
 #include "wx/grid.h"
+
+///\brief Richtext control related.
+#include "wx/richtext/richtextctrl.h"
+#include "wx/richtext/richtextstyles.h"
+#include "wx/richtext/richtextxml.h"
+#include "wx/richtext/richtexthtml.h"
+#include "wx/richtext/richtextformatdlg.h"
+#include "wx/richtext/richtextsymboldlg.h"
+#include "wx/richtext/richtextstyledlg.h"
+#include "wx/richtext/richtextprint.h"
 
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
@@ -768,6 +781,101 @@ public:
 	DECLARE_EVENT_TABLE()
 };
 
+
+/** \brief A control, containing richtext box and toolbar.
+ *
+ */
+class lbRichTextControl :
+		public lb_I_Control,
+public wxControl {
+	
+public:
+	lbRichTextControl();
+	
+	virtual ~lbRichTextControl();
+	
+	void LB_STDCALL create(int parentId) { }
+	int  LB_STDCALL getId() { return GetId(); }
+	
+	void LB_STDCALL windowIsClosing(lb_I_Window* w);
+	void LB_STDCALL init(lb_I_Window* parent);
+	
+///\brief Richtext toolbar handlers
+    void OnBold(lb_I_Unknown* uk);
+    void OnItalic(lb_I_Unknown* uk);
+    void OnUnderline(lb_I_Unknown* uk);
+	
+    void OnAlignLeft(lb_I_Unknown* uk);
+    void OnAlignCentre(lb_I_Unknown* uk);
+    void OnAlignRight(lb_I_Unknown* uk);
+	
+    void OnIndentMore(lb_I_Unknown* uk);
+    void OnIndentLess(lb_I_Unknown* uk);
+	
+    void OnFont(lb_I_Unknown* uk);
+    void OnParagraph(lb_I_Unknown* uk);
+    void OnFormat(lb_I_Unknown* uk);
+	
+    void OnInsertSymbol(lb_I_Unknown* uk);
+	
+    void OnLineSpacingHalf(lb_I_Unknown* uk);
+    void OnLineSpacingDouble(lb_I_Unknown* uk);
+    void OnLineSpacingSingle(lb_I_Unknown* uk);
+	
+    void OnParagraphSpacingMore(lb_I_Unknown* uk);
+    void OnParagraphSpacingLess(lb_I_Unknown* uk);
+	
+    void OnNumberList(lb_I_Unknown* uk);
+    void OnBulletsAndNumbering(lb_I_Unknown* uk);
+    void OnItemizeList(lb_I_Unknown* uk);
+    void OnRenumberList(lb_I_Unknown* uk);
+    void OnPromoteList(lb_I_Unknown* uk);
+    void OnDemoteList(lb_I_Unknown* uk);
+    void OnClearList(lb_I_Unknown* uk);
+// End richtext toolbar	
+	
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_EVENT_TABLE()
+	
+    wxRichTextCtrl*         m_richTextCtrl;
+	
+	int ID_FORMAT_BOLD;
+	int ID_FORMAT_ITALIC;
+	int ID_FORMAT_UNDERLINE;
+	int ID_FORMAT_FONT;
+	int ID_FORMAT_PARAGRAPH;
+	int ID_FORMAT_CONTENT;
+	
+	int ID_RELOAD;
+	
+	int ID_INSERT_SYMBOL;
+	int ID_INSERT_URL;
+	
+	int ID_FORMAT_ALIGN_LEFT;
+	int ID_FORMAT_ALIGN_CENTRE;
+	int ID_FORMAT_ALIGN_RIGHT;
+	
+	int ID_FORMAT_INDENT_MORE;
+	int ID_FORMAT_INDENT_LESS;
+	
+	int ID_FORMAT_PARAGRAPH_SPACING_MORE;
+	int ID_FORMAT_PARAGRAPH_SPACING_LESS;
+	
+	int ID_FORMAT_LINE_SPACING_HALF;
+	int ID_FORMAT_LINE_SPACING_DOUBLE;
+	int ID_FORMAT_LINE_SPACING_SINGLE;
+	
+	int ID_FORMAT_NUMBER_LIST;
+	int ID_FORMAT_BULLETS_AND_NUMBERING;
+	int ID_FORMAT_ITEMIZE_LIST;
+	int ID_FORMAT_RENUMBER_LIST;
+	int ID_FORMAT_PROMOTE_LIST;
+	int ID_FORMAT_DEMOTE_LIST;
+	int ID_FORMAT_CLEAR_LIST;
+	
+};
+
 /*...sclass lbDatabasePanel:0:*/
 /**
  * This is the sample database dialog for a wxWidgets based GUI.
@@ -961,6 +1069,9 @@ public:
 
 	lbErrCodes LB_STDCALL DoValidation(lb_I_Unknown* uk);
 
+	///\todo Implement window activation to make it possible to be handled by actions.
+	//void OnActivate	
+		
 	void OnDispatch(wxCommandEvent& event);
 	void OnImageButtonClick(wxCommandEvent& event);
 	void OnMouseMove(wxMouseEvent& evt);
