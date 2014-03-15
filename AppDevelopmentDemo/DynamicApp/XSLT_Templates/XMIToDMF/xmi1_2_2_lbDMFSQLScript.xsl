@@ -53,15 +53,13 @@
 	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
 	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
 </xsl:variable>
 <xsl:variable name="TargetDBVersion">
 	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
 	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
 	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
 </xsl:variable>
+
 <!-- ************************************************* -->
 
 
@@ -220,6 +218,20 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
 and parametername = '<xsl:value-of select="@name"/>';
 insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+
+<xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+<xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
+
+<xsl:if test="$stereotype='custombinaryfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$UMLType"/>');
+</xsl:if>
+<xsl:if test="$stereotype='customstringfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$UMLType"/>');
+</xsl:if>
+<xsl:if test="$stereotype='custombigstringfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$UMLType"/>');
 </xsl:if>
 
 
