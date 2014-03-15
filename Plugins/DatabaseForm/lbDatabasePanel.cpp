@@ -588,6 +588,9 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 	*/
 	
 	// Default behaviour for unknown special fields is a label to explain that
+	// If the special type is available as a plugin - eg the Richtext, then the
+	// new control should be generated within the plugin. This is the most
+	// extensible mechanism I could add here.
 	{
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, explain)
