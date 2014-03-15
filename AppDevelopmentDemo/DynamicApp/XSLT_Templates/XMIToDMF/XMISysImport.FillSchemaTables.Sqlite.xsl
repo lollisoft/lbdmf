@@ -99,6 +99,7 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	
 	
 <xsl:variable name="dbtyperef"><xsl:value-of select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/></xsl:variable>
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
 	
 <xsl:variable name="dbtype">
 <xsl:choose>
@@ -109,6 +110,11 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='phonenumber'">bpchar</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='bigstring'">TEXT</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='float'">FLOAT</xsl:when>
+	  <xsl:otherwise>
+	  <xsl:if test="$stereotype='custombinaryfield'">BLOB</xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'">bpchar</xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'">TEXT</xsl:if>
+	  </xsl:otherwise>
 </xsl:choose>
 </xsl:variable>	
 

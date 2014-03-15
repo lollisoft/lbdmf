@@ -32,41 +32,6 @@
 
 <xsl:output method="text" indent="no"/>
 
-<!-- Stylesheet parameters that will overwrite those given from the XMISettings.xsl file. -->
-<xsl:param name="XSLDatabaseBackendSystem"/>
-<xsl:param name="XSLDatabaseBackendApplication"/>
-<xsl:param name="overwriteDatabase"/>
-
-<xsl:variable name="targetdatabase">
-<xsl:if test="$XSLDatabaseBackendApplication=''"><xsl:value-of select="$settingsfile_targetdatabase"/></xsl:if>
-<xsl:if test="$XSLDatabaseBackendApplication!=''"><xsl:value-of select="$XSLDatabaseBackendApplication"/></xsl:if>
-</xsl:variable>
-<xsl:variable name="execute_droprules">
-<xsl:if test="$overwriteDatabase=''"><xsl:value-of select="$settingsfile_execute_droprules"/></xsl:if>
-<xsl:if test="$overwriteDatabase!=''"><xsl:value-of select="$overwriteDatabase"/></xsl:if>
-</xsl:variable>
-
-<!-- ********** Select your database target ********** -->
-
-<!--
-<xsl:variable name="DefaultDatabaseSystem" select="'MSSQL'"/>
--->
-<xsl:variable name="DefaultDatabaseSystem" select="'PostgreSQL'"/>
-
-
-<xsl:variable name="TargetDBType">
-	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">Sqlite</xsl:if>
-	<xsl:if test="$targetdatabase = 'PostgreSQL'">PostgreSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'MSSQL'">MSSQL</xsl:if>
-	<xsl:if test="$targetdatabase = 'Sqlite'">Sqlite</xsl:if>
-	<xsl:if test="$targetdatabase = ' '"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-	<xsl:if test="$targetdatabase = ''"><xsl:value-of select="$DefaultDatabaseSystem"/></xsl:if>
-</xsl:variable>
-<xsl:variable name="TargetDBVersion">
-	<xsl:if test="$targetdatabase = 'DatabaseLayerGateway'">1.2.3</xsl:if>
-	<xsl:if test="$targetdatabase = ' '">7.4</xsl:if>
-	<xsl:if test="$targetdatabase = ''">7.4</xsl:if>
-</xsl:variable>
 <!-- ************************************************* -->
 
   <xsl:template match="text()|@*">
@@ -310,8 +275,9 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
 "ID" SERIAL,
 PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
 "<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
-<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
+<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template>
 </xsl:for-each>
 ) WITH OIDS;
 
@@ -325,8 +291,9 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
 "ID" INTEGER IDENTITY (1, 1) NOT NULL,
 PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
 "<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
-<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
+<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template>
 </xsl:for-each>
 );
 
@@ -342,8 +309,9 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 CREATE TABLE "<xsl:value-of select="@name"/>" (
 "ID" INTEGER PRIMARY KEY<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">,
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
 "<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
-<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/></xsl:call-template>
+<xsl:call-template name="convertTypes_DBTypes"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template>
 </xsl:for-each>
 <xsl:call-template name="ForeignColumnForClass_12"><xsl:with-param name="id" select="$classID"/></xsl:call-template>
 );
@@ -356,6 +324,7 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
 
   <xsl:template name="convertTypes_DBTypes">
     <xsl:param name="typename"/>
+	<xsl:param name="stereotype"/>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
     <xsl:choose>
       <xsl:when test="$typename='int'">INTEGER</xsl:when>
@@ -367,6 +336,11 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
       <xsl:when test="$typename='bool'">bool</xsl:when>
       <xsl:when test="$typename='boolean'">bool</xsl:when>
       <xsl:when test="$typename='image'">bytea</xsl:when>
+	  <xsl:otherwise>
+	  <xsl:if test="$stereotype='custombinaryfield'">bytea</xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'">bytea</xsl:if>
+	  </xsl:otherwise>
     </xsl:choose>
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
@@ -380,6 +354,11 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
       <xsl:when test="$typename='bool'">bool</xsl:when>
       <xsl:when test="$typename='boolean'">bool</xsl:when>
       <xsl:when test="$typename='image'">bytea</xsl:when>
+	  <xsl:otherwise>
+	  <xsl:if test="$stereotype='custombinaryfield'">bytea</xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'">bytea</xsl:if>
+	  </xsl:otherwise>
     </xsl:choose>
 </xsl:if>
 <xsl:if test="$TargetDBType = 'Sqlite'">
@@ -394,6 +373,11 @@ CREATE TABLE "<xsl:value-of select="@name"/>" (
       <xsl:when test="$typename='text'">TEXT</xsl:when>
       <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
       <xsl:when test="$typename='image'">BYTEA</xsl:when>
+	  <xsl:otherwise>
+	  <xsl:if test="$stereotype='custombinaryfield'">BYTEA</xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'">BYTEA</xsl:if>
+	  </xsl:otherwise>
     </xsl:choose>
 </xsl:if>
   </xsl:template>

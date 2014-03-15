@@ -334,12 +334,13 @@ CREATE TABLE "<xsl:value-of select="$TableName"/>" (<xsl:for-each select="./owne
 	</xsl:when>
 	<xsl:otherwise>
 		<xsl:variable name="datatypeid" select="./type/@xmi:idref"/> 
+		<xsl:variable name="stereotype" select="./xmi:Extension/stereotype/@name"/>
 		<xsl:variable name="datatype" select="//packagedElement[@xmi.id=$datatypeid]/@name"/>
 		<xsl:choose>
 			<xsl:when test="$datatype='bigstring'"></xsl:when>
 			<xsl:when test="$datatype='image'"></xsl:when>
 <xsl:otherwise><xsl:if test="position()!=1">,</xsl:if>
-	"<xsl:value-of select="@name"/>" <xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/></xsl:call-template></xsl:otherwise>
+	"<xsl:value-of select="@name"/>" <xsl:call-template name="createDBType"><xsl:with-param name="TargetDatabaseType" select="$TargetDatabaseType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template></xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
 </xsl:choose>
@@ -568,7 +569,6 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 </xsl:if>
 
 <xsl:if test="./xmi:Extension/stereotype/@name='lbDMF:relationship'">
-
 <xsl:if test="./lowerValue/@value='1'">
 <xsl:if test="./upperValue/@value='1'">
 
@@ -603,7 +603,6 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$PrimaryTable"/>', '<xsl:value-of select="$PrimaryTableSourceColumn"/>', '<xsl:value-of select="../@name"/>', '<xsl:value-of select="@name"/>');
  
 </xsl:if>
-
 </xsl:if>
 </xsl:if>
 
@@ -862,6 +861,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 <xsl:template name="createDBType">
     <xsl:param name="TargetDatabaseType"/>
     <xsl:param name="TargetDatabaseVersion"/>
+	<xsl:param name="stereotype"/>
 
 <!--
 <xsl:variable name="DatatypeID" select="./type/@xmi:idref"/>
@@ -885,7 +885,13 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">boolean</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">string</xsl:when>
 		<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int</xsl:when>
+		<xsl:otherwise><xsl:choose>
+		<xsl:when test="$stereotype='lbDMF:custombinaryfield'">image</xsl:when>
+		<xsl:when test="$stereotype='lbDMF:customstringfield'">string</xsl:when>
+		<xsl:when test="$stereotype='lbDMF:custombigstringfield'">image</xsl:when>
 		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
+		</xsl:otherwise>
+	</xsl:choose>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:if>
@@ -963,7 +969,13 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
 			<xsl:when test="$backendType='text'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">BYTEA</xsl:when>
-			<xsl:otherwise>
+			<xsl:otherwise><xsl:choose>
+		<xsl:when test="$stereotype='lbDMF:custombinaryfield'">BYTEA</xsl:when>
+		<xsl:when test="$stereotype='lbDMF:customstringfield'">BPCHAR</xsl:when>
+		<xsl:when test="$stereotype='lbDMF:custombigstringfield'">BYTEA</xsl:when>
+		<xsl:otherwise>-- Unknown: <xsl:value-of select="./type/@href"/>
+		</xsl:otherwise>
+	</xsl:choose>
 				<xsl:variable name="lowerValue" select="./lowerValue/@value"/>
 				<xsl:variable name="upperValue" select="./upperValue/@value"/>
 				<xsl:if test="$lowerValue='*'"><xsl:if test="$upperValue='*'"><!--<xsl:if test="position()!=1">,</xsl:if>-->

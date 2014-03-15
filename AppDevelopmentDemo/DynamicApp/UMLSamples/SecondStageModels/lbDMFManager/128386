@@ -1,6 +1,6 @@
 format 73
 "lbDMF" // DMFToUML::lbDMF
-  revision 8
+  revision 9
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -503,6 +503,93 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 191362 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 177538 "custombinaryfield"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Attribute"
+      key "stereotypeIconPath" value ""
+      classrelation 204674 // <unidirectional association>
+	relation 200450 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 204674 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 177666 "customstringfield"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Attribute"
+      key "stereotypeIconPath" value ""
+      classrelation 204802 // <unidirectional association>
+	relation 200578 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 204802 // <unidirectional association>
+	  b parent class_ref 133506 // Element
+      end
+    end
+
+    class 177794 "custombigstringfield"
+      visibility package stereotype "stereotype"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 6
+      key "stereotypeSet" value ""
+      key "stereotypeCheck" value ""
+      key "stereotypeSetParameters" value ""
+      key "stereotypeCheckParameters" value ""
+      key "stereotypeApplyOn" value "Attribute"
+      key "stereotypeIconPath" value ""
+      classrelation 204930 // <unidirectional association>
+	relation 200706 --->
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 204930 // <unidirectional association>
 	  b parent class_ref 133506 // Element
       end
     end
