@@ -268,15 +268,27 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='detail_group'">
+<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
+
+<xsl:if test="$stereotype='detail_group'">
 delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
 and parametername = '<xsl:value-of select="@name"/>';
 insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'detail_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 </xsl:if>
-<xsl:if test="./UML:ModelElement.stereotype/UML:Stereotype/@name='header_group'">
+<xsl:if test="$stereotype='header_group'">
 delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
 and parametername = '<xsl:value-of select="@name"/>';
 insert into formular_parameters (parametername, parametervalue, formularid) values('<xsl:value-of select="@name"/>', 'header_group', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
+
+<xsl:if test="$stereotype='custombinaryfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
+</xsl:if>
+<xsl:if test="$stereotype='customstringfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
+</xsl:if>
+<xsl:if test="$stereotype='custombigstringfield'">
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
 </xsl:if>
 
 
@@ -291,6 +303,7 @@ INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype)
 <xsl:call-template name="XMISysImport.CreateFormularDefinition">
 	<xsl:with-param name="FieldName" select="@name"/>
 	<xsl:with-param name="DataType" select="$datatype"/>
+	<xsl:with-param name="StereoType" select="$stereotype"/>
 	<xsl:with-param name="ClassId" select="$classID"/>
 	<xsl:with-param name="ClassName" select="$classname"/>
 	<xsl:with-param name="TableName" select="$classname"/>
