@@ -33,6 +33,7 @@
     <xsl:param name="ApplicationName"/>
     <xsl:param name="FieldName"/><!-- The field name of the current UML attribute or property definition -->
     <xsl:param name="DataType"/><!-- The fields corresponding type name -->
+    <xsl:param name="StereoType"/><!-- The fields corresponding stereotype -->	
     <xsl:param name="ClassId"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="TableName"/><!-- The Id for the current class to create schema information -->
@@ -49,6 +50,10 @@
 <xsl:when test="$DataType='date'">String</xsl:when>
 <xsl:when test="$DataType='int'">Integer</xsl:when>
 <xsl:when test="$DataType='bool'">Bit</xsl:when>
+<!-- Forward the types into the model. They are later used in code generation and probably mapped there (finally) -->
+<xsl:when test="$StereoType='custombinaryfield'"><xsl:value-of select="$DataType"/></xsl:when>
+<xsl:when test="$StereoType='customstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
+<xsl:when test="$StereoType='custombigstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
 <xsl:otherwise>Undefined</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
