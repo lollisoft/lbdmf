@@ -115,17 +115,30 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
 
 	<xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']">
+
+<xsl:variable name="stereotype" select="./xmi:Extension/stereotype/@name"/>
 	
 <xsl:variable name="dbtype">
 <xsl:choose>
 <xsl:when test="./type/@xmi:type='uml:PrimitiveType'">
 <xsl:choose>
+<!-- TODO: Mapping based on TargetDatabaseType -->		
 	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean'">BOOLEAN</xsl:when>
 	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'">bpchar</xsl:when>
 	<xsl:when test="./type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#Integer'">int4</xsl:when>
 </xsl:choose>
 </xsl:when>
-<xsl:when test="./type/@xmi:type='uml:Class'">int4</xsl:when>
+<xsl:when test="./type/@xmi:type='uml:Class'">
+<xsl:variable name="typeref" select="./type/@xmi:idref" />
+<xsl:variable name="customtype" select="//packagedElement[@xmi:id=$typeref]/@name" />
+<xsl:choose>
+<!-- TODO: Mapping based on TargetDatabaseType -->		
+	<xsl:when test="$stereotype='lbDMF:custombinaryfield'"><xsl:value-of select="$customtype"/></xsl:when>
+	<xsl:when test="$stereotype='lbDMF:customstringfield'"><xsl:value-of select="$customtype"/></xsl:when>
+	<xsl:when test="$stereotype='lbDMF:custombigstringfield'"><xsl:value-of select="$customtype"/></xsl:when>
+<xsl:otherwise>int4</xsl:otherwise>
+</xsl:choose>
+</xsl:when>
 </xsl:choose>
 </xsl:variable>	
 
@@ -133,6 +146,20 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 </xsl:if>
 <xsl:if test="./type/@xmi:type='uml:Class'">
+
+
+<!-- TODO: Mapping based on TargetDatabaseType -->		
+<xsl:if test="$stereotype='lbDMF:custombinaryfield'">
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:if>
+<xsl:if test="$stereotype='lbDMF:customstringfield'">
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="'$dbtype'"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:if>
+<xsl:if test="$stereotype='lbDMF:custombigstringfield'">
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="'$dbtype'"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+</xsl:if>
+
+
 <xsl:if test="@aggregation='none'">
 <xsl:if test="./lowerValue/@value='1'">
 <xsl:if test="./upperValue/@value='1'">
