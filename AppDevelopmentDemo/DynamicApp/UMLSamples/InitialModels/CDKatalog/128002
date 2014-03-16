@@ -1,6 +1,6 @@
 format 73
 "CDKatalog" // CDKatalog
-  revision 12
+  revision 13
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -247,6 +247,16 @@ ${inlines}
 
       attribute 154882 "Description"
 	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 168322 "Details"
+	private explicit_type ""
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
