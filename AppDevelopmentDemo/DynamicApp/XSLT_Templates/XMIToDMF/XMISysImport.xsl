@@ -268,7 +268,8 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 </UML:StructuralFeature.type>
 -->
 
-<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
+<xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
+<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
 
 <xsl:if test="$stereotype='detail_group'">
 delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))

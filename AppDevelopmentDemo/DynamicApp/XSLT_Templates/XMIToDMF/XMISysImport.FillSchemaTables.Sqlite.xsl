@@ -118,9 +118,9 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='bigstring'">TEXT</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='float'">FLOAT</xsl:when>
 	  <xsl:otherwise>
-	  <xsl:if test="$stereotype='custombinaryfield'">BLOB</xsl:if>
-	  <xsl:if test="$stereotype='customstringfield'">bpchar</xsl:if>
-	  <xsl:if test="$stereotype='custombigstringfield'">TEXT</xsl:if>
+	  <xsl:if test="$stereotype='custombinaryfield'"><xsl:value-of select="//UML:DataType[@xmi.id=$dbtyperef]/@name"/></xsl:if>
+	  <xsl:if test="$stereotype='customstringfield'"><xsl:value-of select="//UML:DataType[@xmi.id=$dbtyperef]/@name"/></xsl:if>
+	  <xsl:if test="$stereotype='custombigstringfield'"><xsl:value-of select="//UML:DataType[@xmi.id=$dbtyperef]/@name"/></xsl:if>
 	  </xsl:otherwise>
 </xsl:choose>
 </xsl:variable>	

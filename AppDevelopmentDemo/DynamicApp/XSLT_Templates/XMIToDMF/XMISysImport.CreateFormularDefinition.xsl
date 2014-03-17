@@ -38,6 +38,7 @@
     <xsl:param name="ApplicationName"/>
     <xsl:param name="FieldName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="DataType"/><!-- The Id for the current class to create schema information -->
+    <xsl:param name="StereoType"/><!-- The fields corresponding stereotype -->	
     <xsl:param name="ClassId"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="TableName"/><!-- The Id for the current class to create schema information -->
@@ -48,6 +49,7 @@
 <xsl:call-template name="XMISysImport.CreateFormularDefinition.Sqlite">
 	<xsl:with-param name="FieldName" select="$FieldName"/>
 	<xsl:with-param name="DataType" select="$DataType"/>
+	<xsl:with-param name="StereoType" select="$StereoType"/>
 	<xsl:with-param name="ClassId" select="$ClassId"/>
 	<xsl:with-param name="ClassName" select="$ClassName"/>
 	<xsl:with-param name="TableName" select="$TableName"/>
