@@ -83,6 +83,12 @@
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 -- Fill schema tables dbtables
+
+DELETE FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>');
+
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) 
 select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
@@ -99,7 +105,8 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	
 	
 <xsl:variable name="dbtyperef"><xsl:value-of select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/></xsl:variable>
-<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
+<xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
+<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
 	
 <xsl:variable name="dbtype">
 <xsl:choose>
@@ -117,8 +124,6 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 	  </xsl:otherwise>
 </xsl:choose>
 </xsl:variable>	
-
--- <xsl:value-of select="$dbtyperef"/>
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) 
 select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';

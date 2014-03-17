@@ -1,8 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sun Aug 04 08:17:33 CEST 2013'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Mon Mar 17 05:14:54 CET 2014'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
-      <XMI.exporterVersion>0.34(6) revised on $Date: 2013/08/10 09:06:08 $ </XMI.exporterVersion>
+      <XMI.exporterVersion>0.34(6) revised on $Date: 2014/03/17 05:03:20 $ </XMI.exporterVersion>
     </XMI.documentation>
     <XMI.metamodel xmi.name="UML" xmi.version="1.4"/></XMI.header>
   <XMI.content>
@@ -48,6 +48,24 @@
                     <UML:DataType xmi.idref = '-64--88--106-41-5e05581e:13f93673616:-8000:000000000000088A'/>
                   </UML:StructuralFeature.type>
                 </UML:Attribute>
+                <UML:Attribute xmi.id = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CA8'
+                  name = 'Description' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+                  changeability = 'changeable' targetScope = 'instance'>
+                  <UML:StructuralFeature.multiplicity>
+                    <UML:Multiplicity xmi.id = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CA9'>
+                      <UML:Multiplicity.range>
+                        <UML:MultiplicityRange xmi.id = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CAA'
+                          lower = '1' upper = '1'/>
+                      </UML:Multiplicity.range>
+                    </UML:Multiplicity>
+                  </UML:StructuralFeature.multiplicity>
+                  <UML:ModelElement.stereotype>
+                    <UML:Stereotype xmi.idref = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CAD'/>
+                  </UML:ModelElement.stereotype>
+                  <UML:StructuralFeature.type>
+                    <UML:DataType xmi.idref = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CAC'/>
+                  </UML:StructuralFeature.type>
+                </UML:Attribute>
               </UML:Classifier.feature>
             </UML:Class>
             <UML:Class xmi.id = '-64--88--106-41-5e05581e:13f93673616:-8000:0000000000000868'
@@ -66,7 +84,7 @@
                     </UML:Multiplicity>
                   </UML:StructuralFeature.multiplicity>
                   <UML:StructuralFeature.type>
-                    <UML:DataType xmi.idref = '-64--88--106-30-687485ba:1404348113b:-8000:0000000000000A82'/>
+                    <UML:DataType xmi.idref = '-64--88--106-41-5e05581e:13f93673616:-8000:000000000000088A'/>
                   </UML:StructuralFeature.type>
                 </UML:Attribute>
                 <UML:Attribute xmi.id = '-64--88--106-41-5e05581e:13f93673616:-8000:000000000000087C'
@@ -200,8 +218,11 @@
         <UML:DataType xmi.id = '-64--88--106-41-5e05581e:13f93673616:-8000:000000000000088D'
           name = 'date' visibility = 'private' isSpecification = 'false' isRoot = 'false'
           isLeaf = 'false' isAbstract = 'false'/>
-        <UML:DataType xmi.id = '-64--88--106-30-687485ba:1404348113b:-8000:0000000000000A82'
-          name = 'phonenumber' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+        <UML:DataType xmi.id = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CAC'
+          name = 'richtext' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+          isAbstract = 'false'/>
+        <UML:Stereotype xmi.id = '-64--88--106-28--4e8e54a4:144c947c2b2:-8000:0000000000000CAD'
+          name = 'custombinaryfield' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
           isAbstract = 'false'/>
       </UML:Namespace.ownedElement>
     </UML:Model>
