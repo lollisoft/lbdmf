@@ -71,7 +71,8 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 </xsl:template>
 
 <xsl:template match="UML:Classifier.feature/UML:Attribute">
-<xsl:variable name="stereotype" select="./UML:ModelElement.stereotype/UML:Stereotype/@name"/>
+<xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
+<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>,
 	"<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
 <xsl:call-template name="Translate.ConvertType.Sqlite"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template></xsl:template>
@@ -159,7 +160,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
       <xsl:when test="$typename='image'">BLOB</xsl:when>
 	  <xsl:otherwise>
-	  <xsl:if test="$stereotype='custombinaryfield'">BLOB</xsl:if>
+	  <xsl:if test="$stereotype='custombinaryfield'">BYTEA</xsl:if>
 	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>
 	  <xsl:if test="$stereotype='custombigstringfield'">TEXT</xsl:if>
 	  </xsl:otherwise>
