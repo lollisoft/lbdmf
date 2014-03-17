@@ -107,6 +107,7 @@
 <xsl:with-param name="ClassName" select="$ClassName"/>
 <xsl:with-param name="Stereotype" select="$Stereotype"/>
 </xsl:call-template>
+
 </xsl:when>	
 </xsl:choose>
 </xsl:template>
