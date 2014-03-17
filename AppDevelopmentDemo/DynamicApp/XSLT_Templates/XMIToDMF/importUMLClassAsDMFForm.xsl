@@ -468,7 +468,7 @@ SELECT 'query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Pr
 		<xsl:choose>
 			<xsl:when test="$datatype='bigstring'"></xsl:when>
 			<xsl:when test="$datatype='richtext'">
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, 'Richtext', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, '<xsl:value-of select="$datatype"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 		<xsl:choose>
 <xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:custombinaryfield'">
 INSERT OR IGNORE INTO "column_types" (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$datatype"/>');
