@@ -111,25 +111,52 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
 <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
 
+<xsl:variable name="FieldName">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@name"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@name"/><!-- ArgoUML -->
+</xsl:variable>
+
 <xsl:if test="$aggregation='none'">
-CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+<xsl:if test="$FieldName!=''">
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="$FieldName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$FieldName"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="$otherClassName"/>.<xsl:value-of select="$FieldName"/> violates foreign key <xsl:value-of select="$thisClassName"/>(ID)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_upd" BEFORE UPDATE ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.<xsl:value-of select="$FieldName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$FieldName"/>) IS NULL))
+                 THEN RAISE(ABORT, '<xsl:value-of select="$otherClassName"/>.<xsl:value-of select="$FieldName"/> violates foreign key <xsl:value-of select="$thisClassName"/>(ID)')
+    END;
+END;
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_del" BEFORE DELETE ON <xsl:value-of select="$thisClassName"/> FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT <xsl:value-of select="$FieldName"/> FROM <xsl:value-of select="$otherClassName"/> WHERE <xsl:value-of select="$FieldName"/> = old.<xsl:value-of select="$thisClassName"/>) IS NOT NULL)
+                 THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/>.ID violates foreign key <xsl:value-of select="$otherClassName"/>(<xsl:value-of select="$FieldName"/>)')
+    END;
+END;
+</xsl:if>
+<xsl:if test="$FieldName=''">
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="$thisClassName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$thisClassName"/>) IS NULL))
                  THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/> violates foreign key <xsl:value-of select="$thisClassName"/>(ID)')
     END;
 END;
-CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_upd" BEFORE UPDATE ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_upd" BEFORE UPDATE ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="$thisClassName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$thisClassName"/>) IS NULL))
                  THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/> violates foreign key <xsl:value-of select="$thisClassName"/>(ID)')
     END;
 END;
-CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_del" BEFORE DELETE ON <xsl:value-of select="$thisClassName"/> FOR EACH ROW
+CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_del" BEFORE DELETE ON <xsl:value-of select="$thisClassName"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((SELECT <xsl:value-of select="$thisClassName"/> FROM <xsl:value-of select="$otherClassName"/> WHERE <xsl:value-of select="$thisClassName"/> = old.<xsl:value-of select="$thisClassName"/>) IS NOT NULL)
-                 THEN RAISE(ABORT, 'id violates foreign key <xsl:value-of select="$otherClassName"/>(<xsl:value-of select="$thisClassName"/>)')
+                 THEN RAISE(ABORT, '<xsl:value-of select="$thisClassName"/>.ID violates foreign key <xsl:value-of select="$otherClassName"/>(<xsl:value-of select="$thisClassName"/>)')
     END;
 END;
+</xsl:if>
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$thisClassName"/>', 'ID', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
     </xsl:for-each>
@@ -167,7 +194,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
     </xsl:choose>
   </xsl:template>
   
-<xsl:template name="Translate.CreateForeignColumn.Sqlite">
+<xsl:template name="Translate.CreateForeignColumn.Sqlite_old">
   <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
       <!-- Choose only association ends where navigable is true. -->
       <xsl:variable name="changeForeignKeyName" select="../@name"/>
@@ -179,12 +206,32 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
+
+<xsl:variable name="association" select="../../../../@xmi.id"/>
+
+-- <xsl:value-of select="$association"/>, <xsl:value-of select="$thisEndId"/>, <xsl:value-of select="$thisEnd/@name"/> - <xsl:value-of select="$otherEndId"/>
+
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">,
 <xsl:variable name="assocname" select="../../../UML:AssociationEnd[@type = $thisEndType]/@name"/><xsl:if test="$assocname=''">	"<xsl:value-of select="$otherClassName"/>" INTEGER</xsl:if>
 <xsl:if test="$assocname!=''">
 	"<xsl:value-of select="$assocname"/>" INTEGER</xsl:if>
 </xsl:if>
     </xsl:for-each>
+  </xsl:template>
+
+
+
+  
+<xsl:template name="Translate.CreateForeignColumn.Sqlite">
+  <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
+<xsl:variable name="ref_classid" select="@xmi.idref"/>
+<xsl:variable name="ref_class" select="//UML:Class[@xmi.id=$ref_classid]/@name"/>
+<xsl:variable name="AssocEndID" select="../../@xmi.id"/>
+<xsl:variable name="other_association_end" select="../../../*[@xmi.id != $AssocEndID]/@xmi.id"/>
+<xsl:variable name="other_association_classid" select="../../../*[@xmi.id != $AssocEndID]/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
+<xsl:variable name="other_ref_class" select="//UML:Class[@xmi.id=$other_association_classid]/@name"/>
+<xsl:variable name="association_name"><xsl:choose><xsl:when test="../../@name!=''"><xsl:value-of select="../../@name"/></xsl:when><xsl:when test="../../../../@name!=''"><xsl:value-of select="../../../../@name"/></xsl:when><xsl:otherwise><xsl:value-of select="$other_ref_class"/></xsl:otherwise></xsl:choose></xsl:variable><xsl:if test="../../@aggregation='none'">,
+	"<xsl:value-of select="$association_name"/>" INTEGER</xsl:if></xsl:for-each>
   </xsl:template>
   
 <xsl:template name="Translate.DropAssociations.Sqlite">
