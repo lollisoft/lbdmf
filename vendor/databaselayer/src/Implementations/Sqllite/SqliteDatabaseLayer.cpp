@@ -212,6 +212,8 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 		if (nReturn != SQLITE_OK)
 		{
 			SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
+			strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
+			printf(strErrorMessage.c_str());
 			SetErrorMessage(strErrorMessage);
 			ThrowDatabaseException();
 			return false;
