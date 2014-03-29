@@ -121,7 +121,14 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 	
 <xsl:variable name="dbtyperef"><xsl:value-of select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/></xsl:variable>
 <xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
-<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+<xsl:variable name="stereotype">
+<xsl:if test="$stereotyperef!=''">
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+</xsl:if>
+<xsl:if test="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value!=''">
+<xsl:value-of select="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value"/>
+</xsl:if>
+</xsl:variable>
 	
 <xsl:variable name="dbtype">
 <xsl:choose>
