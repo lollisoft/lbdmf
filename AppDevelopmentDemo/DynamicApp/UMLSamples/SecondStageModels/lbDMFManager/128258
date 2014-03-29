@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 26
+  revision 27
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -778,6 +778,26 @@ ${inlines}
       attribute 225026 "background"
 	protected explicit_type "richtext"
 	stereotype "lbDMF:custombinaryfield"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 231810 "model_complete"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 231938 "model_errors"
+	protected explicit_type "bigstring"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
