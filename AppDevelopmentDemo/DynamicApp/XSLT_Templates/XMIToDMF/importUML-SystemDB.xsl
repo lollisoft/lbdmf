@@ -118,11 +118,15 @@ BEGIN TRANSACTION;
 			<xsl:with-param name="database_pass" select="$database_pass"/>
 
 		</xsl:call-template>	
-	
+		
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type FORM found.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
 					<xsl:call-template name="importDMFForm">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -132,6 +136,10 @@ BEGIN TRANSACTION;
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type ENTITY found.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
 					<xsl:call-template name="importDMFEntity">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="$AppName"/>
@@ -141,6 +149,10 @@ BEGIN TRANSACTION;
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type REPORT found.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -151,6 +163,10 @@ BEGIN TRANSACTION;
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type FORM found.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
 					<xsl:call-template name="importDMFForm">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -160,6 +176,10 @@ BEGIN TRANSACTION;
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type REPORT found.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -279,6 +299,12 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 	</xsl:if>
 
 </xsl:for-each>
+
+<xsl:call-template name="log_message_finish">
+		<xsl:with-param name="Message" select="'Import completed'"/>
+		<xsl:with-param name="ApplicationName" select="$AppName"/>
+</xsl:call-template>
+
 -- Script ready.
 COMMIT;
 </xsl:template>
@@ -307,6 +333,7 @@ delete from "action_step_transitions" where "description" = '_<xsl:value-of sele
 delete from "action_steps" where "actionid" in (select "id" from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
 delete from "formular_actions" where action in (select id from actions where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>'));
 delete from "actions" where "target" = '<xsl:value-of select="$ID"/>' AND "anwendungenid" = (select id from "anwendungen" where name = '<xsl:value-of select="$ApplicationName"/>');
+
 
 -- A form validator should be used before saving the changes to the database
 
