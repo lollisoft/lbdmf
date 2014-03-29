@@ -306,7 +306,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS "idx_user_anwendungen" on "user_anwendungen" (
 
 INSERT OR IGNORE INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") VALUES ('lb_I_DatabaseForm','','-','','Dynamisch aufgebautes Datenbankformular');
 
-INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface") values('<xsl:value-of select="$ApplicationName"/>', 'Application <xsl:value-of select="$ApplicationName"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
+INSERT OR IGNORE INTO "anwendungen" ("name", "titel", "modulename", "functor", "interface", "model_complete", "model_errors") values('<xsl:value-of select="$ApplicationName"/>', 'Application <xsl:value-of select="$ApplicationName"/>', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application', 1, 'Import started'  || cast(X'0A' as TEXT) || 'Second line' || cast(X'00' as TEXT) );
 
 INSERT OR IGNORE INTO "users" (userid, passwort, lastapp) SELECT 'user', 'TestUser', id  FROM "anwendungen" WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
 
