@@ -237,6 +237,8 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 -- Cleanup
 DELETE FROM "formular_parameters" where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'));
 
+-- --
+
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
 <xsl:variable name="datatype" select="//UML:DataType[@xmi.id=$datatypeid]/@name"/>
@@ -255,12 +257,17 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 <xsl:choose>
 <xsl:when test="$datatype='bigstring'"><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:when>
 <xsl:when test="$datatype='image'"><xsl:if test="position()!=1">, </xsl:if>"<xsl:value-of select="@name"/>"</xsl:when>
-<xsl:otherwise></xsl:otherwise>
+<xsl:otherwise>
+</xsl:otherwise>
 </xsl:choose>
 </xsl:for-each> from "<xsl:value-of select="@name"/>" order by "ID"', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:value-of select="@name"/>', 1);
 
 <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
+
+<xsl:variable name="column_types_datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
+<xsl:variable name="column_types_datatype" select="//UML:DataType[@xmi.id=$column_types_datatypeid]/@name"/>
+
 
 <!--
 <UML:StructuralFeature.type>
@@ -269,7 +276,16 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', '<xsl:v
 -->
 
 <xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
-<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+<xsl:variable name="stereotype">
+<xsl:if test="$stereotyperef!=''">
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+</xsl:if>
+<xsl:if test="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value!=''">
+<xsl:value-of select="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value"/>
+</xsl:if>
+</xsl:variable>
+
+
 
 <xsl:if test="$stereotype='detail_group'">
 delete from formular_parameters where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'))
@@ -283,13 +299,13 @@ insert into formular_parameters (parametername, parametervalue, formularid) valu
 </xsl:if>
 
 <xsl:if test="$stereotype='custombinaryfield'">
-INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$column_types_datatype"/>');
 </xsl:if>
 <xsl:if test="$stereotype='customstringfield'">
-INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$column_types_datatype"/>');
 </xsl:if>
 <xsl:if test="$stereotype='custombigstringfield'">
-INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '$datatype');
+INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype) values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="$classname"/>', 1, '<xsl:value-of select="$column_types_datatype"/>');
 </xsl:if>
 
 
@@ -558,7 +574,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
     <xsl:param name="package"/>
 <xsl:if test="$TargetDBType = 'Sqlite'">
     <!-- UML1.4: -->
-    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
+    <xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
 
 <xsl:variable name="ClassID" select="$id"/>
@@ -588,14 +604,25 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
 <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
-	  
-<xsl:if test="$aggregation='none'">
-<xsl:variable name="assocname" select="../../@name"/>, "<xsl:value-of select="$otherClassName"/><xsl:value-of select="$assocname"/>" </xsl:if>
+
+<xsl:variable name="assoc_end_name" select="../../@name"/>
+<xsl:variable name="assoc_name" select="../../../../@name"/>
+
+<xsl:variable name="fieldName">
+<xsl:choose>
+	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
+	<xsl:when test="$assoc_name!=''"><xsl:value-of select="$assoc_name"/></xsl:when>
+	<xsl:otherwise><xsl:value-of select="$otherClassName"/></xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+
+<xsl:if test="$aggregation='none'">, "<xsl:value-of select="$fieldName"/>"</xsl:if>
+
 </xsl:for-each>
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
     <!-- UML1.4: -->
-    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
+    <xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
 
 <xsl:variable name="ClassID" select="$id"/>
@@ -630,7 +657,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
     <!-- UML1.4: -->
-    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
+    <xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
 
 <xsl:variable name="ClassID" select="$id"/>

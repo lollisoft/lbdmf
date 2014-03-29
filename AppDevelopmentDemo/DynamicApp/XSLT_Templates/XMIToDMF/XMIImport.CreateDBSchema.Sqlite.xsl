@@ -72,7 +72,15 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 
 <xsl:template match="UML:Classifier.feature/UML:Attribute">
 <xsl:variable name="stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
-<xsl:variable name="stereotype" select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+<xsl:variable name="stereotype">
+<xsl:if test="$stereotyperef!=''">
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$stereotyperef]/@name"/>
+</xsl:if>
+<xsl:if test="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value!=''">
+<xsl:value-of select="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value"/>
+</xsl:if>
+</xsl:variable>
+
 <xsl:variable name="type" select="./UML:StructuralFeature.type/UML:DataType/@xmi.idref"/>,
 	"<xsl:value-of select="@name"/>"<xsl:value-of select="' '"/><xsl:variable name="UMLType" select="//UML:DataType[@xmi.id=$type]/@name"/>
 <xsl:call-template name="Translate.ConvertType.Sqlite"><xsl:with-param name="typename" select="$UMLType"/><xsl:with-param name="stereotype" select="$stereotype"/></xsl:call-template></xsl:template>
@@ -223,15 +231,19 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 
   
 <xsl:template name="Translate.CreateForeignColumn.Sqlite">
-  <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
-<xsl:variable name="ref_classid" select="@xmi.idref"/>
-<xsl:variable name="ref_class" select="//UML:Class[@xmi.id=$ref_classid]/@name"/>
-<xsl:variable name="AssocEndID" select="../../@xmi.id"/>
-<xsl:variable name="other_association_end" select="../../../*[@xmi.id != $AssocEndID]/@xmi.id"/>
-<xsl:variable name="other_association_classid" select="../../../*[@xmi.id != $AssocEndID]/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
-<xsl:variable name="other_ref_class" select="//UML:Class[@xmi.id=$other_association_classid]/@name"/>
-<xsl:variable name="association_name"><xsl:choose><xsl:when test="../../@name!=''"><xsl:value-of select="../../@name"/></xsl:when><xsl:when test="../../../../@name!=''"><xsl:value-of select="../../../../@name"/></xsl:when><xsl:otherwise><xsl:value-of select="$other_ref_class"/></xsl:otherwise></xsl:choose></xsl:variable><xsl:if test="../../@aggregation='none'">,
-	"<xsl:value-of select="$association_name"/>" INTEGER</xsl:if></xsl:for-each>
+  <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
+<xsl:variable name="assoc_id" select="../../../../@xmi.id"/>
+<xsl:variable name="assoc_none_end_id" select="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
+<xsl:variable name="assoc_aggregate_end_id" select="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
+<xsl:variable name="association_name">
+<xsl:choose>
+<xsl:when test="../../@name!=''"><xsl:value-of select="../../@name"/></xsl:when>
+<xsl:when test="../../../../@name!=''"><xsl:value-of select="../../../../@name"/></xsl:when>
+<xsl:otherwise><xsl:value-of select="//UML:Class[@xmi.id=$assoc_aggregate_end_id]/@name"/></xsl:otherwise>
+</xsl:choose></xsl:variable><xsl:if test="../../@aggregation='none'">
+<xsl:if test="$association_name!=''">,
+	"<xsl:value-of select="$association_name"/>" INTEGER</xsl:if></xsl:if>
+	</xsl:for-each>
   </xsl:template>
   
 <xsl:template name="Translate.DropAssociations.Sqlite">
