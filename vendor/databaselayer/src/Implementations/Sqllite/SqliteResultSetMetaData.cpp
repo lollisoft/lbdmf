@@ -30,7 +30,7 @@ int SqliteResultSetMetaData::GetColumnType(int i)
 	  returnType = COLUMN_TEXT;
   else if (columnTypeString.StartsWith(_("BOOL")))
 	  returnType = COLUMN_BOOL;
-  else if (columnTypeString.IsSameAs(_("BLOB")))
+  else if (columnTypeString.IsSameAs(_("BLOB")) || columnTypeString.IsSameAs(_("BYTEA")))
     returnType = COLUMN_BLOB;
   else if (columnTypeString.IsSameAs(_("DATE")) || columnTypeString.IsSameAs(_("DATETIME")) || columnTypeString.IsSameAs(_("TIMESTAMP")))
     returnType = COLUMN_DATE;
