@@ -496,6 +496,18 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 <xsl:choose>
 <xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:dropdown'">
 -- dropdown field
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:column']/@value=''">
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Error: Dropdown model element did not define column to display. Name = <xsl:value-of select="@name"/>, table = <xsl:value-of select="$tablename"/>.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:table']/@value=''">
+<xsl:call-template name="log_message">
+		<xsl:with-param name="Message">Error: Dropdown model element did not define table to display values for. Name = <xsl:value-of select="@name"/>, table = <xsl:value-of select="$tablename"/>.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</xsl:if>
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 1, '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:column']/@value"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:table']/@value"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:when>
 <xsl:otherwise>
