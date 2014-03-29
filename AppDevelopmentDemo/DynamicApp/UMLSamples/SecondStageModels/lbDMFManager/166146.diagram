@@ -17,9 +17,9 @@ classcanvas 129154 class_ref 128770 // Aktionen
   xyz 128 467 2006
 end
 relationcanvas 128258 relation_ref 193794 // <association>
-  from ref 128002 z 2001 stereotype "<<relationship>>" xyz 583 386 3000 to ref 128130
-  role_a_pos 655 305 3000 no_role_b
-  multiplicity_a_pos 626 305 3000 multiplicity_b_pos 628 451 3000
+  from ref 128002 z 2001 stereotype "<<relationship>>" xyz 583.5 407 3000 to ref 128130
+  role_a_pos 656 347 3000 no_role_b
+  multiplicity_a_pos 627 347 3000 multiplicity_b_pos 628 451 3000
 end
 relationcanvas 129026 relation_ref 128386 // <dependency>
   from ref 128898 z 2007 to ref 128130

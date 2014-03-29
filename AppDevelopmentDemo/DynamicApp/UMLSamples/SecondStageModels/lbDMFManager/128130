@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 52
+  revision 53
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -628,6 +628,26 @@ ${inlines}
 	  b parent class_ref 163970 // Tables
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "name"
+      end
+
+      attribute 231554 "model_complete"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 231682 "model_errors"
+	protected explicit_type "bigstring"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 
