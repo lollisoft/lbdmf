@@ -58,8 +58,7 @@
 </xsl:choose>
 </xsl:variable>
 
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) 
-SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"/>', 0, '<xsl:value-of select="$MappedDataType"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"/>', 0, '<xsl:value-of select="$MappedDataType"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 </xsl:template>
 
@@ -71,16 +70,37 @@ SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"
     <xsl:param name="TargetDBType"/><!-- What database the SQL script should be created for -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 
+
 <xsl:variable name="PrimaryKeyClassId" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
 <xsl:variable name="ForeignKeyClassId" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
 <xsl:variable name="PrimaryKeyClassName" select="//UML:Class[@xmi.id=$PrimaryKeyClassId]/@name"/>
 <xsl:variable name="ForeignKeyClassName" select="//UML:Class[@xmi.id=$ForeignKeyClassId]/@name"/>
 
+<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/@name"/>
+<xsl:variable name="assoc_name" select="//UML:Association[@xmi.id=$AssociationId]/@name"/>
+<xsl:variable name="fieldName">
+<xsl:choose>
+	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
+<!--
+Don't use the association name here. If one has two or more associations between the same tables, the field names must be specified explicitely.
+	<xsl:when test="$assoc_name!=''"><xsl:value-of select="$assoc_name"/></xsl:when>
+-->
+	<xsl:otherwise><xsl:value-of select="$PrimaryKeyClassName"/></xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+
+<!--  Use the association name as the value to select the visible field in lookup controls -->
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(@name, ')'), '(')"/>
 
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) 
-SELECT '<xsl:value-of select="$PrimaryKeyClassName"/>', '<xsl:value-of select="$ForeignKeyClassName"/>', 1, '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$ForeignKeyClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+<xsl:if test="$assocVisibleName!=''">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="$fieldName"/>', '<xsl:value-of select="$ForeignKeyClassName"/>', 1, '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$ForeignKeyClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
 
+<!-- If the association did not have a name, the ID filed is selected -->
+
+<xsl:if test="$assocVisibleName=''">
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="$fieldName"/>', '<xsl:value-of select="$ForeignKeyClassName"/>', 1, 'ID', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$ForeignKeyClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+</xsl:if>
 
 </xsl:template>
 
