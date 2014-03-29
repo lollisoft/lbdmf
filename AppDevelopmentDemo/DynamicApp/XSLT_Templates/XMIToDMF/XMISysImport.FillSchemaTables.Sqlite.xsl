@@ -39,12 +39,28 @@
 <xsl:variable name="PrimaryKeyClassName" select="//UML:Class[@xmi.id=$PrimaryKeyClassId]/@name"/>
 <xsl:variable name="ForeignKeyClassName" select="//UML:Class[@xmi.id=$ForeignKeyClassId]/@name"/>
 
+<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/@name"/>
+<xsl:variable name="assoc_name" select="//UML:Association[@xmi.id=$AssociationId]/@name"/>
+<xsl:variable name="fieldName">
+<xsl:choose>
+	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
+<!--
+Don't use the association name here. If one has two or more associations between the same tables, the field names must be specified explicitely.
+	<xsl:when test="$assoc_name!=''"><xsl:value-of select="$assoc_name"/></xsl:when>
+-->
+	<xsl:otherwise><xsl:value-of select="$PrimaryKeyClassName"/></xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+
+
 <xsl:call-template name="XMISysImport.FillSchemaTables.Sqlite.foreignkeys">
 	<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 	<xsl:with-param name="PrimaryKeyClassId" select="$PrimaryKeyClassId"/>
 	<xsl:with-param name="ForeignKeyClassId" select="$ForeignKeyClassId"/>
 	<xsl:with-param name="PrimaryKeyClassName" select="$PrimaryKeyClassName"/>
 	<xsl:with-param name="ForeignKeyClassName" select="$ForeignKeyClassName"/>
+	<xsl:with-param name="ForeignKeyFieldName" select="$fieldName"/>
+	
 </xsl:call-template>
 
 </xsl:template>
@@ -89,8 +105,7 @@ DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablen
 DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>');
 
-INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) 
-select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
 </xsl:template>
 
@@ -125,8 +140,7 @@ select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select=
 </xsl:choose>
 </xsl:variable>	
 
-INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) 
-select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 	</xsl:for-each>
 	
 
@@ -138,12 +152,12 @@ select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<x
     <xsl:param name="ForeignKeyClassId"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="PrimaryKeyClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="ForeignKeyClassName"/><!-- The Id for the current class to create schema information -->
+    <xsl:param name="ForeignKeyFieldName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 -- Fill schema tables foreignkeys
 
-INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
-select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<xsl:value-of select="$ForeignKeyClassName"/>', '<xsl:value-of select="$PrimaryKeyClassName"/>', 0, 0, 0, id from dbtable where tablename = '<xsl:value-of select="$ForeignKeyClassName"/>' AND tableremarks = '<xsl:value-of select="$ForeignKeyClassId"/>';
+INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<xsl:value-of select="$ForeignKeyClassName"/>', '<xsl:value-of select="$ForeignKeyFieldName"/>', 0, 0, 0, id from dbtable where tablename = '<xsl:value-of select="$ForeignKeyClassName"/>' AND tableremarks = '<xsl:value-of select="$ForeignKeyClassId"/>';
 
 </xsl:template>
 
@@ -154,8 +168,7 @@ select '', '', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'ID', '', '', '<
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 -- Fill schema tables primarykeys
 
-INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) 
-select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 
 </xsl:template>
 
