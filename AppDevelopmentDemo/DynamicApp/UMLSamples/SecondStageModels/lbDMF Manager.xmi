@@ -251,6 +251,12 @@
 								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="name"/>
 							</xmi:Extension>
 						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="model_complete" xmi:id="BOUML_0x38882_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="model_errors" xmi:id="BOUML_0x38902_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Formular_Parameter" xmi:id="BOUML_0x1f502_4" visibility="package">
 						<xmi:Extension extender="Bouml">
@@ -1520,6 +1526,12 @@
 							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_0"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:custombinaryfield"/></xmi:Extension>
 						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="model_complete" xmi:id="BOUML_0x38982_1" visibility="protected">
+							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean"/>
+						</ownedAttribute>
+						<ownedAttribute xmi:type="uml:Property" name="model_errors" xmi:id="BOUML_0x38a02_1" visibility="protected">
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungen_formulare" xmi:id="BOUML_0x1ff02_4" visibility="package">
 						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
@@ -1651,10 +1663,10 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="ro" xmi:id="BOUML_0x22102_1" visibility="protected">
-							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_2"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="specialcolumn" xmi:id="BOUML_0x22182_1" visibility="protected">
-							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_2"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="controltype" xmi:id="BOUML_0x22202_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
@@ -1929,10 +1941,10 @@
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="btest" xmi:id="BOUML_0x22f02_1" visibility="protected">
-							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_2"/>
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="btest1" xmi:id="BOUML_0x22f82_1" visibility="protected">
-							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_2"/>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="report_element_types" xmi:id="BOUML_0x20502_4" visibility="package">
@@ -2853,7 +2865,8 @@
 				</packagedElement>
 			</packagedElement>
 		</packagedElement>
-		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_1" name="boolean"/>
+		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_1" name="bigstring"/>
+		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_2" name="boolean"/>
 		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_0" name="richtext"/>
 	</uml:Model>
 	<lbDMF:codegeneration xmi:id="BOUML_STELT_0x1f402_2" base_Element="BOUML_0x1f402_2"/>
