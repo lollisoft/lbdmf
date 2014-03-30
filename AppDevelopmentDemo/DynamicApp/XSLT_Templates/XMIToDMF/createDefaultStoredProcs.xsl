@@ -33,6 +33,14 @@
     <xsl:param name="Message"/>
     <xsl:param name="ApplicationName"/>
 
+UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>') where name = '<xsl:value-of select="$ApplicationName"/>';
+	
+</xsl:template>
+
+<xsl:template name="log_error">
+    <xsl:param name="Message"/>
+    <xsl:param name="ApplicationName"/>
+
 UPDATE "anwendungen" SET "model_complete" = 0, "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>') where name = '<xsl:value-of select="$ApplicationName"/>';
 	
 </xsl:template>
@@ -41,7 +49,7 @@ UPDATE "anwendungen" SET "model_complete" = 0, "model_errors" = (SELECT "model_e
     <xsl:param name="Message"/>
     <xsl:param name="ApplicationName"/>
 
-UPDATE "anwendungen" SET "model_complete" = 0, "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>' || cast(X'00' as TEXT)) where name = '<xsl:value-of select="$ApplicationName"/>';
+UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>' || cast(X'00' as TEXT)) where name = '<xsl:value-of select="$ApplicationName"/>';
 	
 </xsl:template>
 
