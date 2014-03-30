@@ -497,13 +497,13 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 <xsl:when test="./xmi:Extension/stereotype/@name='lbDMF:dropdown'">
 -- dropdown field
 <xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:column']/@value=''">
-<xsl:call-template name="log_message">
+<xsl:call-template name="log_error">
 		<xsl:with-param name="Message">Error: Dropdown model element did not define column to display. Name = <xsl:value-of select="@name"/>, table = <xsl:value-of select="$tablename"/>.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 </xsl:if>
 <xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:dropdown:table']/@value=''">
-<xsl:call-template name="log_message">
+<xsl:call-template name="log_error">
 		<xsl:with-param name="Message">Error: Dropdown model element did not define table to display values for. Name = <xsl:value-of select="@name"/>, table = <xsl:value-of select="$tablename"/>.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
