@@ -76,18 +76,36 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 <xsl:variable name="PrimaryKeyClassName" select="//UML:Class[@xmi.id=$PrimaryKeyClassId]/@name"/>
 <xsl:variable name="ForeignKeyClassName" select="//UML:Class[@xmi.id=$ForeignKeyClassId]/@name"/>
 
-<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/@name"/>
+<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/@name"/>
 <xsl:variable name="assoc_name" select="//UML:Association[@xmi.id=$AssociationId]/@name"/>
+
+<!-- Detect propably wrong model due to missing definitions. -->
+<xsl:variable name="fieldNameTemp">
+<xsl:choose>
+	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
+	<xsl:otherwise><xsl:value-of select="''"/></xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+
+<!-- Allow complete model, but propably wrong when more than one association exists between two classes. -->
 <xsl:variable name="fieldName">
 <xsl:choose>
 	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
-<!--
-Don't use the association name here. If one has two or more associations between the same tables, the field names must be specified explicitely.
-	<xsl:when test="$assoc_name!=''"><xsl:value-of select="$assoc_name"/></xsl:when>
--->
 	<xsl:otherwise><xsl:value-of select="$PrimaryKeyClassName"/></xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
+
+<xsl:if test="$fieldNameTemp=''">
+
+<xsl:call-template name="log_error">
+		<xsl:with-param name="Message">Error: Association did not define the aggredate column name. Please name the respective association end. Name = <xsl:value-of select="$fieldName"/>, table = <xsl:value-of select="$ForeignKeyClassName"/>.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+<xsl:call-template name="log_error">
+		<xsl:with-param name="Message">Hint: The aggregate name avoids double entries in case of more than one association between the same classes.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+</xsl:if>
 
 <!--  Use the association name as the value to select the visible field in lookup controls -->
 <xsl:variable name="assocVisibleName" select="substring-after(substring-before(@name, ')'), '(')"/>
@@ -99,6 +117,15 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, 
 <!-- If the association did not have a name, the ID filed is selected -->
 
 <xsl:if test="$assocVisibleName=''">
+<xsl:call-template name="log_error">
+		<xsl:with-param name="Message">Error: Association did not define column to display. Please name the association. Name = <xsl:value-of select="$fieldName"/>, table = <xsl:value-of select="$ForeignKeyClassName"/>.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+<xsl:call-template name="log_error">
+		<xsl:with-param name="Message">Hint: A missing display name leads to displaying the foreign key values instead, if that is working.</xsl:with-param>
+		<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+</xsl:call-template>
+
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT '<xsl:value-of select="$fieldName"/>', '<xsl:value-of select="$ForeignKeyClassName"/>', 1, 'ID', '<xsl:value-of select="$PrimaryKeyClassName"/>', 'Integer', id FROM "formulare" WHERE name = '<xsl:value-of select="$ForeignKeyClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:if>
 

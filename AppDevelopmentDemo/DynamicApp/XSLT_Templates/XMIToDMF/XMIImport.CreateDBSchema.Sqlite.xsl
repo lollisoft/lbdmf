@@ -95,7 +95,7 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 	<xsl:param name="overwriteDatabase"/><!-- When set to yes, DROP rules are created -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 
-    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
+    <xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
       <!-- Choose only association ends where navigable is true. -->
 
 <xsl:variable name="thisClassId">
@@ -107,8 +107,8 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 
 
 <xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
@@ -117,15 +117,25 @@ DROP TABLE "<xsl:value-of select="@name"/>";
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
-<xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+<!-- Handle self reference -->
+<xsl:variable name="otherClassName">
+<xsl:if test="$otherClassId!=''">
+<xsl:value-of select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
+</xsl:if>
+<xsl:if test="$otherClassId=''">
+<xsl:value-of select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
+</xsl:if>
+</xsl:variable>
 
 <xsl:variable name="FieldName">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$otherEndId]/@name"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$otherEndId]/@name"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@aggregation='aggregate']/@name"/>
 </xsl:variable>
 
 <xsl:if test="$aggregation='none'">
 <xsl:if test="$FieldName!=''">
+-- otherClassId '<xsl:value-of select="$otherClassId"/>'
+-- otherEndId '<xsl:value-of select="$otherEndId"/>'
+-- FieldName '<xsl:value-of select="$FieldName"/>'
 CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="$FieldName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$FieldName"/>) IS NULL))
@@ -146,6 +156,9 @@ BEGIN
 END;
 </xsl:if>
 <xsl:if test="$FieldName=''">
+-- otherClassId '<xsl:value-of select="$otherClassId"/>'
+-- otherEndId '<xsl:value-of select="$otherEndId"/>'
+-- FieldName '<xsl:value-of select="$FieldName"/>'
 CREATE TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins" BEFORE INSERT ON <xsl:value-of select="$otherClassName"/> FOR EACH ROW
 BEGIN
     SELECT CASE WHEN ((new.<xsl:value-of select="$thisClassName"/> IS NOT NULL) AND ((SELECT ID FROM <xsl:value-of select="$thisClassName"/> WHERE ID = new.<xsl:value-of select="$thisClassName"/>) IS NULL))
@@ -203,7 +216,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
   </xsl:template>
   
 <xsl:template name="Translate.CreateForeignColumn.Sqlite_old">
-  <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
+  <xsl:param name="ClassID"/><xsl:for-each select="//UML:AssociationEnd[@aggregation='none']/UML:AssociationEnd.participant/*[@xmi.idref = $ClassID]">
       <!-- Choose only association ends where navigable is true. -->
       <xsl:variable name="changeForeignKeyName" select="../@name"/>
       <xsl:variable name="thisEnd" select="../.."/>
@@ -237,9 +250,8 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 <xsl:variable name="assoc_aggregate_end_id" select="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/>
 <xsl:variable name="association_name">
 <xsl:choose>
-<xsl:when test="../../@name!=''"><xsl:value-of select="../../@name"/></xsl:when>
-<xsl:when test="../../../../@name!=''"><xsl:value-of select="../../../../@name"/></xsl:when>
-<xsl:otherwise><xsl:value-of select="//UML:Class[@xmi.id=$assoc_aggregate_end_id]/@name"/></xsl:otherwise>
+<xsl:when test="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/@name!=''"><xsl:value-of select="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/@name"/></xsl:when>
+<xsl:otherwise><xsl:value-of select="//UML:Association[@xmi.id=$assoc_id]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/UML:AssociationEnd.participant/UML:Class/@xmi.idref"/></xsl:otherwise>
 </xsl:choose></xsl:variable><xsl:if test="../../@aggregation='none'">
 <xsl:if test="$association_name!=''">,
 	"<xsl:value-of select="$association_name"/>" INTEGER</xsl:if></xsl:if>
