@@ -215,6 +215,12 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
 </xsl:for-each>
 
     </xsl:element>
+
+<xsl:call-template name="log_message_finish">
+		<xsl:with-param name="Message" select="'Import completed'"/>
+		<xsl:with-param name="ApplicationName" select="$applicationname"/>
+</xsl:call-template>
+
 -- Script ready.
 COMMIT;
   </xsl:template>
@@ -588,13 +594,13 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 
 
 <xsl:variable name="otherEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="thisEndId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@type"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@type"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/../../@xmi.id"/><!-- ArgoUML -->
 </xsl:variable>
 
 <xsl:variable name="aggregation">
@@ -602,16 +608,17 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 <xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisEndId]/@aggregation"/><!-- ArgoUML -->
 </xsl:variable>
 
+<xsl:variable name="assoc_end_name">
+<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisClassId]/@name"/><!-- BoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisClassId]/@name"/><!-- ArgoUML -->
+</xsl:variable>
+
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
 <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherClassId]/@name"/>
-
-<xsl:variable name="assoc_end_name" select="../../@name"/>
-<xsl:variable name="assoc_name" select="../../../../@name"/>
 
 <xsl:variable name="fieldName">
 <xsl:choose>
 	<xsl:when test="$assoc_end_name!=''"><xsl:value-of select="$assoc_end_name"/></xsl:when>
-	<xsl:when test="$assoc_name!=''"><xsl:value-of select="$assoc_name"/></xsl:when>
 	<xsl:otherwise><xsl:value-of select="$otherClassName"/></xsl:otherwise>
 </xsl:choose>
 </xsl:variable>

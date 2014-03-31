@@ -39,7 +39,7 @@
 <xsl:variable name="PrimaryKeyClassName" select="//UML:Class[@xmi.id=$PrimaryKeyClassId]/@name"/>
 <xsl:variable name="ForeignKeyClassName" select="//UML:Class[@xmi.id=$ForeignKeyClassId]/@name"/>
 
-<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='none']/@name"/>
+<xsl:variable name="assoc_end_name" select="//UML:Association[@xmi.id=$AssociationId]/UML:Association.connection/UML:AssociationEnd[@aggregation='aggregate']/@name"/>
 <xsl:variable name="assoc_name" select="//UML:Association[@xmi.id=$AssociationId]/@name"/>
 <xsl:variable name="fieldName">
 <xsl:choose>
