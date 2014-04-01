@@ -609,8 +609,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:variable>
 
 <xsl:variable name="assoc_end_name">
-<xsl:value-of select="../../../UML:AssociationEnd[@type=$thisClassId]/@name"/><!-- BoUML -->
-<xsl:value-of select="../../../UML:AssociationEnd[@xmi.id=$thisClassId]/@name"/><!-- ArgoUML -->
+<xsl:value-of select="../../../UML:AssociationEnd[@aggregation='aggregate']/@name"/>
 </xsl:variable>
 
 <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisClassId]/@name"/>
@@ -623,7 +622,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
 </xsl:choose>
 </xsl:variable>
 
-<xsl:if test="$aggregation='none'">, "<xsl:value-of select="$fieldName"/>"</xsl:if>
+<xsl:if test="$aggregation='aggregate'">, "<xsl:value-of select="$fieldName"/>"</xsl:if>
 
 </xsl:for-each>
 </xsl:if>
