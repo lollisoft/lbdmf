@@ -107,7 +107,7 @@ BEGIN TRANSACTION;
 		
 -- Application is <xsl:value-of select="$AppName"/>. Package is <xsl:value-of select="//packagedElement[@xmi:type='uml:Class']/../@name"/>
 -- Using database settings as of name=<xsl:value-of select="$database_name"/>, user=<xsl:value-of select="$database_user"/>
-		
+
 		<xsl:call-template name="createDefaultStoredProcs">
 			<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 			<xsl:with-param name="ApplicationName" select="$AppName"/>
@@ -120,9 +120,8 @@ BEGIN TRANSACTION;
 		</xsl:call-template>	
 		
 		<!-- Generate application configuration values -->
-<xsl:variable name="ApplicationID" select="../@xmi:id"/>
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Package']/xmi:Extension/taggedValue">
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', <xsl:value-of select="$ApplicationID"/>);
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', (select id from anwendungen where name = '<xsl:value-of select="$AppName"/>'));
 		</xsl:for-each>
 		
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
