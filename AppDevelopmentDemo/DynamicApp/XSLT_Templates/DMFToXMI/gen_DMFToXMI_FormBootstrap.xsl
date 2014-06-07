@@ -81,7 +81,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 			<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
 			&lt;xmi:Extension extender="Bouml"&gt;
 				<!--&lt;stereotype name="application"/&gt;-->
-<xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID]">
+<xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='codegenbasedir']">				
 				&lt;taggedValue tag="<xsl:value-of select="@name"/>" value="<xsl:value-of select="@value"/>"/&gt;
 </xsl:for-each>				
 			&lt;/xmi:Extension&gt;
