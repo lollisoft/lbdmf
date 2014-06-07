@@ -45,9 +45,9 @@
 </xsl:variable>
 
 <!-- XSLSettings.xsl should define this variable to either no or yes. -->
-<!--<xsl:variable name="stream_output" select="'yes'"/>-->
+<!--<xsl:variable name="settingsfile_stream_output" select="'yes'"/>-->
 
-<xsl:if test="$stream_output='no'">
+<xsl:if test="$settingsfile_stream_output='no'">
 Export application code to <xsl:value-of select="$basedir"/>
 Have Application ID <xsl:value-of select="$ApplicationID"/>
 Have Application name <xsl:value-of select="$ApplicationName"/>
@@ -62,7 +62,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 </exsl:document>
 </xsl:if>
 
-<xsl:if test="$stream_output='yes'">
+<xsl:if test="$settingsfile_stream_output='yes'">
 <xsl:call-template name="WriteXMIDocument">
 <xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 <xsl:with-param name="OrginalApplicationName" select="$OrginalApplicationName"/>
@@ -78,6 +78,13 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
 		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+			<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
+			&lt;xmi:Extension extender="Bouml"&gt;
+				<!--&lt;stereotype name="application"/&gt;-->
+<xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID]">
+				&lt;taggedValue tag="<xsl:value-of select="@name"/>" value="<xsl:value-of select="@value"/>"/&gt;
+</xsl:for-each>				
+			&lt;/xmi:Extension&gt;
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
