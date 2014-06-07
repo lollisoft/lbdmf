@@ -32,7 +32,7 @@
 
 <xsl:template name="getXMLEntityName">
 	<xsl:param name="FormularID"/>
-	<xsl:value-of select="//lbDMF/formularparameter/parameter[@formularid=$FormularId][@name='XMLEntityName']/@value"/>
+	<xsl:value-of select="//lbDMF/formularparameter/parameter[@formularid=$FormularID][@name='XMLEntityName']/@value"/>
 </xsl:template>
 
 <xsl:template name="WriteXMIClass">
@@ -96,6 +96,12 @@
 			<xsl:when test="@dbtype='Integer'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Integer"/&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@dbtype='richtext'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Richtext"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;&lt;stereotype name="lbDMF:custombinaryfield"/&gt;&lt;/xmi:Extension&gt;
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
 			<xsl:when test="@dbtype='String'">
@@ -511,6 +517,17 @@
 				&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
 				&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='BOOLEAN'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='richtext'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Richtext"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;&lt;stereotype name="lbDMF:custombinaryfield"/&gt;&lt;/xmi:Extension&gt;
+			&lt;/ownedAttribute&gt;
 			</xsl:when>
 			<xsl:when test="@typ='numeric'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
@@ -1254,6 +1271,17 @@
 				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
+			<xsl:when test="@typ='BOOLEAN'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Bit"/&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='richtext'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_Richtext"/&gt;
+				&lt;xmi:Extension extender="Bouml"&gt;&lt;stereotype name="lbDMF:custombinaryfield"/&gt;&lt;/xmi:Extension&gt;
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
 			<xsl:when test="@typ='datetime'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 				&lt;type xmi:idref="BOUML_datatype_Datetime"/&gt;
@@ -1269,6 +1297,7 @@
 				&lt;type xmi:idref="BOUML_datatype_Float"/&gt;
 			&lt;/ownedAttribute&gt;
 			</xsl:when>
+			<xsl:when test="@typ='tinyint'">
 			<xsl:when test="@typ='tinyint'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 			&lt;type xmi:idref="BOUML_datatype_Integer"/&gt;
