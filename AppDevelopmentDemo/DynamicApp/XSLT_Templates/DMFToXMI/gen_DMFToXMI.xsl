@@ -59,14 +59,16 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 &lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
-		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
-			<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
+		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;
+					<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
 			&lt;xmi:Extension extender="Bouml"&gt;
 				<!--&lt;stereotype name="application"/&gt;-->
 <xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='codegenbasedir']">
 				&lt;taggedValue tag="<xsl:value-of select="@name"/>" value="<xsl:value-of select="@value"/>"/&gt;
 </xsl:for-each>				
 			&lt;/xmi:Extension&gt;
+
+<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -299,14 +301,15 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 &lt;xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:lbDMF="http:///schemas/lbDMF/1"&gt;
 	&lt;xmi:Documentation exporter="gen_DMFToXMI" exporterVersion="1.0"/&gt;
 	&lt;uml:Model xmi:type="uml:Model" xmi:id="ID_BOUML_<xsl:value-of select="$ApplicationName"/>" name="DMFToUML"&gt;
-		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
-			<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
+		&lt;packagedElement xmi:type="uml:Package" xmi:id="BOUML_<xsl:value-of select="$ApplicationName"/>" name ="<xsl:value-of select="$OrginalApplicationName"/>"&gt;
+					<!--&lt;ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1" body="Test description"/&gt;-->
 			&lt;xmi:Extension extender="Bouml"&gt;
 				<!--&lt;stereotype name="application"/&gt;-->
-<xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='codegenbasedir']">
+<xsl:for-each select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name!='DBName'][@name!='DBPass'][@name!='DBUser'][@name!='codegenbasedir']">				
 				&lt;taggedValue tag="<xsl:value-of select="@name"/>" value="<xsl:value-of select="@value"/>"/&gt;
 </xsl:for-each>				
 			&lt;/xmi:Extension&gt;
+<xsl:for-each select="//lbDMF/formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularName">
 	<xsl:call-template name="SubstringReplace">
@@ -462,6 +465,7 @@ Have Application name <xsl:value-of select="$OrginalApplicationName"/>
 		&lt;/packagedElement&gt;
 
 		
+		&lt;packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_Richtext" name = "richtext"/&gt;
 		&lt;packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_Bit" name = "boolean"/&gt;
 		&lt;packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_Float" name = "float"/&gt;
 		&lt;packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_Integer" name = "int"/&gt;
