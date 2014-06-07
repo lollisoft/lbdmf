@@ -119,6 +119,12 @@ BEGIN TRANSACTION;
 
 		</xsl:call-template>	
 		
+		<!-- Generate application configuration values -->
+<xsl:variable name="ApplicationID" select="../@xmi:id"/>
+		<xsl:for-each select="//packagedElement[@xmi:type='uml:Package']/xmi:Extension/taggedValue">
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', <xsl:value-of select="$ApplicationID"/>);
+		</xsl:for-each>
+		
 		<xsl:for-each select="//packagedElement[@xmi:type='uml:Class']">
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
