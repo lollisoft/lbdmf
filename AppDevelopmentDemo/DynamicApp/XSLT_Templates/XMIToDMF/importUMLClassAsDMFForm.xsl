@@ -466,9 +466,7 @@ SELECT 'query', 'select <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Pr
 -- Field datatype <xsl:value-of select="$datatype"/>
 
 		<xsl:choose>
-			<xsl:when test="$datatype='bigstring'">
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, '<xsl:value-of select="$datatype"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
-			</xsl:when>
+			<xsl:when test="$datatype='bigstring'"></xsl:when>
 			<xsl:when test="$datatype='richtext'">
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="@name"/>', '<xsl:value-of select="$tablename"/>', 0, '<xsl:value-of select="$datatype"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$FormularName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 		<xsl:choose>
