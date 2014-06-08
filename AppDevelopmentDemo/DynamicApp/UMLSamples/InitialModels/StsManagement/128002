@@ -1,6 +1,6 @@
 format 73
 "StsManagement" // StsManagement
-  revision 1
+  revision 8
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,6 +26,15 @@ format 73
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
+  ncouples 8
+  key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
+  key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
+  key "ProductVersion" value "1.0.1.0"
+  key "UpgradeCode" value "633C13D5-F277-47CB-9E82-0533D83E1507"
+  key "ProductCode" value "80E9011E-B4D8-4897-96D3-112B2108431C"
+  key "BuildStsService" value "yes"
+  key "CustomDataStorePath" value "lbDMFManagerStsStore"
+  key "CustomDataStoreFile" value "lbDMFManagerStsStore"
   classview 128002 "Auth"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -90,6 +99,136 @@ ${inlines}
       end
 
       attribute 128386 "passwort"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128258 // (name)
+	relation 128130 o--- name "name"
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128258 // (name)
+	  b role_name "SecurityUsers" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128386 // SecurityUsers (name)
+      end
+    end
+
+    class 134530 "ApprovedAudiences"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 134914 "uri"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135042 "description"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128514 // (uri)
+	relation 128258 o--- name "uri"
+	  stereotype "masterdetail_action"
+	  a role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128514 // (uri)
+	  b role_name "ApprovedAudiences" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128642 // ApprovedAudiences (uri)
+      end
+
+      attribute 148098 "certificate_store_name"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148226 "certificate_store_location"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148354 "certificate_find_type"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148482 "certificate_find_value"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 134658 "SecurityUsers_ApprovedAudiences"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128386 // SecurityUsers (name)
+	relation_ref 128130 // name
+      end
+
+      classrelation 128642 // ApprovedAudiences (uri)
+	relation_ref 128258 // uri
+      end
+
+      attribute 141570 "name"
 	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
