@@ -22,6 +22,13 @@
 			</xmi:Extension>
 			<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f402_22" name ="DMFToUML">
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f482_22" name ="lbDMF Manager">
+					<xmi:Extension extender="Bouml">
+						<taggedValue tag="ProductVersion" value="1.0.4.0"/>
+						<taggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
+						<taggedValue tag="UpgradeCode" value="48dc066c-97cc-4512-8fa3-52bbe195e075"/>
+						<taggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
+						<taggedValue tag="ProductCode" value="0BB62EC4-D53A-4AF8-B226-C24ABC2E409F"/>
+					</xmi:Extension>
 					<packagedElement xmi:type="uml:Class" name="Anwendungen" xmi:id="BOUML_0x1f682_4" visibility="package">
 						<xmi:Extension extender="Bouml">
 							<stereotype name="lbDMF:form"/>
@@ -105,6 +112,7 @@
 						</ownedAttribute>
 						<ownedAttribute xmi:type="uml:Property" name="model_errors" xmi:id="BOUML_0x38902_1" visibility="protected">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_datatype_1"/>
+							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:custombigstringfield"/></xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="Formulare" xmi:id="BOUML_0x1f482_4" visibility="package">
@@ -2870,6 +2878,7 @@
 		<packagedElement xmi:type="uml:DataType" xmi:id="BOUML_datatype_0" name="richtext"/>
 	</uml:Model>
 	<lbDMF:codegeneration xmi:id="BOUML_STELT_0x1f402_2" base_Element="BOUML_0x1f402_2"/>
+	<lbDMF:custombigstringfield xmi:id="BOUML_STELT_0x38902_1" base_Element="BOUML_0x38902_1"/>
 	<lbDMF:custombinaryfield xmi:id="BOUML_STELT_0x35482_1" base_Element="BOUML_0x35482_1"/>
 	<lbDMF:custombinaryfield xmi:id="BOUML_STELT_0x35582_1" base_Element="BOUML_0x35582_1"/>
 	<lbDMF:custombinaryfield xmi:id="BOUML_STELT_0x35502_1" base_Element="BOUML_0x35502_1"/>
