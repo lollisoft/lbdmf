@@ -111,6 +111,7 @@ Currently it is a copy for the new name in release.
       </xsl:attribute>
       <xsl:apply-templates select="UML:Namespace.ownedElement/UML:Class"/>
     </xsl:element>
+	
       <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
 -- Execute model genAssociations for <xsl:value-of select="@name"/>
         <xsl:variable name="classID" select="@xmi.id"/>
@@ -161,6 +162,17 @@ BEGIN TRANSACTION;
 -- Package: <xsl:value-of select="@name"/>
 -- Skip rewrite
 <xsl:variable name="applicationname" select="@name"/>
+
+-- Import application parameter for <xsl:value-of select="$applicationname"/>
+
+	  <xsl:for-each select="//UML:Package[@name=$applicationname]/UML:ModelElement.taggedValue/UML:TaggedValue">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', (select id from anwendungen where name = '<xsl:value-of select="$applicationname"/>'));
+</xsl:if>
+<xsl:if test="$TargetDBType = 'PostgreSQL'">	
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', (select id from anwendungen where name = '<xsl:value-of select="$applicationname"/>'));
+</xsl:if>
+      </xsl:for-each>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
 <!--
