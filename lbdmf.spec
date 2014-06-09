@@ -73,7 +73,8 @@ echo "Exec=wxWrapper" >> "%{prefix}/share/applications/wxWrapper.desktop"
 echo "TryExec=wxWrapper" >> "%{prefix}/share/applications/wxWrapper.desktop"
 echo "Icon=%{prefix}/share/lbdmf/lbdmf.png" >> "%{prefix}/share/applications/wxWrapper.desktop"
 echo "Categories=Development;" >> "%{prefix}/share/applications/wxWrapper.desktop"
-
+rm -f %{prefix}/share/lbdmf/XMIToDMF/XMISettings.xsl
+rm -f %{prefix}/share/lbdmf/DMFToXMI/XMISettings.xsl
 ldconfig
 
 %postun
