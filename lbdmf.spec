@@ -75,6 +75,17 @@ echo "Icon=%{prefix}/share/lbdmf/lbdmf.png" >> "%{prefix}/share/applications/wxW
 echo "Categories=Development;" >> "%{prefix}/share/applications/wxWrapper.desktop"
 rm -f %{prefix}/share/lbdmf/XMIToDMF/XMISettings.xsl
 rm -f %{prefix}/share/lbdmf/DMFToXMI/XMISettings.xsl
+cat <<'EOF' > %{prefix}/share/lbdmf/XMIToDMF/XMISettings.xsl
+<xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" extension-element-prefixes="exsl">
+<xsl:variable name="settingsfile_targetdatabase" select="'Sqlite'"/><!-- Preparing a default to use sqlite database  -->
+<xsl:variable name="settingsfile_execute_droprules" select="'no'"/><!-- Do not generate drop statements. Default to be used with new models. -->
+<xsl:variable name="settingsfile_database_name" select="' '"/>
+<xsl:variable name="settingsfile_database_user" select="'dbuser'"/>
+<xsl:variable name="settingsfile_database_pass" select="'dbpass'"/>
+</xsl:stylesheet>
+EOF
+
+
 ldconfig
 
 %postun
