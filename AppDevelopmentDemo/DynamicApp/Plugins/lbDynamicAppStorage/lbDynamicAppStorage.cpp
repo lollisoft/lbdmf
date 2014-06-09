@@ -2055,7 +2055,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nYou may have a permission problem when you manually have created\ntables with another user prior.\nPlease see into the logfile for more information.");
+				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nCheck if you try to update an existing database without having activated overwriting the database.\nNot activating overwriting the database would omit creating drop statements.\nPlease see into the logfile for more information.");
 				metaapp->msgBox(_trans("Error"), msg->charrep());
 				sampleQuery->enableFKCollecting();
 
@@ -2283,7 +2283,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			}
 			
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
-				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nCheck if you try to update an existing database without having activated overwriting the database.\nNot activating overwriting the database would omit creating drop statements.\nPlease see into the logfile for more information.");
+				metaapp->msgBox(_trans("Error"), msg->charrep());
 				sampleQuery->enableFKCollecting();
 
 				xmlFreeDoc(doc);
