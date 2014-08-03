@@ -2856,6 +2856,14 @@ int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
 		return 0;
 	}
 
+	// Somehow the primary key count get overridden when a form is open and the master detail action jumps into it.
+	// When there is no primary key, then the code crashes. When the detail form (without a primary key isn't open,
+	// all is fine.
+	DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(szSql);
+	ResultSetMetaData* metadata = tempResult->GetMetaData();
+	wxString tableCheck = metadata->GetTableForColumn(1);
+	numPrimaryKeys = currentdbLayer->GetPrimaryKeys(tableCheck);
+
 	return numPrimaryKeys;
 }
 /*...e*/
