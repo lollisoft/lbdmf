@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 58
+  revision 61
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -322,10 +322,11 @@ ${inlines}
 
       classrelation 128898 // <dependency>
 	relation 128898 -_->
-	  a default
+	  a package
 	    cpp default "#include in source"
 	    classrelation_ref 128898 // <dependency>
 	  b parent class_ref 131970 // formulare
+	  association_type class_ref 184322 // FormularFilter
       end
 
       classrelation 137218 // Formular_Parameter (Formular_Parameter)
@@ -1831,6 +1832,18 @@ ${inlines}
 	key "lbDMF:dropdown:column" value "name"
 	key "lbDMF:dropdown:table" value "anwendungen"
       end
+
+      classrelation 225282 // Parameter (Parameter)
+	relation 220930 ---> name "Parameter"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Parameter" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 225282 // Parameter (Parameter)
+	  b parent class_ref 197506 // TableParameter
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
+      end
     end
 
     class 164098 "Columns"
@@ -2134,6 +2147,64 @@ ${inlines}
 
       attribute 184578 "dbtableid"
 	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "tablename"
+	key "lbDMF:dropdown:table" value "dbtable"
+      end
+    end
+
+    class 197506 "TableParameter"
+      visibility package stereotype "lbDMF:form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 2
+      key "lbDMF:form:ribbongroup" value "Database"
+      key "lbDMF:form:ribbonpage" value "Home"
+      classrelation 225154 // <dependency>
+	relation 220802 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 225154 // <dependency>
+	  b parent class_ref 197378 // dbtableparameter
+      end
+
+      attribute 238722 "parametername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 238850 "parametervalue"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 238978 "tableid"
+	protected explicit_type ""
 	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
