@@ -83,7 +83,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
-	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -124,15 +123,15 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*); // { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer*) { _CL_LOG << "visit(lb_I_Transfer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Transfer_Data*) { _CL_LOG << "visit(lb_I_Transfer_Data*)" LOG_ }
@@ -158,19 +157,45 @@ public:
 	void LB_STDCALL visit(lb_I_CryptoStream*) { _CL_LOG << "visit(lb_I_CryptoStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DispatchInterceptor*) { _CL_LOG << "visit(lb_I_DispatchInterceptor*)" LOG_ }
 	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ExtensionObject*) { _CL_LOG << "visit(lb_I_ExtensionObject*)" LOG_ }
 
 /*...e*/
 	
 	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
-	
-	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
-	void LB_STDCALL visit(lb_I_DocumentVersion*);
-
+	void LB_STDCALL visit(lb_I_UserAccounts*);
+	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
+	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
+	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_FileLocation*);
 	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
+
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
+	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 	/** \brief Start save operation.
 	 *
@@ -188,11 +213,9 @@ public:
 	 */
 	void LB_STDCALL end();
 		
-	void LB_STDCALL setContextNamespace(const char* _namespace);
 	lb_I_Stream* LB_STDCALL getStream();
 	
 	UAP(lb_I_OutputStream, oStream)
-	UAP(lb_I_String, contextNamespace)
 };
 
 
@@ -218,7 +241,7 @@ lbErrCodes LB_STDCALL lbOutputStream::setData(lb_I_Unknown* uk) {
 lbOutputStream::lbOutputStream() 
 {
 	_CL_LOG << "lbOutputStream::lbOutputStream() called." LOG_
-	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
+	
 }
 /*...e*/
 /*...slbOutputStream\58\\58\\126\lbOutputStream\40\\41\:0:*/
@@ -265,11 +288,6 @@ bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
 	return false;
 }
 
-void lbOutputStream::setContextNamespace(const char* _namespace) {
-	_LOG << "lbOutputStream::setContextNamespace('" << _namespace << "') called." LOG_
-	*contextNamespace = _namespace;
-}
-
 void LB_STDCALL lbOutputStream::visit(lb_I_Streamable* pm) {
 	if (oStream != NULL) {
 		// lb_I_Streamable is generic and selfsaving.
@@ -286,6 +304,65 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Boolean* b) {
 
 void LB_STDCALL lbOutputStream::visit(lb_I_String* s) {
 	*oStream << s->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	int count;
+	
+	count = actionstepparameters->getActionStepParametersCount();
+	*oStream << count;
+
+	actionstepparameters->finishActionStepParameterIteration();
+	
+	while (actionstepparameters->hasMoreActionStepParameters()) {
+		actionstepparameters->setNextActionStepParameter();
+		
+		*oStream << actionstepparameters->getActionStepParameterID();
+		*oStream << actionstepparameters->getActionStepParameterActionID();
+		
+		*oStream << actionstepparameters->getActionStepParameterDescription();
+		*oStream << actionstepparameters->getActionStepParameterName();
+		*oStream << actionstepparameters->getActionStepParameterValue();
+		*oStream << actionstepparameters->getActionStepParameterInterface();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	int count;
+	
+	count = actionparameters->getActionParametersCount();
+	*oStream << count;
+	
+	actionparameters->finishActionParameterIteration();
+	
+	while (actionparameters->hasMoreActionParameters()) {
+		actionparameters->setNextActionParameter();
+		
+		*oStream << actionparameters->getActionParameterID();
+		*oStream << actionparameters->getActionParameterActionID();
+		
+		*oStream << actionparameters->getActionParameterDescription();
+		*oStream << actionparameters->getActionParameterName();
+		*oStream << actionparameters->getActionParameterValue();
+		*oStream << actionparameters->getActionParameterInterface();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+	int count;
+
+	count = applicationformulars->getRelationCount();
+	*oStream << count;
+	
+	applicationformulars->finishRelationIteration();
+	
+	while (applicationformulars->hasMoreRelations()) {
+		applicationformulars->setNextRelation();
+		
+		*oStream << applicationformulars->getID();
+		*oStream << applicationformulars->getApplicationID();
+		*oStream << applicationformulars->getFormularID();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
@@ -342,27 +419,377 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_ExtensibleObject* tableModule) {
-	UAP(lb_I_ExtensionObject, extension) 
-	extension = tableModule->getExtension(*&contextNamespace);
-	
-	if (extension != NULL) {
-		UAP(lb_I_Unknown, uk)
-		QI(tableModule, lb_I_Unknown, uk)
-		extension->setOwningObject(*&uk);
 
-		UAP(lb_I_VisitorExtension, visitorExtension)
-		QI(extension, lb_I_VisitorExtension, visitorExtension)
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Step_Transitions* transition) {
+	int count;
+
+	count = transition->getActionStepTransitionsCount();
+	*oStream << count;
 	
-		if (visitorExtension != NULL) {
-			visitorExtension->setOperator(this);
-			visitorExtension->execute();
-		}
+	transition->finishActionStepTransitionIteration();
+	
+	while (transition->hasMoreActionStepTransitions()) {
+		transition->setNextActionStepTransition();
+		
+		*oStream << transition->getActionStepTransitionID();
+		*oStream << transition->getActionStepTransitionSrcActionID();
+		*oStream << transition->getActionStepTransitionDstActionID();
+		*oStream << transition->getActionStepTransitionDecision();
+		*oStream << transition->getActionStepTransitionDescription();
 	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_DocumentVersion*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_Reports* reports) {
+	int count;
 
+	count = reports->getReportCount();
+	*oStream << count;
+	
+	reports->finishReportIteration();
+	
+	while (reports->hasMoreReports()) {
+		reports->setNextReport();
+		
+		*oStream << reports->getReportID();
+		*oStream << reports->getReportName();
+		*oStream << reports->getReportDescription();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportParameters* reportparameters) {
+	int count;
+
+	count = reportparameters->getParameterCount();
+	*oStream << count;
+	
+	reportparameters->finishParameterIteration();
+	
+	while (reportparameters->hasMoreParameters()) {
+		reportparameters->setNextParameter();
+		
+		*oStream << reportparameters->getParameterID();
+		*oStream << reportparameters->getReportID();
+		*oStream << reportparameters->getParameterName();
+		*oStream << reportparameters->getParameterValue();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportElements* reportelements) {
+	int count;
+
+	count = reportelements->getElementCount();
+	*oStream << count;
+	
+	reportelements->finishElementIteration();
+	
+	while (reportelements->hasMoreElements()) {
+		reportelements->setNextElement();
+		
+		*oStream << reportelements->getElementID();
+		*oStream << reportelements->getElementReportID();
+		*oStream << reportelements->getElementName();
+		*oStream << reportelements->getElementTyp();
+		*oStream << reportelements->getElementX();
+		*oStream << reportelements->getElementY();
+		*oStream << reportelements->getElementW();
+		*oStream << reportelements->getElementH();
+		*oStream << reportelements->getElementDescription();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportElementTypes* reportelementtypes) {
+	int count;
+
+	count = reportelementtypes->getElementTypeCount();
+	*oStream << count;
+	
+	reportelementtypes->finishElementTypeIteration();
+	
+	while (reportelementtypes->hasMoreElementTypes()) {
+		reportelementtypes->setNextElementType();
+		
+		*oStream << reportelementtypes->getElementID();
+		*oStream << reportelementtypes->getElementName();
+		*oStream << reportelementtypes->getElementDescription();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportTexts* reporttexts) {
+	int count;
+
+	count = reporttexts->getTextCount();
+	*oStream << count;
+	
+	reporttexts->finishTextIteration();
+	
+	while (reporttexts->hasMoreTexts()) {
+		reporttexts->setNextText();
+		
+		*oStream << reporttexts->getID();
+		*oStream << reporttexts->getElementID();
+		*oStream << reporttexts->getLine();
+		*oStream << reporttexts->getText();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBReportTextblock*) {
+
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBReportProperties*) {
+
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
+	int count;
+
+	count = users->getUserCount();
+	*oStream << count;
+	
+	users->finishUserIteration();
+	
+	while (users->hasMoreUsers()) {
+		users->setNextUser();
+		
+		*oStream << users->getUserID();
+		*oStream << users->getUserName();
+		*oStream << users->getUserPassword();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
+	int count;
+
+	count = columns->getColumnCount();
+	*oStream << count;
+	
+	columns->finishColumnIteration();
+	
+	while (columns->hasMoreColumns()) {
+		columns->setNextColumn();
+		
+		*oStream << columns->getColumnID();
+		*oStream << columns->getColumnName();
+		*oStream << columns->getColumnComment();
+		*oStream << columns->getColumnTyp();
+		*oStream << columns->getColumnLen();
+		*oStream << columns->getColumnPKTable();
+		*oStream << columns->getColumnPKField();
+		*oStream << columns->getColumnTableName();
+		(columns->isNullable() == true) ? *oStream << 1 : *oStream << 0;
+		*oStream << columns->getTableID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
+	int count;
+
+	count = tables->getTableCount();
+	*oStream << count;
+	
+	tables->finishTableIteration();
+	
+	while (tables->hasMoreTables()) {
+		tables->setNextTable();
+		
+		*oStream << tables->getTableID();
+		*oStream << tables->getTableCatalog();
+		*oStream << tables->getTableSchema();
+		*oStream << tables->getTableName();
+		*oStream << tables->getTableType();
+		*oStream << tables->getTableRemarks();
+		*oStream << tables->getApplicationID();
+	}
+}
+
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBTableParameter* dbtableparameter) {
+	int count;
+	
+	count = dbtableparameter->getParameterCount();
+	*oStream << count;
+	
+	dbtableparameter->finishParameterIteration();
+	
+	while (dbtableparameter->hasMoreParameters()) {
+		dbtableparameter->setNextParameter();
+		
+		*oStream << dbtableparameter->getParameterID();
+		*oStream << dbtableparameter->getParameterName();
+		*oStream << dbtableparameter->getParameterValue();
+		*oStream << dbtableparameter->getTableID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	int count;
+
+	count = fkeys->getForeignKeyCount();
+	*oStream << count;
+	
+	fkeys->finishForeignKeyIteration();
+	
+	while (fkeys->hasMoreForeignKeys()) {
+		fkeys->setNextForeignKey();
+		
+		*oStream << fkeys->getForeignKeyID();
+		
+		*oStream << fkeys->getForeignKeyPKTableCatalog();
+		*oStream << fkeys->getForeignKeyPKTableSchema();
+		*oStream << fkeys->getForeignKeyPKTableName();
+		*oStream << fkeys->getForeignKeyPKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyFKTableCatalog();
+		*oStream << fkeys->getForeignKeyFKTableSchema();
+		*oStream << fkeys->getForeignKeyFKTableName();
+		*oStream << fkeys->getForeignKeyFKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyKeySequence();
+		*oStream << fkeys->getForeignKeyUpdateRule();
+		*oStream << fkeys->getForeignKeyDeleteRule();
+		*oStream << fkeys->getTableID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	int count;
+
+	count = pkeys->getPrimaryKeyCount();
+	*oStream << count;
+	
+	pkeys->finishPrimaryKeyIteration();
+	
+	while (pkeys->hasMorePrimaryKeys()) {
+		pkeys->setNextPrimaryKey();
+		
+		*oStream << pkeys->getPrimaryKeyID();
+		*oStream << pkeys->getPrimaryKeyTableCatalog();
+		*oStream << pkeys->getPrimaryKeyTableSchema();
+		*oStream << pkeys->getPrimaryKeyTableName();
+		*oStream << pkeys->getPrimaryKeyColumnName();
+		*oStream << pkeys->getPrimaryKeySequence();
+		*oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
+		*oStream << pkeys->getTableID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Translations* trans) {
+	int count;
+
+	count = trans->getTranslationsCount();
+	*oStream << count;
+	
+	trans->finishTranslationIteration();
+	
+	while (trans->hasMoreTranslations()) {
+		trans->setNextTranslation();
+		
+		*oStream << trans->getTranslationID();
+		*oStream << trans->getTranslationText();
+		*oStream << trans->getTranslationTranslated();
+		*oStream << trans->getTranslationLanguage();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_FormularParameter* forms) {
+	int count;
+
+	count = forms->getParameterCount();
+	*oStream << count;
+	
+	forms->finishParameterIteration();
+	
+	while (forms->hasMoreParameters()) {
+		forms->setNextParameter();
+		
+		*oStream << forms->getParameterID();
+		*oStream << forms->getParameterName();
+		*oStream << forms->getParameterValue();
+		*oStream << forms->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Actions* actions) {
+	int count;
+
+	count = actions->getActionCount();
+	*oStream << count;
+	
+	actions->finishActionIteration();
+	
+	while (actions->hasMoreActions()) {
+		actions->setNextAction();
+	
+		_LOG << "Have an action with this Id: " << actions->getActionID() LOG_
+	
+		*oStream << actions->getActionID();
+		*oStream << actions->getActionName();
+		*oStream << actions->getActionSource();
+		*oStream << actions->getActionTyp();
+		*oStream << actions->getActionTarget();
+		*oStream << actions->getActionApplicationID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Steps* action_steps) {
+	int count;
+
+	count = action_steps->getActionStepCount();
+	*oStream << count;
+
+	_LOG << "lbOutputStream::visit(lb_I_Action_Steps* action_steps) called." LOG_
+
+	action_steps->finishActionStepIteration();
+	
+	while (action_steps->hasMoreActionSteps()) {
+		action_steps->setNextActionStep();
+
+		_LOG << "lbOutputStream::visit(lb_I_Action_Steps* action_steps) writes an entry." LOG_
+		
+		*oStream << action_steps->getActionStepID();
+		*oStream << action_steps->getActionStepActionID();
+		*oStream << action_steps->getActionStepOrderNo();
+		*oStream << action_steps->getActionStepType();
+		*oStream << action_steps->getActionStepBezeichnung();
+		*oStream << action_steps->getActionStepWhat();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Types* action_types) {
+	int count;
+
+	count = action_types->getActionTypesCount();
+	*oStream << count;
+	
+	action_types->finishActionTypeIteration();
+	
+	while (action_types->hasMoreActionTypes()) {
+		action_types->setNextActionType();
+		
+		*oStream << action_types->getActionTypeID();
+		*oStream << action_types->getActionTypeBezeichnung();
+		*oStream << action_types->getActionTypeHandler();
+		*oStream << action_types->getActionTypeModule();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Actions* formular_actions) {
+	int count;
+
+	count = formular_actions->getFormularActionsCount();
+	*oStream << count;
+	
+	formular_actions->finishFormularActionIteration();
+	
+	while (formular_actions->hasMoreFormularActions()) {
+		formular_actions->setNextFormularAction();
+		
+		*oStream << formular_actions->getFormularActionID();
+		*oStream << formular_actions->getFormularActionFormularID();
+		*oStream << formular_actions->getFormularActionActionID();
+		*oStream << formular_actions->getFormularActionEvent();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_FileLocation* fileloc) {
@@ -371,6 +798,137 @@ void LB_STDCALL lbOutputStream::visit(lb_I_FileLocation* fileloc) {
 
 void LB_STDCALL lbOutputStream::visit(lb_I_DirLocation* fileloc) {
 		*oStream << fileloc->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ApplicationParameter* apps) {
+	int count;
+
+	count = apps->getParameterCount();
+	*oStream << count;
+	
+	apps->finishParameterIteration();
+	
+	while (apps->hasMoreParameters()) {
+		apps->setNextParameter();
+		
+		*oStream << apps->getParameterID();
+		*oStream << apps->getParameterName();
+		*oStream << apps->getParameterValue();
+		*oStream << apps->getApplicationID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formulars* forms) {
+	int count;
+
+	count = forms->getFormularCount();
+	*oStream << count;
+	
+	forms->finishFormularIteration();
+	
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		
+		*oStream << forms->getFormularID();
+		*oStream << forms->getName();
+		*oStream << forms->getMenuName();
+		*oStream << forms->getEventName();
+		*oStream << forms->getMenuHelp();
+		*oStream << forms->getApplicationID();
+		*oStream << forms->getTyp();
+		*oStream << forms->getToolbarImage();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Fields* formularfields) {
+	int count;
+
+	count = formularfields->getFieldCount();
+	*oStream << count;
+	
+	formularfields->finishFieldsIteration();
+	
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
+		
+		*oStream << formularfields->getID();
+		*oStream << formularfields->getName();
+		*oStream << formularfields->getTableName();
+		*oStream << formularfields->getDBType();
+		if (formularfields->isFK())
+			*oStream << (long) 1;
+		else
+			*oStream << (long) 0;
+		*oStream << formularfields->getFKName();
+		*oStream << formularfields->getFKTable();
+		*oStream << formularfields->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Column_Types* columntypes) {
+	int count;
+
+	count = columntypes->getTypeCount();
+	*oStream << count;
+	
+	columntypes->finishTypeIteration();
+	
+	while (columntypes->hasMoreTypes()) {
+		columntypes->setNextType();
+		
+		*oStream << columntypes->getTableName();
+		*oStream << columntypes->getName();
+		*oStream << columntypes->getSpecialColumn();
+		*oStream << columntypes->getControlType();
+		if (columntypes->getReadonly() == true) 
+			*oStream << (long) 1;
+		else
+			*oStream << (long) 0;
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Applications* app) {
+	int count;
+
+	count = app->getApplicationCount();
+	*oStream << count;
+	
+	app->finishApplicationIteration();
+	
+	while (app->hasMoreApplications()) {
+		app->setNextApplication();
+		
+		_CL_LOG << "Save application: '" << app->getApplicationName() << 
+		"', title: '" << app->getApplicationTitle() <<
+		"', module: '" << app->getApplicationModule() <<
+		"', functor: '" << app->getApplicationFunctor() <<
+		"', interface: '" << app->getApplicationInterface()
+		  LOG_
+		
+		*oStream << app->getApplicationID();
+		*oStream << app->getApplicationName();
+		*oStream << app->getApplicationTitle();
+		*oStream << app->getApplicationModule();
+		*oStream << app->getApplicationFunctor();
+		*oStream << app->getApplicationInterface();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_User_Applications* app) {
+	int count;
+
+	count = app->getRelationCount();
+	*oStream << count;
+	
+	app->finishRelationIteration();
+	
+	while (app->hasMoreRelations()) {
+		app->setNextRelation();
+		
+		*oStream << app->getID();
+		*oStream << app->getUserID();
+		*oStream << app->getApplicationID();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
@@ -511,15 +1069,12 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
-	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginOutputStream)
@@ -540,16 +1095,11 @@ lbErrCodes LB_STDCALL lbPluginOutputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginOutputStream::lbPluginOutputStream() {
 	_CL_VERBOSE << "lbPluginOutputStream::lbPluginOutputStream() called.\n" LOG_
-	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
-	*pluginNamespace = "Plugin namespace was not set.";
+	
 }
 
 lbPluginOutputStream::~lbPluginOutputStream() {
 	_CL_VERBOSE << "lbPluginOutputStream::~lbPluginOutputStream() called.\n" LOG_
-}
-
-void LB_STDCALL lbPluginOutputStream::setNamespace(const char* _namespace) {
-	*pluginNamespace = _namespace;
 }
 
 bool LB_STDCALL lbPluginOutputStream::canAutorun() {
@@ -575,7 +1125,6 @@ lb_I_Unknown* LB_STDCALL lbPluginOutputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbOutputStream* InputStream = new lbOutputStream();
 		
-		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -595,7 +1144,6 @@ lb_I_Unknown* LB_STDCALL lbPluginOutputStream::getImplementation() {
 	
 		lbOutputStream* InputStream = new lbOutputStream();
 		
-		InputStream->setContextNamespace(pluginNamespace->charrep());
 	
 		QI(InputStream, lb_I_Unknown, impl)
 	}

@@ -182,6 +182,7 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
@@ -705,6 +706,26 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
 		*iStream >> ApplicationID;
 		
 		tables->addTable(catalog, schema, name, type, remarks, ApplicationID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTableParameter* dbtableparameter) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  TID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> TID;
+		
+		dbtableparameter->addParameter(Name, Value, TID, ID);
 	}
 }
 

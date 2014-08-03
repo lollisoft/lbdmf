@@ -84,7 +84,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
-	void LB_STDCALL visit(lb_I_SecurityProvider*) { _CL_VERBOSE << "visit(lb_I_SecurityProvider*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_VERBOSE << "visit(lb_I_LogonHandler*)" LOG_ }
 	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_VERBOSE << "visit(lb_I_LogonPage*)" LOG_ }
 	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_VERBOSE << "visit(lb_I_AppSelectPage*)" LOG_ }
@@ -125,15 +124,15 @@ public:
 	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_VERBOSE << "visit(lb_I_PluginModule*)" LOG_ }
 	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_VERBOSE << "visit(lb_I_wxFrame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Window*) { _CL_VERBOSE << "visit(lb_I_Window*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_Action*) { _CL_VERBOSE << "visit(lb_I_Action*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_VERBOSE << "visit(lb_I_DelegatedAction*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Action*) { _CL_VERBOSE << "visit(lb_I_Action*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_VERBOSE << "visit(lb_I_DelegatedAction*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Form*) { _CL_VERBOSE << "visit(lb_I_Form*)" LOG_ }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_VERBOSE << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_VERBOSE << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_VERBOSE << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_VERBOSE << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation*) { _CL_VERBOSE << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	//void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_VERBOSE << "visit(lb_I_ParameterTable*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_VERBOSE << "visit(lb_I_ParameterTable*)" LOG_ }
 	void LB_STDCALL visit(lb_I_FileLocation*)  { _CL_VERBOSE << "visit(lb_I_FileLocation*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DirLocation*)  { _CL_VERBOSE << "visit(lb_I_DirLocation*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Socket*) { _CL_LOG << "visit(lb_I_Socket*)" LOG_ }
@@ -161,26 +160,51 @@ public:
 	void LB_STDCALL visit(lb_I_CryptoStream*) { _CL_LOG << "visit(lb_I_CryptoStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DispatchInterceptor*) { _CL_LOG << "visit(lb_I_DispatchInterceptor*)" LOG_ }
 	void LB_STDCALL visit(lb_I_VisitableHelper*) { _CL_LOG << "visit(lb_I_VisitableHelper*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ExtensionObject*) { _CL_LOG << "visit(lb_I_ExtensionObject*)" LOG_ }
 /*...e*/
 
 	void LB_STDCALL visit(lb_I_Streamable*);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
+	void LB_STDCALL visit(lb_I_UserAccounts*);
+	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
+	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
 
-	void LB_STDCALL visit(lb_I_ExtensibleObject* tableModule);
-	void LB_STDCALL visit(lb_I_DocumentVersion*);
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Translations*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
+
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
+	void LB_STDCALL visit(lb_I_Action_Step_Transitions*);
+	void LB_STDCALL visit(lb_I_ActionStep_Parameters*);
+	void LB_STDCALL visit(lb_I_Action_Parameters*);
 
 	bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db);
 	void LB_STDCALL end();
 
-	void LB_STDCALL setContextNamespace(const char* _namespace);
-	lb_I_Database* LB_STDCALL getDatabase();
+//	lb_I_Stream* LB_STDCALL getStream();
 
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, ConnectionName)
-	UAP(lb_I_String, contextNamespace)
 };
 
 
@@ -206,7 +230,7 @@ lbErrCodes LB_STDCALL lbDatabaseInputStream::setData(lb_I_Unknown* uk) {
 lbDatabaseInputStream::lbDatabaseInputStream()
 {
 	_CL_VERBOSE << "lbDatabaseInputStream::lbDatabaseInputStream() called." LOG_
-	REQUEST(getModuleInstance(), lb_I_String, contextNamespace)
+	
 }
 /*...e*/
 /*...slbDatabaseInputStream\58\\58\\126\lbDatabaseInputStream\40\\41\:0:*/
@@ -253,16 +277,6 @@ bool LB_STDCALL lbDatabaseInputStream::begin(const char* connectionname, lb_I_Da
 	return false;
 }
 
-lb_I_Database* LB_STDCALL lbDatabaseInputStream::getDatabase() {
-	db++;
-	return *&db;
-}
-
-void lbDatabaseInputStream::setContextNamespace(const char* _namespace) {
-	_LOG << "lbDatabaseInputStream::setContextNamespace('" << _namespace << "') called." LOG_
-	*contextNamespace = _namespace;
-}
-
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 	if (db != NULL) {
 		/*
@@ -278,42 +292,2239 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 	}
 }
 
-// Visiting unknown nodes: https://www.re-motion.org/blogs/mix/2010/05/24/how-a-visitor-implementation-can-handle-unknown-nodes/
-// Other visitor patterns: http://objectmentor.com/resources/articles/visitor.pdf => Extension Object
-// http://www.brockmann-consult.de/beam-wiki/display/BEAM/Extension+Object+Pattern
-// http://www.lcs.syr.edu/faculty/fawcett/handouts/cse776/PatternPDFs/ExtensionObject.pdf
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule) {
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
 	if (db == NULL) {
 		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
 		return;
 	}
 
-	UAP(lb_I_ExtensionObject, extension) 
-	_LOG << "lbDatabaseInputStream::visit(lb_I_ExtensibleObject* tableModule) using context namespace = " << contextNamespace->charrep() LOG_
+	q = db->getQuery("lbDMF", 0);
+	*query = "select id, action_step_id, name, value, interface, description from action_step_parameter";
 
-	extension = tableModule->getExtension(*&contextNamespace);
-	
-	if (extension != NULL) {
-		UAP(lb_I_Unknown, uk)
-		QI(tableModule, lb_I_Unknown, uk)
-		extension->setOwningObject(*&uk);
-	
-		UAP(lb_I_VisitorExtension, visitorExtension)
-		QI(extension, lb_I_VisitorExtension, visitorExtension)
-	
-		if (visitorExtension != NULL) {
-			visitorExtension->setOperator(this);
-			visitorExtension->execute();
-		} else {
-			_LOG << "Error: Could not get interface lb_I_VisitorExtension from extension object." LOG_
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, actionid)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, value)
+		UAP(lb_I_String, _interface)
+		UAP(lb_I_String, description)
+		err = q->first();
+
+		while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+			ID = q->getAsLong(1);
+			actionid = q->getAsLong(2);
+			name = q->getAsString(3);
+			value = q->getAsString(4);
+			_interface = q->getAsString(5);
+			description = q->getAsString(6);
+
+			actionstepparameters->addActionStepParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), actionid->getData(), ID->getData());
+
+			err = q->next();
 		}
-	} else {
-		_LOG << "Warning: Could not get visitor implementation as extension object." LOG_
 	}
 }
 
-void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DocumentVersion*) {
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Parameters* actionparameters) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Action_Parameters* actionparameters) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, actionid, name, value, interface, description from action_parameters";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, actionid)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, value)
+		UAP(lb_I_String, _interface)
+		UAP(lb_I_String, description)
+		err = q->first();
+
+		while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+			ID = q->getAsLong(1);
+			actionid = q->getAsLong(2);
+			name = q->getAsString(3);
+			value = q->getAsString(4);
+			_interface = q->getAsString(5);
+			description = q->getAsString(6);
+
+			actionparameters->addActionParameter(description->charrep(), name->charrep(), value->charrep(), _interface->charrep(), actionid->getData(), ID->getData());
+
+			err = q->next();
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Step_Transitions* transitions) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Action_Step_Transitions* transitions) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, src_actionid, dst_actionid, expression, description from action_step_transitions";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, SrcActionID)
+			UAP(lb_I_Long, DstActionID)
+			UAP(lb_I_String, Decision)
+			UAP(lb_I_String, Description)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+				ID = q->getAsLong(1);
+				SrcActionID = q->getAsLong(2);
+				DstActionID = q->getAsLong(3);
+				Decision = q->getAsString(4);
+				Description = q->getAsString(5);
+
+				transitions->addTransition(Decision->charrep(), SrcActionID->getData(), DstActionID->getData(), Description->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Applications_Formulars* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, anwendungid, formularid from anwendungen_formulare";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ApplicationID)
+			UAP(lb_I_Long, FormularID)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+				ID = q->getAsLong(1);
+				ApplicationID = q->getAsLong(2);
+				FormularID = q->getAsLong(3);
+
+				applicationformulars->addRelation(ApplicationID->getData(), FormularID->getData(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Reports* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, name, description from reports";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+				ID = q->getAsLong(1);
+				Name = q->getAsString(2);
+				Description = q->getAsString(3);
+
+				reports->addReport(Name->charrep(), Description->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparameters) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportParameters* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, reportid, name, value from report_parameters";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ReportID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Value)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				ID = q->getAsLong(1);
+				ReportID = q->getAsLong(2);
+				Name = q->getAsString(3);
+				Value = q->getAsString(4);
+
+				reportparameters->addParameter(ReportID->getData(), Name->charrep(), Value->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportElements* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, reportid, typ, name, x, y, w, h, description from report_elements";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ReportID)
+			UAP(lb_I_Long, Typ)
+			UAP(lb_I_Long, X)
+			UAP(lb_I_Long, Y)
+			UAP(lb_I_Long, W)
+			UAP(lb_I_Long, H)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				ID = q->getAsLong(1);
+				ReportID = q->getAsLong(2);
+				Typ = q->getAsLong(3);
+				Name = q->getAsString(4);
+				X = q->getAsLong(5);
+				Y = q->getAsLong(6);
+				W = q->getAsLong(7);
+				H = q->getAsLong(8);
+				Description = q->getAsString(9);
+
+				reportelements->addElement(ReportID->getData(), Name->charrep(), Typ->getData(), X->getData(), Y->getData(), W->getData(), H->getData(), Description->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelementtypes) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, name, description from report_element_types";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				ID = q->getAsLong(1);
+				Name = q->getAsString(2);
+				Description = q->getAsString(3);
+
+				reportelementtypes->addElementType(Name->charrep(), Description->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportTexts* textlines) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportTexts* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, elementid, line, text from report_texts";
+
+	err = q->query(query->charrep());
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ElementID)
+			UAP(lb_I_Long, Line)
+			UAP(lb_I_String, Text)
+			err = q->first();
+
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				ID = q->getAsLong(1);
+				ElementID = q->getAsLong(2);
+				Line = q->getAsLong(3);
+				Text = q->getAsString(4);
+
+				textlines->addText(ElementID->getData(), Line->getData(), Text->charrep(), ID->getData());
+
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportTextblock*) {
+
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportProperties*) {
+
+}
+
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, userid, passwort from Users") != ERR_NONE) {
+		_LOG << "Error: Access to user table failed. Read user accounts would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No user accounts found. All accounts may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qUID)
+		UAP(lb_I_String, qPWD)
+
+		qID = q->getAsLong(1);
+		qUID = q->getAsString(2);
+		qPWD = q->getAsString(3);
+
+		users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qUID = q->getAsString(2);
+			qPWD = q->getAsString(3);
+
+			users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
+		}
+	}
+}
+
+// Switch later - code is not ready
+//#define USE_DBREVERSE
+
+#ifndef USE_DBREVERSE
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid from dbforeignkey") != ERR_NONE) {
+		_LOG << "Error: Access to foreignkey table failed. Read foreign keys would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No foreign keys found. All foreign keys may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
+
+		currentID = q->getAsLong(1); // Synchronizing: Then it better should be a guid.
+		currentPKTableCatalog = q->getAsString(2);
+		currentPKTableSchema = q->getAsString(3);
+		currentPKTableName = q->getAsString(4);
+		currentPKTableColumnName = q->getAsString(5);
+		currentFKTableCatalog = q->getAsString(6);
+		currentFKTableSchema = q->getAsString(7);
+		currentFKTableName = q->getAsString(8);
+		currentFKTableColumnName = q->getAsString(9);
+		currentKeySequence = q->getAsLong(10);
+		currentUpdateRule = q->getAsLong(11);
+		currentDeleteRule = q->getAsLong(12);
+		currentTableID = q->getAsLong(13);
+
+		fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
+								currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
+								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentTableID->getData(), currentID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			currentPKTableCatalog = q->getAsString(2);
+			currentPKTableSchema = q->getAsString(3);
+			currentPKTableName = q->getAsString(4);
+			currentPKTableColumnName = q->getAsString(5);
+			currentFKTableCatalog = q->getAsString(6);
+			currentFKTableSchema = q->getAsString(7);
+			currentFKTableName = q->getAsString(8);
+			currentFKTableColumnName = q->getAsString(9);
+			currentKeySequence = q->getAsLong(10);
+			currentUpdateRule = q->getAsLong(11);
+			currentDeleteRule = q->getAsLong(12);
+			currentTableID = q->getAsLong(13);
+
+			fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
+									currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
+									currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), currentTableID->getData(), currentID->getData());
+		}
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid from dbprimarykey") != ERR_NONE) {
+		_LOG << "Error: Access to primarykey table failed. Read primary keys would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No primary keys found. All primary keys may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentTableID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+
+		currentID = q->getAsLong(1);
+		currentTableCatalog = q->getAsString(2);
+		currentTableSchema = q->getAsString(3);
+		currentTableName = q->getAsString(4);
+		currentColumnName = q->getAsString(5);
+		currentColumnName_V2 = q->getAsString(6);
+		currentKeySequence = q->getAsLong(7);
+		currentTableID = q->getAsLong(8);
+
+		pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
+								currentKeySequence->getData(), currentColumnName_V2->charrep(), currentTableID->getData(), currentID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			currentTableCatalog = q->getAsString(2);
+			currentTableSchema = q->getAsString(3);
+			currentTableName = q->getAsString(4);
+			currentColumnName = q->getAsString(5);
+			currentColumnName_V2 = q->getAsString(6);
+			currentKeySequence = q->getAsLong(7);
+			currentTableID = q->getAsLong(8);
+
+			pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
+									currentKeySequence->getData(), currentColumnName_V2->charrep(), currentTableID->getData(), currentID->getData());
+		}
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid from dbtable") != ERR_NONE) {
+		_LOG << "Error: Access to dbtable table failed. Read tables would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No tables found. All tables may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, applicationID)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+		
+
+		currentID = q->getAsLong(1);
+		szTableCatalog = q->getAsString(2);
+		szTableSchema = q->getAsString(3);
+		szTableName = q->getAsString(4);
+		szTableType = q->getAsString(5);
+		szTableRemarks = q->getAsString(6);
+		applicationID = q->getAsLong(7);
+		
+
+		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), applicationID->getData(), currentID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			szTableCatalog = q->getAsString(2);
+			szTableSchema = q->getAsString(3);
+			szTableName = q->getAsString(4);
+			szTableType = q->getAsString(5);
+			szTableRemarks = q->getAsString(6);
+			applicationID = q->getAsLong(7);
+
+			tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), applicationID->getData(), currentID->getData());
+		}
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid from dbcolumn") != ERR_NONE) {
+		_LOG << "Error: Access to dbcolumn table failed. Read columns would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No columns found. All columns may be deleted accidantly." LOG_
+	} else {
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnRemarks)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTypeName)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnSize)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szNullable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, TableID)
+
+		currentID = q->getAsLong(1);
+		szColumnName = q->getAsString(2);
+		szColumnRemarks = q->getAsString(3);
+		szTypeName = q->getAsString(4);
+		ColumnSize = q->getAsLong(5);
+		szNullable = q->getAsString(6);
+		szTableName = q->getAsString(7);
+		TableID = q->getAsLong(8);
+
+		columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), TableID->getData(), currentID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			currentID = q->getAsLong(1);
+			szColumnName = q->getAsString(2);
+			szColumnRemarks = q->getAsString(3);
+			szTypeName = q->getAsString(4);
+			ColumnSize = q->getAsLong(5);
+			szNullable = q->getAsString(6);
+			szTableName = q->getAsString(7);
+			TableID = q->getAsLong(8);
+
+			columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), (*szNullable == "true") ? true : false, "", "", szTableName->charrep(), TableID->getData(), currentID->getData());
+		}
+	}
+
+	return;
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTableParameter* dbtableparameter) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery("lbDMF", 0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, parametername, parametervalue, tableid from dbtableparameter") != ERR_NONE) {
+		_LOG << "Error: Access to DBTableParameter table failed. Read DBTableParameter would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first();
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qTID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+		
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qTID = q->getAsLong(4);
+		
+		dbtableparameter->addParameter(qN->charrep(), qV->charrep(), qTID->getData(), qID->getData());
+		
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qTID = q->getAsLong(4);
+			
+			dbtableparameter->addParameter(qN->charrep(), qV->charrep(), qTID->getData(), qID->getData());
+		}
+	}
+}
+
+#endif
+
+#ifdef USE_DBREVERSE
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	UAP(lb_I_Container, Tables)
+
+	Tables = db->getForeignKeys(ConnectionName->charrep());
+
+	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
+
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+
+		*paramname = "PKTableCatalog";
+		param->getUAPString(*&paramname, *&currentPKTableCatalog);
+		*paramname = "PKTableSchema";
+		param->getUAPString(*&paramname, *&currentPKTableSchema);
+		*paramname = "PKTableName";
+		param->getUAPString(*&paramname, *&currentPKTableName);
+		*paramname = "PKTableColumnName";
+		param->getUAPString(*&paramname, *&currentPKTableColumnName);
+
+		*paramname = "FKTableCatalog";
+		param->getUAPString(*&paramname, *&currentFKTableCatalog);
+		*paramname = "FKTableSchema";
+		param->getUAPString(*&paramname, *&currentFKTableSchema);
+		*paramname = "FKTableName";
+		param->getUAPString(*&paramname, *&currentFKTableName);
+		*paramname = "FKTableColumnName";
+		param->getUAPString(*&paramname, *&currentFKTableColumnName);
+
+		*paramname = "KeySequence";
+		param->getUAPLong(*&paramname, *&currentKeySequence);
+		*paramname = "UpdateRule";
+		param->getUAPLong(*&paramname, *&currentUpdateRule);
+		*paramname = "DeleteRule";
+		param->getUAPLong(*&paramname, *&currentDeleteRule);
+
+		*paramname = "ID";
+		param->getUAPLong(*&paramname, *&currentID);
+
+		fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(),
+								currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(),
+								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), ++i);
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	UAP(lb_I_Container, Tables)
+
+	Tables = db->getPrimaryKeys(ConnectionName->charrep());
+
+	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+
+		*paramname = "TableCatalog";
+		param->getUAPString(*&paramname, *&currentTableCatalog);
+		*paramname = "TableSchema";
+		param->getUAPString(*&paramname, *&currentTableSchema);
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&currentTableName);
+		*paramname = "ColumnName";
+		param->getUAPString(*&paramname, *&currentColumnName);
+		*paramname = "ColumnName_V2";
+		param->getUAPString(*&paramname, *&currentColumnName_V2);
+
+		*paramname = "KeySequence";
+		param->getUAPLong(*&paramname, *&currentKeySequence);
+
+		*paramname = "ID";
+		param->getUAPLong(*&paramname, *&currentID);
+
+		pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(),
+								currentKeySequence->getData(), currentColumnName_V2->charrep(), ++i);
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	UAP(lb_I_Container, Tables)
+
+	// When using the optional parameter to let db fill the data directly into the model
+	Tables = db->getTables(ConnectionName->charrep());
+
+	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+
+		*name = "TableCatalog";
+		param->getUAPString(*&name, *&szTableCatalog);
+		*name = "TableSchema";
+		param->getUAPString(*&name, *&szTableSchema);
+		*name = "TableName";
+		param->getUAPString(*&name, *&szTableName);
+		*name = "TableTyp";
+		param->getUAPString(*&name, *&szTableType);
+		*name = "TableRemarks";
+		param->getUAPString(*&name, *&szTableRemarks);
+
+		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+	}
+}
+
+/// \todo Improve speed by directly passing the container into the lbDMFDataModel classes.
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDatetimeSubtypeCode)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameBufferLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameDecimalDigits)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNumPrecRadix)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameRemarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnDefault)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameSQLDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameCharOctetLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameOrdinalPosition)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameIsNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameTypeName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, nameColumnSize)
+
+
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	UAP(lb_I_Container, Pages)
+
+	Pages = db->getColumns(ConnectionName->charrep());
+
+	columns->addPagedConainer(*&Pages);
+
+	return;
+#ifdef bla
+	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTypeName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szRemarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szIsNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnDefault)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnSize)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, BufferLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DecimalDigits)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, NumPrecRadix)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Nullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, SQLDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DatetimeSubtypeCode)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, CharOctetLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, OrdinalPosition)
+/*
+	*nameDatetimeSubtypeCode = "DatetimeSubtypeCode";
+	*nameTableCatalog = "TableCatalog";
+	*nameTableSchema = "TableSchema";
+	*nameTableName = "TableName";
+	*nameColumnName = "ColumnName";
+	*nameDataType = "DataType";
+	*nameTypeName = "TypeName";
+	*nameBufferLength = "BufferLength";
+	*nameDecimalDigits = "DecimalDigits";
+	*nameNumPrecRadix = "NumPrecRadix";
+	*nameNullable = "Nullable";
+	*nameRemarks = "Remarks";
+	*nameColumnDefault = "ColumnDefault";
+	*nameSQLDataType = "SQLDataType";
+	*nameCharOctetLength = "CharOctetLength";
+	*nameOrdinalPosition = "OrdinalPosition";
+	*nameIsNullable = "IsNullable";
+	*nameColumnSize = "ColumnSize";
+*/
+
+	*nameDatetimeSubtypeCode = "1";
+	*nameTableCatalog = "2";
+	*nameTableSchema = "3";
+	*nameTableName = "4";
+	*nameColumnName = "5";
+	*nameDataType = "6";
+	*nameTypeName = "7";
+	*nameBufferLength = "8";
+	*nameDecimalDigits = "9";
+	*nameNumPrecRadix = "10";
+	*nameNullable = "11";
+	*nameRemarks = "12";
+	*nameColumnDefault = "13";
+	*nameSQLDataType = "14";
+	*nameCharOctetLength = "15";
+	*nameOrdinalPosition = "16";
+	*nameIsNullable = "17";
+	*nameColumnSize = "18";
+
+	long columnsPortion = 0;
+	long columnsImported = 0;
+
+	// Outer loop over the pages.
+	while (Pages->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Container, Columns)
+
+			uk = Pages->nextElement();
+		QI(uk, lb_I_Container, Columns)
+
+			while (Columns->hasMoreElements() == 1) {
+				UAP(lb_I_Unknown, uk)
+					UAP(lb_I_Parameter, param)
+
+					uk = Columns->nextElement();
+				QI(uk, lb_I_Parameter, param)
+
+					//		param->getUAPString(*&nameTableCatalog, *&szCatalog);
+					//		param->getUAPString(*&nameTableSchema, *&szSchema);
+					param->getUAPString(*&nameTableName, *&szTableName);
+				param->getUAPString(*&nameColumnName, *&szColumnName);
+
+				//		param->getUAPLong(*&nameDataType, *&DataType);
+				param->getUAPString(*&nameTypeName, *&szTypeName);
+				param->getUAPLong(*&nameColumnSize, *&ColumnSize);
+				//		param->getUAPLong(*&nameBufferLength, *&BufferLength);
+				//		param->getUAPLong(*&nameDecimalDigits, *&DecimalDigits);
+				//		param->getUAPLong(*&nameNumPrecRadix, *&NumPrecRadix);
+				//		param->getUAPLong(*&nameNullable, *&Nullable);
+						param->getUAPString(*&nameRemarks, *&szRemarks);
+				//		param->getUAPString(*&nameColumnDefault, *&szColumnDefault);
+				//		param->getUAPLong(*&nameSQLDataType, *&SQLDataType);
+				//		param->getUAPLong(*&nameDatetimeSubtypeCode, *&DatetimeSubtypeCode);
+				//		param->getUAPLong(*&nameCharOctetLength, *&CharOctetLength);
+				//		param->getUAPLong(*&nameOrdinalPosition, *&OrdinalPosition);
+				//		param->getUAPString(*&nameIsNullable, *&szIsNullable);
+
+				columnsPortion++;
+
+				if (columnsPortion == 100) {
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+						columnsImported += columnsPortion;
+					columnsPortion = 0;
+					l->setData(columnsImported);
+
+					*msg = "Copied ";
+					*msg += l->charrep();
+					*msg += " of columns into datamodel ...";
+
+					meta->setStatusText("Info", msg->charrep());
+
+				}
+
+
+				columns->addColumn(szColumnName->charrep(), szColumnRemarks->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
+			}
+	}
+#endif
+}
+
+#endif
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, text, translated, language from translations") != ERR_NONE) {
+		_LOG << "Error: Access to translations table failed. Read translations would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No translations found. All accounts may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qText)
+		UAP(lb_I_String, qTranslated)
+		UAP(lb_I_String, qLanguage)
+
+		qID = q->getAsLong(1);
+		qText = q->getAsString(2);
+		qTranslated = q->getAsString(3);
+		qLanguage = q->getAsString(4);
+
+		trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qText = q->getAsString(2);
+			qTranslated = q->getAsString(3);
+			qLanguage = q->getAsString(4);
+
+			trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_FormularParameter* params) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, parametername, parametervalue, formularid from Formular_Parameters") != ERR_NONE) {
+		_LOG << "Error: Access to Formular_Parameters table failed. Read Formular_Parameters would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qFID = q->getAsLong(4);
+
+		params->addParameter(qN->charrep(), qV->charrep(), qFID->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qFID = q->getAsLong(4);
+
+			params->addParameter(qN->charrep(), qV->charrep(), qFID->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select id, name, typ, source, target, anwendungenid from actions";
+
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action table failed. Read actions would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qTyp)
+		UAP(lb_I_Long, qApplicationID)
+		UAP(lb_I_String, qTarget)
+		UAP(lb_I_String, qName)
+		UAP(lb_I_String, qSource)
+
+		qID = q->getAsLong(1);
+		qName = q->getAsString(2);
+		qTyp = q->getAsLong(3);
+		qSource = q->getAsString(4);
+		qTarget = q->getAsString(5);
+		qApplicationID = q->getAsLong(6);
+
+		
+		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qApplicationID->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qName = q->getAsString(2);
+			qTyp = q->getAsLong(3);
+			qSource = q->getAsString(4);
+			qTarget = q->getAsString(5);
+			qApplicationID = q->getAsLong(6);
+
+			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->charrep(), qApplicationID->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Steps* action_steps) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select \"id\", \"bezeichnung\", \"actionid\", \"a_order_nr\", \"type\", \"what\" from \"action_steps\"";
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action_steps table failed. Read action_steps would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No action_steps found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qBezeichnung)
+		UAP(lb_I_Long, qActionID)
+		UAP(lb_I_Long, qOrderNo)
+		UAP(lb_I_Long, qType)
+		UAP(lb_I_String, qWhat)
+
+		qID = q->getAsLong(1);
+		qBezeichnung = q->getAsString(2);
+		qActionID = q->getAsLong(3);
+		qOrderNo = q->getAsLong(4);
+		qType = q->getAsLong(5);
+		qWhat = q->getAsString(6);
+
+		action_steps->addActionStep(qBezeichnung->charrep(), qActionID->getData(), qOrderNo->getData(), qType->getData(), qWhat->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qBezeichnung = q->getAsString(2);
+			qActionID = q->getAsLong(3);
+			qOrderNo = q->getAsLong(4);
+			qType = q->getAsLong(5);
+			qWhat = q->getAsString(6);
+
+			action_steps->addActionStep(qBezeichnung->charrep(), qActionID->getData(), qOrderNo->getData(), qType->getData(), qWhat->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Types* action_types) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select id, bezeichnung, action_handler, module from action_types";
+
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action_types table failed. Read action_types would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No action_types found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qBezeichnung)
+		UAP(lb_I_String, qActionHandler)
+		UAP(lb_I_String, qModule)
+
+		qID = q->getAsLong(1);
+		qBezeichnung = q->getAsString(2);
+		qActionHandler = q->getAsString(3);
+		qModule = q->getAsString(4);
+
+		action_types->addActionTypes(qBezeichnung->charrep(), qActionHandler->charrep(), qModule->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qBezeichnung = q->getAsString(2);
+			qActionHandler = q->getAsString(3);
+			qModule = q->getAsString(4);
+
+			action_types->addActionTypes(qBezeichnung->charrep(), qActionHandler->charrep() , qModule->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Actions* formular_actions) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select id, formular, \"action\", event from formular_actions";
+
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to formular_actions table failed. Read formular_actions would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFormular)
+		UAP(lb_I_Long, qAction)
+		UAP(lb_I_String, qEvent)
+
+		qID = q->getAsLong(1);
+		qFormular = q->getAsLong(2);
+		qAction = q->getAsLong(3);
+		qEvent = q->getAsString(4);
+
+		formular_actions->addFormularAction(qFormular->getData() , qAction->getData(), qEvent->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qFormular = q->getAsLong(2);
+			qAction = q->getAsLong(3);
+			qEvent = q->getAsString(4);
+
+			formular_actions->addFormularAction(qFormular->getData() , qAction->getData(), qEvent->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, parametername, parametervalue, anwendungid from Anwendungs_Parameter") != ERR_NONE) {
+		_LOG << "Error: Access to Anwendungs_Parameters table failed. Read Anwendungs_Parameters would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Anwendungs_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qAID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qAID = q->getAsLong(4);
+
+		params->addParameter(qN->charrep(), qV->charrep(), qAID->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qAID = q->getAsLong(4);
+			_LOG << "Add application parameter: " << qN->charrep() << ", " << qV->charrep() << ", " <<  qAID->getData() << ", " <<  qID->getData() LOG_
+			params->addParameter(qN->charrep(), qV->charrep(), qAID->getData(), qID->getData());
+		}
+	}
+}
+
+#ifndef USE_OLDMAPPING
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	const char *_actionquery = "select id, name, tablename, dbtype, isfk, fkname, fktable, formularid from formularfields";
+
+
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to formular_actions table failed. Read formular_actions would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFormular)
+		UAP(lb_I_String, name)
+		UAP(lb_I_String, tablename)
+		UAP(lb_I_String, dbtype)
+		UAP(lb_I_String, isfk)
+		UAP(lb_I_String, fkname)
+		UAP(lb_I_String, fktablename)
+
+		qID = q->getAsLong(1);
+		name = q->getAsString(2);
+		tablename = q->getAsString(3);
+		dbtype = q->getAsString(4);
+		isfk = q->getAsString(5);
+		fkname = q->getAsString(6);
+		fktablename = q->getAsString(7);
+		qFormular = q->getAsLong(8);
+
+		if (*isfk == "true")
+			formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), true, fkname->charrep(), fktablename->charrep(), qFormular->getData());
+		else
+			formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), false, "", "", qFormular->getData());
+			
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			name = q->getAsString(2);
+			tablename = q->getAsString(3);
+			dbtype = q->getAsString(4);
+			isfk = q->getAsString(5);
+			fkname = q->getAsString(6);
+			fktablename = q->getAsString(7);
+			qFormular = q->getAsLong(8);
+
+			if (*isfk == "true")
+				formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), true, fkname->charrep(), fktablename->charrep(), qFormular->getData());
+			else
+				formularfields->addField(name->charrep(), tablename->charrep(), dbtype->charrep(), false, "", "", qFormular->getData());
+		}
+	}
+}
+#endif
+
+#ifdef USE_OLDMAPPING
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
+	lbErrCodes err = ERR_NONE;
+	bool showMessage = false;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, messageText)
+	UAP(lb_I_Query, q)
+
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+    UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Parameter, document)
+	UAP(lb_I_Unknown, uk)
+
+	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+
+	visit(*&appParams); // Do an additional load of application parameters. This avoids much code changes.
+
+	uk = metaapp->getActiveDocument();
+
+	if (uk == NULL) {
+		_LOG << "Error: Expected an 'active document' here!" LOG_
+		return;
+	}
+
+    QI(uk, lb_I_Parameter, document)
+
+
+	/// \todo There is a problem when using Sqlite database wrapper and the cursor emulation.
+
+	/*
+	 * The where clause would propably replaced wrongly by the ID = 1 where clause.
+	 */
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+	// Get all formulars, even one is custom
+	if (q->query("select id, anwendungid from formulare") != ERR_NONE) {
+		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	while (err == ERR_NONE) {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
+		UAP(lb_I_Query, query_query)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+		FormularID = q->getAsLong(1);
+		AnwendungID = q->getAsLong(2);
+
+		query_query = db->getQuery("lbDMF", 0);
+
+		*query = "select parametervalue from formular_parameters where parametername = 'query' and formularid = ";
+		*query += FormularID->charrep();
+
+		if (query_query->query(query->charrep()) == ERR_NONE) {
+			// Query succeeded
+			UAP(lb_I_String, formularquery)
+			UAP(lb_I_Query, form_query)
+
+			lbErrCodes qqerr = query_query->first();
+
+			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
+				// Get the stored query for the formular with id = FormularID
+				formularquery = query_query->getAsString(1);
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
+/*
+        UAP_REQUEST(getModuleInstance(), lb_I_String, tempformularquery)
+        *tempformularquery = formularquery->charrep();
+        char* t = tempformularquery->stristr(formularquery->charrep(), "WHERE");
+        t[0] = 0;
+        *formularquery = tempformularquery;
+        *formularquery += " LIMIT 1";
+*/
+
+				UAP(lb_I_Database, customDB)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+
+				*dbname = "";
+				*dbuser = "";
+				*dbpass = "";
+
+///\todo There is a strange bug in overwriting the string anyhow within the call to setStatusText below.
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbbackend)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, sysdbbackend)
+				
+				*sysdbbackend = metaapp->getSystemDatabaseBackend();
+				*dbbackend = metaapp->getApplicationDatabaseBackend();
+
+				if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
+					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
+				} else {
+					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
+				}
+
+				*dbname = appParams->getParameter("DBName", AnwendungID->getData());
+				*dbuser = appParams->getParameter("DBUser", AnwendungID->getData());
+				*dbpass = appParams->getParameter("DBPass", AnwendungID->getData());
+
+				metaapp->setStatusText("Info", "Target database is application database ...");
+
+				/************/
+
+				if (strcmp(dbname->charrep(), "lbDMF") == 0) {
+					// It is the system database
+					if (sysdbbackend->charrep() != NULL && strcmp(sysdbbackend->charrep(), "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend->charrep(), customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				} else {
+					if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend->charrep(), customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				}
+
+
+
+				if (customDB == NULL) {
+					_LOGERROR << "Error: Could not load database backend, either plugin or built in version. The sysdbbackend value was: " << sysdbbackend->charrep() LOG_
+					return;
+				}
+
+				customDB->init();
+				/************/
+
+				if (dbbackend->charrep() != NULL && strcmp(dbbackend->charrep(), "") != 0) {
+					// It is the plugin that currently only supports local Sqlite
+					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0); // Use retrieved database name
+					}
+				} else {
+					if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0);
+					}
+				}
+
+
+				form_query->enableFKCollecting();
+				_LOG << "Execute query '" << formularquery->charrep() << "'" LOG_
+				lbErrCodes errQuery = form_query->query(formularquery->charrep());
+				_LOG << "Done executing query '" << formularquery->charrep() << "'" LOG_
+
+				if ((errQuery == ERR_NONE) || (errQuery == ERR_DB_NODATA)) {
+					// formular query is valid
+					int columns = form_query->getColumns();
+					for (int i = 1; i <= columns; i++) {
+						UAP(lb_I_String, name)
+						UAP(lb_I_String, tablename)
+
+						name = form_query->getColumnName(i);
+						tablename = form_query->getTableName(name->charrep());
+
+						_LOG << "Check if column " << name->charrep() << " from " << tablename->charrep() << " is a foreign column..." LOG_
+
+						if (form_query->hasFKColumn(name->charrep()) == 1) {
+							UAP(lb_I_String, t)
+							UAP(lb_I_String, c)
+							UAP(lb_I_Query, fkpkmapping_query)
+							fkpkmapping_query = db->getQuery("lbDMF", 0);
+
+							_LOG << "Yes, is foreign column." LOG_
+
+							t = form_query->getPKTable(name->charrep());
+							c = form_query->getPKColumn(name->charrep());
+
+							char* buffer = (char*) malloc(1000);
+							buffer[0] = 0;
+
+							UAP(lb_I_String, T)
+
+							T = form_query->getTableName(name->charrep());
+
+							sprintf(buffer, "select pkname, pktable	from foreignkey_visibledata_mapping "
+									"where fkname = '%s' and fktable = '%s'", name->charrep(), T->charrep());
+
+							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
+								UAP(lb_I_String, PKName)
+								UAP(lb_I_String, PKTable)
+								lbErrCodes err = fkpkmapping_query->first();
+
+								if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+									PKName = fkpkmapping_query->getAsString(1);
+									PKTable = fkpkmapping_query->getAsString(2);
+
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name->charrep(), tablename->charrep(), "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model. (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
+								} else {
+									_LOG << "Yes, is foreign column, but no mapping defined." LOG_
+
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Bit", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Float", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "String", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Binary", false, "", "", FormularID->getData());
+											break;
+
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model (no mapping). (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
+											formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", false, "", "", FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
+								}
+							}
+						} else {
+							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+							_LOG << "No, is not foreign column." LOG_
+
+							switch (coltype) {
+								case lb_I_Query::lbDBColumnBit:
+									formularfields->addField(name->charrep(), tablename->charrep(),  "Bit", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnFloat:
+									formularfields->addField(name->charrep(), tablename->charrep(),  "Float", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnChar:
+									formularfields->addField(name->charrep(), tablename->charrep(),  "String", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnBinary:
+									formularfields->addField(name->charrep(), tablename->charrep(),  "Binary", false, "", "", FormularID->getData());
+									break;
+
+								case lb_I_Query::lbDBColumnBigInteger:
+								case lb_I_Query::lbDBColumnInteger:
+									formularfields->addField(name->charrep(), tablename->charrep(),  "Integer", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnUnknown:
+									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+									break;
+							}
+						}
+					}
+				} else {
+					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_
+				}
+			}
+		} else {
+			_LOG << "Error: Query '" << query->charrep() << "' failed!" LOG_
+		}
+		err = q->next();
+	}
+
+
+	if (err == WARN_DB_NODATA) {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
+		UAP(lb_I_Query, query_query)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+
+		query_query = db->getQuery("lbDMF", 0);
+
+		FormularID = q->getAsLong(1);
+		AnwendungID = q->getAsLong(2);
+
+		*query = "select parametervalue from formular_parameters where parametername = 'query' and formularid = ";
+		*query += FormularID->charrep();
+
+		if (query_query->query(query->charrep()) == ERR_NONE) {
+			// Query succeeded
+			UAP(lb_I_String, formularquery)
+			UAP(lb_I_Query, form_query)
+
+			lbErrCodes qqerr = query_query->first();
+
+			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
+				// Get the stored query for the formular with id = FormularID
+				formularquery = query_query->getAsString(1);
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Have query object for " << ConnectionName->charrep() << ": '" << formularquery->charrep() << "'" LOG_
+				//form_query = db->getQuery(ConnectionName->charrep(), 0);
+				/*
+				 UAP_REQUEST(getModuleInstance(), lb_I_String, tempformularquery)
+				 *tempformularquery = formularquery->charrep();
+				 char* t = tempformularquery->stristr(formularquery->charrep(), "WHERE");
+				 t[0] = 0;
+				 *formularquery = tempformularquery;
+				 *formularquery += " LIMIT 1";
+				 */
+				
+				UAP(lb_I_Database, customDB)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+				
+				*dbname = "";
+				*dbuser = "";
+				*dbpass = "";
+				
+				char* dbbackend = metaapp->getApplicationDatabaseBackend();
+				char* sysdbbackend = metaapp->getSystemDatabaseBackend();
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					_LOG << "Info: Have got any AppParams from document used for plugin database backend." LOG_
+				} else {
+					_LOG << "Info: Have got any AppParams from document used for built in database backend." LOG_
+				}
+				
+				*dbname = appParams->getParameter("DBName", AnwendungID->getData());
+				*dbuser = appParams->getParameter("DBUser", AnwendungID->getData());
+				*dbpass = appParams->getParameter("DBPass", AnwendungID->getData());
+				
+				metaapp->setStatusText("Info", "Target database is application database ...");
+				
+				/************/
+				
+				if (strcmp(dbname->charrep(), "lbDMF") == 0) {
+					// It is the system database
+					if (sysdbbackend != NULL && strcmp(sysdbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, sysdbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				} else {
+					if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, customDB, "'database plugin'")
+						_LOG << "Using plugin database backend for UML import operation..." LOG_
+					} else {
+						// Use built in
+						REQUEST(getModuleInstance(), lb_I_Database, customDB)
+						_LOG << "Using built in database backend for UML import operation..." LOG_
+					}
+				}
+				
+				
+				
+				if (customDB == NULL) {
+					_LOG << "Error: Could not load database backend, either plugin or built in version." LOG_
+					return;
+				}
+				
+				customDB->init();
+				/************/
+				
+				if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+					// It is the plugin that currently only supports local Sqlite
+					if ((strcmp(dbname->charrep(), "") == 0) || (customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0); // Use retrieved database name
+					}
+				} else {
+					if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+						/// \todo Implement fallback to Sqlite3.
+						if (!showMessage) {
+							*messageText = "Some of the designed applications do not have access to their databases.";
+							showMessage = true;
+						} else {
+							*messageText += "\n\nDatabase missing: ";
+							*messageText += dbname->charrep();
+						}
+						
+						// A fallback to the old code, that may not produce a result.
+						form_query = db->getQuery(ConnectionName->charrep(), 0);
+					} else {
+						form_query = customDB->getQuery(dbname->charrep(), 0);
+					}
+				}
+				
+				form_query->enableFKCollecting();
+
+				lbErrCodes errQuery = form_query->query(formularquery->charrep());
+
+				// The second case will never happen unless the query implementation will return WARN_DB_NODATA and query_query results into no data.
+				// There is always a case of no data in the application tables, but there should always meta data available except the SQL of that query is wrong.
+				if ((errQuery == ERR_NONE) || (errQuery == ERR_DB_NODATA)) {
+					// formular query is valid
+					int columns = form_query->getColumns();
+					for (int i = 1; i <= columns; i++) {
+						UAP(lb_I_String, name)
+						UAP(lb_I_String, tablename)
+
+						name = form_query->getColumnName(i);
+						tablename = form_query->getTableName(name->charrep());
+
+						_LOG << "Check if column " << name->charrep() << " from " << tablename->charrep() << " is a foreign column..." LOG_
+
+						if (form_query->hasFKColumn(name->charrep()) == 1) {
+							UAP(lb_I_String, t)
+							UAP(lb_I_String, c)
+							UAP(lb_I_Query, fkpkmapping_query)
+							fkpkmapping_query = db->getQuery("lbDMF", 0);
+
+							_LOG << "Yes, is foreign column." LOG_
+
+							t = form_query->getPKTable(name->charrep());
+							c = form_query->getPKColumn(name->charrep());
+
+							char* buffer = (char*) malloc(1000);
+							buffer[0] = 0;
+
+							UAP(lb_I_String, table_name)
+							table_name = form_query->getTableName(name->charrep());
+							
+							sprintf(buffer, "select pkname, pktable	from foreignkey_visibledata_mapping "
+									"where fkname = '%s' and fktable = '%s'", name->charrep(), table_name->charrep());
+
+							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
+								UAP(lb_I_String, PKName)
+								UAP(lb_I_String, PKTable)
+								lbErrCodes err = fkpkmapping_query->first();
+
+								if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+									PKName = fkpkmapping_query->getAsString(1);
+									PKTable = fkpkmapping_query->getAsString(2);
+
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name->charrep(), tablename->charrep(), "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name->charrep(), tablename->charrep(), "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name->charrep(), tablename->charrep(), "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name->charrep(), tablename->charrep(), "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											_LOG << "Save the visible column into the internal object model. (" << name->charrep() << " in " << tablename->charrep() << " to " << PKName->charrep() << " in " << PKTable->charrep() << ")" LOG_
+											formularfields->addField(name->charrep(), tablename->charrep(), "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
+								}
+							}
+						} else {
+							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+							_LOG << "No, is not foreign column." LOG_
+
+							switch (coltype) {
+								case lb_I_Query::lbDBColumnBit:
+									formularfields->addField(name->charrep(), tablename->charrep(), "Bit", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnFloat:
+									formularfields->addField(name->charrep(), tablename->charrep(), "Float", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnChar:
+									formularfields->addField(name->charrep(), tablename->charrep(), "String", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnBinary:
+									formularfields->addField(name->charrep(), tablename->charrep(), "Binary", false, "", "", FormularID->getData());
+									break;
+
+								case lb_I_Query::lbDBColumnBigInteger:
+								case lb_I_Query::lbDBColumnInteger:
+									formularfields->addField(name->charrep(), tablename->charrep(), "Integer", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnUnknown:
+									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+									break;
+							}
+						}
+					}
+				} else {
+					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_
+				}
+			}
+		} else {
+			_LOG << "Error: Query '" << query->charrep() << "' failed!" LOG_
+		}
+	}
+	if (showMessage) {
+		metaapp->msgBox("Error", messageText->charrep());
+	}
+}
+#endif
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, name, menuname, eventname, menuhilfe, anwendungid, typ, toolbarimage from formulare") != ERR_NONE) {
+		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No formulars found. All formulars may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
+		UAP(lb_I_Long, Typ)
+		UAP(lb_I_String, FormularName)
+		UAP(lb_I_String, MenuName)
+		UAP(lb_I_String, MenuHilfe)
+		UAP(lb_I_String, EventName)
+		UAP(lb_I_String, ToolbarImage)
+
+		FormularID = q->getAsLong(1);
+		FormularName = q->getAsString(2);
+		MenuName = q->getAsString(3);
+		EventName = q->getAsString(4);
+		MenuHilfe = q->getAsString(5);
+		AnwendungID = q->getAsLong(6);
+		Typ = q->getAsLong(7);
+		ToolbarImage = q->getAsString(8);
+
+		forms->addFormular(FormularName->charrep(), ToolbarImage->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			FormularID = q->getAsLong(1);
+			FormularName = q->getAsString(2);
+			MenuName = q->getAsString(3);
+			EventName = q->getAsString(4);
+			MenuHilfe = q->getAsString(5);
+			AnwendungID = q->getAsLong(6);
+			Typ = q->getAsLong(7);
+			ToolbarImage = q->getAsString(8);
+
+			forms->addFormular(FormularName->charrep(), ToolbarImage->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select tablename, name, specialcolumn, controltype, ro from column_types") != ERR_NONE) {
+		_LOG << "Error: Access to column types table failed. Read column types would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No column types found. All column types may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_String, Readonly)
+		UAP(lb_I_String, TableName)
+		UAP(lb_I_String, Name)
+		UAP(lb_I_String, SpecialColumn)
+		UAP(lb_I_String, ControlType)
+
+		TableName = q->getAsString(1);
+		Name = q->getAsString(2);
+		SpecialColumn = q->getAsString(3);
+		ControlType = q->getAsString(4);
+		Readonly = q->getAsString(5);
+
+		columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (*Readonly == "true") ? true : false);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			TableName = q->getAsString(1);
+			Name = q->getAsString(2);
+			SpecialColumn = q->getAsString(3);
+			ControlType = q->getAsString(4);
+			Readonly = q->getAsString(5);
+
+			columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (*Readonly == "true") ? true : false);
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications* applications) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, Name, Titel, ModuleName, Functor, Interface from Anwendungen") != ERR_NONE) {
+		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qName)
+		UAP(lb_I_String, qTitel)
+		UAP(lb_I_String, qModuleName)
+		UAP(lb_I_String, qFunctor)
+		UAP(lb_I_String, qInterface)
+
+		qID = q->getAsLong(1);
+		qName = q->getAsString(2);
+		qTitel = q->getAsString(3);
+		qModuleName = q->getAsString(4);
+		qFunctor = q->getAsString(5);
+		qInterface = q->getAsString(6);
+
+		applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+
+		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qName = q->getAsString(2);
+			qTitel = q->getAsString(3);
+			qModuleName = q->getAsString(4);
+			qFunctor = q->getAsString(5);
+			qInterface = q->getAsString(6);
+
+			applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+		}
+
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applications) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+
+	q = db->getQuery("lbDMF", 0);
+
+	q->skipFKCollecting();
+
+	if (q->query("select id, userid, anwendungenid from user_anwendungen") != ERR_NONE) {
+		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+		return;
+	}
+
+	err = q->first();
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qUserID)
+		UAP(lb_I_Long, qAppID)
+
+		qID = q->getAsLong(1);
+		qUserID = q->getAsLong(2);
+		qAppID = q->getAsLong(3);
+
+		user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
+
+		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qUserID = q->getAsLong(2);
+			qAppID = q->getAsLong(3);
+
+			user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
+		}
+
+	}
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_MetaApplication* app) {
@@ -437,15 +2648,12 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace);
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
 
 private:
 	UAP(lb_I_Unknown, impl)
-	UAP(lb_I_String, pluginNamespace)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseInputStream)
@@ -466,12 +2674,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseInputStream::setData(lb_I_Unknown* uk) {
 
 lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() {
 	_CL_VERBOSE << "lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() called.\n" LOG_
-	REQUEST(getModuleInstance(), lb_I_String, pluginNamespace)
-	*pluginNamespace = "Plugin namespace was not set.";
-}
-
-void LB_STDCALL lbPluginDatabaseInputStream::setNamespace(const char* _namespace) {
-	*pluginNamespace = _namespace;
+	
 }
 
 lbPluginDatabaseInputStream::~lbPluginDatabaseInputStream() {
@@ -501,7 +2704,6 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::peekImplementation() {
 	if (impl == NULL) {
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
 		
-		InputStream->setContextNamespace(pluginNamespace->charrep());
 
 		QI(InputStream, lb_I_Unknown, impl)
 	} else {
@@ -520,8 +2722,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseInputStream::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior." LOG_
 
 		lbDatabaseInputStream* InputStream = new lbDatabaseInputStream();
-
-		InputStream->setContextNamespace(pluginNamespace->charrep());
+		
 
 		QI(InputStream, lb_I_Unknown, impl)
 	}
