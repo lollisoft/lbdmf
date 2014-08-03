@@ -4071,6 +4071,16 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
+/** \brief A class to store parameters related to a table.
+ *
+ */
+class lb_I_DBTableParameter : public lb_I_ParameterTable {
+public:
+	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long table_id, long _id = -1) = 0;
+	virtual long		LB_STDCALL getTableID() = 0;
+	virtual char*		LB_STDCALL getParameter(const char* name, long table_id) = 0;	
+};
+
 /** \brief A class to store database column information.
  *
  * This is the internal storage for database column information. It will be used in the visitor plugin to transfer
@@ -5315,6 +5325,7 @@ UAPDECL(lb_I_DispatchRequest)
 UAPDECL(lb_I_DispatchResponse)
 UAPDECL(lb_I_Applications_Formulars)
 UAPDECL(lb_I_DBTables)
+UAPDECL(lb_I_DBTableParameter)
 UAPDECL(lb_I_DBColumns)
 UAPDECL(lb_I_DBPrimaryKeys)
 UAPDECL(lb_I_DBForeignKeys)

@@ -181,6 +181,7 @@ public:
 	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
@@ -958,6 +959,52 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	}
 
 	return;
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTableParameter* dbtableparameter) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery("lbDMF", 0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, parametername, parametervalue, tableid from dbtableparameter") != ERR_NONE) {
+		_LOG << "Error: Access to DBTableParameter table failed. Read DBTableParameter would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first();
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qTID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+		
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qTID = q->getAsLong(4);
+		
+		dbtableparameter->addParameter(qN->charrep(), qV->charrep(), qTID->getData(), qID->getData());
+		
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qTID = q->getAsLong(4);
+			
+			dbtableparameter->addParameter(qN->charrep(), qV->charrep(), qTID->getData(), qID->getData());
+		}
+	}
 }
 
 #endif

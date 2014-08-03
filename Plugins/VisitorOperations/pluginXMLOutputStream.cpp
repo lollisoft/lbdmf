@@ -180,6 +180,7 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 	
@@ -570,8 +571,24 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTables* dbtable) {
 		"\" remarks=\"" << dbtable->getTableRemarks() << 
 		"\"/>" << "\n";
 	}
-
+	
 	*oStream << "</dbtables>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTableParameter* dbtableparameter) {
+	*oStream << "<dbtableparameter>" << "\n";
+	
+	dbtableparameter->finishParameterIteration();
+	
+	while (dbtableparameter->hasMoreParameters()) {
+		dbtableparameter->setNextParameter();
+		*oStream << 
+		"<parameter ID=\"" << dbtableparameter->getParameterID() << 
+		"\" name=\"" << dbtableparameter->getParameterName() << 
+		"\" value=\"" << dbtableparameter->getParameterValue() << 
+		"\" applicationid=\"" << dbtableparameter->getTableID() << "\"/>" << "\n";
+	}
+	*oStream << "</dbtableparameter>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {

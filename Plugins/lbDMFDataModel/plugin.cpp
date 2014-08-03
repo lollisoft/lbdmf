@@ -116,6 +116,7 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginDBTableModel, Model)
 	ADD_PLUGIN(lbPluginDBForeignKeysModel, Model)
 	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
+	ADD_PLUGIN(lbPluginDBTableParameters, Model)
 	ADD_PLUGIN(lbPluginApplicationFormularsRelationModel, Model)
 	ADD_PLUGIN(lbPluginActionStepTransitionsModel, Model)
 	ADD_PLUGIN(lbPluginActionParameters, Model)
@@ -123,9 +124,6 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {
-	
-	
-	;
 	_CL_VERBOSE << "lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() called." LOG_
 }
 

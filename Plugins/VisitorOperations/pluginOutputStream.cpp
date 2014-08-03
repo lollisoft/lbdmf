@@ -180,6 +180,7 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBTableParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
@@ -599,6 +600,25 @@ void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
 		*oStream << tables->getTableType();
 		*oStream << tables->getTableRemarks();
 		*oStream << tables->getApplicationID();
+	}
+}
+
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBTableParameter* dbtableparameter) {
+	int count;
+	
+	count = dbtableparameter->getParameterCount();
+	*oStream << count;
+	
+	dbtableparameter->finishParameterIteration();
+	
+	while (dbtableparameter->hasMoreParameters()) {
+		dbtableparameter->setNextParameter();
+		
+		*oStream << dbtableparameter->getParameterID();
+		*oStream << dbtableparameter->getParameterName();
+		*oStream << dbtableparameter->getParameterValue();
+		*oStream << dbtableparameter->getTableID();
 	}
 }
 
