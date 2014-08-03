@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 27
+  revision 34
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -42,6 +42,16 @@ format 73
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 172674 "FormularFilter"
+      draw_all_relations no hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    classdiagram 179202 "UsersFilter"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
     classdiagram 166146 "Actions"
       draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
       size A4
@@ -1508,6 +1518,15 @@ ${inlines}
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
       end
+
+      classrelation 218370 // <dependency>
+	relation 214146 -_->
+	  stereotype "filtered"
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 218370 // <dependency>
+	  b parent class_ref 184322 // FormularFilter
+      end
     end
 
     class 150018 "formularfields"
@@ -2548,6 +2567,23 @@ ${inlines}
 	key "lbDMF:relationship:table" value "anwendungen"
 	key "lbDMF:relationship:order" value "-1"
       end
+
+      classrelation 224898 // <association>
+	relation 220674 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 224898 // <association>
+	  b role_name "tableid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 225026 // tableid (<association>)
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value "id"
+	key "lbDMF:relationship:table" value "dbtable"
+	key "lbDMF:relationship:order" value "-1"
+      end
     end
 
     class 163586 "dbcolumn"
@@ -2869,6 +2905,110 @@ ${inlines}
 
       classrelation 176002 // dbtableid (<association>)
 	relation_ref 172546 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 184322 "FormularFilter"
+      visibility package stereotype "ownership_filter"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 211586 // <dependency>
+	relation 207362 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 211586 // <dependency>
+	  b parent class_ref 130690 // anwendungen
+      end
+
+      classrelation 211714 // <dependency>
+	relation 207490 -_->
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 211714 // <dependency>
+	  b parent class_ref 133122 // user_anwendungen
+      end
+
+      classrelation 211842 // <dependency>
+	relation 207618 -_->
+	  stereotype "owner"
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 211842 // <dependency>
+	  b parent class_ref 133250 // users
+      end
+    end
+
+    class 190850 "UserFilter"
+      visibility package stereotype "filterdefinition"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 197378 "dbtableparameter"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 245506 "id"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 238466 "parametername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 238594 "parametervalue"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 225026 // tableid (<association>)
+	relation_ref 220674 // <association>
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""
