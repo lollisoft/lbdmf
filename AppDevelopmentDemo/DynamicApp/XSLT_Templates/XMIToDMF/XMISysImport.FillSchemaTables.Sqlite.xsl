@@ -89,6 +89,12 @@ Don't use the association name here. If one has two or more associations between
 	<xsl:with-param name="ClassName" select="$ClassName"/>
 </xsl:call-template>
 
+<xsl:call-template name="XMISysImport.FillSchemaTableProperties.Sqlite">
+	<xsl:with-param name="ClassId" select="$ClassId"/>
+	<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
+	<xsl:with-param name="ClassName" select="$ClassName"/>
+</xsl:call-template>
+
 </xsl:template>
 
 <xsl:template name="XMISysImport.FillSchemaTables.Sqlite.dbtables">
@@ -103,6 +109,7 @@ Don't use the association name here. If one has two or more associations between
 DELETE FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+DELETE FROM dbtableparameter WHERE tableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>');
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
@@ -178,6 +185,20 @@ INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fks
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
 
 </xsl:template>
+
+<xsl:template name="XMISysImport.FillSchemaTableProperties.Sqlite">
+    <xsl:param name="ClassId"/><!-- The Id for the current class to create schema information -->
+    <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
+	  <xsl:for-each select="./UML:ModelElement.taggedValue/UML:TaggedValue">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+insert into dbtableparameter (parametername, parametervalue, tableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
+(select id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' and tableremarks = '<xsl:value-of select="$ClassId"/>'));
+</xsl:if>
+      </xsl:for-each>
+
+</xsl:template>
+	  
+	  
 
 </xsl:stylesheet>
 
