@@ -1,6 +1,6 @@
 format 73
 "OpenSourceStoreReview"
-  revision 1
+  revision 2
   modified_by 2 "lothar"
 
 
@@ -36,6 +36,10 @@ format 73
 
   mark_for_import
   
+  ncouples 4
+  key "gxmi path" value "Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/OpenSourceStoreReviewApp.xmi"
+  key "gxmi gen views" value "no"
+  key "gxmi encoding" value "ISO-8859-1"
+  key "gxmi taggedvalue" value "1"
   package_ref 128258 // OpenSourceStoreReview
-
 end
